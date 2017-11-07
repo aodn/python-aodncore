@@ -1,0 +1,446 @@
+import smtplib
+from copy import deepcopy
+from email.mime.multipart import MIMEMultipart
+from email.mime.text import MIMEText
+
+from tabulate import tabulate
+
+from aodncore.util import validate_bool, validate_type
+from .basestep import AbstractNotifyRunner
+from ..common import (NotificationRecipientType, validate_recipienttype)
+from ..exceptions import InvalidRecipientError, NotificationFailedError
+from ...util import IndexedSet, TemplateRenderer, format_exception, validate_dict, validate_nonstring_iterable
+
+__all__ = [
+    'get_notify_runner',
+    'NotifyRunnerAdapter',
+    'EmailNotifyRunner',
+    'LogFailuresNotifyRunner',
+    'NotifyList',
+    'NotificationRecipient',
+    'SnsNotifyRunner'
+]
+
+
+def get_notify_runner(notification_data, config, logger, notify_params=None):
+    """Factory function to return notify runner class
+
+    :param notification_data: dictionary containing notification data (i.e. template values)
+    :param config: LazyConfigManager instance
+    :param logger: Logger instance
+    :param notify_params: list of parameters to define notification behaviour
+    :return: AbstractNotifyRunner sub-class
+    """
+    return NotifyRunnerAdapter(notification_data, config, logger, notify_params)
+
+
+def get_child_notify_runner(recipient_type, notification_data, config, logger):
+    """Factory function to return appropriate notify runner based on recipient type value
+
+    :param recipient_type: element of the NotificationRecipientType enum
+    :param notification_data: dict containing values used in templating etc.
+    :param config: LazyConfigManager instance
+    :param logger: Logger instance
+    :return: BaseNotifyRunner sub-class
+    """
+    validate_recipienttype(recipient_type)
+
+    if recipient_type is NotificationRecipientType.EMAIL:
+        return EmailNotifyRunner(notification_data, config, logger)
+    elif recipient_type is NotificationRecipientType.SNS:
+        return SnsNotifyRunner(notification_data, config, logger)
+    else:
+        return LogFailuresNotifyRunner(notification_data, config, logger)
+
+
+class BaseNotifyRunner(AbstractNotifyRunner):
+    """Base class for NotifyRunner classes, provides *protocol agnostic* helper methods and properties for child
+        NotifyRunner classes
+    """
+
+    def __init__(self, notification_data, config, logger):
+        super(BaseNotifyRunner, self).__init__(config, logger)
+        self.notification_data = notification_data
+
+        self.error = None
+        self._message_parts = None
+        self._template_values = None
+
+    @property
+    def message_parts(self):
+        """Returns a tuple containing the rendered text and HTML templates
+
+        :return: tuple containing (text_part, html_part)
+        """
+        if self._message_parts is None:
+            self._message_parts = self._render()
+        return self._message_parts
+
+    @property
+    def template_values(self):
+        """Assemble the template values from the supplied notification data and rendered file tables
+
+        :return: dict containing final template values
+        """
+        if self._template_values is None:
+            tables = self._get_file_tables()
+            template_values = deepcopy(self.notification_data)
+            template_values.update(tables)
+            self._template_values = template_values
+        return self._template_values
+
+    def _get_file_tables(self):
+        """Render tables for use in notifications
+
+        :return: dict containing rendered input file and file collection tables, in text and HTML format
+        """
+        input_file_table_data = [
+            [
+                self.notification_data['input_file'],
+                self.notification_data['handler_start_time'],
+                self.notification_data['processing_result']
+            ]
+        ]
+        input_file_table_headers = ['Input file', 'Handler start time', 'Processing result']
+
+        text_input_file_table = tabulate(input_file_table_data, input_file_table_headers, tablefmt='simple')
+
+        html_input_file_table = tabulate(input_file_table_data, input_file_table_headers, tablefmt='html')
+
+        text_collection_table = tabulate(self.notification_data['collection_data'],
+                                         self.notification_data['collection_headers'], tablefmt='simple')
+
+        html_collection_table = tabulate(self.notification_data['collection_data'],
+                                         self.notification_data['collection_headers'], tablefmt='html')
+
+        return {
+            'text_input_file_table': text_input_file_table,
+            'html_input_file_table': html_input_file_table,
+            'text_collection_table': text_collection_table,
+            'html_collection_table': html_collection_table
+        }
+
+    @staticmethod
+    def _get_recipient_addresses(notify_list):
+        """Get a list of *only* the address attributes of the NotifyList
+
+        :param notify_list:
+        :return:
+        """
+        recipient_addresses = [r.address for r in notify_list]
+        return recipient_addresses
+
+    def _render(self):
+        template_renderer = TemplateRenderer()
+        text = template_renderer.render(self._config.pipeline_config['templating']['text_notification_template'],
+                                        self.template_values)
+        html = template_renderer.render(self._config.pipeline_config['templating']['html_notification_template'],
+                                        self.template_values)
+        return text, html
+
+
+class NotifyRunnerAdapter(BaseNotifyRunner):
+    def __init__(self, notification_data, config, logger, notify_params):
+        super(NotifyRunnerAdapter, self).__init__(notification_data, config, logger)
+        self.notification_data = notification_data
+
+        if notify_params is None:
+            notify_params = {}
+
+        self.notify_params = notify_params
+
+    def run(self, notify_list):
+        notify_list_object = NotifyList.from_collection(notify_list)
+        invalid_recipients = notify_list_object.filter_by_notify_type(NotificationRecipientType.INVALID)
+        if invalid_recipients:
+            self._logger.error(
+                "notifications unable to be sent to invalid recipients: {invalid}".format(
+                    invalid=list(r.raw_string for r in invalid_recipients)))
+
+        notify_types = {t.notify_type for t in notify_list_object if
+                        t.notify_type is not NotificationRecipientType.INVALID}
+
+        for notify_type in notify_types:
+            type_notify_list = notify_list_object.filter_by_notify_type(notify_type)
+            notify_runner = get_child_notify_runner(notify_type, self.notification_data, self._config, self._logger)
+            self._logger.info("get_child_notify_runner -> '{runner}'".format(runner=notify_runner.__class__.__name__))
+            notify_runner.run(type_notify_list)
+
+        failed_notifications = notify_list_object.filter_by_failed()
+        if failed_notifications:
+            self._logger.error(
+                "notifications failed to the following recipients: {failed}".format(
+                    failed=list((r.raw_string, r.error) for r in failed_notifications)))
+
+        return notify_list_object
+
+
+class EmailNotifyRunner(BaseNotifyRunner):
+    def _construct_message(self, recipient_addresses, subject, from_address):
+        rendered_text, rendered_html = self.message_parts
+        subparts = (MIMEText(rendered_text, 'text'), MIMEText(rendered_html, 'html'))
+        message = MIMEMultipart('alternative', _subparts=subparts)
+        message['Subject'] = subject
+        message['From'] = from_address
+        message['To'] = ','.join(recipient_addresses)
+
+        return message
+
+    def _send(self, recipient_addresses, message):
+        smtp_server = smtplib.SMTP()
+        sendmail_result = None
+        try:
+            smtp_server.connect(self._config.pipeline_config['mail']['smtp_server'],
+                                port=self._config.pipeline_config['mail'].get('smtp_port', 587))
+            if self._config.pipeline_config['mail'].get('smtp_tls', True):
+                smtp_server.starttls()
+            smtp_server.login(self._config.pipeline_config['mail']['smtp_user'],
+                              self._config.pipeline_config['mail']['smtp_pass'])
+            sendmail_result = smtp_server.sendmail(self._config.pipeline_config['mail']['from'], recipient_addresses,
+                                                   message.as_string())
+        finally:
+            try:
+                smtp_server.quit()
+            except smtplib.SMTPServerDisconnected:
+                pass
+            except Exception as e:
+                self._logger.warning("exception thrown when closing SMTP. {e}".format(e=format_exception(e)))
+
+        return sendmail_result
+
+    def run(self, notify_list):
+        """Attempt to send notification email to recipients in notify_list paramater.
+
+            `error_dict` is a dict object as described in the smtplib.SMTP.sendmail method docs, which allows
+            per-recipient status inspection/error logging
+
+        :param notify_list: NotifyList instance
+        :return: None
+        """
+        validate_notifylist(notify_list)
+
+        recipient_addresses = self._get_recipient_addresses(notify_list)
+        self._logger.info("email recipients: {recipients}".format(recipients=recipient_addresses))
+
+        subject = self._config.pipeline_config['mail']['subject'].format(**self.template_values)
+        from_address = self._config.pipeline_config['mail']['from']
+        message = self._construct_message(recipient_addresses, subject, from_address)
+
+        error_dict = None
+        try:
+            error_dict = self._send(recipient_addresses, message)
+        except smtplib.SMTPRecipientsRefused as e:
+            # the SMTP transaction was successful, but *all* of the recipients were refused by the destination server
+            error_dict = e.recipients
+        except Exception as e:
+            # the SMTP transaction was unsuccessful, so consider the whole execution as having failed
+            self._logger.exception(e)
+            self.error = e
+            notify_list.set_error(e)
+        finally:
+            if error_dict is not None:
+                # use the error_dict to update each recipient status individually
+                notify_list.update_from_error_dict(error_dict)
+            notify_list.set_notification_attempted()
+
+
+class SnsNotifyRunner(BaseNotifyRunner):
+    def run(self, notify_list):
+        validate_notifylist(notify_list)
+
+        # TODO: implement SNS runner
+        fail_runner = LogFailuresNotifyRunner(self.notification_data, self._config, self._logger)
+        fail_runner.run(notify_list)
+
+
+class LogFailuresNotifyRunner(BaseNotifyRunner):
+    def run(self, notify_list):
+        validate_notifylist(notify_list)
+
+        recipients = list(r.raw_string for r in notify_list)
+        self._logger.warning("recipients unable to be notified: {recipients}".format(recipients=recipients))
+
+
+class NotifyList(object):
+    __slots__ = ['__s']
+
+    def __init__(self, data=None):
+        super(NotifyList, self).__init__()
+
+        self.__s = IndexedSet()
+
+        if data is not None:
+            self.update(data)
+
+    def __contains__(self, element):
+        return element in self.__s
+
+    def __getitem__(self, index):
+        result = self.__s[index]
+        return NotifyList(result) if isinstance(result, IndexedSet) else result
+
+    def __iter__(self):
+        return iter(self.__s)
+
+    def __len__(self):
+        return len(self.__s)
+
+    def __repr__(self):  # pragma: no cover
+        return "NotifyList({repr})".format(repr=repr(list(self.__s)))
+
+    def add(self, recipient):
+        validate_notificationrecipient(recipient)
+
+        result = recipient not in self.__s
+        self.__s.add(recipient)
+        return result
+
+    # alias append to the add method
+    append = add
+
+    def discard(self, recipient):
+        result = recipient in self.__s
+        self.__s.discard(recipient)
+        return result
+
+    def difference(self, sequence):
+        return self.__s.difference(sequence)
+
+    def issubset(self, sequence):
+        return self.__s.issubset(sequence)
+
+    def issuperset(self, sequence):
+        return self.__s.issuperset(sequence)
+
+    def union(self, sequence):
+        if not all(isinstance(f, NotificationRecipient) for f in sequence):
+            raise TypeError('invalid sequence, all elements must be NotificationRecipient objects')
+        return NotifyList(self.__s.union(sequence))
+
+    def update(self, sequence):
+        validate_nonstring_iterable(sequence)
+
+        result = None
+        for item in sequence:
+            result = self.add(item)
+        return result
+
+    def filter_by_failed(self):
+        return NotifyList(r for r in self.__s if r.notification_attempted and not r.notification_succeeded)
+
+    def filter_by_notify_type(self, notify_type):
+        """Return a new NotifyList containing only recipients of the given notify_type
+
+        :param notify_type: attribute by which to filter PipelineFiles
+        :return: NotifyList containing only NotifyRecipient objects of the given type
+        """
+        validate_recipienttype(notify_type)
+        collection = NotifyList(r for r in self.__s if r.notify_type is notify_type)
+        return collection
+
+    @classmethod
+    def from_collection(cls, recipient_collection):
+        return cls(NotificationRecipient.from_string(r) for r in recipient_collection)
+
+    def set_notification_attempted(self):
+        for recipient in self.__s:
+            recipient.notification_attempted = True
+
+    def set_error(self, error):
+        """Set the error attribute for all elements
+
+        :param error: Exception instance
+        :return: None
+        """
+        for recipient in self.__s:
+            recipient.error = error
+
+    def update_from_error_dict(self, error_dict):
+        """Update recipient statuses according to the given dict parameter. The absence of an address in the dict keys
+            will be interpreted as "successfully sent".
+
+        :param error_dict: dict as returned by smtplib.SMTP.sendmail method
+        :return: None
+        """
+        validate_dict(error_dict)
+
+        for recipient in self.__s:
+            error_log = error_dict.get(recipient.address)
+            if error_log is not None:
+                recipient.error = NotificationFailedError("{0}: {1}".format(*error_log))
+            else:
+                recipient.notification_succeeded = True
+
+
+class NotificationRecipient(object):
+    def __init__(self, address, notify_type, raw_string='', error=None):
+        self._address = address
+        self.notify_type = notify_type
+        self._raw_string = raw_string
+        self.error = error
+
+        self._notification_attempted = False
+        self._notification_succeeded = False
+
+    def __repr__(self):  # pragma: no cover
+        return "NotificationRecipient({str})".format(str=str(self.__dict__))
+
+    @property
+    def address(self):
+        return self._address
+
+    @property
+    def notify_type(self):
+        return self._notify_type
+
+    @notify_type.setter
+    def notify_type(self, notify_type):
+        validate_recipienttype(notify_type)
+        self._notify_type = notify_type
+
+    @property
+    def raw_string(self):
+        return self._raw_string
+
+    @property
+    def notification_attempted(self):
+        return self._notification_attempted
+
+    @notification_attempted.setter
+    def notification_attempted(self, notification_attempted):
+        validate_bool(notification_attempted)
+        self._notification_attempted = notification_attempted
+
+    @property
+    def notification_succeeded(self):
+        return self._notification_succeeded
+
+    @notification_succeeded.setter
+    def notification_succeeded(self, notification_succeeded):
+        validate_bool(notification_succeeded)
+        self._notification_succeeded = notification_succeeded
+
+    @classmethod
+    def from_string(cls, recipient_string):
+        """From a given 'recipient string', expected to be in the format of 'protocol:address', return a
+        new NotificationRecipient object with attributes set according to the content/validity of the input string
+
+        :param recipient_string: string in format of 'protocol:address'
+        :return: NotificationRecipient object
+        """
+        try:
+            protocol, address = recipient_string.split(':', 1)
+        except ValueError:
+            recipient_type = NotificationRecipientType.INVALID
+            address = ''
+        else:
+            recipient_type = NotificationRecipientType.get_type_from_protocol(protocol)
+
+        is_valid = recipient_type.address_validation_function(address)
+        error = None if is_valid else InvalidRecipientError(recipient_type.error_string)
+
+        return cls(address, recipient_type, recipient_string, error)
+
+
+validate_notifylist = validate_type(NotifyList)
+validate_notificationrecipient = validate_type(NotificationRecipient)

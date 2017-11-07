@@ -1,0 +1,384 @@
+import abc
+import logging.config
+import os
+import stat
+from uuid import uuid4
+
+from six import PY2
+from transitions import Machine
+
+from ..util import mkdir_p, rm_f, rm_r
+
+# OS X test compatibility, due to absence of pyinotify (which is specific to the Linux kernel)
+try:
+    import pyinotify
+except ImportError:
+    class pyinotify(object):
+        IN_MOVED_TO = 0
+        IN_CLOSE_WRITE = 0
+
+        def __init__(self):
+            raise NotImplementedError('pyinotify package is not installed')
+
+        class ProcessEvent(object):
+            def __init__(self):
+                raise NotImplementedError('pyinotify package is not installed')
+
+from celery import Task
+from celery.utils.log import get_task_logger
+from six import iteritems
+
+from .exceptions import InvalidHandlerError
+from ..util import list_regular_files, safe_move_file
+
+__all__ = [
+    'get_task_name',
+    'CeleryConfig',
+    'CeleryContext',
+    'IncomingFileEventHandler',
+    'WatchServiceManager'
+]
+
+
+def get_task_name(namespace, function_name):
+    """Convenience function for CeleryManager.get_task_name
+
+    :param namespace: task namespace
+    :param function_name: name of function to
+    :return: string containing qualified task name
+    """
+    task_name = "{namespace}.{function_name}".format(namespace=namespace, function_name=function_name)
+    return task_name
+
+
+class CeleryConfig(object):
+    # TODO: remove this hardcoding and get values from pipeline_config
+    BROKER_URL = 'amqp://'
+    BROKER_TRANSPORT = 'amqp'
+    CELERY_ACCEPT_CONTENT = ['json']
+    CELERY_TASK_SERIALIZER = 'json'
+    CELERY_RESULT_SERIALIZER = 'json'
+
+    CELERY_ROUTES = {}
+
+    def __init__(self, routes=None):
+        self.CELERY_ROUTES = routes or {}
+
+
+class CeleryContext(object):
+    def __init__(self, application, config, celeryconfig):
+        self._application = application
+        self._config = config
+        self._celeryconfig = celeryconfig
+
+        self._application_configured = False
+        logging.config.dictConfig(config.logging_config)
+
+    @property
+    def application(self):
+        """Return the configured Celery application instance
+
+        :return: Celery application instance with config applied and tasks registered
+        """
+        if not self._application_configured:
+            self._configure_application()
+        return self._application
+
+    def _build_task(self, pipeline_name, handler_class, kwargs):
+        """Closure method to return a Celery Task instance which has been prepared for a specific pipeline.
+            The this allows the task to accept a single input_file parameter, while dynamically instantiating the
+            handler class passed in via the 'handler_class' parameter, with the per-pipeline 'kwargs' pre-applied to the
+            class through the use of partial.
+
+        :param pipeline_name: explicit task name for handling by celery Workers
+        :param handler_class: HandlerBase sub-class object which the task will instantiate
+        :param kwargs: dictionary containing the keyword arguments for use by the handler class
+        :return: reference to a Celery task function which runs the given handler with the given keywords
+        """
+        task_name = get_task_name(self._config.pipeline_config['watch']['task_namespace'], pipeline_name)
+        config = self._config
+
+        class PipelineTask(Task):
+            ignore_result = True
+            name = task_name
+
+            def __init__(self):
+                self.file_state_manager = None
+                self.handler = None
+                self.input_file = None
+                self.logger = None
+                self.pipeline_name = pipeline_name
+
+            def _generate_location_map(self, input_file):
+                basename = os.path.basename(input_file)
+                error_dir = os.path.join(config.pipeline_config['global']['error_dir'], pipeline_name)
+                error_path = os.path.join(error_dir,
+                                          "{name}.{id}".format(name=basename, id=self.request.id))
+                processing_dir = os.path.join(config.pipeline_config['global']['processing_dir'], pipeline_name,
+                                              self.request.id)
+                processing_path = os.path.join(processing_dir, basename)
+
+                return {
+                    'input_file': input_file,
+                    'error_dir': error_dir,
+                    'error_path': error_path,
+                    'processing_dir': processing_dir,
+                    'processing_path': processing_path
+                }
+
+            def _configure_logger(self):
+                raw_logger = get_task_logger(task_name)
+                logging_extra = {
+                    'celery_task_id': self.request.id,
+                    'celery_task_name': task_name
+                }
+                self.logger = logging.LoggerAdapter(raw_logger, logging_extra)
+
+            def run(self, input_file):
+                self.input_file = input_file
+
+                self._configure_logger()
+
+                location_map = self._generate_location_map(input_file)
+                self.file_state_manager = IncomingFileStateManager(location_map, self.logger)
+
+                self.file_state_manager.move_to_processing()
+
+                self.handler = handler_class(location_map['processing_path'], config=config, celery_task=self, **kwargs)
+                self.handler.run()
+
+                if self.handler.error:
+                    self.file_state_manager.move_to_error()
+                else:
+                    self.file_state_manager.move_to_success()
+
+        return PipelineTask()
+
+    def _configure_application(self):
+        self._application.config_from_object(self._celeryconfig)
+        self._register_tasks()
+        self._application_configured = True
+
+    def _register_tasks(self):
+        available_handler_names = set(self._config.discovered_handlers.keys())
+        configured_handler_names = {h['handler'] for h in self._config.watch_config.values()}
+
+        if not configured_handler_names.issubset(available_handler_names):
+            invalid_handlers = configured_handler_names.difference(available_handler_names)
+            raise ValueError(
+                "one or more handlers not found in discovered handlers. "
+                "{invalid_handlers} not in {discovered_handlers}".format(
+                    invalid_handlers=list(invalid_handlers), discovered_handlers=list(available_handler_names)))
+
+        for pipeline_name, items in iteritems(self._config.watch_config):
+            try:
+                handler_class = self._config.discovered_handlers[items['handler']]
+            except KeyError:
+                raise InvalidHandlerError(
+                    "handler not found in discovered handlers. "
+                    "{name} not in {handlers}".format(name=items['handler'], handlers=available_handler_names))
+
+            params = items.get('params', {})
+            task_object = self._build_task(pipeline_name, handler_class, params)
+            self._application.register_task(task_object)
+
+
+def should_ignore_event(pathname):
+    """Determine whether an inotify event should be ignored
+
+    :param pathname: path to the file which triggered an event
+    :return: True if the event should be ignored
+    """
+
+    # ignore non-regular files
+    try:
+        mode = os.stat(pathname).st_mode
+    except OSError:
+        return True
+    if not stat.S_ISREG(mode):
+        return True
+
+    # ignore dotfiles
+    basename = os.path.basename(pathname)
+    if basename.startswith('.'):
+        return True
+
+    return False
+
+
+class IncomingFileEventHandler(pyinotify.ProcessEvent):
+    def __init__(self, config):
+        super(IncomingFileEventHandler, self).__init__()
+        self._config = config
+        self._logger = logging.getLogger(config.pipeline_config['watch']['logger_name'])
+
+    def process_default(self, event):
+        # event_id is distinct from task_id, and exists in order to correlate log messages before *and* after a task
+        # is queued for a given event
+        event_id = uuid4()
+        self._logger.info("inotify event: event_id='{event_id}' maskname='{event.maskname}'".format(event_id=event_id,
+                                                                                                    event=event))
+        self.queue_task(event.path, event.pathname, event_id)
+
+    def queue_task(self, directory, pathname, event_id=None):
+        """Add a task to the queue corresponding with the given directory, handling the given file
+
+        :param directory: the watched directory
+        :param pathname: the fully qualified path to the file which triggered the event
+        :param event_id: UUID to identify this event in log files (will be generated if not present)
+        :return: None
+        """
+        if should_ignore_event(pathname):
+            self._logger.info("ignored event for '{pathname}'".format(pathname=pathname))
+            return
+
+        queue = self._config.watch_directory_map[directory]
+        task_name = get_task_name(self._config.pipeline_config['watch']['task_namespace'], queue)
+
+        task_data = {
+            'event_id': event_id or uuid4(),
+            'pathname': pathname,
+            'queue': queue,
+            'task_name': task_name
+        }
+
+        self._logger.info(
+            "task data: event_id='{event_id}' queue='{queue}' task_name='{task_name}' pathname='{pathname}'".format(
+                **task_data))
+
+        result = self._config.celery_application.send_task(task_name, args=[pathname])
+        task_data['task_id'] = result.id
+
+        # pathname is deliberately duplicated here to enable cross-referencing from pipeline specific logs in order to
+        # correlate a filename to the associated task_id
+        self._logger.info(
+            "task sent: task_id='{task_id}' event_id='{event_id}' pathname='{pathname}'".format(**task_data))
+        self._logger.debug("full task_data: {task_data}".format(task_data=task_data))
+
+
+class AbstractFileStateManager(object):
+    __metaclass__ = abc.ABCMeta
+
+    states = ['FILE_IN_INCOMING', 'FILE_IN_PROCESSING', 'FILE_IN_ERROR', 'FILE_SUCCESS']
+    transitions = [
+        {
+            'trigger': 'move_to_processing',
+            'source': 'FILE_IN_INCOMING',
+            'dest': 'FILE_IN_PROCESSING',
+            'before': '_move_to_processing'
+        },
+        {
+            'trigger': 'move_to_error',
+            'source': 'FILE_IN_PROCESSING',
+            'dest': 'FILE_IN_ERROR',
+            'before': '_move_to_error'
+        },
+        {
+            'trigger': 'move_to_success',
+            'source': 'FILE_IN_PROCESSING',
+            'dest': 'FILE_SUCCESS',
+            'after': '_cleanup_success'
+        }
+    ]
+
+    def __init__(self, location_map, logger):
+        self.location_map = location_map
+        self.logger = logger
+        self._machine = Machine(model=self, states=self.states, initial='FILE_IN_INCOMING', auto_transitions=False,
+                                transitions=self.transitions, after_state_change='_after_state_change')
+
+    def _after_state_change(self):
+        self.logger.info("file state transitioned to: {state}".format(state=self.state))
+
+    @abc.abstractmethod
+    def _move_to_processing(self):
+        pass
+
+    @abc.abstractmethod
+    def _move_to_error(self):
+        pass
+
+    @abc.abstractmethod
+    def _cleanup_success(self):
+        pass
+
+
+class IncomingFileStateManager(AbstractFileStateManager):
+    def _move_to_processing(self):
+        mkdir_p(self.location_map['processing_dir'])
+        safe_move_file(self.location_map['input_file'], self.location_map['processing_path'])
+
+    def _move_to_error(self):
+        mkdir_p(self.location_map['error_dir'])
+        safe_move_file(self.location_map['processing_path'], self.location_map['error_path'])
+        rm_r(self.location_map['processing_dir'])
+
+    def _cleanup_success(self):
+        rm_f(self.location_map['processing_path'])
+        rm_r(self.location_map['processing_dir'])
+
+
+class WatchServiceContext(object):
+    """Class to create instances required for WatchServiceManager
+
+    """
+
+    def __init__(self, config):
+        self.event_handler = IncomingFileEventHandler(config)
+        self.watch_manager = pyinotify.WatchManager()
+        self.notifier = pyinotify.Notifier(self.watch_manager, self.event_handler)
+
+
+class WatchServiceManager(object):
+    EVENT_MASK = pyinotify.IN_MOVED_TO | pyinotify.IN_CLOSE_WRITE
+
+    def __init__(self, config, event_handler, watch_manager, notifier):
+        # noinspection PyProtectedMember
+        assert watch_manager is notifier._watch_manager, ("notifier must be instantiated with the same watch_manager "
+                                                          "instance as __init__ param")
+
+        self._watch_manager = watch_manager
+        self.notifier = notifier
+
+        self._config = config
+        self._event_handler = event_handler
+
+        self._logger = logging.getLogger(config.pipeline_config['watch']['logger_name'])
+
+    @property
+    def watches(self):
+        return [w.path for w in self._watch_manager.watches.values()]
+
+    # noinspection PyUnusedLocal
+    def handle_signal(self, signo=None, stackframe=None):
+        self.stop("received signal '{signo}'".format(signo=signo))
+
+    def stop(self, reason='unknown'):
+        self._logger.info("stopping Notifier event loop. Reason: {reason}".format(reason=reason))
+        try:
+            self.notifier.stop()
+        except AttributeError:
+            # already stopped
+            pass
+
+    def __enter__(self):
+        self._queue_and_watch_directories()
+        return self
+
+    def __exit__(self, exc_type=None, exc_val=None, exc_tb=None):
+        self.stop('context manager exiting')
+
+    def _queue_and_watch_directories(self):
+        """Configure the given WatchManager with the watches defined in the configuration, queuing any existing files
+
+        :return: None
+        """
+        for directory, queue in iteritems(self._config.watch_directory_map):
+            # Python 2 cannot handle the unicode string due to using str.* methods for sorting
+            str_directory = str(directory) if PY2 else directory
+
+            for existing_file in list_regular_files(str_directory):
+                self._event_handler.queue_task(directory, existing_file)
+
+            self._logger.info("adding watch for '{directory}'".format(directory=directory))
+            self._watch_manager.add_watch(directory, self.EVENT_MASK)

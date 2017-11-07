@@ -1,0 +1,16 @@
+pip
+boto3==1.4.4
+cc-plugin-imos>=1.1.1
+celery==4.0.2
+compliance-checker==2.3.1
+enum34==1.1.6
+Jinja2==2.9.6
+jsonschema==2.6.0
+numpy>=1.13.0
+paramiko==2.2.1
+pyinotify==0.9.6
+scandir==1.5
+six==1.10.0
+SQLAlchemy==1.1.11
+tabulate==0.7.7
+transitions==0.5.3

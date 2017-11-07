@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+</head>
+<style>
+    table {
+        border-collapse: collapse;
+    }
+
+    th {
+        background-color: #C0FFEE;
+        font-weight: bold;
+    }
+
+    table, td, th {
+        border: 1px solid #666;
+        padding: 5px;
+    }
+
+    .tablewrapper {
+        overflow-x: auto;
+    }
+</style>
+<body>
+<p>Dear Uploader,</p>
+<p>Please find below a report on the handling of the following file:</p>
+<div class="tablewrapper">
+    {{ html_input_file_table }}
+</div>
+{% if html_collection_table %}
+    <p>The input file resolved to the following child file(s):</p>
+    <div class="tablewrapper">
+        {{ html_collection_table }}
+    </div>
+{% endif %}
+{% if error_details %}
+    <h4>Error details:</h4>
+    <pre>{{ error_details }}</pre>
+{% endif %}
+<p>Regards,<br>
+    Australian Ocean Data Network
+</p>
+</body>
+</html>

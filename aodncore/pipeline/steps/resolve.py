@@ -1,0 +1,249 @@
+import os
+import re
+
+from enum import Enum
+
+from .basestep import AbstractResolveRunner
+from ..common import EXT_DIR_MANIFEST, EXT_MAP_MANIFEST, EXT_RSYNC_MANIFEST, EXT_SIMPLE_MANIFEST, EXT_ZIP
+from ..files import PipelineFile, PipelineFileCollection
+from ...util import extract_zip, list_regular_files, is_zipfile, safe_copy_file
+
+__all__ = [
+    'get_resolve_runner',
+    'MapManifestResolveRunner',
+    'RsyncManifestResolveRunner',
+    'SimpleManifestResolveRunner',
+    'SingleFileResolveRunner',
+    'ZipFileResolveRunner'
+]
+
+
+def get_resolve_runner(input_file, output_dir, config, logger, resolve_params=None):
+    """Factory function to return appropriate resolver class based on the file extension
+
+    :param input_file: path to the input file
+    :param output_dir: directory where the resolved files will be extracted/copied
+    :param config: reference to the calling handler object
+    :param logger: reference to a Logger instance to use
+    :param resolve_params: list of parameters to pass to check runner instances
+    :return: BaseResolveRunner sub-class
+    """
+    _, file_extension = os.path.splitext(input_file)
+
+    if file_extension == EXT_ZIP:
+        return ZipFileResolveRunner(input_file, output_dir, config, logger)
+    elif file_extension == EXT_SIMPLE_MANIFEST:
+        return SimpleManifestResolveRunner(input_file, output_dir, config, logger, resolve_params)
+    elif file_extension == EXT_MAP_MANIFEST:
+        return MapManifestResolveRunner(input_file, output_dir, config, logger, resolve_params)
+    elif file_extension == EXT_RSYNC_MANIFEST:
+        return RsyncManifestResolveRunner(input_file, output_dir, config, logger, resolve_params)
+    elif file_extension == EXT_DIR_MANIFEST:
+        return DirManifestResolveRunner(input_file, output_dir, config, logger, resolve_params)
+    else:
+        return SingleFileResolveRunner(input_file, output_dir, config, logger)
+
+
+# noinspection PyAbstractClass
+class BaseResolveRunner(AbstractResolveRunner):
+    def __init__(self, input_file, output_dir, config, logger):
+        super(AbstractResolveRunner, self).__init__(config, logger)
+        self.input_file = input_file
+        self.output_dir = output_dir
+        self._collection = PipelineFileCollection()
+
+
+class SingleFileResolveRunner(BaseResolveRunner):
+    def run(self):
+        name = os.path.basename(self.input_file)
+        temp_location = os.path.join(self.output_dir, name)
+        safe_copy_file(self.input_file, temp_location)
+
+        self._collection.add(temp_location)
+        return self._collection
+
+
+class ZipFileResolveRunner(BaseResolveRunner):
+    def run(self):
+        if not is_zipfile(self.input_file):
+            raise ValueError("input_file must be a valid ZIP file")
+
+        extract_zip(self.input_file, self.output_dir)
+
+        for f in list_regular_files(self.output_dir, recursive=True):
+            self._collection.add(f)
+        return self._collection
+
+
+# noinspection PyAbstractClass
+class BaseManifestResolveRunner(BaseResolveRunner):
+    def __init__(self, input_file, output_dir, config, logger, resolve_params=None):
+        super(BaseManifestResolveRunner, self).__init__(input_file, output_dir, config, logger)
+
+        if resolve_params is None:
+            resolve_params = {}
+
+        relative_path_root = resolve_params.pop('relative_path_root', self._config.pipeline_config['global']['wip_dir'])
+        self.relative_path_root = relative_path_root
+
+    def get_abs_path(self, path):
+        return path if os.path.isabs(path) else os.path.join(self.relative_path_root, path)
+
+
+class MapManifestResolveRunner(BaseManifestResolveRunner):
+    """Handles a manifest file with a pre-determined destination path. Unlike other resolve runners, this creates
+        PipelineFile objects to add to the collection rather than allowing the collection to generate the objects.
+        This is because dest_path is predetermined in the manifest itself, so no dest_path calculation is required. 
+    
+    File format must be as follows:
+    
+    /path/to/source/file1,destination/path/for/upload1
+    /path/to/source/file2,destination/path/for/upload2
+
+    """
+    PATH_SPLIT_CHAR = ','
+
+    def run(self):
+        with open(self.input_file, 'r') as f:
+            for line_newline in f:
+                line = line_newline.rstrip(os.linesep)
+                src, dest_path = line.split(self.PATH_SPLIT_CHAR, 1)
+
+                abs_path = self.get_abs_path(src)
+                fileobj = PipelineFile(abs_path, dest_path=dest_path)
+
+                self._collection.add(fileobj)
+
+        return self._collection
+
+
+class RsyncLineType(Enum):
+    INVALID = 0
+    HEADER = 1
+    FILE_ADD = 2
+    FILE_DELETE = 3
+    DIRECTORY_ADD = 4
+    DIRECTORY_DELETE = 5
+
+
+class RsyncManifestLine(object):
+    def __init__(self, path, type_):
+        self.path = path
+        self.type = type_
+
+
+class RsyncManifestResolveRunner(BaseManifestResolveRunner):
+    """Handles a manifest file as outputted by an rsync process
+
+    File format is expected to have invalid lines(header, whitespace,summary lines), so valid lines are extracted using
+    regular expressions to determine the intended action. A file will *typically* look as follows. The lines should be
+    classified as follows (text in square brackets not in actual files):
+    
+    receiving incremental file list                                     [HEADER LINE, IGNORED]
+    *deleting   aoml/1900709/profiles/                                  [DIRECTORY DELETION, IGNORED]
+    .d..t...... aoml/1900709/                                           [DIRECTORY ADDITION, IGNORED]
+    >f.st...... handlers/dummy/test_manifest.nc                         [FILE ADDITION]
+    *deleting   handlers/dummy/aoml/1900728/1900728_Rtraj.nc            [FILE DELETION]
+                                                                        [NON-MATCHING LINE, IGNORED]
+                                                                        [NON-MATCHING LINE, IGNORED]
+    sent 65477852 bytes  received 407818360 bytes  115508.53 bytes/sec  [NON-MATCHING LINE, IGNORED]
+    total size is 169778564604  speedup is 358.72                       [NON-MATCHING LINE, IGNORED] 
+
+    """
+    HEADER_LINE = 'receiving incremental file list'
+    RECORD_PATTERN = re.compile(r"""^
+                                (?P<operation>\*deleting|[>.][df].{9}) # file operation type
+                                \s{1,3} # space(s) separating operation from path
+                                (?P<path>.*) # file path
+                                $
+                                """, re.VERBOSE)
+
+    FILE_ADD_PATTERN = re.compile(r'^>f.{9}')
+    DIR_ADD_PATTERN = re.compile(r'^\.d.{9}')
+    DELETE_PATTERN = re.compile(r'^\*deleting')
+
+    @classmethod
+    def classify_line(cls, line):
+
+        if line == cls.HEADER_LINE:
+            return RsyncManifestLine(None, RsyncLineType.HEADER)
+
+        match = cls.RECORD_PATTERN.match(line)
+        try:
+            matchdict = match.groupdict()
+            operation = matchdict['operation']
+            path = matchdict['path']
+        except (AttributeError, KeyError):
+            return RsyncManifestLine(None, RsyncLineType.INVALID)
+
+        if cls.FILE_ADD_PATTERN.match(operation):
+            return RsyncManifestLine(path, RsyncLineType.FILE_ADD)
+        elif cls.DIR_ADD_PATTERN.match(operation):
+            return RsyncManifestLine(path, RsyncLineType.DIRECTORY_ADD)
+        elif cls.DELETE_PATTERN.match(operation):
+            delete_type = RsyncLineType.DIRECTORY_DELETE if path.endswith('/') else RsyncLineType.FILE_DELETE
+            return RsyncManifestLine(path, delete_type)
+        else:
+            return RsyncManifestLine(None, RsyncLineType.INVALID)  # pragma: no cover
+
+    def run(self):
+        with open(self.input_file, 'r') as f:
+            for line_newline in f:
+                line = line_newline.rstrip(os.linesep)
+                record = self.classify_line(line)
+
+                if record.type in (RsyncLineType.HEADER, RsyncLineType.INVALID):
+                    continue
+
+                abs_path = self.get_abs_path(record.path)
+                if record.type is RsyncLineType.FILE_ADD:
+                    self._collection.add(abs_path)
+                elif record.type is RsyncLineType.FILE_DELETE:
+                    self._collection.add(abs_path, deletion=True)
+
+        return self._collection
+
+
+class SimpleManifestResolveRunner(BaseManifestResolveRunner):
+    """Handles a simple manifest file which only contains a list of source files
+
+    File format must be as follows:
+
+    /path/to/source/file1
+    /path/to/source/file2
+
+    """
+
+    def run(self):
+        with open(self.input_file, 'r') as f:
+            for line_newline in f:
+                line = line_newline.rstrip(os.linesep)
+                abs_path = self.get_abs_path(line)
+                self._collection.add(abs_path)
+
+        return self._collection
+
+
+class DirManifestResolveRunner(BaseManifestResolveRunner):
+    """Handles a simple manifest file which only contains a list of source files or directories, which will have all
+        files recursively added to the collection
+
+    File format must be as follows:
+
+    /path/to/source/file1
+    /path/to/source/dir1
+
+    """
+
+    def run(self):
+        with open(self.input_file, 'r') as f:
+            for line_newline in f:
+                line = line_newline.rstrip(os.linesep)
+                abs_path = self.get_abs_path(line)
+                if os.path.isdir(abs_path):
+                    for f_ in list_regular_files(abs_path, recursive=True):
+                        self._collection.add(f_)
+                else:
+                    self._collection.add(abs_path)
+
+        return self._collection

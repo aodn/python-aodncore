@@ -1,0 +1,19 @@
+Dear Uploader,
+
+Please find below a report on the handling of the following file:
+
+{{ text_input_file_table }}
+
+{% if text_collection_table %}
+    The input file resolved to the following child file(s):
+    {{ text_collection_table }}
+{% endif %}
+
+{% if error_details %}
+    Error details
+    -------------
+    {{ error_details }}
+{% endif %}
+
+Regards,
+Australian Ocean Data Network
