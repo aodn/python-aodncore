@@ -465,7 +465,7 @@ class HandlerBase(object):
         collection_headers, collection_data = self.file_collection.get_table_data()
         notification_data = {
             'input_file': os.path.basename(self.input_file),
-            'processing_result': self.result,
+            'processing_result': self.result.name,
             'handler_start_time': self.start_time.strftime("%Y-%m-%d %H:%M"),
             'collection_headers': collection_headers,
             'collection_data': collection_data,
