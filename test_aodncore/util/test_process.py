@@ -6,7 +6,7 @@ from six import assertRaisesRegex
 
 from aodncore.common import SystemCommandFailedError
 from aodncore.util import SystemProcess
-from test_aodncore.testlib import BaseTestCase
+from aodncore.testlib import BaseTestCase
 
 CAT_CMD = '/bin/cat'
 ECHO_CMD = '/bin/echo'

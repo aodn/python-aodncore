@@ -2,8 +2,8 @@ import os
 import tempfile
 import unittest
 
-from aodncore.util import mkdir_p, rm_rf
-from test_aodncore.testlib.testutil import GLOBAL_TEST_BASE, get_test_config, make_test_file
+from .testutil import get_test_config, make_test_file, mock
+from ..util import mkdir_p, rm_rf
 
 
 class BaseTestCase(unittest.TestCase):
@@ -30,13 +30,8 @@ class BaseTestCase(unittest.TestCase):
 
     def setUp(self):
         self.maxDiff = 10000
-        os.environ['PIPELINE_CONFIG_FILE'] = os.path.join(GLOBAL_TEST_BASE, 'pipeline', 'pipeline.conf')
-        os.environ['PIPELINE_TRIGGER_CONFIG_FILE'] = os.path.join(GLOBAL_TEST_BASE, 'pipeline', 'trigger.conf')
-        os.environ['PIPELINE_WATCH_CONFIG_FILE'] = os.path.join(GLOBAL_TEST_BASE, 'pipeline', 'watches.conf')
+        self.mock_logger = mock.MagicMock()
 
     def tearDown(self):
         if hasattr(self, '_temp_dir'):
             rm_rf(self._temp_dir)
-        os.environ.pop('PIPELINE_CONFIG_FILE', None)
-        os.environ.pop('PIPELINE_TRIGGER_CONFIG_FILE', None)
-        os.environ.pop('PIPELINE_WATCH_CONFIG_FILE', None)

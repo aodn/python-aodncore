@@ -7,7 +7,7 @@ from tempfile import mkstemp
 
 from aodncore.pipeline import FileClassifier
 from aodncore.pipeline.exceptions import InvalidFileFormatError, InvalidFileNameError, InvalidFileContentError
-from test_aodncore.testlib import BaseTestCase, make_test_file
+from aodncore.testlib import BaseTestCase, make_test_file
 
 
 class TestFileClassifier(BaseTestCase):

@@ -2,7 +2,7 @@ import abc
 import inspect
 
 from aodncore.pipeline.steps.basestep import AbstractCollectionStepRunner, AbstractNotifyRunner, AbstractResolveRunner
-from test_aodncore.testlib import BaseTestCase
+from aodncore.testlib import BaseTestCase
 
 
 class TestAbstractCollectionStepRunner(BaseTestCase):

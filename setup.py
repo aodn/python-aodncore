@@ -7,16 +7,17 @@ from aodncore.version import __version__
 
 ENTRY_POINTS = {
     'unittest.handlers': [
-        'DummyHandler = test_aodncore.testlib:DummyHandler'
+        'DummyHandler = test_aodncore.pipeline.dummyhandler:DummyHandler'
     ],
     'unittest.path_functions': [
-        'dest_path_testing = test_aodncore.testlib:dest_path_testing'
+        'dest_path_testing = aodncore.testlib:dest_path_testing'
     ]
 }
 
 PACKAGE_DATA = {
     'aodncore': [
-        'pipeline/templates/*.j2'
+        'pipeline/templates/*.j2',
+        'testlib/conf/*.conf'
     ]
 }
 

@@ -1,9 +1,9 @@
 import os
 from functools import partial
 
-from aodncore.pipeline import HandlerBase
-from test_aodncore.testlib.basetest import BaseTestCase
-from test_aodncore.testlib.testutil import regenerate_metadata
+from .basetest import BaseTestCase
+from .testutil import regenerate_metadata
+from ..pipeline import HandlerBase
 
 __all__ = [
     'HandlerTestCase'
