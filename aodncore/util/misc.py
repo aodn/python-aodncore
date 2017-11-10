@@ -86,7 +86,7 @@ def is_valid_email_address(address):
     :param address: address to validate
     :return: True if address matches the regex, otherwise False
     """
-    pattern = re.compile(r"^[A-Z0-9_.+-]+@[A-Z0-9-]+\.[A-Z0-9-.]+$", re.IGNORECASE)
+    pattern = re.compile(r"^[A-Z0-9_.+-]+@(localhost|[A-Z0-9-]+\.[A-Z0-9-.]+)$", re.IGNORECASE)
     return re.match(pattern, address)
 
 
