@@ -68,6 +68,7 @@ class PipelineFile(object):
 
     def __iter__(self):
         yield 'archive_path', self.archive_path
+        yield 'check_log', self.check_log
         yield 'check_passed', self.check_passed
         yield 'check_type', self.check_type.name
         yield 'dest_path', self.dest_path
@@ -102,6 +103,10 @@ class PipelineFile(object):
             raise ValueError('archive_path must be a relative path')
         self._archive_path = archive_path
         self._post_property_update({'archive_path': archive_path})
+
+    @property
+    def check_log(self):
+        return '' if self._check_result is None else os.linesep.join(self._check_result.log)
 
     @property
     def check_passed(self):
@@ -507,7 +512,7 @@ class PipelineFileCollection(MutableSet):
         :param include_all_attributes: return a default subset of columns, or all columns
         :return: a tuple with the first element being a list of columns, and the second being a 2D list of the data
         """
-        default_columns = ('name', 'dest_path', 'check_type', 'check_passed')
+        default_columns = {'name', 'dest_path', 'check_log', 'check_type', 'check_passed'}
 
         def include_column(name):
             return True if include_all_attributes else name in default_columns
