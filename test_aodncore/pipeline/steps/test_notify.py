@@ -5,7 +5,7 @@ import socket
 from aodncore.pipeline import NotificationRecipientType, PipelineFile, PipelineFileCollection
 from aodncore.pipeline.steps.notify import (get_child_notify_runner, BaseNotifyRunner, EmailNotifyRunner,
                                             LogFailuresNotifyRunner, NotifyList, NotificationRecipient, SnsNotifyRunner)
-from test_aodncore.testlib import BaseTestCase, MOCK_LOGGER, mock
+from aodncore.testlib import BaseTestCase, mock
 
 TESTDATA_DIR = os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(__file__))), 'testdata')
 GOOD_NC = os.path.join(TESTDATA_DIR, 'good.nc')
@@ -54,7 +54,7 @@ class TestBaseNotifyRunner(BaseTestCase):
     def setUp(self):
         super(TestBaseNotifyRunner, self).setUp()
         notification_data = get_notification_data()
-        self.dummy_runner = DummyNotifyRunner(notification_data, self.config, MOCK_LOGGER)
+        self.dummy_runner = DummyNotifyRunner(notification_data, self.config, self.mock_logger)
 
     def test__get_file_tables(self):
         file_tables = self.dummy_runner._get_file_tables()
@@ -69,7 +69,7 @@ class TestEmailNotifyRunner(BaseTestCase):
     def setUp(self):
         super(TestEmailNotifyRunner, self).setUp()
         notification_data = get_notification_data()
-        self.email_runner = EmailNotifyRunner(notification_data, self.config, MOCK_LOGGER)
+        self.email_runner = EmailNotifyRunner(notification_data, self.config, self.mock_logger)
         self.notify_list = NotifyList()
 
     @mock.patch('aodncore.pipeline.steps.notify.smtplib.SMTP')
@@ -163,7 +163,7 @@ class TestLogFailuresNotifyRunner(BaseTestCase):
     def setUp(self):
         super(TestLogFailuresNotifyRunner, self).setUp()
         notification_data = get_notification_data()
-        self.fail_runner = LogFailuresNotifyRunner(notification_data, self.config, MOCK_LOGGER)
+        self.fail_runner = LogFailuresNotifyRunner(notification_data, self.config, self.mock_logger)
         self.notify_list = NotifyList()
 
     def test_invalid_recipient(self):
