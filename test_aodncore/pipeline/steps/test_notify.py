@@ -1,20 +1,31 @@
+import os
 import smtplib
 import socket
 
-from aodncore.pipeline import NotificationRecipientType
-from aodncore.pipeline.steps.notify import (get_child_notify_runner, EmailNotifyRunner, LogFailuresNotifyRunner,
-                                            NotifyList, NotificationRecipient, SnsNotifyRunner)
-from aodncore.testlib import BaseTestCase, mock
+from aodncore.pipeline import NotificationRecipientType, PipelineFile, PipelineFileCollection
+from aodncore.pipeline.steps.notify import (get_child_notify_runner, BaseNotifyRunner, EmailNotifyRunner,
+                                            LogFailuresNotifyRunner, NotifyList, NotificationRecipient, SnsNotifyRunner)
+from test_aodncore.testlib import BaseTestCase, MOCK_LOGGER, mock
 
-TEST_NOTIFICATION_DATA = {
-    'input_file': '',
-    'processing_result': 'HANDLER_SUCCESS',
-    'handler_start_time': '2017-10-23 16:05',
-    'collection_headers': [],
-    'collection_data': [],
-    'notify_params': {},
-    'error_details': ''
-}
+TESTDATA_DIR = os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(__file__))), 'testdata')
+GOOD_NC = os.path.join(TESTDATA_DIR, 'good.nc')
+
+
+def get_notification_data():
+    collection = PipelineFileCollection(PipelineFile(GOOD_NC))
+    collection_headers, collection_data = collection.get_table_data()
+
+    data = {
+        'input_file': 'good.nc',
+        'processing_result': 'HANDLER_SUCCESS',
+        'handler_start_time': '2017-10-23 16:05',
+        'checks': None,
+        'collection_headers': collection_headers,
+        'collection_data': collection_data,
+        'error_details': ''
+    }
+
+    return data
 
 
 class TestPipelineStepsNotify(BaseTestCase):
@@ -34,10 +45,31 @@ class TestPipelineStepsNotify(BaseTestCase):
         self.assertIsInstance(fail_runner, LogFailuresNotifyRunner)
 
 
+class DummyNotifyRunner(BaseNotifyRunner):
+    def run(self, notify_list):
+        pass
+
+
+class TestBaseNotifyRunner(BaseTestCase):
+    def setUp(self):
+        super(TestBaseNotifyRunner, self).setUp()
+        notification_data = get_notification_data()
+        self.dummy_runner = DummyNotifyRunner(notification_data, self.config, MOCK_LOGGER)
+
+    def test__get_file_tables(self):
+        file_tables = self.dummy_runner._get_file_tables()
+
+        expected_keys = ['html_collection_table', 'html_input_file_table', 'text_collection_table',
+                         'text_input_file_table']
+
+        self.assertItemsEqual(expected_keys, file_tables.keys())
+
+
 class TestEmailNotifyRunner(BaseTestCase):
     def setUp(self):
         super(TestEmailNotifyRunner, self).setUp()
-        self.email_runner = EmailNotifyRunner(TEST_NOTIFICATION_DATA, self.config, self.mock_logger)
+        notification_data = get_notification_data()
+        self.email_runner = EmailNotifyRunner(notification_data, self.config, MOCK_LOGGER)
         self.notify_list = NotifyList()
 
     @mock.patch('aodncore.pipeline.steps.notify.smtplib.SMTP')
@@ -130,7 +162,8 @@ class TestEmailNotifyRunner(BaseTestCase):
 class TestLogFailuresNotifyRunner(BaseTestCase):
     def setUp(self):
         super(TestLogFailuresNotifyRunner, self).setUp()
-        self.fail_runner = LogFailuresNotifyRunner(TEST_NOTIFICATION_DATA, self.config, self.mock_logger)
+        notification_data = get_notification_data()
+        self.fail_runner = LogFailuresNotifyRunner(notification_data, self.config, MOCK_LOGGER)
         self.notify_list = NotifyList()
 
     def test_invalid_recipient(self):
