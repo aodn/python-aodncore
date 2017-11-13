@@ -248,7 +248,7 @@ class EmailNotifyRunner(BaseNotifyRunner):
                 with ZipFile(attachment_file, 'w') as z:
                     for failed_file in failed_files:
                         path = "{failed_file[name]}.log.txt".format(failed_file=failed_file)
-                        content = failed_file['check_log']
+                        content = failed_file['check_log'].encode('utf-8')
                         z.writestr(path, content)
 
                 attachment_file.seek(0)
