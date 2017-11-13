@@ -593,30 +593,38 @@ class HandlerBase(object):
         self._error = exception
         self._result = HandlerResult.ERROR
 
-        if full_traceback:
-            self.logger.exception(format_exception(exception))
+        try:
+            if full_traceback:
+                self.logger.exception(format_exception(exception))
 
-            import traceback
-            self._error_details = traceback.format_exc()
+                import traceback
+                self._error_details = traceback.format_exc()
 
-            # invalid configuration means notification is not possible
-            if isinstance(exception, (InvalidConfigError, MissingConfigParameterError)):
-                self.notify_on_error = self.notify_on_success = False
-                self.notify_params = {'error_notify_list': []}
+                # invalid configuration means notification is not possible
+                if isinstance(exception, (InvalidConfigError, MissingConfigParameterError)):
+                    self.notify_on_error = self.notify_on_success = False
+                    self.notify_params = {'error_notify_list': []}
+                else:
+                    self.notify_on_error = True
+                    self.notify_params = {
+                        'error_notify_list': self.config.pipeline_config['global']['admin_recipients']}
             else:
-                self.notify_on_error = True
-                self.notify_params = {'error_notify_list': self.config.pipeline_config['global']['admin_recipients']}
-        else:
-            self.logger.error(format_exception(exception))
-            self._error_details = str(exception)
+                self.logger.error(format_exception(exception))
+                self._error_details = str(exception)
 
-        self._trigger_notify_error()
-        self._trigger_complete_with_errors()
+            self._trigger_notify_error()
+            self._trigger_complete_with_errors()
+        except Exception as e:
+            self.logger.exception('error during _handle_error method: {e}'.format(e=format_exception(e)))
 
     def _handle_success(self):
         self._result = HandlerResult.SUCCESS
-        self._trigger_notify_success()
-        self._trigger_complete_success()
+
+        try:
+            self._trigger_notify_success()
+            self._trigger_complete_success()
+        except Exception as e:
+            self.logger.exception('error during _handle_success method: {e}'.format(e=format_exception(e)))
 
     def _set_cc_versions(self):
         self._cc_versions = get_cc_module_versions()
