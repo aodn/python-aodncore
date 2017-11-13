@@ -117,6 +117,9 @@ class BaseNotifyRunner(AbstractNotifyRunner):
     def _get_file_tables(self):
         """Render tables for use in notifications
 
+            Note: everything in this method assumes *strict ordering* of elements, hence use of lists and OrderedDicts,
+                rather than potentially more efficient dict and set types
+
         :return: dict containing rendered input file and file collection tables, in text and HTML format
         """
 
@@ -139,6 +142,8 @@ class BaseNotifyRunner(AbstractNotifyRunner):
             'published': 'Published?'
         }
 
+        # this validates that only existing columns are included, and becomes the authoritative list of included
+        # columns, used when generating final headers and data rows
         raw_headers = [h for h in included_columns if h in self.notification_data['collection_headers']]
 
         # determine final column names by checking the "friendly" map for overrides
