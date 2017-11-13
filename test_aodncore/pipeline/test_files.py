@@ -475,3 +475,8 @@ class TestPipelineFileCollection(BaseTestCase):
         fileobj2_keys = list(OrderedDict(fileobj2).keys())
         self.assertSequenceEqual(fileobj1_keys, table_headers)
         self.assertSequenceEqual(fileobj2_keys, table_headers)
+
+    def test_get_table_data_empty(self):
+        table_headers, table_data = self.collection.get_table_data()
+        self.assertListEqual([], table_headers)
+        self.assertListEqual([], table_data)

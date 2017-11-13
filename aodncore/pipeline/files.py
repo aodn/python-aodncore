@@ -518,12 +518,11 @@ class PipelineFileCollection(MutableSet):
 
         :return: a tuple with the first element being a list of columns, and the second being a 2D list of the data
         """
-
-        # TODO: find a better way to get PipelineFile attributes than to create a dummy instance. It can't determine the
-        #       columns from the collection directly, since it might be empty
-        template = OrderedDict(PipelineFile('', '', is_deletion=True))
-        columns = template.keys()
         data = [OrderedDict(e) for e in self.__s]
+        try:
+            columns = data[0].keys()
+        except IndexError:
+            columns = []
         return columns, data
 
     def set_check_types(self, check_params):
