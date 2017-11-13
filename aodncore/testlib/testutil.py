@@ -13,9 +13,9 @@ from pkg_resources import WorkingSet
 from six import iteritems
 from six.moves.urllib.parse import urlunsplit
 
-from aodncore.pipeline import HandlerBase
-from aodncore.pipeline.config import LazyConfigManager
-from aodncore.util import discover_entry_points, merge_dicts, CaptureStdIO
+from ..pipeline import HandlerBase
+from ..pipeline.config import LazyConfigManager
+from ..util import discover_entry_points, merge_dicts, CaptureStdIO
 
 try:
     from unittest import mock
@@ -27,7 +27,6 @@ __all__ = [
     'get_nonexistent_path',
     'make_zip',
     'mock',
-    'MOCK_LOGGER',
     'get_entry_points_from_paths',
     'get_test_config',
     'get_test_working_set',
@@ -39,7 +38,7 @@ __all__ = [
 
 GLOBAL_TEST_BASE = os.path.dirname(os.path.dirname(__file__))
 
-MOCK_LOGGER = mock.MagicMock()
+TESTLIB_CONF_DIR = os.path.join(os.path.dirname(__file__), 'conf')
 
 
 def dest_path_testing(filename):
@@ -150,9 +149,9 @@ def patch_test_config(config, rel_path, temp_dir):
 
 
 def get_test_config(temp_dir):
-    test_pipeline_config_file = os.path.join(GLOBAL_TEST_BASE, 'pipeline', 'pipeline.conf')
-    test_trigger_config_file = os.path.join(GLOBAL_TEST_BASE, 'pipeline', 'trigger.conf')
-    test_watch_config_file = os.path.join(GLOBAL_TEST_BASE, 'pipeline', 'watches.conf')
+    test_pipeline_config_file = os.path.join(TESTLIB_CONF_DIR, 'pipeline.conf')
+    test_trigger_config_file = os.path.join(TESTLIB_CONF_DIR,  'trigger.conf')
+    test_watch_config_file = os.path.join(TESTLIB_CONF_DIR, 'watches.conf')
     os.environ['PIPELINE_CONFIG_FILE'] = test_pipeline_config_file
     os.environ['PIPELINE_TRIGGER_CONFIG_FILE'] = test_trigger_config_file
     os.environ['PIPELINE_WATCH_CONFIG_FILE'] = test_watch_config_file

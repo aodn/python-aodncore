@@ -10,16 +10,17 @@ from aodncore.pipeline import (CheckResult, PipelineFileCollection, PipelineFile
                                PipelineFilePublishType)
 from aodncore.pipeline.exceptions import MissingFileError
 from aodncore.pipeline.steps import get_child_check_runner
+from aodncore.testlib import BaseTestCase, get_nonexistent_path, mock
 from aodncore.util import safe_copy_file
-from test_aodncore.testlib import BaseTestCase, MOCK_LOGGER, get_nonexistent_path, mock
+from test_aodncore import TESTDATA_DIR
 
-TESTDATA_DIR = os.path.join(os.path.dirname(os.path.dirname(__file__)), 'testdata')
 GOOD_NC = os.path.join(TESTDATA_DIR, 'good.nc')
 
 
 # noinspection PyAttributeOutsideInit
 class TestPipelineFile(BaseTestCase):
     def setUp(self):
+        super(TestPipelineFile, self).setUp()
         _, self.test_file = mkstemp(suffix='.nc', prefix=self.__class__.__name__)
         safe_copy_file(GOOD_NC, self.test_file, overwrite=True)
 
@@ -32,14 +33,14 @@ class TestPipelineFile(BaseTestCase):
 
     def test_compliance_check(self):
         # Test compliance checking
-        check_runner = get_child_check_runner(PipelineFileCheckType.NC_COMPLIANCE_CHECK, None, MOCK_LOGGER,
+        check_runner = get_child_check_runner(PipelineFileCheckType.NC_COMPLIANCE_CHECK, None, self.mock_logger,
                                               {'checks': ['cf']})
         check_runner.run(PipelineFileCollection(self.pipelinefile))
         assertCountEqual(self, dict(self.pipelinefile.check_result).keys(), ['compliant', 'errors', 'log'])
 
     def test_format_check(self):
         # Test file format checking
-        check_runner = get_child_check_runner(PipelineFileCheckType.FORMAT_CHECK, None, MOCK_LOGGER)
+        check_runner = get_child_check_runner(PipelineFileCheckType.FORMAT_CHECK, None, self.mock_logger)
         check_runner.run(PipelineFileCollection(self.pipelinefile))
         assertCountEqual(self, dict(self.pipelinefile.check_result).keys(), ['compliant', 'errors', 'log'])
 

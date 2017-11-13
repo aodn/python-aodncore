@@ -6,10 +6,9 @@ from aodncore.pipeline import CheckResult, PipelineFileCheckType, PipelineFileCo
 from aodncore.pipeline.exceptions import InvalidCheckTypeError, InvalidCheckSuiteError
 from aodncore.pipeline.steps.check import (get_child_check_runner, ComplianceCheckerCheckRunner, FormatCheckRunner,
                                            NetcdfFormatCheckRunner, PermissiveCheckRunner)
+from aodncore.testlib import BaseTestCase
+from test_aodncore import TESTDATA_DIR
 
-from test_aodncore.testlib import BaseTestCase, MOCK_LOGGER
-
-TESTDATA_DIR = os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(__file__))), 'testdata')
 BAD_NC = os.path.join(TESTDATA_DIR, 'bad.nc')
 GOOD_NC = os.path.join(TESTDATA_DIR, 'good.nc')
 
@@ -17,23 +16,24 @@ GOOD_NC = os.path.join(TESTDATA_DIR, 'good.nc')
 class TestPipelineStepsCheck(BaseTestCase):
     def test_get_check_runner(self):
         with self.assertRaises(ValueError):
-            _ = get_child_check_runner(1, None, None, MOCK_LOGGER)
+            _ = get_child_check_runner(1, None, None, self.mock_logger)
         with self.assertRaises(ValueError):
-            _ = get_child_check_runner('str', None, None, MOCK_LOGGER)
+            _ = get_child_check_runner('str', None, None, self.mock_logger)
 
         with self.assertRaises(InvalidCheckTypeError):
-            _ = get_child_check_runner(PipelineFileCheckType.NO_ACTION, None, None, MOCK_LOGGER)
+            _ = get_child_check_runner(PipelineFileCheckType.NO_ACTION, None, None, self.mock_logger)
 
-        cc_runner = get_child_check_runner(PipelineFileCheckType.NC_COMPLIANCE_CHECK, None, None, MOCK_LOGGER)
+        cc_runner = get_child_check_runner(PipelineFileCheckType.NC_COMPLIANCE_CHECK, None, None, self.mock_logger)
         self.assertIsInstance(cc_runner, ComplianceCheckerCheckRunner)
 
-        fc_runner = get_child_check_runner(PipelineFileCheckType.FORMAT_CHECK, None, None, MOCK_LOGGER)
+        fc_runner = get_child_check_runner(PipelineFileCheckType.FORMAT_CHECK, None, None, self.mock_logger)
         self.assertIsInstance(fc_runner, FormatCheckRunner)
 
 
 class TestComplianceCheckerRunner(BaseTestCase):
     def setUp(self):
-        self.cc_runner = ComplianceCheckerCheckRunner(None, MOCK_LOGGER, {'checks': ['cf']})
+        super(TestComplianceCheckerRunner, self).setUp()
+        self.cc_runner = ComplianceCheckerCheckRunner(None, self.mock_logger, {'checks': ['cf']})
 
     def test_compliant_file(self):
         collection = PipelineFileCollection([GOOD_NC])
@@ -69,7 +69,7 @@ class TestComplianceCheckerRunner(BaseTestCase):
 
     def test_multiple_check_suite(self):
         collection = PipelineFileCollection([GOOD_NC])  # GOOD_NC complies with cf but NOT imos:1.4
-        self.cc_runner = ComplianceCheckerCheckRunner(None, MOCK_LOGGER, {'checks': ['cf', 'imos:1.4']})
+        self.cc_runner = ComplianceCheckerCheckRunner(None, self.mock_logger, {'checks': ['cf', 'imos:1.4']})
         self.cc_runner.run(collection)
 
         check_result = collection[0].check_result
@@ -80,16 +80,17 @@ class TestComplianceCheckerRunner(BaseTestCase):
 
     def test_invalid_check_suite(self):
         with self.assertRaises(InvalidCheckSuiteError):
-            self.cc_runner = ComplianceCheckerCheckRunner(None, MOCK_LOGGER, {'checks': ['cf', 'no_such_thing']})
+            self.cc_runner = ComplianceCheckerCheckRunner(None, self.mock_logger, {'checks': ['cf', 'no_such_thing']})
 
     def test_no_check_suite(self):
         with self.assertRaises(InvalidCheckSuiteError):
-            self.cc_runner = ComplianceCheckerCheckRunner(None, MOCK_LOGGER)
+            self.cc_runner = ComplianceCheckerCheckRunner(None, self.mock_logger)
 
 
 class TestFormatCheckRunner(BaseTestCase):
     def setUp(self):
-        self.fc_runner = FormatCheckRunner(None, MOCK_LOGGER)
+        super(TestFormatCheckRunner, self).setUp()
+        self.fc_runner = FormatCheckRunner(None, self.mock_logger)
 
     def test_get_format_check_runner(self):
         nc_runner = self.fc_runner.get_format_check_runner('.nc')

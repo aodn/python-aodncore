@@ -8,7 +8,8 @@ import six
 from aodncore.util import (discover_entry_points, format_exception, is_function, is_nonstring_iterable, matches_regexes,
                            merge_dicts, slice_sequence, str_to_list, validate_callable, validate_mandatory_elements,
                            validate_membership, validate_nonstring_iterable, validate_type, CaptureStdIO)
-from test_aodncore.testlib import BaseTestCase, DummyHandler, get_test_working_set
+from aodncore.testlib import BaseTestCase, get_test_working_set
+from test_aodncore.pipeline.dummyhandler import DummyHandler
 
 StringIO = six.StringIO
 

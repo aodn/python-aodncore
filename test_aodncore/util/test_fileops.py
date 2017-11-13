@@ -11,7 +11,7 @@ import six
 from aodncore.util import (extract_zip, is_netcdffile, is_zipfile, list_regular_files, mkdir_p,
                            rm_f, rm_r, rm_rf, safe_copy_file, safe_move_file, get_file_checksum, TemporaryDirectory)
 from aodncore.util.misc import format_exception
-from test_aodncore.testlib import BaseTestCase, get_nonexistent_path
+from aodncore.testlib import BaseTestCase, get_nonexistent_path
 
 StringIO = six.StringIO
 

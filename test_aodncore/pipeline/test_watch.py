@@ -1,5 +1,5 @@
 from aodncore.pipeline.watch import (get_task_name, CeleryConfig)
-from test_aodncore.testlib import BaseTestCase
+from aodncore.testlib import BaseTestCase
 
 
 class TestPipelineWatch(BaseTestCase):

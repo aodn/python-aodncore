@@ -5,7 +5,7 @@ from celery import Celery
 
 from aodncore.pipeline.configlib import CustomParser, load_pipeline_config, load_watch_config
 from aodncore.pipeline.exceptions import InvalidConfigError
-from test_aodncore.testlib import BaseTestCase, get_nonexistent_path
+from aodncore.testlib import BaseTestCase, get_nonexistent_path
 
 TEST_ROOT = os.path.dirname(__file__)
 

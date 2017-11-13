@@ -276,10 +276,10 @@ class LoggingContext(object):
     """Context manager to allow temporary changes to logging configuration within the context of the block
     """
 
-    def __init__(self, logger, level=None, format=None, handler=None, close=True):
+    def __init__(self, logger, level=None, format_=None, handler=None, close=True):
         self.logger = logger.logger if isinstance(logger, logging.LoggerAdapter) else logger
         self.level = level
-        self.format = format
+        self.format = format_
         self.handler = handler
         self.close = close
 

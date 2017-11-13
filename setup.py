@@ -7,16 +7,17 @@ from aodncore.version import __version__
 
 ENTRY_POINTS = {
     'unittest.handlers': [
-        'DummyHandler = test_aodncore.testlib:DummyHandler'
+        'DummyHandler = test_aodncore.pipeline.dummyhandler:DummyHandler'
     ],
     'unittest.path_functions': [
-        'dest_path_testing = test_aodncore.testlib:dest_path_testing'
+        'dest_path_testing = aodncore.testlib:dest_path_testing'
     ]
 }
 
 PACKAGE_DATA = {
     'aodncore': [
-        'pipeline/templates/*.j2'
+        'pipeline/templates/*.j2',
+        'testlib/conf/*.conf'
     ]
 }
 
@@ -26,7 +27,6 @@ PACKAGE_SCRIPTS = ['aodncore/bin/drawmachine.py', 'aodncore/pipeline/watchservic
 
 requirements_txt = os.path.join(os.path.dirname(__file__), 'requirements.txt')
 requires = [str(r.req) for r in parse_requirements(requirements_txt, session=False)]
-tests_require = ['mock']
 
 setup(
     name=PACKAGE_NAME,
@@ -42,6 +42,5 @@ setup(
     zip_safe=False,
     install_requires=requires,
     test_suite='test_aodncore',
-    tests_require=tests_require,
     entry_points=ENTRY_POINTS
 )

@@ -176,7 +176,7 @@ class TalendHarvesterRunner(BaseHarvesterRunner):
 
         self._logger.info('--- START TALEND OUTPUT ---')
         # log talend output with basic formatter
-        with LoggingContext(self._logger, format='%(message)s'):
+        with LoggingContext(self._logger, format_='%(message)s'):
             try:
                 p.execute()
             except SystemCommandFailedError:

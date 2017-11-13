@@ -166,10 +166,12 @@ class PipelineFilePublishType(Enum):
     def is_harvest_type(self):
         return self._is_harvest_type
 
+    # noinspection PyMethodParameters,PyTypeChecker
     @classproperty
     def all_addition_types(cls):
         return {t for t in cls if t.is_addition_type}
 
+    # noinspection PyMethodParameters,PyTypeChecker
     @classproperty
     def all_deletion_types(cls):
         return {t for t in cls if t.is_deletion_type}
