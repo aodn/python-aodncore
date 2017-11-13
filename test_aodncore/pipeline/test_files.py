@@ -50,9 +50,9 @@ class TestPipelineFile(BaseTestCase):
         assertCountEqual(self, dict_object.keys(),
                          ['archive_path', 'check_passed', 'dest_path', 'file_checksum', 'check_log', 'check_type',
                           'is_archived', 'is_checked', 'is_deletion', 'is_harvested', 'is_stored', 'name',
-                          'notification_result', 'pending_archive', 'pending_harvest_addition',
-                          'pending_harvest_deletion', 'pending_store_addition', 'pending_store_deletion',
-                          'publish_type', 'should_archive', 'should_harvest', 'should_store', 'src_path', ])
+                          'pending_archive', 'pending_harvest_addition', 'pending_harvest_deletion',
+                          'pending_store_addition', 'pending_store_deletion', 'published', 'publish_type',
+                          'should_archive', 'should_harvest', 'should_store', 'src_path', ])
 
     def test_property_check_result(self):
         self.assertFalse(self.pipelinefile.is_checked)

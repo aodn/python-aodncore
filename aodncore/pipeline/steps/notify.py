@@ -1,5 +1,6 @@
 import os
 import smtplib
+from collections import OrderedDict
 from copy import deepcopy
 from email import encoders
 from email.mime.base import MIMEBase
@@ -118,20 +119,36 @@ class BaseNotifyRunner(AbstractNotifyRunner):
 
         :return: dict containing rendered input file and file collection tables, in text and HTML format
         """
-        input_file_table_data = {
-            'Input file': self.notification_data['input_file'],
-            'Handler start time': self.notification_data['handler_start_time'],
-            'Result': self.notification_data['processing_result']
-        }
+
+        input_file_table_data = OrderedDict([
+            ('Input file', self.notification_data['input_file']),
+            ('Processed at', self.notification_data['handler_start_time']),
+            ('Compliance checks', self.notification_data['checks']),
+            ('Result', self.notification_data['processing_result'])
+        ])
 
         text_input_file_table = self._get_text_input_file_table(input_file_table_data)
         html_input_file_table = self._get_html_input_file_table(input_file_table_data)
 
-        text_collection_table = tabulate(self.notification_data['collection_data'],
-                                         self.notification_data['collection_headers'], tablefmt='simple')
+        # column ordering and inclusion for collection table is determined entirely from this collection
+        included_columns = ('name', 'check_passed', 'published')
 
-        html_collection_table = tabulate(self.notification_data['collection_data'],
-                                         self.notification_data['collection_headers'], tablefmt='html')
+        attribute_friendly_name_map = {
+            'name': 'Name',
+            'check_passed': 'Checks passed',
+            'published': 'Published?'
+        }
+
+        raw_headers = [h for h in included_columns if h in self.notification_data['collection_headers']]
+
+        # determine final column names by checking the "friendly" map for overrides
+        collection_headers = [attribute_friendly_name_map.get(h, h) for h in raw_headers]
+
+        # generate a "list of lists", where each element is the row containing only the desired elements (ordered)
+        collection_data = [[pf[attr] for attr in raw_headers] for pf in self.notification_data['collection_data']]
+
+        text_collection_table = tabulate(collection_data, collection_headers, tablefmt='simple')
+        html_collection_table = tabulate(collection_data, collection_headers, tablefmt='html')
 
         return {
             'text_input_file_table': text_input_file_table,
@@ -223,16 +240,15 @@ class EmailNotifyRunner(BaseNotifyRunner):
 
         message.attach(message_alternative)
 
-        # TODO: tidy up the retrieval of attributes from collection_data, e.g. replace 'f[0]' with a name based approach
-        failed_files = [f for f in self.notification_data['collection_data'] if f[0]]
+        failed_files = [f for f in self.notification_data['collection_data'] if f['check_log']]
         if failed_files:
             attachment = MIMEBase('application', 'zip')
 
             with SpooledTemporaryFile(prefix='error_logs', suffix='.zip') as attachment_file:
                 with ZipFile(attachment_file, 'w') as z:
                     for failed_file in failed_files:
-                        path = "{failed_file[4]}.log.txt".format(failed_file=failed_file)
-                        content = failed_file[0]
+                        path = "{failed_file[name]}.log.txt".format(failed_file=failed_file)
+                        content = failed_file['check_log']
                         z.writestr(path, content)
 
                 attachment_file.seek(0)

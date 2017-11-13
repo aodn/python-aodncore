@@ -463,10 +463,13 @@ class HandlerBase(object):
 
     def _notify_common(self, notify_list_param):
         collection_headers, collection_data = self.file_collection.get_table_data()
+        checks = () if self.check_params is None else self.check_params.get('checks', ())
+
         notification_data = {
             'input_file': os.path.basename(self.input_file),
             'processing_result': self.result.name,
             'handler_start_time': self.start_time.strftime("%Y-%m-%d %H:%M"),
+            'checks': ','.join(checks) or 'None',
             'collection_headers': collection_headers,
             'collection_data': collection_data,
             'error_details': self._error_details
