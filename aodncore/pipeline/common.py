@@ -68,7 +68,7 @@ class HandlerResult(Enum):
 class NotificationRecipientType(Enum):
     """Notification recipient type
     """
-    INVALID = ('invalid', lambda p: True, 'invalid protocol')
+    INVALID = ('invalid', lambda p: False, 'invalid protocol')
     EMAIL = ('email', is_valid_email_address, 'invalid email address')
     SNS = ('sns', lambda p: True, 'invalid SNS topic')
 

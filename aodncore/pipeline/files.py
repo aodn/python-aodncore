@@ -68,6 +68,7 @@ class PipelineFile(object):
 
     def __iter__(self):
         yield 'archive_path', self.archive_path
+        yield 'check_log', self.check_log
         yield 'check_passed', self.check_passed
         yield 'check_type', self.check_type.name
         yield 'dest_path', self.dest_path
@@ -78,6 +79,7 @@ class PipelineFile(object):
         yield 'is_harvested', str(self._is_harvested)
         yield 'is_stored', str(self._is_stored)
         yield 'name', self.name
+        yield 'published', self.published
         yield 'pending_archive', str(self.pending_archive)
         yield 'pending_harvest_addition', str(self.pending_harvest_addition)
         yield 'pending_harvest_deletion', str(self.pending_harvest_deletion)
@@ -104,8 +106,12 @@ class PipelineFile(object):
         self._post_property_update({'archive_path': archive_path})
 
     @property
+    def check_log(self):
+        return '' if self._check_result is None else os.linesep.join(self._check_result.log)
+
+    @property
     def check_passed(self):
-        return 'unknown' if self._check_result is None else str(self._check_result.compliant)
+        return 'N/A' if self._check_result is None else str(self._check_result.compliant)
 
     @property
     def check_result(self):
@@ -193,6 +199,12 @@ class PipelineFile(object):
     @property
     def is_uploaded(self):
         return not self.is_deletion and self.is_stored
+
+    @property
+    def published(self):
+        should_publish = self.should_store or self.should_harvest
+        was_published = self.is_stored or self.is_harvested
+        return 'Yes' if should_publish and was_published else 'No'
 
     @property
     def pending_archive(self):
@@ -501,30 +513,16 @@ class PipelineFileCollection(MutableSet):
         collection = PipelineFileCollection(f for f in self.__s if any_attributes_true(f))
         return collection
 
-    def get_table_data(self, include_all_attributes=False):
+    def get_table_data(self):
         """Return PipelineFile members in a simple tabular data format suitable for rendering into formatted tables
-        
-        :param include_all_attributes: return a default subset of columns, or all columns
+
         :return: a tuple with the first element being a list of columns, and the second being a 2D list of the data
         """
-        default_columns = ('name', 'dest_path', 'check_type', 'check_passed')
-
-        def include_column(name):
-            return True if include_all_attributes else name in default_columns
-
-        # TODO: find a better way to get PipelineFile attributes than to create a dummy instance
-        template = OrderedDict(PipelineFile('', '', is_deletion=True))
-
-        dict_items = [OrderedDict(e) for e in self.__s]
-        columns = [column for column in template.keys() if include_column(column)]
-
-        if include_all_attributes:
-            data = [e.values() for e in dict_items]
-        else:
-            data = []
-            for item in dict_items:
-                data.append([value for column, value in item.items() if include_column(column)])
-
+        data = [OrderedDict(e) for e in self.__s]
+        try:
+            columns = data[0].keys()
+        except IndexError:
+            columns = []
         return columns, data
 
     def set_check_types(self, check_params):

@@ -23,23 +23,27 @@
     }
 </style>
 <body>
-<p>Dear Uploader,</p>
-<p>Please find below a report on the handling of the following file:</p>
-<div class="tablewrapper">
-    {{ html_input_file_table }}
-</div>
-{% if html_collection_table %}
+    <p>Dear Uploader,</p>
+    <p>Please find below a report on the handling of the following file:</p>
+    <div class="tablewrapper">
+        {{ html_input_file_table }}
+    </div>
+
+    {% if error_details -%}
+    <h4>Error details:</h4>
+    <pre>{{ error_details }}</pre>
+    {%- endif %}
+
+    {% if html_collection_table %}
+    <h4>File collection details:</h4>
     <p>The input file resolved to the following child file(s):</p>
     <div class="tablewrapper">
         {{ html_collection_table }}
     </div>
-{% endif %}
-{% if error_details %}
-    <h4>Error details:</h4>
-    <pre>{{ error_details }}</pre>
-{% endif %}
-<p>Regards,<br>
-    Australian Ocean Data Network
-</p>
+    {% endif %}
+
+    <p>Regards,<br>
+        Australian Ocean Data Network
+    </p>
 </body>
 </html>

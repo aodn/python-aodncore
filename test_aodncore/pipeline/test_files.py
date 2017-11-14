@@ -48,11 +48,11 @@ class TestPipelineFile(BaseTestCase):
         dict_object = dict(self.pipelinefile)
         # Confirm that __iter__ returns a dict with the expected keys
         assertCountEqual(self, dict_object.keys(),
-                         ['archive_path', 'check_passed', 'dest_path', 'file_checksum', 'check_type', 'is_archived',
-                          'is_checked', 'is_deletion', 'is_harvested', 'is_stored', 'name', 'pending_archive',
-                          'pending_harvest_addition', 'pending_harvest_deletion', 'pending_store_addition',
-                          'pending_store_deletion', 'publish_type', 'should_archive', 'should_harvest', 'should_store',
-                          'src_path', ])
+                         ['archive_path', 'check_passed', 'dest_path', 'file_checksum', 'check_log', 'check_type',
+                          'is_archived', 'is_checked', 'is_deletion', 'is_harvested', 'is_stored', 'name',
+                          'pending_archive', 'pending_harvest_addition', 'pending_harvest_deletion',
+                          'pending_store_addition', 'pending_store_deletion', 'published', 'publish_type',
+                          'should_archive', 'should_harvest', 'should_store', 'src_path', ])
 
     def test_property_check_result(self):
         self.assertFalse(self.pipelinefile.is_checked)
@@ -471,18 +471,12 @@ class TestPipelineFileCollection(BaseTestCase):
         self.collection.update((fileobj1, fileobj2))
 
         table_headers, table_data = self.collection.get_table_data()
-        assertCountEqual(self, table_headers, ['name', 'dest_path', 'check_type', 'check_passed'])
-
-        for row in table_data:
-            self.assertEqual(len(table_headers), len(row))
-
-            assertCountEqual(self, table_data[0],
-                             (fileobj1.name, fileobj1.dest_path, fileobj1.check_type.name, fileobj1.check_passed))
-            assertCountEqual(self, table_data[1],
-                             (fileobj2.name, fileobj2.dest_path, fileobj2.check_type.name, fileobj2.check_passed))
-
-        table_headers, table_data = self.collection.get_table_data(include_all_attributes=True)
         fileobj1_keys = list(OrderedDict(fileobj1).keys())
         fileobj2_keys = list(OrderedDict(fileobj2).keys())
         self.assertSequenceEqual(fileobj1_keys, table_headers)
         self.assertSequenceEqual(fileobj2_keys, table_headers)
+
+    def test_get_table_data_empty(self):
+        table_headers, table_data = self.collection.get_table_data()
+        self.assertListEqual([], table_headers)
+        self.assertListEqual([], table_data)

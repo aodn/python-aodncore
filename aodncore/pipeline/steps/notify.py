@@ -1,7 +1,13 @@
+import os
 import smtplib
+from collections import OrderedDict
 from copy import deepcopy
+from email import encoders
+from email.mime.base import MIMEBase
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
+from tempfile import SpooledTemporaryFile
+from zipfile import ZipFile
 
 from tabulate import tabulate
 
@@ -89,29 +95,65 @@ class BaseNotifyRunner(AbstractNotifyRunner):
             self._template_values = template_values
         return self._template_values
 
+    @staticmethod
+    def _get_html_input_file_table(table_data):
+        html_lines = ["<table><tbody>"]
+        row_template = '<tr><th style="text-align: left;">{k}</th><td style="text-align: left;">{v}</td></tr>'
+        rows = [row_template.format(k=k, v=v) for k, v in table_data.items()]
+        html_lines.extend(rows)
+        html_lines.append("</tbody></table>")
+        html = os.linesep.join(html_lines)
+        return html
+
+    @staticmethod
+    def _get_text_input_file_table(table_data):
+        text_lines = []
+        row_template = '{k}: {v}'
+        rows = [row_template.format(k=k, v=v) for k, v in table_data.items()]
+        text_lines.extend(rows)
+        text = os.linesep.join(text_lines)
+        return text
+
     def _get_file_tables(self):
         """Render tables for use in notifications
 
+            Note: everything in this method assumes *strict ordering* of elements, hence use of lists and OrderedDicts,
+                rather than potentially more efficient dict and set types
+
         :return: dict containing rendered input file and file collection tables, in text and HTML format
         """
-        input_file_table_data = [
-            [
-                self.notification_data['input_file'],
-                self.notification_data['handler_start_time'],
-                self.notification_data['processing_result']
-            ]
-        ]
-        input_file_table_headers = ['Input file', 'Handler start time', 'Processing result']
 
-        text_input_file_table = tabulate(input_file_table_data, input_file_table_headers, tablefmt='simple')
+        input_file_table_data = OrderedDict([
+            ('Input file', self.notification_data['input_file']),
+            ('Processed at', self.notification_data['handler_start_time']),
+            ('Compliance checks', self.notification_data['checks']),
+            ('Result', self.notification_data['processing_result'])
+        ])
 
-        html_input_file_table = tabulate(input_file_table_data, input_file_table_headers, tablefmt='html')
+        text_input_file_table = self._get_text_input_file_table(input_file_table_data)
+        html_input_file_table = self._get_html_input_file_table(input_file_table_data)
 
-        text_collection_table = tabulate(self.notification_data['collection_data'],
-                                         self.notification_data['collection_headers'], tablefmt='simple')
+        # column ordering and inclusion for collection table is determined entirely from this collection
+        included_columns = ('name', 'check_passed', 'published')
 
-        html_collection_table = tabulate(self.notification_data['collection_data'],
-                                         self.notification_data['collection_headers'], tablefmt='html')
+        attribute_friendly_name_map = {
+            'name': 'Name',
+            'check_passed': 'Checks passed',
+            'published': 'Published?'
+        }
+
+        # this validates that only existing columns are included, and becomes the authoritative list of included
+        # columns, used when generating final headers and data rows
+        raw_headers = [h for h in included_columns if h in self.notification_data['collection_headers']]
+
+        # determine final column names by checking the "friendly" map for overrides
+        collection_headers = [attribute_friendly_name_map.get(h, h) for h in raw_headers]
+
+        # generate a "list of lists", where each element is the row containing only the desired elements (ordered)
+        collection_data = [[pf[attr] for attr in raw_headers] for pf in self.notification_data['collection_data']]
+
+        text_collection_table = tabulate(collection_data, collection_headers, tablefmt='simple')
+        html_collection_table = tabulate(collection_data, collection_headers, tablefmt='html')
 
         return {
             'text_input_file_table': text_input_file_table,
@@ -155,7 +197,8 @@ class NotifyRunnerAdapter(BaseNotifyRunner):
         if invalid_recipients:
             self._logger.error(
                 "notifications unable to be sent to invalid recipients: {invalid}".format(
-                    invalid=list(r.raw_string for r in invalid_recipients)))
+                    invalid=list((r.raw_string, r.error) for r in invalid_recipients)))
+            invalid_recipients.set_notification_attempted()
 
         notify_types = {t.notify_type for t in notify_list_object if
                         t.notify_type is not NotificationRecipientType.INVALID}
@@ -171,6 +214,12 @@ class NotifyRunnerAdapter(BaseNotifyRunner):
             self._logger.error(
                 "notifications failed to the following recipients: {failed}".format(
                     failed=list((r.raw_string, r.error) for r in failed_notifications)))
+            succeeded_notifications = notify_list_object.filter_by_succeeded()
+            if succeeded_notifications:
+                self._logger.info("notifications succeeded to the following recipients: {succeeded}".format(
+                    succeeded=list(r.raw_string for r in succeeded_notifications)))
+        else:
+            self._logger.info('all notification attempts were successful')
 
         return notify_list_object
 
@@ -178,16 +227,47 @@ class NotifyRunnerAdapter(BaseNotifyRunner):
 class EmailNotifyRunner(BaseNotifyRunner):
     def _construct_message(self, recipient_addresses, subject, from_address):
         rendered_text, rendered_html = self.message_parts
-        subparts = (MIMEText(rendered_text, 'text'), MIMEText(rendered_html, 'html'))
-        message = MIMEMultipart('alternative', _subparts=subparts)
+
+        text_part = MIMEText(rendered_text, 'text')
+        html_part = MIMEText(rendered_html, 'html')
+
+        message = MIMEMultipart('mixed')
         message['Subject'] = subject
         message['From'] = from_address
         message['To'] = ','.join(recipient_addresses)
 
+        message_related = MIMEMultipart('related')
+        message_related.attach(html_part)
+
+        message_alternative = MIMEMultipart('alternative')
+        message_alternative.attach(text_part)
+        message_alternative.attach(message_related)
+
+        message.attach(message_alternative)
+
+        failed_files = [f for f in self.notification_data['collection_data'] if
+                        f['check_log'] and f['check_passed'] != 'True']
+        if failed_files:
+            attachment = MIMEBase('application', 'zip')
+
+            with SpooledTemporaryFile(prefix='error_logs', suffix='.zip') as attachment_file:
+                with ZipFile(attachment_file, 'w') as z:
+                    for failed_file in failed_files:
+                        path = "{failed_file[name]}.log.txt".format(failed_file=failed_file)
+                        content = failed_file['check_log'].encode('utf-8')
+                        z.writestr(path, content)
+
+                attachment_file.seek(0)
+                attachment.set_payload(attachment_file.read())
+
+            encoders.encode_base64(attachment)
+            attachment.add_header('Content-Disposition', 'attachment', filename='error_logs.zip')
+            message.attach(attachment)
+
         return message
 
     def _send(self, recipient_addresses, message):
-        smtp_server = smtplib.SMTP()
+        smtp_server = smtplib.SMTP(timeout=60)
         sendmail_result = None
         try:
             smtp_server.connect(self._config.pipeline_config['mail']['smtp_server'],
@@ -328,6 +408,9 @@ class NotifyList(object):
     def filter_by_failed(self):
         return NotifyList(r for r in self.__s if r.notification_attempted and not r.notification_succeeded)
 
+    def filter_by_succeeded(self):
+        return NotifyList(r for r in self.__s if r.notification_attempted and r.notification_succeeded)
+
     def filter_by_notify_type(self, notify_type):
         """Return a new NotifyList containing only recipients of the given notify_type
 
@@ -431,13 +514,17 @@ class NotificationRecipient(object):
         try:
             protocol, address = recipient_string.split(':', 1)
         except ValueError:
-            recipient_type = NotificationRecipientType.INVALID
             address = ''
+            error = InvalidRecipientError('invalid recipient string')
+            recipient_type = NotificationRecipientType.INVALID
         else:
+            error = None
             recipient_type = NotificationRecipientType.get_type_from_protocol(protocol)
 
-        is_valid = recipient_type.address_validation_function(address)
-        error = None if is_valid else InvalidRecipientError(recipient_type.error_string)
+            address_is_valid = recipient_type.address_validation_function(address)
+            if not address_is_valid:
+                error = InvalidRecipientError(recipient_type.error_string)
+                recipient_type = NotificationRecipientType.INVALID
 
         return cls(address, recipient_type, recipient_string, error)
 

@@ -4,7 +4,7 @@ import unittest
 
 from aodncore.pipeline import PipelineFilePublishType, HandlerResult
 from aodncore.pipeline.exceptions import (ComplianceCheckFailedError, HandlerAlreadyRunError, InvalidCheckSuiteError,
-                                          InvalidInputFileError, InvalidFileFormatError)
+                                          InvalidInputFileError, InvalidFileFormatError, InvalidRecipientError)
 from aodncore.pipeline.steps import NotifyList
 from aodncore.testlib import HandlerTestCase, dest_path_testing, get_nonexistent_path, mock
 from test_aodncore import TESTDATA_DIR
@@ -130,7 +130,7 @@ class TestDummyHandler(HandlerTestCase):
         self.assertEqual(len(handler.notify_list), 2)
         self.assertFalse(handler.notify_list[0].notification_succeeded)
         self.assertTrue(handler.notify_list[1].notification_succeeded)
-        self.assertIsNone(handler.notify_list[0].error)
+        self.assertIsInstance(handler.notify_list[0].error, InvalidRecipientError)
         self.assertIsNone(handler.notify_list[1].error)
 
     @mock.patch('aodncore.pipeline.steps.notify.smtplib.SMTP')
