@@ -245,7 +245,8 @@ class EmailNotifyRunner(BaseNotifyRunner):
 
         message.attach(message_alternative)
 
-        failed_files = [f for f in self.notification_data['collection_data'] if f['check_log']]
+        failed_files = [f for f in self.notification_data['collection_data'] if
+                        f['check_log'] and f['check_passed'] != 'True']
         if failed_files:
             attachment = MIMEBase('application', 'zip')
 
