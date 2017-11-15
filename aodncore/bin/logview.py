@@ -26,7 +26,9 @@ def parse_args():
     """Parse the command line"""
     parser = argparse.ArgumentParser()
     parser.add_argument('logfile', help='pipeline task log file')
-    parser.add_argument('task_id')
+    parser.add_argument('-t', '--task_id', help='print lines for task_id', metavar='ID')
+    parser.add_argument('-e', '--errors', help='print error lines only', action='store_true')
+    parser.add_argument('-w', '--warnings', help='print warning & error lines only', action='store_true')
 
     args = parser.parse_args()
 
@@ -82,12 +84,26 @@ def print_output(log_data, fmt=OUTPUT_FORMAT):
 
 def view_log(args):
 
-    log_data = parse_log(args.logfile)
+    all_data = parse_log(args.logfile)
 
     # TODO: filtering
+    out_data = []
+    task_id = getattr(args, 'task_id', None)
+    levels = None
+    if args.errors:
+        levels = ('ERROR', 'CRITICAL')
+    if args.warnings:
+        levels = ('WARNING', 'ERROR', 'CRITICAL')
+    for data in all_data:
+        if task_id and data['task_id'] != task_id:
+            continue
+        if levels and data['level'] not in levels:
+            continue
+
+        out_data.append(data)
 
     # format & print output
-    print_output(log_data)
+    print_output(out_data)
 
 
 if __name__ == '__main__':
