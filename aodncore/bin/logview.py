@@ -26,9 +26,10 @@ def parse_args():
     """Parse the command line"""
     parser = argparse.ArgumentParser()
     parser.add_argument('logfile', help='pipeline task log file')
-    parser.add_argument('-t', '--task_id', help='print lines for task_id', metavar='ID')
-    parser.add_argument('-e', '--errors', help='print error lines only', action='store_true')
-    parser.add_argument('-w', '--warnings', help='print warning & error lines only', action='store_true')
+    parser.add_argument('-t', '--task_id', help='lines for task_id', metavar='ID')
+    parser.add_argument('-e', '--errors', help='error lines only', action='store_true')
+    parser.add_argument('-w', '--warnings', help='warning & error lines only', action='store_true')
+    parser.add_argument('-p', '--pattern', help='lines matching regex pattern', metavar='REGEX')
 
     args = parser.parse_args()
 
@@ -87,17 +88,25 @@ def view_log(args):
     all_data = parse_log(args.logfile)
 
     # TODO: filtering
-    out_data = []
     task_id = getattr(args, 'task_id', None)
+
     levels = None
     if args.errors:
         levels = ('ERROR', 'CRITICAL')
     if args.warnings:
         levels = ('WARNING', 'ERROR', 'CRITICAL')
+
+    pattern = None
+    if hasattr(args, 'pattern'):
+        pattern = re.compile(args.pattern)
+
+    out_data = []
     for data in all_data:
         if task_id and data['task_id'] != task_id:
             continue
         if levels and data['level'] not in levels:
+            continue
+        if pattern and not pattern.search(data['message']):
             continue
 
         out_data.append(data)
