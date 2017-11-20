@@ -193,8 +193,9 @@ class S3UploadRunner(BaseUploadRunner):
     def _validate_bucket(self):
         try:
             self.s3_client.head_bucket(Bucket=self.bucket)
-        except Exception:
-            raise InvalidUploadUrlError("S3 bucket '{0}' does not exist".format(self.bucket))
+        except Exception as e:
+            raise InvalidUploadUrlError(
+                "unable to access S3 bucket '{0}': {1}".format(self.bucket, format_exception(e)))
 
 
 def sftp_path_exists(sftpclient, path):
