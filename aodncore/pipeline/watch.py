@@ -288,7 +288,7 @@ class AbstractFileStateManager(object):
                                 transitions=self.transitions, after_state_change='_after_state_change')
 
     def _after_state_change(self):
-        self.logger.info("file state transitioned to: {state}".format(state=self.state))
+        self.logger.info("{name} transitioned to state: {state}".format(name=self.__class__.__name__, state=self.state))
 
     @abc.abstractmethod
     def _move_to_processing(self):
