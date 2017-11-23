@@ -1,8 +1,8 @@
 ## Python Pipeline
 
-At the core of the handler base class is a state machine defining the workflow states and the transitions between those states. The following diagram describes the machine (generated directly from the codebase using https://github.com/aodn/zzz-aodn-pipeline-poc/blob/master/aodn_pipeline/scripts/drawgraph.py):
+At the core of the handler base class is a state machine defining the workflow states and the transitions between those states. The following diagram describes the machine (generated directly from the codebase using https://github.com/aodn/python-aodncore/blob/master/aodncore/bin/drawmachine.py):
 
-![Pipeline Handler state machine](https://github.com/aodn/zzz-aodn-pipeline-poc/blob/master/state_machine.png)
+![Pipeline Handler state machine](https://github.com/aodn/python-aodncore/blob/master/state_machine.png)
 
 The transition methods can be loosely divided into two categories:
 1. Core methods - implement core common code such as logging (text and DB), setup of the central "file collection" used throughout the handler, compliance checking, publishing (harvesting/uploading). These are generally *not* intended to be overwritten by handler child classes.
@@ -52,4 +52,4 @@ The unit tests can be executed in any number of ways, but the two simplest and m
 (pltest) ~$ python setup.py test
 ```
 
-Both of these options should scan the project for tests, and execute them. The tests should be found in https://github.com/aodn/zzz-aodn-pipeline-poc/tree/master/tests
+Both of these options should scan the project for tests, and execute them. The tests should be found in https://github.com/aodn/python-aodncore/tree/master/test_aodncore
