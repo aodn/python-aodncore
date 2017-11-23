@@ -509,7 +509,7 @@ class HandlerBase(object):
 
         :return: None
         """
-        self.logger.info("handler state transitioned to: {state}".format(state=self.state))
+        self.logger.info("{name} transitioned to state: {state}".format(name=self.__class__.__name__, state=self.state))
         if self.celery_task is not None:
             self.celery_task.update_state(state=self.state)
 
