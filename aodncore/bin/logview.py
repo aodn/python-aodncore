@@ -10,6 +10,12 @@ import re
 import sys
 
 
+# location of logs
+LOGDIR_BASE = '/sw/chef/src/tmp/p2_logs'
+LOG_WATCH = LOGDIR_BASE + '/watchservice/pipeline_watchservice-stderr.log'
+LOGDIR_CELERY = LOGDIR_BASE + '/celery'
+LOGDIR_PROCESS = LOGDIR_BASE + '/process'
+
 # regular expressions to match log format and define fields extracted from log
 LOG_FIELDS = OrderedDict([
     ('time', r"(?P<time>\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2},\d{3})\s+"),
@@ -22,6 +28,20 @@ INPUT_REGEX = re.compile(''.join(LOG_FIELDS.values()))
 OUTPUT_FORMAT = '{time:20} {level:>9} {message}\n'
 
 
+def find_log(input_file):
+    """
+    Given the name of an uploaded file, find the log file from the pipeline process that handled it.
+
+    :param str input_file: Name of uploaded file
+    :return: Full path to log file.
+    """
+    # TODO: implement find_log
+    # Things to try:
+    #   Read LOG_WATCH file and find the file name
+    #   Read all process logs in LOGDIR_PROCESS and use pattern match
+    return ''
+
+
 def parse_args():
     """Parse the command line"""
     parser = argparse.ArgumentParser()
@@ -30,8 +50,14 @@ def parse_args():
     parser.add_argument('-e', '--errors', help='error lines only', action='store_true')
     parser.add_argument('-w', '--warnings', help='warning & error lines only', action='store_true')
     parser.add_argument('-p', '--pattern', help='lines matching regex pattern', metavar='REGEX')
+    parser.add_argument('-f', '--file', help='name of processed file')
 
     args = parser.parse_args()
+
+    print('Args: {}\n'.format(args))
+
+    if args.file:
+        args.logfile = find_log(args.file)
 
     return args
 
@@ -73,7 +99,7 @@ def print_output(log_data, fmt=OUTPUT_FORMAT):
     output = []
     for data in log_data:
         output.append(fmt.format(**data))
-        # TODO: wrap long lines
+        # TODO: wrap long lines?
 
     try:
         sys.stdout.writelines(output)
@@ -83,21 +109,17 @@ def print_output(log_data, fmt=OUTPUT_FORMAT):
         pass
 
 
-def view_log(args):
+def view_log(logfile, task_id=None, errors=False, warnings=False, pattern=None):
 
-    all_data = parse_log(args.logfile)
-
-    # TODO: filtering
-    task_id = getattr(args, 'task_id', None)
+    all_data = parse_log(logfile)
 
     levels = None
-    if args.errors:
+    if errors:
         levels = ('ERROR', 'CRITICAL')
-    if args.warnings:
+    if warnings:
         levels = ('WARNING', 'ERROR', 'CRITICAL')
 
-    pattern = None
-    if hasattr(args, 'pattern'):
+    if pattern:
         pattern = re.compile(args.pattern)
 
     out_data = []
@@ -108,6 +130,7 @@ def view_log(args):
             continue
         if pattern and not pattern.search(data['message']):
             continue
+        # TODO: filter by handler step?
 
         out_data.append(data)
 
@@ -118,6 +141,8 @@ def view_log(args):
 if __name__ == '__main__':
     args = parse_args()
 
-    view_log(args)
+    # TODO: filter by file name (parent or child)
+
+    view_log(args.logfile, task_id=args.task_id, errors=args.errors, warnings=args.warnings, pattern=args.pattern)
 
     exit(0)
