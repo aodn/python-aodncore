@@ -25,7 +25,64 @@ LOG_FIELDS = OrderedDict([
     ('message', r"(?P<message>.*)")
 ])
 INPUT_REGEX = re.compile(''.join(LOG_FIELDS.values()))
-OUTPUT_FORMAT = '{time:20} {level:>9} {message}\n'
+DEFAULT_FORMAT = '{time:20} {level:>9} {message}\n'
+
+
+class LogViewer(object):
+    """
+    Class to parse logs written by pipelines and output various filtered or summary views.
+    """
+
+    def __init__(self, logfile):
+        self.logfile = logfile
+
+    def show(self, task_id=None, errors=False, warnings=False, pattern=None, fmt=DEFAULT_FORMAT):
+        """
+        Print a filtered & re-formatted view of the log to stdout
+
+        :param str task_id: only include log for given task uuid
+        :param bool errors: only include error log lines
+        :param bool warnings: only include warning & error lines
+        :param str pattern: only include log messages matching pattern (regular expression)
+        :param str fmt: output format (fmt.format() applied to dict of LOG_FIELDS extracted from log)
+        """
+
+        levels = None
+        if errors:
+            levels = ('ERROR', 'CRITICAL')
+        if warnings:
+            levels = ('WARNING', 'ERROR', 'CRITICAL')
+        if pattern:
+            pattern = re.compile(pattern)
+
+        with open(self.logfile) as log:
+            for line in log:
+                line = line.strip()
+
+                # parse a line of log data
+                m = INPUT_REGEX.match(line)
+                if m is None:
+                    # TODO: deal with unformatted lines
+                    continue
+                data = m.groupdict()
+
+                # filter -- should we include this line?
+                if task_id and data['task_id'] != task_id:
+                    continue
+                if levels and data['level'] not in levels:
+                    continue
+                if pattern and not pattern.search(data['message']):
+                    continue
+                # TODO: filter by handler step?
+
+                # format & print the line
+                line_out = fmt.format(**data)
+                try:
+                    sys.stdout.write(line_out)
+                    sys.stdout.flush()
+                except IOError:
+                    # this can happen if output is piped to `head` or `less`
+                    pass
 
 
 def find_log(input_file):
@@ -62,87 +119,12 @@ def parse_args():
     return args
 
 
-def parse_log(logfile):
-    """
-    Parse the log returning a list of log data. Each list item is a dictionary of fieldname: value pairs.
-
-    :param str logfile: Path to log file
-    :return: list of log details from each line.
-
-    """
-    # read all log lines
-    with open(logfile) as log:
-        lines = log.readlines()
-
-    # parse each line
-    log_data = []
-    for line in lines:
-        line = line.strip()
-
-        m = INPUT_REGEX.match(line)
-        if m is not None:
-            log_data.append(m.groupdict())
-
-        # TODO: deal with unformatted lines
-
-    return log_data
-
-
-def print_output(log_data, fmt=OUTPUT_FORMAT):
-    """
-    Print the log data to stdout.
-
-    :param list log_data: List of log data as returned by parse_log
-    :param str fmt: format string to convert log fields into a line of output
-
-    """
-    output = []
-    for data in log_data:
-        output.append(fmt.format(**data))
-        # TODO: wrap long lines?
-
-    try:
-        sys.stdout.writelines(output)
-        sys.stdout.flush()
-    except IOError:
-        # this can happen if output is piped to `head` or `less`
-        pass
-
-
-def view_log(logfile, task_id=None, errors=False, warnings=False, pattern=None):
-
-    all_data = parse_log(logfile)
-
-    levels = None
-    if errors:
-        levels = ('ERROR', 'CRITICAL')
-    if warnings:
-        levels = ('WARNING', 'ERROR', 'CRITICAL')
-
-    if pattern:
-        pattern = re.compile(args.pattern)
-
-    out_data = []
-    for data in all_data:
-        if task_id and data['task_id'] != task_id:
-            continue
-        if levels and data['level'] not in levels:
-            continue
-        if pattern and not pattern.search(data['message']):
-            continue
-        # TODO: filter by handler step?
-
-        out_data.append(data)
-
-    # format & print output
-    print_output(out_data)
-
-
 if __name__ == '__main__':
     args = parse_args()
 
     # TODO: filter by file name (parent or child)
 
-    view_log(args.logfile, task_id=args.task_id, errors=args.errors, warnings=args.warnings, pattern=args.pattern)
+    lv = LogViewer(args.logfile)
+    lv.show(task_id=args.task_id, errors=args.errors, warnings=args.warnings, pattern=args.pattern)
 
     exit(0)
