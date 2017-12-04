@@ -72,7 +72,7 @@ class CeleryContext(object):
         self._celeryconfig = celeryconfig
 
         self._application_configured = False
-        logging.config.dictConfig(config.logging_config)
+        logging.config.dictConfig(config.worker_logging_config)
 
     @property
     def application(self):
