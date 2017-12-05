@@ -14,8 +14,8 @@ __all__ = [
     'CheckRunnerAdapter',
     'ComplianceCheckerCheckRunner',
     'FormatCheckRunner',
-    'PermissiveCheckRunner',
     'NetcdfFormatCheckRunner',
+    'NonEmptyCheckRunner',
     'get_cc_module_versions'
 ]
 
@@ -39,6 +39,8 @@ def get_child_check_runner(check_type, config, logger, check_params=None):
         return ComplianceCheckerCheckRunner(config, logger, check_params)
     elif check_type is PipelineFileCheckType.FORMAT_CHECK:
         return FormatCheckRunner(config, logger)
+    elif check_type is PipelineFileCheckType.NONEMPTY_CHECK:
+        return NonEmptyCheckRunner(config, logger)
     else:
         raise InvalidCheckTypeError("invalid check type '{check_type}'".format(check_type=check_type))
 
@@ -187,17 +189,7 @@ class FormatCheckRunner(BaseCheckRunner):
         if extension == EXT_NETCDF:
             return NetcdfFormatCheckRunner(self._config, self._logger)
         else:
-            return PermissiveCheckRunner(self._config, self._logger)
-
-
-class PermissiveCheckRunner(BaseCheckRunner):
-    def run(self, pipeline_files):
-        for pipeline_file in pipeline_files:
-            message = "no check runner for extension of {filepath}, no format check performed".format(
-                filepath=pipeline_file.src_path)
-            self._logger.warning(message)
-            compliance_log = (message,)
-            pipeline_file.check_result = CheckResult(True, compliance_log)
+            return NonEmptyCheckRunner(self._config, self._logger)
 
 
 class NetcdfFormatCheckRunner(BaseCheckRunner):
@@ -206,7 +198,17 @@ class NetcdfFormatCheckRunner(BaseCheckRunner):
             self._logger.info(
                 "checking that '{filepath}' is a valid NetCDF file".format(filepath=pipeline_file.src_path))
             compliant = is_netcdffile(pipeline_file.src_path)
-            compliance_log = () if compliant else ('invalid NetCDF file',)
+            compliance_log = [] if compliant else ('invalid NetCDF file',)
+            pipeline_file.check_result = CheckResult(compliant, compliance_log)
+
+
+class NonEmptyCheckRunner(BaseCheckRunner):
+    def run(self, pipeline_files):
+        for pipeline_file in pipeline_files:
+            self._logger.info(
+                "checking that '{filepath}' is not empty".format(filepath=pipeline_file.src_path))
+            compliant = os.path.getsize(pipeline_file.src_path) > 0
+            compliance_log = [] if compliant else ('empty file',)
             pipeline_file.check_result = CheckResult(compliant, compliance_log)
 
 

@@ -5,11 +5,12 @@ from uuid import uuid4
 from aodncore.pipeline import CheckResult, PipelineFileCheckType, PipelineFileCollection
 from aodncore.pipeline.exceptions import InvalidCheckTypeError, InvalidCheckSuiteError
 from aodncore.pipeline.steps.check import (get_child_check_runner, ComplianceCheckerCheckRunner, FormatCheckRunner,
-                                           NetcdfFormatCheckRunner, PermissiveCheckRunner)
+                                           NetcdfFormatCheckRunner, NonEmptyCheckRunner)
 from aodncore.testlib import BaseTestCase
 from test_aodncore import TESTDATA_DIR
 
 BAD_NC = os.path.join(TESTDATA_DIR, 'bad.nc')
+EMPTY_NC = os.path.join(TESTDATA_DIR, 'empty.nc')
 GOOD_NC = os.path.join(TESTDATA_DIR, 'good.nc')
 
 
@@ -29,6 +30,9 @@ class TestPipelineStepsCheck(BaseTestCase):
         fc_runner = get_child_check_runner(PipelineFileCheckType.FORMAT_CHECK, None, None, self.mock_logger)
         self.assertIsInstance(fc_runner, FormatCheckRunner)
 
+        ne_runner = get_child_check_runner(PipelineFileCheckType.NONEMPTY_CHECK, None, None, self.mock_logger)
+        self.assertIsInstance(ne_runner, NonEmptyCheckRunner)
+
 
 class TestComplianceCheckerRunner(BaseTestCase):
     def setUp(self):
@@ -43,6 +47,7 @@ class TestComplianceCheckerRunner(BaseTestCase):
 
         self.assertIsInstance(check_result, CheckResult)
         self.assertTrue(check_result.compliant)
+        self.assertFalse(check_result.errors)
         self.assertListEqual(check_result.log, [])
 
     def test_noncompliant_file(self):
@@ -96,8 +101,8 @@ class TestFormatCheckRunner(BaseTestCase):
         nc_runner = self.fc_runner.get_format_check_runner('.nc')
         self.assertIsInstance(nc_runner, NetcdfFormatCheckRunner)
 
-        permissive_runner = self.fc_runner.get_format_check_runner(str(uuid4()))
-        self.assertIsInstance(permissive_runner, PermissiveCheckRunner)
+        ne_runner = self.fc_runner.get_format_check_runner(str(uuid4()))
+        self.assertIsInstance(ne_runner, NonEmptyCheckRunner)
 
     def test_nc_and_txt(self):
         _, temp_txt_file = mkstemp(suffix='.txt', prefix=self.__class__.__name__, dir=self.temp_dir)
@@ -110,5 +115,28 @@ class TestNetcdfFormatCheckRunner(BaseTestCase):
     pass
 
 
-class TestPermissiveCheckRunner(BaseTestCase):
-    pass
+class TestNonEmptyCheckRunner(BaseTestCase):
+    def setUp(self):
+        super(TestNonEmptyCheckRunner, self).setUp()
+        self.ne_runner = NonEmptyCheckRunner(None, self.mock_logger)
+
+    def test_nonempty_file(self):
+        collection = PipelineFileCollection([GOOD_NC])
+        self.ne_runner.run(collection)
+
+        check_result = collection[0].check_result
+
+        self.assertIsInstance(check_result, CheckResult)
+        self.assertTrue(check_result.compliant)
+        self.assertFalse(check_result.errors)
+        self.assertEqual(check_result.log, [])
+
+    def test_empty_file(self):
+        collection = PipelineFileCollection([EMPTY_NC])
+        self.ne_runner.run(collection)
+
+        check_result = collection[0].check_result
+
+        self.assertIsInstance(check_result, CheckResult)
+        self.assertFalse(check_result.compliant)
+        self.assertNotEqual(check_result.log, [])
