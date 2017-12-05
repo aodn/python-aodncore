@@ -2,8 +2,8 @@
 import logging.config
 import signal
 
+from aodncore.pipeline.serviceconfig import CONFIG
 from aodncore.pipeline.watch import WatchServiceContext, WatchServiceManager
-from aodncore.pipeline.watchconfig import CONFIG
 
 logging.config.dictConfig(CONFIG.logging_config)
 LOGGER = logging.getLogger(CONFIG.pipeline_config['watch']['logger_name'])
