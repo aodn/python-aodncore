@@ -11,7 +11,7 @@ __all__ = [
     'EXT_SIMPLE_MANIFEST',
     'EXT_ZIP',
     'CheckResult',
-    'HanderResult',
+    'HandlerResult',
     'NotificationRecipientType',
     'PipelineFileCheckType',
     'PipelineFilePublishType',
