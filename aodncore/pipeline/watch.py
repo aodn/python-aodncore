@@ -36,6 +36,7 @@ __all__ = [
     'CeleryConfig',
     'CeleryContext',
     'IncomingFileEventHandler',
+    'WatchServiceContext',
     'WatchServiceManager'
 ]
 
@@ -72,7 +73,6 @@ class CeleryContext(object):
         self._celeryconfig = celeryconfig
 
         self._application_configured = False
-        logging.config.dictConfig(config.worker_logging_config)
 
     @property
     def application(self):
@@ -127,6 +127,7 @@ class CeleryContext(object):
                 }
 
             def _configure_logger(self):
+                logging.config.dictConfig(config.worker_logging_config)
                 raw_logger = get_task_logger(task_name)
                 logging_extra = {
                     'celery_task_id': self.request.id,
