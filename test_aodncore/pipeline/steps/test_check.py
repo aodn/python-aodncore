@@ -58,6 +58,7 @@ class TestComplianceCheckerRunner(BaseTestCase):
 
         self.assertIsInstance(check_result, CheckResult)
         self.assertFalse(check_result.compliant)
+        self.assertFalse(check_result.errors)
         self.assertNotEqual(check_result.log, [])
 
     def test_invalid_file(self):
@@ -70,6 +71,7 @@ class TestComplianceCheckerRunner(BaseTestCase):
 
         self.assertIsInstance(check_result, CheckResult)
         self.assertFalse(check_result.compliant)
+        self.assertFalse(check_result.errors)
         self.assertNotEqual(check_result.log, [])
 
     def test_multiple_check_suite(self):
@@ -81,6 +83,7 @@ class TestComplianceCheckerRunner(BaseTestCase):
 
         self.assertIsInstance(check_result, CheckResult)
         self.assertFalse(check_result.compliant)
+        self.assertFalse(check_result.errors)
         self.assertNotEqual(check_result.log, [])
 
     def test_invalid_check_suite(self):
@@ -139,4 +142,5 @@ class TestNonEmptyCheckRunner(BaseTestCase):
 
         self.assertIsInstance(check_result, CheckResult)
         self.assertFalse(check_result.compliant)
+        self.assertFalse(check_result.errors)
         self.assertNotEqual(check_result.log, [])
