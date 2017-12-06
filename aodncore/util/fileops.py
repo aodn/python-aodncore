@@ -181,7 +181,11 @@ def safe_copy_file(source, destination, overwrite=False):
                 shutil.copyfileobj(f, temp_destination)
         os.rename(temp_destination_name, destination)
     finally:
-        rm_f(temp_destination_name)
+        try:
+            rm_f(temp_destination_name)
+        except OSError as e:
+            if e.errno != errno.ENOENT:
+                raise  # pragma: no cover
 
 
 def safe_move_file(src, dst, overwrite=False):
