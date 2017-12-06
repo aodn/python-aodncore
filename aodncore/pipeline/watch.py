@@ -287,6 +287,7 @@ class AbstractFileStateManager(object):
         self.logger = logger
         self._machine = Machine(model=self, states=self.states, initial='FILE_IN_INCOMING', auto_transitions=False,
                                 transitions=self.transitions, after_state_change='_after_state_change')
+        self.logger.info("{name} initialised in state: {state}".format(name=self.__class__.__name__, state=self.state))
 
     def _after_state_change(self):
         self.logger.info("{name} transitioned to state: {state}".format(name=self.__class__.__name__, state=self.state))
