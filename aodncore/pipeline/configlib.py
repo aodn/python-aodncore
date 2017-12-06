@@ -59,7 +59,8 @@ class LazyConfigManager(object):
         self._celery_routes = None
         self._discovered_dest_path_functions = None
         self._discovered_handlers = None
-        self._logging_config = None
+        self._watchservice_logging_config = None
+        self._worker_logging_config = None
         self._pipeline_config = None
         self._trigger_config = None
         self._watch_config = None
@@ -103,19 +104,28 @@ class LazyConfigManager(object):
         return self._discovered_handlers
 
     @property
-    def logging_config(self):
-        if self._logging_config is None:
-            logging_config = get_base_logging_config(self.pipeline_config)
+    def watchservice_logging_config(self):
+        if self._watchservice_logging_config is None:
+            watchservice_logging_config = get_watchservice_logging_config(self.pipeline_config)
+            validate_logging_config(watchservice_logging_config)
+            self._watchservice_logging_config = watchservice_logging_config
+
+        return self._watchservice_logging_config
+
+    @property
+    def worker_logging_config(self):
+        if self._worker_logging_config is None:
+            worker_logging_config = get_base_worker_logging_config(self.pipeline_config)
             for name in self.watch_config.keys():
                 task_name = get_task_name(self.pipeline_config['watch']['task_namespace'], name)
                 watch_logging_config = get_logging_config_for_watch(task_name,
                                                                     self.pipeline_config['logging']['log_root'],
                                                                     self.pipeline_config['logging']['level'])
-                logging_config = merge_dicts(logging_config, watch_logging_config)
-            validate_logging_config(logging_config)
-            self._logging_config = logging_config
+                worker_logging_config = merge_dicts(worker_logging_config, watch_logging_config)
+            validate_logging_config(worker_logging_config)
+            self._worker_logging_config = worker_logging_config
 
-        return self._logging_config
+        return self._worker_logging_config
 
     @property
     def pipeline_config(self):
@@ -158,19 +168,46 @@ class LazyConfigManager(object):
     def purge_lazy_properties(self):
         self._celery_application = None
         self._celery_routes = None
-        self._logging_config = None
+        self._worker_logging_config = None
         self._pipeline_config = None
         self._watch_config = None
         self._watch_directory_map = None
 
 
-def get_base_logging_config(pipeline_config):
+def get_base_worker_logging_config(pipeline_config):
+    """Get the *base* logging config for pipeline worker processes, suitable for use by logging.config.dictConfig
+
+    :param pipeline_config: LazyConfigManager.pipeline_config dict
+    :return: dict containing base worker logging config
+    """
     base_logging_config = {
         'version': 1,
         'formatters': {
             'pipeline_formatter': {
                 'format': pipeline_config['logging']['pipeline_format']
-            },
+            }
+        },
+        'filters': {},
+        'handlers': {},
+        'loggers': {}
+    }
+
+    # decrease log level for noisy library loggers, unless explicitly increased for debugging
+    for lib in ('botocore', 'paramiko', 's3transfer', 'transitions'):
+        base_logging_config['loggers'][lib] = {'level': pipeline_config['logging'].get('liblevel', 'WARN')}
+
+    return base_logging_config
+
+
+def get_watchservice_logging_config(pipeline_config):
+    """Generate logging configuration for the 'watchservice' service, suitable for use by logging.config.dictConfig
+
+    :param pipeline_config: LazyConfigManager.pipeline_config dict
+    :return: rendered watchservice logging config
+    """
+    watchservice_logging_config = {
+        'version': 1,
+        'formatters': {
             'watchservice_formatter': {
                 'format': pipeline_config['logging']['watchservice_format']
             }
@@ -191,15 +228,18 @@ def get_base_logging_config(pipeline_config):
             }
         }
     }
-
-    # decrease log level for noisy library loggers, unless explicitly increased for debugging
-    for lib in ('botocore', 'paramiko', 's3transfer', 'transitions'):
-        base_logging_config['loggers'][lib] = {'level': pipeline_config['logging'].get('liblevel', 'WARN')}
-
-    return base_logging_config
+    return watchservice_logging_config
 
 
 def get_logging_config_for_watch(task_name, log_root, level='INFO'):
+    """Get logging configuration for a single pipeline watch, intended to be merged onto the output of
+        `get_base_worker_logging_config`
+
+    :param task_name: name of the pipeline for which the config is being generated
+    :param log_root: logging root directory
+    :param level: logging level to
+    :return: dict containing handlers/loggers for a single watch
+    """
     handler_name = "{name}_handler".format(name=task_name)
     watch_logging_config = {
         'handlers': {

@@ -144,8 +144,8 @@ class TestLazyConfigManager(BaseTestCase):
         self.assertIsInstance(app, Celery)
 
     def test_logging_config(self):
-        self.assertIsNone(self.config._logging_config)
-        logging_config = self.config.logging_config
+        self.assertIsNone(self.config._worker_logging_config)
+        logging_config = self.config.worker_logging_config
         pass
 
     def test_watch_directory_map(self):
