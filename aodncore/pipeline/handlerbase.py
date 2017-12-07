@@ -347,7 +347,8 @@ class HandlerBase(object):
 
         :return: None
         """
-        return os.path.join(self._instance_working_directory, 'collection')
+        if self._instance_working_directory:
+            return os.path.join(self._instance_working_directory, 'collection')
 
     @property
     def products_dir(self):
@@ -355,7 +356,8 @@ class HandlerBase(object):
 
         :return: None
         """
-        return os.path.join(self._instance_working_directory, 'products')
+        if self._instance_working_directory:
+            return os.path.join(self._instance_working_directory, 'products')
 
     @property
     def temp_dir(self):
@@ -363,7 +365,8 @@ class HandlerBase(object):
 
         :return: None
         """
-        return os.path.join(self._instance_working_directory, 'temp')
+        if self._instance_working_directory:
+            return os.path.join(self._instance_working_directory, 'temp')
 
     #
     # 'before' methods for ordered state machine transitions
