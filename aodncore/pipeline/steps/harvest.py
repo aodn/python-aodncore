@@ -124,7 +124,7 @@ class TalendHarvesterRunner(BaseHarvesterRunner):
     def validate_file_handling(self, file_collection, harvester_map):
         all_matched_files = PipelineFileCollection()
         for matched_files in harvester_map.values():
-            all_matched_files.update(matched_files)
+            all_matched_files.update(matched_files, overwrite=True)
 
         if file_collection.issubset(all_matched_files):
             self._logger.info('All files in slice mapped correctly to a harvester')

@@ -324,7 +324,7 @@ class TestPipelineFileCollection(BaseTestCase):
         fileobj1 = PipelineFile(f1, dest_path="FOO/1", is_deletion=True)
         fileobj2 = PipelineFile(f2, dest_path="FOO/2", is_deletion=True)
         fileobj3 = PipelineFile(f3, dest_path="foo/3", is_deletion=True)
-        fileobj4 = PipelineFile(f3, dest_path="BAR/1", is_deletion=True)
+        fileobj4 = PipelineFile(f4, dest_path="BAR/1", is_deletion=True)
         self.collection.update((fileobj1, fileobj2, fileobj3, fileobj4))
 
         filtered_collection = self.collection.filter_by_attribute_regex('dest_path', '^FOO/[1-3]$')

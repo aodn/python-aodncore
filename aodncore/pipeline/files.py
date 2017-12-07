@@ -7,7 +7,7 @@ import six
 
 from .common import (FileType, PipelineFilePublishType, PipelineFileCheckType, validate_addition_publishtype,
                      validate_checkresult, validate_checktype, validate_deletion_publishtype, validate_publishtype)
-from .exceptions import MissingFileError
+from .exceptions import DuplicatePipelineFileError, MissingFileError
 from ..util import (IndexedSet, format_exception, get_file_checksum, matches_regexes, slice_sequence,
                     validate_bool, validate_callable, validate_dict, validate_mapping, validate_nonstring_iterable,
                     validate_regex, validate_string, validate_type)
@@ -68,6 +68,17 @@ class PipelineFile(object):
 
         self._check_result = None
         self._mime_type = None
+
+    def __eq__(self, other):
+        if isinstance(other, type(self)):
+            return self.__key() == other.__key()
+        return False
+
+    def __hash__(self):
+        return hash(self.__key())
+
+    def __key(self):
+        return self.src_path, self.file_checksum
 
     def __iter__(self):
         yield 'archive_path', self.archive_path
@@ -325,6 +336,9 @@ class PipelineFileCollection(MutableSet):
             for f in data:
                 self.add(f)
 
+    def __bool__(self):
+        return bool(self.__s)
+
     def __contains__(self, v):
         if isinstance(v, PipelineFile):
             element = v
@@ -345,30 +359,37 @@ class PipelineFileCollection(MutableSet):
     def __repr__(self):  # pragma: no cover
         return "PipelineFileCollection({repr})".format(repr=repr(list(self.__s)))
 
-    def add(self, src_path, deletion=False):
-        validate_pipelinefile_or_string(src_path)
+    def add(self, pipeline_file, deletion=False, overwrite=False):
+        validate_pipelinefile_or_string(pipeline_file)
+        validate_bool(deletion)
+        validate_bool(overwrite)
 
-        if isinstance(src_path, PipelineFile):
-            fileobj = src_path
+        if isinstance(pipeline_file, PipelineFile):
+            fileobj = pipeline_file
         else:
-            if not deletion and not os.path.isfile(src_path):
-                raise MissingFileError("file '{src}' doesn't exist".format(src=src_path))
+            if not deletion and not os.path.isfile(pipeline_file):
+                raise MissingFileError("file '{src}' doesn't exist".format(src=pipeline_file))
+            fileobj = PipelineFile(pipeline_file, is_deletion=deletion)
 
-            fileobj = PipelineFile(src_path, is_deletion=deletion)
         result = fileobj not in self.__s
+        if not result and not overwrite:
+            raise DuplicatePipelineFileError("{f.name} already in collection".format(f=fileobj))
+
         self.__s.add(fileobj)
         return result
 
     # alias append to the add method
     append = add
 
-    def discard(self, pipelinefile):
-        if isinstance(pipelinefile, PipelineFile):
-            fileobj = pipelinefile
+    def discard(self, pipeline_file):
+        validate_pipelinefile_or_string(pipeline_file)
+        if isinstance(pipeline_file, PipelineFile):
+            fileobj = pipeline_file
         else:
-            fileobj = self.get_pipelinefile_from_src_path(pipelinefile)
+            fileobj = self.get_pipelinefile_from_src_path(pipeline_file)
 
         result = fileobj in self.__s
+
         self.__s.discard(fileobj)
         return result
 
@@ -386,12 +407,12 @@ class PipelineFileCollection(MutableSet):
             raise TypeError('invalid sequence, all elements must be PipelineFile objects')
         return PipelineFileCollection(self.__s.union(sequence))
 
-    def update(self, sequence):
+    def update(self, sequence, overwrite=False):
         validate_nonstring_iterable(sequence)
 
         result = None
         for item in sequence:
-            result = self.add(item)
+            result = self.add(item, overwrite=overwrite)
         return result
 
     def get_pipelinefile_from_src_path(self, src_path):
