@@ -306,13 +306,18 @@ class AbstractFileStateManager(object):
 
 
 class IncomingFileStateManager(AbstractFileStateManager):
+    processing_mode = stat.S_IRUSR | stat.S_IRGRP | stat.S_IROTH
+    error_mode = stat.S_IRUSR | stat.S_IWUSR | stat.S_IRGRP | stat.S_IWGRP | stat.S_IROTH
+
     def _move_to_processing(self):
         mkdir_p(self.location_map['processing_dir'])
         safe_move_file(self.location_map['input_file'], self.location_map['processing_path'])
+        os.chmod(self.location_map['processing_path'], self.processing_mode)
 
     def _move_to_error(self):
         mkdir_p(self.location_map['error_dir'])
         safe_move_file(self.location_map['processing_path'], self.location_map['error_path'])
+        os.chmod(self.location_map['error_path'], self.error_mode)
         rm_r(self.location_map['processing_dir'])
 
     def _cleanup_success(self):
