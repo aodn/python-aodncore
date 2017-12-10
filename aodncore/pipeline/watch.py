@@ -310,19 +310,31 @@ class IncomingFileStateManager(AbstractFileStateManager):
     error_mode = stat.S_IRUSR | stat.S_IWUSR | stat.S_IRGRP | stat.S_IWGRP | stat.S_IROTH
 
     def _move_to_processing(self):
-        mkdir_p(self.location_map['processing_dir'])
-        safe_move_file(self.location_map['input_file'], self.location_map['processing_path'])
-        os.chmod(self.location_map['processing_path'], self.processing_mode)
+        try:
+            mkdir_p(self.location_map['processing_dir'])
+            safe_move_file(self.location_map['input_file'], self.location_map['processing_path'])
+            os.chmod(self.location_map['processing_path'], self.processing_mode)
+        except Exception:
+            self.logger.exception("unhandled exception in _move_to_processing")
+            raise
 
     def _move_to_error(self):
-        mkdir_p(self.location_map['error_dir'])
-        safe_move_file(self.location_map['processing_path'], self.location_map['error_path'])
-        os.chmod(self.location_map['error_path'], self.error_mode)
-        rm_r(self.location_map['processing_dir'])
+        try:
+            mkdir_p(self.location_map['error_dir'])
+            safe_move_file(self.location_map['processing_path'], self.location_map['error_path'])
+            os.chmod(self.location_map['error_path'], self.error_mode)
+            rm_r(self.location_map['processing_dir'])
+        except Exception:
+            self.logger.exception("unhandled exception in _move_to_error")
+            raise
 
     def _cleanup_success(self):
-        rm_f(self.location_map['processing_path'])
-        rm_r(self.location_map['processing_dir'])
+        try:
+            rm_f(self.location_map['processing_path'])
+            rm_r(self.location_map['processing_dir'])
+        except Exception:
+            self.logger.exception("unhandled exception in _cleanup_success")
+            raise
 
 
 class WatchServiceContext(object):
