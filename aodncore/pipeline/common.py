@@ -105,8 +105,9 @@ class PipelineFileCheckType(Enum):
     """Each PipelineFile may individually specify which checks are performed against it
     """
     NO_ACTION = 0
-    FORMAT_CHECK = 1
-    NC_COMPLIANCE_CHECK = 2
+    NONEMPTY_CHECK = 1
+    FORMAT_CHECK = 2
+    NC_COMPLIANCE_CHECK = 3
 
 
 class PipelineFilePublishType(Enum):
