@@ -5,13 +5,12 @@ import uuid
 import zipfile
 from tempfile import mkdtemp, mkstemp
 
-import netCDF4
 import six
 
+from aodncore.testlib import BaseTestCase, get_nonexistent_path
 from aodncore.util import (extract_zip, is_netcdffile, is_zipfile, list_regular_files, mkdir_p,
                            rm_f, rm_r, rm_rf, safe_copy_file, safe_move_file, get_file_checksum, TemporaryDirectory)
 from aodncore.util.misc import format_exception
-from aodncore.testlib import BaseTestCase, get_nonexistent_path
 
 StringIO = six.StringIO
 
@@ -98,6 +97,15 @@ class TestUtilFileOps(BaseTestCase):
         dir_entries = list(list_regular_files(self.temp_dir, recursive=True))
         self.assertListEqual(dir_entries, [temp_regular_file1, temp_regular_file3, temp_regular_file2,
                                            temp_regular_file5, temp_regular_file4])
+
+        try:
+            unicode
+        except NameError:
+            unicode = str
+
+        dir_entries_unicode = list(list_regular_files(unicode(self.temp_dir), recursive=True))
+        self.assertListEqual(dir_entries_unicode, [temp_regular_file1, temp_regular_file3, temp_regular_file2,
+                                                   temp_regular_file5, temp_regular_file4])
 
     def test_mkdir_p(self):
         temp_dir = os.path.join(self.temp_dir, 'a', 'b', 'c', 'd', 'e')
