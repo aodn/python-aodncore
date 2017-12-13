@@ -1,10 +1,11 @@
 import errno
 import hashlib
+import locale
 import os
 import shutil
 import tempfile
 import zipfile
-from functools import partial
+from functools import cmp_to_key, partial
 
 import netCDF4
 import six
@@ -15,6 +16,8 @@ except ImportError:
     from scandir import scandir, walk
 
 StringIO = six.StringIO
+
+locale.setlocale(locale.LC_ALL, '')
 
 __all__ = [
     'extract_zip',
@@ -70,7 +73,7 @@ def is_zipfile(filepath):
     return zipfile.is_zipfile(filepath)
 
 
-def list_regular_files(path, recursive=False, sort_key=str.lower):
+def list_regular_files(path, recursive=False, sort_key=cmp_to_key(locale.strcoll)):
     """List all regular files in a given directory, returning the absolute path
 
     :param sort_key: callable used to sort directory listings
@@ -81,21 +84,21 @@ def list_regular_files(path, recursive=False, sort_key=str.lower):
     if not callable(sort_key):
         raise ValueError("sort_key must be callable")
 
-    def nonrecursive_list(path_, sort_key_=sort_key):
-        dir_entries = sorted(scandir(os.path.abspath(path_)), key=lambda p: sort_key_(p.name))
+    def nonrecursive_list(path_):
+        dir_entries = sorted(scandir(os.path.abspath(path_)), key=lambda p: sort_key(p.name))
         return (f.path for f in dir_entries if f.is_file(follow_symlinks=False))
 
-    def recursive_list(path_, sort_key_=sort_key):
+    def recursive_list(path_):
         for root, dirs, files in walk(path_):
-            dirs.sort(key=sort_key_)
-            files.sort(key=sort_key_)
+            dirs.sort(key=sort_key)
+            files.sort(key=sort_key)
             for name in files:
                 fullpath = os.path.join(root, name)
                 if not os.path.islink(fullpath):
                     yield os.path.abspath(fullpath)
 
     inner_func = recursive_list if recursive else nonrecursive_list
-    return inner_func(path, sort_key)
+    return inner_func(path)
 
 
 def mkdir_p(path, mode=0o755):
@@ -183,9 +186,9 @@ def safe_copy_file(source, destination, overwrite=False):
     finally:
         try:
             rm_f(temp_destination_name)
-        except OSError as e:
+        except OSError as e:  # pragma: no cover
             if e.errno != errno.ENOENT:
-                raise  # pragma: no cover
+                raise
 
 
 def safe_move_file(src, dst, overwrite=False):
