@@ -62,6 +62,8 @@ class TestUtilFileOps(BaseTestCase):
         # regular file
         _, temp_regular_file1 = mkstemp(prefix='b' + self.__class__.__name__, dir=self.temp_dir)
         _, temp_regular_file2 = mkstemp(prefix='a' + self.__class__.__name__, dir=self.temp_dir)
+        _, temp_regular_file3 = mkstemp(prefix='B' + self.__class__.__name__, dir=self.temp_dir)
+        _, temp_regular_file4 = mkstemp(prefix='A' + self.__class__.__name__, dir=self.temp_dir)
 
         # directory
         temp_subdirectory = mkdtemp(prefix=self.__class__.__name__, dir=self.temp_dir)
@@ -78,25 +80,45 @@ class TestUtilFileOps(BaseTestCase):
         sock = socket.socket(socket.AF_UNIX, socket.SOCK_STREAM)
         sock.bind(temp_socket_file)
 
+        reference_list = [temp_regular_file4, temp_regular_file3, temp_regular_file2, temp_regular_file1]
         dir_entries = list(list_regular_files(self.temp_dir))
-        self.assertListEqual(dir_entries, [temp_regular_file2, temp_regular_file1])
+
+        self.assertListEqual(dir_entries, reference_list)
 
         with self.assertRaises(ValueError):
             list_regular_files(self.temp_dir, sort_key='non_callable_key')
 
     def test_list_regular_files_recursive(self):
-        _, temp_regular_file1 = mkstemp(prefix=self.__class__.__name__, dir=self.temp_dir)
-        temp_subdirectory1 = mkdtemp(prefix='b' + self.__class__.__name__, dir=self.temp_dir)
-        temp_subdirectory2 = mkdtemp(prefix='a' + self.__class__.__name__, dir=self.temp_dir)
-        _, temp_regular_file2 = mkstemp(prefix=self.__class__.__name__, dir=temp_subdirectory1)
-        _, temp_regular_file3 = mkstemp(prefix=self.__class__.__name__, dir=temp_subdirectory2)
-        temp_subdirectory4 = mkdtemp(prefix=self.__class__.__name__, dir=self.temp_dir)
-        _, temp_regular_file4 = mkstemp(prefix='b' + self.__class__.__name__, dir=temp_subdirectory4)
-        _, temp_regular_file5 = mkstemp(prefix='a' + self.__class__.__name__, dir=temp_subdirectory4)
+        temp_subdirectory_0_1 = mkdtemp(prefix=self.__class__.__name__, dir=self.temp_dir)
+        temp_subdirectory_0_2 = mkdtemp(prefix='B' + self.__class__.__name__, dir=self.temp_dir)
+        temp_subdirectory_0_3 = mkdtemp(prefix='a' + self.__class__.__name__, dir=self.temp_dir)
+
+        _, temp_regular_file_0_1 = mkstemp(prefix=self.__class__.__name__, dir=self.temp_dir)
+
+        temp_subdirectory_1_1 = mkdtemp(prefix='a' + self.__class__.__name__, dir=temp_subdirectory_0_1)
+
+        _, temp_regular_file_1_1 = mkstemp(prefix='b' + self.__class__.__name__, dir=temp_subdirectory_0_1)
+        _, temp_regular_file_1_2 = mkstemp(prefix='A' + self.__class__.__name__, dir=temp_subdirectory_0_1)
+        _, temp_regular_file_1_3 = mkstemp(prefix='B' + self.__class__.__name__, dir=temp_subdirectory_0_2)
+        _, temp_regular_file_1_4 = mkstemp(prefix='a' + self.__class__.__name__, dir=temp_subdirectory_0_2)
+        _, temp_regular_file_1_5 = mkstemp(prefix='b' + self.__class__.__name__, dir=temp_subdirectory_0_3)
+        _, temp_regular_file_1_6 = mkstemp(prefix='A' + self.__class__.__name__, dir=temp_subdirectory_0_3)
+
+        _, temp_regular_file_2_1 = mkstemp(prefix='b' + self.__class__.__name__, dir=temp_subdirectory_1_1)
+        _, temp_regular_file_2_2 = mkstemp(prefix='a' + self.__class__.__name__, dir=temp_subdirectory_1_1)
+        _, temp_regular_file_2_3 = mkstemp(prefix='B' + self.__class__.__name__, dir=temp_subdirectory_1_1)
+        _, temp_regular_file_2_4 = mkstemp(prefix='A' + self.__class__.__name__, dir=temp_subdirectory_1_1)
+
+        reference_list = [
+            temp_regular_file_0_1,
+            temp_regular_file_1_3, temp_regular_file_1_4,
+            temp_regular_file_1_2, temp_regular_file_1_1,
+            temp_regular_file_2_4, temp_regular_file_2_3, temp_regular_file_2_2, temp_regular_file_2_1,
+            temp_regular_file_1_6, temp_regular_file_1_5
+        ]
 
         dir_entries = list(list_regular_files(self.temp_dir, recursive=True))
-        self.assertListEqual(dir_entries, [temp_regular_file1, temp_regular_file3, temp_regular_file2,
-                                           temp_regular_file5, temp_regular_file4])
+        self.assertListEqual(dir_entries, reference_list)
 
         try:
             unicode
@@ -104,8 +126,7 @@ class TestUtilFileOps(BaseTestCase):
             unicode = str
 
         dir_entries_unicode = list(list_regular_files(unicode(self.temp_dir), recursive=True))
-        self.assertListEqual(dir_entries_unicode, [temp_regular_file1, temp_regular_file3, temp_regular_file2,
-                                                   temp_regular_file5, temp_regular_file4])
+        self.assertListEqual(dir_entries_unicode, reference_list)
 
     def test_mkdir_p(self):
         temp_dir = os.path.join(self.temp_dir, 'a', 'b', 'c', 'd', 'e')
