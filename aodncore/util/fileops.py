@@ -17,7 +17,7 @@ except ImportError:
 
 StringIO = six.StringIO
 
-locale.setlocale(locale.LC_ALL, '')
+locale.setlocale(locale.LC_ALL, 'C')
 
 __all__ = [
     'extract_zip',
