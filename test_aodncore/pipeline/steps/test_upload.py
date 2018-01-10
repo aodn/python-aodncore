@@ -7,17 +7,34 @@ from aodncore.pipeline.exceptions import FileDeleteFailedError, FileUploadFailed
 from aodncore.pipeline.steps.upload import (get_upload_runner, sftp_path_exists, sftp_makedirs, sftp_mkdir_p,
                                             BaseUploadRunner, FileUploadRunner, S3UploadRunner, SftpUploadRunner)
 from aodncore.testlib import BaseTestCase, get_nonexistent_path, mock
-
 from test_aodncore import TESTDATA_DIR
-BAD_NC = os.path.join(TESTDATA_DIR, 'bad.nc')
+
 GOOD_NC = os.path.join(TESTDATA_DIR, 'good.nc')
+INVALID_PNG = os.path.join(TESTDATA_DIR, 'invalid.png')
+TEST_ICO = os.path.join(TESTDATA_DIR, 'test.ico')
+UNKNOWN_FILE_TYPE = os.path.join(TESTDATA_DIR, 'test.unknown_file_extension')
 
 
 def get_upload_collection(delete=False):
-    pipeline_file = PipelineFile(GOOD_NC, is_deletion=delete)
-    pipeline_file.publish_type = PipelineFilePublishType.DELETE_ONLY if delete else PipelineFilePublishType.UPLOAD_ONLY
-    pipeline_file.dest_path = 'subdirectory/targetfile.nc'
-    collection = PipelineFileCollection([pipeline_file])
+    publish_type = PipelineFilePublishType.DELETE_ONLY if delete else PipelineFilePublishType.UPLOAD_ONLY
+
+    netcdf_file = PipelineFile(GOOD_NC, is_deletion=delete)
+    netcdf_file.publish_type = publish_type
+    netcdf_file.dest_path = 'subdirectory/targetfile.nc'
+
+    png_file = PipelineFile(INVALID_PNG, is_deletion=delete)
+    png_file.publish_type = publish_type
+    png_file.dest_path = 'subdirectory/targetfile.png'
+
+    js_file = PipelineFile(TEST_ICO, is_deletion=delete)
+    js_file.publish_type = publish_type
+    js_file.dest_path = 'subdirectory/targetfile.ico'
+
+    unknown_file = PipelineFile(UNKNOWN_FILE_TYPE, is_deletion=delete)
+    unknown_file.publish_type = publish_type
+    unknown_file.dest_path = 'subdirectory/targetfile.unknown_file_extension'
+
+    collection = PipelineFileCollection([netcdf_file, png_file, js_file, unknown_file])
     return collection
 
 
@@ -209,30 +226,54 @@ class TestFileUploadRunner(BaseTestCase):
     @mock.patch('aodncore.pipeline.steps.upload.safe_copy_file')
     def test_upload(self, mock_safe_copy_file, mock_mkdir_p):
         collection = get_upload_collection()
-        pipeline_file = collection[0]
+        netcdf_file, png_file, ico_file, unknown_file = collection
 
         file_upload_runner = FileUploadRunner('/tmp/probably/doesnt/exist/upload', None, self.mock_logger)
         file_upload_runner.run(collection)
 
-        dest_path = os.path.join(file_upload_runner.prefix, pipeline_file.dest_path)
-        dest_dir = os.path.dirname(dest_path)
+        netcdf_dest_path = os.path.join(file_upload_runner.prefix, netcdf_file.dest_path)
+        netcdf_dest_dir = os.path.dirname(netcdf_dest_path)
+        png_dest_path = os.path.join(file_upload_runner.prefix, png_file.dest_path)
+        png_dest_dir = os.path.dirname(png_dest_path)
+        ico_dest_path = os.path.join(file_upload_runner.prefix, ico_file.dest_path)
+        ico_dest_dir = os.path.dirname(ico_dest_path)
+        unknown_dest_path = os.path.join(file_upload_runner.prefix, unknown_file.dest_path)
+        unknown_dest_dir = os.path.dirname(unknown_dest_path)
 
-        mock_mkdir_p.assert_called_once_with(dest_dir)
-        mock_safe_copy_file.assert_called_once_with(pipeline_file.src_path, dest_path, overwrite=True)
-        self.assertTrue(pipeline_file.is_stored)
+        self.assertEqual(mock_mkdir_p.call_count, 4)
+        mock_mkdir_p.assert_any_call(netcdf_dest_dir)
+        mock_mkdir_p.assert_any_call(png_dest_dir)
+        mock_mkdir_p.assert_any_call(ico_dest_dir)
+        mock_mkdir_p.assert_any_call(unknown_dest_dir)
+
+        self.assertEqual(mock_safe_copy_file.call_count, 4)
+        mock_safe_copy_file.assert_any_call(netcdf_file.src_path, netcdf_dest_path, overwrite=True)
+        mock_safe_copy_file.assert_any_call(png_file.src_path, png_dest_path, overwrite=True)
+        mock_safe_copy_file.assert_any_call(ico_file.src_path, ico_dest_path, overwrite=True)
+        mock_safe_copy_file.assert_any_call(unknown_file.src_path, unknown_dest_path, overwrite=True)
+
+        self.assertTrue(all(p.is_stored for p in collection))
 
     @mock.patch('aodncore.pipeline.steps.upload.rm_f')
     def test_delete(self, mock_rm_f):
         collection = get_upload_collection(delete=True)
-        pipeline_file = collection[0]
+        netcdf_file, png_file, ico_file, unknown_file = collection
 
         file_upload_runner = FileUploadRunner('/tmp/probably/doesnt/exist/upload', None, self.mock_logger)
         file_upload_runner.run(collection)
 
-        dest_path = os.path.join(file_upload_runner.prefix, pipeline_file.dest_path)
+        netcdf_dest_path = os.path.join(file_upload_runner.prefix, netcdf_file.dest_path)
+        png_dest_path = os.path.join(file_upload_runner.prefix, png_file.dest_path)
+        ico_dest_path = os.path.join(file_upload_runner.prefix, ico_file.dest_path)
+        unknown_dest_path = os.path.join(file_upload_runner.prefix, unknown_file.dest_path)
 
-        mock_rm_f.assert_called_once_with(dest_path)
-        self.assertTrue(pipeline_file.is_stored)
+        self.assertEqual(mock_rm_f.call_count, 4)
+        mock_rm_f.assert_any_call(netcdf_dest_path)
+        mock_rm_f.assert_any_call(png_dest_path)
+        mock_rm_f.assert_any_call(ico_dest_path)
+        mock_rm_f.assert_any_call(unknown_dest_path)
+
+        self.assertTrue(all(p.is_stored for p in collection))
 
 
 class TestS3UploadRunner(BaseTestCase):
@@ -255,7 +296,7 @@ class TestS3UploadRunner(BaseTestCase):
     @mock.patch('aodncore.pipeline.steps.upload.boto3')
     def test_upload(self, mock_boto3):
         collection = get_upload_collection()
-        pipeline_file = collection[0]
+        netcdf_file, png_file, ico_file, unknown_file = collection
 
         dummy_bucket = str(uuid4())
         dummy_prefix = str(uuid4())
@@ -265,19 +306,39 @@ class TestS3UploadRunner(BaseTestCase):
 
         with mock.patch('aodncore.pipeline.steps.upload.open', mock.mock_open(read_data='')) as m:
             s3_upload_runner.run(collection)
-        m.assert_called_once_with(pipeline_file.src_path, 'rb')
+        self.assertEqual(m.call_count, 4)
+        m.assert_any_call(netcdf_file.src_path, 'rb')
+        m.assert_any_call(png_file.src_path, 'rb')
+        m.assert_any_call(ico_file.src_path, 'rb')
+        m.assert_any_call(unknown_file.src_path, 'rb')
 
-        dest_path = os.path.join(s3_upload_runner.prefix, pipeline_file.dest_path)
+        netcdf_dest_path = os.path.join(dummy_prefix, netcdf_file.dest_path)
+        png_dest_path = os.path.join(dummy_prefix, png_file.dest_path)
+        ico_dest_path = os.path.join(dummy_prefix, ico_file.dest_path)
+        unknown_dest_path = os.path.join(dummy_prefix, unknown_file.dest_path)
 
         s3_upload_runner.s3_client.head_bucket.assert_called_once_with(Bucket=dummy_bucket)
-        s3_upload_runner.s3_client.upload_fileobj.assert_called_once_with(m(), Bucket=dummy_bucket, Key=dest_path)
 
-        self.assertTrue(pipeline_file.is_stored)
+        self.assertEqual(s3_upload_runner.s3_client.upload_fileobj.call_count, 4)
+
+        s3_upload_runner.s3_client.upload_fileobj.assert_any_call(m(), Bucket=dummy_bucket, Key=netcdf_dest_path,
+                                                                  ExtraArgs={'ContentType': 'application/octet-stream'})
+
+        s3_upload_runner.s3_client.upload_fileobj.assert_any_call(m(), Bucket=dummy_bucket, Key=png_dest_path,
+                                                                  ExtraArgs={'ContentType': 'image/png'})
+
+        s3_upload_runner.s3_client.upload_fileobj.assert_any_call(m(), Bucket=dummy_bucket, Key=ico_dest_path,
+                                                                  ExtraArgs={'ContentType': 'image/vnd.microsoft.icon'})
+
+        s3_upload_runner.s3_client.upload_fileobj.assert_any_call(m(), Bucket=dummy_bucket, Key=unknown_dest_path,
+                                                                  ExtraArgs={'ContentType': 'application/octet-stream'})
+
+        self.assertTrue(all(p.is_stored for p in collection))
 
     @mock.patch('aodncore.pipeline.steps.upload.boto3')
     def test_delete(self, mock_boto3):
         collection = get_upload_collection(delete=True)
-        pipeline_file = collection[0]
+        netcdf_file, png_file, ico_file, unknown_file = collection
 
         dummy_bucket = str(uuid4())
         dummy_prefix = str(uuid4())
@@ -289,12 +350,20 @@ class TestS3UploadRunner(BaseTestCase):
             s3_upload_runner.run(collection)
         m.assert_not_called()
 
-        dest_path = os.path.join(s3_upload_runner.prefix, pipeline_file.dest_path)
+        netcdf_dest_path = os.path.join(s3_upload_runner.prefix, netcdf_file.dest_path)
+        png_dest_path = os.path.join(s3_upload_runner.prefix, png_file.dest_path)
+        ico_dest_path = os.path.join(s3_upload_runner.prefix, ico_file.dest_path)
+        unknown_dest_path = os.path.join(s3_upload_runner.prefix, unknown_file.dest_path)
 
         s3_upload_runner.s3_client.head_bucket.assert_called_once_with(Bucket=dummy_bucket)
-        s3_upload_runner.s3_client.delete_object.assert_called_once_with(Bucket=dummy_bucket, Key=dest_path)
 
-        self.assertTrue(pipeline_file.is_stored)
+        self.assertEqual(s3_upload_runner.s3_client.delete_object.call_count, 4)
+        s3_upload_runner.s3_client.delete_object.assert_any_call(Bucket=dummy_bucket, Key=netcdf_dest_path)
+        s3_upload_runner.s3_client.delete_object.assert_any_call(Bucket=dummy_bucket, Key=png_dest_path)
+        s3_upload_runner.s3_client.delete_object.assert_any_call(Bucket=dummy_bucket, Key=ico_dest_path)
+        s3_upload_runner.s3_client.delete_object.assert_any_call(Bucket=dummy_bucket, Key=unknown_dest_path)
+
+        self.assertTrue(all(p.is_stored for p in collection))
 
 
 # noinspection PyUnusedLocal
@@ -311,7 +380,7 @@ class TestSftpUploadRunner(BaseTestCase):
     @mock.patch('aodncore.pipeline.steps.upload.AutoAddPolicy')
     def test_upload(self, mock_autoaddpolicy, mock_sshclient):
         collection = get_upload_collection()
-        pipeline_file = collection[0]
+        netcdf_file, png_file, ico_file, unknown_file = collection
 
         dummy_server = str(uuid4())
         dummy_prefix = "/tmp/{uuid}".format(uuid=str(uuid4()))
@@ -323,22 +392,34 @@ class TestSftpUploadRunner(BaseTestCase):
 
         sftp_upload_runner._sshclient.connect.assert_called_once_with(sftp_upload_runner.server)
 
-        dest_path = os.path.join(sftp_upload_runner.prefix, pipeline_file.dest_path)
-        parent_dir = os.path.dirname(dest_path)
-        grandparent_dir = os.path.dirname(parent_dir)
+        netcdf_dest_path = os.path.join(sftp_upload_runner.prefix, netcdf_file.dest_path)
+        netcdf_dest_dir = os.path.dirname(netcdf_dest_path)
+        png_dest_path = os.path.join(sftp_upload_runner.prefix, png_file.dest_path)
+        png_dest_dir = os.path.dirname(png_dest_path)
+        ico_dest_path = os.path.join(sftp_upload_runner.prefix, ico_file.dest_path)
+        ico_dest_dir = os.path.dirname(ico_dest_path)
+        unknown_dest_path = os.path.join(sftp_upload_runner.prefix, unknown_file.dest_path)
+        unknown_dest_dir = os.path.dirname(unknown_dest_path)
 
-        sftp_upload_runner.sftp_client.stat.assert_called_once_with(grandparent_dir)
-        sftp_upload_runner.sftp_client.mkdir.assert_called_once_with(parent_dir, 0o755)
+        self.assertEqual(sftp_upload_runner.sftp_client.mkdir.call_count, 4)
+        sftp_upload_runner.sftp_client.mkdir.assert_any_call(netcdf_dest_dir, 0o755)
+        sftp_upload_runner.sftp_client.mkdir.assert_any_call(png_dest_dir, 0o755)
+        sftp_upload_runner.sftp_client.mkdir.assert_any_call(ico_dest_dir, 0o755)
+        sftp_upload_runner.sftp_client.mkdir.assert_any_call(unknown_dest_dir, 0o755)
 
-        sftp_upload_runner.sftp_client.putfo.assert_called_once_with(m(), dest_path, confirm=True)
+        self.assertEqual(sftp_upload_runner.sftp_client.putfo.call_count, 4)
+        sftp_upload_runner.sftp_client.putfo.assert_any_call(m(), netcdf_dest_path, confirm=True)
+        sftp_upload_runner.sftp_client.putfo.assert_any_call(m(), png_dest_path, confirm=True)
+        sftp_upload_runner.sftp_client.putfo.assert_any_call(m(), ico_dest_path, confirm=True)
+        sftp_upload_runner.sftp_client.putfo.assert_any_call(m(), unknown_dest_path, confirm=True)
 
-        self.assertTrue(pipeline_file.is_stored)
+        self.assertTrue(all(p.is_stored for p in collection))
 
     @mock.patch('aodncore.pipeline.steps.upload.SSHClient')
     @mock.patch('aodncore.pipeline.steps.upload.AutoAddPolicy')
     def test_delete(self, mock_autoaddpolicy, mock_sshclient):
         collection = get_upload_collection(delete=True)
-        pipeline_file = collection[0]
+        netcdf_file, png_file, ico_file, unknown_file = collection
 
         dummy_server = str(uuid4())
         dummy_prefix = "/tmp/{uuid}".format(uuid=str(uuid4()))
@@ -348,8 +429,15 @@ class TestSftpUploadRunner(BaseTestCase):
 
         sftp_upload_runner._sshclient.connect.assert_called_once_with(sftp_upload_runner.server)
 
-        dest_path = os.path.join(sftp_upload_runner.prefix, pipeline_file.dest_path)
+        netcdf_dest_path = os.path.join(sftp_upload_runner.prefix, netcdf_file.dest_path)
+        png_dest_path = os.path.join(sftp_upload_runner.prefix, png_file.dest_path)
+        ico_dest_path = os.path.join(sftp_upload_runner.prefix, ico_file.dest_path)
+        unknown_dest_path = os.path.join(sftp_upload_runner.prefix, unknown_file.dest_path)
 
-        sftp_upload_runner.sftp_client.remove.assert_called_once_with(dest_path)
+        self.assertEqual(sftp_upload_runner.sftp_client.remove.call_count, 4)
+        sftp_upload_runner.sftp_client.remove.assert_any_call(netcdf_dest_path)
+        sftp_upload_runner.sftp_client.remove.assert_any_call(png_dest_path)
+        sftp_upload_runner.sftp_client.remove.assert_any_call(ico_dest_path)
+        sftp_upload_runner.sftp_client.remove.assert_any_call(unknown_dest_path)
 
-        self.assertTrue(pipeline_file.is_stored)
+        self.assertTrue(all(p.is_stored for p in collection))
