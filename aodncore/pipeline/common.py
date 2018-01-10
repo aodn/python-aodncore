@@ -1,16 +1,12 @@
+import mimetypes
+
 from enum import Enum
 
 from ..util import classproperty, is_valid_email_address, validate_membership, validate_type
 
 __all__ = [
-    'EXT_NONE',
-    'EXT_DIR_MANIFEST',
-    'EXT_MAP_MANIFEST',
-    'EXT_NETCDF',
-    'EXT_RSYNC_MANIFEST',
-    'EXT_SIMPLE_MANIFEST',
-    'EXT_ZIP',
     'CheckResult',
+    'FileType',
     'HandlerResult',
     'NotificationRecipientType',
     'PipelineFileCheckType',
@@ -22,14 +18,6 @@ __all__ = [
     'validate_publishtype',
     'validate_recipienttype'
 ]
-
-EXT_NONE = ''
-EXT_DIR_MANIFEST = '.dir_manifest'
-EXT_MAP_MANIFEST = '.map_manifest'
-EXT_NETCDF = '.nc'
-EXT_RSYNC_MANIFEST = '.rsync_manifest'
-EXT_SIMPLE_MANIFEST = '.manifest'
-EXT_ZIP = '.zip'
 
 
 class CheckResult(object):
@@ -99,6 +87,50 @@ class NotificationRecipientType(Enum):
     @classmethod
     def get_type_from_protocol(cls, protocol):
         return next((t for t in cls if t.protocol == protocol), cls.INVALID)
+
+
+class FileType(Enum):
+    """Represents each known file type, including extension and mime type
+
+        Each enum member may have it's attributes accessed by name when required for comparisons and filtering, e.g.
+
+        # lookup the extension for a PNG file type in general
+
+        > FileType.PNG.extension
+        '.png'
+
+        # assign a type attribute to an object, and query the type-specific values directly from the object
+
+        > class Object(object):
+                pass
+
+        > o = Object()
+        > o.file_type = FileType.ZIP
+        > o.file_type.extension
+        '.zip'
+        > o.file_type.mime_type
+        'application/zip'
+
+    """
+    __slots__ = ('extension', 'mime_type')
+
+    UNKNOWN = ()
+
+    ZIP = ('.zip', 'application/zip')
+    CSV = ('.csv', 'text/csv')
+    PDF = ('.pdf', 'application/pdf')
+    PNG = ('.png', 'image/png')
+    JPEG = ('.jpg', 'image/jpeg')
+
+    NETCDF = ('.nc', 'application/octet-stream')
+    DIR_MANIFEST = ('.dir_manifest', 'text/plain')
+    MAP_MANIFEST = ('.map_manifest', 'text/plain')
+    RSYNC_MANIFEST = ('.rsync_manifest', 'text/plain')
+    SIMPLE_MANIFEST = ('.manifest', 'text/plain')
+
+    def __init__(self, extension=None, mime_type=None):
+        self.extension = extension
+        self.mime_type = mime_type
 
 
 class PipelineFileCheckType(Enum):

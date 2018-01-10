@@ -4,7 +4,7 @@ import os
 from compliance_checker.runner import ComplianceChecker, CheckSuite
 
 from .basestep import AbstractCollectionStepRunner
-from ..common import EXT_NETCDF, CheckResult, PipelineFileCheckType, validate_checktype
+from ..common import FileType, CheckResult, PipelineFileCheckType, validate_checktype
 from ..exceptions import ComplianceCheckFailedError, InvalidCheckSuiteError, InvalidCheckTypeError
 from ..files import PipelineFileCollection
 from ...util import format_exception, is_netcdffile, CaptureStdIO
@@ -186,7 +186,7 @@ class FormatCheckRunner(BaseCheckRunner):
         :param extension: file extension
         :return: *FormatCheckRunner instance
         """
-        if extension == EXT_NETCDF:
+        if extension == FileType.NETCDF.extension:
             return NetcdfFormatCheckRunner(self._config, self._logger)
         else:
             return NonEmptyCheckRunner(self._config, self._logger)

@@ -4,7 +4,7 @@ from collections import MutableSet, OrderedDict
 
 import six
 
-from .common import (EXT_NETCDF, PipelineFilePublishType, PipelineFileCheckType, validate_addition_publishtype,
+from .common import (FileType, PipelineFilePublishType, PipelineFileCheckType, validate_addition_publishtype,
                      validate_checkresult, validate_checktype, validate_deletion_publishtype, validate_publishtype)
 from .exceptions import MissingFileError
 from ..util import (IndexedSet, format_exception, get_file_checksum, matches_regexes, slice_sequence,
@@ -533,7 +533,7 @@ class PipelineFileCollection(MutableSet):
         for f in self.__s:
             if f.is_deletion:
                 f.check_type = PipelineFileCheckType.NO_ACTION
-            elif checks and f.extension == EXT_NETCDF:
+            elif checks and f.extension == FileType.NETCDF.extension:
                 f.check_type = PipelineFileCheckType.NC_COMPLIANCE_CHECK
             else:
                 f.check_type = PipelineFileCheckType.FORMAT_CHECK
