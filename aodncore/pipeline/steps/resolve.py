@@ -10,6 +10,7 @@ from ...util import extract_zip, list_regular_files, is_zipfile, safe_copy_file
 
 __all__ = [
     'get_resolve_runner',
+    'DirManifestResolveRunner',
     'MapManifestResolveRunner',
     'RsyncManifestResolveRunner',
     'SimpleManifestResolveRunner',
