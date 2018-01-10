@@ -11,6 +11,7 @@ from ...util import format_exception, is_netcdffile, CaptureStdIO
 
 __all__ = [
     'get_check_runner',
+    'get_child_check_runner',
     'CheckRunnerAdapter',
     'ComplianceCheckerCheckRunner',
     'FormatCheckRunner',
@@ -174,19 +175,19 @@ class ComplianceCheckerCheckRunner(BaseCheckRunner):
 
 class FormatCheckRunner(BaseCheckRunner):
     def run(self, pipeline_files):
-        extensions = {e.extension for e in pipeline_files}
-        for extension in extensions:
-            check_list = pipeline_files.filter_by_attribute_value('extension', extension)
-            format_check_runner = self.get_format_check_runner(extension)
+        file_types = {e.file_type for e in pipeline_files}
+        for file_type in file_types:
+            check_list = pipeline_files.filter_by_attribute_id('file_type', file_type)
+            format_check_runner = self.get_format_check_runner(file_type)
             format_check_runner.run(check_list)
 
-    def get_format_check_runner(self, extension):
-        """Factory method to return appropriate *FormatCheckRunner instance based on file extension
+    def get_format_check_runner(self, file_type):
+        """Factory method to return appropriate *FormatCheckRunner instance based on file type
         
-        :param extension: file extension
+        :param file_type: FileType member
         :return: *FormatCheckRunner instance
         """
-        if extension == FileType.NETCDF.extension:
+        if file_type is FileType.NETCDF:
             return NetcdfFormatCheckRunner(self._config, self._logger)
         else:
             return NonEmptyCheckRunner(self._config, self._logger)

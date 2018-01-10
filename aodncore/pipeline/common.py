@@ -1,4 +1,5 @@
 import mimetypes
+import os
 
 from enum import Enum
 
@@ -136,6 +137,11 @@ class FileType(Enum):
     @classmethod
     def get_type_from_extension(cls, extension):
         return next((t for t in cls if t.extension == extension), cls.UNKNOWN)
+
+    @classmethod
+    def get_type_from_name(cls, name):
+        _, extension = os.path.splitext(name)
+        return cls.get_type_from_extension(extension)
 
 
 class PipelineFileCheckType(Enum):

@@ -46,7 +46,7 @@ class PipelineFile(object):
         self._archive_path = archive_path
         self._dest_path = dest_path
 
-        _, self.extension = os.path.splitext(src_path)
+        self.file_type = FileType.get_type_from_name(src_path)
 
         self.file_update_callback = file_update_callback
 
@@ -533,7 +533,7 @@ class PipelineFileCollection(MutableSet):
         for f in self.__s:
             if f.is_deletion:
                 f.check_type = PipelineFileCheckType.NO_ACTION
-            elif checks and f.extension == FileType.NETCDF.extension:
+            elif checks and f.file_type is FileType.NETCDF:
                 f.check_type = PipelineFileCheckType.NC_COMPLIANCE_CHECK
             else:
                 f.check_type = PipelineFileCheckType.FORMAT_CHECK
