@@ -132,6 +132,11 @@ class FileType(Enum):
         self.extension = extension
         self.mime_type = mime_type
 
+    # noinspection PyTypeChecker
+    @classmethod
+    def get_type_from_extension(cls, extension):
+        return next((t for t in cls if t.extension == extension), cls.UNKNOWN)
+
 
 class PipelineFileCheckType(Enum):
     """Each PipelineFile may individually specify which checks are performed against it

@@ -6,7 +6,7 @@ from tempfile import gettempdir
 
 from transitions import Machine
 
-from .common import HandlerResult, PipelineFilePublishType, PipelineFileCheckType, validate_publishtype
+from .common import FileType, HandlerResult, PipelineFilePublishType, PipelineFileCheckType, validate_publishtype
 from .configlib import validate_lazyconfigmanager
 from .destpath import get_path_function
 from .exceptions import (PipelineProcessingError, HandlerAlreadyRunError, InvalidConfigError, InvalidInputFileError,
@@ -170,7 +170,8 @@ class HandlerBase(object):
         self._default_deletion_publish_type = PipelineFilePublishType.DELETE_UNHARVEST
         self._error = None
         self._file_checksum = None
-        self._file_extension = None
+        _, self._file_extension = os.path.splitext(input_file)
+        self._file_type = FileType.get_type_from_extension(self.file_extension)
         self._is_archived = False
         self._result = HandlerResult.UNKNOWN
         self._start_time = datetime.now()
@@ -266,9 +267,17 @@ class HandlerBase(object):
     def file_extension(self):
         """Read-only property to retrieve the input_file extension
 
-        :return: checksum string or None
+        :return: extension string
         """
         return self._file_extension
+
+    @property
+    def file_type(self):
+        """Read-only property to retrieve the input_file type
+
+        :return: FileType member
+        """
+        return self._file_type
 
     @property
     def instance_working_directory(self):
@@ -528,16 +537,14 @@ class HandlerBase(object):
     #
 
     def _check_extension(self):
-        """Check that the input file has a valid extension
+        """Check that the input file has a valid extension (if allowed_extensions defined)
 
-        :return:
+        :return: None
         """
-        _, self._file_extension = os.path.splitext(self.input_file)
         if self.allowed_extensions and self.file_extension not in self.allowed_extensions:
             raise InvalidFileFormatError(
                 "input file extension '{extension}' not in allowed_extensions list: {allowed}".format(
-                    extension=self.file_extension, allowed=self.allowed_extensions)
-            )
+                    extension=self.file_extension, allowed=self.allowed_extensions))
 
     def _init_logging(self):
         """Initialise logging, including Celery integration
