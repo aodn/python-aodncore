@@ -1,3 +1,4 @@
+import mimetypes
 import os
 import re
 from collections import MutableSet, OrderedDict
@@ -9,7 +10,7 @@ from .common import (FileType, PipelineFilePublishType, PipelineFileCheckType, v
 from .exceptions import MissingFileError
 from ..util import (IndexedSet, format_exception, get_file_checksum, matches_regexes, slice_sequence,
                     validate_bool, validate_callable, validate_dict, validate_mapping, validate_nonstring_iterable,
-                    validate_regex, validate_type)
+                    validate_regex, validate_string, validate_type)
 
 __all__ = [
     'PipelineFileCollection',
@@ -46,7 +47,8 @@ class PipelineFile(object):
         self._archive_path = archive_path
         self._dest_path = dest_path
 
-        self.file_type = FileType.get_type_from_name(src_path)
+        _, self._extension = os.path.splitext(src_path)
+        self.file_type = FileType.get_type_from_extension(self.extension)
 
         self.file_update_callback = file_update_callback
 
@@ -65,6 +67,7 @@ class PipelineFile(object):
         self._is_stored = False
 
         self._check_result = None
+        self._mime_type = None
 
     def __iter__(self):
         yield 'archive_path', self.archive_path
@@ -72,12 +75,14 @@ class PipelineFile(object):
         yield 'check_passed', self.check_passed
         yield 'check_type', self.check_type.name
         yield 'dest_path', self.dest_path
+        yield 'extension', self.extension
         yield 'file_checksum', self.file_checksum
         yield 'is_checked', str(self._is_checked)
         yield 'is_deletion', str(self._is_deletion)
         yield 'is_archived', str(self._is_archived)
         yield 'is_harvested', str(self._is_harvested)
         yield 'is_stored', str(self._is_stored)
+        yield 'mime_type', self.mime_type
         yield 'name', self.name
         yield 'published', self.published
         yield 'pending_archive', str(self.pending_archive)
@@ -153,6 +158,10 @@ class PipelineFile(object):
         self._post_property_update({'dest_path': dest_path})
 
     @property
+    def extension(self):
+        return self._extension
+
+    @property
     def is_harvested(self):
         return self._is_harvested
 
@@ -199,6 +208,20 @@ class PipelineFile(object):
     @property
     def is_uploaded(self):
         return not self.is_deletion and self.is_stored
+
+    @property
+    def mime_type(self):
+        if not self._mime_type:
+            self._mime_type = self.file_type.mime_type or mimetypes.types_map.get(self.extension,
+                                                                                  'application/octet-stream')
+        return self._mime_type
+
+    @mime_type.setter
+    def mime_type(self, mime_type):
+        validate_string(mime_type)
+
+        self._mime_type = mime_type
+        self._post_property_update({'mime_type': mime_type})
 
     @property
     def published(self):
