@@ -106,7 +106,7 @@ PIPELINE_CONFIG_SCHEMA = {
     'definitions': {
         'loggingLevel': {
             'type': 'string',
-            'enum': ['CRITICAL', 'FATAL', 'ERROR', 'WARNING', 'WARN', 'INFO', 'DEBUG', 'NOTSET']
+            'enum': ['CRITICAL', 'FATAL', 'ERROR', 'WARNING', 'WARN', 'INFO', 'SYSINFO', 'DEBUG', 'NOTSET']
         }
     }
 }
