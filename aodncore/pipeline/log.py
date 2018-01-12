@@ -4,6 +4,7 @@ import os
 import jsonschema
 
 from .schema import LOGGING_CONFIG_SCHEMA
+from ..util import validate_nonstring_iterable
 
 # custom SYSINFO logging level
 SYSINFO = 15
@@ -11,67 +12,78 @@ logging.addLevelName(SYSINFO, 'SYSINFO')
 
 __all__ = [
     'SYSINFO',
-    'get_base_worker_logging_config',
-    'get_logging_config_for_watch',
+    'WorkerLoggingConfigBuilder',
     'get_watchservice_logging_config',
     'get_pipeline_logger',
     'validate_logging_config'
 ]
 
 
-def get_base_worker_logging_config(pipeline_config):
-    """Get the *base* logging config for pipeline worker processes, suitable for use by logging.config.dictConfig
+class WorkerLoggingConfigBuilder(object):
+    def __init__(self, pipeline_config):
+        self.pipeline_config = pipeline_config
 
-    :param pipeline_config: LazyConfigManager.pipeline_config dict
-    :return: dict containing base worker logging config
-    """
-    base_logging_config = {
-        'version': 1,
-        'formatters': {
-            'pipeline_formatter': {
-                'format': pipeline_config['logging']['pipeline_format']
-            }
-        },
-        'filters': {},
-        'handlers': {},
-        'loggers': {}
-    }
+        liblevel = self.pipeline_config['logging'].get('liblevel', 'WARN')
 
-    # decrease log level for noisy library loggers, unless explicitly increased for debugging
-    for lib in ('botocore', 'paramiko', 's3transfer', 'transitions'):
-        base_logging_config['loggers'][lib] = {'level': pipeline_config['logging'].get('liblevel', 'WARN')}
-
-    return base_logging_config
-
-
-def get_logging_config_for_watch(task_name, log_root, level=SYSINFO):
-    """Get logging configuration for a single pipeline watch, intended to be merged onto the output of
-        `get_base_worker_logging_config`
-
-    :param task_name: name of the pipeline for which the config is being generated
-    :param log_root: logging root directory
-    :param level: logging level to
-    :return: dict containing handlers/loggers for a single watch
-    """
-    handler_name = "{name}_handler".format(name=task_name)
-    watch_logging_config = {
-        'handlers': {
-            handler_name: {
-                'level': level,
-                'class': 'logging.FileHandler',
-                'formatter': 'pipeline_formatter',
-                'filename': os.path.join(log_root, 'process', "{task_name}.log".format(task_name=task_name))
-            }
-        },
-        'loggers': {
-            task_name: {
-                'handlers': [handler_name],
-                'level': level,
-                'propagate': False
+        self._dict_config = {
+            'version': 1,
+            'formatters': {
+                'pipeline_formatter': {
+                    'format': self.pipeline_config['logging']['pipeline_format']
+                }
+            },
+            'filters': {},
+            'handlers': {},
+            'loggers': {
+                'botocore': {
+                    'level': liblevel
+                },
+                'paramiko': {
+                    'level': liblevel
+                },
+                's3transfer': {
+                    'level': liblevel
+                },
+                'transitions': {
+                    'level': liblevel
+                }
             }
         }
-    }
-    return watch_logging_config
+
+    def add_watch_config(self, name, formatter='pipeline_formatter', level=None):
+        """Add logging configuration for a single pipeline watch
+
+        :param name: name of the pipeline for which the config is being generated
+        :param formatter: name of the formatter to use for handler
+        :param level: logging level
+        :return: dict containing handlers/loggers for a single watch
+        """
+        if level is None:
+            level = self.pipeline_config['logging']['level']
+
+        handler_name = "{name}_handler".format(name=name)
+
+        self._dict_config['handlers'][handler_name] = {
+            'level': level,
+            'class': 'logging.FileHandler',
+            'formatter': formatter,
+            'filename': os.path.join(self.pipeline_config['logging']['log_root'], 'process',
+                                     "{task_name}.log".format(task_name=name))
+        }
+        self._dict_config['loggers'][name] = {
+            'handlers': [handler_name],
+            'level': level,
+            'propagate': False
+        }
+
+    def add_watches(self, watches):
+        validate_nonstring_iterable(watches)
+
+        for watch in watches:
+            self.add_watch_config(watch)
+
+    def get_config(self):
+        return self._dict_config
 
 
 def get_watchservice_logging_config(pipeline_config):

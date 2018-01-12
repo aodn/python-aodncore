@@ -301,12 +301,14 @@ class AbstractFileStateManager(object):
         self.logger = logger
         self._machine = Machine(model=self, states=self.states, initial='FILE_IN_INCOMING', auto_transitions=False,
                                 transitions=self.transitions, after_state_change='_after_state_change')
-        self.logger.info("{name} initialised in state: {state}".format(name=self.__class__.__name__, state=self.state))
+        self.logger.sysinfo(
+            "{name} initialised in state: {state}".format(name=self.__class__.__name__, state=self.state))
 
         self._pre_check()
 
     def _after_state_change(self):
-        self.logger.info("{name} transitioned to state: {state}".format(name=self.__class__.__name__, state=self.state))
+        self.logger.sysinfo(
+            "{name} transitioned to state: {state}".format(name=self.__class__.__name__, state=self.state))
 
     @abc.abstractmethod
     def _pre_check(self):

@@ -4,17 +4,14 @@ import os
 import jsonschema
 from celery import Celery
 from six import iteritems
-from six.moves import configparser
 
 from .exceptions import InvalidConfigError
-from .log import (get_base_worker_logging_config, get_watchservice_logging_config, get_logging_config_for_watch,
-                  validate_logging_config)
+from .log import (WorkerLoggingConfigBuilder, get_watchservice_logging_config, validate_logging_config)
 from .schema import PIPELINE_CONFIG_SCHEMA
 from .watch import get_task_name, CeleryConfig, CeleryContext
-from ..util import discover_entry_points, format_exception, merge_dicts, str_to_list, validate_type
+from ..util import discover_entry_points, format_exception, validate_type
 
 __all__ = [
-    'CustomParser',
     'load_pipeline_config',
     'load_trigger_config',
     'load_watch_config',
@@ -27,32 +24,6 @@ DEFAULT_WATCH_CONFIG = '/mnt/ebs/aodn-pipeline/etc/watches.conf'
 DEFAULT_WATCH_CONFIG_ENVVAR = 'PIPELINE_WATCH_CONFIG_FILE'
 DEFAULT_TRIGGER_CONFIG = '/usr/local/talend/etc/trigger.conf'
 DEFAULT_TRIGGER_CONFIG_ENVVAR = 'PIPELINE_TRIGGER_CONFIG_FILE'
-
-
-# noinspection PyClassicStyleClass
-class CustomParser(configparser.SafeConfigParser):
-    """Sub-class of SafeConfigParser to implement an "as_dict" method
-    """
-
-    def as_dict(self):
-        """Return dict representation of the SafeConfigParser object
-
-        :return: dict
-        """
-        parser_as_dict = {s: dict(self.items(s)) for s in self.sections()}
-        return parser_as_dict
-
-    def getlist(self, section, option, **kwargs):
-        """Return a comma-separated string as native list
-
-        :param section: ConfigParser section
-        :param option: ConfigParser option
-        :param kwargs: additional kwargs passed to str_to_list
-        :return: list representation of the given config option
-        """
-        value = self.get(section, option)
-        value_as_list = str_to_list(value, **kwargs)
-        return value_as_list
 
 
 class LazyConfigManager(object):
@@ -117,13 +88,14 @@ class LazyConfigManager(object):
     @property
     def worker_logging_config(self):
         if self._worker_logging_config is None:
-            worker_logging_config = get_base_worker_logging_config(self.pipeline_config)
+            config_builder = WorkerLoggingConfigBuilder(self.pipeline_config)
+
             for name in self.watch_config.keys():
                 task_name = get_task_name(self.pipeline_config['watch']['task_namespace'], name)
-                watch_logging_config = get_logging_config_for_watch(task_name,
-                                                                    self.pipeline_config['logging']['log_root'],
-                                                                    self.pipeline_config['logging']['level'])
-                worker_logging_config = merge_dicts(worker_logging_config, watch_logging_config)
+                config_builder.add_watch_config(task_name)
+
+            worker_logging_config = config_builder.get_config()
+
             validate_logging_config(worker_logging_config)
             self._worker_logging_config = worker_logging_config
 
