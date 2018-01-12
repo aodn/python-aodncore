@@ -111,7 +111,7 @@ class TalendHarvesterRunner(BaseHarvesterRunner):
                     if config_type == 'regex':
                         for pattern in patterns:
                             matched_files_for_pattern = file_list.filter_by_attribute_regex('dest_path', pattern)
-                            matched_files.update(matched_files_for_pattern)
+                            matched_files.update(matched_files_for_pattern, overwrite=True)
 
                             # TODO: implement extra parameters
                             # if config_type == 'extra_params':
