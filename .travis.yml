@@ -2,6 +2,11 @@ language: python
 python:
   - "2.7"
 
+addons:
+  apt:
+    packages:
+    - libudunits2-0
+ 
 install:
   - wget --content-disposition http://imos-binary.s3-website-ap-southeast-2.amazonaws.com/jobs/compliance_checker_prod/compliance_checker_prod-latest.whl
   - wget --content-disposition http://imos-binary.s3-website-ap-southeast-2.amazonaws.com/jobs/cc_plugin_imos_prod/cc_plugin_imos_prod-latest.whl
