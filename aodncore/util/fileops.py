@@ -6,6 +6,7 @@ import shutil
 import tempfile
 import zipfile
 from functools import cmp_to_key, partial
+from tempfile import TemporaryFile
 
 import netCDF4
 import six
@@ -20,7 +21,11 @@ StringIO = six.StringIO
 locale.setlocale(locale.LC_ALL, 'C')
 
 __all__ = [
+    'TemporaryDirectory',
     'extract_zip',
+    'get_file_checksum',
+    'is_dir_writable',
+    'is_file_writable',
     'is_netcdffile',
     'is_zipfile',
     'list_regular_files',
@@ -30,9 +35,48 @@ __all__ = [
     'rm_rf',
     'safe_copy_file',
     'safe_move_file',
-    'get_file_checksum',
-    'TemporaryDirectory'
+    'validate_dir_writable',
+    'validate_file_writable'
 ]
+
+
+class _TemporaryDirectory(object):
+    """Context manager for tempfile.mkdtemp() (available in core library in v3.2+).
+    """
+
+    def __init__(self, suffix="", prefix=None, dir=None):
+        self._closed = False
+        self.name = None
+
+        dir_prefix = prefix if prefix else self.__class__.__name__
+        self.name = tempfile.mkdtemp(suffix=suffix, prefix=dir_prefix, dir=dir)
+
+        self._rmtree = shutil.rmtree
+
+    def __del__(self):
+        self.cleanup()
+
+    def __enter__(self):
+        return self.name
+
+    def __exit__(self, exc_type, exc_value, traceback):
+        self.cleanup()
+
+    def __repr__(self):  # pragma: no cover
+        return "<{} {!r}>".format(self.__class__.__name__, self.name)
+
+    def cleanup(self):
+        try:
+            self._rmtree(self.name)
+        except OSError as e:
+            if e.errno == errno.EEXIST:
+                pass  # pragma: no cover
+
+
+try:
+    TemporaryDirectory = tempfile.TemporaryDirectory
+except AttributeError:
+    TemporaryDirectory = _TemporaryDirectory
 
 
 def extract_zip(zip_path, dest_dir):
@@ -44,6 +88,49 @@ def extract_zip(zip_path, dest_dir):
     """
     with zipfile.ZipFile(zip_path, mode='r') as z:
         z.extractall(dest_dir)
+
+
+def get_file_checksum(filepath, block_size=65536, algorithm='sha256'):
+    """Get the hash of a file
+
+    :param filepath: path to the input file
+    :param block_size: number of bytes to hash each iteration
+    :param algorithm: hash algorithm (from hashlib module)
+    :return: hash of the input file
+    """
+    hash_function = getattr(hashlib, algorithm)
+    hasher = hash_function()
+    with open(filepath, 'rb') as f:
+        for block in iter(partial(f.read, block_size), b''):
+            hasher.update(block)
+    return hasher.hexdigest()
+
+
+def is_dir_writable(path):
+    """Check whether a directory is writable
+
+    :param path: directory path to check
+    :return: None
+    """
+    try:
+        with TemporaryFile(prefix='is_dir_writable', suffix='.tmp', dir=path) as t:
+            t.write('is_dir_writable')
+    except IOError as e:
+        if e.errno == errno.EACCES:
+            return False
+    else:
+        return True
+
+
+def is_file_writable(path):
+    """Check whether a file is writable
+
+        Note: not as reliable as the is_dir_writable function since that actually writes a file
+
+    :param path: file path to check
+    :return: None
+    """
+    return os.access(path, os.W_OK)
 
 
 def is_netcdffile(filepath):
@@ -185,7 +272,8 @@ def safe_copy_file(source, destination, overwrite=False):
         os.rename(temp_destination_name, destination)
     finally:
         try:
-            rm_f(temp_destination_name)
+            if temp_destination_name:
+                rm_f(temp_destination_name)
         except OSError as e:  # pragma: no cover
             if e.errno != errno.ENOENT:
                 raise
@@ -203,56 +291,11 @@ def safe_move_file(src, dst, overwrite=False):
     os.remove(src)
 
 
-def get_file_checksum(filepath, block_size=65536, algorithm='sha256'):
-    """Get the hash of a file
-
-    :param filepath: path to the input file
-    :param block_size: number of bytes to hash each iteration
-    :param algorithm: hash algorithm (from hashlib module)
-    :return: hash of the input file
-    """
-    hash_function = getattr(hashlib, algorithm)
-    hasher = hash_function()
-    with open(filepath, 'rb') as f:
-        for block in iter(partial(f.read, block_size), b''):
-            hasher.update(block)
-    return hasher.hexdigest()
+def validate_dir_writable(path):
+    if not is_dir_writable(path):
+        raise ValueError("dir '{dir}' is not writable".format(dir=path))
 
 
-class _TemporaryDirectory(object):
-    """Context manager for tempfile.mkdtemp() (available in core library in v3.2+).
-    """
-
-    def __init__(self, suffix="", prefix=None, dir=None):
-        self._closed = False
-        self.name = None
-
-        dir_prefix = prefix if prefix else self.__class__.__name__
-        self.name = tempfile.mkdtemp(suffix=suffix, prefix=dir_prefix, dir=dir)
-
-        self._rmtree = shutil.rmtree
-
-    def __del__(self):
-        self.cleanup()
-
-    def __enter__(self):
-        return self.name
-
-    def __exit__(self, exc_type, exc_value, traceback):
-        self.cleanup()
-
-    def __repr__(self):  # pragma: no cover
-        return "<{} {!r}>".format(self.__class__.__name__, self.name)
-
-    def cleanup(self):
-        try:
-            self._rmtree(self.name)
-        except OSError as e:
-            if e.errno == errno.EEXIST:
-                pass  # pragma: no cover
-
-
-try:
-    TemporaryDirectory = tempfile.TemporaryDirectory
-except AttributeError:
-    TemporaryDirectory = _TemporaryDirectory
+def validate_file_writable(path):
+    if not is_file_writable(path):
+        raise ValueError("file '{file}' is not writable".format(file=path))
