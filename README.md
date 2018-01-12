@@ -1,5 +1,7 @@
 ## Python Pipeline
 
+[![Build Status](https://travis-ci.org/aodn/python-aodncore.png?branch=master)](https://travis-ci.org/aodn/python-aodncore)
+
 At the core of the handler base class is a state machine defining the workflow states and the transitions between those states. The following diagram describes the machine (generated directly from the codebase using https://github.com/aodn/python-aodncore/blob/master/aodncore/bin/drawmachine.py):
 
 ![Pipeline Handler state machine](https://github.com/aodn/python-aodncore/blob/master/state_machine.png)
