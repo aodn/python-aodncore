@@ -188,7 +188,8 @@ class S3UploadRunner(BaseUploadRunner):
         abs_path = self._get_absolute_dest_path(pipeline_file)
 
         with open(pipeline_file.src_path, 'rb') as f:
-            self.s3_client.upload_fileobj(f, Bucket=self.bucket, Key=abs_path)
+            self.s3_client.upload_fileobj(f, Bucket=self.bucket, Key=abs_path,
+                                          ExtraArgs={'ContentType': pipeline_file.mime_type})
 
     def _validate_bucket(self):
         try:

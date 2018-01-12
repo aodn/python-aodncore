@@ -27,6 +27,7 @@
           <option value="aodncore.pipeline.handlerbase.HandlerBase._trigger_notify_success" />
           <option value="aodncore.pipeline.handlerbase.HandlerBase._trigger_complete_success" />
           <option value="int.name" />
+          <option value="mimetypes.types_map" />
         </list>
       </option>
     </inspection_tool>

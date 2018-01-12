@@ -4,12 +4,13 @@ import re
 from enum import Enum
 
 from .basestep import AbstractResolveRunner
-from ..common import EXT_DIR_MANIFEST, EXT_MAP_MANIFEST, EXT_RSYNC_MANIFEST, EXT_SIMPLE_MANIFEST, EXT_ZIP
+from ..common import FileType
 from ..files import PipelineFile, PipelineFileCollection
 from ...util import extract_zip, list_regular_files, is_zipfile, safe_copy_file
 
 __all__ = [
     'get_resolve_runner',
+    'DirManifestResolveRunner',
     'MapManifestResolveRunner',
     'RsyncManifestResolveRunner',
     'SimpleManifestResolveRunner',
@@ -30,15 +31,15 @@ def get_resolve_runner(input_file, output_dir, config, logger, resolve_params=No
     """
     _, file_extension = os.path.splitext(input_file)
 
-    if file_extension == EXT_ZIP:
+    if file_extension == FileType.ZIP.extension:
         return ZipFileResolveRunner(input_file, output_dir, config, logger)
-    elif file_extension == EXT_SIMPLE_MANIFEST:
+    elif file_extension == FileType.SIMPLE_MANIFEST.extension:
         return SimpleManifestResolveRunner(input_file, output_dir, config, logger, resolve_params)
-    elif file_extension == EXT_MAP_MANIFEST:
+    elif file_extension == FileType.MAP_MANIFEST.extension:
         return MapManifestResolveRunner(input_file, output_dir, config, logger, resolve_params)
-    elif file_extension == EXT_RSYNC_MANIFEST:
+    elif file_extension == FileType.RSYNC_MANIFEST.extension:
         return RsyncManifestResolveRunner(input_file, output_dir, config, logger, resolve_params)
-    elif file_extension == EXT_DIR_MANIFEST:
+    elif file_extension == FileType.DIR_MANIFEST.extension:
         return DirManifestResolveRunner(input_file, output_dir, config, logger, resolve_params)
     else:
         return SingleFileResolveRunner(input_file, output_dir, config, logger)

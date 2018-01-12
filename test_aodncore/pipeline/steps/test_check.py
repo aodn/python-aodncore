@@ -2,7 +2,7 @@ import os
 from tempfile import mkstemp
 from uuid import uuid4
 
-from aodncore.pipeline import CheckResult, PipelineFileCheckType, PipelineFileCollection
+from aodncore.pipeline import CheckResult, FileType, PipelineFileCheckType, PipelineFileCollection
 from aodncore.pipeline.exceptions import InvalidCheckTypeError, InvalidCheckSuiteError
 from aodncore.pipeline.steps.check import (get_child_check_runner, ComplianceCheckerCheckRunner, FormatCheckRunner,
                                            NetcdfFormatCheckRunner, NonEmptyCheckRunner)
@@ -101,7 +101,7 @@ class TestFormatCheckRunner(BaseTestCase):
         self.fc_runner = FormatCheckRunner(None, self.mock_logger)
 
     def test_get_format_check_runner(self):
-        nc_runner = self.fc_runner.get_format_check_runner('.nc')
+        nc_runner = self.fc_runner.get_format_check_runner(FileType.NETCDF)
         self.assertIsInstance(nc_runner, NetcdfFormatCheckRunner)
 
         ne_runner = self.fc_runner.get_format_check_runner(str(uuid4()))
