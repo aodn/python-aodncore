@@ -1,11 +1,13 @@
+import inspect
 import os
 
 from celery import Celery
 
 from aodncore.pipeline.configlib import load_pipeline_config, load_watch_config
 from aodncore.pipeline.exceptions import InvalidConfigError
-from aodncore.testlib import BaseTestCase, get_nonexistent_path
+from aodncore.testlib import BaseTestCase, conf, get_nonexistent_path
 
+CONF_ROOT = os.path.dirname(inspect.getfile(conf))
 TEST_ROOT = os.path.dirname(__file__)
 
 REFERENCE_PIPELINE_CONFIG = {
@@ -108,8 +110,12 @@ class TestLazyConfigManager(BaseTestCase):
 
 
 class TestConfig(BaseTestCase):
+    def setUp(self):
+        super(TestConfig, self).setUp()
+
     def test_load_pipeline_config(self):
-        config = load_pipeline_config()
+        pipeline_conf_file = os.path.join(CONF_ROOT, 'pipeline.conf')
+        config = load_pipeline_config(pipeline_conf_file)
         self.assertDictEqual(REFERENCE_PIPELINE_CONFIG, config)
 
         nonexistent_config_file = get_nonexistent_path()
@@ -117,5 +123,6 @@ class TestConfig(BaseTestCase):
             _ = load_pipeline_config(nonexistent_config_file, envvar=None)
 
     def test_load_watch_config(self):
-        config = load_watch_config()
+        watch_conf_file = os.path.join(CONF_ROOT, 'watches.conf')
+        config = load_watch_config(watch_conf_file)
         self.assertDictEqual(REFERENCE_WATCH_CONFIG, config)
