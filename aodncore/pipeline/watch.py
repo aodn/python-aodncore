@@ -253,7 +253,8 @@ class IncomingFileEventHandler(pyinotify.ProcessEvent):
         # pathname is deliberately duplicated here to enable cross-referencing from pipeline specific logs in order to
         # correlate a filename to the associated task_id
         self._logger.info(
-            "task sent: task_id='{task_id}' event_id='{event_id}' pathname='{pathname}'".format(**task_data))
+            "task sent: task_id='{task_id}' task_name='{task_name}' event_id='{event_id}' pathname='{pathname}'".format(
+                **task_data))
         self._logger.debug("full task_data: {task_data}".format(task_data=task_data))
 
 
@@ -397,6 +398,9 @@ class WatchServiceManager(object):
             str_directory = str(directory) if PY2 else directory
 
             for existing_file in list_regular_files(str_directory):
+                self._logger.info(
+                    "queuing existing file: existing_file='{existing_file}'".format(
+                        existing_file=existing_file))
                 self._event_handler.queue_task(directory, existing_file)
 
             self._logger.info("adding watch for '{directory}'".format(directory=directory))
