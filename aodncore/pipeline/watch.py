@@ -7,7 +7,7 @@ from uuid import uuid4
 from six import PY2
 from transitions import Machine
 
-from ..util import mkdir_p, rm_f, rm_r
+from ..util import mkdir_p, rm_f, rm_r, validate_dir_writable, validate_file_writable
 
 # OS X test compatibility, due to absence of pyinotify (which is specific to the Linux kernel)
 try:
@@ -111,6 +111,7 @@ class CeleryContext(object):
 
             def _generate_location_map(self, input_file):
                 basename = os.path.basename(input_file)
+                incoming_dir = os.path.dirname(input_file)
                 error_dir = os.path.join(config.pipeline_config['global']['error_dir'], pipeline_name)
                 error_path = os.path.join(error_dir,
                                           "{name}.{id}".format(name=basename, id=self.request.id))
@@ -119,11 +120,18 @@ class CeleryContext(object):
                 processing_path = os.path.join(processing_dir, basename)
 
                 return {
-                    'input_file': input_file,
-                    'error_dir': error_dir,
-                    'error_path': error_path,
-                    'processing_dir': processing_dir,
-                    'processing_path': processing_path
+                    'incoming': {
+                        'dir': incoming_dir,
+                        'path': input_file
+                    },
+                    'error': {
+                        'dir': error_dir,
+                        'path': error_path
+                    },
+                    'processing': {
+                        'dir': processing_dir,
+                        'path': processing_path
+                    }
                 }
 
             def _configure_logger(self):
@@ -135,23 +143,28 @@ class CeleryContext(object):
                 }
                 self.logger = logging.LoggerAdapter(raw_logger, logging_extra)
 
-            def run(self, input_file):
-                self.input_file = input_file
+            def run(self, incoming_file):
+                try:
+                    self.input_file = incoming_file
 
-                self._configure_logger()
+                    self._configure_logger()
 
-                location_map = self._generate_location_map(input_file)
-                self.file_state_manager = IncomingFileStateManager(location_map, self.logger)
+                    location_map = self._generate_location_map(incoming_file)
+                    self.file_state_manager = IncomingFileStateManager(location_map, self.logger)
 
-                self.file_state_manager.move_to_processing()
+                    self.file_state_manager.move_to_processing()
 
-                self.handler = handler_class(location_map['processing_path'], config=config, celery_task=self, **kwargs)
-                self.handler.run()
+                    self.handler = handler_class(location_map['processing']['path'], config=config, celery_task=self,
+                                                 **kwargs)
+                    self.handler.run()
 
-                if self.handler.error:
-                    self.file_state_manager.move_to_error()
-                else:
-                    self.file_state_manager.move_to_success()
+                    if self.handler.error:
+                        self.file_state_manager.move_to_error()
+                    else:
+                        self.file_state_manager.move_to_success()
+                except Exception:
+                    self.logger.exception('unhandled exception in PipelineTask')
+                    raise
 
         return PipelineTask()
 
@@ -290,8 +303,14 @@ class AbstractFileStateManager(object):
                                 transitions=self.transitions, after_state_change='_after_state_change')
         self.logger.info("{name} initialised in state: {state}".format(name=self.__class__.__name__, state=self.state))
 
+        self._pre_check()
+
     def _after_state_change(self):
         self.logger.info("{name} transitioned to state: {state}".format(name=self.__class__.__name__, state=self.state))
+
+    @abc.abstractmethod
+    def _pre_check(self):
+        pass
 
     @abc.abstractmethod
     def _move_to_processing(self):
@@ -310,32 +329,27 @@ class IncomingFileStateManager(AbstractFileStateManager):
     processing_mode = stat.S_IRUSR | stat.S_IRGRP | stat.S_IROTH
     error_mode = stat.S_IRUSR | stat.S_IWUSR | stat.S_IRGRP | stat.S_IWGRP | stat.S_IROTH
 
+    def _pre_check(self):
+        validate_file_writable(self.location_map['incoming']['path'])
+
+        mkdir_p(self.location_map['processing']['dir'])
+        validate_dir_writable(self.location_map['processing']['dir'])
+
+        mkdir_p(self.location_map['error']['dir'])
+        validate_dir_writable(self.location_map['error']['dir'])
+
     def _move_to_processing(self):
-        try:
-            mkdir_p(self.location_map['processing_dir'])
-            safe_move_file(self.location_map['input_file'], self.location_map['processing_path'])
-            os.chmod(self.location_map['processing_path'], self.processing_mode)
-        except Exception:
-            self.logger.exception("unhandled exception in _move_to_processing")
-            raise
+        safe_move_file(self.location_map['incoming']['path'], self.location_map['processing']['path'])
+        os.chmod(self.location_map['processing']['path'], self.processing_mode)
 
     def _move_to_error(self):
-        try:
-            mkdir_p(self.location_map['error_dir'])
-            safe_move_file(self.location_map['processing_path'], self.location_map['error_path'])
-            os.chmod(self.location_map['error_path'], self.error_mode)
-            rm_r(self.location_map['processing_dir'])
-        except Exception:
-            self.logger.exception("unhandled exception in _move_to_error")
-            raise
+        safe_move_file(self.location_map['processing']['path'], self.location_map['error']['path'])
+        os.chmod(self.location_map['error']['path'], self.error_mode)
+        rm_r(self.location_map['processing']['dir'])
 
     def _cleanup_success(self):
-        try:
-            rm_f(self.location_map['processing_path'])
-            rm_r(self.location_map['processing_dir'])
-        except Exception:
-            self.logger.exception("unhandled exception in _cleanup_success")
-            raise
+        rm_f(self.location_map['processing']['path'])
+        rm_r(self.location_map['processing']['dir'])
 
 
 class WatchServiceContext(object):
