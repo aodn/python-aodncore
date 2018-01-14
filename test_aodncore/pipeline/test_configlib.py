@@ -1,12 +1,13 @@
+import inspect
 import os
-import tempfile
 
 from celery import Celery
 
-from aodncore.pipeline.configlib import CustomParser, load_pipeline_config, load_watch_config
+from aodncore.pipeline.configlib import load_pipeline_config, load_watch_config
 from aodncore.pipeline.exceptions import InvalidConfigError
-from aodncore.testlib import BaseTestCase, get_nonexistent_path
+from aodncore.testlib import BaseTestCase, conf, get_nonexistent_path
 
+CONF_ROOT = os.path.dirname(inspect.getfile(conf))
 TEST_ROOT = os.path.dirname(__file__)
 
 REFERENCE_PIPELINE_CONFIG = {
@@ -19,7 +20,7 @@ REFERENCE_PIPELINE_CONFIG = {
         'wip_dir': '/tmp/probably/doesnt/exist/wip'
     },
     'logging': {
-        'level': 'INFO',
+        'level': 'SYSINFO',
         'pipeline_format': '%(asctime)s %(levelname)s %(name)s[%(celery_task_id)s] %(message)s',
         'log_root': '',
         'watchservice_format': '%(asctime)s %(levelname)s [%(name)s] %(message)s'
@@ -76,65 +77,6 @@ REFERENCE_WATCH_DIRECTORY_MAP = {
 }
 
 
-class TestCustomParser(BaseTestCase):
-    def setUp(self):
-        super(TestCustomParser, self).setUp()
-        parser = CustomParser()
-        parser.add_section('section1')
-        parser.add_section('section2')
-        parser.add_section('section3')
-        parser.add_section('section4')
-        parser.set('DEFAULT', 'defaultitem', 'foo')
-        parser.set('section1', 'item1', 'bar')
-        parser.set('section2', 'item2', '123456')
-        parser.set('section3', 'item3', 'baz')
-        parser.set('section3', 'item4', '%(defaultitem)s AND %(item3)s')
-        parser.set('section4', 'item5', 'value1,value 2, value3 , value4,,value 5, ,value6')
-
-        _, self.temp_config_file = tempfile.mkstemp(dir=self.temp_dir)
-        with open(self.temp_config_file, 'wb') as f:
-            parser.write(f)
-
-        self.parser = CustomParser()
-        self.parser.read(self.temp_config_file)
-
-    def test_as_parser(self):
-        new_parser = CustomParser()
-        new_parser.read(self.temp_config_file)
-
-        self.assertDictEqual(new_parser._sections, self.parser._sections)
-
-    def test_as_dict(self):
-        reference_dict = {
-            'section1': {
-                'defaultitem': 'foo', 'item1': 'bar'
-            },
-            'section2': {
-                'item2': '123456', 'defaultitem': 'foo'
-            },
-            'section3': {
-                'defaultitem': 'foo', 'item4': 'foo AND baz', 'item3': 'baz'
-            },
-            'section4': {
-                'item5': 'value1,value 2, value3 , value4,,value 5, ,value6', 'defaultitem': 'foo'
-            },
-
-        }
-
-        dict_representation = self.parser.as_dict()
-        self.assertDictEqual(reference_dict, dict_representation)
-
-    def test_getlist(self):
-        reference_list = ['value1', 'value 2', 'value3', 'value4', 'value 5', 'value6']
-        reference_list_spaces = ['value1,value', '2,', 'value3', ',', 'value4,,value', '5,', ',value6']
-
-        list_item = self.parser.getlist('section4', 'item5')
-        self.assertListEqual(reference_list, list_item)
-
-        list_item_spaces = self.parser.getlist('section4', 'item5', delimiter=' ')
-        self.assertListEqual(reference_list_spaces, list_item_spaces)
-
-
 class TestLazyConfigManager(BaseTestCase):
     def setUp(self):
         super(TestLazyConfigManager, self).setUp()
@@ -168,8 +110,12 @@ class TestLazyConfigManager(BaseTestCase):
 
 
 class TestConfig(BaseTestCase):
+    def setUp(self):
+        super(TestConfig, self).setUp()
+
     def test_load_pipeline_config(self):
-        config = load_pipeline_config()
+        pipeline_conf_file = os.path.join(CONF_ROOT, 'pipeline.conf')
+        config = load_pipeline_config(pipeline_conf_file)
         self.assertDictEqual(REFERENCE_PIPELINE_CONFIG, config)
 
         nonexistent_config_file = get_nonexistent_path()
@@ -177,5 +123,6 @@ class TestConfig(BaseTestCase):
             _ = load_pipeline_config(nonexistent_config_file, envvar=None)
 
     def test_load_watch_config(self):
-        config = load_watch_config()
+        watch_conf_file = os.path.join(CONF_ROOT, 'watches.conf')
+        config = load_watch_config(watch_conf_file)
         self.assertDictEqual(REFERENCE_WATCH_CONFIG, config)

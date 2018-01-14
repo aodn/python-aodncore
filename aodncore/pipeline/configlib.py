@@ -4,15 +4,14 @@ import os
 import jsonschema
 from celery import Celery
 from six import iteritems
-from six.moves import configparser
 
 from .exceptions import InvalidConfigError
-from .schema import LOGGING_CONFIG_SCHEMA, PIPELINE_CONFIG_SCHEMA
+from .log import (WorkerLoggingConfigBuilder, get_watchservice_logging_config, validate_logging_config)
+from .schema import PIPELINE_CONFIG_SCHEMA
 from .watch import get_task_name, CeleryConfig, CeleryContext
-from ..util import discover_entry_points, format_exception, merge_dicts, str_to_list, validate_type
+from ..util import discover_entry_points, format_exception, validate_type
 
 __all__ = [
-    'CustomParser',
     'load_pipeline_config',
     'load_trigger_config',
     'load_watch_config',
@@ -25,32 +24,6 @@ DEFAULT_WATCH_CONFIG = '/mnt/ebs/aodn-pipeline/etc/watches.conf'
 DEFAULT_WATCH_CONFIG_ENVVAR = 'PIPELINE_WATCH_CONFIG_FILE'
 DEFAULT_TRIGGER_CONFIG = '/usr/local/talend/etc/trigger.conf'
 DEFAULT_TRIGGER_CONFIG_ENVVAR = 'PIPELINE_TRIGGER_CONFIG_FILE'
-
-
-# noinspection PyClassicStyleClass
-class CustomParser(configparser.SafeConfigParser):
-    """Sub-class of SafeConfigParser to implement an "as_dict" method
-    """
-
-    def as_dict(self):
-        """Return dict representation of the SafeConfigParser object
-
-        :return: dict
-        """
-        parser_as_dict = {s: dict(self.items(s)) for s in self.sections()}
-        return parser_as_dict
-
-    def getlist(self, section, option, **kwargs):
-        """Return a comma-separated string as native list
-
-        :param section: ConfigParser section
-        :param option: ConfigParser option
-        :param kwargs: additional kwargs passed to str_to_list
-        :return: list representation of the given config option
-        """
-        value = self.get(section, option)
-        value_as_list = str_to_list(value, **kwargs)
-        return value_as_list
 
 
 class LazyConfigManager(object):
@@ -115,13 +88,14 @@ class LazyConfigManager(object):
     @property
     def worker_logging_config(self):
         if self._worker_logging_config is None:
-            worker_logging_config = get_base_worker_logging_config(self.pipeline_config)
+            config_builder = WorkerLoggingConfigBuilder(self.pipeline_config)
+
             for name in self.watch_config.keys():
                 task_name = get_task_name(self.pipeline_config['watch']['task_namespace'], name)
-                watch_logging_config = get_logging_config_for_watch(task_name,
-                                                                    self.pipeline_config['logging']['log_root'],
-                                                                    self.pipeline_config['logging']['level'])
-                worker_logging_config = merge_dicts(worker_logging_config, watch_logging_config)
+                config_builder.add_watch_config(task_name)
+
+            worker_logging_config = config_builder.get_config()
+
             validate_logging_config(worker_logging_config)
             self._worker_logging_config = worker_logging_config
 
@@ -174,93 +148,6 @@ class LazyConfigManager(object):
         self._watch_directory_map = None
 
 
-def get_base_worker_logging_config(pipeline_config):
-    """Get the *base* logging config for pipeline worker processes, suitable for use by logging.config.dictConfig
-
-    :param pipeline_config: LazyConfigManager.pipeline_config dict
-    :return: dict containing base worker logging config
-    """
-    base_logging_config = {
-        'version': 1,
-        'formatters': {
-            'pipeline_formatter': {
-                'format': pipeline_config['logging']['pipeline_format']
-            }
-        },
-        'filters': {},
-        'handlers': {},
-        'loggers': {}
-    }
-
-    # decrease log level for noisy library loggers, unless explicitly increased for debugging
-    for lib in ('botocore', 'paramiko', 's3transfer', 'transitions'):
-        base_logging_config['loggers'][lib] = {'level': pipeline_config['logging'].get('liblevel', 'WARN')}
-
-    return base_logging_config
-
-
-def get_watchservice_logging_config(pipeline_config):
-    """Generate logging configuration for the 'watchservice' service, suitable for use by logging.config.dictConfig
-
-    :param pipeline_config: LazyConfigManager.pipeline_config dict
-    :return: rendered watchservice logging config
-    """
-    watchservice_logging_config = {
-        'version': 1,
-        'formatters': {
-            'watchservice_formatter': {
-                'format': pipeline_config['logging']['watchservice_format']
-            }
-        },
-        'filters': {},
-        'handlers': {
-            'watchservice_handler': {
-                'level': pipeline_config['logging']['level'],
-                'class': 'logging.StreamHandler',
-                'formatter': 'watchservice_formatter'
-            }
-        },
-        'loggers': {
-            'watchservice': {
-                'handlers': ['watchservice_handler'],
-                'level': pipeline_config['logging']['level'],
-                'propagate': False
-            }
-        }
-    }
-    return watchservice_logging_config
-
-
-def get_logging_config_for_watch(task_name, log_root, level='INFO'):
-    """Get logging configuration for a single pipeline watch, intended to be merged onto the output of
-        `get_base_worker_logging_config`
-
-    :param task_name: name of the pipeline for which the config is being generated
-    :param log_root: logging root directory
-    :param level: logging level to
-    :return: dict containing handlers/loggers for a single watch
-    """
-    handler_name = "{name}_handler".format(name=task_name)
-    watch_logging_config = {
-        'handlers': {
-            handler_name: {
-                'level': level,
-                'class': 'logging.FileHandler',
-                'formatter': 'pipeline_formatter',
-                'filename': os.path.join(log_root, 'process', "{task_name}.log".format(task_name=task_name))
-            }
-        },
-        'loggers': {
-            task_name: {
-                'handlers': [handler_name],
-                'level': level,
-                'propagate': False
-            }
-        }
-    }
-    return watch_logging_config
-
-
 def load_pipeline_config(default_config_file=DEFAULT_WATCH_CONFIG, envvar=DEFAULT_CONFIG_ENVVAR):
     config_file = os.environ.get(envvar, default_config_file)
     config = load_json_file(config_file, envvar=envvar)
@@ -302,10 +189,6 @@ def load_json_file(default_config_file, envvar=None):
         raise InvalidConfigError(format_exception(e))
 
     return config
-
-
-def validate_logging_config(logging_config):
-    jsonschema.validate(logging_config, LOGGING_CONFIG_SCHEMA)
 
 
 def validate_pipeline_config(pipeline_config):

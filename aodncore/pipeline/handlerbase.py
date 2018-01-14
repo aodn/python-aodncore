@@ -12,6 +12,7 @@ from .destpath import get_path_function
 from .exceptions import (PipelineProcessingError, HandlerAlreadyRunError, InvalidConfigError, InvalidInputFileError,
                          InvalidFileFormatError, MissingConfigParameterError)
 from .files import PipelineFile, PipelineFileCollection
+from .log import SYSINFO, get_pipeline_logger
 from .steps import (get_cc_module_versions, get_check_runner, get_harvester_runner, get_notify_runner,
                     get_resolve_runner, get_upload_runner)
 from ..util import format_exception, get_file_checksum, validate_bool, TemporaryDirectory
@@ -21,7 +22,7 @@ __all__ = [
 ]
 
 FALLBACK_LOG_FORMAT = "%(asctime)s %(levelname)s [%(name)s] %(message)s"
-FALLBACK_LOG_LEVEL = logging.INFO
+FALLBACK_LOG_LEVEL = SYSINFO
 
 
 class HandlerBase(object):
@@ -404,7 +405,7 @@ class HandlerBase(object):
         """
         resolve_runner = get_resolve_runner(self.input_file, self.collection_dir, self.config, self.logger,
                                             self.resolve_params)
-        self.logger.info("get_resolve_runner -> '{runner}'".format(runner=resolve_runner.__class__.__name__))
+        self.logger.sysinfo("get_resolve_runner -> '{runner}'".format(runner=resolve_runner.__class__.__name__))
         resolved_files = resolve_runner.run()
 
         resolved_files.set_file_update_callback(self._file_update_callback)
@@ -416,7 +417,7 @@ class HandlerBase(object):
 
     def _check(self):
         check_runner = get_check_runner(self.config, self.logger, self.check_params)
-        self.logger.info("get_check_runner -> '{runner}'".format(runner=check_runner.__class__.__name__))
+        self.logger.sysinfo("get_check_runner -> '{runner}'".format(runner=check_runner.__class__.__name__))
         self.file_collection.set_check_types(self.check_params)
         files_to_check = PipelineFileCollection(
             f for f in self.file_collection if f.check_type is not PipelineFileCheckType.NO_ACTION)
@@ -442,7 +443,7 @@ class HandlerBase(object):
     def _harvest(self, upload_runner):
         harvest_runner = get_harvester_runner(self.harvest_type, upload_runner, self.harvest_params, self.temp_dir,
                                               self.config, self.logger)
-        self.logger.info("get_harvester_runner -> '{runner}'".format(runner=harvest_runner.__class__.__name__))
+        self.logger.sysinfo("get_harvester_runner -> '{runner}'".format(runner=harvest_runner.__class__.__name__))
         files_to_harvest = self.file_collection.filter_by_bool_attribute('pending_harvest')
 
         if files_to_harvest:
@@ -457,13 +458,14 @@ class HandlerBase(object):
     def _publish(self):
         archive_runner = get_upload_runner(self._config.pipeline_config['global']['archive_uri'], self._config,
                                            self.logger, archive_mode=True)
-        self.logger.info("get_upload_runner (archive) -> '{runner}'".format(runner=archive_runner.__class__.__name__))
+        self.logger.sysinfo(
+            "get_upload_runner (archive) -> '{runner}'".format(runner=archive_runner.__class__.__name__))
 
         self._archive(archive_runner)
 
         upload_runner = get_upload_runner(self._config.pipeline_config['global']['upload_uri'], self._config,
                                           self.logger)
-        self.logger.info("get_upload_runner -> '{runner}'".format(runner=upload_runner.__class__.__name__))
+        self.logger.sysinfo("get_upload_runner -> '{runner}'".format(runner=upload_runner.__class__.__name__))
 
         self.file_collection.set_dest_paths(self._dest_path_function_ref)
         self._harvest(upload_runner)
@@ -488,7 +490,7 @@ class HandlerBase(object):
         }
 
         notify_runner = get_notify_runner(notification_data, self.config, self.logger, self.notify_params)
-        self.logger.info("get_notify_runner -> '{runner}'".format(runner=notify_runner.__class__.__name__))
+        self.logger.sysinfo("get_notify_runner -> '{runner}'".format(runner=notify_runner.__class__.__name__))
 
         notify_params_dict = self.notify_params or {}
         notify_list = notify_params_dict.get(notify_list_param)
@@ -521,7 +523,8 @@ class HandlerBase(object):
 
         :return: None
         """
-        self.logger.info("{name} transitioned to state: {state}".format(name=self.__class__.__name__, state=self.state))
+        self.logger.sysinfo(
+            "{name} transitioned to state: {state}".format(name=self.__class__.__name__, state=self.state))
         if self.celery_task is not None:
             self.celery_task.update_state(state=self.state)
 
@@ -557,7 +560,6 @@ class HandlerBase(object):
             pipeline_name = self.celery_task.pipeline_name
             self.logger = self.celery_task.logger
         except AttributeError as e:
-            logger = logging.getLogger()
             # the absence of a celery task indicates we're in a unittest or IDE, so fall-back to basic logging config
             celery_task_id = None
             celery_task_name = 'NO_TASK'
@@ -569,7 +571,7 @@ class HandlerBase(object):
                 'celery_task_name': celery_task_name,
                 'pipeline_name': pipeline_name
             }
-            logger = logging.LoggerAdapter(logger, logging_extra)
+            logger = get_pipeline_logger('', logging_extra)
 
             # turn down logging for noisy libraries to WARN, unless overridden in pipeline config 'liblevel' key
             liblevel = getattr(self.config, 'pipeline_config', {}).get('logging', {}).get('liblevel', 'WARN')
@@ -638,7 +640,7 @@ class HandlerBase(object):
 
     def _set_cc_versions(self):
         self._cc_versions = get_cc_module_versions()
-        self.logger.info("get_cc_module_versions -> {versions}".format(versions=self._cc_versions))
+        self.logger.sysinfo("get_cc_module_versions -> {versions}".format(versions=self._cc_versions))
 
     def _set_checksum(self):
         try:
@@ -646,7 +648,7 @@ class HandlerBase(object):
         except (IOError, OSError) as e:
             self.logger.exception(e)
             raise InvalidInputFileError(e)
-        self.logger.info("get_file_checksum -> '{checksum}'".format(checksum=self.file_checksum))
+        self.logger.sysinfo("get_file_checksum -> '{checksum}'".format(checksum=self.file_checksum))
 
     def _set_path_functions(self):
         """Determine functions to use for publishing destination and archive path resolution
@@ -657,14 +659,14 @@ class HandlerBase(object):
             'pluggable']['path_function_group'])
         self._dest_path_function_ref = dest_path_function_ref
         self._dest_path_function_name = dest_path_function_name
-        self.logger.info(
+        self.logger.sysinfo(
             "get_path_function -> '{function}'".format(function=self._dest_path_function_name))
 
         archive_path_function_ref, archive_path_function_name = get_path_function(self, self.config.pipeline_config[
             'pluggable']['path_function_group'], archive_mode=True)
         self._archive_path_function_ref = archive_path_function_ref
         self._archive_path_function_name = archive_path_function_name
-        self.logger.info(
+        self.logger.sysinfo(
             "get_path_function (archive) -> '{function}'".format(function=self._archive_path_function_name))
 
     #
@@ -676,21 +678,21 @@ class HandlerBase(object):
 
         :return: None
         """
-        self.logger.info("`preprocess` not overridden by child class, skipping step")
+        self.logger.sysinfo("`preprocess` not overridden by child class, skipping step")
 
     def process(self):  # pragma: no cover
         """Method designed to be overridden by child handlers in order to execute code between check and publish steps
 
         :return: None
         """
-        self.logger.info("`process` not overridden by child class, skipping step")
+        self.logger.sysinfo("`process` not overridden by child class, skipping step")
 
     def postprocess(self):  # pragma: no cover
         """Method designed to be overridden by child handlers in order to execute code between publish and notify steps
 
         :return: None
         """
-        self.logger.info("`postprocess` not overridden by child class, skipping step")
+        self.logger.sysinfo("`postprocess` not overridden by child class, skipping step")
 
     #
     # "public" methods

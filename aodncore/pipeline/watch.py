@@ -7,6 +7,7 @@ from uuid import uuid4
 from six import PY2
 from transitions import Machine
 
+from .log import get_pipeline_logger
 from ..util import mkdir_p, rm_f, rm_r, validate_dir_writable, validate_file_writable
 
 # OS X test compatibility, due to absence of pyinotify (which is specific to the Linux kernel)
@@ -136,12 +137,11 @@ class CeleryContext(object):
 
             def _configure_logger(self):
                 logging.config.dictConfig(config.worker_logging_config)
-                raw_logger = get_task_logger(task_name)
                 logging_extra = {
                     'celery_task_id': self.request.id,
                     'celery_task_name': task_name
                 }
-                self.logger = logging.LoggerAdapter(raw_logger, logging_extra)
+                self.logger = get_pipeline_logger(task_name, extra=logging_extra, logger_function=get_task_logger)
 
             def run(self, incoming_file):
                 try:
@@ -224,7 +224,7 @@ class IncomingFileEventHandler(pyinotify.ProcessEvent):
     def __init__(self, config):
         super(IncomingFileEventHandler, self).__init__()
         self._config = config
-        self._logger = logging.getLogger(config.pipeline_config['watch']['logger_name'])
+        self._logger = get_pipeline_logger(config.pipeline_config['watch']['logger_name'])
 
     def process_default(self, event):
         # event_id is distinct from task_id, and exists in order to correlate log messages before *and* after a task
@@ -301,12 +301,14 @@ class AbstractFileStateManager(object):
         self.logger = logger
         self._machine = Machine(model=self, states=self.states, initial='FILE_IN_INCOMING', auto_transitions=False,
                                 transitions=self.transitions, after_state_change='_after_state_change')
-        self.logger.info("{name} initialised in state: {state}".format(name=self.__class__.__name__, state=self.state))
+        self.logger.sysinfo(
+            "{name} initialised in state: {state}".format(name=self.__class__.__name__, state=self.state))
 
         self._pre_check()
 
     def _after_state_change(self):
-        self.logger.info("{name} transitioned to state: {state}".format(name=self.__class__.__name__, state=self.state))
+        self.logger.sysinfo(
+            "{name} transitioned to state: {state}".format(name=self.__class__.__name__, state=self.state))
 
     @abc.abstractmethod
     def _pre_check(self):
@@ -377,7 +379,7 @@ class WatchServiceManager(object):
         self._config = config
         self._event_handler = event_handler
 
-        self._logger = logging.getLogger(config.pipeline_config['watch']['logger_name'])
+        self._logger = get_pipeline_logger(config.pipeline_config['watch']['logger_name'])
 
     @property
     def watches(self):
