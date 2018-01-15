@@ -519,6 +519,8 @@ class HandlerBase(object):
             'checks': ','.join(checks) or 'None',
             'collection_headers': collection_headers,
             'collection_data': collection_data,
+            'error_details': self.error_details or False,
+            'upload_dir': os.path.dirname(self.upload_path) if self.upload_path else None
         }
         notification_data = merge_dicts(class_dict, extra)
 

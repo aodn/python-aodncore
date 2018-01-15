@@ -42,8 +42,20 @@
     </div>
     {% endif %}
 
+    <p>
+    For further information about this message, please contact <a href="mailto:info@aodn.org.au">info@aodn.org.au</a>
+    (or the relevant AODN project officer).
+    </p>
+
     <p>Regards,<br>
         Australian Ocean Data Network
     </p>
+
+    <footer>
+    <pre>
+    (Log reference: {{ celery_task_name }}[{{ celery_task_id }}])
+    </pre>
+    </footer>
+
 </body>
 </html>
