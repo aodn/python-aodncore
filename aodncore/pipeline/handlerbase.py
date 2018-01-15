@@ -236,6 +236,22 @@ class HandlerBase(object):
     #
 
     @property
+    def celery_task_id(self):
+        """Read-only property to return Celery task ID
+
+        :return: Celery task ID or None
+        """
+        return self._celery_task_id
+
+    @property
+    def celery_task_name(self):
+        """Read-only property to return Celery task name
+
+        :return: Celery task name or None
+        """
+        return self._celery_task_name
+
+    @property
     def cc_versions(self):
         """Read-only property to retrieve compliance checker module versions
 
@@ -505,7 +521,7 @@ class HandlerBase(object):
             'collection_data': collection_data,
         }
         notification_data = merge_dicts(class_dict, extra)
-        
+
         notify_runner = get_notify_runner(notification_data, self.config, self.logger, self.notify_params)
         self.logger.sysinfo("get_notify_runner -> '{runner}'".format(runner=notify_runner.__class__.__name__))
 
