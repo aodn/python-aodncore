@@ -49,13 +49,6 @@ class TestPipelineStepsHarvest(BaseTestCase):
         with self.assertRaises(InvalidHandlerError):
             harvester_runner.validate_file_handling(file_slice, matched_file_map)
 
-    @patch.object(TalendHarvesterRunner, 'run_deletions')
-    def test_run_talend_deletion(self, mock_run_deletions):
-        harvest_collection = get_harvest_collection(delete=True)
-        harvester_runner = TalendHarvesterRunner(self.uploader, None, TESTDATA_DIR, self.config, self.mock_logger)
-        harvester_runner.run(harvest_collection)
-        mock_run_deletions.assert_called_once()
-
     def test_get_harvest_runner(self):
         harvester_runner = get_harvester_runner('talend', self.uploader, None, TESTDATA_DIR, None, self.mock_logger)
         self.assertIsInstance(harvester_runner, TalendHarvesterRunner)
@@ -77,6 +70,14 @@ class TestPipelineStepsHarvest(BaseTestCase):
         harvester_runner = TalendHarvesterRunner(self.uploader, None, TESTDATA_DIR, self.config, self.mock_logger)
         harvester_runner.run(harvest_collection)
         mock_execute_talend.assert_called_once()
+
+    @patch.object(TalendHarvesterRunner, 'run_deletions')
+    def test_single_store_deletion(self, mock_run_deletions):
+        harvest_collection = get_harvest_collection(delete=True)
+        harvested_file_map = {'my_test_harvester': harvest_collection}
+        harvester_runner = TalendHarvesterRunner(self.uploader, None, TESTDATA_DIR, self.config, self.mock_logger)
+        harvester_runner.run(harvest_collection)
+        mock_run_deletions.assert_called_once_with(harvested_file_map, TESTDATA_DIR, 'pending_store_deletion')
 
     @patch.object(TalendHarvesterRunner, 'match_harvester_to_files')
     @patch.object(TalendHarvesterRunner, 'run_deletions')
@@ -115,14 +116,14 @@ class TestPipelineStepsHarvest(BaseTestCase):
 
     @patch.object(TalendHarvesterRunner, 'run_deletions')
     def test_multi_harvester_exception_cleanup(self, mock_run_deletions):
-        harvest_collection = get_harvest_collection()
+        harvest_collection = get_harvest_collection(False)
         harvested_file_map = {'my_test_harvester_1': harvest_collection}
         os.environ['PIPELINE_TRIGGER_CONFIG_FILE'] = os.path.join(TEST_ROOT, 'trigger_single_fail.conf')
         multi_harvester_runner = TalendHarvesterRunner(self.uploader, None, TESTDATA_DIR, self.config, self.mock_logger)
         with self.assertRaises(SystemCommandFailedError):
             multi_harvester_runner.run(harvest_collection)
         # Expect cleanup attempt to have been called on the files already harvested
-        mock_run_deletions.assert_called_once_with(harvested_file_map, TESTDATA_DIR)
+        mock_run_deletions.assert_called_once_with(harvested_file_map, TESTDATA_DIR, 'pending_undo_deletion')
 
     @patch.object(TalendHarvesterRunner, 'run_deletions')
     def test_harvester_exception_cleanup_previous_success(self, mock_run_deletions):

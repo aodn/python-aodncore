@@ -38,6 +38,16 @@ def get_upload_collection(delete=False):
     return collection
 
 
+def get_undo_collection():
+    pipeline_file = PipelineFile(GOOD_NC)
+    pipeline_file.should_undo_delete = True
+    pipeline_file.is_stored = True
+    pipeline_file.publish_type = PipelineFilePublishType.UPLOAD_ONLY
+    pipeline_file.dest_path = 'subdirectory/targetfile.nc'
+    collection = PipelineFileCollection([pipeline_file])
+    return collection
+
+
 # noinspection PyUnusedLocal
 class TestPipelineStepsUpload(BaseTestCase):
     def test_get_upload_runner(self):
@@ -220,6 +230,12 @@ class TestBaseUploadRunner(BaseTestCase):
         runner.run(collection)
         self.assertTrue(collection[0].is_stored)
 
+    def test_undo_success(self):
+        collection = get_undo_collection()
+        runner = NullUploadRunner("/", fail=False)
+        runner.run(collection)
+        self.assertTrue(collection[0].is_undo_deleted)
+
 
 class TestFileUploadRunner(BaseTestCase):
     @mock.patch('aodncore.pipeline.steps.upload.mkdir_p')
@@ -274,6 +290,19 @@ class TestFileUploadRunner(BaseTestCase):
         mock_rm_f.assert_any_call(unknown_dest_path)
 
         self.assertTrue(all(p.is_stored for p in collection))
+
+    @mock.patch('aodncore.pipeline.steps.upload.rm_f')
+    def test_undo(self, mock_rm_f):
+        collection = get_undo_collection()
+        pipeline_file = collection[0]
+
+        file_upload_runner = FileUploadRunner('/tmp/probably/doesnt/exist/upload', None, self.mock_logger)
+        file_upload_runner.run(collection)
+
+        dest_path = os.path.join(file_upload_runner.prefix, pipeline_file.dest_path)
+
+        mock_rm_f.assert_called_once_with(dest_path)
+        self.assertTrue(pipeline_file.is_undo_deleted)
 
 
 class TestS3UploadRunner(BaseTestCase):
@@ -364,6 +393,28 @@ class TestS3UploadRunner(BaseTestCase):
         s3_upload_runner.s3_client.delete_object.assert_any_call(Bucket=dummy_bucket, Key=unknown_dest_path)
 
         self.assertTrue(all(p.is_stored for p in collection))
+
+    @mock.patch('aodncore.pipeline.steps.upload.boto3')
+    def test_undo(self, mock_boto3):
+        collection = get_undo_collection()
+        pipeline_file = collection[0]
+
+        dummy_bucket = str(uuid4())
+        dummy_prefix = str(uuid4())
+        s3_upload_runner = S3UploadRunner(dummy_bucket, dummy_prefix, None, self.mock_logger)
+
+        mock_boto3.client.assert_called_once_with('s3')
+
+        with mock.patch('aodncore.pipeline.steps.upload.open', mock.mock_open(read_data='')) as m:
+            s3_upload_runner.run(collection)
+        m.assert_not_called()
+
+        dest_path = os.path.join(s3_upload_runner.prefix, pipeline_file.dest_path)
+
+        s3_upload_runner.s3_client.head_bucket.assert_called_once_with(Bucket=dummy_bucket)
+        s3_upload_runner.s3_client.delete_object.assert_called_once_with(Bucket=dummy_bucket, Key=dest_path)
+
+        self.assertTrue(pipeline_file.is_undo_deleted)
 
 
 # noinspection PyUnusedLocal

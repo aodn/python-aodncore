@@ -60,12 +60,14 @@ class PipelineFile(object):
         self._should_archive = False
         self._should_harvest = False
         self._should_store = False
+        self._should_undo_delete = False
 
         # status flags - these express the *current state* of the file
         self._is_checked = False
         self._is_archived = False
         self._is_harvested = False
         self._is_stored = False
+        self._is_undo_deleted = False
 
         self._check_result = None
         self._mime_type = None
@@ -95,6 +97,7 @@ class PipelineFile(object):
         yield 'is_harvested', str(self._is_harvested)
         yield 'is_stored', str(self._is_stored)
         yield 'mime_type', self.mime_type
+        yield 'is_undo_deleted', str(self._is_undo_deleted)
         yield 'name', self.name
         yield 'published', self.published
         yield 'pending_archive', str(self.pending_archive)
@@ -102,10 +105,12 @@ class PipelineFile(object):
         yield 'pending_harvest_deletion', str(self.pending_harvest_deletion)
         yield 'pending_store_addition', str(self.pending_store_addition)
         yield 'pending_store_deletion', str(self.pending_store_deletion)
+        yield 'pending_undo_deletion', str(self.pending_undo_deletion)
         yield 'publish_type', self.publish_type.name
         yield 'should_archive', str(self._should_archive)
         yield 'should_harvest', str(self._should_harvest)
         yield 'should_store', str(self._should_store)
+        yield 'should_undo_delete', str(self._should_undo_delete)
         yield 'src_path', self.src_path
 
     def __repr__(self):  # pragma: no cover
@@ -233,12 +238,27 @@ class PipelineFile(object):
     def is_stored(self):
         return self._is_stored
 
+    @property
+    def is_undo_deleted(self):
+        return self._is_undo_deleted
+
+    @is_undo_deleted.setter
+    def is_undo_deleted(self, is_undo_deleted):
+        validate_bool(is_undo_deleted)
+
+        self._is_undo_deleted = is_undo_deleted
+        self._post_property_update({'is_undo_deleted': is_undo_deleted})
+
     @is_stored.setter
     def is_stored(self, is_stored):
         validate_bool(is_stored)
 
         self._is_stored = is_stored
         self._post_property_update({'is_stored': is_stored})
+
+    @property
+    def is_harvested_or_stored(self):
+        return self.is_stored or self.is_harvested
 
     @property
     def is_uploaded(self):
@@ -273,6 +293,10 @@ class PipelineFile(object):
         return self.should_harvest and not self.is_harvested
 
     @property
+    def pending_undo(self):
+        return self.should_undo_delete and not self.is_deletion
+
+    @property
     def pending_harvest_addition(self):
         return self.pending_harvest and not self.is_deletion
 
@@ -291,6 +315,10 @@ class PipelineFile(object):
     @property
     def pending_store_deletion(self):
         return self.pending_store and self.is_deletion
+
+    @property
+    def pending_undo_deletion(self):
+        return self.is_harvested_or_stored and self.pending_undo
 
     @property
     def publish_type(self):
@@ -328,6 +356,17 @@ class PipelineFile(object):
     @property
     def should_harvest(self):
         return self._should_harvest
+
+    @property
+    def should_undo_delete(self):
+        return self._should_undo_delete
+
+    @should_undo_delete.setter
+    def should_undo_delete(self, should_undo_delete):
+        validate_bool(should_undo_delete)
+
+        self._should_undo_delete = should_undo_delete
+        self._post_property_update({'should_undo_delete': should_undo_delete})
 
     def _post_property_update(self, properties, include_values=True):
         """Method run after a property is updated in order to perform optional actions such as updating ORM (if enabled)
