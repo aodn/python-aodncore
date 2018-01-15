@@ -15,7 +15,7 @@ from .files import PipelineFile, PipelineFileCollection
 from .log import SYSINFO, get_pipeline_logger
 from .steps import (get_cc_module_versions, get_check_runner, get_harvester_runner, get_notify_runner,
                     get_resolve_runner, get_upload_runner)
-from ..util import format_exception, get_file_checksum, validate_bool, TemporaryDirectory
+from ..util import format_exception, get_file_checksum, merge_dicts, validate_bool, TemporaryDirectory
 
 __all__ = [
     'HandlerBase'
@@ -207,7 +207,7 @@ class HandlerBase(object):
                                 auto_transitions=False, transitions=HandlerBase.all_transitions,
                                 after_state_change='_after_state_change')
 
-    def __str__(self):
+    def __iter__(self):
         ignored_attributes = {'celery_task', 'config', 'default_addition_publish_type', 'default_deletion_publish_type',
                               'logger', 'state', 'trigger'}
         ignored_attributes.update("is_{state}".format(state=s) for s in self.all_states)
@@ -221,7 +221,12 @@ class HandlerBase(object):
         properties = {p: str(getattr(self, p)) for p in property_names if includeattr(p)}
         public_attrs = {k: str(v) for k, v in self.__dict__.items() if includeattr(k)}
         public_attrs.update(properties)
-        return "{cls}({attrs})".format(cls=self.__class__.__name__, attrs=public_attrs)
+
+        for item in public_attrs.items():
+            yield item
+
+    def __str__(self):
+        return "{cls}({attrs})".format(cls=self.__class__.__name__, attrs=dict(self))
 
     #
     # properties
@@ -255,6 +260,14 @@ class HandlerBase(object):
         :return: Exception object or None
         """
         return self._error
+
+    @property
+    def error_details(self):
+        """Read-only property to retrieve string description of error (if applicable) from handler instance
+
+        :return: error description or 'None'
+        """
+        return self._error_details
 
     @property
     def file_checksum(self):
@@ -479,16 +492,17 @@ class HandlerBase(object):
         collection_headers, collection_data = self.file_collection.get_table_data()
         checks = () if self.check_params is None else self.check_params.get('checks', ())
 
-        notification_data = {
+        class_dict = dict(self)
+        extra = {
             'input_file': os.path.basename(self.input_file),
             'processing_result': self.result.name,
             'handler_start_time': self.start_time.strftime("%Y-%m-%d %H:%M"),
             'checks': ','.join(checks) or 'None',
             'collection_headers': collection_headers,
             'collection_data': collection_data,
-            'error_details': self._error_details
         }
-
+        notification_data = merge_dicts(class_dict, extra)
+        
         notify_runner = get_notify_runner(notification_data, self.config, self.logger, self.notify_params)
         self.logger.sysinfo("get_notify_runner -> '{runner}'".format(runner=notify_runner.__class__.__name__))
 
