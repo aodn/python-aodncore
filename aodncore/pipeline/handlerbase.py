@@ -140,6 +140,7 @@ class HandlerBase(object):
                  harvest_type='talend',
                  include_regexes=None,
                  notify_params=None,
+                 upload_path=None,
                  resolve_params=None,
                  **kwargs):
         """
@@ -160,6 +161,7 @@ class HandlerBase(object):
         :param harvest_type: determine which harvest type will be used (supported types in harvest module)
         :param include_regexes: list of regexes that files must match to be 'eligible'
         :param notify_params: keyword parameters passed to the notify step to control notification behaviour
+        :param upload_path: original path of file (for information only, e.g. notifications)
         :param resolve_params: keyword parameters passed to the publish step to control harvest runner parameters
         :param kwargs: allow additional keyword arguments to allow potential for child handler to use custom arguments
         """
@@ -191,6 +193,7 @@ class HandlerBase(object):
         self.harvest_type = harvest_type
         self.include_regexes = include_regexes
         self.notify_params = notify_params
+        self.upload_path = upload_path
         self.resolve_params = resolve_params
 
         self.file_collection = PipelineFileCollection()
