@@ -1,14 +1,13 @@
 import os
 import uuid
 from collections import MutableSet, OrderedDict
-from tempfile import mkstemp
 
 from six import assertCountEqual
 from six.moves import range
 
 from aodncore.pipeline import (CheckResult, PipelineFileCollection, PipelineFile, PipelineFileCheckType,
                                PipelineFilePublishType)
-from aodncore.pipeline.exceptions import MissingFileError
+from aodncore.pipeline.exceptions import DuplicatePipelineFileError, MissingFileError
 from aodncore.pipeline.steps import get_child_check_runner
 from aodncore.testlib import BaseTestCase, get_nonexistent_path, mock
 from test_aodncore import TESTDATA_DIR
@@ -156,6 +155,20 @@ class TestPipelineFileCollection(BaseTestCase):
 
     def test_abstract_class(self):
         self.assertIsInstance(self.collection, MutableSet)
+
+    def test_add_duplicate(self):
+        p1 = PipelineFile(GOOD_NC)
+        p2 = PipelineFile(GOOD_NC)
+
+        self.assertNotEqual(id(p1), id(p2))
+        self.assertTrue(p1 == p2)
+
+        self.collection.add(p1)
+        with self.assertRaises(DuplicatePipelineFileError):
+            self.collection.add(p2)
+
+        with self.assertRaises(DuplicatePipelineFileError):
+            self.collection.update([p2])
 
     def test_invalid_types(self):
         class NothingClass(object):
