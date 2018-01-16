@@ -36,14 +36,15 @@ class PipelineFile(object):
         :param file_update_callback: optional callback to call when a file property is updated
         """
         try:
-            self.file_checksum = None if is_deletion else get_file_checksum(src_path)
+            self._file_checksum = None if is_deletion else get_file_checksum(src_path)
         except (IOError, OSError) as e:
             raise MissingFileError(
                 "failed to create PipelineFile addition for '{src_path}'. {e}".format(src_path=src_path,
                                                                                       e=format_exception(e)))
 
-        self.name = name if name is not None else os.path.basename(src_path)
-        self.src_path = src_path
+        self._name = name if name is not None else os.path.basename(src_path)
+        self._src_path = src_path
+
         self._archive_path = archive_path
         self._dest_path = dest_path
 
@@ -78,7 +79,7 @@ class PipelineFile(object):
         return hash(self.__key())
 
     def __key(self):
-        return self.src_path, self.file_checksum
+        return self.file_checksum, self.name, self.src_path
 
     def __iter__(self):
         yield 'archive_path', self.archive_path
@@ -109,6 +110,29 @@ class PipelineFile(object):
 
     def __repr__(self):  # pragma: no cover
         return "PipelineFile({repr})".format(repr=repr(dict(self)))
+
+    #
+    # Static properties (read-only, should never change during the lifecycle of the object)
+    #
+    @property
+    def extension(self):
+        return self._extension
+
+    @property
+    def file_checksum(self):
+        return self._file_checksum
+
+    @property
+    def name(self):
+        return self._name
+
+    @property
+    def src_path(self):
+        return self._src_path
+
+    #
+    # State properties (may change during the lifecycle of the object to reflect the current state)
+    #
 
     @property
     def archive_path(self):
