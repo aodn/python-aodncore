@@ -434,10 +434,10 @@ class PipelineFileCollection(MutableSet):
     def update(self, sequence, overwrite=False):
         validate_nonstring_iterable(sequence)
 
-        result = None
+        results = []
         for item in sequence:
-            result = self.add(item, overwrite=overwrite)
-        return result
+            results.append(self.add(item, overwrite=overwrite))
+        return any(results)
 
     def get_pipelinefile_from_src_path(self, src_path):
         """Get PipelineFile for a given src_path
