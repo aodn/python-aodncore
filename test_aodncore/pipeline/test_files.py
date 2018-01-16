@@ -156,6 +156,18 @@ class TestPipelineFileCollection(BaseTestCase):
     def test_abstract_class(self):
         self.assertIsInstance(self.collection, MutableSet)
 
+    def test_add(self):
+        p1 = PipelineFile(GOOD_NC)
+        p2 = PipelineFile(GOOD_NC)
+
+        result1 = self.collection.add(p1)
+        self.assertTrue(result1)
+
+        result2 = self.collection.add(p2, overwrite=True)
+        self.assertTrue(result2)
+
+        self.assertSetEqual({p2}, self.collection)
+
     def test_add_duplicate(self):
         p1 = PipelineFile(GOOD_NC)
         p2 = PipelineFile(GOOD_NC)
@@ -167,8 +179,38 @@ class TestPipelineFileCollection(BaseTestCase):
         with self.assertRaises(DuplicatePipelineFileError):
             self.collection.add(p2)
 
+        self.assertSetEqual({p1}, self.collection)
+
+    def test_update(self):
+        p1 = PipelineFile(GOOD_NC)
+        p2 = PipelineFile(BAD_NC)
+        self.collection.add(p1)
+
+        try:
+            self.collection.update([p2])
+        except Exception as e:
+            raise AssertionError(
+                "unexpected exception raised. {cls} {msg}".format(cls=e.__class__.__name__, msg=e))
+
+        self.assertSetEqual({p1, p2}, self.collection)
+
+    def test_update_duplicate(self):
+        p1 = PipelineFile(GOOD_NC)
+        p2 = PipelineFile(GOOD_NC)
+        self.collection.add(p1)
+
         with self.assertRaises(DuplicatePipelineFileError):
             self.collection.update([p2])
+
+        self.assertIs(self.collection[0], p1)
+
+        try:
+            self.collection.add(p2, overwrite=True)
+        except Exception as e:
+            raise AssertionError(
+                "unexpected exception raised. {cls} {msg}".format(cls=e.__class__.__name__, msg=e))
+
+        self.assertSetEqual({p2}, self.collection)
 
     def test_invalid_types(self):
         class NothingClass(object):

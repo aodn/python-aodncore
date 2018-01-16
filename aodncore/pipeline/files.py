@@ -399,6 +399,10 @@ class PipelineFileCollection(MutableSet):
         if not result and not overwrite:
             raise DuplicatePipelineFileError("{f.name} already in collection".format(f=fileobj))
 
+        if overwrite:
+            self.__s.discard(fileobj)
+            result = True
+
         self.__s.add(fileobj)
         return result
 
