@@ -123,7 +123,8 @@ class CeleryContext(object):
                 return {
                     'incoming': {
                         'dir': incoming_dir,
-                        'path': input_file
+                        'path': input_file,
+                        'relative_path': os.path.relpath(input_file, config.pipeline_config['watch']['incoming_dir'])
                     },
                     'error': {
                         'dir': error_dir,
@@ -155,7 +156,7 @@ class CeleryContext(object):
                     self.file_state_manager.move_to_processing()
 
                     self.handler = handler_class(location_map['processing']['path'], config=config, celery_task=self,
-                                                 **kwargs)
+                                                 upload_path=location_map['incoming']['relative_path'], **kwargs)
                     self.handler.run()
 
                     if self.handler.error:

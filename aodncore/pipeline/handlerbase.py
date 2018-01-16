@@ -15,7 +15,7 @@ from .files import PipelineFile, PipelineFileCollection
 from .log import SYSINFO, get_pipeline_logger
 from .steps import (get_cc_module_versions, get_check_runner, get_harvester_runner, get_notify_runner,
                     get_resolve_runner, get_upload_runner)
-from ..util import format_exception, get_file_checksum, validate_bool, TemporaryDirectory
+from ..util import format_exception, get_file_checksum, merge_dicts, validate_bool, TemporaryDirectory
 
 __all__ = [
     'HandlerBase'
@@ -140,6 +140,7 @@ class HandlerBase(object):
                  harvest_type='talend',
                  include_regexes=None,
                  notify_params=None,
+                 upload_path=None,
                  resolve_params=None,
                  **kwargs):
         """
@@ -160,6 +161,7 @@ class HandlerBase(object):
         :param harvest_type: determine which harvest type will be used (supported types in harvest module)
         :param include_regexes: list of regexes that files must match to be 'eligible'
         :param notify_params: keyword parameters passed to the notify step to control notification behaviour
+        :param upload_path: original path of file (for information only, e.g. notifications)
         :param resolve_params: keyword parameters passed to the publish step to control harvest runner parameters
         :param kwargs: allow additional keyword arguments to allow potential for child handler to use custom arguments
         """
@@ -191,6 +193,7 @@ class HandlerBase(object):
         self.harvest_type = harvest_type
         self.include_regexes = include_regexes
         self.notify_params = notify_params
+        self.upload_path = upload_path
         self.resolve_params = resolve_params
 
         self.file_collection = PipelineFileCollection()
@@ -207,7 +210,7 @@ class HandlerBase(object):
                                 auto_transitions=False, transitions=HandlerBase.all_transitions,
                                 after_state_change='_after_state_change')
 
-    def __str__(self):
+    def __iter__(self):
         ignored_attributes = {'celery_task', 'config', 'default_addition_publish_type', 'default_deletion_publish_type',
                               'logger', 'state', 'trigger'}
         ignored_attributes.update("is_{state}".format(state=s) for s in self.all_states)
@@ -221,11 +224,32 @@ class HandlerBase(object):
         properties = {p: str(getattr(self, p)) for p in property_names if includeattr(p)}
         public_attrs = {k: str(v) for k, v in self.__dict__.items() if includeattr(k)}
         public_attrs.update(properties)
-        return "{cls}({attrs})".format(cls=self.__class__.__name__, attrs=public_attrs)
+
+        for item in public_attrs.items():
+            yield item
+
+    def __str__(self):
+        return "{cls}({attrs})".format(cls=self.__class__.__name__, attrs=dict(self))
 
     #
     # properties
     #
+
+    @property
+    def celery_task_id(self):
+        """Read-only property to return Celery task ID
+
+        :return: Celery task ID or None
+        """
+        return self._celery_task_id
+
+    @property
+    def celery_task_name(self):
+        """Read-only property to return Celery task name
+
+        :return: Celery task name or None
+        """
+        return self._celery_task_name
 
     @property
     def cc_versions(self):
@@ -255,6 +279,14 @@ class HandlerBase(object):
         :return: Exception object or None
         """
         return self._error
+
+    @property
+    def error_details(self):
+        """Read-only property to retrieve string description of error (if applicable) from handler instance
+
+        :return: error description or 'None'
+        """
+        return self._error_details
 
     @property
     def file_checksum(self):
@@ -479,15 +511,16 @@ class HandlerBase(object):
         collection_headers, collection_data = self.file_collection.get_table_data()
         checks = () if self.check_params is None else self.check_params.get('checks', ())
 
-        notification_data = {
+        class_dict = dict(self)
+        extra = {
             'input_file': os.path.basename(self.input_file),
             'processing_result': self.result.name,
             'handler_start_time': self.start_time.strftime("%Y-%m-%d %H:%M"),
             'checks': ','.join(checks) or 'None',
             'collection_headers': collection_headers,
             'collection_data': collection_data,
-            'error_details': self._error_details
         }
+        notification_data = merge_dicts(class_dict, extra)
 
         notify_runner = get_notify_runner(notification_data, self.config, self.logger, self.notify_params)
         self.logger.sysinfo("get_notify_runner -> '{runner}'".format(runner=notify_runner.__class__.__name__))
