@@ -60,7 +60,7 @@ class PipelineFile(object):
         self._should_archive = False
         self._should_harvest = False
         self._should_store = False
-        self._should_undo_delete = False
+        self._undo_deletion = False
 
         # status flags - these express the *current state* of the file
         self._is_checked = False
@@ -110,7 +110,7 @@ class PipelineFile(object):
         yield 'should_archive', str(self._should_archive)
         yield 'should_harvest', str(self._should_harvest)
         yield 'should_store', str(self._should_store)
-        yield 'should_undo_delete', str(self._should_undo_delete)
+        yield 'undo_deletion', str(self._undo_deletion)
         yield 'src_path', self.src_path
 
     def __repr__(self):  # pragma: no cover
@@ -257,10 +257,6 @@ class PipelineFile(object):
         self._post_property_update({'is_stored': is_stored})
 
     @property
-    def is_harvested_or_stored(self):
-        return self.is_stored or self.is_harvested
-
-    @property
     def is_uploaded(self):
         return not self.is_deletion and self.is_stored
 
@@ -293,10 +289,6 @@ class PipelineFile(object):
         return self.should_harvest and not self.is_harvested
 
     @property
-    def pending_undo(self):
-        return self.should_undo_delete and not self.is_deletion
-
-    @property
     def pending_harvest_addition(self):
         return self.pending_harvest and not self.is_deletion
 
@@ -318,7 +310,7 @@ class PipelineFile(object):
 
     @property
     def pending_undo_deletion(self):
-        return self.is_harvested_or_stored and self.pending_undo
+        return self.undo_deletion and not self.is_deletion
 
     @property
     def publish_type(self):
@@ -358,15 +350,15 @@ class PipelineFile(object):
         return self._should_harvest
 
     @property
-    def should_undo_delete(self):
-        return self._should_undo_delete
+    def undo_deletion(self):
+        return self._undo_deletion
 
-    @should_undo_delete.setter
-    def should_undo_delete(self, should_undo_delete):
-        validate_bool(should_undo_delete)
+    @undo_deletion.setter
+    def undo_deletion(self, undo_deletion):
+        validate_bool(undo_deletion)
 
-        self._should_undo_delete = should_undo_delete
-        self._post_property_update({'should_undo_delete': should_undo_delete})
+        self._undo_deletion = undo_deletion
+        self._post_property_update({'undo_deletion': undo_deletion})
 
     def _post_property_update(self, properties, include_values=True):
         """Method run after a property is updated in order to perform optional actions such as updating ORM (if enabled)
@@ -672,6 +664,17 @@ class PipelineFileCollection(MutableSet):
         for f in self.__s:
             if f.dest_path is None and any((f.should_store, f.should_harvest)):
                 f.dest_path = dest_path_function(f.src_path)
+
+    def set_boolean_attribute(self, attribute, val):
+        """Set a boolean attribute for each file in the collection
+
+        :param attribute: attribute to set
+        :param val: value to set the attribute
+        :return: None
+        """
+        for f in self.__s:
+            if hasattr(f, attribute):
+                setattr(f, attribute, val)
 
     def set_file_update_callback(self, file_update_callback):
         """Set a callback function in each PipelineFile in this collection

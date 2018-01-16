@@ -40,7 +40,7 @@ def get_upload_collection(delete=False):
 
 def get_undo_collection():
     pipeline_file = PipelineFile(GOOD_NC)
-    pipeline_file.should_undo_delete = True
+    pipeline_file.undo_deletion = True
     pipeline_file.is_stored = True
     pipeline_file.publish_type = PipelineFilePublishType.UPLOAD_ONLY
     pipeline_file.dest_path = 'subdirectory/targetfile.nc'

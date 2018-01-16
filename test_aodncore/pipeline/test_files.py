@@ -57,7 +57,7 @@ class TestPipelineFile(BaseTestCase):
                           'pending_archive', 'pending_harvest_addition', 'pending_harvest_deletion',
                           'pending_store_addition', 'pending_store_deletion', 'pending_undo_deletion', 'published',
                           'publish_type',
-                          'should_archive', 'should_harvest', 'should_store', 'should_undo_delete', 'src_path', ])
+                          'should_archive', 'should_harvest', 'should_store', 'undo_deletion', 'src_path', ])
 
     def test_property_check_result(self):
         self.assertFalse(self.pipelinefile.is_checked)

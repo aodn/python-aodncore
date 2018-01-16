@@ -6,7 +6,7 @@ from aodncore.common import SystemCommandFailedError
 from aodncore.pipeline import PipelineFile, PipelineFileCollection, PipelineFilePublishType
 from aodncore.pipeline.exceptions import InvalidHarvesterError, InvalidHandlerError
 from aodncore.pipeline.steps.harvest import get_harvester_runner, TalendHarvesterRunner
-from aodncore.testlib import BaseTestCase, get_test_config
+from aodncore.testlib import BaseTestCase, get_test_config, mock
 from test_aodncore import TESTDATA_DIR
 
 TEST_ROOT = os.path.dirname(__file__)
@@ -114,8 +114,8 @@ class TestPipelineStepsHarvest(BaseTestCase):
         # Expect cleanup attempt NOT to have been called, as no files have been harvested yet
         mock_run_deletions.assert_not_called()
 
-    @patch.object(TalendHarvesterRunner, 'run_deletions')
-    def test_multi_harvester_exception_cleanup(self, mock_run_deletions):
+    @patch.object(TalendHarvesterRunner, 'run_undo_deletions')
+    def test_multi_harvester_exception_cleanup(self, mock_run_undo_deletions):
         harvest_collection = get_harvest_collection(False)
         harvested_file_map = {'my_test_harvester_1': harvest_collection}
         os.environ['PIPELINE_TRIGGER_CONFIG_FILE'] = os.path.join(TEST_ROOT, 'trigger_single_fail.conf')
@@ -123,7 +123,7 @@ class TestPipelineStepsHarvest(BaseTestCase):
         with self.assertRaises(SystemCommandFailedError):
             multi_harvester_runner.run(harvest_collection)
         # Expect cleanup attempt to have been called on the files already harvested
-        mock_run_deletions.assert_called_once_with(harvested_file_map, TESTDATA_DIR, 'pending_undo_deletion')
+        mock_run_undo_deletions.assert_called_once_with(harvested_file_map, TESTDATA_DIR, 'pending_undo_deletion')
 
     @patch.object(TalendHarvesterRunner, 'run_deletions')
     def test_harvester_exception_cleanup_previous_success(self, mock_run_deletions):
