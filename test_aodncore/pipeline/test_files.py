@@ -51,13 +51,13 @@ class TestPipelineFile(BaseTestCase):
         # Confirm that __iter__ returns a dict with the expected keys
         assertCountEqual(self, dict_object.keys(),
                          ['archive_path', 'check_passed', 'dest_path', 'file_checksum', 'check_log', 'check_type',
-                          'extension', 'is_archived', 'is_checked', 'is_deletion', 'is_undo_deleted', 'is_harvested',
+                          'extension', 'is_archived', 'is_checked', 'is_deletion', 'is_undone', 'is_harvested',
                           'is_stored',
                           'mime_type', 'name',
                           'pending_archive', 'pending_harvest_addition', 'pending_harvest_deletion',
-                          'pending_store_addition', 'pending_store_deletion', 'pending_undo_deletion', 'published',
+                          'pending_store_addition', 'pending_store_deletion', 'pending_undo', 'published',
                           'publish_type',
-                          'should_archive', 'should_harvest', 'should_store', 'undo_deletion', 'src_path', ])
+                          'should_archive', 'should_harvest', 'should_store', 'should_undo', 'src_path', ])
 
     def test_nonexistent_attribute(self):
         nonexistent_attribute = str(uuid.uuid4())

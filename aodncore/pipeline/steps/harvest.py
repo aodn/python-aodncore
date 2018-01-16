@@ -77,7 +77,7 @@ class TalendHarvesterRunner(BaseHarvesterRunner):
                 if not deletion_map:
                     self._logger.info('No files to delete, proceeding to add matching files')
                 else:
-                    self.run_deletions(deletion_map, self.tmp_base_dir, 'pending_store_deletion')
+                    self.run_deletions(deletion_map, self.tmp_base_dir)
             except SystemCommandFailedError as e:
                 self._logger.error(
                     "File harvest deletion failed with exception: {e}".format(e=format_exception(e)))
@@ -145,14 +145,6 @@ class TalendHarvesterRunner(BaseHarvesterRunner):
         os.symlink(src_path, symlink_target)
 
     @staticmethod
-    def remove_symlink(talend_base_dir, dest_path):
-        symlink_target = os.path.join(talend_base_dir, dest_path)
-        try:
-            os.unlink(symlink_target)
-        except OSError:
-            pass
-
-    @staticmethod
     def executor_conversion(executor):
         python_formatted_exec = re.sub('=%{', '={', executor)
         return python_formatted_exec
@@ -167,12 +159,12 @@ class TalendHarvesterRunner(BaseHarvesterRunner):
 
         return input_file_list
 
-    def cleanup_on_error(self):
+    def cleanup_on_error(self, temp_directory):
         for file_map in self.harvested_file_map:
             for file_collection in file_map.values():
-                file_collection.set_boolean_attribute('undo_deletion', True)
+                file_collection.set_bool_attribute('should_undo', True)
 
-            self.run_undo_deletions(file_map, self.tmp_base_dir, 'pending_undo_deletion')
+            self.run_undo_deletions(file_map, temp_directory)
 
     def execute_talend(self, executor, matched_files, talend_base_dir):
         matched_file_list = [mf.dest_path for mf in matched_files]
@@ -198,32 +190,23 @@ class TalendHarvesterRunner(BaseHarvesterRunner):
             finally:
                 self._logger.info('--- END TALEND OUTPUT ---')
 
-    def run_deletions(self, harvester_map, tmp_base_dir, deletion_attribute):
+    def run_deletions(self, harvester_map, tmp_base_dir):
         for harvester, matched_files in harvester_map.items():
             with TemporaryDirectory(prefix='talend_base', dir=tmp_base_dir) as talend_base_dir:
-                for pf in matched_files:
-                    self.remove_symlink(talend_base_dir, pf.dest_path)
-                try:
-                    self.execute_talend(self._config.trigger_config[harvester]['exec'], matched_files, talend_base_dir)
-                except SystemCommandFailedError:
-                    raise
+                self.execute_talend(self._config.trigger_config[harvester]['exec'], matched_files, talend_base_dir)
 
-            files_to_delete = matched_files.filter_by_bool_attributes_and(deletion_attribute)
+            files_to_delete = matched_files.filter_by_bool_attribute('pending_store_deletion')
             if files_to_delete:
                 self.upload_runner.run(files_to_delete)
 
-    def run_undo_deletions(self, harvester_map, tmp_base_dir, deletion_attribute):
+    def run_undo_deletions(self, harvester_map, additions_base_dir):
         for harvester, matched_files in harvester_map.items():
-            with TemporaryDirectory(prefix='talend_base', dir=tmp_base_dir) as talend_base_dir:
-                for pf in matched_files:
-                    self.remove_symlink(talend_base_dir, pf.dest_path)
-                try:
-                    self.execute_talend(self._config.trigger_config[harvester]['exec'], matched_files, talend_base_dir)
-                except SystemCommandFailedError:
-                    raise
+            for pf in matched_files:
+                os.remove(os.path.join(additions_base_dir, pf.dest_path))
+            self.execute_talend(self._config.trigger_config[harvester]['exec'], matched_files, additions_base_dir)
 
             # Only attempt to delete files that are flagged as stored
-            files_to_delete = matched_files.filter_by_bool_attributes_and(deletion_attribute, 'is_stored')
+            files_to_delete = matched_files.filter_by_bool_attributes_and('pending_undo', 'is_stored')
             if files_to_delete:
                 self.upload_runner.run(files_to_delete)
 
@@ -235,10 +218,9 @@ class TalendHarvesterRunner(BaseHarvesterRunner):
 
                 try:
                     self.execute_talend(self._config.trigger_config[harvester]['exec'], matched_files, talend_base_dir)
-                    for f in matched_files:
-                        f.is_harvested = True
+                    matched_files.set_bool_attribute('is_harvested', True)
                 except SystemCommandFailedError:
-                    self.cleanup_on_error()
+                    self.cleanup_on_error(talend_base_dir)
                     raise
 
             # and then update the list of already harvested files

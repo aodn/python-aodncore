@@ -95,7 +95,7 @@ class BaseUploadRunner(AbstractCollectionStepRunner):
 
         additions = pipeline_files.filter_by_bool_attribute(self.pending_addition_attr)
         deletions = pipeline_files.filter_by_bool_attribute('pending_store_deletion')
-        undo_deletions = pipeline_files.filter_by_bool_attribute('pending_undo_deletion')
+        undo_deletions = pipeline_files.filter_by_bool_attribute('pending_undo')
 
         self._pre_run_hook()
 
@@ -125,11 +125,11 @@ class BaseUploadRunner(AbstractCollectionStepRunner):
             self._logger.info("undoing upload '{uri}'".format(uri=self._get_absolute_dest_uri(pipeline_file)))
             try:
                 self._delete_file(pipeline_file)
-                pipeline_file.is_undo_deleted = True
             except Exception as e:
                 raise FileDeleteFailedError(
                     "{e}: '{dest_path}'".format(e=format_exception(e),
                                                 dest_path=getattr(pipeline_file, self.dest_path_attr)))
+            pipeline_file.is_undone = True
 
         self._post_run_hook()
 

@@ -40,7 +40,7 @@ def get_upload_collection(delete=False):
 
 def get_undo_collection():
     pipeline_file = PipelineFile(GOOD_NC)
-    pipeline_file.undo_deletion = True
+    pipeline_file.should_undo = True
     pipeline_file.is_stored = True
     pipeline_file.publish_type = PipelineFilePublishType.UPLOAD_ONLY
     pipeline_file.dest_path = 'subdirectory/targetfile.nc'
@@ -234,7 +234,7 @@ class TestBaseUploadRunner(BaseTestCase):
         collection = get_undo_collection()
         runner = NullUploadRunner("/", fail=False)
         runner.run(collection)
-        self.assertTrue(collection[0].is_undo_deleted)
+        self.assertTrue(collection[0].is_undone)
 
 
 class TestFileUploadRunner(BaseTestCase):
@@ -302,7 +302,7 @@ class TestFileUploadRunner(BaseTestCase):
         dest_path = os.path.join(file_upload_runner.prefix, pipeline_file.dest_path)
 
         mock_rm_f.assert_called_once_with(dest_path)
-        self.assertTrue(pipeline_file.is_undo_deleted)
+        self.assertTrue(pipeline_file.is_undone)
 
 
 class TestS3UploadRunner(BaseTestCase):
@@ -414,7 +414,7 @@ class TestS3UploadRunner(BaseTestCase):
         s3_upload_runner.s3_client.head_bucket.assert_called_once_with(Bucket=dummy_bucket)
         s3_upload_runner.s3_client.delete_object.assert_called_once_with(Bucket=dummy_bucket, Key=dest_path)
 
-        self.assertTrue(pipeline_file.is_undo_deleted)
+        self.assertTrue(pipeline_file.is_undone)
 
 
 # noinspection PyUnusedLocal
