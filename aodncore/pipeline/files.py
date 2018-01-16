@@ -24,6 +24,10 @@ class PipelineFile(object):
     """Represents a single file in order to store state information relating to the intended actions to be performed
         on the file, and the actions that *were*
     """
+    __slots__ = ['file_checksum', 'name', 'src_path', '_archive_path', '_dest_path', '_extension', 'file_type',
+                 '_file_update_callback', '_check_type', '_is_deletion', '_publish_type', '_should_archive',
+                 '_should_harvest', '_should_store', '_undo_deletion', '_is_checked', '_is_archived', '_is_harvested',
+                 '_is_stored', '_is_undo_deleted', '_check_result', '_mime_type']
 
     def __init__(self, src_path, name=None, archive_path=None, dest_path=None, is_deletion=False,
                  file_update_callback=None):
@@ -51,7 +55,9 @@ class PipelineFile(object):
         _, self._extension = os.path.splitext(src_path)
         self.file_type = FileType.get_type_from_extension(self.extension)
 
-        self.file_update_callback = file_update_callback
+        self._file_update_callback = None
+        if file_update_callback is not None:
+            self.file_update_callback = file_update_callback
 
         # processing flags - these express the *intended actions* for the file
         self._check_type = PipelineFileCheckType.NO_ACTION
@@ -200,6 +206,16 @@ class PipelineFile(object):
     @property
     def extension(self):
         return self._extension
+
+    @property
+    def file_update_callback(self):
+        return self._file_update_callback
+
+    @file_update_callback.setter
+    def file_update_callback(self, callback):
+        validate_callable(callback)
+
+        self._file_update_callback = callback
 
     @property
     def is_harvested(self):

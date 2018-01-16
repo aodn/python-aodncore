@@ -59,6 +59,12 @@ class TestPipelineFile(BaseTestCase):
                           'publish_type',
                           'should_archive', 'should_harvest', 'should_store', 'undo_deletion', 'src_path', ])
 
+    def test_nonexistent_attribute(self):
+        nonexistent_attribute = str(uuid.uuid4())
+
+        with self.assertRaises(AttributeError):
+            setattr(self.pipelinefile, nonexistent_attribute, None)
+
     def test_property_check_result(self):
         self.assertFalse(self.pipelinefile.is_checked)
         self.pipelinefile.check_result = CheckResult(True, False, None)
