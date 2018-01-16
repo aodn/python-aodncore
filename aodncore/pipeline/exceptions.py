@@ -4,6 +4,7 @@ __all__ = [
     'PipelineProcessingError',
     'PipelineSystemError',
     'ComplianceCheckFailedError',
+    'DuplicatePipelineFileError',
     'FileDeleteFailedError',
     'FileUploadFailedError',
     'HandlerAlreadyRunError',
@@ -13,7 +14,6 @@ __all__ = [
     'InvalidFileNameError',
     'InvalidCheckTypeError',
     'InvalidConfigError',
-    'InvalidFileCollectionError',
     'InvalidPathFunctionError',
     'InvalidHandlerError',
     'InvalidHarvesterError',
@@ -61,6 +61,10 @@ class InvalidFileFormatError(PipelineProcessingError):
 
 # System errors
 
+class DuplicatePipelineFileError(PipelineSystemError):
+    pass
+
+
 class FileDeleteFailedError(PipelineSystemError):
     pass
 
@@ -82,10 +86,6 @@ class InvalidCheckTypeError(PipelineSystemError):
 
 
 class InvalidConfigError(PipelineSystemError):
-    pass
-
-
-class InvalidFileCollectionError(PipelineSystemError):
     pass
 
 

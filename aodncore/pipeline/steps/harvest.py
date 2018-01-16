@@ -111,7 +111,7 @@ class TalendHarvesterRunner(BaseHarvesterRunner):
                     if config_type == 'regex':
                         for pattern in patterns:
                             matched_files_for_pattern = file_list.filter_by_attribute_regex('dest_path', pattern)
-                            matched_files.update(matched_files_for_pattern)
+                            matched_files.update(matched_files_for_pattern, overwrite=True)
 
                             # TODO: implement extra parameters
                             # if config_type == 'extra_params':
@@ -124,7 +124,7 @@ class TalendHarvesterRunner(BaseHarvesterRunner):
     def validate_file_handling(self, file_collection, harvester_map):
         all_matched_files = PipelineFileCollection()
         for matched_files in harvester_map.values():
-            all_matched_files.update(matched_files)
+            all_matched_files.update(matched_files, overwrite=True)
 
         if file_collection.issubset(all_matched_files):
             self._logger.info('All files in slice mapped correctly to a harvester')

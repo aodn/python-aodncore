@@ -1,6 +1,7 @@
 import os
 from uuid import uuid4
 
+from aodncore.pipeline.exceptions import DuplicatePipelineFileError
 from aodncore.pipeline.steps.resolve import (get_resolve_runner, DirManifestResolveRunner, MapManifestResolveRunner,
                                              RsyncManifestResolveRunner, SimpleManifestResolveRunner,
                                              SingleFileResolveRunner, ZipFileResolveRunner)
@@ -19,6 +20,7 @@ TEST_DIR_MANIFEST_NC = os.path.join(TESTDATA_DIR, 'layer1', 'layer2', 'test_mani
 DIR_MANIFEST = os.path.join(TESTDATA_DIR, 'test.dir_manifest')
 MAP_MANIFEST = os.path.join(TESTDATA_DIR, 'test.map_manifest')
 RSYNC_MANIFEST = os.path.join(TESTDATA_DIR, 'test.rsync_manifest')
+RSYNC_MANIFEST_DUPLICATE = os.path.join(TESTDATA_DIR, 'test_duplicate.rsync_manifest')
 SIMPLE_MANIFEST = os.path.join(TESTDATA_DIR, 'test.manifest')
 
 
@@ -95,6 +97,13 @@ class TestRsyncManifestResolveRunner(BaseTestCase):
                                                               os.path.basename(TEST_MANIFEST_NC)))
 
         self.assertEqual(collection[1].src_path, os.path.join(TESTDATA_DIR, 'aoml/1900728/1900728_Rtraj.nc'))
+
+    def test_rsync_manifest_resolve_runner_duplicate(self):
+        rsync_manifest_resolve_runner = RsyncManifestResolveRunner(RSYNC_MANIFEST_DUPLICATE, self.temp_dir, MOCK_CONFIG,
+                                                                   self.mock_logger)
+
+        with self.assertRaises(DuplicatePipelineFileError):
+            _ = rsync_manifest_resolve_runner.run()
 
 
 class TestSimpleManifestResolveRunner(BaseTestCase):

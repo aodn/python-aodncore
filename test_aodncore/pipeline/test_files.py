@@ -1,19 +1,18 @@
 import os
 import uuid
 from collections import MutableSet, OrderedDict
-from tempfile import mkstemp
 
 from six import assertCountEqual
 from six.moves import range
 
 from aodncore.pipeline import (CheckResult, PipelineFileCollection, PipelineFile, PipelineFileCheckType,
                                PipelineFilePublishType)
-from aodncore.pipeline.exceptions import MissingFileError
+from aodncore.pipeline.exceptions import DuplicatePipelineFileError, MissingFileError
 from aodncore.pipeline.steps import get_child_check_runner
 from aodncore.testlib import BaseTestCase, get_nonexistent_path, mock
-from aodncore.util import safe_copy_file
 from test_aodncore import TESTDATA_DIR
 
+BAD_NC = os.path.join(TESTDATA_DIR, 'bad.nc')
 GOOD_NC = os.path.join(TESTDATA_DIR, 'good.nc')
 
 
@@ -21,15 +20,8 @@ GOOD_NC = os.path.join(TESTDATA_DIR, 'good.nc')
 class TestPipelineFile(BaseTestCase):
     def setUp(self):
         super(TestPipelineFile, self).setUp()
-        _, self.test_file = mkstemp(suffix='.nc', prefix=self.__class__.__name__)
-        safe_copy_file(GOOD_NC, self.test_file, overwrite=True)
-
-        self.pipelinefile = PipelineFile(self.test_file, dest_path=self.test_file + '.dest')
-
+        self.pipelinefile = PipelineFile(GOOD_NC, dest_path=GOOD_NC + '.dest')
         self.pipelinefile_deletion = PipelineFile(get_nonexistent_path(), is_deletion=True)
-
-    def tearDown(self):
-        os.remove(self.test_file)
 
     def test_compliance_check(self):
         # Test compliance checking
@@ -37,6 +29,16 @@ class TestPipelineFile(BaseTestCase):
                                               {'checks': ['cf']})
         check_runner.run(PipelineFileCollection(self.pipelinefile))
         assertCountEqual(self, dict(self.pipelinefile.check_result).keys(), ['compliant', 'errors', 'log'])
+
+    def test_equal_files(self):
+        duplicate_file = PipelineFile(GOOD_NC)
+        self.assertFalse(id(self.pipelinefile) == id(duplicate_file))
+        self.assertTrue(self.pipelinefile == duplicate_file)
+
+    def test_unequal_files(self):
+        different_file = PipelineFile(BAD_NC)
+        self.assertFalse(id(self.pipelinefile) == id(different_file))
+        self.assertFalse(self.pipelinefile == different_file)
 
     def test_format_check(self):
         # Test file format checking
@@ -153,6 +155,62 @@ class TestPipelineFileCollection(BaseTestCase):
 
     def test_abstract_class(self):
         self.assertIsInstance(self.collection, MutableSet)
+
+    def test_add(self):
+        p1 = PipelineFile(GOOD_NC)
+        p2 = PipelineFile(GOOD_NC)
+
+        result1 = self.collection.add(p1)
+        self.assertTrue(result1)
+
+        result2 = self.collection.add(p2, overwrite=True)
+        self.assertTrue(result2)
+
+        self.assertSetEqual({p2}, self.collection)
+
+    def test_add_duplicate(self):
+        p1 = PipelineFile(GOOD_NC)
+        p2 = PipelineFile(GOOD_NC)
+
+        self.assertNotEqual(id(p1), id(p2))
+        self.assertTrue(p1 == p2)
+
+        self.collection.add(p1)
+        with self.assertRaises(DuplicatePipelineFileError):
+            self.collection.add(p2)
+
+        self.assertSetEqual({p1}, self.collection)
+
+    def test_update(self):
+        p1 = PipelineFile(GOOD_NC)
+        p2 = PipelineFile(BAD_NC)
+        self.collection.add(p1)
+
+        try:
+            self.collection.update([p2])
+        except Exception as e:
+            raise AssertionError(
+                "unexpected exception raised. {cls} {msg}".format(cls=e.__class__.__name__, msg=e))
+
+        self.assertSetEqual({p1, p2}, self.collection)
+
+    def test_update_duplicate(self):
+        p1 = PipelineFile(GOOD_NC)
+        p2 = PipelineFile(GOOD_NC)
+        self.collection.add(p1)
+
+        with self.assertRaises(DuplicatePipelineFileError):
+            self.collection.update([p2])
+
+        self.assertIs(self.collection[0], p1)
+
+        try:
+            self.collection.add(p2, overwrite=True)
+        except Exception as e:
+            raise AssertionError(
+                "unexpected exception raised. {cls} {msg}".format(cls=e.__class__.__name__, msg=e))
+
+        self.assertSetEqual({p2}, self.collection)
 
     def test_invalid_types(self):
         class NothingClass(object):
@@ -324,7 +382,7 @@ class TestPipelineFileCollection(BaseTestCase):
         fileobj1 = PipelineFile(f1, dest_path="FOO/1", is_deletion=True)
         fileobj2 = PipelineFile(f2, dest_path="FOO/2", is_deletion=True)
         fileobj3 = PipelineFile(f3, dest_path="foo/3", is_deletion=True)
-        fileobj4 = PipelineFile(f3, dest_path="BAR/1", is_deletion=True)
+        fileobj4 = PipelineFile(f4, dest_path="BAR/1", is_deletion=True)
         self.collection.update((fileobj1, fileobj2, fileobj3, fileobj4))
 
         filtered_collection = self.collection.filter_by_attribute_regex('dest_path', '^FOO/[1-3]$')

@@ -1,0 +1,10 @@
+receiving incremental file list
+*deleting   aoml/1900709/profiles/
+.d..t...... aoml/1900709/
+>f.st...... test_manifest.nc
+>f.st...... test_manifest.nc
+*deleting   aoml/1900728/1900728_Rtraj.nc
+
+
+sent 65477852 bytes  received 407818360 bytes  115508.53 bytes/sec
+total size is 169778564604  speedup is 358.72
