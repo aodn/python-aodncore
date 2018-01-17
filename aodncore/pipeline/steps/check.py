@@ -78,7 +78,7 @@ class CheckRunnerAdapter(BaseCheckRunner):
         for check_type in check_types:
             check_list = pipeline_files.filter_by_attribute_id('check_type', check_type)
             check_runner = get_child_check_runner(check_type, self._config, self._logger, self.check_params)
-            self._logger.info("get_child_check_runner -> '{runner}'".format(runner=check_runner.__class__.__name__))
+            self._logger.sysinfo("get_child_check_runner -> '{runner}'".format(runner=check_runner.__class__.__name__))
             check_runner.run(check_list)
 
         failed_files = PipelineFileCollection(f for f in pipeline_files

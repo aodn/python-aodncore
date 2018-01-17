@@ -66,7 +66,7 @@ class TalendHarvesterRunner(BaseHarvesterRunner):
         deletions = pipeline_files.filter_by_bool_attribute('pending_harvest_deletion')
         additions = pipeline_files.filter_by_bool_attribute('pending_harvest_addition')
 
-        self._logger.info("Dividing files into slices of {slice_size} files".format(slice_size=self.slice_size))
+        self._logger.sysinfo("Dividing files into slices of {slice_size} files".format(slice_size=self.slice_size))
         deletion_slices = deletions.get_slices(self.slice_size)
         addition_slices = additions.get_slices(self.slice_size)
 
@@ -152,8 +152,8 @@ class TalendHarvesterRunner(BaseHarvesterRunner):
         _, input_file_list = mkstemp(prefix='file_list', suffix='.txt', dir=talend_base_dir)
 
         with open(input_file_list, 'w') as f:
-            self._logger.info('Files to process: ')
-            self._logger.info(matched_file_list)
+            self._logger.sysinfo('Files to process: ')
+            self._logger.sysinfo(matched_file_list)
             f.writelines("{line}{sep}".format(line=l, sep=os.linesep) for l in matched_file_list)
 
         return input_file_list
@@ -170,7 +170,7 @@ class TalendHarvesterRunner(BaseHarvesterRunner):
         talend_exec = converted_exec.format(base=talend_base_dir, file_list=input_file_list,
                                             log_dir=self._config.pipeline_config['talend']['talend_log_dir'])
 
-        self._logger.info("Executing {talend_exec}".format(talend_exec=talend_exec))
+        self._logger.sysinfo("Executing {talend_exec}".format(talend_exec=talend_exec))
 
         p = SystemProcess(talend_exec, shell=True)
 
