@@ -1,21 +1,14 @@
-import ast
-import inspect
 import os
-import sys
 import tempfile
 import uuid
 import zipfile
-from distutils.core import run_setup
 
-import pkg_resources
 from netCDF4 import Dataset
-from pkg_resources import WorkingSet
 from six import iteritems
 from six.moves.urllib.parse import urlunsplit
 
-from ..pipeline import HandlerBase
-from ..pipeline.config import LazyConfigManager
-from ..util import discover_entry_points, merge_dicts, CaptureStdIO
+from ..pipeline.configlib import LazyConfigManager
+from ..util import discover_entry_points, merge_dicts
 
 try:
     from unittest import mock
@@ -25,15 +18,11 @@ except ImportError:
 __all__ = [
     'dest_path_testing',
     'get_nonexistent_path',
+    'make_test_file',
     'make_zip',
     'mock',
-    'get_entry_points_from_paths',
     'get_test_config',
-    'get_test_working_set',
-    'patch_test_config',
-    'probe_root_package_path',
-    'regenerate_egg_info',
-    'regenerate_metadata'
+    'patch_test_config'
 ]
 
 GLOBAL_TEST_BASE = os.path.dirname(os.path.dirname(__file__))
@@ -150,7 +139,7 @@ def patch_test_config(config, rel_path, temp_dir):
 
 def get_test_config(temp_dir):
     test_pipeline_config_file = os.path.join(TESTLIB_CONF_DIR, 'pipeline.conf')
-    test_trigger_config_file = os.path.join(TESTLIB_CONF_DIR,  'trigger.conf')
+    test_trigger_config_file = os.path.join(TESTLIB_CONF_DIR, 'trigger.conf')
     test_watch_config_file = os.path.join(TESTLIB_CONF_DIR, 'watches.conf')
     os.environ['PIPELINE_CONFIG_FILE'] = test_pipeline_config_file
     os.environ['PIPELINE_TRIGGER_CONFIG_FILE'] = test_trigger_config_file
@@ -160,94 +149,3 @@ def get_test_config(temp_dir):
     patch_test_config(config, GLOBAL_TEST_BASE, temp_dir)
 
     return config
-
-
-def get_test_working_set(*package_paths):
-    """Get a WorkingSet populated with packages,
-
-    :param package_paths: one or more paths to the package(s) to be added to the WorkingSet
-    :return: the populated WorkingSet instance
-    """
-    regenerate_egg_info(*package_paths)
-    ws = WorkingSet(package_paths)
-    return ws
-
-
-def get_entry_points_from_paths(entry_point_name, *package_paths):
-    """Discover entry points advertised under the given entry point group name, in the given path(s).
-        Additionally add any entry points with the same suffix under the unittest namespace (e.g. discovering
-        'pipeline.handlers' will also automatically discover objects in the 'unittest.handlers' group
-
-    :param entry_point_name: entry point group name
-    :param package_paths: one or more paths to use for discovery
-    :return: dict containing discovered entry points
-    """
-    ws = get_test_working_set(*package_paths)
-    discovered_entry_points = discover_entry_points(entry_point_name, ws)
-
-    entry_point_type = entry_point_name.split('.')[-1]
-    unittest_entry_points = discover_entry_points('unittest.{t}'.format(t=entry_point_type), ws)
-    all_entry_points = merge_dicts(discovered_entry_points, unittest_entry_points)
-
-    return all_entry_points
-
-
-def probe_root_package_path(object_):
-    """Given an object, attempt to return the *root* package path
-    e.g.
-    Given an instance of 'aodncore.pipeline.HandlerBase', attempt to return the filesystem path to 'aodncore'
-
-    :param object_: object to derive root package from
-    :return: path to the package root
-    """
-    module_name = inspect.getmodule(object_).__name__
-    parent_module_name = module_name.split('.')[0]
-    package_path = os.path.dirname(os.path.dirname(sys.modules[parent_module_name].__file__))
-    setup_script = os.path.join(package_path, 'setup.py')
-    assert os.path.exists(setup_script)
-    package_name = None
-    with file(setup_script) as f:
-        for line in f:
-            if line.startswith('PACKAGE_NAME'):
-                package_name = ast.parse(line).body[0].value.s
-                break
-    if package_name is None:
-        raise EnvironmentError('unable to find package name')
-    return package_name, package_path
-
-
-def regenerate_egg_info(*package_paths):
-    """Regenerate 'egg_info' metadata for a
-
-    :param package_paths: one or more package paths in which to generate 'egg_info' metadata
-    :return: None
-    """
-    old_cwd = os.getcwd()
-    for package_path in package_paths:
-        setup_py = os.path.join(package_path, 'setup.py')
-        os.chdir(package_path)
-        try:
-            with CaptureStdIO() as (_, _):
-                run_setup(setup_py, ['egg_info'])
-        finally:
-            os.chdir(old_cwd)
-
-
-def regenerate_metadata(handler_class):
-    """Regenerate the egg-info metadata in the package containing the given handler class. This is to enable entry
-        point discovery in a package directory for unit testing.
-
-    :param handler_class: instance of a HandlerBase sub-class
-    :return: None
-    """
-    package_tuple = probe_root_package_path(handler_class)
-    packages_to_regenerate = [package_tuple]
-
-    if package_tuple[0] != 'aodncore':
-        core_package_tuple = probe_root_package_path(HandlerBase)
-        packages_to_regenerate.insert(0, core_package_tuple)
-
-    for package_name, package_path in packages_to_regenerate:
-        print("REGENERATING METADATA FOR package '{}' IN '{}'".format(package_name, package_path))
-        regenerate_egg_info(package_path)
-        pkg_resources.get_distribution(package_name).activate()

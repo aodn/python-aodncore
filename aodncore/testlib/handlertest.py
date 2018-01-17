@@ -2,7 +2,6 @@ import os
 from functools import partial
 
 from .basetest import BaseTestCase
-from .testutil import regenerate_metadata
 from ..pipeline import HandlerBase
 
 __all__ = [
@@ -20,10 +19,6 @@ class HandlerTestCase(BaseTestCase):
     def setUp(self):
         super(HandlerTestCase, self).setUp()
         handler_class = getattr(self, 'handler_class', HandlerBase)
-
-        if handler_class not in self._metadata_regenerated:
-            regenerate_metadata(handler_class)
-            self._metadata_regenerated.add(handler_class)
 
         self.handler_class = partial(handler_class, config=self.config)
 
