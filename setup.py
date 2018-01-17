@@ -6,9 +6,6 @@ from setuptools import setup, find_packages
 from aodncore.version import __version__
 
 ENTRY_POINTS = {
-    'unittest.handlers': [
-        'DummyHandler = test_aodncore.pipeline.dummyhandler:DummyHandler'
-    ],
     'unittest.path_functions': [
         'dest_path_testing = aodncore.testlib:dest_path_testing'
     ]
