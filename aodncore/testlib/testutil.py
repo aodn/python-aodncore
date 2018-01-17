@@ -8,7 +8,7 @@ from six import iteritems
 from six.moves.urllib.parse import urlunsplit
 
 from ..pipeline.configlib import LazyConfigManager
-from ..util import discover_entry_points, merge_dicts
+from ..testlib.dummyhandler import DummyHandler
 
 try:
     from unittest import mock
@@ -121,18 +121,8 @@ def patch_test_config(config, rel_path, temp_dir):
     config.pipeline_config['logging']['log_root'] = tempfile.mkdtemp(prefix='temp_log_root', dir=temp_dir)
     config.pipeline_config['mail']['smtp_server'] = str(uuid.uuid4())
 
-    # re-run discovery of entry points, and include test entry points. This is to support the two testing scenarios of:
-    # 1) tests in aodncore needing to operate on 'unittest.*' namespaces, since we don't want the package to define
-    #    entry points under the *real* group name
-    # 2) tests in extension modules (i.e. aodndata) need to discover both the real entry points they themselves define,
-    #    in addition to the test entry points in aodncore for when they are not specifically testing the objects
-    #    represented by the real entry points
-    test_path_functions = discover_entry_points('unittest.path_functions')
-    test_handlers = discover_entry_points('unittest.handlers')
-    real_path_functions = discover_entry_points(config.pipeline_config['pluggable']['path_function_group'])
-    real_handlers = discover_entry_points(config.pipeline_config['pluggable']['handlers_group'])
-    config._discovered_dest_path_functions = merge_dicts(real_path_functions, test_path_functions)
-    config._discovered_handlers = merge_dicts(real_handlers, test_handlers)
+    config._discovered_dest_path_functions = {'dest_path_testing': dest_path_testing}
+    config._discovered_handlers = {'DummyHandler': DummyHandler}
 
     return config
 

@@ -6,9 +6,8 @@ from aodncore.pipeline import PipelineFilePublishType, HandlerResult
 from aodncore.pipeline.exceptions import (ComplianceCheckFailedError, HandlerAlreadyRunError, InvalidCheckSuiteError,
                                           InvalidInputFileError, InvalidFileFormatError, InvalidRecipientError)
 from aodncore.pipeline.steps import NotifyList
-from aodncore.testlib import HandlerTestCase, dest_path_testing, get_nonexistent_path, mock
+from aodncore.testlib import DummyHandler, HandlerTestCase, dest_path_testing, get_nonexistent_path, mock
 from test_aodncore import TESTDATA_DIR
-from test_aodncore.pipeline.dummyhandler import DummyHandler
 
 BAD_NC = os.path.join(TESTDATA_DIR, 'bad.nc')
 BAD_ZIP = os.path.join(TESTDATA_DIR, 'bad.zip')
