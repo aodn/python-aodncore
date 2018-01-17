@@ -21,6 +21,10 @@
     .tablewrapper {
         overflow-x: auto;
     }
+
+    .fineprint {
+        font-size: 10px;
+    }
 </style>
 <body>
     <p>Dear Uploader,</p>
@@ -43,8 +47,8 @@
     {% endif %}
 
     <p>
-    For further information about this message, please contact <a href="mailto:info@aodn.org.au">info@aodn.org.au</a>
-    (or the relevant AODN project officer).
+    Please reply to this message for further information (or contact the relevant AODN project officer).
+    Please include the full text of this message in your reply.
     </p>
 
     <p>Regards,<br>
@@ -52,9 +56,9 @@
     </p>
 
     <footer>
-    <pre>
-    (Log reference: {{ celery_task_name }}[{{ celery_task_id }}])
-    </pre>
+        <p class="fineprint">
+            AODN reference: {{ celery_task_name }}[{{ celery_task_id }}]
+        </p>
     </footer>
 
 </body>
