@@ -1,15 +1,13 @@
 import os
 import sys
 import uuid
-from unittest import skipIf
 
 import six
 
-from aodncore.util import (discover_entry_points, format_exception, is_function, is_nonstring_iterable, matches_regexes,
+from aodncore.testlib import BaseTestCase
+from aodncore.util import (format_exception, is_function, is_nonstring_iterable, matches_regexes,
                            merge_dicts, slice_sequence, str_to_list, validate_callable, validate_mandatory_elements,
                            validate_membership, validate_nonstring_iterable, validate_type, CaptureStdIO)
-from aodncore.testlib import BaseTestCase, get_test_working_set
-from test_aodncore.pipeline.dummyhandler import DummyHandler
 
 StringIO = six.StringIO
 
@@ -50,14 +48,6 @@ class TestLoggingContext(BaseTestCase):
 
 
 class TestUtilMisc(BaseTestCase):
-    @skipIf(sys.platform == 'darwin', 'pyinotify not available on darwin platform')
-    def test_discover_entry_points(self):
-        search_path = os.path.dirname(os.path.dirname(TEST_ROOT))
-        ws = get_test_working_set(search_path)
-
-        discovered_entry_points = discover_entry_points('unittest.handlers', ws)
-        self.assertDictEqual(discovered_entry_points, {'DummyHandler': DummyHandler})
-
     def test_is_function(self):
         class DummyClass(object):
             def dummy_method(self):

@@ -12,6 +12,7 @@ from .watch import get_task_name, CeleryConfig, CeleryContext
 from ..util import discover_entry_points, format_exception, validate_type
 
 __all__ = [
+    'LazyConfigManager',
     'load_pipeline_config',
     'load_trigger_config',
     'load_watch_config',
