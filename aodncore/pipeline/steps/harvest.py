@@ -1,5 +1,6 @@
 import os
 import re
+from collections import OrderedDict
 from tempfile import mkstemp
 
 from .basestep import AbstractCollectionStepRunner
@@ -100,7 +101,7 @@ class TalendHarvesterRunner(BaseHarvesterRunner):
                 raise
 
     def match_harvester_to_files(self, file_list):
-        harvester_map = {}
+        harvester_map = OrderedDict()
 
         for harvester, config_item in self._config.trigger_config.items():
             matched_files = PipelineFileCollection()
