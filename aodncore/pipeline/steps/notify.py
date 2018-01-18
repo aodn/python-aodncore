@@ -207,7 +207,7 @@ class NotifyRunnerAdapter(BaseNotifyRunner):
         for notify_type in notify_types:
             type_notify_list = notify_list_object.filter_by_notify_type(notify_type)
             notify_runner = get_child_notify_runner(notify_type, self.notification_data, self._config, self._logger)
-            self._logger.info("get_child_notify_runner -> '{runner}'".format(runner=notify_runner.__class__.__name__))
+            self._logger.sysinfo("get_child_notify_runner -> '{runner}'".format(runner=notify_runner.__class__.__name__))
             notify_runner.run(type_notify_list)
 
         failed_notifications = notify_list_object.filter_by_failed()
