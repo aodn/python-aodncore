@@ -21,10 +21,14 @@
     .tablewrapper {
         overflow-x: auto;
     }
+
+    .fineprint {
+        font-size: 10px;
+    }
 </style>
 <body>
-    <p>Dear Uploader,</p>
-    <p>Please find below a report on the handling of the following file:</p>
+    <p>Dear Data Contributor,</p>
+    <p>Please find below a report on the handling of the following file uploaded to the AODN:</p>
     <div class="tablewrapper">
         {{ html_input_file_table }}
     </div>
@@ -36,14 +40,26 @@
 
     {% if html_collection_table %}
     <h4>File collection details:</h4>
-    <p>The input file resolved to the following child file(s):</p>
+    <p>The input file resolved to the following file(s):</p>
     <div class="tablewrapper">
         {{ html_collection_table }}
     </div>
     {% endif %}
 
+    <p>
+    Please reply to this message for further information (or contact the relevant AODN project officer).
+    Please include the full text of this message in your reply.
+    </p>
+
     <p>Regards,<br>
         Australian Ocean Data Network
     </p>
+
+    <footer>
+        <p class="fineprint">
+            AODN reference: {{ celery_task_name }}[{{ celery_task_id }}]
+        </p>
+    </footer>
+
 </body>
 </html>

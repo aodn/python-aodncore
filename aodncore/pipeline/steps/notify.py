@@ -125,6 +125,7 @@ class BaseNotifyRunner(AbstractNotifyRunner):
 
         input_file_table_data = OrderedDict([
             ('Input file', self.notification_data['input_file']),
+            ('Uploaded to', self.notification_data['upload_dir']),
             ('Processed at', self.notification_data['handler_start_time']),
             ('Compliance checks', self.notification_data['checks']),
             ('Result', self.notification_data['processing_result'])

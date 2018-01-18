@@ -1,6 +1,6 @@
-Dear Uploader,
+Dear Data Contributor,
 
-Please find below a report on the handling of the following file:
+Please find below a report on the handling of the following file uploaded to the AODN:
 
 {{ text_input_file_table }}
 
@@ -13,10 +13,15 @@ Error details
 {% if text_collection_table %}
 File collection details
 -------------
-The input file resolved to the following child file(s):
+The input file resolved to the following file(s):
 
 {{ text_collection_table }}
 {% endif %}
 
+For further information about this message, please contact info@aodn.org.au (or the relevant AODN project officer).
+
 Regards,
 Australian Ocean Data Network
+
+
+Log reference: {{ celery_task_name }}[{{ celery_task_id }}]

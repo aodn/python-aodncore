@@ -22,7 +22,8 @@ def get_notification_data():
         'checks': None,
         'collection_headers': collection_headers,
         'collection_data': collection_data,
-        'error_details': ''
+        'error_details': '',
+        'upload_dir': None
     }
 
     return data
