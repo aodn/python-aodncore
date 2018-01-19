@@ -54,7 +54,6 @@ class TalendHarvesterRunner(BaseHarvesterRunner):
         self.params = harvest_params
         self.tmp_base_dir = tmp_base_dir
         self.upload_runner = upload_runner
-        # store a list of file collections that have already been harvested, for the purposes of rollback
         self.harvested_file_map = []
 
     def run(self, pipeline_files):
@@ -72,33 +71,21 @@ class TalendHarvesterRunner(BaseHarvesterRunner):
         addition_slices = additions.get_slices(self.slice_size)
 
         for file_slice in deletion_slices:
-            try:
-                deletion_map = self.match_harvester_to_files(file_slice)
-                if not deletion_map:
-                    self._logger.info('No files to delete, proceeding to add matching files')
-                else:
-                    self.run_deletions(deletion_map, self.tmp_base_dir)
-            except SystemCommandFailedError as e:
-                self._logger.error(
-                    "File harvest deletion failed with exception: {e}".format(e=format_exception(e)))
-                # exit out of processing the current slice - is this the right behaviour on deletion error?
-                raise
+            deletion_map = self.match_harvester_to_files(file_slice)
+            if not deletion_map:
+                self._logger.info('No files to delete, proceeding to add matching files')
+            else:
+                self.run_deletions(deletion_map, self.tmp_base_dir)
 
         for file_slice in addition_slices:
-            try:
-                addition_map = self.match_harvester_to_files(file_slice)
-                self.validate_file_handling(file_slice, addition_map)
+            addition_map = self.match_harvester_to_files(file_slice)
+            self.validate_file_handling(file_slice, addition_map)
 
-                for matched_files in addition_map.values():
-                    for f in matched_files:
-                        self._logger.info("Adding file with destination path: {}".format(f.dest_path))
+            for matched_files in addition_map.values():
+                for f in matched_files:
+                    self._logger.info("Adding file with destination path: {}".format(f.dest_path))
 
-                self.run_additions(addition_map, self.tmp_base_dir)
-            except SystemCommandFailedError as e:
-                # exit out of processing the current slice and stop the talend-trigger
-                self._logger.error(
-                    "File harvest addition failed with exception: {e}".format(e=format_exception(e)))
-                raise
+            self.run_additions(addition_map, self.tmp_base_dir)
 
     def match_harvester_to_files(self, file_list):
         harvester_map = OrderedDict()
@@ -130,7 +117,6 @@ class TalendHarvesterRunner(BaseHarvesterRunner):
         if file_collection.issubset(all_matched_files):
             self._logger.info('All files in slice mapped correctly to a harvester')
         else:
-            # Determine which files in the slice are not in the matched file mapping
             missing_files = file_collection - all_matched_files
             for mf in missing_files:
                 self._logger.error("File {mf.src_path} has not been mapped to a harvester".format(mf=mf))
@@ -159,12 +145,12 @@ class TalendHarvesterRunner(BaseHarvesterRunner):
 
         return input_file_list
 
-    def cleanup_on_error(self, temp_directory):
+    def cleanup_on_error(self):
         for file_map in self.harvested_file_map:
             for file_collection in file_map.values():
                 file_collection.set_bool_attribute('should_undo', True)
 
-            self.run_undo_deletions(file_map, temp_directory)
+            self.run_undo_deletions(file_map)
 
     def execute_talend(self, executor, matched_files, talend_base_dir):
         matched_file_list = [mf.dest_path for mf in matched_files]
@@ -180,17 +166,25 @@ class TalendHarvesterRunner(BaseHarvesterRunner):
         p = SystemProcess(talend_exec, shell=True)
 
         self._logger.info('--- START TALEND OUTPUT ---')
-        # log talend output with basic formatter
         with LoggingContext(self._logger, format_='%(message)s'):
             try:
                 p.execute()
-            except SystemCommandFailedError:
+            except Exception:
                 self._logger.error(p.stdout_text)
                 raise
+            else:
+                self._logger.info(p.stdout_text)
             finally:
                 self._logger.info('--- END TALEND OUTPUT ---')
 
     def run_deletions(self, harvester_map, tmp_base_dir):
+        """Function to un-harvest and delete files using the appropriate file upload runner
+        Operates in newly created temporary directory as talend requires a non-existant file to perform un-harvesting
+
+
+        :param harvester_map: mapping of harvesters to the PipelineFileCollection to operate on
+        :param tmp_base_dir: temporary directory base for talend operation
+        """
         for harvester, matched_files in harvester_map.items():
             with TemporaryDirectory(prefix='talend_base', dir=tmp_base_dir) as talend_base_dir:
                 self.execute_talend(self._config.trigger_config[harvester]['exec'], matched_files, talend_base_dir)
@@ -199,18 +193,30 @@ class TalendHarvesterRunner(BaseHarvesterRunner):
             if files_to_delete:
                 self.upload_runner.run(files_to_delete)
 
-    def run_undo_deletions(self, harvester_map, additions_base_dir):
-        for harvester, matched_files in harvester_map.items():
-            for pf in matched_files:
-                os.remove(os.path.join(additions_base_dir, pf.dest_path))
-            self.execute_talend(self._config.trigger_config[harvester]['exec'], matched_files, additions_base_dir)
+    def run_undo_deletions(self, harvester_map):
+        """Function to un-harvest and undo stored files as appropriate in the case of errors
+        Operates in newly created temporary directory as talend requires a non-existant file to perform un-harvesting
 
-            # Only attempt to delete files that are flagged as stored
+
+        :param harvester_map: mapping of harvesters to the PipelineFileCollection to operate on
+        """
+        for harvester, matched_files in harvester_map.items():
+            with TemporaryDirectory(prefix='talend_base', dir=self.tmp_base_dir) as talend_base_dir:
+                self.execute_talend(self._config.trigger_config[harvester]['exec'], matched_files, talend_base_dir)
+
             files_to_delete = matched_files.filter_by_bool_attributes_and('pending_undo', 'is_stored')
             if files_to_delete:
                 self.upload_runner.run(files_to_delete)
 
     def run_additions(self, harvester_map, tmp_base_dir):
+        """Function to harvest and upload files using the appropriate file upload runner
+        Operates in newly created temporary directory and creates symlink between source and destination file
+        Talend will then operate on the destination file (symlink)
+
+
+        :param harvester_map: mapping of harvesters to the PipelineFileCollection to operate on
+        :param tmp_base_dir: temporary directory base for talend operation
+        """
         for harvester, matched_files in harvester_map.items():
             with TemporaryDirectory(prefix='talend_base', dir=tmp_base_dir) as talend_base_dir:
                 for pf in matched_files:
@@ -220,10 +226,9 @@ class TalendHarvesterRunner(BaseHarvesterRunner):
                     self.execute_talend(self._config.trigger_config[harvester]['exec'], matched_files, talend_base_dir)
                     matched_files.set_bool_attribute('is_harvested', True)
                 except SystemCommandFailedError:
-                    self.cleanup_on_error(talend_base_dir)
+                    self.cleanup_on_error()
                     raise
 
-            # and then update the list of already harvested files
             self.harvested_file_map.append({harvester: matched_files})
 
             files_to_upload = matched_files.filter_by_bool_attribute('pending_store_addition')
