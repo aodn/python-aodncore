@@ -51,7 +51,8 @@ class TestPipelineFile(BaseTestCase):
         # Confirm that __iter__ returns a dict with the expected keys
         assertCountEqual(self, dict_object.keys(),
                          ['archive_path', 'check_passed', 'dest_path', 'file_checksum', 'check_log', 'check_type',
-                          'extension', 'is_archived', 'is_checked', 'is_deletion', 'is_undone', 'is_harvested',
+                          'extension', 'is_archived', 'is_checked', 'is_deletion', 'is_harvest_undone',
+                          'is_storage_undone', 'is_harvested',
                           'is_stored',
                           'mime_type', 'name',
                           'pending_archive', 'pending_harvest_addition', 'pending_harvest_deletion',

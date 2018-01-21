@@ -27,7 +27,7 @@ class PipelineFile(object):
     __slots__ = ['_file_checksum', '_name', '_src_path', '_archive_path', '_dest_path', '_extension', 'file_type',
                  '_file_update_callback', '_check_type', '_is_deletion', '_publish_type', '_should_archive',
                  '_should_harvest', '_should_store', '_should_undo', '_is_checked', '_is_archived', '_is_harvested',
-                 '_is_stored', '_is_undone', '_check_result', '_mime_type']
+                 '_is_stored', '_is_harvest_undone', "_is_storage_undone", '_check_result', '_mime_type']
 
     def __init__(self, src_path, name=None, archive_path=None, dest_path=None, is_deletion=False,
                  file_update_callback=None):
@@ -73,7 +73,8 @@ class PipelineFile(object):
         self._is_archived = False
         self._is_harvested = False
         self._is_stored = False
-        self._is_undone = False
+        self._is_harvest_undone = False
+        self._is_storage_undone = False
 
         self._check_result = None
         self._mime_type = None
@@ -103,7 +104,8 @@ class PipelineFile(object):
         yield 'is_harvested', str(self._is_harvested)
         yield 'is_stored', str(self._is_stored)
         yield 'mime_type', self.mime_type
-        yield 'is_undone', str(self._is_undone)
+        yield 'is_harvest_undone', str(self._is_harvest_undone)
+        yield 'is_storage_undone', str(self._is_storage_undone)
         yield 'name', self.name
         yield 'published', self.published
         yield 'pending_archive', str(self.pending_archive)
@@ -255,15 +257,26 @@ class PipelineFile(object):
         return self._is_stored
 
     @property
-    def is_undone(self):
-        return self._is_undone
+    def is_harvest_undone(self):
+        return self._is_harvest_undone
 
-    @is_undone.setter
-    def is_undone(self, is_undone):
-        validate_bool(is_undone)
+    @is_harvest_undone.setter
+    def is_harvest_undone(self, is_harvest_undone):
+        validate_bool(is_harvest_undone)
 
-        self._is_undone = is_undone
-        self._post_property_update({'is_undone': is_undone})
+        self._is_harvest_undone = is_harvest_undone
+        self._post_property_update({'is_harvest_undone': is_harvest_undone})
+
+    @property
+    def is_storage_undone(self):
+        return self._is_storage_undone
+
+    @is_storage_undone.setter
+    def is_storage_undone(self, is_storage_undone):
+        validate_bool(is_storage_undone)
+
+        self._is_storage_undone = is_storage_undone
+        self._post_property_update({'is_storage_undone': is_storage_undone})
 
     @is_stored.setter
     def is_stored(self, is_stored):

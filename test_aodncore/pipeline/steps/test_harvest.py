@@ -6,7 +6,7 @@ from aodncore.common import SystemCommandFailedError
 from aodncore.pipeline import PipelineFile, PipelineFileCollection, PipelineFilePublishType
 from aodncore.pipeline.exceptions import InvalidHarvesterError, InvalidHandlerError
 from aodncore.pipeline.steps.harvest import get_harvester_runner, TalendHarvesterRunner
-from aodncore.testlib import BaseTestCase, get_test_config, mock
+from aodncore.testlib import BaseTestCase, get_test_config
 from test_aodncore import TESTDATA_DIR
 
 TEST_ROOT = os.path.dirname(__file__)
@@ -18,6 +18,17 @@ PF_2_NC = os.path.join(TESTDATA_DIR, 'pf2.nc')
 def get_harvest_collection(delete=False):
     pipeline_file = PipelineFile(GOOD_NC, is_deletion=delete)
     publish_type = PipelineFilePublishType.UNHARVEST_ONLY if delete else PipelineFilePublishType.HARVEST_ONLY
+    pipeline_file.publish_type = publish_type
+    pipeline_file.dest_path = 'subdir/targetfile.nc'
+    collection = PipelineFileCollection([pipeline_file])
+    return collection
+
+
+def get_storage_collection(undo=False):
+    pipeline_file = PipelineFile(GOOD_NC)
+    publish_type = PipelineFilePublishType.HARVEST_UPLOAD
+    pipeline_file.should_undo = undo
+    pipeline_file.is_stored = True
     pipeline_file.publish_type = publish_type
     pipeline_file.dest_path = 'subdir/targetfile.nc'
     collection = PipelineFileCollection([pipeline_file])
@@ -123,6 +134,22 @@ class TestPipelineStepsHarvest(BaseTestCase):
             multi_harvester_runner.run(harvest_collection)
         # Expect cleanup attempt to have been called on the files already harvested
         mock_run_undo_deletions.assert_called_once()
+
+    def test_multi_harvest_undo(self):
+        harvest_collection = get_harvest_collection(False)
+        os.environ['PIPELINE_TRIGGER_CONFIG_FILE'] = os.path.join(TEST_ROOT, 'trigger_single_fail.conf')
+        multi_harvester_runner = TalendHarvesterRunner(self.uploader, None, TESTDATA_DIR, self.config, self.mock_logger)
+        with self.assertRaises(SystemCommandFailedError):
+            multi_harvester_runner.run(harvest_collection)
+        self.assertTrue(harvest_collection[0].is_harvest_undone)
+
+    def test_multi_storage_undo(self):
+        harvest_collection = get_storage_collection(True)
+        os.environ['PIPELINE_TRIGGER_CONFIG_FILE'] = os.path.join(TEST_ROOT, 'trigger_single_fail.conf')
+        multi_harvester_runner = TalendHarvesterRunner(self.uploader, None, TESTDATA_DIR, self.config, self.mock_logger)
+        with self.assertRaises(SystemCommandFailedError):
+            multi_harvester_runner.run(harvest_collection)
+        self.assertTrue(harvest_collection[0].is_storage_undone)
 
     @patch.object(TalendHarvesterRunner, 'run_undo_deletions')
     def test_harvester_exception_cleanup_previous_success(self, mock_run_undo_deletions):

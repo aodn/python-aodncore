@@ -145,7 +145,7 @@ class TalendHarvesterRunner(BaseHarvesterRunner):
 
         return input_file_list
 
-    def cleanup_on_error(self):
+    def undo_processed_files(self):
         for file_map in self.harvested_file_map:
             for file_collection in file_map.values():
                 file_collection.set_bool_attribute('should_undo', True)
@@ -173,6 +173,7 @@ class TalendHarvesterRunner(BaseHarvesterRunner):
                 self._logger.error(p.stdout_text)
                 raise
             else:
+                matched_files.set_bool_attribute('is_harvested', True)
                 self._logger.info(p.stdout_text)
             finally:
                 self._logger.info('--- END TALEND OUTPUT ---')
@@ -203,10 +204,12 @@ class TalendHarvesterRunner(BaseHarvesterRunner):
         for harvester, matched_files in harvester_map.items():
             with TemporaryDirectory(prefix='talend_base', dir=self.tmp_base_dir) as talend_base_dir:
                 self.execute_talend(self._config.trigger_config[harvester]['exec'], matched_files, talend_base_dir)
+                matched_files.set_bool_attribute('is_harvest_undone', True)
 
             files_to_delete = matched_files.filter_by_bool_attributes_and('pending_undo', 'is_stored')
             if files_to_delete:
                 self.upload_runner.run(files_to_delete)
+                files_to_delete.set_bool_attribute('is_storage_undone', True)
 
     def run_additions(self, harvester_map, tmp_base_dir):
         """Function to harvest and upload files using the appropriate file upload runner
@@ -224,9 +227,8 @@ class TalendHarvesterRunner(BaseHarvesterRunner):
 
                 try:
                     self.execute_talend(self._config.trigger_config[harvester]['exec'], matched_files, talend_base_dir)
-                    matched_files.set_bool_attribute('is_harvested', True)
                 except SystemCommandFailedError:
-                    self.cleanup_on_error()
+                    self.undo_processed_files()
                     raise
 
             self.harvested_file_map.append({harvester: matched_files})
