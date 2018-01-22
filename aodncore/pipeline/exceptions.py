@@ -22,7 +22,8 @@ __all__ = [
     'InvalidUploadUrlError',
     'MissingConfigParameterError',
     'MissingFileError',
-    'NotificationFailedError'
+    'NotificationFailedError',
+    'UnmappedFilesError'
 ]
 
 
@@ -122,4 +123,8 @@ class MissingFileError(PipelineSystemError):
 
 
 class NotificationFailedError(PipelineSystemError):
+    pass
+
+
+class UnmappedFilesError(PipelineSystemError):
     pass

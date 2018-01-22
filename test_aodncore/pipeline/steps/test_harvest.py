@@ -4,7 +4,7 @@ from mock import MagicMock, patch
 
 from aodncore.common import SystemCommandFailedError
 from aodncore.pipeline import PipelineFile, PipelineFileCollection, PipelineFilePublishType
-from aodncore.pipeline.exceptions import InvalidHarvesterError, InvalidHandlerError
+from aodncore.pipeline.exceptions import InvalidHarvesterError, UnmappedFilesError
 from aodncore.pipeline.steps.harvest import get_harvester_runner, TalendHarvesterRunner
 from aodncore.testlib import BaseTestCase, get_test_config
 from test_aodncore import TESTDATA_DIR
@@ -57,8 +57,8 @@ class TestPipelineStepsHarvest(BaseTestCase):
         matched_file_map = {'my_test_harvester': get_harvest_collection()}
         file_slice = get_multi_file_slice()
         harvester_runner = TalendHarvesterRunner(self.uploader, None, TESTDATA_DIR, self.config, self.mock_logger)
-        with self.assertRaises(InvalidHandlerError):
-            harvester_runner.validate_file_handling(file_slice, matched_file_map)
+        with self.assertRaises(UnmappedFilesError):
+            harvester_runner.validate_harvester_mapping(file_slice, matched_file_map)
 
     def test_get_harvest_runner(self):
         harvester_runner = get_harvester_runner('talend', self.uploader, None, TESTDATA_DIR, None, self.mock_logger)
@@ -96,7 +96,8 @@ class TestPipelineStepsHarvest(BaseTestCase):
         mock_match_harvester_to_files.return_value = {}
         harvest_collection = get_harvest_collection(delete=True)
         harvester_runner = TalendHarvesterRunner(self.uploader, None, TESTDATA_DIR, self.config, self.mock_logger)
-        harvester_runner.run(harvest_collection)
+        with self.assertRaises(UnmappedFilesError):
+            harvester_runner.run(harvest_collection)
         mock_run_deletions.assert_not_called()
 
     def test_talend_harvester_single_deletion_exec_fail(self):

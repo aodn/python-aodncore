@@ -4,10 +4,10 @@ from collections import OrderedDict
 from tempfile import mkstemp
 
 from .basestep import AbstractCollectionStepRunner
-from ..exceptions import InvalidHarvesterError, InvalidHandlerError
+from ..exceptions import InvalidHarvesterError, UnmappedFilesError
 from ..files import PipelineFileCollection, validate_pipelinefilecollection
 from ...common import SystemCommandFailedError
-from ...util import mkdir_p, format_exception, LoggingContext, SystemProcess, TemporaryDirectory
+from ...util import mkdir_p, LoggingContext, SystemProcess, TemporaryDirectory
 
 __all__ = [
     'get_harvester_runner',
@@ -66,25 +66,18 @@ class TalendHarvesterRunner(BaseHarvesterRunner):
         deletions = pipeline_files.filter_by_bool_attribute('pending_harvest_deletion')
         additions = pipeline_files.filter_by_bool_attribute('pending_harvest_addition')
 
-        self._logger.sysinfo("Dividing files into slices of {slice_size} files".format(slice_size=self.slice_size))
+        self._logger.sysinfo("harvesting slice size: {slice_size}".format(slice_size=self.slice_size))
         deletion_slices = deletions.get_slices(self.slice_size)
         addition_slices = additions.get_slices(self.slice_size)
 
         for file_slice in deletion_slices:
             deletion_map = self.match_harvester_to_files(file_slice)
-            if not deletion_map:
-                self._logger.info('No files to delete, proceeding to add matching files')
-            else:
-                self.run_deletions(deletion_map, self.tmp_base_dir)
+            self.validate_harvester_mapping(file_slice, deletion_map)
+            self.run_deletions(deletion_map, self.tmp_base_dir)
 
         for file_slice in addition_slices:
             addition_map = self.match_harvester_to_files(file_slice)
-            self.validate_file_handling(file_slice, addition_map)
-
-            for matched_files in addition_map.values():
-                for f in matched_files:
-                    self._logger.info("Adding file with destination path: {}".format(f.dest_path))
-
+            self.validate_harvester_mapping(file_slice, addition_map)
             self.run_additions(addition_map, self.tmp_base_dir)
 
     def match_harvester_to_files(self, file_list):
@@ -92,36 +85,36 @@ class TalendHarvesterRunner(BaseHarvesterRunner):
 
         for harvester, config_item in self._config.trigger_config.items():
             matched_files = PipelineFileCollection()
-            extra_params = []
 
             for event in config_item['events']:
                 for config_type, patterns in event.items():
                     if config_type == 'regex':
                         for pattern in patterns:
                             matched_files_for_pattern = file_list.filter_by_attribute_regex('dest_path', pattern)
+                            match_list = [{'file': f.src_path, 'deletion': f.is_deletion} for f in
+                                          matched_files_for_pattern]
+                            self._logger.sysinfo(
+                                "harvester '{harvester}' matched files: {match_list}".format(harvester=harvester,
+                                                                                             match_list=match_list))
                             matched_files.update(matched_files_for_pattern, overwrite=True)
 
                             # TODO: implement extra parameters
-                            # if config_type == 'extra_params':
-                            # do some magic here
+
             if matched_files:
                 harvester_map[harvester] = matched_files
 
         return harvester_map
 
-    def validate_file_handling(self, file_collection, harvester_map):
+    @staticmethod
+    def validate_harvester_mapping(file_collection, harvester_map):
         all_matched_files = PipelineFileCollection()
         for matched_files in harvester_map.values():
             all_matched_files.update(matched_files, overwrite=True)
 
-        if file_collection.issubset(all_matched_files):
-            self._logger.info('All files in slice mapped correctly to a harvester')
-        else:
-            missing_files = file_collection - all_matched_files
-            for mf in missing_files:
-                self._logger.error("File {mf.src_path} has not been mapped to a harvester".format(mf=mf))
-
-            raise InvalidHandlerError('Not all files in the file slice have been mapped to a harvester')
+        if not file_collection.issubset(all_matched_files):
+            unmapped_files = [m.src_path for m in file_collection - all_matched_files]
+            raise UnmappedFilesError(
+                "no matching harvester(s) found for: {unmapped_files}".format(unmapped_files=unmapped_files))
 
     @staticmethod
     def create_symlink(talend_base_dir, src_path, dest_path):
@@ -135,12 +128,11 @@ class TalendHarvesterRunner(BaseHarvesterRunner):
         python_formatted_exec = re.sub('=%{', '={', executor)
         return python_formatted_exec
 
-    def create_input_file_list(self, talend_base_dir, matched_file_list):
+    @staticmethod
+    def create_input_file_list(talend_base_dir, matched_file_list):
         _, input_file_list = mkstemp(prefix='file_list', suffix='.txt', dir=talend_base_dir)
 
         with open(input_file_list, 'w') as f:
-            self._logger.sysinfo('Files to process: ')
-            self._logger.sysinfo(matched_file_list)
             f.writelines("{line}{sep}".format(line=l, sep=os.linesep) for l in matched_file_list)
 
         return input_file_list
@@ -161,7 +153,7 @@ class TalendHarvesterRunner(BaseHarvesterRunner):
         talend_exec = converted_exec.format(base=talend_base_dir, file_list=input_file_list,
                                             log_dir=self._config.pipeline_config['talend']['talend_log_dir'])
 
-        self._logger.sysinfo("Executing {talend_exec}".format(talend_exec=talend_exec))
+        self._logger.sysinfo("executing {talend_exec}".format(talend_exec=talend_exec))
 
         p = SystemProcess(talend_exec, shell=True)
 
