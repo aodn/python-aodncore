@@ -1,6 +1,6 @@
 import os
 
-from mock import MagicMock, patch
+from mock import MagicMock, patch, mock_open
 
 from aodncore.common import SystemCommandFailedError
 from aodncore.pipeline import PipelineFile, PipelineFileCollection, PipelineFilePublishType
@@ -17,7 +17,7 @@ PF_2_NC = os.path.join(TESTDATA_DIR, 'pf2.nc')
 
 def get_harvest_collection(delete=False):
     pipeline_file = PipelineFile(GOOD_NC, is_deletion=delete)
-    publish_type = PipelineFilePublishType.UNHARVEST_ONLY if delete else PipelineFilePublishType.HARVEST_ONLY
+    publish_type = PipelineFilePublishType.DELETE_UNHARVEST if delete else PipelineFilePublishType.HARVEST_UPLOAD
     pipeline_file.publish_type = publish_type
     pipeline_file.dest_path = 'subdir/targetfile.nc'
     collection = PipelineFileCollection([pipeline_file])
@@ -68,27 +68,34 @@ class TestPipelineStepsHarvest(BaseTestCase):
         with self.assertRaises(InvalidHarvesterError):
             _ = get_harvester_runner('nonexistent_harvester', self.uploader, None, TESTDATA_DIR, None, self.mock_logger)
 
-    @patch.object(TalendHarvesterRunner, 'execute_talend')
-    def test_talend_harvester_single_addition(self, mock_execute_talend):
+    @patch('aodncore.pipeline.steps.harvest.SystemProcess')
+    def test_talend_harvester_single_addition(self, mock_systemprocess):
         harvest_collection = get_harvest_collection()
         harvester_runner = TalendHarvesterRunner(self.uploader, None, TESTDATA_DIR, self.config, self.mock_logger)
         harvester_runner.run(harvest_collection)
-        mock_execute_talend.assert_called_once()
+        mock_systemprocess.assert_called_once()
+        self.assertTrue(all(f.is_harvested for f in harvest_collection))
 
-    @patch.object(TalendHarvesterRunner, 'execute_talend')
-    def test_talend_harvester_single_deletion(self, mock_execute_talend):
+    @patch('aodncore.pipeline.steps.harvest.SystemProcess')
+    def test_talend_harvester_single_deletion(self, mock_systemprocess):
         harvest_collection = get_harvest_collection(delete=True)
         harvester_runner = TalendHarvesterRunner(self.uploader, None, TESTDATA_DIR, self.config, self.mock_logger)
         harvester_runner.run(harvest_collection)
-        mock_execute_talend.assert_called_once()
+        mock_systemprocess.assert_called_once()
+        self.assertTrue(all(f.is_harvested for f in harvest_collection))
 
-    @patch.object(TalendHarvesterRunner, 'run_deletions')
-    def test_single_store_deletion(self, mock_run_deletions):
+    @patch('aodncore.pipeline.steps.harvest.SystemProcess')
+    @patch('aodncore.pipeline.steps.harvest.TemporaryDirectory')
+    @patch('aodncore.pipeline.steps.harvest.mkstemp')
+    def test_single_store_deletion(self, mock_mkstemp, mock_temporarydirectory, mock_systemprocess):
+        mock_mkstemp.return_value = ('', '')
         harvest_collection = get_harvest_collection(delete=True)
-        harvested_file_map = {'my_test_harvester': harvest_collection}
         harvester_runner = TalendHarvesterRunner(self.uploader, None, TESTDATA_DIR, self.config, self.mock_logger)
-        harvester_runner.run(harvest_collection)
-        mock_run_deletions.assert_called_once_with(harvested_file_map, TESTDATA_DIR)
+        with patch('aodncore.pipeline.steps.harvest.open', mock_open(read_data='')) as m:
+            harvester_runner.run(harvest_collection)
+
+        self.assertTrue(all(f.is_harvested for f in harvest_collection))
+        harvester_runner.upload_runner.run.assert_called_once_with(harvest_collection)
 
     @patch.object(TalendHarvesterRunner, 'match_harvester_to_files')
     @patch.object(TalendHarvesterRunner, 'run_deletions')
@@ -107,14 +114,14 @@ class TestPipelineStepsHarvest(BaseTestCase):
         with self.assertRaises(SystemCommandFailedError):
             harvester_runner.run(harvest_collection)
 
-    @patch.object(TalendHarvesterRunner, 'execute_talend')
-    def test_multi_harvester_success(self, mock_execute_talend):
+    @patch('aodncore.pipeline.steps.harvest.SystemProcess')
+    def test_multi_harvester_success(self, mock_systemprocess):
         os.environ['PIPELINE_TRIGGER_CONFIG_FILE'] = os.path.join(TEST_ROOT, 'trigger_multi.conf')
         harvest_collection = get_harvest_collection()
         multi_harvester_runner = TalendHarvesterRunner(self.uploader, None, TESTDATA_DIR, self.config, self.mock_logger)
         multi_harvester_runner.run(harvest_collection)
-        # Expect exactly 2 talend calls, one for each harvester
-        assert mock_execute_talend.call_count == 2
+        self.assertEqual(mock_systemprocess.call_count, 2)
+        self.assertTrue(all(f.is_harvested for f in harvest_collection))
 
     @patch.object(TalendHarvesterRunner, 'run_deletions')
     def test_harvester_exception_cleanup(self, mock_run_deletions):
@@ -123,7 +130,6 @@ class TestPipelineStepsHarvest(BaseTestCase):
         multi_harvester_runner = TalendHarvesterRunner(self.uploader, None, TESTDATA_DIR, self.config, self.mock_logger)
         with self.assertRaises(SystemCommandFailedError):
             multi_harvester_runner.run(harvest_collection)
-        # Expect cleanup attempt NOT to have been called, as no files have been harvested yet
         mock_run_deletions.assert_not_called()
 
     @patch.object(TalendHarvesterRunner, 'run_undo_deletions')
@@ -133,7 +139,6 @@ class TestPipelineStepsHarvest(BaseTestCase):
         multi_harvester_runner = TalendHarvesterRunner(self.uploader, None, TESTDATA_DIR, self.config, self.mock_logger)
         with self.assertRaises(SystemCommandFailedError):
             multi_harvester_runner.run(harvest_collection)
-        # Expect cleanup attempt to have been called on the files already harvested
         mock_run_undo_deletions.assert_called_once()
 
     def test_multi_harvest_undo(self):
@@ -159,5 +164,4 @@ class TestPipelineStepsHarvest(BaseTestCase):
         multi_harvester_runner = TalendHarvesterRunner(self.uploader, None, TESTDATA_DIR, self.config, self.mock_logger)
         with self.assertRaises(SystemCommandFailedError):
             multi_harvester_runner.run(harvest_collection)
-        # Expect both sets of already harvested files to have been deleted
-        mock_run_undo_deletions.call_count = 2
+        self.assertEqual(mock_run_undo_deletions.call_count, 2)
