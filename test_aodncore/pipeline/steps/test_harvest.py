@@ -1,6 +1,6 @@
 import os
 
-from mock import MagicMock, patch, mock_open
+from mock import patch, mock_open
 
 from aodncore.common import SystemCommandFailedError
 from aodncore.pipeline import PipelineFile, PipelineFileCollection, PipelineFilePublishType
@@ -8,6 +8,7 @@ from aodncore.pipeline.exceptions import InvalidHarvesterError, UnmappedFilesErr
 from aodncore.pipeline.steps.harvest import get_harvester_runner, TalendHarvesterRunner
 from aodncore.testlib import BaseTestCase, get_test_config
 from test_aodncore import TESTDATA_DIR
+from .test_upload import NullUploadRunner
 
 TEST_ROOT = os.path.dirname(__file__)
 GOOD_NC = os.path.join(TESTDATA_DIR, 'good.nc')
@@ -49,7 +50,7 @@ def get_multi_file_slice():
 class TestPipelineStepsHarvest(BaseTestCase):
     def setUp(self):
         super(TestPipelineStepsHarvest, self).setUp()
-        self.uploader = MagicMock()
+        self.uploader = NullUploadRunner("/", False)
         # overwrite default config to allow loading of custom trigger.conf files
         self._config = get_test_config(self.temp_dir)
 
@@ -95,7 +96,6 @@ class TestPipelineStepsHarvest(BaseTestCase):
             harvester_runner.run(harvest_collection)
 
         self.assertTrue(all(f.is_harvested for f in harvest_collection))
-        harvester_runner.upload_runner.run.assert_called_once_with(harvest_collection)
 
     @patch.object(TalendHarvesterRunner, 'match_harvester_to_files')
     @patch.object(TalendHarvesterRunner, 'run_deletions')
@@ -147,7 +147,9 @@ class TestPipelineStepsHarvest(BaseTestCase):
         multi_harvester_runner = TalendHarvesterRunner(self.uploader, None, TESTDATA_DIR, self.config, self.mock_logger)
         with self.assertRaises(SystemCommandFailedError):
             multi_harvester_runner.run(harvest_collection)
-        self.assertTrue(harvest_collection[0].is_harvest_undone)
+
+        self.assertTrue(all(f.is_harvest_undone for f in harvest_collection))
+        self.assertTrue(all(f.is_storage_undone for f in harvest_collection))
 
     def test_multi_storage_undo(self):
         harvest_collection = get_storage_collection(True)
@@ -155,7 +157,7 @@ class TestPipelineStepsHarvest(BaseTestCase):
         multi_harvester_runner = TalendHarvesterRunner(self.uploader, None, TESTDATA_DIR, self.config, self.mock_logger)
         with self.assertRaises(SystemCommandFailedError):
             multi_harvester_runner.run(harvest_collection)
-        self.assertTrue(harvest_collection[0].is_storage_undone)
+        self.assertTrue(all(f.is_storage_undone for f in harvest_collection))
 
     @patch.object(TalendHarvesterRunner, 'run_undo_deletions')
     def test_harvester_exception_cleanup_previous_success(self, mock_run_undo_deletions):

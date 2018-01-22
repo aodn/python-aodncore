@@ -6,7 +6,6 @@ from tempfile import mkstemp
 from .basestep import AbstractCollectionStepRunner
 from ..exceptions import InvalidHarvesterError, UnmappedFilesError
 from ..files import PipelineFileCollection, validate_pipelinefilecollection
-from ...common import SystemCommandFailedError
 from ...util import mkdir_p, LoggingContext, SystemProcess, TemporaryDirectory
 
 __all__ = [
@@ -91,12 +90,12 @@ class TalendHarvesterRunner(BaseHarvesterRunner):
                     if config_type == 'regex':
                         for pattern in patterns:
                             matched_files_for_pattern = file_list.filter_by_attribute_regex('dest_path', pattern)
-                            match_list = [{'file': f.src_path, 'deletion': f.is_deletion} for f in
-                                          matched_files_for_pattern]
-                            self._logger.sysinfo(
-                                "harvester '{harvester}' matched files: {match_list}".format(harvester=harvester,
-                                                                                             match_list=match_list))
-                            matched_files.update(matched_files_for_pattern, overwrite=True)
+                            if matched_files_for_pattern:
+                                for mf in matched_files_for_pattern:
+                                    self._logger.sysinfo("harvester '{harvester}' matched file: {mf.src_path}".format(
+                                        harvester=harvester, mf=mf))
+
+                                matched_files.update(matched_files_for_pattern, overwrite=True)
 
                             # TODO: implement extra parameters
 
@@ -144,7 +143,7 @@ class TalendHarvesterRunner(BaseHarvesterRunner):
 
             self.run_undo_deletions(file_map)
 
-    def execute_talend(self, executor, matched_files, talend_base_dir):
+    def execute_talend(self, executor, matched_files, talend_base_dir, success_attribute='is_harvested'):
         matched_file_list = [mf.dest_path for mf in matched_files]
         input_file_list = self.create_input_file_list(talend_base_dir, matched_file_list)
 
@@ -165,7 +164,7 @@ class TalendHarvesterRunner(BaseHarvesterRunner):
                 self._logger.error(p.stdout_text)
                 raise
             else:
-                matched_files.set_bool_attribute('is_harvested', True)
+                matched_files.set_bool_attribute(success_attribute, True)
                 self._logger.info(p.stdout_text)
             finally:
                 self._logger.info('--- END TALEND OUTPUT ---')
@@ -195,13 +194,12 @@ class TalendHarvesterRunner(BaseHarvesterRunner):
         """
         for harvester, matched_files in harvester_map.items():
             with TemporaryDirectory(prefix='talend_base', dir=self.tmp_base_dir) as talend_base_dir:
-                self.execute_talend(self._config.trigger_config[harvester]['exec'], matched_files, talend_base_dir)
-                matched_files.set_bool_attribute('is_harvest_undone', True)
+                self.execute_talend(self._config.trigger_config[harvester]['exec'], matched_files, talend_base_dir,
+                                    'is_harvest_undone')
 
             files_to_delete = matched_files.filter_by_bool_attributes_and('pending_undo', 'is_stored')
             if files_to_delete:
                 self.upload_runner.run(files_to_delete)
-                files_to_delete.set_bool_attribute('is_storage_undone', True)
 
     def run_additions(self, harvester_map, tmp_base_dir):
         """Function to harvest and upload files using the appropriate file upload runner
@@ -219,7 +217,7 @@ class TalendHarvesterRunner(BaseHarvesterRunner):
 
                 try:
                     self.execute_talend(self._config.trigger_config[harvester]['exec'], matched_files, talend_base_dir)
-                except SystemCommandFailedError:
+                except Exception:
                     self.undo_processed_files()
                     raise
 
