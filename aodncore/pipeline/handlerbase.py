@@ -206,6 +206,8 @@ class HandlerBase(object):
         self._handler_run = False
         self._instance_working_directory = None
         self._notify_list = None
+        self._should_notify = None
+
         self._machine = Machine(model=self, states=HandlerBase.all_states, initial='HANDLER_INITIAL',
                                 auto_transitions=False, transitions=HandlerBase.all_transitions,
                                 after_state_change='_after_state_change')
@@ -335,6 +337,14 @@ class HandlerBase(object):
         :return: HandlerResult member
         """
         return self._result
+
+    @property
+    def should_notify(self):
+        """Read-only property to retrieve the list of intended recipients *after* being assembled based on notify_params
+
+        :return: NotifyList instance
+        """
+        return self._should_notify
 
     @property
     def start_time(self):
@@ -507,7 +517,7 @@ class HandlerBase(object):
     # 'before' methods for non-ordered state machine transitions
     #
 
-    def _notify_common(self, notify_list_param):
+    def _notify_common(self):
         collection_headers, collection_data = self.file_collection.get_table_data()
         checks = () if self.check_params is None else self.check_params.get('checks', ())
 
@@ -527,17 +537,14 @@ class HandlerBase(object):
         notify_runner = get_notify_runner(notification_data, self.config, self.logger, self.notify_params)
         self.logger.sysinfo("get_notify_runner -> '{runner}'".format(runner=notify_runner.__class__.__name__))
 
-        notify_params_dict = self.notify_params or {}
-        notify_list = notify_params_dict.get(notify_list_param)
-
-        if notify_list:
-            self._notify_list = notify_runner.run(notify_list)
+        if self._should_notify:
+            self._notify_list = notify_runner.run(self._should_notify)
 
     def _notify_success(self):
-        self._notify_common('success_notify_list')
+        self._notify_common()
 
     def _notify_error(self):
-        self._notify_common('error_notify_list')
+        self._notify_common()
 
     def _complete_common(self):
         self.logger.info(
@@ -631,7 +638,7 @@ class HandlerBase(object):
         for subdirectory in ('collection', 'products', 'temp'):
             os.mkdir(os.path.join(self._instance_working_directory, subdirectory))
 
-    def _handle_error(self, exception, full_traceback=False):
+    def _handle_error(self, exception, system_error=False):
         """Update error details with exception details
         
         :param exception: exception instance being handled 
@@ -640,24 +647,29 @@ class HandlerBase(object):
         self._error = exception
         self._result = HandlerResult.ERROR
 
+        should_notify = []
+        notify_params_dict = self.notify_params or {}
+
         try:
-            if full_traceback:
+            if system_error:
                 self.logger.exception(format_exception(exception))
 
                 import traceback
                 self._error_details = traceback.format_exc()
 
                 # invalid configuration means notification is not possible
-                if isinstance(exception, (InvalidConfigError, MissingConfigParameterError)):
-                    self.notify_on_error = self.notify_on_success = False
-                    self.notify_params = {'error_notify_list': []}
-                else:
-                    self.notify_on_error = True
-                    self.notify_params = {
-                        'error_notify_list': self.config.pipeline_config['global']['admin_recipients']}
+                if not isinstance(exception, (InvalidConfigError, MissingConfigParameterError)):
+                    should_notify.extend(notify_params_dict.get('owner_notify_list', []))
+
             else:
                 self.logger.error(format_exception(exception))
                 self._error_details = str(exception)
+                should_notify.extend(notify_params_dict.get('error_notify_list', []))
+
+                if notify_params_dict.get('notify_owner_error', False):
+                    should_notify.extend(notify_params_dict.get('owner_notify_list', []))
+
+            self._should_notify = should_notify
 
             self._trigger_notify_error()
             self._trigger_complete_with_errors()
@@ -666,6 +678,14 @@ class HandlerBase(object):
 
     def _handle_success(self):
         self._result = HandlerResult.SUCCESS
+
+        notify_params_dict = self.notify_params or {}
+        should_notify = notify_params_dict.get('success_notify_list', [])
+
+        if notify_params_dict.get('notify_owner_success', False):
+            should_notify.extend(notify_params_dict.get('owner_notify_list', []))
+
+        self._should_notify = should_notify
 
         try:
             self._trigger_notify_success()
@@ -749,6 +769,6 @@ class HandlerBase(object):
             except PipelineProcessingError as e:
                 self._handle_error(e)
             except (Exception, KeyboardInterrupt, SystemExit) as e:
-                self._handle_error(e, full_traceback=True)
+                self._handle_error(e, system_error=True)
             else:
                 self._handle_success()

@@ -109,28 +109,85 @@ class TestDummyHandler(HandlerTestCase):
         mock_smtp.return_value.sendmail.return_value = {}
 
         handler = self.run_handler_with_exception(ComplianceCheckFailedError, NOT_NETCDF_NC_FILE,
-                                                  notify_params={'error_notify_list': ['email:nobody1@example.com',
-                                                                                       'email:nobody2@example.com']},
+                                                  notify_params={'notify_owner_error': False,
+                                                                 'owner_notify_list': ['email:owner1@example.com'],
+                                                                 'success_notify_list': ['email:nobody1@example.com',
+                                                                                         'email:nobody2@example.com'],
+                                                                 'error_notify_list': ['email:nobody3@example.com',
+                                                                                       'email:nobody4@example.com']},
                                                   dest_path_function=dest_path_testing)
+
+        expected_recipients = ['email:nobody3@example.com', 'email:nobody4@example.com']
+
         self.assertIsInstance(handler.notify_list, NotifyList)
-        self.assertEqual(len(handler.notify_list), 2)
-        self.assertTrue(handler.notify_list[0].notification_succeeded)
-        self.assertIsNone(handler.notify_list[0].error)
+        self.assertItemsEqual(expected_recipients, [n.raw_string for n in handler.notify_list])
+        self.assertTrue(all(r.notification_succeeded for r in handler.notify_list))
+        self.assertTrue(all(r.error is None for r in handler.notify_list))
+
+    @mock.patch('aodncore.pipeline.steps.notify.smtplib.SMTP')
+    def test_notify_owner_error(self, mock_smtp):
+        mock_smtp.return_value.sendmail.return_value = {}
+
+        handler = self.run_handler_with_exception(ComplianceCheckFailedError, NOT_NETCDF_NC_FILE,
+                                                  notify_params={'notify_owner_error': True,
+                                                                 'owner_notify_list': ['email:owner1@example.com'],
+                                                                 'success_notify_list': ['email:nobody1@example.com',
+                                                                                         'email:nobody2@example.com'],
+                                                                 'error_notify_list': ['email:nobody3@example.com',
+                                                                                       'email:nobody4@example.com']},
+                                                  dest_path_function=dest_path_testing)
+
+        expected_recipients = ['email:owner1@example.com', 'email:nobody3@example.com', 'email:nobody4@example.com']
+
+        self.assertIsInstance(handler.notify_list, NotifyList)
+        self.assertItemsEqual(expected_recipients, [n.raw_string for n in handler.notify_list])
+        self.assertTrue(all(r.notification_succeeded for r in handler.notify_list))
+        self.assertTrue(all(r.error is None for r in handler.notify_list))
+
+    @mock.patch('aodncore.pipeline.steps.notify.smtplib.SMTP')
+    def test_notify_system_error(self, mock_smtp):
+        mock_smtp.return_value.sendmail.return_value = {}
+
+        handler = self.run_handler_with_exception(InvalidInputFileError, get_nonexistent_path(),
+                                                  notify_params={'notify_owner_error': False,
+                                                                 'owner_notify_list': ['email:owner1@example.com'],
+                                                                 'success_notify_list': ['email:nobody1@example.com',
+                                                                                         'email:nobody2@example.com'],
+                                                                 'error_notify_list': ['email:nobody3@example.com',
+                                                                                       'email:nobody4@example.com']
+                                                                 },
+                                                  dest_path_function=dest_path_testing)
+
+        # a PipelineSystemError should *always* be sent to owner, regardless of 'notify_owner_error' flag
+        expected_recipients = ['email:owner1@example.com']
+
+        self.assertIsInstance(handler.notify_list, NotifyList)
+        self.assertItemsEqual(expected_recipients, [n.raw_string for n in handler.notify_list])
+        self.assertTrue(all(r.notification_succeeded for r in handler.notify_list))
+        self.assertTrue(all(r.error is None for r in handler.notify_list))
 
     @mock.patch('aodncore.pipeline.steps.notify.smtplib.SMTP')
     def test_notify_fail(self, mock_smtp):
         mock_smtp.return_value.sendmail.return_value = {}
 
         handler = self.run_handler(self.temp_nc_file,
-                                   notify_params={'success_notify_list': ['INVALID:nobody1@example.com',
-                                                                          'email:nobody2@example.com']},
+                                   notify_params={'notify_owner_error': False,
+                                                  'owner_notify_list': ['email:owner1@example.com'],
+                                                  'success_notify_list': ['email:nobody1@example.com',
+                                                                          'INVALID:nobody2@example.com'],
+                                                  'error_notify_list': ['email:nobody3@example.com',
+                                                                        'email:nobody4@example.com']
+                                                  },
                                    dest_path_function=dest_path_testing)
+
+        expected_recipients = ['email:nobody1@example.com', 'INVALID:nobody2@example.com']
+
         self.assertIsInstance(handler.notify_list, NotifyList)
-        self.assertEqual(len(handler.notify_list), 2)
-        self.assertFalse(handler.notify_list[0].notification_succeeded)
-        self.assertTrue(handler.notify_list[1].notification_succeeded)
-        self.assertIsInstance(handler.notify_list[0].error, InvalidRecipientError)
-        self.assertIsNone(handler.notify_list[1].error)
+        self.assertItemsEqual(expected_recipients, [n.raw_string for n in handler.notify_list])
+        self.assertTrue(handler.notify_list[0].notification_succeeded)
+        self.assertFalse(handler.notify_list[1].notification_succeeded)
+        self.assertIsNone(handler.notify_list[0].error)
+        self.assertIsInstance(handler.notify_list[1].error, InvalidRecipientError)
 
     @mock.patch('aodncore.pipeline.steps.notify.smtplib.SMTP')
     def test_notify_success(self, mock_smtp):
@@ -138,14 +195,38 @@ class TestDummyHandler(HandlerTestCase):
 
         handler = self.run_handler(self.temp_nc_file,
                                    notify_params={'success_notify_list': ['email:nobody1@example.com',
-                                                                          'email:nobody2@example.com',
-                                                                          'email:nobody3@example.com',
-                                                                          'email:nobody4@example.com']},
+                                                                          'email:nobody2@example.com'],
+                                                  'error_notify_list': ['email:nobody3@example.com',
+                                                                        'email:nobody4@example.com']},
                                    dest_path_function=dest_path_testing)
+
+        expected_recipients = ['email:nobody1@example.com', 'email:nobody2@example.com']
+
         self.assertIsInstance(handler.notify_list, NotifyList)
-        self.assertEqual(len(handler.notify_list), 4)
+        self.assertItemsEqual(expected_recipients, [n.raw_string for n in handler.notify_list])
         self.assertTrue(all(r.notification_succeeded for r in handler.notify_list))
-        self.assertIsNone(handler.notify_list[0].error)
+        self.assertTrue(all(r.error is None for r in handler.notify_list))
+
+    @mock.patch('aodncore.pipeline.steps.notify.smtplib.SMTP')
+    def test_notify_owner_success(self, mock_smtp):
+        mock_smtp.return_value.sendmail.return_value = {}
+
+        handler = self.run_handler(self.temp_nc_file,
+                                   notify_params={'notify_owner_success': True,
+                                                  'owner_notify_list': ['email:owner1@example.com'],
+                                                  'success_notify_list': ['email:nobody1@example.com',
+                                                                          'email:nobody2@example.com'],
+                                                  'error_notify_list': ['email:nobody3@example.com',
+                                                                        'email:nobody4@example.com']
+                                                  },
+                                   dest_path_function=dest_path_testing)
+
+        expected_recipients = ['email:owner1@example.com', 'email:nobody1@example.com', 'email:nobody2@example.com']
+
+        self.assertIsInstance(handler.notify_list, NotifyList)
+        self.assertItemsEqual(expected_recipients, [n.raw_string for n in handler.notify_list])
+        self.assertTrue(all(r.notification_succeeded for r in handler.notify_list))
+        self.assertTrue(all(r.error is None for r in handler.notify_list))
 
     def test_property_default_addition_publish_type(self):
         handler = self.handler_class(self.temp_nc_file)
