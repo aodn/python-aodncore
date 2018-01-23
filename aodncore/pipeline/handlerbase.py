@@ -13,6 +13,7 @@ from .exceptions import (PipelineProcessingError, HandlerAlreadyRunError, Invali
                          InvalidFileFormatError, MissingConfigParameterError)
 from .files import PipelineFile, PipelineFileCollection
 from .log import SYSINFO, get_pipeline_logger
+from .schema import validate_check_params, validate_harvest_params, validate_notify_params, validate_resolve_params
 from .steps import (get_cc_module_versions, get_check_runner, get_harvester_runner, get_notify_runner,
                     get_resolve_runner, get_upload_runner)
 from ..util import format_exception, get_file_checksum, merge_dicts, validate_bool, TemporaryDirectory
@@ -423,6 +424,7 @@ class HandlerBase(object):
         :return: None
         """
         self._init_logging()
+        self._validate_params()
         self._set_checksum()
         self._check_extension()
         self._set_cc_versions()
@@ -703,6 +705,20 @@ class HandlerBase(object):
         self._archive_path_function_name = archive_path_function_name
         self.logger.sysinfo(
             "get_path_function (archive) -> '{function}'".format(function=self._archive_path_function_name))
+
+    def _validate_params(self):
+        """Validate *_params dicts against their respective schemas
+
+        :return: None
+        """
+        if self.check_params:
+            validate_check_params(self.check_params)
+        if self.harvest_params:
+            validate_harvest_params(self.harvest_params)
+        if self.notify_params:
+            validate_notify_params(self.notify_params)
+        if self.resolve_params:
+            validate_resolve_params(self.resolve_params)
 
     #
     # process methods - to be overridden by child class as required

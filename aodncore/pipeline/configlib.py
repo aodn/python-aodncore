@@ -1,13 +1,12 @@
 import json
 import os
 
-import jsonschema
 from celery import Celery
 from six import iteritems
 
 from .exceptions import InvalidConfigError
-from .log import (WorkerLoggingConfigBuilder, get_watchservice_logging_config, validate_logging_config)
-from .schema import PIPELINE_CONFIG_SCHEMA
+from .log import WorkerLoggingConfigBuilder, get_watchservice_logging_config
+from .schema import validate_logging_config, validate_pipeline_config
 from .watch import get_task_name, CeleryConfig, CeleryContext
 from ..util import discover_entry_points, format_exception, validate_type
 
@@ -190,10 +189,6 @@ def load_json_file(default_config_file, envvar=None):
         raise InvalidConfigError(format_exception(e))
 
     return config
-
-
-def validate_pipeline_config(pipeline_config):
-    jsonschema.validate(pipeline_config, PIPELINE_CONFIG_SCHEMA)
 
 
 validate_lazyconfigmanager = validate_type(LazyConfigManager)

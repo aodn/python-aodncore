@@ -2,6 +2,8 @@ import os
 import sys
 import unittest
 
+from jsonschema import ValidationError
+
 from aodncore.pipeline import PipelineFilePublishType, HandlerResult
 from aodncore.pipeline.exceptions import (ComplianceCheckFailedError, HandlerAlreadyRunError, InvalidCheckSuiteError,
                                           InvalidInputFileError, InvalidFileFormatError, InvalidRecipientError)
@@ -55,6 +57,22 @@ class TestDummyHandler(HandlerTestCase):
 
     def test_invalid_exclude_regex(self):
         self.run_handler_with_exception(ValueError, GOOD_NC, include_regexes=['.*'], exclude_regexes=['['])
+
+    def test_invalid_check_params(self):
+        self.run_handler_with_exception(ValidationError, GOOD_NC, check_params={'invalid_param': 'value'})
+        self.run_handler_with_exception(ValidationError, GOOD_NC, check_params={'checks': 'invalid_type'})
+
+    def test_invalid_harvest_params(self):
+        self.run_handler_with_exception(ValidationError, GOOD_NC, harvest_params={'slice_size': 'twenty'})
+        self.run_handler_with_exception(ValidationError, GOOD_NC, harvest_params={'invalid_param': 'value'})
+
+    def test_invalid_notify_params(self):
+        self.run_handler_with_exception(ValidationError, GOOD_NC, notify_params={'notify_owner_error': ['value']})
+        self.run_handler_with_exception(ValidationError, GOOD_NC, notify_params={'invalid_param': 'value'})
+
+    def test_invalid_resolve_params(self):
+        self.run_handler_with_exception(ValidationError, GOOD_NC, resolve_params={'relative_path_root': 0})
+        self.run_handler_with_exception(ValidationError, GOOD_NC, resolve_params={'invalid_param': 'value'})
 
     def test_nonexistent_file(self):
         nonexistent_file = get_nonexistent_path()
