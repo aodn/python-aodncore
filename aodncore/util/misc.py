@@ -17,6 +17,7 @@ __all__ = [
     'is_nonstring_iterable',
     'is_function',
     'is_valid_email_address',
+    'iter_public_attributes',
     'matches_regexes',
     'merge_dicts',
     'slice_sequence',
@@ -88,6 +89,29 @@ def is_valid_email_address(address):
     """
     pattern = re.compile(r"^[A-Z0-9_.+-]+@(localhost|[A-Z0-9-]+\.[A-Z0-9-.]+)$", re.IGNORECASE)
     return re.match(pattern, address)
+
+
+def iter_public_attributes(instance, ignored_attributes=None):
+    """Get an iterator over an instance's public attributes, *including* properties
+
+    :param instance: object instance
+    :param ignored_attributes: set of attribute names to exclude
+    :return: iterator over the instances public attributes
+    """
+    ignored_attributes = {} if ignored_attributes is None else set(ignored_attributes)
+
+    def includeattr(attr):
+        if attr.startswith('_') or attr in ignored_attributes:
+            return False
+        return True
+
+    attribute_names = set(getattr(instance, '__slots__', getattr(instance, '__dict__', {})))
+    property_names = {p for p in dir(instance.__class__) if isinstance(getattr(instance.__class__, p), property)}
+    all_names = attribute_names.union(property_names)
+
+    public_attrs = {a: str(getattr(instance, a)) for a in all_names if includeattr(a)}
+
+    return six.iteritems(public_attrs)
 
 
 def matches_regexes(input_string, include_regexes=None, exclude_regexes=None):
