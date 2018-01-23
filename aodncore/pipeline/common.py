@@ -2,7 +2,7 @@ import os
 
 from enum import Enum
 
-from ..util import classproperty, is_valid_email_address, validate_membership, validate_type
+from ..util import classproperty, is_valid_email_address, iter_public_attributes, validate_membership, validate_type
 
 __all__ = [
     'CheckResult',
@@ -30,9 +30,7 @@ class CheckResult(object):
         self._errors = errors
 
     def __iter__(self):
-        yield 'compliant', self.compliant
-        yield 'errors', self.errors
-        yield 'log', self.log
+        return iter_public_attributes(self)
 
     @property
     def compliant(self):
