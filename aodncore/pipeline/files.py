@@ -27,7 +27,8 @@ class PipelineFile(object):
     __slots__ = ['_file_checksum', '_name', '_src_path', '_archive_path', '_dest_path', '_extension', 'file_type',
                  '_file_update_callback', '_check_type', '_is_deletion', '_publish_type', '_should_archive',
                  '_should_harvest', '_should_store', '_should_undo', '_is_checked', '_is_archived', '_is_harvested',
-                 '_is_stored', '_is_harvest_undone', "_is_upload_undone", '_check_result', '_mime_type']
+                 '_is_overwrite', '_is_stored', '_is_harvest_undone', "_is_upload_undone", '_check_result',
+                 '_mime_type']
 
     def __init__(self, src_path, name=None, archive_path=None, dest_path=None, is_deletion=False,
                  file_update_callback=None):

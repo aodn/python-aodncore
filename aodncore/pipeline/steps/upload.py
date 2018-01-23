@@ -8,6 +8,7 @@ from six.moves.urllib.parse import urlparse
 
 from .basestep import AbstractCollectionStepRunner
 from ..exceptions import FileDeleteFailedError, FileUploadFailedError, InvalidUploadUrlError
+from ..files import validate_pipelinefilecollection
 from ...util import format_exception, mkdir_p, rm_f, safe_copy_file
 
 __all__ = [
@@ -87,11 +88,16 @@ class BaseUploadRunner(AbstractCollectionStepRunner):
     def _get_absolute_dest_uri(self, pipeline_file):
         pass
 
+    @abc.abstractmethod  # pragma: no cover
+    def determine_overwrites(self, pipeline_files):
+        pass
+
     def _get_absolute_dest_path(self, pipeline_file):
         rel_path = getattr(pipeline_file, self.dest_path_attr)
         return os.path.join(self.prefix, rel_path)
 
     def run(self, pipeline_files):
+        validate_pipelinefilecollection(pipeline_files)
 
         additions = pipeline_files.filter_by_bool_attribute(self.pending_addition_attr)
         deletions = pipeline_files.filter_by_bool_attribute('pending_store_deletion')
@@ -161,6 +167,13 @@ class FileUploadRunner(BaseUploadRunner):
         mkdir_p(os.path.dirname(abs_path))
         safe_copy_file(pipeline_file.src_path, abs_path, overwrite=True)
 
+    def determine_overwrites(self, pipeline_files):
+        validate_pipelinefilecollection(pipeline_files)
+
+        for pipeline_file in pipeline_files:
+            abs_path = self._get_absolute_dest_path(pipeline_file)
+            pipeline_file.is_overwrite = os.path.exists(abs_path)
+
 
 class S3UploadRunner(BaseUploadRunner):
     """UploadRunner to upload files to an S3 bucket
@@ -208,6 +221,14 @@ class S3UploadRunner(BaseUploadRunner):
         except Exception as e:
             raise InvalidUploadUrlError(
                 "unable to access S3 bucket '{0}': {1}".format(self.bucket, format_exception(e)))
+
+    def determine_overwrites(self, pipeline_files):
+        validate_pipelinefilecollection(pipeline_files)
+
+        for pipeline_file in pipeline_files:
+            abs_path = self._get_absolute_dest_path(pipeline_file)
+            response = self.s3_client.list_objects_v2(Bucket=self.bucket, Prefix=abs_path)
+            pipeline_file.is_overwrite = bool(k for k in response.get('Contents', []) if k['Key'] == abs_path)
 
 
 def sftp_path_exists(sftpclient, path):
@@ -311,3 +332,10 @@ class SftpUploadRunner(BaseUploadRunner):
 
         with open(pipeline_file.src_path, 'rb') as f:
             self.sftp_client.putfo(f, abs_path, confirm=True)
+
+    def determine_overwrites(self, pipeline_files):
+        validate_pipelinefilecollection(pipeline_files)
+
+        for pipeline_file in pipeline_files:
+            abs_path = self._get_absolute_dest_path(pipeline_file)
+            pipeline_file.is_overwrite = sftp_path_exists(self.sftp_client, abs_path)
