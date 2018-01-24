@@ -1,169 +1,414 @@
 import os
 
-from mock import patch, mock_open
+from mock import patch
 
 from aodncore.common import SystemCommandFailedError
 from aodncore.pipeline import PipelineFile, PipelineFileCollection, PipelineFilePublishType
 from aodncore.pipeline.exceptions import InvalidHarvesterError, UnmappedFilesError
 from aodncore.pipeline.steps.harvest import get_harvester_runner, TalendHarvesterRunner
-from aodncore.testlib import BaseTestCase, get_test_config
+from aodncore.testlib import BaseTestCase, NullUploadRunner
 from test_aodncore import TESTDATA_DIR
-from .test_upload import NullUploadRunner
 
 TEST_ROOT = os.path.dirname(__file__)
+BAD_NC = os.path.join(TESTDATA_DIR, 'bad.nc')
+EMPTY_NC = os.path.join(TESTDATA_DIR, 'empty.nc')
 GOOD_NC = os.path.join(TESTDATA_DIR, 'good.nc')
-PF_1_NC = os.path.join(TESTDATA_DIR, 'pf1.nc')
-PF_2_NC = os.path.join(TESTDATA_DIR, 'pf2.nc')
 
 
-def get_harvest_collection(delete=False):
-    pipeline_file = PipelineFile(GOOD_NC, is_deletion=delete)
-    publish_type = PipelineFilePublishType.DELETE_UNHARVEST if delete else PipelineFilePublishType.HARVEST_UPLOAD
-    pipeline_file.publish_type = publish_type
-    pipeline_file.dest_path = 'subdir/targetfile.nc'
-    collection = PipelineFileCollection([pipeline_file])
-    return collection
+def get_harvest_collection(delete=False, with_store=False, already_stored=False):
+    pf_bad = PipelineFile(BAD_NC, is_deletion=delete)
+    pf_empty = PipelineFile(EMPTY_NC, is_deletion=delete)
+    pf_good = PipelineFile(GOOD_NC, is_deletion=delete)
 
+    collection = PipelineFileCollection([pf_bad, pf_empty, pf_good])
 
-def get_storage_collection(undo=False):
-    pipeline_file = PipelineFile(GOOD_NC)
-    publish_type = PipelineFilePublishType.HARVEST_UPLOAD
-    pipeline_file.should_undo = undo
-    pipeline_file.is_stored = True
-    pipeline_file.publish_type = publish_type
-    pipeline_file.dest_path = 'subdir/targetfile.nc'
-    collection = PipelineFileCollection([pipeline_file])
-    return collection
+    if with_store:
+        publish_type = PipelineFilePublishType.DELETE_UNHARVEST if delete else PipelineFilePublishType.HARVEST_UPLOAD
+    else:
+        publish_type = PipelineFilePublishType.UNHARVEST_ONLY if delete else PipelineFilePublishType.HARVEST_ONLY
 
+    for pipeline_file in collection:
+        pipeline_file.is_stored = already_stored
+        pipeline_file.dest_path = os.path.join('DUMMY', os.path.basename(pipeline_file.src_path))
+        pipeline_file.publish_type = publish_type
 
-def get_multi_file_slice():
-    pf_1 = PipelineFile(PF_1_NC)
-    pf_2 = PipelineFile(PF_2_NC)
-    pf_1.publish_type = PipelineFilePublishType.HARVEST_ONLY
-    pf_2.publish_type = PipelineFilePublishType.HARVEST_ONLY
-    pf_1.dest_path = 'subdir/tf1.nc'
-    pf_2.dest_path = 'subdir/tf2.nc'
-    collection = PipelineFileCollection([pf_1, pf_2])
     return collection
 
 
 class TestPipelineStepsHarvest(BaseTestCase):
     def setUp(self):
         super(TestPipelineStepsHarvest, self).setUp()
-        self.uploader = NullUploadRunner("/", False)
-        # overwrite default config to allow loading of custom trigger.conf files
-        self._config = get_test_config(self.temp_dir)
 
-    def test_validate_file_handling_failure(self):
-        matched_file_map = {'my_test_harvester': get_harvest_collection()}
-        file_slice = get_multi_file_slice()
-        harvester_runner = TalendHarvesterRunner(self.uploader, None, TESTDATA_DIR, self.config, self.mock_logger)
-        with self.assertRaises(UnmappedFilesError):
-            harvester_runner.validate_harvester_mapping(file_slice, matched_file_map)
+        self.uploader = NullUploadRunner("/")
 
-    def test_get_harvest_runner(self):
+    def test_get_harvester_runner(self):
         harvester_runner = get_harvester_runner('talend', self.uploader, None, TESTDATA_DIR, None, self.mock_logger)
         self.assertIsInstance(harvester_runner, TalendHarvesterRunner)
 
-    def test_get_harvest_runner_invalid(self):
+    def test_get_harvester_runner_invalid(self):
         with self.assertRaises(InvalidHarvesterError):
             _ = get_harvester_runner('nonexistent_harvester', self.uploader, None, TESTDATA_DIR, None, self.mock_logger)
 
-    @patch('aodncore.pipeline.steps.harvest.SystemProcess')
-    def test_talend_harvester_single_addition(self, mock_systemprocess):
-        harvest_collection = get_harvest_collection()
-        harvester_runner = TalendHarvesterRunner(self.uploader, None, TESTDATA_DIR, self.config, self.mock_logger)
-        harvester_runner.run(harvest_collection)
-        mock_systemprocess.assert_called_once()
-        self.assertTrue(all(f.is_harvested for f in harvest_collection))
 
-    @patch('aodncore.pipeline.steps.harvest.SystemProcess')
-    def test_talend_harvester_single_deletion(self, mock_systemprocess):
-        harvest_collection = get_harvest_collection(delete=True)
-        harvester_runner = TalendHarvesterRunner(self.uploader, None, TESTDATA_DIR, self.config, self.mock_logger)
-        harvester_runner.run(harvest_collection)
-        mock_systemprocess.assert_called_once()
-        self.assertTrue(all(f.is_harvested for f in harvest_collection))
+class TestTalendHarvesterRunner(BaseTestCase):
+    def setUp(self):
+        super(TestTalendHarvesterRunner, self).setUp()
+        self.uploader = NullUploadRunner("/")
 
-    @patch('aodncore.pipeline.steps.harvest.SystemProcess')
-    @patch('aodncore.pipeline.steps.harvest.TemporaryDirectory')
-    @patch('aodncore.pipeline.steps.harvest.mkstemp')
-    def test_single_store_deletion(self, mock_mkstemp, mock_temporarydirectory, mock_systemprocess):
-        mock_mkstemp.return_value = ('', '')
-        harvest_collection = get_harvest_collection(delete=True)
-        harvester_runner = TalendHarvesterRunner(self.uploader, None, TESTDATA_DIR, self.config, self.mock_logger)
-        with patch('aodncore.pipeline.steps.harvest.open', mock_open(read_data='')) as m:
-            harvester_runner.run(harvest_collection)
+    def test_validate_harvester_mapping(self):
+        collection = get_harvest_collection()
+        subset = collection.filter_by_attribute_value('src_path', GOOD_NC)
+        matched_file_map = {'my_test_harvester': subset}
 
-        self.assertTrue(all(f.is_harvested for f in harvest_collection))
-
-    @patch.object(TalendHarvesterRunner, 'match_harvester_to_files')
-    @patch.object(TalendHarvesterRunner, 'run_deletions')
-    def test_talend_harvester_single_deletion_no_map(self, mock_run_deletions, mock_match_harvester_to_files):
-        mock_match_harvester_to_files.return_value = {}
-        harvest_collection = get_harvest_collection(delete=True)
         harvester_runner = TalendHarvesterRunner(self.uploader, None, TESTDATA_DIR, self.config, self.mock_logger)
+
         with self.assertRaises(UnmappedFilesError):
-            harvester_runner.run(harvest_collection)
-        mock_run_deletions.assert_not_called()
+            harvester_runner.validate_harvester_mapping(collection, matched_file_map)
 
-    def test_talend_harvester_single_deletion_exec_fail(self):
-        os.environ['PIPELINE_TRIGGER_CONFIG_FILE'] = os.path.join(TEST_ROOT, 'trigger_fail.conf')
-        harvest_collection = get_harvest_collection(delete=True)
+    @patch('aodncore.util.process.subprocess')
+    def test_harvest_only_deletion(self, mock_subprocess):
+        mock_subprocess.Popen().wait.return_value = 0
+        mock_subprocess.Popen().communicate.return_value = ('mocked stdout', 'mocked stderr')
+
+        collection = get_harvest_collection(delete=True)
         harvester_runner = TalendHarvesterRunner(self.uploader, None, TESTDATA_DIR, self.config, self.mock_logger)
+
+        harvester_runner.run(collection)
+
+        harvester_runner.upload_runner.assert_not_called()
+
+        self.assertTrue(all(f.is_deletion for f in collection))
+        self.assertTrue(all(f.is_harvested for f in collection))
+        self.assertFalse(any(f.is_stored for f in collection))
+
+    @patch('aodncore.util.process.subprocess')
+    def test_harvest_only_deletion_sliced(self, mock_subprocess):
+        mock_subprocess.Popen().wait.return_value = 0
+        mock_subprocess.Popen().communicate.return_value = ('mocked stdout', 'mocked stderr')
+
+        collection = get_harvest_collection(delete=True)
+        harvester_runner = TalendHarvesterRunner(self.uploader, {'slice_size': 1}, TESTDATA_DIR, self.config,
+                                                 self.mock_logger)
+
+        harvester_runner.run(collection)
+
+        harvester_runner.upload_runner.assert_not_called()
+
+        self.assertTrue(all(f.is_deletion for f in collection))
+        self.assertTrue(all(f.is_harvested for f in collection))
+        self.assertFalse(any(f.is_stored for f in collection))
+
+    @patch('aodncore.util.process.subprocess')
+    def test_harvest_upload_deletion(self, mock_subprocess):
+        mock_subprocess.Popen().wait.return_value = 0
+        mock_subprocess.Popen().communicate.return_value = ('mocked stdout', 'mocked stderr')
+
+        collection = get_harvest_collection(delete=True, with_store=True)
+        harvester_runner = TalendHarvesterRunner(self.uploader, None, TESTDATA_DIR, self.config, self.mock_logger)
+
+        harvester_runner.run(collection)
+
+        harvester_runner.upload_runner.assert_call_count(1)
+
+        self.assertTrue(all(f.is_deletion for f in collection))
+        self.assertTrue(all(f.is_harvested for f in collection))
+        self.assertTrue(all(f.is_deleted for f in collection))
+
+    @patch('aodncore.util.process.subprocess')
+    def test_harvest_upload_deletion_sliced(self, mock_subprocess):
+        mock_subprocess.Popen().wait.return_value = 0
+        mock_subprocess.Popen().communicate.return_value = ('mocked stdout', 'mocked stderr')
+
+        collection = get_harvest_collection(delete=True, with_store=True)
+        harvester_runner = TalendHarvesterRunner(self.uploader, {'slice_size': 1}, TESTDATA_DIR, self.config,
+                                                 self.mock_logger)
+
+        harvester_runner.run(collection)
+
+        harvester_runner.upload_runner.assert_call_count(3)
+
+        self.assertTrue(all(f.is_deletion for f in collection))
+        self.assertTrue(all(f.is_harvested for f in collection))
+        self.assertTrue(all(f.is_deleted for f in collection))
+
+    @patch('aodncore.util.process.subprocess')
+    def test_harvest_only_fail(self, mock_subprocess):
+        mock_subprocess.Popen().wait.return_value = 1
+        mock_subprocess.Popen().communicate.return_value = ('mocked stdout', 'mocked stderr')
+
+        collection = get_harvest_collection()
+        harvester_runner = TalendHarvesterRunner(self.uploader, None, TESTDATA_DIR, self.config, self.mock_logger)
+
         with self.assertRaises(SystemCommandFailedError):
-            harvester_runner.run(harvest_collection)
+            harvester_runner.run(collection)
 
-    @patch('aodncore.pipeline.steps.harvest.SystemProcess')
-    def test_multi_harvester_success(self, mock_systemprocess):
-        os.environ['PIPELINE_TRIGGER_CONFIG_FILE'] = os.path.join(TEST_ROOT, 'trigger_multi.conf')
-        harvest_collection = get_harvest_collection()
-        multi_harvester_runner = TalendHarvesterRunner(self.uploader, None, TESTDATA_DIR, self.config, self.mock_logger)
-        multi_harvester_runner.run(harvest_collection)
-        self.assertEqual(mock_systemprocess.call_count, 2)
-        self.assertTrue(all(f.is_harvested for f in harvest_collection))
+        harvester_runner.upload_runner.assert_not_called()
 
-    @patch.object(TalendHarvesterRunner, 'run_deletions')
-    def test_harvester_exception_cleanup(self, mock_run_deletions):
-        harvest_collection = get_harvest_collection()
-        os.environ['PIPELINE_TRIGGER_CONFIG_FILE'] = os.path.join(TEST_ROOT, 'trigger_fail.conf')
-        multi_harvester_runner = TalendHarvesterRunner(self.uploader, None, TESTDATA_DIR, self.config, self.mock_logger)
+        self.assertFalse(any(f.is_harvested for f in collection))
+        self.assertFalse(any(f.is_stored for f in collection))
+
+    @patch('aodncore.util.process.subprocess')
+    def test_harvest_only_fail_sliced(self, mock_subprocess):
+        mock_subprocess.Popen().wait.return_value = 1
+        mock_subprocess.Popen().communicate.return_value = ('mocked stdout', 'mocked stderr')
+
+        collection = get_harvest_collection()
+        harvester_runner = TalendHarvesterRunner(self.uploader, {'slice_size': 1}, TESTDATA_DIR, self.config,
+                                                 self.mock_logger)
+
         with self.assertRaises(SystemCommandFailedError):
-            multi_harvester_runner.run(harvest_collection)
-        mock_run_deletions.assert_not_called()
+            harvester_runner.run(collection)
 
-    @patch.object(TalendHarvesterRunner, 'run_undo_deletions')
-    def test_multi_harvester_exception_cleanup(self, mock_run_undo_deletions):
-        harvest_collection = get_harvest_collection(False)
-        os.environ['PIPELINE_TRIGGER_CONFIG_FILE'] = os.path.join(TEST_ROOT, 'trigger_single_fail.conf')
-        multi_harvester_runner = TalendHarvesterRunner(self.uploader, None, TESTDATA_DIR, self.config, self.mock_logger)
+        harvester_runner.upload_runner.assert_not_called()
+
+        self.assertFalse(any(f.is_harvested for f in collection))
+        self.assertFalse(any(f.is_uploaded for f in collection))
+
+    @patch('aodncore.util.process.subprocess')
+    def test_harvest_upload_fail(self, mock_subprocess):
+        mock_subprocess.Popen().wait.return_value = 1
+        mock_subprocess.Popen().communicate.return_value = ('mocked stdout', 'mocked stderr')
+
+        collection = get_harvest_collection(with_store=True)
+        harvester_runner = TalendHarvesterRunner(self.uploader, None, TESTDATA_DIR, self.config, self.mock_logger)
+
         with self.assertRaises(SystemCommandFailedError):
-            multi_harvester_runner.run(harvest_collection)
-        mock_run_undo_deletions.assert_called_once()
+            harvester_runner.run(collection)
 
-    def test_multi_harvest_undo(self):
-        harvest_collection = get_harvest_collection(False)
-        os.environ['PIPELINE_TRIGGER_CONFIG_FILE'] = os.path.join(TEST_ROOT, 'trigger_single_fail.conf')
-        multi_harvester_runner = TalendHarvesterRunner(self.uploader, None, TESTDATA_DIR, self.config, self.mock_logger)
+        harvester_runner.upload_runner.assert_not_called()
+
+        self.assertFalse(any(f.is_harvested for f in collection))
+        self.assertFalse(any(f.is_uploaded for f in collection))
+
+    @patch('aodncore.util.process.subprocess')
+    def test_harvest_upload_fail_sliced(self, mock_subprocess):
+        mock_subprocess.Popen().wait.return_value = 1
+        mock_subprocess.Popen().communicate.return_value = ('mocked stdout', 'mocked stderr')
+
+        collection = get_harvest_collection(with_store=True)
+        harvester_runner = TalendHarvesterRunner(self.uploader, {'slice_size': 1}, TESTDATA_DIR, self.config,
+                                                 self.mock_logger)
+
         with self.assertRaises(SystemCommandFailedError):
-            multi_harvester_runner.run(harvest_collection)
+            harvester_runner.run(collection)
 
-        self.assertTrue(all(f.is_harvest_undone for f in harvest_collection))
-        self.assertTrue(all(f.is_storage_undone for f in harvest_collection))
+        harvester_runner.upload_runner.assert_not_called()
 
-    def test_multi_storage_undo(self):
-        harvest_collection = get_storage_collection(True)
-        os.environ['PIPELINE_TRIGGER_CONFIG_FILE'] = os.path.join(TEST_ROOT, 'trigger_single_fail.conf')
-        multi_harvester_runner = TalendHarvesterRunner(self.uploader, None, TESTDATA_DIR, self.config, self.mock_logger)
+        self.assertFalse(any(f.is_harvested for f in collection))
+        self.assertFalse(any(f.is_uploaded for f in collection))
+
+    @patch('aodncore.util.process.subprocess')
+    def test_harvest_only_success(self, mock_subprocess):
+        mock_subprocess.Popen().wait.return_value = 0
+        mock_subprocess.Popen().communicate.return_value = ('mocked stdout', 'mocked stderr')
+
+        collection = get_harvest_collection()
+        harvester_runner = TalendHarvesterRunner(self.uploader, None, TESTDATA_DIR, self.config, self.mock_logger)
+
+        harvester_runner.run(collection)
+
+        harvester_runner.upload_runner.assert_not_called()
+
+        self.assertTrue(all(f.is_harvested for f in collection))
+        self.assertFalse(any(f.is_uploaded for f in collection))
+
+    @patch('aodncore.util.process.subprocess')
+    def test_harvest_only_success_sliced(self, mock_subprocess):
+        mock_subprocess.Popen().wait.return_value = 0
+        mock_subprocess.Popen().communicate.return_value = ('mocked stdout', 'mocked stderr')
+
+        collection = get_harvest_collection()
+        harvester_runner = TalendHarvesterRunner(self.uploader, {'slice_size': 1}, TESTDATA_DIR, self.config,
+                                                 self.mock_logger)
+
+        harvester_runner.run(collection)
+
+        harvester_runner.upload_runner.assert_not_called()
+
+        self.assertTrue(all(f.is_harvested for f in collection))
+        self.assertFalse(any(f.is_uploaded for f in collection))
+
+    @patch('aodncore.util.process.subprocess')
+    def test_harvest_upload_success(self, mock_subprocess):
+        mock_subprocess.Popen().wait.return_value = 0
+        mock_subprocess.Popen().communicate.return_value = ('mocked stdout', 'mocked stderr')
+
+        collection = get_harvest_collection(with_store=True)
+        harvester_runner = TalendHarvesterRunner(self.uploader, None, TESTDATA_DIR, self.config,
+                                                 self.mock_logger)
+
+        harvester_runner.run(collection)
+
+        harvester_runner.upload_runner.assert_call_count(1)
+
+        self.assertTrue(all(f.is_harvested for f in collection))
+        self.assertTrue(all(f.is_uploaded for f in collection))
+
+        self.assertFalse(any(f.is_harvest_undone for f in collection))
+        self.assertFalse(any(f.is_upload_undone for f in collection))
+
+    @patch('aodncore.util.process.subprocess')
+    def test_harvest_upload_success_sliced(self, mock_subprocess):
+        mock_subprocess.Popen().wait.return_value = 0
+        mock_subprocess.Popen().communicate.return_value = ('mocked stdout', 'mocked stderr')
+
+        collection = get_harvest_collection(with_store=True)
+        harvester_runner = TalendHarvesterRunner(self.uploader, {'slice_size': 1}, TESTDATA_DIR, self.config,
+                                                 self.mock_logger)
+
+        harvester_runner.run(collection)
+
+        harvester_runner.upload_runner.assert_call_count(3)
+
+        self.assertTrue(all(f.is_harvested for f in collection))
+        self.assertTrue(all(f.is_uploaded for f in collection))
+
+        self.assertFalse(any(f.is_harvest_undone for f in collection))
+        self.assertFalse(any(f.is_upload_undone for f in collection))
+
+    @patch('aodncore.util.process.subprocess')
+    def test_harvest_only_undo(self, mock_subprocess):
+        mock_subprocess.Popen().wait.side_effect = (1, 0)
+        mock_subprocess.Popen().communicate.return_value = ('mocked stdout', 'mocked stderr')
+
+        collection = get_harvest_collection()
+        harvester_runner = TalendHarvesterRunner(self.uploader, None, TESTDATA_DIR, self.config,
+                                                 self.mock_logger)
+
         with self.assertRaises(SystemCommandFailedError):
-            multi_harvester_runner.run(harvest_collection)
-        self.assertTrue(all(f.is_storage_undone for f in harvest_collection))
+            harvester_runner.run(collection)
 
-    @patch.object(TalendHarvesterRunner, 'run_undo_deletions')
-    def test_harvester_exception_cleanup_previous_success(self, mock_run_undo_deletions):
-        harvest_collection = get_harvest_collection()
-        os.environ['PIPELINE_TRIGGER_CONFIG_FILE'] = os.path.join(TEST_ROOT, 'trigger_multi_fail.conf')
-        multi_harvester_runner = TalendHarvesterRunner(self.uploader, None, TESTDATA_DIR, self.config, self.mock_logger)
+        harvester_runner.upload_runner.assert_not_called()
+
+        self.assertTrue(all(f.is_harvest_undone for f in collection))  # *should* be undone
+
+    @patch('aodncore.util.process.subprocess')
+    def test_harvest_only_undo_sliced(self, mock_subprocess):
+        mock_subprocess.Popen().wait.side_effect = (0, 1, 0, 0)  # second call mocks a harvester failure on slice 2
+        mock_subprocess.Popen().communicate.return_value = ('mocked stdout', 'mocked stderr')
+
+        collection = get_harvest_collection()
+        harvester_runner = TalendHarvesterRunner(self.uploader, {'slice_size': 1}, TESTDATA_DIR, self.config,
+                                                 self.mock_logger)
+
         with self.assertRaises(SystemCommandFailedError):
-            multi_harvester_runner.run(harvest_collection)
-        self.assertEqual(mock_run_undo_deletions.call_count, 2)
+            harvester_runner.run(collection)
+
+            harvester_runner.upload_runner.assert_not_called()
+
+        success_slice, fail_slice, pending_slice = collection.get_slices(harvester_runner.slice_size)
+
+        self.assertTrue(all(f.is_harvested for f in success_slice))
+        self.assertTrue(all(f.is_harvest_undone for f in success_slice))  # *should* be undone
+
+        self.assertFalse(all(f.is_harvested for f in fail_slice))
+        self.assertTrue(all(f.is_harvest_undone for f in fail_slice))  # *should* be undone
+
+        self.assertFalse(all(f.is_harvested for f in pending_slice))
+        self.assertFalse(all(f.is_harvest_undone for f in pending_slice))  # should *not* be undone, since never 'done'
+
+    @patch('aodncore.util.process.subprocess')
+    def test_harvest_upload_undo(self, mock_subprocess):
+        mock_subprocess.Popen().wait.side_effect = (1, 0)
+        mock_subprocess.Popen().communicate.return_value = ('mocked stdout', 'mocked stderr')
+
+        collection = get_harvest_collection(with_store=True)
+        harvester_runner = TalendHarvesterRunner(self.uploader, None, TESTDATA_DIR, self.config,
+                                                 self.mock_logger)
+
+        with self.assertRaises(SystemCommandFailedError):
+            harvester_runner.run(collection)
+
+        harvester_runner.upload_runner.assert_not_called()
+
+        self.assertFalse(all(f.is_harvested for f in collection))
+        self.assertFalse(all(f.is_uploaded for f in collection))
+        self.assertTrue(all(f.is_harvest_undone for f in collection))  # *should* be undone
+        self.assertFalse(all(f.is_upload_undone for f in collection))  # should *not* be undone, since never 'done'
+
+    @patch('aodncore.util.process.subprocess')
+    def test_harvest_upload_undo_sliced(self, mock_subprocess):
+        mock_subprocess.Popen().wait.side_effect = (0, 1, 0, 0)  # second call mocks a harvester failure on slice 2
+        mock_subprocess.Popen().communicate.return_value = ('mocked stdout', 'mocked stderr')
+
+        collection = get_harvest_collection(with_store=True)
+        harvester_runner = TalendHarvesterRunner(self.uploader, {'slice_size': 1}, TESTDATA_DIR, self.config,
+                                                 self.mock_logger)
+
+        with self.assertRaises(SystemCommandFailedError):
+            harvester_runner.run(collection)
+
+            harvester_runner.upload_runner.assert_call_count(2)
+
+        success_slice, fail_slice, pending_slice = collection.get_slices(harvester_runner.slice_size)
+
+        self.assertTrue(all(f.is_harvested for f in success_slice))
+        self.assertTrue(all(f.is_uploaded for f in success_slice))
+        self.assertTrue(all(f.is_harvest_undone for f in success_slice))  # *should* be undone
+        self.assertTrue(all(f.is_upload_undone for f in success_slice))  # *should* be undone
+
+        self.assertFalse(all(f.is_harvested for f in fail_slice))
+        self.assertFalse(all(f.is_uploaded for f in fail_slice))
+        self.assertTrue(all(f.is_harvest_undone for f in fail_slice))  # *should* be undone
+        self.assertFalse(all(f.is_upload_undone for f in fail_slice))  # should *not* be undone, since never 'done'
+
+        self.assertFalse(all(f.is_harvested for f in pending_slice))
+        self.assertFalse(all(f.is_uploaded for f in pending_slice))
+        self.assertFalse(all(f.is_harvest_undone for f in pending_slice))  # should *not* be undone, since never 'done'
+        self.assertFalse(all(f.is_upload_undone for f in pending_slice))  # should *not* be undone, since never 'done'
+
+    @patch('aodncore.util.process.subprocess')
+    def test_harvest_only_undo_only_current_slice(self, mock_subprocess):
+        mock_subprocess.Popen().wait.side_effect = (0, 1, 0, 0)  # second call mocks a harvester failure on slice 2
+        mock_subprocess.Popen().communicate.return_value = ('mocked stdout', 'mocked stderr')
+
+        collection = get_harvest_collection()
+        harvester_runner = TalendHarvesterRunner(self.uploader, {'slice_size': 1, 'undo_previous_slices': False},
+                                                 TESTDATA_DIR, self.config, self.mock_logger)
+
+        with self.assertRaises(SystemCommandFailedError):
+            harvester_runner.run(collection)
+
+            harvester_runner.upload_runner.assert_not_called()
+
+        success_slice, fail_slice, pending_slice = collection.get_slices(harvester_runner.slice_size)
+
+        self.assertTrue(all(f.is_harvested for f in success_slice))
+        self.assertFalse(any(f.is_harvest_undone for f in success_slice))  # should *not* be undone, due to param
+
+        self.assertFalse(all(f.is_harvested for f in fail_slice))
+        self.assertTrue(all(f.is_harvest_undone for f in fail_slice))  # *should* be undone
+
+        self.assertFalse(all(f.is_harvested for f in pending_slice))
+        self.assertFalse(all(f.is_harvest_undone for f in pending_slice))  # should *not* be undone, since never 'done'
+
+    @patch('aodncore.util.process.subprocess')
+    def test_harvest_upload_undo_only_current_slice(self, mock_subprocess):
+        mock_subprocess.Popen().wait.side_effect = (0, 1, 0, 0)  # second call mocks a harvester failure on slice 2
+        mock_subprocess.Popen().communicate.return_value = ('mocked stdout', 'mocked stderr')
+
+        collection = get_harvest_collection(with_store=True)
+        harvester_runner = TalendHarvesterRunner(self.uploader, {'slice_size': 1, 'undo_previous_slices': False},
+                                                 TESTDATA_DIR, self.config, self.mock_logger)
+
+        with self.assertRaises(SystemCommandFailedError):
+            harvester_runner.run(collection)
+
+            harvester_runner.upload_runner.assert_not_called()
+
+        success_slice, fail_slice, pending_slice = collection.get_slices(harvester_runner.slice_size)
+
+        self.assertTrue(all(f.is_harvested for f in success_slice))
+        self.assertTrue(all(f.is_uploaded for f in success_slice))
+        self.assertFalse(any(f.is_harvest_undone for f in success_slice))  # should *not* be undone, due to param
+        self.assertFalse(any(f.is_upload_undone for f in success_slice))  # should *not* be undone, due to param
+
+        self.assertFalse(all(f.is_harvested for f in fail_slice))
+        self.assertFalse(any(f.is_uploaded for f in fail_slice))
+        self.assertTrue(all(f.is_harvest_undone for f in fail_slice))  # *should* be undone
+        self.assertFalse(any(f.is_upload_undone for f in fail_slice))  # should *not* be undone, since never 'done'
+
+        self.assertFalse(any(f.is_harvested for f in pending_slice))
+        self.assertFalse(any(f.is_uploaded for f in pending_slice))
+        self.assertFalse(any(f.is_harvest_undone for f in pending_slice))  # should *not* be undone, since never 'done'
+        self.assertFalse(any(f.is_upload_undone for f in pending_slice))  # should *not* be undone, since never 'done'
