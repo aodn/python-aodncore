@@ -205,7 +205,7 @@ class HandlerBase(object):
         self._error_details = None
         self._handler_run = False
         self._instance_working_directory = None
-        self._notify_list = None
+        self._notification_results = None
         self._should_notify = None
 
         self._machine = Machine(model=self, states=HandlerBase.all_states, initial='HANDLER_INITIAL',
@@ -323,12 +323,12 @@ class HandlerBase(object):
         return self._instance_working_directory
 
     @property
-    def notify_list(self):
-        """Read-only property to retrieve the notification list and sent status of each recipient
+    def notification_results(self):
+        """Read-only property to retrieve the notification results, including the sent status of each recipient
 
         :return: NotifyList instance
         """
-        return self._notify_list
+        return self._notification_results
 
     @property
     def result(self):
@@ -538,7 +538,7 @@ class HandlerBase(object):
         self.logger.sysinfo("get_notify_runner -> '{runner}'".format(runner=notify_runner.__class__.__name__))
 
         if self._should_notify:
-            self._notify_list = notify_runner.run(self._should_notify)
+            self._notification_results = notify_runner.run(self._should_notify)
 
     def _notify_success(self):
         self._notify_common()
