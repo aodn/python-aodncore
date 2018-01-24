@@ -129,7 +129,7 @@ class BaseUploadRunner(AbstractCollectionStepRunner):
                 raise FileDeleteFailedError(
                     "{e}: '{dest_path}'".format(e=format_exception(e),
                                                 dest_path=getattr(pipeline_file, self.dest_path_attr)))
-            pipeline_file.is_storage_undone = True
+            pipeline_file.is_upload_undone = True
 
         self._post_run_hook()
 

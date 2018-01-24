@@ -27,7 +27,7 @@ class PipelineFile(object):
     __slots__ = ['_file_checksum', '_name', '_src_path', '_archive_path', '_dest_path', '_extension', 'file_type',
                  '_file_update_callback', '_check_type', '_is_deletion', '_publish_type', '_should_archive',
                  '_should_harvest', '_should_store', '_should_undo', '_is_checked', '_is_archived', '_is_harvested',
-                 '_is_stored', '_is_harvest_undone', "_is_storage_undone", '_check_result', '_mime_type']
+                 '_is_stored', '_is_harvest_undone', "_is_upload_undone", '_check_result', '_mime_type']
 
     def __init__(self, src_path, name=None, archive_path=None, dest_path=None, is_deletion=False,
                  file_update_callback=None):
@@ -74,7 +74,7 @@ class PipelineFile(object):
         self._is_harvested = False
         self._is_stored = False
         self._is_harvest_undone = False
-        self._is_storage_undone = False
+        self._is_upload_undone = False
 
         self._check_result = None
         self._mime_type = None
@@ -105,7 +105,7 @@ class PipelineFile(object):
         yield 'is_stored', str(self._is_stored)
         yield 'mime_type', self.mime_type
         yield 'is_harvest_undone', str(self._is_harvest_undone)
-        yield 'is_storage_undone', str(self._is_storage_undone)
+        yield 'is_upload_undone', str(self._is_upload_undone)
         yield 'name', self.name
         yield 'published', self.published
         yield 'pending_archive', str(self.pending_archive)
@@ -268,15 +268,15 @@ class PipelineFile(object):
         self._post_property_update({'is_harvest_undone': is_harvest_undone})
 
     @property
-    def is_storage_undone(self):
-        return self._is_storage_undone
+    def is_upload_undone(self):
+        return self._is_upload_undone
 
-    @is_storage_undone.setter
-    def is_storage_undone(self, is_storage_undone):
-        validate_bool(is_storage_undone)
+    @is_upload_undone.setter
+    def is_upload_undone(self, is_upload_undone):
+        validate_bool(is_upload_undone)
 
-        self._is_storage_undone = is_storage_undone
-        self._post_property_update({'is_storage_undone': is_storage_undone})
+        self._is_upload_undone = is_upload_undone
+        self._post_property_update({'is_upload_undone': is_upload_undone})
 
     @is_stored.setter
     def is_stored(self, is_stored):
@@ -315,7 +315,7 @@ class PipelineFile(object):
 
     @property
     def pending_harvest(self):
-        return self.should_harvest and not self.is_harvested
+        return self.should_harvest and not self.is_harvested and not self.should_undo
 
     @property
     def pending_harvest_addition(self):
@@ -326,8 +326,12 @@ class PipelineFile(object):
         return self.pending_harvest and self.is_deletion
 
     @property
+    def pending_harvest_undo(self):
+        return self.should_undo and self.should_harvest and not self.is_harvest_undone
+
+    @property
     def pending_store(self):
-        return self.should_store and not self.is_stored
+        return self.should_store and not self.is_stored and not self.should_undo
 
     @property
     def pending_store_addition(self):
@@ -338,8 +342,12 @@ class PipelineFile(object):
         return self.pending_store and self.is_deletion
 
     @property
+    def pending_store_undo(self):
+        return self.should_undo and self.should_store and not self.is_upload_undone
+
+    @property
     def pending_undo(self):
-        return self.should_undo and not self.is_deletion
+        return self.pending_harvest_undo or self.pending_store_undo
 
     @property
     def publish_type(self):
@@ -385,6 +393,9 @@ class PipelineFile(object):
     @should_undo.setter
     def should_undo(self, should_undo):
         validate_bool(should_undo)
+
+        if self.is_deletion:
+            raise ValueError('undo is not possible for deletions')
 
         self._should_undo = should_undo
         self._post_property_update({'should_undo': should_undo})
