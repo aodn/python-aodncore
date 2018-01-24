@@ -24,6 +24,7 @@ HARVEST_PARAMS_SCHEMA = {
     'type': 'object',
     'properties': {
         'slice_size': {'type': 'integer'},
+        'undo_previous_slices': {'type': 'boolean'}
     },
     'additionalProperties': False
 }
