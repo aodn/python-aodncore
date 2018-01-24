@@ -5,8 +5,8 @@ from uuid import uuid4
 from aodncore.pipeline import PipelineFile, PipelineFileCollection, PipelineFilePublishType
 from aodncore.pipeline.exceptions import FileDeleteFailedError, FileUploadFailedError, InvalidUploadUrlError
 from aodncore.pipeline.steps.upload import (get_upload_runner, sftp_path_exists, sftp_makedirs, sftp_mkdir_p,
-                                            BaseUploadRunner, FileUploadRunner, S3UploadRunner, SftpUploadRunner)
-from aodncore.testlib import BaseTestCase, get_nonexistent_path, mock
+                                            FileUploadRunner, S3UploadRunner, SftpUploadRunner)
+from aodncore.testlib import BaseTestCase, NullUploadRunner, get_nonexistent_path, mock
 from test_aodncore import TESTDATA_DIR
 
 GOOD_NC = os.path.join(TESTDATA_DIR, 'good.nc')
@@ -178,31 +178,6 @@ class TestPipelineStepsUpload(BaseTestCase):
             sftp_mkdir_p(sftpclient, path)
 
 
-class NullUploadRunner(BaseUploadRunner):
-    def __init__(self, prefix, fail):
-        mock_logger = mock.MagicMock()
-        super(NullUploadRunner, self).__init__(None, mock_logger)
-        self.prefix = prefix
-        self.fail = fail
-
-    def _delete_file(self, pipeline_file):
-        if self.fail:
-            raise NotImplementedError
-
-    def _post_run_hook(self):
-        pass
-
-    def _pre_run_hook(self):
-        pass
-
-    def _upload_file(self, pipeline_file):
-        if self.fail:
-            raise NotImplementedError
-
-    def _get_absolute_dest_uri(self, pipeline_file):
-        return "null://{dest_path}".format(dest_path=pipeline_file.dest_path)
-
-
 class TestBaseUploadRunner(BaseTestCase):
     def test_delete_fail(self):
         collection = get_upload_collection(delete=True)
@@ -214,7 +189,7 @@ class TestBaseUploadRunner(BaseTestCase):
 
     def test_delete_success(self):
         collection = get_upload_collection(delete=True)
-        runner = NullUploadRunner("/", fail=False)
+        runner = NullUploadRunner("/")
         runner.run(collection)
         self.assertTrue(collection[0].is_stored)
 
@@ -226,7 +201,7 @@ class TestBaseUploadRunner(BaseTestCase):
 
     def test_upload_success(self):
         collection = get_upload_collection()
-        runner = NullUploadRunner("/", fail=False)
+        runner = NullUploadRunner("/")
         runner.run(collection)
         self.assertTrue(collection[0].is_stored)
 
