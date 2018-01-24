@@ -50,6 +50,7 @@ class TalendHarvesterRunner(BaseHarvesterRunner):
 
         self.deletion = deletion
         self.slice_size = harvest_params.get('slice_size', 2048)
+        self.undo_previous_slices = harvest_params.get('undo_previous_slices', True)
         self.params = harvest_params
         self.tmp_base_dir = tmp_base_dir
         self.upload_runner = upload_runner
@@ -136,8 +137,8 @@ class TalendHarvesterRunner(BaseHarvesterRunner):
 
         return input_file_list
 
-    def undo_processed_files(self):
-        for file_map in self.harvested_file_map:
+    def undo_processed_files(self, undo_map):
+        for file_map in undo_map:
             for file_collection in file_map.values():
                 file_collection.set_bool_attribute('should_undo', True)
 
@@ -218,7 +219,11 @@ class TalendHarvesterRunner(BaseHarvesterRunner):
                 try:
                     self.execute_talend(self._config.trigger_config[harvester]['exec'], matched_files, talend_base_dir)
                 except Exception:
-                    self.undo_processed_files()
+                    undo_map = [{harvester: matched_files}]
+                    if self.undo_previous_slices:
+                        undo_map.extend(self.harvested_file_map)
+
+                    self.undo_processed_files(undo_map)
                     raise
 
             self.harvested_file_map.append({harvester: matched_files})
