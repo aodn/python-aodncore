@@ -134,6 +134,32 @@ class TestPipelineFile(BaseTestCase):
         self.pipelinefile.is_harvested = True
         self.assertTrue(self.pipelinefile.is_harvested)
 
+    def test_property_published_upload_only(self):
+        self.pipelinefile.publish_type = PipelineFilePublishType.UPLOAD_ONLY
+        self.assertEqual('No', self.pipelinefile.published)
+        self.pipelinefile.is_stored = True
+        self.assertEqual('Yes', self.pipelinefile.published)
+        self.pipelinefile.is_upload_undone = True
+        self.assertEqual('No', self.pipelinefile.published)
+
+    def test_property_published_harvest_only(self):
+        self.pipelinefile.publish_type = PipelineFilePublishType.HARVEST_ONLY
+        self.assertEqual('No', self.pipelinefile.published)
+        self.pipelinefile.is_harvested = True
+        self.assertEqual('Yes', self.pipelinefile.published)
+        self.pipelinefile.is_harvest_undone = True
+        self.assertEqual('No', self.pipelinefile.published)
+
+    def test_property_published_harvest_upload(self):
+        self.pipelinefile.publish_type = PipelineFilePublishType.HARVEST_UPLOAD
+        self.assertEqual('No', self.pipelinefile.published)
+        self.pipelinefile.is_stored = True
+        self.assertEqual('No', self.pipelinefile.published)  # not harvested!
+        self.pipelinefile.is_harvested = True
+        self.assertEqual('Yes', self.pipelinefile.published)
+        self.pipelinefile.is_upload_undone = True
+        self.assertEqual('No', self.pipelinefile.published)
+
     def test_file_callback(self):
         class TestCallbackContainer(object):
             def __init__(self):

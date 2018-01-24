@@ -305,9 +305,13 @@ class PipelineFile(object):
 
     @property
     def published(self):
-        should_publish = self.should_store or self.should_harvest
-        was_published = self.is_stored or self.is_harvested
-        return 'Yes' if should_publish and was_published else 'No'
+        stored = self.is_stored and not self.is_upload_undone
+        harvested = self.is_harvested and not self.is_harvest_undone
+        if self.should_store and self.should_harvest:
+            published = stored and harvested
+        else:
+            published = stored or harvested
+        return 'Yes' if published else 'No'
 
     @property
     def pending_archive(self):
