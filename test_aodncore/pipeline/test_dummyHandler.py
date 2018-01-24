@@ -194,7 +194,8 @@ class TestDummyHandler(HandlerTestCase):
         mock_smtp.return_value.sendmail.return_value = {}
 
         handler = self.run_handler(self.temp_nc_file,
-                                   notify_params={'success_notify_list': ['email:nobody1@example.com',
+                                   notify_params={'owner_notify_list': ['email:owner1@example.com'],
+                                                  'success_notify_list': ['email:nobody1@example.com',
                                                                           'email:nobody2@example.com'],
                                                   'error_notify_list': ['email:nobody3@example.com',
                                                                         'email:nobody4@example.com']},
