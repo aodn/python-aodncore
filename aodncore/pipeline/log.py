@@ -1,9 +1,6 @@
 import logging
 import os
 
-import jsonschema
-
-from .schema import LOGGING_CONFIG_SCHEMA
 from ..util import validate_nonstring_iterable
 
 # custom SYSINFO logging level
@@ -14,8 +11,7 @@ __all__ = [
     'SYSINFO',
     'WorkerLoggingConfigBuilder',
     'get_watchservice_logging_config',
-    'get_pipeline_logger',
-    'validate_logging_config'
+    'get_pipeline_logger'
 ]
 
 
@@ -134,5 +130,3 @@ def get_pipeline_logger(name, extra=None, logger_function=logging.getLogger):
     return logger_adapter
 
 
-def validate_logging_config(logging_config):
-    jsonschema.validate(logging_config, LOGGING_CONFIG_SCHEMA)

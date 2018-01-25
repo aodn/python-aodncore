@@ -1,7 +1,33 @@
+import jsonschema
+
 __all__ = [
-    'LOGGING_CONFIG_SCHEMA',
-    'PIPELINE_CONFIG_SCHEMA'
+    'validate_check_params',
+    'validate_harvest_params',
+    'validate_logging_config',
+    'validate_pipeline_config',
+    'validate_notify_params',
+    'validate_resolve_params'
 ]
+
+CHECK_PARAMS_SCHEMA = {
+    'type': 'object',
+    'properties': {
+        'checks': {'type': 'array'},
+        'criteria': {'type': 'string'},
+        'output_format': {'type': 'string'},
+        'verbosity': {'type': 'integer'}
+    },
+    'additionalProperties': False
+}
+
+HARVEST_PARAMS_SCHEMA = {
+    'type': 'object',
+    'properties': {
+        'slice_size': {'type': 'integer'},
+        'undo_previous_slices': {'type': 'boolean'}
+    },
+    'additionalProperties': False
+}
 
 LOGGING_CONFIG_SCHEMA = {
     'type': 'object',
@@ -17,6 +43,24 @@ LOGGING_CONFIG_SCHEMA = {
     },
     'required': ['version', 'formatters', 'handlers', 'loggers'],
     'additionalProperties': False
+}
+
+NOTIFY_PARAMS_SCHEMA = {
+    'type': 'object',
+    'properties': {
+        'notify_owner_error': {'type': 'boolean'},
+        'notify_owner_success': {'type': 'boolean'},
+        'error_notify_list': {'$ref': '#/definitions/notifyList'},
+        'owner_notify_list': {'$ref': '#/definitions/notifyList'},
+        'success_notify_list': {'$ref': '#/definitions/notifyList'},
+    },
+    'additionalProperties': False,
+    'definitions': {
+        'notifyList': {
+            'type': 'array',
+            'items': {'type': 'string'}
+        }
+    }
 }
 
 PIPELINE_CONFIG_SCHEMA = {
@@ -110,3 +154,35 @@ PIPELINE_CONFIG_SCHEMA = {
         }
     }
 }
+
+RESOLVE_PARAMS_SCHEMA = {
+    'type': 'object',
+    'properties': {
+        'relative_path_root': {'type': 'string'},
+    },
+    'additionalProperties': False
+}
+
+
+def validate_check_params(check_params):
+    jsonschema.validate(check_params, CHECK_PARAMS_SCHEMA)
+
+
+def validate_harvest_params(harvest_params):
+    jsonschema.validate(harvest_params, HARVEST_PARAMS_SCHEMA)
+
+
+def validate_logging_config(logging_config):
+    jsonschema.validate(logging_config, LOGGING_CONFIG_SCHEMA)
+
+
+def validate_notify_params(notify_params):
+    jsonschema.validate(notify_params, NOTIFY_PARAMS_SCHEMA)
+
+
+def validate_pipeline_config(pipeline_config):
+    jsonschema.validate(pipeline_config, PIPELINE_CONFIG_SCHEMA)
+
+
+def validate_resolve_params(resolve_params):
+    jsonschema.validate(resolve_params, RESOLVE_PARAMS_SCHEMA)
