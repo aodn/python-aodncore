@@ -51,10 +51,17 @@ class TestPipelineFile(BaseTestCase):
         # Confirm that __iter__ returns a dict with the expected keys
         assertCountEqual(self, dict_object.keys(),
                          ['archive_path', 'check_passed', 'dest_path', 'file_checksum', 'check_log', 'check_type',
-                          'extension', 'is_archived', 'is_checked', 'is_deletion', 'is_harvested', 'is_stored',
-                          'mime_type', 'name', 'pending_archive', 'pending_harvest_addition',
-                          'pending_harvest_deletion', 'pending_store_addition', 'pending_store_deletion', 'published',
-                          'publish_type', 'should_archive', 'should_harvest', 'should_store', 'src_path', ])
+                          'extension', 'is_archived', 'is_checked', 'is_deletion', 'is_harvest_undone',
+                          'is_upload_undone', 'is_harvested', 'is_stored', 'mime_type', 'name', 'pending_archive',
+                          'pending_harvest_addition', 'pending_harvest_deletion', 'pending_store_addition',
+                          'pending_store_deletion', 'pending_undo', 'published', 'publish_type', 'should_archive',
+                          'should_harvest', 'should_store', 'should_undo', 'src_path', ])
+
+    def test_nonexistent_attribute(self):
+        nonexistent_attribute = str(uuid.uuid4())
+
+        with self.assertRaises(AttributeError):
+            setattr(self.pipelinefile, nonexistent_attribute, None)
 
     def test_property_check_result(self):
         self.assertFalse(self.pipelinefile.is_checked)
@@ -126,6 +133,32 @@ class TestPipelineFile(BaseTestCase):
         self.assertFalse(self.pipelinefile.is_harvested)
         self.pipelinefile.is_harvested = True
         self.assertTrue(self.pipelinefile.is_harvested)
+
+    def test_property_published_upload_only(self):
+        self.pipelinefile.publish_type = PipelineFilePublishType.UPLOAD_ONLY
+        self.assertEqual('No', self.pipelinefile.published)
+        self.pipelinefile.is_stored = True
+        self.assertEqual('Yes', self.pipelinefile.published)
+        self.pipelinefile.is_upload_undone = True
+        self.assertEqual('No', self.pipelinefile.published)
+
+    def test_property_published_harvest_only(self):
+        self.pipelinefile.publish_type = PipelineFilePublishType.HARVEST_ONLY
+        self.assertEqual('No', self.pipelinefile.published)
+        self.pipelinefile.is_harvested = True
+        self.assertEqual('Yes', self.pipelinefile.published)
+        self.pipelinefile.is_harvest_undone = True
+        self.assertEqual('No', self.pipelinefile.published)
+
+    def test_property_published_harvest_upload(self):
+        self.pipelinefile.publish_type = PipelineFilePublishType.HARVEST_UPLOAD
+        self.assertEqual('No', self.pipelinefile.published)
+        self.pipelinefile.is_stored = True
+        self.assertEqual('No', self.pipelinefile.published)  # not harvested!
+        self.pipelinefile.is_harvested = True
+        self.assertEqual('Yes', self.pipelinefile.published)
+        self.pipelinefile.is_upload_undone = True
+        self.assertEqual('No', self.pipelinefile.published)
 
     def test_file_callback(self):
         class TestCallbackContainer(object):

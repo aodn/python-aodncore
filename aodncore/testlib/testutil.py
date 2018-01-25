@@ -7,6 +7,7 @@ from netCDF4 import Dataset
 from six import iteritems
 from six.moves.urllib.parse import urlunsplit
 
+from aodncore.pipeline.steps.upload import BaseUploadRunner
 from ..pipeline.configlib import LazyConfigManager
 from ..testlib.dummyhandler import DummyHandler
 
@@ -16,6 +17,7 @@ except ImportError:
     import mock
 
 __all__ = [
+    'NullUploadRunner',
     'dest_path_testing',
     'get_nonexistent_path',
     'make_test_file',
@@ -28,6 +30,49 @@ __all__ = [
 GLOBAL_TEST_BASE = os.path.dirname(os.path.dirname(__file__))
 
 TESTLIB_CONF_DIR = os.path.join(os.path.dirname(__file__), 'conf')
+
+
+class NullUploadRunner(BaseUploadRunner):
+    def __init__(self, prefix, fail=False):
+        mock_logger = mock.MagicMock()
+        super(NullUploadRunner, self).__init__(None, mock_logger)
+        self.prefix = prefix
+        self.fail = fail
+
+        self.call_count = 0
+
+    def _delete_file(self, pipeline_file):
+        if self.fail:
+            raise Exception('deliberate failure requested')
+
+    def _post_run_hook(self):
+        pass
+
+    def _pre_run_hook(self):
+        pass
+
+    def _upload_file(self, pipeline_file):
+        if self.fail:
+            raise Exception('deliberate failure requested')
+
+    def _get_absolute_dest_uri(self, pipeline_file):
+        return "null://{dest_path}".format(dest_path=pipeline_file.dest_path)
+
+    def run(self, pipeline_files):
+        self.call_count += 1
+        super(NullUploadRunner, self).run(pipeline_files)
+
+    def assert_call_count(self, count):
+        if self.call_count != count:
+            raise AssertionError("run method call_count: {call_count}".format(call_count=self.call_count))
+
+    def assert_called(self):
+        if self.call_count == 0:
+            raise AssertionError("run method not called")
+
+    def assert_not_called(self):
+        if self.call_count != 0:
+            raise AssertionError("run method call_count: {call_count}".format(call_count=self.call_count))
 
 
 def dest_path_testing(filename):

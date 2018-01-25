@@ -24,6 +24,10 @@ class PipelineFile(object):
     """Represents a single file in order to store state information relating to the intended actions to be performed
         on the file, and the actions that *were*
     """
+    __slots__ = ['_file_checksum', '_name', '_src_path', '_archive_path', '_dest_path', '_extension', 'file_type',
+                 '_file_update_callback', '_check_type', '_is_deletion', '_publish_type', '_should_archive',
+                 '_should_harvest', '_should_store', '_should_undo', '_is_checked', '_is_archived', '_is_harvested',
+                 '_is_stored', '_is_harvest_undone', "_is_upload_undone", '_check_result', '_mime_type']
 
     def __init__(self, src_path, name=None, archive_path=None, dest_path=None, is_deletion=False,
                  file_update_callback=None):
@@ -51,7 +55,9 @@ class PipelineFile(object):
         _, self._extension = os.path.splitext(src_path)
         self.file_type = FileType.get_type_from_extension(self.extension)
 
-        self.file_update_callback = file_update_callback
+        self._file_update_callback = None
+        if file_update_callback is not None:
+            self.file_update_callback = file_update_callback
 
         # processing flags - these express the *intended actions* for the file
         self._check_type = PipelineFileCheckType.NO_ACTION
@@ -60,12 +66,15 @@ class PipelineFile(object):
         self._should_archive = False
         self._should_harvest = False
         self._should_store = False
+        self._should_undo = False
 
         # status flags - these express the *current state* of the file
         self._is_checked = False
         self._is_archived = False
         self._is_harvested = False
         self._is_stored = False
+        self._is_harvest_undone = False
+        self._is_upload_undone = False
 
         self._check_result = None
         self._mime_type = None
@@ -95,6 +104,8 @@ class PipelineFile(object):
         yield 'is_harvested', str(self._is_harvested)
         yield 'is_stored', str(self._is_stored)
         yield 'mime_type', self.mime_type
+        yield 'is_harvest_undone', str(self._is_harvest_undone)
+        yield 'is_upload_undone', str(self._is_upload_undone)
         yield 'name', self.name
         yield 'published', self.published
         yield 'pending_archive', str(self.pending_archive)
@@ -102,10 +113,12 @@ class PipelineFile(object):
         yield 'pending_harvest_deletion', str(self.pending_harvest_deletion)
         yield 'pending_store_addition', str(self.pending_store_addition)
         yield 'pending_store_deletion', str(self.pending_store_deletion)
+        yield 'pending_undo', str(self.pending_undo)
         yield 'publish_type', self.publish_type.name
         yield 'should_archive', str(self._should_archive)
         yield 'should_harvest', str(self._should_harvest)
         yield 'should_store', str(self._should_store)
+        yield 'should_undo', str(self._should_undo)
         yield 'src_path', self.src_path
 
     def __repr__(self):  # pragma: no cover
@@ -197,6 +210,16 @@ class PipelineFile(object):
         return self._extension
 
     @property
+    def file_update_callback(self):
+        return self._file_update_callback
+
+    @file_update_callback.setter
+    def file_update_callback(self, callback):
+        validate_callable(callback)
+
+        self._file_update_callback = callback
+
+    @property
     def is_harvested(self):
         return self._is_harvested
 
@@ -233,6 +256,28 @@ class PipelineFile(object):
     def is_stored(self):
         return self._is_stored
 
+    @property
+    def is_harvest_undone(self):
+        return self._is_harvest_undone
+
+    @is_harvest_undone.setter
+    def is_harvest_undone(self, is_harvest_undone):
+        validate_bool(is_harvest_undone)
+
+        self._is_harvest_undone = is_harvest_undone
+        self._post_property_update({'is_harvest_undone': is_harvest_undone})
+
+    @property
+    def is_upload_undone(self):
+        return self._is_upload_undone
+
+    @is_upload_undone.setter
+    def is_upload_undone(self, is_upload_undone):
+        validate_bool(is_upload_undone)
+
+        self._is_upload_undone = is_upload_undone
+        self._post_property_update({'is_upload_undone': is_upload_undone})
+
     @is_stored.setter
     def is_stored(self, is_stored):
         validate_bool(is_stored)
@@ -260,9 +305,13 @@ class PipelineFile(object):
 
     @property
     def published(self):
-        should_publish = self.should_store or self.should_harvest
-        was_published = self.is_stored or self.is_harvested
-        return 'Yes' if should_publish and was_published else 'No'
+        stored = self.is_stored and not self.is_upload_undone
+        harvested = self.is_harvested and not self.is_harvest_undone
+        if self.should_store and self.should_harvest:
+            published = stored and harvested
+        else:
+            published = stored or harvested
+        return 'Yes' if published else 'No'
 
     @property
     def pending_archive(self):
@@ -270,7 +319,7 @@ class PipelineFile(object):
 
     @property
     def pending_harvest(self):
-        return self.should_harvest and not self.is_harvested
+        return self.should_harvest and not self.is_harvested and not self.should_undo
 
     @property
     def pending_harvest_addition(self):
@@ -281,8 +330,12 @@ class PipelineFile(object):
         return self.pending_harvest and self.is_deletion
 
     @property
+    def pending_harvest_undo(self):
+        return self.should_undo and self.should_harvest and not self.is_harvest_undone
+
+    @property
     def pending_store(self):
-        return self.should_store and not self.is_stored
+        return self.should_store and not self.is_stored and not self.should_undo
 
     @property
     def pending_store_addition(self):
@@ -291,6 +344,14 @@ class PipelineFile(object):
     @property
     def pending_store_deletion(self):
         return self.pending_store and self.is_deletion
+
+    @property
+    def pending_store_undo(self):
+        return self.should_undo and self.should_store and not self.is_upload_undone
+
+    @property
+    def pending_undo(self):
+        return self.pending_harvest_undo or self.pending_store_undo
 
     @property
     def publish_type(self):
@@ -328,6 +389,20 @@ class PipelineFile(object):
     @property
     def should_harvest(self):
         return self._should_harvest
+
+    @property
+    def should_undo(self):
+        return self._should_undo
+
+    @should_undo.setter
+    def should_undo(self, should_undo):
+        validate_bool(should_undo)
+
+        if self.is_deletion:
+            raise ValueError('undo is not possible for deletions')
+
+        self._should_undo = should_undo
+        self._post_property_update({'should_undo': should_undo})
 
     def _post_property_update(self, properties, include_values=True):
         """Method run after a property is updated in order to perform optional actions such as updating ORM (if enabled)
@@ -633,6 +708,18 @@ class PipelineFileCollection(MutableSet):
         for f in self.__s:
             if f.dest_path is None and any((f.should_store, f.should_harvest)):
                 f.dest_path = dest_path_function(f.src_path)
+
+    def set_bool_attribute(self, attribute, value):
+        """Set a boolean attribute for each file in the collection
+
+        :param attribute: attribute to set
+        :param value: value to set the attribute
+        :return: None
+        """
+        validate_bool(value)
+
+        for f in self.__s:
+            setattr(f, attribute, value)
 
     def set_file_update_callback(self, file_update_callback):
         """Set a callback function in each PipelineFile in this collection
