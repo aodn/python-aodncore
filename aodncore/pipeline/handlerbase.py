@@ -491,7 +491,7 @@ class HandlerBase(object):
 
         self.file_collection.set_dest_paths(self._dest_path_function_ref)
 
-        upload_runner.determine_overwrites(self.file_collection)
+        upload_runner.set_is_overwrite(self.file_collection)
 
         self._harvest(upload_runner)
         self._store_unharvested(upload_runner)

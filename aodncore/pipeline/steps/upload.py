@@ -89,7 +89,7 @@ class BaseUploadRunner(AbstractCollectionStepRunner):
         pass
 
     @abc.abstractmethod  # pragma: no cover
-    def determine_overwrites(self, pipeline_files):
+    def set_is_overwrite(self, pipeline_files):
         pass
 
     def _get_absolute_dest_path(self, pipeline_file):
@@ -167,7 +167,7 @@ class FileUploadRunner(BaseUploadRunner):
         mkdir_p(os.path.dirname(abs_path))
         safe_copy_file(pipeline_file.src_path, abs_path, overwrite=True)
 
-    def determine_overwrites(self, pipeline_files):
+    def set_is_overwrite(self, pipeline_files):
         validate_pipelinefilecollection(pipeline_files)
 
         for pipeline_file in pipeline_files:
@@ -222,7 +222,7 @@ class S3UploadRunner(BaseUploadRunner):
             raise InvalidUploadUrlError(
                 "unable to access S3 bucket '{0}': {1}".format(self.bucket, format_exception(e)))
 
-    def determine_overwrites(self, pipeline_files):
+    def set_is_overwrite(self, pipeline_files):
         validate_pipelinefilecollection(pipeline_files)
 
         for pipeline_file in pipeline_files:
@@ -333,7 +333,7 @@ class SftpUploadRunner(BaseUploadRunner):
         with open(pipeline_file.src_path, 'rb') as f:
             self.sftp_client.putfo(f, abs_path, confirm=True)
 
-    def determine_overwrites(self, pipeline_files):
+    def set_is_overwrite(self, pipeline_files):
         validate_pipelinefilecollection(pipeline_files)
 
         for pipeline_file in pipeline_files:

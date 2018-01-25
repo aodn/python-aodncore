@@ -58,7 +58,7 @@ class NullUploadRunner(BaseUploadRunner):
     def _get_absolute_dest_uri(self, pipeline_file):
         return "null://{dest_path}".format(dest_path=pipeline_file.dest_path)
 
-    def determine_overwrites(self, pipeline_files):
+    def set_is_overwrite(self, pipeline_files):
         pass
 
     def run(self, pipeline_files):
