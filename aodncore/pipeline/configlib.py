@@ -1,5 +1,6 @@
 import json
 import os
+from collections import OrderedDict
 
 import jsonschema
 from celery import Celery
@@ -185,7 +186,7 @@ def load_json_file(default_config_file, envvar=None):
     config_file = os.environ.get(envvar, default_config_file)
     try:
         with open(config_file) as f:
-            config = json.load(f)
+            config = json.load(f, object_pairs_hook=OrderedDict)
     except (IOError, OSError) as e:
         raise InvalidConfigError(format_exception(e))
 
