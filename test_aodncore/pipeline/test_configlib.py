@@ -3,7 +3,7 @@ import os
 
 from celery import Celery
 
-from aodncore.pipeline.configlib import load_pipeline_config, load_watch_config
+from aodncore.pipeline.configlib import load_pipeline_config, load_trigger_config, load_watch_config
 from aodncore.pipeline.exceptions import InvalidConfigError
 from aodncore.testlib import BaseTestCase, conf, get_nonexistent_path
 
@@ -48,6 +48,39 @@ REFERENCE_PIPELINE_CONFIG = {
         'task_namespace': 'tasks'
     }
 
+}
+
+REFERENCE_TRIGGER_CONFIG = {
+    "zzz_my_test_harvester": {
+        "exec": "echo --context_param paramFile=\"/usr/local/talend/jobs/param_file.conf\" --context_param base=%{base} --context_param fileList=%{file_list} --context_param logDir=%{log_dir}",
+        "events": [
+            {
+                "regex": [
+                    ".*"
+                ]
+            }
+        ]
+    },
+        "aaa_my_test_harvester": {
+        "exec": "echo --context_param paramFile=\"/usr/local/talend/jobs/param_file.conf\" --context_param base=%{base} --context_param fileList=%{file_list} --context_param logDir=%{log_dir}",
+        "events": [
+            {
+                "regex": [
+                    ".*"
+                ]
+            }
+        ]
+    },
+        "mmm_my_test_harvester": {
+        "exec": "echo --context_param paramFile=\"/usr/local/talend/jobs/param_file.conf\" --context_param base=%{base} --context_param fileList=%{file_list} --context_param logDir=%{log_dir}",
+        "events": [
+            {
+                "regex": [
+                    ".*"
+                ]
+            }
+        ]
+    }
 }
 
 REFERENCE_WATCH_CONFIG = {
@@ -121,6 +154,11 @@ class TestConfig(BaseTestCase):
         nonexistent_config_file = get_nonexistent_path()
         with self.assertRaises(InvalidConfigError):
             _ = load_pipeline_config(nonexistent_config_file, envvar=None)
+
+    def test_load_trigger_config(self):
+        trigger_conf_file = os.path.join(CONF_ROOT, 'trigger.conf')
+        config = load_trigger_config(trigger_conf_file)
+        self.assertDictEqual(REFERENCE_TRIGGER_CONFIG, config)
 
     def test_load_watch_config(self):
         watch_conf_file = os.path.join(CONF_ROOT, 'watches.conf')
