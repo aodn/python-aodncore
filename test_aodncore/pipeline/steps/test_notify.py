@@ -32,17 +32,17 @@ def get_notification_data():
 class TestPipelineStepsNotify(BaseTestCase):
     def test_get_check_runner(self):
         with self.assertRaises(ValueError):
-            _ = get_child_notify_runner(1, None, None, self.mock_logger)
+            _ = get_child_notify_runner(1, None, None, self.test_logger)
         with self.assertRaises(ValueError):
-            _ = get_child_notify_runner('str', None, None, self.mock_logger)
+            _ = get_child_notify_runner('str', None, None, self.test_logger)
 
-        email_runner = get_child_notify_runner(NotificationRecipientType.EMAIL, None, None, self.mock_logger)
+        email_runner = get_child_notify_runner(NotificationRecipientType.EMAIL, None, None, self.test_logger)
         self.assertIsInstance(email_runner, EmailNotifyRunner)
 
-        sns_runner = get_child_notify_runner(NotificationRecipientType.SNS, None, None, self.mock_logger)
+        sns_runner = get_child_notify_runner(NotificationRecipientType.SNS, None, None, self.test_logger)
         self.assertIsInstance(sns_runner, SnsNotifyRunner)
 
-        fail_runner = get_child_notify_runner(NotificationRecipientType.INVALID, None, None, self.mock_logger)
+        fail_runner = get_child_notify_runner(NotificationRecipientType.INVALID, None, None, self.test_logger)
         self.assertIsInstance(fail_runner, LogFailuresNotifyRunner)
 
 
@@ -55,7 +55,7 @@ class TestBaseNotifyRunner(BaseTestCase):
     def setUp(self):
         super(TestBaseNotifyRunner, self).setUp()
         notification_data = get_notification_data()
-        self.dummy_runner = DummyNotifyRunner(notification_data, self.config, self.mock_logger)
+        self.dummy_runner = DummyNotifyRunner(notification_data, self.config, self.test_logger)
 
     def test__get_file_tables(self):
         file_tables = self.dummy_runner._get_file_tables()
@@ -70,7 +70,7 @@ class TestEmailNotifyRunner(BaseTestCase):
     def setUp(self):
         super(TestEmailNotifyRunner, self).setUp()
         notification_data = get_notification_data()
-        self.email_runner = EmailNotifyRunner(notification_data, self.config, self.mock_logger)
+        self.email_runner = EmailNotifyRunner(notification_data, self.config, self.test_logger)
         self.notify_list = NotifyList()
 
     @mock.patch('aodncore.pipeline.steps.notify.smtplib.SMTP')
@@ -164,7 +164,7 @@ class TestLogFailuresNotifyRunner(BaseTestCase):
     def setUp(self):
         super(TestLogFailuresNotifyRunner, self).setUp()
         notification_data = get_notification_data()
-        self.fail_runner = LogFailuresNotifyRunner(notification_data, self.config, self.mock_logger)
+        self.fail_runner = LogFailuresNotifyRunner(notification_data, self.config, mock.MagicMock())
         self.notify_list = NotifyList()
 
     def test_invalid_recipient(self):
@@ -175,4 +175,4 @@ class TestLogFailuresNotifyRunner(BaseTestCase):
         except Exception as e:
             raise AssertionError(
                 "unexpected exception raised. {cls} {msg}".format(cls=e.__class__.__name__, msg=e))
-        self.mock_logger.warning.assert_called_with("recipients unable to be notified: ['invalid:recipient1']")
+        self.fail_runner._logger.warning.assert_called_with("recipients unable to be notified: ['invalid:recipient1']")

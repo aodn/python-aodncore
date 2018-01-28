@@ -1,9 +1,14 @@
+import logging.config
 import os
 import tempfile
 import unittest
 
-from .testutil import get_test_config, make_test_file, mock
+from aodncore.pipeline.log import SYSINFO, get_pipeline_logger
+from .testutil import get_test_config, make_test_file
 from ..util import mkdir_p, rm_rf
+
+TEST_LOG_FORMAT = "%(asctime)s %(levelname)s [%(name)s] %(message)s"
+TEST_LOG_LEVEL = SYSINFO
 
 
 class BaseTestCase(unittest.TestCase):
@@ -30,7 +35,8 @@ class BaseTestCase(unittest.TestCase):
 
     def setUp(self):
         self.maxDiff = 10000
-        self.mock_logger = mock.MagicMock()
+        self.test_logger = get_pipeline_logger('unittest')
+        logging.basicConfig(level=TEST_LOG_LEVEL, format=TEST_LOG_FORMAT)
 
     def tearDown(self):
         if hasattr(self, '_temp_dir'):
