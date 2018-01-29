@@ -25,7 +25,7 @@ class TestPipelineFile(BaseTestCase):
 
     def test_compliance_check(self):
         # Test compliance checking
-        check_runner = get_child_check_runner(PipelineFileCheckType.NC_COMPLIANCE_CHECK, None, self.mock_logger,
+        check_runner = get_child_check_runner(PipelineFileCheckType.NC_COMPLIANCE_CHECK, None, self.test_logger,
                                               {'checks': ['cf']})
         check_runner.run(PipelineFileCollection(self.pipelinefile))
         assertCountEqual(self, dict(self.pipelinefile.check_result).keys(), ['compliant', 'errors', 'log'])
@@ -42,7 +42,7 @@ class TestPipelineFile(BaseTestCase):
 
     def test_format_check(self):
         # Test file format checking
-        check_runner = get_child_check_runner(PipelineFileCheckType.FORMAT_CHECK, None, self.mock_logger)
+        check_runner = get_child_check_runner(PipelineFileCheckType.FORMAT_CHECK, None, self.test_logger)
         check_runner.run(PipelineFileCollection(self.pipelinefile))
         assertCountEqual(self, dict(self.pipelinefile.check_result).keys(), ['compliant', 'errors', 'log'])
 

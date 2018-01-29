@@ -179,6 +179,8 @@ class TalendHarvesterRunner(BaseHarvesterRunner):
         :param tmp_base_dir: temporary directory base for talend operation
         """
         for harvester, matched_files in harvester_map.items():
+            self._logger.info("running deletions for harvester '{harvester}'".format(harvester=harvester))
+
             with TemporaryDirectory(prefix='talend_base', dir=tmp_base_dir) as talend_base_dir:
                 self.execute_talend(self._config.trigger_config[harvester]['exec'], matched_files, talend_base_dir)
 
@@ -194,6 +196,8 @@ class TalendHarvesterRunner(BaseHarvesterRunner):
         :param harvester_map: mapping of harvesters to the PipelineFileCollection to operate on
         """
         for harvester, matched_files in harvester_map.items():
+            self._logger.info("running undo deletions for harvester '{harvester}'".format(harvester=harvester))
+
             with TemporaryDirectory(prefix='talend_base', dir=self.tmp_base_dir) as talend_base_dir:
                 self.execute_talend(self._config.trigger_config[harvester]['exec'], matched_files, talend_base_dir,
                                     'is_harvest_undone')
@@ -212,6 +216,8 @@ class TalendHarvesterRunner(BaseHarvesterRunner):
         :param tmp_base_dir: temporary directory base for talend operation
         """
         for harvester, matched_files in harvester_map.items():
+            self._logger.info("running additions for harvester '{harvester}'".format(harvester=harvester))
+
             with TemporaryDirectory(prefix='talend_base', dir=tmp_base_dir) as talend_base_dir:
                 for pf in matched_files:
                     self.create_symlink(talend_base_dir, pf.src_path, pf.dest_path)

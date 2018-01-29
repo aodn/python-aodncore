@@ -17,27 +17,28 @@ GOOD_NC = os.path.join(TESTDATA_DIR, 'good.nc')
 class TestPipelineStepsCheck(BaseTestCase):
     def test_get_check_runner(self):
         with self.assertRaises(ValueError):
-            _ = get_child_check_runner(1, None, None, self.mock_logger)
+            _ = get_child_check_runner(1, None, self.test_logger, None)
         with self.assertRaises(ValueError):
-            _ = get_child_check_runner('str', None, None, self.mock_logger)
+            _ = get_child_check_runner('str', None, self.test_logger, None)
 
         with self.assertRaises(InvalidCheckTypeError):
-            _ = get_child_check_runner(PipelineFileCheckType.NO_ACTION, None, None, self.mock_logger)
+            _ = get_child_check_runner(PipelineFileCheckType.NO_ACTION, None, self.test_logger, None)
 
-        cc_runner = get_child_check_runner(PipelineFileCheckType.NC_COMPLIANCE_CHECK, None, None, self.mock_logger)
+        cc_runner = get_child_check_runner(PipelineFileCheckType.NC_COMPLIANCE_CHECK, None, self.test_logger,
+                                           {'checks': ['cf']})
         self.assertIsInstance(cc_runner, ComplianceCheckerCheckRunner)
 
-        fc_runner = get_child_check_runner(PipelineFileCheckType.FORMAT_CHECK, None, None, self.mock_logger)
+        fc_runner = get_child_check_runner(PipelineFileCheckType.FORMAT_CHECK, None, self.test_logger, None)
         self.assertIsInstance(fc_runner, FormatCheckRunner)
 
-        ne_runner = get_child_check_runner(PipelineFileCheckType.NONEMPTY_CHECK, None, None, self.mock_logger)
+        ne_runner = get_child_check_runner(PipelineFileCheckType.NONEMPTY_CHECK, None, self.test_logger, None)
         self.assertIsInstance(ne_runner, NonEmptyCheckRunner)
 
 
 class TestComplianceCheckerRunner(BaseTestCase):
     def setUp(self):
         super(TestComplianceCheckerRunner, self).setUp()
-        self.cc_runner = ComplianceCheckerCheckRunner(None, self.mock_logger, {'checks': ['cf']})
+        self.cc_runner = ComplianceCheckerCheckRunner(None, self.test_logger, {'checks': ['cf']})
 
     def test_compliant_file(self):
         collection = PipelineFileCollection([GOOD_NC])
@@ -76,7 +77,7 @@ class TestComplianceCheckerRunner(BaseTestCase):
 
     def test_multiple_check_suite(self):
         collection = PipelineFileCollection([GOOD_NC])  # GOOD_NC complies with cf but NOT imos:1.4
-        self.cc_runner = ComplianceCheckerCheckRunner(None, self.mock_logger, {'checks': ['cf', 'imos:1.4']})
+        self.cc_runner = ComplianceCheckerCheckRunner(None, self.test_logger, {'checks': ['cf', 'imos:1.4']})
         self.cc_runner.run(collection)
 
         check_result = collection[0].check_result
@@ -88,17 +89,17 @@ class TestComplianceCheckerRunner(BaseTestCase):
 
     def test_invalid_check_suite(self):
         with self.assertRaises(InvalidCheckSuiteError):
-            self.cc_runner = ComplianceCheckerCheckRunner(None, self.mock_logger, {'checks': ['cf', 'no_such_thing']})
+            self.cc_runner = ComplianceCheckerCheckRunner(None, self.test_logger, {'checks': ['cf', 'no_such_thing']})
 
     def test_no_check_suite(self):
         with self.assertRaises(InvalidCheckSuiteError):
-            self.cc_runner = ComplianceCheckerCheckRunner(None, self.mock_logger)
+            self.cc_runner = ComplianceCheckerCheckRunner(None, self.test_logger)
 
 
 class TestFormatCheckRunner(BaseTestCase):
     def setUp(self):
         super(TestFormatCheckRunner, self).setUp()
-        self.fc_runner = FormatCheckRunner(None, self.mock_logger)
+        self.fc_runner = FormatCheckRunner(None, self.test_logger)
 
     def test_get_format_check_runner(self):
         nc_runner = self.fc_runner.get_format_check_runner(FileType.NETCDF)
@@ -121,7 +122,7 @@ class TestNetcdfFormatCheckRunner(BaseTestCase):
 class TestNonEmptyCheckRunner(BaseTestCase):
     def setUp(self):
         super(TestNonEmptyCheckRunner, self).setUp()
-        self.ne_runner = NonEmptyCheckRunner(None, self.mock_logger)
+        self.ne_runner = NonEmptyCheckRunner(None, self.test_logger)
 
     def test_nonempty_file(self):
         collection = PipelineFileCollection([GOOD_NC])

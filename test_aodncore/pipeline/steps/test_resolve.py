@@ -37,21 +37,21 @@ MOCK_CONFIG = MockConfig
 
 class TestPipelineStepsResolve(BaseTestCase):
     def test_get_resolve_runner(self):
-        map_manifest_resolve_runner = get_resolve_runner(MAP_MANIFEST, self.temp_dir, MOCK_CONFIG, self.mock_logger)
+        map_manifest_resolve_runner = get_resolve_runner(MAP_MANIFEST, self.temp_dir, MOCK_CONFIG, self.test_logger)
         self.assertIsInstance(map_manifest_resolve_runner, MapManifestResolveRunner)
 
-        rsync_manifest_resolve_runner = get_resolve_runner(RSYNC_MANIFEST, self.temp_dir, MOCK_CONFIG, self.mock_logger)
+        rsync_manifest_resolve_runner = get_resolve_runner(RSYNC_MANIFEST, self.temp_dir, MOCK_CONFIG, self.test_logger)
         self.assertIsInstance(rsync_manifest_resolve_runner, RsyncManifestResolveRunner)
 
         simple_manifest_resolve_runner = get_resolve_runner(SIMPLE_MANIFEST, self.temp_dir, MOCK_CONFIG,
-                                                            self.mock_logger)
+                                                            self.test_logger)
         self.assertIsInstance(simple_manifest_resolve_runner, SimpleManifestResolveRunner)
 
-        nc_resolve_runner = get_resolve_runner(GOOD_NC, self.temp_dir, TESTDATA_DIR, MOCK_CONFIG, self.mock_logger)
+        nc_resolve_runner = get_resolve_runner(GOOD_NC, self.temp_dir, TESTDATA_DIR, MOCK_CONFIG, self.test_logger)
         self.assertIsInstance(nc_resolve_runner, SingleFileResolveRunner)
 
         unknown_file_extension = get_resolve_runner(str(uuid4()), self.temp_dir, TESTDATA_DIR, MOCK_CONFIG,
-                                                    self.mock_logger)
+                                                    self.test_logger)
         self.assertIsInstance(unknown_file_extension, SingleFileResolveRunner)
 
         zip_resolve_runner = get_resolve_runner(GOOD_ZIP, self.temp_dir, TESTDATA_DIR, MOCK_CONFIG, None)
@@ -61,7 +61,7 @@ class TestPipelineStepsResolve(BaseTestCase):
 class TestDirManifestResolveRunner(BaseTestCase):
     def test_dir_manifest_resolve_runner(self):
         dir_manifest_resolve_runner = DirManifestResolveRunner(DIR_MANIFEST, self.temp_dir, MOCK_CONFIG,
-                                                               self.mock_logger)
+                                                               self.test_logger)
         collection = dir_manifest_resolve_runner.run()
 
         self.assertEqual(collection[0].src_path, os.path.join(MOCK_CONFIG.pipeline_config['global']['wip_dir'],
@@ -74,7 +74,7 @@ class TestDirManifestResolveRunner(BaseTestCase):
 class TestMapManifestResolveRunner(BaseTestCase):
     def test_map_manifest_resolve_runner(self):
         map_manifest_resolve_runner = MapManifestResolveRunner(MAP_MANIFEST, self.temp_dir, MOCK_CONFIG,
-                                                               self.mock_logger)
+                                                               self.test_logger)
         collection = map_manifest_resolve_runner.run()
 
         self.assertEqual(collection[0].src_path, os.path.join(MOCK_CONFIG.pipeline_config['global']['wip_dir'],
@@ -86,7 +86,7 @@ class TestMapManifestResolveRunner(BaseTestCase):
 class TestRsyncManifestResolveRunner(BaseTestCase):
     def test_rsync_manifest_resolve_runner(self):
         rsync_manifest_resolve_runner = RsyncManifestResolveRunner(RSYNC_MANIFEST, self.temp_dir, MOCK_CONFIG,
-                                                                   self.mock_logger)
+                                                                   self.test_logger)
         collection = rsync_manifest_resolve_runner.run()
 
         self.assertEqual(len(collection), 2)
@@ -100,7 +100,7 @@ class TestRsyncManifestResolveRunner(BaseTestCase):
 
     def test_rsync_manifest_resolve_runner_duplicate(self):
         rsync_manifest_resolve_runner = RsyncManifestResolveRunner(RSYNC_MANIFEST_DUPLICATE, self.temp_dir, MOCK_CONFIG,
-                                                                   self.mock_logger)
+                                                                   self.test_logger)
 
         with self.assertRaises(DuplicatePipelineFileError):
             _ = rsync_manifest_resolve_runner.run()
@@ -109,7 +109,7 @@ class TestRsyncManifestResolveRunner(BaseTestCase):
 class TestSimpleManifestResolveRunner(BaseTestCase):
     def test_simple_manifest_resolve_runner(self):
         simple_manifest_resolve_runner = SimpleManifestResolveRunner(SIMPLE_MANIFEST, self.temp_dir, MOCK_CONFIG,
-                                                                     self.mock_logger)
+                                                                     self.test_logger)
         collection = simple_manifest_resolve_runner.run()
 
         self.assertEqual(collection[0].src_path, os.path.join(MOCK_CONFIG.pipeline_config['global']['wip_dir'],
@@ -118,7 +118,7 @@ class TestSimpleManifestResolveRunner(BaseTestCase):
 
 class TestSingleFileResolveRunner(BaseTestCase):
     def test_single_file_resolve_runner(self):
-        single_file_resolve_runner = SingleFileResolveRunner(GOOD_NC, self.temp_dir, MOCK_CONFIG, self.mock_logger)
+        single_file_resolve_runner = SingleFileResolveRunner(GOOD_NC, self.temp_dir, MOCK_CONFIG, self.test_logger)
         collection = single_file_resolve_runner.run()
 
         good_nc = os.path.join(self.temp_dir, os.path.basename(GOOD_NC))
@@ -132,7 +132,7 @@ class TestSingleFileResolveRunner(BaseTestCase):
 class TestZipFileResolveRunner(BaseTestCase):
     def test_zip_file_resolve_runner(self):
         collection_dir = os.path.join(self.temp_dir, 'collection')
-        zip_file_resolve_runner = ZipFileResolveRunner(BAD_ZIP, collection_dir, MOCK_CONFIG, self.mock_logger)
+        zip_file_resolve_runner = ZipFileResolveRunner(BAD_ZIP, collection_dir, MOCK_CONFIG, self.test_logger)
         collection = zip_file_resolve_runner.run()
 
         good_nc = os.path.join(collection_dir, os.path.basename(GOOD_NC))
@@ -148,7 +148,7 @@ class TestZipFileResolveRunner(BaseTestCase):
 
     def test_recursive_zip(self):
         collection_dir = os.path.join(self.temp_dir, 'collection')
-        zip_file_resolve_runner = ZipFileResolveRunner(RECURSIVE_ZIP, collection_dir, MOCK_CONFIG, self.mock_logger)
+        zip_file_resolve_runner = ZipFileResolveRunner(RECURSIVE_ZIP, collection_dir, MOCK_CONFIG, self.test_logger)
         collection = zip_file_resolve_runner.run()
 
         good_nc = os.path.join(collection_dir, 'layer1', os.path.basename(GOOD_NC))

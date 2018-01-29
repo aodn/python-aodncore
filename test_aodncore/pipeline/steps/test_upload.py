@@ -52,19 +52,19 @@ def get_undo_collection():
 class TestPipelineStepsUpload(BaseTestCase):
     def test_get_upload_runner(self):
         file_uri = 'file:///tmp/probably/doesnt/exist/upload'
-        file_upload_runner = get_upload_runner(file_uri, None, self.mock_logger)
+        file_upload_runner = get_upload_runner(file_uri, None, self.test_logger)
         self.assertIsInstance(file_upload_runner, FileUploadRunner)
 
         s3_uri = "s3://{dummy_bucket}/{dummy_prefix}".format(dummy_bucket=str(uuid4()), dummy_prefix=str(uuid4()))
-        s3_upload_runner = get_upload_runner(s3_uri, None, self.mock_logger)
+        s3_upload_runner = get_upload_runner(s3_uri, None, self.test_logger)
         self.assertIsInstance(s3_upload_runner, S3UploadRunner)
 
         sftp_uri = "sftp://{dummy_host}/{dummy_path}".format(dummy_host=str(uuid4()), dummy_path=str(uuid4()))
-        sftp_upload_runner = get_upload_runner(sftp_uri, None, self.mock_logger)
+        sftp_upload_runner = get_upload_runner(sftp_uri, None, self.test_logger)
         self.assertIsInstance(sftp_upload_runner, SftpUploadRunner)
 
         with self.assertRaises(InvalidUploadUrlError):
-            _ = get_upload_runner('invalid_uri', None, self.mock_logger)
+            _ = get_upload_runner('invalid_uri', None, self.test_logger)
 
     def test_sftp_path_exists_error(self):
         sftpclient = mock.MagicMock()
@@ -213,7 +213,7 @@ class TestFileUploadRunner(BaseTestCase):
         collection = get_upload_collection()
         netcdf_file, png_file, ico_file, unknown_file = collection
 
-        file_upload_runner = FileUploadRunner('/tmp/probably/doesnt/exist/upload', None, self.mock_logger)
+        file_upload_runner = FileUploadRunner('/tmp/probably/doesnt/exist/upload', None, self.test_logger)
         file_upload_runner.run(collection)
 
         netcdf_dest_path = os.path.join(file_upload_runner.prefix, netcdf_file.dest_path)
@@ -244,7 +244,7 @@ class TestFileUploadRunner(BaseTestCase):
         collection = get_upload_collection(delete=True)
         netcdf_file, png_file, ico_file, unknown_file = collection
 
-        file_upload_runner = FileUploadRunner('/tmp/probably/doesnt/exist/upload', None, self.mock_logger)
+        file_upload_runner = FileUploadRunner('/tmp/probably/doesnt/exist/upload', None, self.test_logger)
         file_upload_runner.run(collection)
 
         netcdf_dest_path = os.path.join(file_upload_runner.prefix, netcdf_file.dest_path)
@@ -268,7 +268,7 @@ class TestS3UploadRunner(BaseTestCase):
 
         dummy_bucket = str(uuid4())
         dummy_prefix = str(uuid4())
-        s3_upload_runner = S3UploadRunner(dummy_bucket, dummy_prefix, None, self.mock_logger)
+        s3_upload_runner = S3UploadRunner(dummy_bucket, dummy_prefix, None, self.test_logger)
 
         mock_boto3.client.assert_called_once_with('s3')
 
@@ -285,7 +285,7 @@ class TestS3UploadRunner(BaseTestCase):
 
         dummy_bucket = str(uuid4())
         dummy_prefix = str(uuid4())
-        s3_upload_runner = S3UploadRunner(dummy_bucket, dummy_prefix, None, self.mock_logger)
+        s3_upload_runner = S3UploadRunner(dummy_bucket, dummy_prefix, None, self.test_logger)
 
         mock_boto3.client.assert_called_once_with('s3')
 
@@ -327,7 +327,7 @@ class TestS3UploadRunner(BaseTestCase):
 
         dummy_bucket = str(uuid4())
         dummy_prefix = str(uuid4())
-        s3_upload_runner = S3UploadRunner(dummy_bucket, dummy_prefix, None, self.mock_logger)
+        s3_upload_runner = S3UploadRunner(dummy_bucket, dummy_prefix, None, self.test_logger)
 
         mock_boto3.client.assert_called_once_with('s3')
 
@@ -356,7 +356,7 @@ class TestSftpUploadRunner(BaseTestCase):
     @mock.patch('aodncore.pipeline.steps.upload.SSHClient')
     @mock.patch('aodncore.pipeline.steps.upload.AutoAddPolicy')
     def test_init(self, mock_autoaddpolicy, mock_sshclient):
-        sftp_upload_runner = SftpUploadRunner('', '', None, self.mock_logger)
+        sftp_upload_runner = SftpUploadRunner('', '', None, self.test_logger)
 
         mock_sshclient.assert_called_once_with()
         sftp_upload_runner._sshclient.set_missing_host_key_policy.assert_called_once_with(mock_autoaddpolicy())
@@ -370,7 +370,7 @@ class TestSftpUploadRunner(BaseTestCase):
         dummy_server = str(uuid4())
         dummy_prefix = "/tmp/{uuid}".format(uuid=str(uuid4()))
 
-        sftp_upload_runner = SftpUploadRunner(dummy_server, dummy_prefix, None, self.mock_logger)
+        sftp_upload_runner = SftpUploadRunner(dummy_server, dummy_prefix, None, self.test_logger)
 
         with mock.patch('aodncore.pipeline.steps.upload.open', mock.mock_open(read_data='')) as m:
             sftp_upload_runner.run(collection)
@@ -409,7 +409,7 @@ class TestSftpUploadRunner(BaseTestCase):
         dummy_server = str(uuid4())
         dummy_prefix = "/tmp/{uuid}".format(uuid=str(uuid4()))
 
-        sftp_upload_runner = SftpUploadRunner(dummy_server, dummy_prefix, None, self.mock_logger)
+        sftp_upload_runner = SftpUploadRunner(dummy_server, dummy_prefix, None, self.test_logger)
         sftp_upload_runner.run(collection)
 
         sftp_upload_runner._sshclient.connect.assert_called_once_with(sftp_upload_runner.server)
