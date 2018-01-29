@@ -1,5 +1,6 @@
 import inspect
 import os
+from collections import OrderedDict
 
 from celery import Celery
 
@@ -50,38 +51,47 @@ REFERENCE_PIPELINE_CONFIG = {
 
 }
 
-REFERENCE_TRIGGER_CONFIG = {
-    "zzz_my_test_harvester": {
-        "exec": "echo --context_param paramFile=\"/usr/local/talend/jobs/param_file.conf\" --context_param base=%{base} --context_param fileList=%{file_list} --context_param logDir=%{log_dir}",
-        "events": [
-            {
-                "regex": [
-                    ".*"
-                ]
-            }
-        ]
-    },
-        "aaa_my_test_harvester": {
-        "exec": "echo --context_param paramFile=\"/usr/local/talend/jobs/param_file.conf\" --context_param base=%{base} --context_param fileList=%{file_list} --context_param logDir=%{log_dir}",
-        "events": [
-            {
-                "regex": [
-                    ".*"
-                ]
-            }
-        ]
-    },
-        "mmm_my_test_harvester": {
-        "exec": "echo --context_param paramFile=\"/usr/local/talend/jobs/param_file.conf\" --context_param base=%{base} --context_param fileList=%{file_list} --context_param logDir=%{log_dir}",
-        "events": [
-            {
-                "regex": [
-                    ".*"
-                ]
-            }
-        ]
-    }
-}
+REFERENCE_TRIGGER_CONFIG = OrderedDict([
+    ("zzz_my_test_harvester", OrderedDict([
+        (
+            "exec",
+            'echo --context_param paramFile="/usr/local/talend/jobs/param_file.conf" --context_param base=%{base} --context_param fileList=%{file_list} --context_param logDir=%{log_dir}'
+        ),
+        (
+            "events", [
+                OrderedDict([
+                    ("regex", [".*"])
+                ])
+            ]
+        )
+    ])),
+    ("aaa_my_test_harvester", OrderedDict([
+        (
+            "exec",
+            'echo --context_param paramFile="/usr/local/talend/jobs/param_file.conf" --context_param base=%{base} --context_param fileList=%{file_list} --context_param logDir=%{log_dir}'
+        ),
+        (
+            "events", [
+                OrderedDict([
+                    ("regex", [".*"])
+                ])
+            ]
+        )
+    ])),
+    ("mmm_my_test_harvester", OrderedDict([
+        (
+            "exec",
+            'echo --context_param paramFile="/usr/local/talend/jobs/param_file.conf" --context_param base=%{base} --context_param fileList=%{file_list} --context_param logDir=%{log_dir}'
+        ),
+        (
+            "events", [
+                OrderedDict([
+                    ("regex", [".*"])
+                ])
+            ]
+        )
+    ]))
+])
 
 REFERENCE_WATCH_CONFIG = {
     "ANMN_QLD_XXXX": {
@@ -158,7 +168,9 @@ class TestConfig(BaseTestCase):
     def test_load_trigger_config(self):
         trigger_conf_file = os.path.join(CONF_ROOT, 'trigger.conf')
         config = load_trigger_config(trigger_conf_file)
+        self.assertIsInstance(config, OrderedDict)
         self.assertDictEqual(REFERENCE_TRIGGER_CONFIG, config)
+        self.assertListEqual(list(REFERENCE_TRIGGER_CONFIG.keys()), list(config.keys()))
 
     def test_load_watch_config(self):
         watch_conf_file = os.path.join(CONF_ROOT, 'watches.conf')
