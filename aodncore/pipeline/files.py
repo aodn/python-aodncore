@@ -8,9 +8,9 @@ import six
 from .common import (FileType, PipelineFilePublishType, PipelineFileCheckType, validate_addition_publishtype,
                      validate_checkresult, validate_checktype, validate_deletion_publishtype, validate_publishtype)
 from .exceptions import DuplicatePipelineFileError, MissingFileError
-from ..util import (IndexedSet, format_exception, get_file_checksum, matches_regexes, slice_sequence,
-                    validate_bool, validate_callable, validate_dict, validate_mapping, validate_nonstring_iterable,
-                    validate_regex, validate_string, validate_type)
+from ..util import (IndexedSet, format_exception, get_file_checksum, iter_public_attributes, matches_regexes,
+                    slice_sequence, validate_bool, validate_callable, validate_dict, validate_mapping,
+                    validate_nonstring_iterable, validate_regex, validate_string, validate_type)
 
 __all__ = [
     'PipelineFileCollection',
@@ -27,7 +27,8 @@ class PipelineFile(object):
     __slots__ = ['_file_checksum', '_name', '_src_path', '_archive_path', '_dest_path', '_extension', 'file_type',
                  '_file_update_callback', '_check_type', '_is_deletion', '_publish_type', '_should_archive',
                  '_should_harvest', '_should_store', '_should_undo', '_is_checked', '_is_archived', '_is_harvested',
-                 '_is_stored', '_is_harvest_undone', "_is_upload_undone", '_check_result', '_mime_type']
+                 '_is_overwrite', '_is_stored', '_is_harvest_undone', "_is_upload_undone", '_check_result',
+                 '_mime_type']
 
     def __init__(self, src_path, name=None, archive_path=None, dest_path=None, is_deletion=False,
                  file_update_callback=None):
@@ -72,6 +73,7 @@ class PipelineFile(object):
         self._is_checked = False
         self._is_archived = False
         self._is_harvested = False
+        self._is_overwrite = None
         self._is_stored = False
         self._is_harvest_undone = False
         self._is_upload_undone = False
@@ -91,38 +93,13 @@ class PipelineFile(object):
         return self.file_checksum, self.name, self.src_path
 
     def __iter__(self):
-        yield 'archive_path', self.archive_path
-        yield 'check_log', self.check_log
-        yield 'check_passed', self.check_passed
-        yield 'check_type', self.check_type.name
-        yield 'dest_path', self.dest_path
-        yield 'extension', self.extension
-        yield 'file_checksum', self.file_checksum
-        yield 'is_checked', str(self._is_checked)
-        yield 'is_deletion', str(self._is_deletion)
-        yield 'is_archived', str(self._is_archived)
-        yield 'is_harvested', str(self._is_harvested)
-        yield 'is_stored', str(self._is_stored)
-        yield 'mime_type', self.mime_type
-        yield 'is_harvest_undone', str(self._is_harvest_undone)
-        yield 'is_upload_undone', str(self._is_upload_undone)
-        yield 'name', self.name
-        yield 'published', self.published
-        yield 'pending_archive', str(self.pending_archive)
-        yield 'pending_harvest_addition', str(self.pending_harvest_addition)
-        yield 'pending_harvest_deletion', str(self.pending_harvest_deletion)
-        yield 'pending_store_addition', str(self.pending_store_addition)
-        yield 'pending_store_deletion', str(self.pending_store_deletion)
-        yield 'pending_undo', str(self.pending_undo)
-        yield 'publish_type', self.publish_type.name
-        yield 'should_archive', str(self._should_archive)
-        yield 'should_harvest', str(self._should_harvest)
-        yield 'should_store', str(self._should_store)
-        yield 'should_undo', str(self._should_undo)
-        yield 'src_path', self.src_path
+        return iter_public_attributes(self)
 
     def __repr__(self):  # pragma: no cover
-        return "PipelineFile({repr})".format(repr=repr(dict(self)))
+        return "{cls}({repr})".format(cls=self.__class__.__name__, repr=repr(dict(self)))
+
+    def __str__(self):
+        return "{cls}({str})".format(cls=self.__class__.__name__, str=dict(self))
 
     #
     # Static properties (read-only, should never change during the lifecycle of the object)
@@ -206,10 +183,6 @@ class PipelineFile(object):
         self._post_property_update({'dest_path': dest_path})
 
     @property
-    def extension(self):
-        return self._extension
-
-    @property
     def file_update_callback(self):
         return self._file_update_callback
 
@@ -251,6 +224,17 @@ class PipelineFile(object):
     @property
     def is_deleted(self):
         return self.is_deletion and self.is_stored
+
+    @property
+    def is_overwrite(self):
+        return self._is_overwrite
+
+    @is_overwrite.setter
+    def is_overwrite(self, is_overwrite):
+        validate_bool(is_overwrite)
+
+        self._is_overwrite = is_overwrite
+        self._post_property_update({'is_overwrite': is_overwrite})
 
     @property
     def is_stored(self):

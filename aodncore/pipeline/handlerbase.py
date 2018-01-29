@@ -16,7 +16,8 @@ from .log import SYSINFO, get_pipeline_logger
 from .schema import validate_check_params, validate_harvest_params, validate_notify_params, validate_resolve_params
 from .steps import (get_cc_module_versions, get_check_runner, get_harvester_runner, get_notify_runner,
                     get_resolve_runner, get_upload_runner)
-from ..util import format_exception, get_file_checksum, merge_dicts, validate_bool, TemporaryDirectory
+from ..util import (format_exception, get_file_checksum, iter_public_attributes, merge_dicts, validate_bool,
+                    TemporaryDirectory)
 
 __all__ = [
     'HandlerBase'
@@ -218,18 +219,7 @@ class HandlerBase(object):
                               'logger', 'state', 'trigger'}
         ignored_attributes.update("is_{state}".format(state=s) for s in self.all_states)
 
-        def includeattr(attr):
-            if attr.startswith('_') or attr in ignored_attributes:
-                return False
-            return True
-
-        property_names = {p for p in dir(HandlerBase) if isinstance(getattr(HandlerBase, p), property)}
-        properties = {p: str(getattr(self, p)) for p in property_names if includeattr(p)}
-        public_attrs = {k: str(v) for k, v in self.__dict__.items() if includeattr(k)}
-        public_attrs.update(properties)
-
-        for item in public_attrs.items():
-            yield item
+        return iter_public_attributes(self, ignored_attributes)
 
     def __str__(self):
         return "{cls}({attrs})".format(cls=self.__class__.__name__, attrs=dict(self))
@@ -512,6 +502,9 @@ class HandlerBase(object):
         self.logger.sysinfo("get_upload_runner -> '{runner}'".format(runner=upload_runner.__class__.__name__))
 
         self.file_collection.set_dest_paths(self._dest_path_function_ref)
+
+        upload_runner.set_is_overwrite(self.file_collection)
+
         self._harvest(upload_runner)
         self._store_unharvested(upload_runner)
 
