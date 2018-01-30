@@ -1,7 +1,6 @@
 import os
 import smtplib
 from collections import OrderedDict
-from copy import deepcopy
 from email import encoders
 from email.mime.base import MIMEBase
 from email.mime.multipart import MIMEMultipart
@@ -90,7 +89,7 @@ class BaseNotifyRunner(AbstractNotifyRunner):
         """
         if self._template_values is None:
             tables = self._get_file_tables()
-            template_values = deepcopy(self.notification_data)
+            template_values = self.notification_data.copy()
             template_values.update(tables)
             self._template_values = template_values
         return self._template_values

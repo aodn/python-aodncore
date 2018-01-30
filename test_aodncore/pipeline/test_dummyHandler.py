@@ -143,6 +143,27 @@ class TestDummyHandler(HandlerTestCase):
         self.assertTrue(all(r.error is None for r in handler.notification_results))
 
     @mock.patch('aodncore.pipeline.steps.notify.smtplib.SMTP')
+    def test_notify_error_unicode(self, mock_smtp):
+        mock_smtp.return_value.sendmail.return_value = {}
+
+        handler = self.run_handler_with_exception(ComplianceCheckFailedError, BAD_NC,
+                                                  notify_params={'notify_owner_error': False,
+                                                                 'owner_notify_list': ['email:owner1@example.com'],
+                                                                 'success_notify_list': ['email:nobody1@example.com',
+                                                                                         'email:nobody2@example.com'],
+                                                                 'error_notify_list': ['email:nobody3@example.com',
+                                                                                       'email:nobody4@example.com']},
+                                                  dest_path_function=dest_path_testing,
+                                                  check_params={'checks': ['cf']})
+
+        expected_recipients = ['email:nobody3@example.com', 'email:nobody4@example.com']
+
+        self.assertIsInstance(handler.notification_results, NotifyList)
+        self.assertItemsEqual(expected_recipients, [n.raw_string for n in handler.notification_results])
+        self.assertTrue(all(r.notification_succeeded for r in handler.notification_results))
+        self.assertTrue(all(r.error is None for r in handler.notification_results))
+
+    @mock.patch('aodncore.pipeline.steps.notify.smtplib.SMTP')
     def test_notify_owner_error(self, mock_smtp):
         mock_smtp.return_value.sendmail.return_value = {}
 
