@@ -9,9 +9,8 @@ jsonschema==2.6.0
 mock==2.0.0 ; python_version < '3.3'
 numpy>=1.13.0
 paramiko==2.2.1
-pyinotify==0.9.6
+pyinotify==0.9.6 ; sys_platform == 'darwin'
 scandir==1.6 ; python_version < '3.5'
 six==1.10.0
-SQLAlchemy==1.1.11
 tabulate==0.7.7
 transitions==0.5.3
