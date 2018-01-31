@@ -109,7 +109,7 @@ def iter_public_attributes(instance, ignored_attributes=None):
     property_names = {p for p in dir(instance.__class__) if isinstance(getattr(instance.__class__, p), property)}
     all_names = attribute_names.union(property_names)
 
-    public_attrs = {a: str(getattr(instance, a)) for a in all_names if includeattr(a)}
+    public_attrs = {a: getattr(instance, a) for a in all_names if includeattr(a)}
 
     return six.iteritems(public_attrs)
 
