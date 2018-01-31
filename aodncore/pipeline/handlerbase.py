@@ -556,7 +556,7 @@ class HandlerBase(object):
     #
 
     def _after_state_change(self):
-        """Method run after each successful state transition to update state in the DB and log
+        """Method run after each successful state transition
 
         :return: None
         """
