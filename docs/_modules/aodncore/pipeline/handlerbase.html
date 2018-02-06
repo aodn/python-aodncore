@@ -74,9 +74,9 @@
 
 <span class="sd">Responsible for general setup of handler class and performing initial sanity checking of the input file and parameters</span>
 
-<span class="sd">1. validation of parameters</span>
-<span class="sd">1. validation of input file (e.g. the file exists, is accessible, is of an allowed type etc.)</span>
-<span class="sd">1. setup temporary directories</span>
+<span class="sd">#. validation of parameters</span>
+<span class="sd">#. validation of input file (e.g. the file exists, is accessible, is of an allowed type etc.)</span>
+<span class="sd">#. setup temporary directories</span>
 
 <span class="sd">resolve</span>
 <span class="sd">~~~~~~~</span>
@@ -86,13 +86,15 @@
 <span class="sd">&quot;known&quot; files for the duration of the handler. After this step, there is no need to consider the original source format</span>
 <span class="sd">of the input file, as this step &quot;resolves&quot; the file into a generic collection for further processing.</span>
 
-<span class="sd">1. prepare the &quot;file collection&quot; used by all subsequent steps by placing files into a temporary directory and</span>
-<span class="sd">creating an entry in the handlers &quot;file_collection&quot; attribute, which is a special type of set</span>
-<span class="sd">(PipelineFileCollection object) optimised for dealing with pipeline files (PipelineFile objects)</span>
-<span class="sd">    1. if single file, copy to temporary directory and add to file collection</span>
-<span class="sd">    1. if ZIP file, extract files into temporary directory and add them to the file collection</span>
-<span class="sd">    1. if manifest file, add files &quot;in place&quot; to the file collection</span>
-<span class="sd">1. update files to be included/excluded from processing based on regex filter (if defined in parameter)</span>
+<span class="sd">#. prepare the &quot;file collection&quot; used by all subsequent steps by placing files into a temporary directory and</span>
+<span class="sd">   creating an entry in the handlers &quot;file_collection&quot; attribute, which is a special type of set</span>
+<span class="sd">   (PipelineFileCollection object) optimised for dealing with pipeline files (PipelineFile objects)</span>
+
+<span class="sd">    #. if single file, copy to temporary directory and add to file collection</span>
+<span class="sd">    #. if ZIP file, extract files into temporary directory and add them to the file collection</span>
+<span class="sd">    #. if manifest file, add files &quot;in place&quot; to the file collection</span>
+
+<span class="sd">#. update files to be included/excluded from processing based on regex filter (if defined in parameter)</span>
 
 <span class="sd">preprocess</span>
 <span class="sd">~~~~~~~~~~</span>
@@ -104,11 +106,12 @@
 
 <span class="sd">Responsible for checking the validity and/or compliance of files in the collection.</span>
 
-<span class="sd">1.  determine the type of check to be performed based on the handler parameters and file type</span>
-<span class="sd">    1. if NetCDF and compliance checks defined in parameters, check against listed check suites</span>
-<span class="sd">    1. if NetCDF and no compliance checks defined, validate NetCDF format</span>
-<span class="sd">    1. if known file type, validate file format (e.g. if .pdf extension, validate PDF format)  # TODO</span>
-<span class="sd">    1. if unknown file type, no checks performed</span>
+<span class="sd">#.  determine the type of check to be performed based on the handler parameters and file type</span>
+
+<span class="sd">    #. if NetCDF and compliance checks defined in parameters, check against listed check suites</span>
+<span class="sd">    #. if NetCDF and no compliance checks defined, validate NetCDF format</span>
+<span class="sd">    #. if known file type, validate file format (e.g. if .pdf extension, validate PDF format)  # TODO</span>
+<span class="sd">    #. if unknown file type, no checks performed</span>
 
 <span class="sd">process</span>
 <span class="sd">~~~~~~~</span>
@@ -122,9 +125,9 @@
 <span class="sd">actions only on files in the collection which have been flagged for that action (as determined by the publish_type</span>
 <span class="sd">attribute of the files).</span>
 
-<span class="sd">1. determine files flagged as needing to be archived, and upload to &#39;archive&#39; location</span>
-<span class="sd">1. determine files flagged as needing to be harvested, match and execute Talend harvester(s) for files</span>
-<span class="sd">1. determine files flagged as needing to be uploaded, and upload to &#39;upload&#39;</span>
+<span class="sd">#. determine files flagged as needing to be archived, and upload to &#39;archive&#39; location</span>
+<span class="sd">#. determine files flagged as needing to be harvested, match and execute Talend harvester(s) for files</span>
+<span class="sd">#. determine files flagged as needing to be uploaded, and upload to &#39;upload&#39;</span>
 
 <span class="sd">postprocess</span>
 <span class="sd">~~~~~~~~~~~</span>
@@ -136,8 +139,8 @@
 
 <span class="sd">Responsible for notifying the uploader and/or the pipeline &#39;owner&#39; of the result of the handler attempt.</span>
 
-<span class="sd">1. determine the recipients, based on notification parameters and handler result</span>
-<span class="sd">1. send notifications</span>
+<span class="sd">#. determine the recipients, based on notification parameters and handler result</span>
+<span class="sd">#. send notifications</span>
 
 <span class="sd">Customising handler behaviour</span>
 <span class="sd">-----------------------------</span>
