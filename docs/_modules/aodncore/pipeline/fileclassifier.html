@@ -1,0 +1,208 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>aodncore.pipeline.fileclassifier &#8212; aodncore 0.1 documentation</title>
+    <link rel="stylesheet" href="../../../_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../../',
+        VERSION:     '0.1',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true,
+        SOURCELINK_SUFFIX: '.txt'
+      };
+    </script>
+    <script type="text/javascript" src="../../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../../_static/doctools.js"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" />
+   
+  <link rel="stylesheet" href="../../../_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head>
+  <body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <h1>Source code for aodncore.pipeline.fileclassifier</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;FileClassifier - Generic class for working out the destination path of</span>
+<span class="sd">a file to be published. The idea is to define the common functionality</span>
+<span class="sd">here, then create subclasses to customise for each specific incoming</span>
+<span class="sd">handler. </span>
+
+<span class="sd">Expected use:</span>
+
+<span class="sd">    class MyFileClassifier(FileClassifier):</span>
+<span class="sd">        def dest_path(self, input_file):</span>
+<span class="sd">            path = &lt;case-specific logic&gt; </span>
+<span class="sd">            ...</span>
+<span class="sd">            return path</span>
+
+<span class="sd">    try:</span>
+<span class="sd">        dest_path = MyFileClassifier.dest_path(input_file)</span>
+<span class="sd">    except FileClassifierException, e:</span>
+<span class="sd">        print &gt;&gt;sys.stderr, e</span>
+<span class="sd">        exit(1)</span>
+
+<span class="sd">    print dest_path</span>
+
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">import</span> <span class="nn">re</span>
+
+<span class="kn">from</span> <span class="nn">netCDF4</span> <span class="k">import</span> <span class="n">Dataset</span>
+
+<span class="kn">from</span> <span class="nn">.exceptions</span> <span class="k">import</span> <span class="n">InvalidFileFormatError</span><span class="p">,</span> <span class="n">InvalidFileNameError</span><span class="p">,</span> <span class="n">InvalidFileContentError</span>
+
+
+<div class="viewcode-block" id="FileClassifier"><a class="viewcode-back" href="../../../aodncore.pipeline.html#aodncore.pipeline.fileclassifier.FileClassifier">[docs]</a><span class="k">class</span> <span class="nc">FileClassifier</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Base class for working out where a file should be published.&quot;&quot;&quot;</span>
+
+    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">_get_file_name_fields</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">input_file</span><span class="p">,</span> <span class="n">min_fields</span><span class="o">=</span><span class="mi">6</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Return the &#39;_&#39;-separated fields in the file name as a list.</span>
+<span class="sd">        Raise an exception if the number of fields is less than min_fields.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># trim off dirs &amp; extention</span>
+        <span class="n">basename</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">basename</span><span class="p">(</span><span class="n">input_file</span><span class="p">)</span>
+        <span class="n">just_the_name</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="s1">&#39;\.\w*$&#39;</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">basename</span><span class="p">)</span>
+
+        <span class="n">fields</span> <span class="o">=</span> <span class="n">just_the_name</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;_&#39;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">fields</span><span class="p">)</span> <span class="o">&lt;</span> <span class="n">min_fields</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">InvalidFileNameError</span><span class="p">(</span>
+                <span class="s2">&quot;&#39;</span><span class="si">{name}</span><span class="s2">&#39; has less than </span><span class="si">{nfld:d}</span><span class="s2"> fields in file name.&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="n">input_file</span><span class="p">,</span> <span class="n">nfld</span><span class="o">=</span><span class="n">min_fields</span><span class="p">)</span>
+            <span class="p">)</span>
+        <span class="k">return</span> <span class="n">fields</span>
+
+    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">_get_facility</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">input_file</span><span class="p">,</span> <span class="n">check_sub</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Get the facility/sub-facility from the file name and return as a</span>
+<span class="sd">        tuple (&#39;facility&#39;, &#39;sub-facility&#39;). Raise exception if no</span>
+<span class="sd">        sub-facility is present, unless check_sub is False.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">name_field</span> <span class="o">=</span> <span class="bp">cls</span><span class="o">.</span><span class="n">_get_file_name_fields</span><span class="p">(</span><span class="n">input_file</span><span class="p">,</span> <span class="n">min_fields</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+        <span class="n">fac_subfac</span> <span class="o">=</span> <span class="n">name_field</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;-&#39;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">check_sub</span> <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span><span class="n">fac_subfac</span><span class="p">)</span> <span class="o">&lt;</span> <span class="mi">2</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">InvalidFileNameError</span><span class="p">(</span><span class="s2">&quot;Missing sub-facility in file name &#39;</span><span class="si">{name}</span><span class="s2">&#39;&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="n">input_file</span><span class="p">))</span>
+        <span class="k">return</span> <span class="nb">tuple</span><span class="p">(</span><span class="n">fac_subfac</span><span class="p">)</span>
+
+    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">_open_nc_file</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">file_path</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Open a NetCDF file for reading&quot;&quot;&quot;</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">Dataset</span><span class="p">(</span><span class="n">file_path</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s1">&#39;r&#39;</span><span class="p">)</span>
+        <span class="k">except</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">InvalidFileFormatError</span><span class="p">(</span><span class="s2">&quot;Could not open NetCDF file &#39;</span><span class="si">{path}</span><span class="s2">&#39;.&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">path</span><span class="o">=</span><span class="n">file_path</span><span class="p">))</span>
+
+    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">_get_nc_att</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">file_path</span><span class="p">,</span> <span class="n">att_name</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Return the value of a global attribute from a NetCDF file. If a</span>
+<span class="sd">        list of attribute names is given, a list of values is</span>
+<span class="sd">        returned.  Unless a default value other than None is given, a</span>
+<span class="sd">        missing attribute raises an exception.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">dataset</span> <span class="o">=</span> <span class="bp">cls</span><span class="o">.</span><span class="n">_open_nc_file</span><span class="p">(</span><span class="n">file_path</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">att_name</span><span class="p">,</span> <span class="nb">list</span><span class="p">):</span>
+            <span class="n">att_list</span> <span class="o">=</span> <span class="n">att_name</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">att_list</span> <span class="o">=</span> <span class="p">[</span><span class="n">att_name</span><span class="p">]</span>
+        <span class="n">values</span> <span class="o">=</span> <span class="p">[]</span>
+
+        <span class="k">for</span> <span class="n">att</span> <span class="ow">in</span> <span class="n">att_list</span><span class="p">:</span>
+            <span class="n">val</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">dataset</span><span class="p">,</span> <span class="n">att</span><span class="p">,</span> <span class="n">default</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">val</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="n">InvalidFileContentError</span><span class="p">(</span>
+                    <span class="s2">&quot;File &#39;</span><span class="si">{path}</span><span class="s2">&#39; has no attribute &#39;</span><span class="si">{att}</span><span class="s2">&#39;&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">path</span><span class="o">=</span><span class="n">file_path</span><span class="p">,</span> <span class="n">att</span><span class="o">=</span><span class="n">att</span><span class="p">)</span>
+                <span class="p">)</span>
+            <span class="n">values</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">val</span><span class="p">)</span>
+        <span class="n">dataset</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">att_name</span><span class="p">,</span> <span class="nb">list</span><span class="p">):</span>
+            <span class="k">return</span> <span class="n">values</span>
+        <span class="k">return</span> <span class="n">values</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+
+    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">_get_site_code</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">input_file</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Return the site_code attribute of the input_file&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">cls</span><span class="o">.</span><span class="n">_get_nc_att</span><span class="p">(</span><span class="n">input_file</span><span class="p">,</span> <span class="s1">&#39;site_code&#39;</span><span class="p">)</span>
+
+    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">_get_variable_names</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">input_file</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Return a list of the variable names in the file.&quot;&quot;&quot;</span>
+        <span class="n">dataset</span> <span class="o">=</span> <span class="bp">cls</span><span class="o">.</span><span class="n">_open_nc_file</span><span class="p">(</span><span class="n">input_file</span><span class="p">)</span>
+        <span class="n">names</span> <span class="o">=</span> <span class="n">dataset</span><span class="o">.</span><span class="n">variables</span><span class="o">.</span><span class="n">keys</span><span class="p">()</span>
+        <span class="n">dataset</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+        <span class="k">return</span> <span class="n">names</span>
+
+    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">_make_path</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">dir_list</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Create a path from a list of directory names, making sure the</span>
+<span class="sd">         result is a plain ascii string, not unicode (which could</span>
+<span class="sd">         happen if some of the components of dir_list come from NetCDF</span>
+<span class="sd">         file attributes).</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">dir_list</span><span class="p">)):</span>
+            <span class="n">dir_list</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">dir_list</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
+        <span class="k">return</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="o">*</span><span class="n">dir_list</span><span class="p">)</span></div>
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper"><div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../../../index.html">Documentation overview</a><ul>
+  <li><a href="../../index.html">Module code</a><ul>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="../../../search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2018, AODN.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.6.7</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.10</a>
+      
+    </div>
+
+    
+
+    
+  </body>
+</html>

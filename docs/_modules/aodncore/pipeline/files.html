@@ -1,0 +1,816 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>aodncore.pipeline.files &#8212; aodncore 0.1 documentation</title>
+    <link rel="stylesheet" href="../../../_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../../',
+        VERSION:     '0.1',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true,
+        SOURCELINK_SUFFIX: '.txt'
+      };
+    </script>
+    <script type="text/javascript" src="../../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../../_static/doctools.js"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" />
+   
+  <link rel="stylesheet" href="../../../_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head>
+  <body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <h1>Source code for aodncore.pipeline.files</h1><div class="highlight"><pre>
+<span></span><span class="kn">import</span> <span class="nn">mimetypes</span>
+<span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">import</span> <span class="nn">re</span>
+<span class="kn">from</span> <span class="nn">collections</span> <span class="k">import</span> <span class="n">MutableSet</span><span class="p">,</span> <span class="n">OrderedDict</span>
+
+<span class="kn">import</span> <span class="nn">six</span>
+
+<span class="kn">from</span> <span class="nn">.common</span> <span class="k">import</span> <span class="p">(</span><span class="n">FileType</span><span class="p">,</span> <span class="n">PipelineFilePublishType</span><span class="p">,</span> <span class="n">PipelineFileCheckType</span><span class="p">,</span> <span class="n">validate_addition_publishtype</span><span class="p">,</span>
+                     <span class="n">validate_checkresult</span><span class="p">,</span> <span class="n">validate_checktype</span><span class="p">,</span> <span class="n">validate_deletion_publishtype</span><span class="p">,</span> <span class="n">validate_publishtype</span><span class="p">)</span>
+<span class="kn">from</span> <span class="nn">.exceptions</span> <span class="k">import</span> <span class="n">DuplicatePipelineFileError</span><span class="p">,</span> <span class="n">MissingFileError</span>
+<span class="kn">from</span> <span class="nn">..util</span> <span class="k">import</span> <span class="p">(</span><span class="n">IndexedSet</span><span class="p">,</span> <span class="n">format_exception</span><span class="p">,</span> <span class="n">get_file_checksum</span><span class="p">,</span> <span class="n">iter_public_attributes</span><span class="p">,</span> <span class="n">matches_regexes</span><span class="p">,</span>
+                    <span class="n">slice_sequence</span><span class="p">,</span> <span class="n">validate_bool</span><span class="p">,</span> <span class="n">validate_callable</span><span class="p">,</span> <span class="n">validate_dict</span><span class="p">,</span> <span class="n">validate_mapping</span><span class="p">,</span>
+                    <span class="n">validate_nonstring_iterable</span><span class="p">,</span> <span class="n">validate_regex</span><span class="p">,</span> <span class="n">validate_string</span><span class="p">,</span> <span class="n">validate_type</span><span class="p">)</span>
+
+<span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="s1">&#39;PipelineFileCollection&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;PipelineFile&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;validate_pipelinefilecollection&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;validate_pipelinefile_or_string&#39;</span>
+<span class="p">]</span>
+
+
+<div class="viewcode-block" id="PipelineFile"><a class="viewcode-back" href="../../../aodncore.pipeline.html#aodncore.pipeline.files.PipelineFile">[docs]</a><span class="k">class</span> <span class="nc">PipelineFile</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Represents a single file in order to store state information relating to the intended actions to be performed</span>
+<span class="sd">        on the file, and the actions that *were*</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="vm">__slots__</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;_file_checksum&#39;</span><span class="p">,</span> <span class="s1">&#39;_name&#39;</span><span class="p">,</span> <span class="s1">&#39;_src_path&#39;</span><span class="p">,</span> <span class="s1">&#39;_archive_path&#39;</span><span class="p">,</span> <span class="s1">&#39;_dest_path&#39;</span><span class="p">,</span> <span class="s1">&#39;_extension&#39;</span><span class="p">,</span> <span class="s1">&#39;file_type&#39;</span><span class="p">,</span>
+                 <span class="s1">&#39;_file_update_callback&#39;</span><span class="p">,</span> <span class="s1">&#39;_check_type&#39;</span><span class="p">,</span> <span class="s1">&#39;_is_deletion&#39;</span><span class="p">,</span> <span class="s1">&#39;_publish_type&#39;</span><span class="p">,</span> <span class="s1">&#39;_should_archive&#39;</span><span class="p">,</span>
+                 <span class="s1">&#39;_should_harvest&#39;</span><span class="p">,</span> <span class="s1">&#39;_should_store&#39;</span><span class="p">,</span> <span class="s1">&#39;_should_undo&#39;</span><span class="p">,</span> <span class="s1">&#39;_is_checked&#39;</span><span class="p">,</span> <span class="s1">&#39;_is_archived&#39;</span><span class="p">,</span> <span class="s1">&#39;_is_harvested&#39;</span><span class="p">,</span>
+                 <span class="s1">&#39;_is_overwrite&#39;</span><span class="p">,</span> <span class="s1">&#39;_is_stored&#39;</span><span class="p">,</span> <span class="s1">&#39;_is_harvest_undone&#39;</span><span class="p">,</span> <span class="s2">&quot;_is_upload_undone&quot;</span><span class="p">,</span> <span class="s1">&#39;_check_result&#39;</span><span class="p">,</span>
+                 <span class="s1">&#39;_mime_type&#39;</span><span class="p">]</span>
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">src_path</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">archive_path</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">dest_path</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">is_deletion</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+                 <span class="n">file_update_callback</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        :param src_path: absolute source path to the file being represented</span>
+<span class="sd">        :param name: arbitrary name (defaults to os.path.basename)</span>
+<span class="sd">        :param archive_path: relative path used when archiving the file</span>
+<span class="sd">        :param dest_path: relative path used when publishing the file</span>
+<span class="sd">        :param is_deletion: boolean designating whether this is a deletion</span>
+<span class="sd">        :param file_update_callback: optional callback to call when a file property is updated</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_file_checksum</span> <span class="o">=</span> <span class="kc">None</span> <span class="k">if</span> <span class="n">is_deletion</span> <span class="k">else</span> <span class="n">get_file_checksum</span><span class="p">(</span><span class="n">src_path</span><span class="p">)</span>
+        <span class="k">except</span> <span class="p">(</span><span class="ne">IOError</span><span class="p">,</span> <span class="ne">OSError</span><span class="p">)</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">MissingFileError</span><span class="p">(</span>
+                <span class="s2">&quot;failed to create PipelineFile addition for &#39;</span><span class="si">{src_path}</span><span class="s2">&#39;. </span><span class="si">{e}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">src_path</span><span class="o">=</span><span class="n">src_path</span><span class="p">,</span>
+                                                                                      <span class="n">e</span><span class="o">=</span><span class="n">format_exception</span><span class="p">(</span><span class="n">e</span><span class="p">)))</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_name</span> <span class="o">=</span> <span class="n">name</span> <span class="k">if</span> <span class="n">name</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="k">else</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">basename</span><span class="p">(</span><span class="n">src_path</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_src_path</span> <span class="o">=</span> <span class="n">src_path</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_archive_path</span> <span class="o">=</span> <span class="n">archive_path</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_dest_path</span> <span class="o">=</span> <span class="n">dest_path</span>
+
+        <span class="n">_</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_extension</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">splitext</span><span class="p">(</span><span class="n">src_path</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">file_type</span> <span class="o">=</span> <span class="n">FileType</span><span class="o">.</span><span class="n">get_type_from_extension</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">extension</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_file_update_callback</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="k">if</span> <span class="n">file_update_callback</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">file_update_callback</span> <span class="o">=</span> <span class="n">file_update_callback</span>
+
+        <span class="c1"># processing flags - these express the *intended actions* for the file</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_check_type</span> <span class="o">=</span> <span class="n">PipelineFileCheckType</span><span class="o">.</span><span class="n">NO_ACTION</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_is_deletion</span> <span class="o">=</span> <span class="n">is_deletion</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_publish_type</span> <span class="o">=</span> <span class="n">PipelineFilePublishType</span><span class="o">.</span><span class="n">NO_ACTION</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_should_archive</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_should_harvest</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_should_store</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_should_undo</span> <span class="o">=</span> <span class="kc">False</span>
+
+        <span class="c1"># status flags - these express the *current state* of the file</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_is_checked</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_is_archived</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_is_harvested</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_is_overwrite</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_is_stored</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_is_harvest_undone</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_is_upload_undone</span> <span class="o">=</span> <span class="kc">False</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_check_result</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_mime_type</span> <span class="o">=</span> <span class="kc">None</span>
+
+    <span class="k">def</span> <span class="nf">__eq__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">other</span><span class="p">,</span> <span class="nb">type</span><span class="p">(</span><span class="bp">self</span><span class="p">)):</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">__key</span><span class="p">()</span> <span class="o">==</span> <span class="n">other</span><span class="o">.</span><span class="n">__key</span><span class="p">()</span>
+        <span class="k">return</span> <span class="kc">False</span>
+
+    <span class="k">def</span> <span class="nf">__hash__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="nb">hash</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">__key</span><span class="p">())</span>
+
+    <span class="k">def</span> <span class="nf">__key</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">file_checksum</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">src_path</span>
+
+    <span class="k">def</span> <span class="nf">__iter__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">iter_public_attributes</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>  <span class="c1"># pragma: no cover</span>
+        <span class="k">return</span> <span class="s2">&quot;</span><span class="si">{cls}</span><span class="s2">(</span><span class="si">{repr}</span><span class="s2">)&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">cls</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="p">,</span> <span class="nb">repr</span><span class="o">=</span><span class="nb">repr</span><span class="p">(</span><span class="nb">dict</span><span class="p">(</span><span class="bp">self</span><span class="p">)))</span>
+
+    <span class="k">def</span> <span class="nf">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="s2">&quot;</span><span class="si">{cls}</span><span class="s2">(</span><span class="si">{str}</span><span class="s2">)&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">cls</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="p">,</span> <span class="nb">str</span><span class="o">=</span><span class="nb">dict</span><span class="p">(</span><span class="bp">self</span><span class="p">))</span>
+
+    <span class="c1">#</span>
+    <span class="c1"># Static properties (read-only, should never change during the lifecycle of the object)</span>
+    <span class="c1">#</span>
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">extension</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_extension</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">file_checksum</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_file_checksum</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">name</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_name</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">src_path</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_src_path</span>
+
+    <span class="c1">#</span>
+    <span class="c1"># State properties (may change during the lifecycle of the object to reflect the current state)</span>
+    <span class="c1">#</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">archive_path</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_archive_path</span>
+
+    <span class="nd">@archive_path</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span> <span class="nf">archive_path</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">archive_path</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isabs</span><span class="p">(</span><span class="n">archive_path</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;archive_path must be a relative path&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_archive_path</span> <span class="o">=</span> <span class="n">archive_path</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_post_property_update</span><span class="p">({</span><span class="s1">&#39;archive_path&#39;</span><span class="p">:</span> <span class="n">archive_path</span><span class="p">})</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">check_log</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="s1">&#39;&#39;</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_check_result</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="n">os</span><span class="o">.</span><span class="n">linesep</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_check_result</span><span class="o">.</span><span class="n">log</span><span class="p">)</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">check_passed</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="s1">&#39;N/A&#39;</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_check_result</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_check_result</span><span class="o">.</span><span class="n">compliant</span><span class="p">)</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">check_result</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_check_result</span>
+
+    <span class="nd">@check_result</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span> <span class="nf">check_result</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">check_result</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+
+<span class="sd">        :param check_result: </span>
+<span class="sd">        :return: </span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">validate_checkresult</span><span class="p">(</span><span class="n">check_result</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_is_checked</span> <span class="o">=</span> <span class="kc">True</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_check_result</span> <span class="o">=</span> <span class="n">check_result</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_post_property_update</span><span class="p">({</span><span class="s1">&#39;is_checked&#39;</span><span class="p">:</span> <span class="kc">True</span><span class="p">})</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">check_type</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_check_type</span>
+
+    <span class="nd">@check_type</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span> <span class="nf">check_type</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">check_type</span><span class="p">):</span>
+        <span class="n">validate_checktype</span><span class="p">(</span><span class="n">check_type</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_check_type</span> <span class="o">=</span> <span class="n">check_type</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_post_property_update</span><span class="p">({</span><span class="s1">&#39;check_type&#39;</span><span class="p">:</span> <span class="n">check_type</span><span class="o">.</span><span class="n">name</span><span class="p">})</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">dest_path</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_dest_path</span>
+
+    <span class="nd">@dest_path</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span> <span class="nf">dest_path</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dest_path</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isabs</span><span class="p">(</span><span class="n">dest_path</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;dest_path must be a relative path&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_dest_path</span> <span class="o">=</span> <span class="n">dest_path</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_post_property_update</span><span class="p">({</span><span class="s1">&#39;dest_path&#39;</span><span class="p">:</span> <span class="n">dest_path</span><span class="p">})</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">file_update_callback</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_file_update_callback</span>
+
+    <span class="nd">@file_update_callback</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span> <span class="nf">file_update_callback</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">callback</span><span class="p">):</span>
+        <span class="n">validate_callable</span><span class="p">(</span><span class="n">callback</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_file_update_callback</span> <span class="o">=</span> <span class="n">callback</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">is_harvested</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_is_harvested</span>
+
+    <span class="nd">@is_harvested</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span> <span class="nf">is_harvested</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">is_harvested</span><span class="p">):</span>
+        <span class="n">validate_bool</span><span class="p">(</span><span class="n">is_harvested</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_is_harvested</span> <span class="o">=</span> <span class="n">is_harvested</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_post_property_update</span><span class="p">({</span><span class="s1">&#39;is_harvested&#39;</span><span class="p">:</span> <span class="n">is_harvested</span><span class="p">})</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">is_archived</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_is_archived</span>
+
+    <span class="nd">@is_archived</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span> <span class="nf">is_archived</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">is_archived</span><span class="p">):</span>
+        <span class="n">validate_bool</span><span class="p">(</span><span class="n">is_archived</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_is_archived</span> <span class="o">=</span> <span class="n">is_archived</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_post_property_update</span><span class="p">({</span><span class="s1">&#39;is_archived&#39;</span><span class="p">:</span> <span class="n">is_archived</span><span class="p">})</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">is_checked</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_is_checked</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">is_deletion</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_is_deletion</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">is_deleted</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">is_deletion</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">is_stored</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">is_overwrite</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_is_overwrite</span>
+
+    <span class="nd">@is_overwrite</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span> <span class="nf">is_overwrite</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">is_overwrite</span><span class="p">):</span>
+        <span class="n">validate_bool</span><span class="p">(</span><span class="n">is_overwrite</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_is_overwrite</span> <span class="o">=</span> <span class="n">is_overwrite</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_post_property_update</span><span class="p">({</span><span class="s1">&#39;is_overwrite&#39;</span><span class="p">:</span> <span class="n">is_overwrite</span><span class="p">})</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">is_stored</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_is_stored</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">is_harvest_undone</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_is_harvest_undone</span>
+
+    <span class="nd">@is_harvest_undone</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span> <span class="nf">is_harvest_undone</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">is_harvest_undone</span><span class="p">):</span>
+        <span class="n">validate_bool</span><span class="p">(</span><span class="n">is_harvest_undone</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_is_harvest_undone</span> <span class="o">=</span> <span class="n">is_harvest_undone</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_post_property_update</span><span class="p">({</span><span class="s1">&#39;is_harvest_undone&#39;</span><span class="p">:</span> <span class="n">is_harvest_undone</span><span class="p">})</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">is_upload_undone</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_is_upload_undone</span>
+
+    <span class="nd">@is_upload_undone</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span> <span class="nf">is_upload_undone</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">is_upload_undone</span><span class="p">):</span>
+        <span class="n">validate_bool</span><span class="p">(</span><span class="n">is_upload_undone</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_is_upload_undone</span> <span class="o">=</span> <span class="n">is_upload_undone</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_post_property_update</span><span class="p">({</span><span class="s1">&#39;is_upload_undone&#39;</span><span class="p">:</span> <span class="n">is_upload_undone</span><span class="p">})</span>
+
+    <span class="nd">@is_stored</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span> <span class="nf">is_stored</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">is_stored</span><span class="p">):</span>
+        <span class="n">validate_bool</span><span class="p">(</span><span class="n">is_stored</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_is_stored</span> <span class="o">=</span> <span class="n">is_stored</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_post_property_update</span><span class="p">({</span><span class="s1">&#39;is_stored&#39;</span><span class="p">:</span> <span class="n">is_stored</span><span class="p">})</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">is_uploaded</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">is_deletion</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">is_stored</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">mime_type</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_mime_type</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_mime_type</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">file_type</span><span class="o">.</span><span class="n">mime_type</span> <span class="ow">or</span> <span class="n">mimetypes</span><span class="o">.</span><span class="n">types_map</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">extension</span><span class="p">,</span>
+                                                                                  <span class="s1">&#39;application/octet-stream&#39;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_mime_type</span>
+
+    <span class="nd">@mime_type</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span> <span class="nf">mime_type</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">mime_type</span><span class="p">):</span>
+        <span class="n">validate_string</span><span class="p">(</span><span class="n">mime_type</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_mime_type</span> <span class="o">=</span> <span class="n">mime_type</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_post_property_update</span><span class="p">({</span><span class="s1">&#39;mime_type&#39;</span><span class="p">:</span> <span class="n">mime_type</span><span class="p">})</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">published</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">stored</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">is_stored</span> <span class="ow">and</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">is_upload_undone</span>
+        <span class="n">harvested</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">is_harvested</span> <span class="ow">and</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">is_harvest_undone</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">should_store</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">should_harvest</span><span class="p">:</span>
+            <span class="n">published</span> <span class="o">=</span> <span class="n">stored</span> <span class="ow">and</span> <span class="n">harvested</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">published</span> <span class="o">=</span> <span class="n">stored</span> <span class="ow">or</span> <span class="n">harvested</span>
+        <span class="k">return</span> <span class="s1">&#39;Yes&#39;</span> <span class="k">if</span> <span class="n">published</span> <span class="k">else</span> <span class="s1">&#39;No&#39;</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">pending_archive</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">should_archive</span> <span class="ow">and</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">is_archived</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">pending_harvest</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">should_harvest</span> <span class="ow">and</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">is_harvested</span> <span class="ow">and</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">should_undo</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">pending_harvest_addition</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">pending_harvest</span> <span class="ow">and</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">is_deletion</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">pending_harvest_deletion</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">pending_harvest</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">is_deletion</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">pending_harvest_undo</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">should_undo</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">should_harvest</span> <span class="ow">and</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">is_harvest_undone</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">pending_store</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">should_store</span> <span class="ow">and</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">is_stored</span> <span class="ow">and</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">should_undo</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">pending_store_addition</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">pending_store</span> <span class="ow">and</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">is_deletion</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">pending_store_deletion</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">pending_store</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">is_deletion</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">pending_store_undo</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">should_undo</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">should_store</span> <span class="ow">and</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">is_upload_undone</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">pending_undo</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">pending_harvest_undo</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">pending_store_undo</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">publish_type</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_publish_type</span>
+
+    <span class="nd">@publish_type</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span> <span class="nf">publish_type</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">publish_type</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Publish type is a special property which allows handler sub-classes to specify in a single line what</span>
+<span class="sd">        &quot;publishing&quot; actions should be performed on a given file. For this reason, the boolean flags are read-only</span>
+<span class="sd">        properties and only intended to be changed via this property.</span>
+<span class="sd">        </span>
+<span class="sd">        :param publish_type: an element of the PipelineFilePublishType enum</span>
+<span class="sd">        :return: None</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">validate_publishtype</span><span class="p">(</span><span class="n">publish_type</span><span class="p">)</span>
+
+        <span class="n">validate_value_func</span> <span class="o">=</span> <span class="n">validate_deletion_publishtype</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">is_deletion</span> <span class="k">else</span> <span class="n">validate_addition_publishtype</span>
+        <span class="n">validate_value_func</span><span class="p">(</span><span class="n">publish_type</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_should_archive</span> <span class="o">=</span> <span class="n">publish_type</span><span class="o">.</span><span class="n">is_archive_type</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_should_harvest</span> <span class="o">=</span> <span class="n">publish_type</span><span class="o">.</span><span class="n">is_harvest_type</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_should_store</span> <span class="o">=</span> <span class="n">publish_type</span><span class="o">.</span><span class="n">is_store_type</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_publish_type</span> <span class="o">=</span> <span class="n">publish_type</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_post_property_update</span><span class="p">({</span><span class="s1">&#39;publish_type&#39;</span><span class="p">:</span> <span class="n">publish_type</span><span class="o">.</span><span class="n">name</span><span class="p">})</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">should_archive</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_should_archive</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">should_store</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_should_store</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">should_harvest</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_should_harvest</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">should_undo</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_should_undo</span>
+
+    <span class="nd">@should_undo</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span> <span class="nf">should_undo</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">should_undo</span><span class="p">):</span>
+        <span class="n">validate_bool</span><span class="p">(</span><span class="n">should_undo</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">is_deletion</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;undo is not possible for deletions&#39;</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_should_undo</span> <span class="o">=</span> <span class="n">should_undo</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_post_property_update</span><span class="p">({</span><span class="s1">&#39;should_undo&#39;</span><span class="p">:</span> <span class="n">should_undo</span><span class="p">})</span>
+
+    <span class="k">def</span> <span class="nf">_post_property_update</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">properties</span><span class="p">,</span> <span class="n">include_values</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Method run after a property is updated in order to perform optional actions such as updating ORM (if enabled)</span>
+<span class="sd">            and running the update callback (if set)</span>
+
+<span class="sd">        :param properties: dict containing the updated properties and their new values (used to update ORM)</span>
+<span class="sd">        :return: None</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">validate_mapping</span><span class="p">(</span><span class="n">properties</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">file_update_callback</span><span class="p">:</span>
+            <span class="n">log_output</span> <span class="o">=</span> <span class="n">properties</span> <span class="k">if</span> <span class="n">include_values</span> <span class="k">else</span> <span class="n">properties</span><span class="o">.</span><span class="n">keys</span><span class="p">()</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">file_update_callback</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">,</span>
+                                      <span class="n">message</span><span class="o">=</span><span class="s2">&quot;updated: </span><span class="si">{properties}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">properties</span><span class="o">=</span><span class="n">log_output</span><span class="p">))</span></div>
+
+
+<div class="viewcode-block" id="PipelineFileCollection"><a class="viewcode-back" href="../../../aodncore.pipeline.html#aodncore.pipeline.files.PipelineFileCollection">[docs]</a><span class="k">class</span> <span class="nc">PipelineFileCollection</span><span class="p">(</span><span class="n">MutableSet</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;A collection which implements the MutableSet abstract base class, with pipeline file specific functionality</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="vm">__slots__</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;__s&#39;</span><span class="p">]</span>
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">PipelineFileCollection</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">__s</span> <span class="o">=</span> <span class="n">IndexedSet</span><span class="p">()</span>
+
+        <span class="k">if</span> <span class="n">data</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="p">(</span><span class="n">PipelineFile</span><span class="p">,</span> <span class="n">six</span><span class="o">.</span><span class="n">string_types</span><span class="p">)):</span>
+                <span class="n">data</span> <span class="o">=</span> <span class="p">[</span><span class="n">data</span><span class="p">]</span>
+            <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="n">data</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">f</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">__bool__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="nb">bool</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">__s</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">__contains__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">v</span><span class="p">):</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="n">PipelineFile</span><span class="p">):</span>
+            <span class="n">element</span> <span class="o">=</span> <span class="n">v</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">element</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_pipelinefile_from_src_path</span><span class="p">(</span><span class="n">v</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">element</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">__s</span>
+
+    <span class="k">def</span> <span class="nf">__getitem__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">index</span><span class="p">):</span>
+        <span class="n">result</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">__s</span><span class="p">[</span><span class="n">index</span><span class="p">]</span>
+        <span class="k">return</span> <span class="n">PipelineFileCollection</span><span class="p">(</span><span class="n">result</span><span class="p">)</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">result</span><span class="p">,</span> <span class="n">IndexedSet</span><span class="p">)</span> <span class="k">else</span> <span class="n">result</span>
+
+    <span class="k">def</span> <span class="nf">__iter__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="nb">iter</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">__s</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">__len__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">__s</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>  <span class="c1"># pragma: no cover</span>
+        <span class="k">return</span> <span class="s2">&quot;PipelineFileCollection(</span><span class="si">{repr}</span><span class="s2">)&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="nb">repr</span><span class="o">=</span><span class="nb">repr</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">__s</span><span class="p">)))</span>
+
+<div class="viewcode-block" id="PipelineFileCollection.add"><a class="viewcode-back" href="../../../aodncore.pipeline.html#aodncore.pipeline.files.PipelineFileCollection.add">[docs]</a>    <span class="k">def</span> <span class="nf">add</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pipeline_file</span><span class="p">,</span> <span class="n">deletion</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">overwrite</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+        <span class="n">validate_pipelinefile_or_string</span><span class="p">(</span><span class="n">pipeline_file</span><span class="p">)</span>
+        <span class="n">validate_bool</span><span class="p">(</span><span class="n">deletion</span><span class="p">)</span>
+        <span class="n">validate_bool</span><span class="p">(</span><span class="n">overwrite</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">pipeline_file</span><span class="p">,</span> <span class="n">PipelineFile</span><span class="p">):</span>
+            <span class="n">fileobj</span> <span class="o">=</span> <span class="n">pipeline_file</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">deletion</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isfile</span><span class="p">(</span><span class="n">pipeline_file</span><span class="p">):</span>
+                <span class="k">raise</span> <span class="n">MissingFileError</span><span class="p">(</span><span class="s2">&quot;file &#39;</span><span class="si">{src}</span><span class="s2">&#39; doesn&#39;t exist&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">src</span><span class="o">=</span><span class="n">pipeline_file</span><span class="p">))</span>
+            <span class="n">fileobj</span> <span class="o">=</span> <span class="n">PipelineFile</span><span class="p">(</span><span class="n">pipeline_file</span><span class="p">,</span> <span class="n">is_deletion</span><span class="o">=</span><span class="n">deletion</span><span class="p">)</span>
+
+        <span class="n">result</span> <span class="o">=</span> <span class="n">fileobj</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">__s</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">result</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">overwrite</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">DuplicatePipelineFileError</span><span class="p">(</span><span class="s2">&quot;</span><span class="si">{f.name}</span><span class="s2"> already in collection&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">f</span><span class="o">=</span><span class="n">fileobj</span><span class="p">))</span>
+
+        <span class="k">if</span> <span class="n">overwrite</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">__s</span><span class="o">.</span><span class="n">discard</span><span class="p">(</span><span class="n">fileobj</span><span class="p">)</span>
+            <span class="n">result</span> <span class="o">=</span> <span class="kc">True</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">__s</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">fileobj</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">result</span></div>
+
+    <span class="c1"># alias append to the add method</span>
+    <span class="n">append</span> <span class="o">=</span> <span class="n">add</span>
+
+<div class="viewcode-block" id="PipelineFileCollection.discard"><a class="viewcode-back" href="../../../aodncore.pipeline.html#aodncore.pipeline.files.PipelineFileCollection.discard">[docs]</a>    <span class="k">def</span> <span class="nf">discard</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pipeline_file</span><span class="p">):</span>
+        <span class="n">validate_pipelinefile_or_string</span><span class="p">(</span><span class="n">pipeline_file</span><span class="p">)</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">pipeline_file</span><span class="p">,</span> <span class="n">PipelineFile</span><span class="p">):</span>
+            <span class="n">fileobj</span> <span class="o">=</span> <span class="n">pipeline_file</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">fileobj</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_pipelinefile_from_src_path</span><span class="p">(</span><span class="n">pipeline_file</span><span class="p">)</span>
+
+        <span class="n">result</span> <span class="o">=</span> <span class="n">fileobj</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">__s</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">__s</span><span class="o">.</span><span class="n">discard</span><span class="p">(</span><span class="n">fileobj</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">result</span></div>
+
+<div class="viewcode-block" id="PipelineFileCollection.difference"><a class="viewcode-back" href="../../../aodncore.pipeline.html#aodncore.pipeline.files.PipelineFileCollection.difference">[docs]</a>    <span class="k">def</span> <span class="nf">difference</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">sequence</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">__s</span><span class="o">.</span><span class="n">difference</span><span class="p">(</span><span class="n">sequence</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="PipelineFileCollection.issubset"><a class="viewcode-back" href="../../../aodncore.pipeline.html#aodncore.pipeline.files.PipelineFileCollection.issubset">[docs]</a>    <span class="k">def</span> <span class="nf">issubset</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">sequence</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">__s</span><span class="o">.</span><span class="n">issubset</span><span class="p">(</span><span class="n">sequence</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="PipelineFileCollection.issuperset"><a class="viewcode-back" href="../../../aodncore.pipeline.html#aodncore.pipeline.files.PipelineFileCollection.issuperset">[docs]</a>    <span class="k">def</span> <span class="nf">issuperset</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">sequence</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">__s</span><span class="o">.</span><span class="n">issuperset</span><span class="p">(</span><span class="n">sequence</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="PipelineFileCollection.union"><a class="viewcode-back" href="../../../aodncore.pipeline.html#aodncore.pipeline.files.PipelineFileCollection.union">[docs]</a>    <span class="k">def</span> <span class="nf">union</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">sequence</span><span class="p">):</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">all</span><span class="p">(</span><span class="nb">isinstance</span><span class="p">(</span><span class="n">f</span><span class="p">,</span> <span class="n">PipelineFile</span><span class="p">)</span> <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="n">sequence</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s1">&#39;invalid sequence, all elements must be PipelineFile objects&#39;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">PipelineFileCollection</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">__s</span><span class="o">.</span><span class="n">union</span><span class="p">(</span><span class="n">sequence</span><span class="p">))</span></div>
+
+<div class="viewcode-block" id="PipelineFileCollection.update"><a class="viewcode-back" href="../../../aodncore.pipeline.html#aodncore.pipeline.files.PipelineFileCollection.update">[docs]</a>    <span class="k">def</span> <span class="nf">update</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">sequence</span><span class="p">,</span> <span class="n">overwrite</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+        <span class="n">validate_nonstring_iterable</span><span class="p">(</span><span class="n">sequence</span><span class="p">)</span>
+
+        <span class="n">results</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="n">sequence</span><span class="p">:</span>
+            <span class="n">results</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">item</span><span class="p">,</span> <span class="n">overwrite</span><span class="o">=</span><span class="n">overwrite</span><span class="p">))</span>
+        <span class="k">return</span> <span class="nb">any</span><span class="p">(</span><span class="n">results</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="PipelineFileCollection.get_pipelinefile_from_src_path"><a class="viewcode-back" href="../../../aodncore.pipeline.html#aodncore.pipeline.files.PipelineFileCollection.get_pipelinefile_from_src_path">[docs]</a>    <span class="k">def</span> <span class="nf">get_pipelinefile_from_src_path</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">src_path</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Get PipelineFile for a given src_path</span>
+
+<span class="sd">        :param src_path: source path string for which to retrieve corresponding PipelineFile</span>
+<span class="sd">        :return: matching PipelineFile or None if it is not in the collection</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">pipeline_file</span> <span class="o">=</span> <span class="nb">next</span><span class="p">((</span><span class="n">f</span> <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">__s</span> <span class="k">if</span> <span class="n">f</span><span class="o">.</span><span class="n">src_path</span> <span class="o">==</span> <span class="n">src_path</span><span class="p">),</span> <span class="kc">None</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">pipeline_file</span></div>
+
+<div class="viewcode-block" id="PipelineFileCollection.get_slices"><a class="viewcode-back" href="../../../aodncore.pipeline.html#aodncore.pipeline.files.PipelineFileCollection.get_slices">[docs]</a>    <span class="k">def</span> <span class="nf">get_slices</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">slice_size</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Slice this collection into a list of PipelineFileCollections with maximum length of slice_size</span>
+
+<span class="sd">        :param slice_size: maximum length of each slice</span>
+<span class="sd">        :return: list containing the current object sliced into new PipelineFileCollections of max length slice_size</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">slice_sequence</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">slice_size</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="PipelineFileCollection.filter_by_attribute_id"><a class="viewcode-back" href="../../../aodncore.pipeline.html#aodncore.pipeline.files.PipelineFileCollection.filter_by_attribute_id">[docs]</a>    <span class="k">def</span> <span class="nf">filter_by_attribute_id</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">attribute</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Return a new PipelineFileCollection containing only elements where the id of the given attribute *is* the</span>
+<span class="sd">        given id (i.e. refers to the same object)</span>
+<span class="sd">        </span>
+<span class="sd">        :param attribute: attribute by which to filter PipelineFiles</span>
+<span class="sd">        :param value: attribute id to filter on</span>
+<span class="sd">        :return: PipelineFileCollection containing only PipelineFiles with the given attribute matching the given value</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">collection</span> <span class="o">=</span> <span class="n">PipelineFileCollection</span><span class="p">(</span><span class="n">f</span> <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">__s</span> <span class="k">if</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">f</span><span class="p">,</span> <span class="n">attribute</span><span class="p">)</span> <span class="ow">is</span> <span class="n">value</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">collection</span></div>
+
+<div class="viewcode-block" id="PipelineFileCollection.filter_by_attribute_value"><a class="viewcode-back" href="../../../aodncore.pipeline.html#aodncore.pipeline.files.PipelineFileCollection.filter_by_attribute_value">[docs]</a>    <span class="k">def</span> <span class="nf">filter_by_attribute_value</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">attribute</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Return a new PipelineFileCollection containing only elements where the value of the given attribute is equal</span>
+<span class="sd">            to the given value</span>
+
+<span class="sd">        :param attribute: attribute by which to filter PipelineFiles</span>
+<span class="sd">        :param value: attribute value to filter on</span>
+<span class="sd">        :return: PipelineFileCollection containing only PipelineFiles with the given attribute matching the given value</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">collection</span> <span class="o">=</span> <span class="n">PipelineFileCollection</span><span class="p">(</span><span class="n">f</span> <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">__s</span> <span class="k">if</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">f</span><span class="p">,</span> <span class="n">attribute</span><span class="p">)</span> <span class="o">==</span> <span class="n">value</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">collection</span></div>
+
+<div class="viewcode-block" id="PipelineFileCollection.filter_by_attribute_regex"><a class="viewcode-back" href="../../../aodncore.pipeline.html#aodncore.pipeline.files.PipelineFileCollection.filter_by_attribute_regex">[docs]</a>    <span class="k">def</span> <span class="nf">filter_by_attribute_regex</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">attribute</span><span class="p">,</span> <span class="n">pattern</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Return a new PipelineFileCollection containing only elements where the value of the named attribute matches a</span>
+<span class="sd">            given regex pattern</span>
+
+<span class="sd">        :param attribute: attribute to filter on</span>
+<span class="sd">        :param pattern: regex pattern by which to filter PipelineFiles</span>
+<span class="sd">        :return: PipelineFileCollection containing only PipelineFiles with the attribute matching the given pattern</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">validate_regex</span><span class="p">(</span><span class="n">pattern</span><span class="p">)</span>
+        <span class="n">collection</span> <span class="o">=</span> <span class="n">PipelineFileCollection</span><span class="p">(</span>
+            <span class="n">f</span> <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">__s</span> <span class="k">if</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">f</span><span class="p">,</span> <span class="n">attribute</span><span class="p">)</span> <span class="ow">and</span> <span class="n">re</span><span class="o">.</span><span class="n">match</span><span class="p">(</span><span class="n">pattern</span><span class="p">,</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">f</span><span class="p">,</span> <span class="n">attribute</span><span class="p">)))</span>
+        <span class="k">return</span> <span class="n">collection</span></div>
+
+<div class="viewcode-block" id="PipelineFileCollection.filter_by_bool_attribute"><a class="viewcode-back" href="../../../aodncore.pipeline.html#aodncore.pipeline.files.PipelineFileCollection.filter_by_bool_attribute">[docs]</a>    <span class="k">def</span> <span class="nf">filter_by_bool_attribute</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">attribute</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Return a new PipelineFileCollection containing only elements where the named attribute resolves to True</span>
+
+<span class="sd">        :param attribute: attribute by which to filter PipelineFiles</span>
+<span class="sd">        :return: PipelineFileCollection containing only PipelineFiles with a True value for the given attribute</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">collection</span> <span class="o">=</span> <span class="n">PipelineFileCollection</span><span class="p">(</span><span class="n">f</span> <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">__s</span> <span class="k">if</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">f</span><span class="p">,</span> <span class="n">attribute</span><span class="p">))</span>
+        <span class="k">return</span> <span class="n">collection</span></div>
+
+<div class="viewcode-block" id="PipelineFileCollection.filter_by_bool_attribute_not"><a class="viewcode-back" href="../../../aodncore.pipeline.html#aodncore.pipeline.files.PipelineFileCollection.filter_by_bool_attribute_not">[docs]</a>    <span class="k">def</span> <span class="nf">filter_by_bool_attribute_not</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">attribute</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Return a new PipelineFileCollection containing only elements where the named attribute resolves to False</span>
+
+<span class="sd">        :param attribute: attribute by which to filter PipelineFiles</span>
+<span class="sd">        :return: PipelineFileCollection containing only PipelineFiles with a False value for the given attribute</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">collection</span> <span class="o">=</span> <span class="n">PipelineFileCollection</span><span class="p">(</span><span class="n">f</span> <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">__s</span> <span class="k">if</span> <span class="ow">not</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">f</span><span class="p">,</span> <span class="n">attribute</span><span class="p">))</span>
+        <span class="k">return</span> <span class="n">collection</span></div>
+
+<div class="viewcode-block" id="PipelineFileCollection.filter_by_bool_attributes_and"><a class="viewcode-back" href="../../../aodncore.pipeline.html#aodncore.pipeline.files.PipelineFileCollection.filter_by_bool_attributes_and">[docs]</a>    <span class="k">def</span> <span class="nf">filter_by_bool_attributes_and</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">attributes</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Return a new PipelineFileCollection containing only elements where *all* of the named attributes resolve to</span>
+<span class="sd">            True</span>
+
+<span class="sd">        :param attributes: attributes by which to filter PipelineFiles</span>
+<span class="sd">        :return: PipelineFileCollection containing only PipelineFiles with a True value for all of the given attributes</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">attributes_set</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="n">attributes</span><span class="p">)</span>
+
+        <span class="k">def</span> <span class="nf">all_attributes_true</span><span class="p">(</span><span class="n">pf</span><span class="p">):</span>
+            <span class="k">return</span> <span class="nb">all</span><span class="p">(</span><span class="nb">getattr</span><span class="p">(</span><span class="n">pf</span><span class="p">,</span> <span class="n">a</span><span class="p">)</span> <span class="k">for</span> <span class="n">a</span> <span class="ow">in</span> <span class="n">attributes_set</span><span class="p">)</span>
+
+        <span class="n">collection</span> <span class="o">=</span> <span class="n">PipelineFileCollection</span><span class="p">(</span><span class="n">f</span> <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">__s</span> <span class="k">if</span> <span class="n">all_attributes_true</span><span class="p">(</span><span class="n">f</span><span class="p">))</span>
+        <span class="k">return</span> <span class="n">collection</span></div>
+
+<div class="viewcode-block" id="PipelineFileCollection.filter_by_bool_attributes_and_not"><a class="viewcode-back" href="../../../aodncore.pipeline.html#aodncore.pipeline.files.PipelineFileCollection.filter_by_bool_attributes_and_not">[docs]</a>    <span class="k">def</span> <span class="nf">filter_by_bool_attributes_and_not</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">true_attributes</span><span class="p">,</span> <span class="n">false_attributes</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Return a new PipelineFileCollection containing only elements where *all* of the named true_attributes have a</span>
+<span class="sd">            value of True and all of the false_attributes have a value of False</span>
+
+<span class="sd">        :param true_attributes: attributes which *must* be True</span>
+<span class="sd">        :param false_attributes: attributes which *must* be False</span>
+<span class="sd">        :return: PipelineFileCollection containing only PipelineFiles with a True value for all attributes named in</span>
+<span class="sd">        true_attributes and a False value for all attributes named in false_attributes</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">true_attributes</span><span class="p">,</span> <span class="n">six</span><span class="o">.</span><span class="n">string_types</span><span class="p">):</span>
+            <span class="n">true_attributes</span> <span class="o">=</span> <span class="p">[</span><span class="n">true_attributes</span><span class="p">]</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">false_attributes</span><span class="p">,</span> <span class="n">six</span><span class="o">.</span><span class="n">string_types</span><span class="p">):</span>
+            <span class="n">false_attributes</span> <span class="o">=</span> <span class="p">[</span><span class="n">false_attributes</span><span class="p">]</span>
+
+        <span class="n">true_attributes_set</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="n">true_attributes</span><span class="p">)</span>
+        <span class="n">false_attributes_set</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="n">false_attributes</span><span class="p">)</span>
+
+        <span class="k">def</span> <span class="nf">check_true_attributes</span><span class="p">(</span><span class="n">pf</span><span class="p">):</span>
+            <span class="k">return</span> <span class="nb">all</span><span class="p">(</span><span class="nb">getattr</span><span class="p">(</span><span class="n">pf</span><span class="p">,</span> <span class="n">a</span><span class="p">)</span> <span class="k">for</span> <span class="n">a</span> <span class="ow">in</span> <span class="n">true_attributes_set</span><span class="p">)</span>
+
+        <span class="k">def</span> <span class="nf">check_false_attributes</span><span class="p">(</span><span class="n">pf</span><span class="p">):</span>
+            <span class="k">return</span> <span class="ow">not</span> <span class="nb">any</span><span class="p">(</span><span class="nb">getattr</span><span class="p">(</span><span class="n">pf</span><span class="p">,</span> <span class="n">a</span><span class="p">)</span> <span class="k">for</span> <span class="n">a</span> <span class="ow">in</span> <span class="n">false_attributes_set</span><span class="p">)</span>
+
+        <span class="n">collection</span> <span class="o">=</span> <span class="n">PipelineFileCollection</span><span class="p">(</span>
+            <span class="n">f</span> <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">__s</span> <span class="k">if</span> <span class="n">check_true_attributes</span><span class="p">(</span><span class="n">f</span><span class="p">)</span> <span class="ow">and</span> <span class="n">check_false_attributes</span><span class="p">(</span><span class="n">f</span><span class="p">))</span>
+        <span class="k">return</span> <span class="n">collection</span></div>
+
+<div class="viewcode-block" id="PipelineFileCollection.filter_by_bool_attributes_not"><a class="viewcode-back" href="../../../aodncore.pipeline.html#aodncore.pipeline.files.PipelineFileCollection.filter_by_bool_attributes_not">[docs]</a>    <span class="k">def</span> <span class="nf">filter_by_bool_attributes_not</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">attributes</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Return a new PipelineFileCollection containing only elements where *all* of the named attributes resolve to</span>
+<span class="sd">            False</span>
+
+<span class="sd">        :param attributes: attributes by which to filter PipelineFiles</span>
+<span class="sd">        :return: PipelineFileCollection containing only PipelineFiles with a False value for all of the given attributes</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">attributes_set</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="n">attributes</span><span class="p">)</span>
+
+        <span class="k">def</span> <span class="nf">no_attributes_true</span><span class="p">(</span><span class="n">pf</span><span class="p">):</span>
+            <span class="k">return</span> <span class="ow">not</span> <span class="nb">any</span><span class="p">(</span><span class="nb">getattr</span><span class="p">(</span><span class="n">pf</span><span class="p">,</span> <span class="n">a</span><span class="p">)</span> <span class="k">for</span> <span class="n">a</span> <span class="ow">in</span> <span class="n">attributes_set</span><span class="p">)</span>
+
+        <span class="n">collection</span> <span class="o">=</span> <span class="n">PipelineFileCollection</span><span class="p">(</span><span class="n">f</span> <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">__s</span> <span class="k">if</span> <span class="n">no_attributes_true</span><span class="p">(</span><span class="n">f</span><span class="p">))</span>
+        <span class="k">return</span> <span class="n">collection</span></div>
+
+<div class="viewcode-block" id="PipelineFileCollection.filter_by_bool_attributes_or"><a class="viewcode-back" href="../../../aodncore.pipeline.html#aodncore.pipeline.files.PipelineFileCollection.filter_by_bool_attributes_or">[docs]</a>    <span class="k">def</span> <span class="nf">filter_by_bool_attributes_or</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">attributes</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Return a new PipelineFileCollection containing only elements where *any* of the named attributes resolve to</span>
+<span class="sd">            True</span>
+
+<span class="sd">        :param attributes: attributes by which to filter PipelineFiles</span>
+<span class="sd">        :return: PipelineFileCollection containing only PipelineFiles with a True value for any of the given attributes</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">attributes_set</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="n">attributes</span><span class="p">)</span>
+
+        <span class="k">def</span> <span class="nf">any_attributes_true</span><span class="p">(</span><span class="n">pf</span><span class="p">):</span>
+            <span class="k">return</span> <span class="nb">any</span><span class="p">(</span><span class="nb">getattr</span><span class="p">(</span><span class="n">pf</span><span class="p">,</span> <span class="n">a</span><span class="p">)</span> <span class="k">for</span> <span class="n">a</span> <span class="ow">in</span> <span class="n">attributes_set</span><span class="p">)</span>
+
+        <span class="n">collection</span> <span class="o">=</span> <span class="n">PipelineFileCollection</span><span class="p">(</span><span class="n">f</span> <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">__s</span> <span class="k">if</span> <span class="n">any_attributes_true</span><span class="p">(</span><span class="n">f</span><span class="p">))</span>
+        <span class="k">return</span> <span class="n">collection</span></div>
+
+<div class="viewcode-block" id="PipelineFileCollection.get_table_data"><a class="viewcode-back" href="../../../aodncore.pipeline.html#aodncore.pipeline.files.PipelineFileCollection.get_table_data">[docs]</a>    <span class="k">def</span> <span class="nf">get_table_data</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Return PipelineFile members in a simple tabular data format suitable for rendering into formatted tables</span>
+
+<span class="sd">        :return: a tuple with the first element being a list of columns, and the second being a 2D list of the data</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">data</span> <span class="o">=</span> <span class="p">[</span><span class="n">OrderedDict</span><span class="p">(</span><span class="n">e</span><span class="p">)</span> <span class="k">for</span> <span class="n">e</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">__s</span><span class="p">]</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">columns</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">keys</span><span class="p">()</span>
+        <span class="k">except</span> <span class="ne">IndexError</span><span class="p">:</span>
+            <span class="n">columns</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">return</span> <span class="n">columns</span><span class="p">,</span> <span class="n">data</span></div>
+
+<div class="viewcode-block" id="PipelineFileCollection.set_check_types"><a class="viewcode-back" href="../../../aodncore.pipeline.html#aodncore.pipeline.files.PipelineFileCollection.set_check_types">[docs]</a>    <span class="k">def</span> <span class="nf">set_check_types</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">check_params</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">check_params</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">check_params</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="n">validate_dict</span><span class="p">(</span><span class="n">check_params</span><span class="p">)</span>
+        <span class="n">checks</span> <span class="o">=</span> <span class="n">check_params</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;checks&#39;</span><span class="p">,</span> <span class="p">())</span>
+        <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">__s</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">f</span><span class="o">.</span><span class="n">is_deletion</span><span class="p">:</span>
+                <span class="n">f</span><span class="o">.</span><span class="n">check_type</span> <span class="o">=</span> <span class="n">PipelineFileCheckType</span><span class="o">.</span><span class="n">NO_ACTION</span>
+            <span class="k">elif</span> <span class="n">checks</span> <span class="ow">and</span> <span class="n">f</span><span class="o">.</span><span class="n">file_type</span> <span class="ow">is</span> <span class="n">FileType</span><span class="o">.</span><span class="n">NETCDF</span><span class="p">:</span>
+                <span class="n">f</span><span class="o">.</span><span class="n">check_type</span> <span class="o">=</span> <span class="n">PipelineFileCheckType</span><span class="o">.</span><span class="n">NC_COMPLIANCE_CHECK</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">f</span><span class="o">.</span><span class="n">check_type</span> <span class="o">=</span> <span class="n">PipelineFileCheckType</span><span class="o">.</span><span class="n">FORMAT_CHECK</span></div>
+
+<div class="viewcode-block" id="PipelineFileCollection.set_archive_paths"><a class="viewcode-back" href="../../../aodncore.pipeline.html#aodncore.pipeline.files.PipelineFileCollection.set_archive_paths">[docs]</a>    <span class="k">def</span> <span class="nf">set_archive_paths</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">archive_path_function</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Set archive_path attributes for each file in the collection</span>
+
+<span class="sd">        :param archive_path_function: function used to determine archive destination path</span>
+<span class="sd">        :return: None</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">validate_callable</span><span class="p">(</span><span class="n">archive_path_function</span><span class="p">)</span>
+
+        <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">__s</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">f</span><span class="o">.</span><span class="n">archive_path</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">f</span><span class="o">.</span><span class="n">should_archive</span><span class="p">:</span>
+                <span class="n">f</span><span class="o">.</span><span class="n">archive_path</span> <span class="o">=</span> <span class="n">archive_path_function</span><span class="p">(</span><span class="n">f</span><span class="o">.</span><span class="n">src_path</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="PipelineFileCollection.set_dest_paths"><a class="viewcode-back" href="../../../aodncore.pipeline.html#aodncore.pipeline.files.PipelineFileCollection.set_dest_paths">[docs]</a>    <span class="k">def</span> <span class="nf">set_dest_paths</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dest_path_function</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Set dest_path attributes for each file in the collection</span>
+
+<span class="sd">        :param dest_path_function: function used to determine publishing destination path</span>
+<span class="sd">        :return: None</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">validate_callable</span><span class="p">(</span><span class="n">dest_path_function</span><span class="p">)</span>
+
+        <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">__s</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">f</span><span class="o">.</span><span class="n">dest_path</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">and</span> <span class="nb">any</span><span class="p">((</span><span class="n">f</span><span class="o">.</span><span class="n">should_store</span><span class="p">,</span> <span class="n">f</span><span class="o">.</span><span class="n">should_harvest</span><span class="p">)):</span>
+                <span class="n">f</span><span class="o">.</span><span class="n">dest_path</span> <span class="o">=</span> <span class="n">dest_path_function</span><span class="p">(</span><span class="n">f</span><span class="o">.</span><span class="n">src_path</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="PipelineFileCollection.set_bool_attribute"><a class="viewcode-back" href="../../../aodncore.pipeline.html#aodncore.pipeline.files.PipelineFileCollection.set_bool_attribute">[docs]</a>    <span class="k">def</span> <span class="nf">set_bool_attribute</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">attribute</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Set a boolean attribute for each file in the collection</span>
+
+<span class="sd">        :param attribute: attribute to set</span>
+<span class="sd">        :param value: value to set the attribute</span>
+<span class="sd">        :return: None</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">validate_bool</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
+
+        <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">__s</span><span class="p">:</span>
+            <span class="nb">setattr</span><span class="p">(</span><span class="n">f</span><span class="p">,</span> <span class="n">attribute</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="PipelineFileCollection.set_file_update_callback"><a class="viewcode-back" href="../../../aodncore.pipeline.html#aodncore.pipeline.files.PipelineFileCollection.set_file_update_callback">[docs]</a>    <span class="k">def</span> <span class="nf">set_file_update_callback</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">file_update_callback</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Set a callback function in each PipelineFile in this collection</span>
+
+<span class="sd">        :param file_update_callback: callback (function)</span>
+<span class="sd">        :return:</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">__s</span><span class="p">:</span>
+            <span class="n">f</span><span class="o">.</span><span class="n">file_update_callback</span> <span class="o">=</span> <span class="n">file_update_callback</span></div>
+
+<div class="viewcode-block" id="PipelineFileCollection.set_default_publish_types"><a class="viewcode-back" href="../../../aodncore.pipeline.html#aodncore.pipeline.files.PipelineFileCollection.set_default_publish_types">[docs]</a>    <span class="k">def</span> <span class="nf">set_default_publish_types</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">include_regexes</span><span class="p">,</span> <span class="n">exclude_regexes</span><span class="p">,</span> <span class="n">addition_type</span><span class="p">,</span> <span class="n">deletion_type</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+
+<span class="sd">        :param include_regexes:</span>
+<span class="sd">        :param exclude_regexes:</span>
+<span class="sd">        :param addition_type:</span>
+<span class="sd">        :param deletion_type:</span>
+<span class="sd">        :return:</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">__s</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">matches_regexes</span><span class="p">(</span><span class="n">f</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="n">include_regexes</span><span class="p">,</span> <span class="n">exclude_regexes</span><span class="p">):</span>
+                <span class="n">f</span><span class="o">.</span><span class="n">publish_type</span> <span class="o">=</span> <span class="n">deletion_type</span> <span class="k">if</span> <span class="n">f</span><span class="o">.</span><span class="n">is_deletion</span> <span class="k">else</span> <span class="n">addition_type</span></div></div>
+
+
+<span class="n">validate_pipelinefilecollection</span> <span class="o">=</span> <span class="n">validate_type</span><span class="p">(</span><span class="n">PipelineFileCollection</span><span class="p">)</span>
+<span class="n">validate_pipelinefile_or_string</span> <span class="o">=</span> <span class="n">validate_type</span><span class="p">((</span><span class="n">PipelineFile</span><span class="p">,</span> <span class="n">six</span><span class="o">.</span><span class="n">string_types</span><span class="p">))</span>
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper"><div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../../../index.html">Documentation overview</a><ul>
+  <li><a href="../../index.html">Module code</a><ul>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="../../../search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2018, AODN.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.6.7</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.10</a>
+      
+    </div>
+
+    
+
+    
+  </body>
+</html>

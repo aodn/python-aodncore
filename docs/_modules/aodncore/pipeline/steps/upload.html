@@ -1,0 +1,425 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>aodncore.pipeline.steps.upload &#8212; aodncore 0.1 documentation</title>
+    <link rel="stylesheet" href="../../../../_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="../../../../_static/pygments.css" type="text/css" />
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../../../',
+        VERSION:     '0.1',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true,
+        SOURCELINK_SUFFIX: '.txt'
+      };
+    </script>
+    <script type="text/javascript" src="../../../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../../../_static/doctools.js"></script>
+    <link rel="index" title="Index" href="../../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../../search.html" />
+   
+  <link rel="stylesheet" href="../../../../_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head>
+  <body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <h1>Source code for aodncore.pipeline.steps.upload</h1><div class="highlight"><pre>
+<span></span><span class="kn">import</span> <span class="nn">abc</span>
+<span class="kn">import</span> <span class="nn">errno</span>
+<span class="kn">import</span> <span class="nn">os</span>
+
+<span class="kn">import</span> <span class="nn">boto3</span>
+<span class="kn">from</span> <span class="nn">paramiko</span> <span class="k">import</span> <span class="n">SSHClient</span><span class="p">,</span> <span class="n">AutoAddPolicy</span>
+<span class="kn">from</span> <span class="nn">six.moves.urllib.parse</span> <span class="k">import</span> <span class="n">urlparse</span>
+
+<span class="kn">from</span> <span class="nn">.basestep</span> <span class="k">import</span> <span class="n">AbstractCollectionStepRunner</span>
+<span class="kn">from</span> <span class="nn">..exceptions</span> <span class="k">import</span> <span class="n">FileDeleteFailedError</span><span class="p">,</span> <span class="n">FileUploadFailedError</span><span class="p">,</span> <span class="n">InvalidUploadUrlError</span>
+<span class="kn">from</span> <span class="nn">..files</span> <span class="k">import</span> <span class="n">validate_pipelinefilecollection</span>
+<span class="kn">from</span> <span class="nn">...util</span> <span class="k">import</span> <span class="n">format_exception</span><span class="p">,</span> <span class="n">mkdir_p</span><span class="p">,</span> <span class="n">rm_f</span><span class="p">,</span> <span class="n">safe_copy_file</span>
+
+<span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="s1">&#39;get_upload_runner&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;FileUploadRunner&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;S3UploadRunner&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;SftpUploadRunner&#39;</span>
+<span class="p">]</span>
+
+
+<div class="viewcode-block" id="get_upload_runner"><a class="viewcode-back" href="../../../../aodncore.pipeline.steps.html#aodncore.pipeline.steps.upload.get_upload_runner">[docs]</a><span class="k">def</span> <span class="nf">get_upload_runner</span><span class="p">(</span><span class="n">upload_base_url</span><span class="p">,</span> <span class="n">config</span><span class="p">,</span> <span class="n">logger</span><span class="p">,</span> <span class="n">archive_mode</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Factory function to return appropriate uploader class based on URL scheme</span>
+
+<span class="sd">    :param upload_base_url: URL base</span>
+<span class="sd">    :param config: LazyConfigManager instance</span>
+<span class="sd">    :param logger: Logger instance</span>
+<span class="sd">    :param archive_mode: flag to indicate archive</span>
+<span class="sd">    :return: BaseUploadRunner sub-class</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">url</span> <span class="o">=</span> <span class="n">urlparse</span><span class="p">(</span><span class="n">upload_base_url</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">url</span><span class="o">.</span><span class="n">scheme</span> <span class="o">==</span> <span class="s1">&#39;file&#39;</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">FileUploadRunner</span><span class="p">(</span><span class="n">url</span><span class="o">.</span><span class="n">path</span><span class="p">,</span> <span class="n">config</span><span class="p">,</span> <span class="n">logger</span><span class="p">,</span> <span class="n">archive_mode</span><span class="p">)</span>
+    <span class="k">elif</span> <span class="n">url</span><span class="o">.</span><span class="n">scheme</span> <span class="o">==</span> <span class="s1">&#39;s3&#39;</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">S3UploadRunner</span><span class="p">(</span><span class="n">url</span><span class="o">.</span><span class="n">netloc</span><span class="p">,</span> <span class="n">url</span><span class="o">.</span><span class="n">path</span><span class="p">,</span> <span class="n">config</span><span class="p">,</span> <span class="n">logger</span><span class="p">,</span> <span class="n">archive_mode</span><span class="p">)</span>
+    <span class="k">elif</span> <span class="n">url</span><span class="o">.</span><span class="n">scheme</span> <span class="o">==</span> <span class="s1">&#39;sftp&#39;</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">SftpUploadRunner</span><span class="p">(</span><span class="n">url</span><span class="o">.</span><span class="n">netloc</span><span class="p">,</span> <span class="n">url</span><span class="o">.</span><span class="n">path</span><span class="p">,</span> <span class="n">config</span><span class="p">,</span> <span class="n">logger</span><span class="p">,</span> <span class="n">archive_mode</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="n">InvalidUploadUrlError</span><span class="p">(</span><span class="s2">&quot;invalid URL scheme &#39;</span><span class="si">{scheme}</span><span class="s2">&#39;&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">scheme</span><span class="o">=</span><span class="n">url</span><span class="o">.</span><span class="n">scheme</span><span class="p">))</span></div>
+
+
+<span class="k">class</span> <span class="nc">BaseUploadRunner</span><span class="p">(</span><span class="n">AbstractCollectionStepRunner</span><span class="p">):</span>
+    <span class="n">__metaclass__</span> <span class="o">=</span> <span class="n">abc</span><span class="o">.</span><span class="n">ABCMeta</span>
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">config</span><span class="p">,</span> <span class="n">logger</span><span class="p">,</span> <span class="n">archive_mode</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">BaseUploadRunner</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">config</span><span class="p">,</span> <span class="n">logger</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">prefix</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">archive_mode</span> <span class="o">=</span> <span class="n">archive_mode</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">is_stored_attr</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;PipelineFile attribute to flag completion of upload operation</span>
+
+<span class="sd">        :return: bool</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="s1">&#39;is_archived&#39;</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">archive_mode</span> <span class="k">else</span> <span class="s1">&#39;is_stored&#39;</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">pending_addition_attr</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="s1">&#39;pending_archive&#39;</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">archive_mode</span> <span class="k">else</span> <span class="s1">&#39;pending_store_addition&#39;</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">dest_path_attr</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;PipelineFile attribute containing the destination path</span>
+
+<span class="sd">        :return: bool</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="s1">&#39;archive_path&#39;</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">archive_mode</span> <span class="k">else</span> <span class="s1">&#39;dest_path&#39;</span>
+
+    <span class="nd">@abc</span><span class="o">.</span><span class="n">abstractmethod</span>  <span class="c1"># pragma: no cover</span>
+    <span class="k">def</span> <span class="nf">_delete_file</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pipeline_file</span><span class="p">):</span>
+        <span class="k">pass</span>
+
+    <span class="nd">@abc</span><span class="o">.</span><span class="n">abstractmethod</span>  <span class="c1"># pragma: no cover</span>
+    <span class="k">def</span> <span class="nf">_post_run_hook</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">pass</span>
+
+    <span class="nd">@abc</span><span class="o">.</span><span class="n">abstractmethod</span>  <span class="c1"># pragma: no cover</span>
+    <span class="k">def</span> <span class="nf">_pre_run_hook</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">pass</span>
+
+    <span class="nd">@abc</span><span class="o">.</span><span class="n">abstractmethod</span>  <span class="c1"># pragma: no cover</span>
+    <span class="k">def</span> <span class="nf">_upload_file</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pipeline_file</span><span class="p">):</span>
+        <span class="k">pass</span>
+
+    <span class="nd">@abc</span><span class="o">.</span><span class="n">abstractmethod</span>  <span class="c1"># pragma: no cover</span>
+    <span class="k">def</span> <span class="nf">_get_absolute_dest_uri</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pipeline_file</span><span class="p">):</span>
+        <span class="k">pass</span>
+
+    <span class="nd">@abc</span><span class="o">.</span><span class="n">abstractmethod</span>  <span class="c1"># pragma: no cover</span>
+    <span class="k">def</span> <span class="nf">set_is_overwrite</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pipeline_files</span><span class="p">):</span>
+        <span class="k">pass</span>
+
+    <span class="k">def</span> <span class="nf">_get_absolute_dest_path</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pipeline_file</span><span class="p">):</span>
+        <span class="n">rel_path</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">pipeline_file</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">dest_path_attr</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">prefix</span><span class="p">,</span> <span class="n">rel_path</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">run</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pipeline_files</span><span class="p">):</span>
+        <span class="n">validate_pipelinefilecollection</span><span class="p">(</span><span class="n">pipeline_files</span><span class="p">)</span>
+
+        <span class="n">additions</span> <span class="o">=</span> <span class="n">pipeline_files</span><span class="o">.</span><span class="n">filter_by_bool_attribute</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">pending_addition_attr</span><span class="p">)</span>
+        <span class="n">deletions</span> <span class="o">=</span> <span class="n">pipeline_files</span><span class="o">.</span><span class="n">filter_by_bool_attribute</span><span class="p">(</span><span class="s1">&#39;pending_store_deletion&#39;</span><span class="p">)</span>
+        <span class="n">undo_deletions</span> <span class="o">=</span> <span class="n">pipeline_files</span><span class="o">.</span><span class="n">filter_by_bool_attribute</span><span class="p">(</span><span class="s1">&#39;pending_undo&#39;</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_pre_run_hook</span><span class="p">()</span>
+
+        <span class="k">for</span> <span class="n">pipeline_file</span> <span class="ow">in</span> <span class="n">additions</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span>
+                <span class="s2">&quot;uploading &#39;</span><span class="si">{source_path}</span><span class="s2">&#39; to &#39;</span><span class="si">{uri}</span><span class="s2">&#39;&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">source_path</span><span class="o">=</span><span class="n">pipeline_file</span><span class="o">.</span><span class="n">src_path</span><span class="p">,</span>
+                                                              <span class="n">uri</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_get_absolute_dest_uri</span><span class="p">(</span><span class="n">pipeline_file</span><span class="p">)))</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_upload_file</span><span class="p">(</span><span class="n">pipeline_file</span><span class="p">)</span>
+            <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="n">FileUploadFailedError</span><span class="p">(</span>
+                    <span class="s2">&quot;</span><span class="si">{e}</span><span class="s2">: &#39;</span><span class="si">{dest_path}</span><span class="s2">&#39;&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">e</span><span class="o">=</span><span class="n">format_exception</span><span class="p">(</span><span class="n">e</span><span class="p">),</span>
+                                                <span class="n">dest_path</span><span class="o">=</span><span class="nb">getattr</span><span class="p">(</span><span class="n">pipeline_file</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">dest_path_attr</span><span class="p">)))</span>
+            <span class="nb">setattr</span><span class="p">(</span><span class="n">pipeline_file</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">is_stored_attr</span><span class="p">,</span> <span class="kc">True</span><span class="p">)</span>
+
+        <span class="k">for</span> <span class="n">pipeline_file</span> <span class="ow">in</span> <span class="n">deletions</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;deleting &#39;</span><span class="si">{uri}</span><span class="s2">&#39;&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">uri</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_get_absolute_dest_path</span><span class="p">(</span><span class="n">pipeline_file</span><span class="p">)))</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_delete_file</span><span class="p">(</span><span class="n">pipeline_file</span><span class="p">)</span>
+            <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="n">FileDeleteFailedError</span><span class="p">(</span>
+                    <span class="s2">&quot;</span><span class="si">{e}</span><span class="s2">: &#39;</span><span class="si">{dest_path}</span><span class="s2">&#39;&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">e</span><span class="o">=</span><span class="n">format_exception</span><span class="p">(</span><span class="n">e</span><span class="p">),</span>
+                                                <span class="n">dest_path</span><span class="o">=</span><span class="nb">getattr</span><span class="p">(</span><span class="n">pipeline_file</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">dest_path_attr</span><span class="p">)))</span>
+            <span class="n">pipeline_file</span><span class="o">.</span><span class="n">is_stored</span> <span class="o">=</span> <span class="kc">True</span>
+
+        <span class="k">for</span> <span class="n">pipeline_file</span> <span class="ow">in</span> <span class="n">undo_deletions</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;undoing upload &#39;</span><span class="si">{uri}</span><span class="s2">&#39;&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">uri</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_get_absolute_dest_uri</span><span class="p">(</span><span class="n">pipeline_file</span><span class="p">)))</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_delete_file</span><span class="p">(</span><span class="n">pipeline_file</span><span class="p">)</span>
+            <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="n">FileDeleteFailedError</span><span class="p">(</span>
+                    <span class="s2">&quot;</span><span class="si">{e}</span><span class="s2">: &#39;</span><span class="si">{dest_path}</span><span class="s2">&#39;&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">e</span><span class="o">=</span><span class="n">format_exception</span><span class="p">(</span><span class="n">e</span><span class="p">),</span>
+                                                <span class="n">dest_path</span><span class="o">=</span><span class="nb">getattr</span><span class="p">(</span><span class="n">pipeline_file</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">dest_path_attr</span><span class="p">)))</span>
+            <span class="n">pipeline_file</span><span class="o">.</span><span class="n">is_upload_undone</span> <span class="o">=</span> <span class="kc">True</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_post_run_hook</span><span class="p">()</span>
+
+
+<div class="viewcode-block" id="FileUploadRunner"><a class="viewcode-back" href="../../../../aodncore.pipeline.steps.html#aodncore.pipeline.steps.upload.FileUploadRunner">[docs]</a><span class="k">class</span> <span class="nc">FileUploadRunner</span><span class="p">(</span><span class="n">BaseUploadRunner</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;UploadRunner to &quot;upload&quot; a file to a local directory</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">prefix</span><span class="p">,</span> <span class="n">config</span><span class="p">,</span> <span class="n">logger</span><span class="p">,</span> <span class="n">archive_mode</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">FileUploadRunner</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">config</span><span class="p">,</span> <span class="n">logger</span><span class="p">,</span> <span class="n">archive_mode</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">prefix</span> <span class="o">=</span> <span class="n">prefix</span>
+
+    <span class="k">def</span> <span class="nf">_delete_file</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pipeline_file</span><span class="p">):</span>
+        <span class="n">abs_path</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_absolute_dest_path</span><span class="p">(</span><span class="n">pipeline_file</span><span class="p">)</span>
+        <span class="n">rm_f</span><span class="p">(</span><span class="n">abs_path</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_get_absolute_dest_uri</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pipeline_file</span><span class="p">):</span>
+        <span class="k">return</span> <span class="s2">&quot;file://</span><span class="si">{path}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">path</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_get_absolute_dest_path</span><span class="p">(</span><span class="n">pipeline_file</span><span class="p">))</span>
+
+    <span class="k">def</span> <span class="nf">_post_run_hook</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span>
+
+    <span class="k">def</span> <span class="nf">_pre_run_hook</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span>
+
+    <span class="k">def</span> <span class="nf">_upload_file</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pipeline_file</span><span class="p">):</span>
+        <span class="n">abs_path</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_absolute_dest_path</span><span class="p">(</span><span class="n">pipeline_file</span><span class="p">)</span>
+        <span class="n">mkdir_p</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="n">abs_path</span><span class="p">))</span>
+        <span class="n">safe_copy_file</span><span class="p">(</span><span class="n">pipeline_file</span><span class="o">.</span><span class="n">src_path</span><span class="p">,</span> <span class="n">abs_path</span><span class="p">,</span> <span class="n">overwrite</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+<div class="viewcode-block" id="FileUploadRunner.set_is_overwrite"><a class="viewcode-back" href="../../../../aodncore.pipeline.steps.html#aodncore.pipeline.steps.upload.FileUploadRunner.set_is_overwrite">[docs]</a>    <span class="k">def</span> <span class="nf">set_is_overwrite</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pipeline_files</span><span class="p">):</span>
+        <span class="n">validate_pipelinefilecollection</span><span class="p">(</span><span class="n">pipeline_files</span><span class="p">)</span>
+
+        <span class="k">for</span> <span class="n">pipeline_file</span> <span class="ow">in</span> <span class="n">pipeline_files</span><span class="p">:</span>
+            <span class="n">abs_path</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_absolute_dest_path</span><span class="p">(</span><span class="n">pipeline_file</span><span class="p">)</span>
+            <span class="n">pipeline_file</span><span class="o">.</span><span class="n">is_overwrite</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">abs_path</span><span class="p">)</span></div></div>
+
+
+<div class="viewcode-block" id="S3UploadRunner"><a class="viewcode-back" href="../../../../aodncore.pipeline.steps.html#aodncore.pipeline.steps.upload.S3UploadRunner">[docs]</a><span class="k">class</span> <span class="nc">S3UploadRunner</span><span class="p">(</span><span class="n">BaseUploadRunner</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;UploadRunner to upload files to an S3 bucket</span>
+
+<span class="sd">    Note: this does not and should not attempt to support any authentication code. Multiple mechanisms for loading</span>
+<span class="sd">            credentials are far more appropriately handled directly by the boto3, and it is expected that the</span>
+<span class="sd">            credentials are supplied using one of these mechanisms by the environment (e.g. deployed from configuration</span>
+<span class="sd">            management, set as environment variables etc.)</span>
+
+<span class="sd">            Refer: http://boto3.readthedocs.io/en/latest/guide/configuration.html</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">bucket</span><span class="p">,</span> <span class="n">prefix</span><span class="p">,</span> <span class="n">config</span><span class="p">,</span> <span class="n">logger</span><span class="p">,</span> <span class="n">archive_mode</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">S3UploadRunner</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">config</span><span class="p">,</span> <span class="n">logger</span><span class="p">,</span> <span class="n">archive_mode</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">bucket</span> <span class="o">=</span> <span class="n">bucket</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">prefix</span> <span class="o">=</span> <span class="n">prefix</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">s3_client</span> <span class="o">=</span> <span class="n">boto3</span><span class="o">.</span><span class="n">client</span><span class="p">(</span><span class="s1">&#39;s3&#39;</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_delete_file</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pipeline_file</span><span class="p">):</span>
+        <span class="n">abs_path</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_absolute_dest_path</span><span class="p">(</span><span class="n">pipeline_file</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">s3_client</span><span class="o">.</span><span class="n">delete_object</span><span class="p">(</span><span class="n">Bucket</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">bucket</span><span class="p">,</span> <span class="n">Key</span><span class="o">=</span><span class="n">abs_path</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_get_absolute_dest_uri</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pipeline_file</span><span class="p">):</span>
+        <span class="k">return</span> <span class="s2">&quot;s3://</span><span class="si">{bucket}</span><span class="s2">/</span><span class="si">{path}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">bucket</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">bucket</span><span class="p">,</span> <span class="n">path</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_get_absolute_dest_path</span><span class="p">(</span><span class="n">pipeline_file</span><span class="p">))</span>
+
+    <span class="k">def</span> <span class="nf">_post_run_hook</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span>
+
+    <span class="k">def</span> <span class="nf">_pre_run_hook</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_validate_bucket</span><span class="p">()</span>
+
+    <span class="k">def</span> <span class="nf">_upload_file</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pipeline_file</span><span class="p">):</span>
+        <span class="n">abs_path</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_absolute_dest_path</span><span class="p">(</span><span class="n">pipeline_file</span><span class="p">)</span>
+
+        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">pipeline_file</span><span class="o">.</span><span class="n">src_path</span><span class="p">,</span> <span class="s1">&#39;rb&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">s3_client</span><span class="o">.</span><span class="n">upload_fileobj</span><span class="p">(</span><span class="n">f</span><span class="p">,</span> <span class="n">Bucket</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">bucket</span><span class="p">,</span> <span class="n">Key</span><span class="o">=</span><span class="n">abs_path</span><span class="p">,</span>
+                                          <span class="n">ExtraArgs</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;ContentType&#39;</span><span class="p">:</span> <span class="n">pipeline_file</span><span class="o">.</span><span class="n">mime_type</span><span class="p">})</span>
+
+    <span class="k">def</span> <span class="nf">_validate_bucket</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">s3_client</span><span class="o">.</span><span class="n">head_bucket</span><span class="p">(</span><span class="n">Bucket</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">bucket</span><span class="p">)</span>
+        <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">InvalidUploadUrlError</span><span class="p">(</span>
+                <span class="s2">&quot;unable to access S3 bucket &#39;</span><span class="si">{0}</span><span class="s2">&#39;: </span><span class="si">{1}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">bucket</span><span class="p">,</span> <span class="n">format_exception</span><span class="p">(</span><span class="n">e</span><span class="p">)))</span>
+
+<div class="viewcode-block" id="S3UploadRunner.set_is_overwrite"><a class="viewcode-back" href="../../../../aodncore.pipeline.steps.html#aodncore.pipeline.steps.upload.S3UploadRunner.set_is_overwrite">[docs]</a>    <span class="k">def</span> <span class="nf">set_is_overwrite</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pipeline_files</span><span class="p">):</span>
+        <span class="n">validate_pipelinefilecollection</span><span class="p">(</span><span class="n">pipeline_files</span><span class="p">)</span>
+
+        <span class="k">for</span> <span class="n">pipeline_file</span> <span class="ow">in</span> <span class="n">pipeline_files</span><span class="p">:</span>
+            <span class="n">abs_path</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_absolute_dest_path</span><span class="p">(</span><span class="n">pipeline_file</span><span class="p">)</span>
+            <span class="n">response</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">s3_client</span><span class="o">.</span><span class="n">list_objects_v2</span><span class="p">(</span><span class="n">Bucket</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">bucket</span><span class="p">,</span> <span class="n">Prefix</span><span class="o">=</span><span class="n">abs_path</span><span class="p">)</span>
+            <span class="n">pipeline_file</span><span class="o">.</span><span class="n">is_overwrite</span> <span class="o">=</span> <span class="nb">bool</span><span class="p">(</span><span class="n">k</span> <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="n">response</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;Contents&#39;</span><span class="p">,</span> <span class="p">[])</span> <span class="k">if</span> <span class="n">k</span><span class="p">[</span><span class="s1">&#39;Key&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="n">abs_path</span><span class="p">)</span></div></div>
+
+
+<span class="k">def</span> <span class="nf">sftp_path_exists</span><span class="p">(</span><span class="n">sftpclient</span><span class="p">,</span> <span class="n">path</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Test whether a path exists on a remote SFTP server</span>
+
+<span class="sd">    :param sftpclient: SFTPClient object</span>
+<span class="sd">    :param path: path to test for existence</span>
+<span class="sd">    :return: True if the path exists, False if not</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">sftpclient</span><span class="o">.</span><span class="n">stat</span><span class="p">(</span><span class="n">path</span><span class="p">)</span>
+    <span class="k">except</span> <span class="ne">IOError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">e</span><span class="o">.</span><span class="n">errno</span> <span class="o">==</span> <span class="n">errno</span><span class="o">.</span><span class="n">ENOENT</span><span class="p">:</span>
+            <span class="k">return</span> <span class="kc">False</span>
+        <span class="k">raise</span>
+    <span class="k">return</span> <span class="kc">True</span>
+
+
+<span class="k">def</span> <span class="nf">sftp_makedirs</span><span class="p">(</span><span class="n">sftpclient</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="mo">0o755</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Recursively create a directory path on a remote SFTP server</span>
+<span class="sd">        Based on os.makedirs, with local calls replaced with SFTPClient equivalents calls.</span>
+
+<span class="sd">    :param sftpclient: SFTPClient object</span>
+<span class="sd">    :param name: directory path to create</span>
+<span class="sd">    :param mode: permissions for the newly created directory</span>
+<span class="sd">    :return: None</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">head</span><span class="p">,</span> <span class="n">tail</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="n">name</span><span class="p">)</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">tail</span><span class="p">:</span>
+        <span class="n">head</span><span class="p">,</span> <span class="n">tail</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="n">head</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">head</span> <span class="ow">and</span> <span class="n">tail</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">sftp_path_exists</span><span class="p">(</span><span class="n">sftpclient</span><span class="p">,</span> <span class="n">head</span><span class="p">):</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">sftp_makedirs</span><span class="p">(</span><span class="n">sftpclient</span><span class="p">,</span> <span class="n">head</span><span class="p">,</span> <span class="n">mode</span><span class="p">)</span>
+        <span class="k">except</span> <span class="ne">IOError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>  <span class="c1"># pragma: no cover</span>
+            <span class="k">if</span> <span class="n">e</span><span class="o">.</span><span class="n">errno</span> <span class="o">!=</span> <span class="n">errno</span><span class="o">.</span><span class="n">EEXIST</span><span class="p">:</span>
+                <span class="k">raise</span>
+        <span class="k">if</span> <span class="n">tail</span> <span class="o">==</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">curdir</span><span class="p">:</span>
+            <span class="k">return</span>
+
+    <span class="n">sftpclient</span><span class="o">.</span><span class="n">mkdir</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">mode</span><span class="p">)</span>
+
+
+<span class="k">def</span> <span class="nf">sftp_mkdir_p</span><span class="p">(</span><span class="n">sftpclient</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="mo">0o755</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Replicate &#39;mkdir -p&#39; shell command behaviour by wrapping sftp_makedirs and suppressing exceptions where the</span>
+<span class="sd">        directory already exists.</span>
+
+<span class="sd">    :param sftpclient: SFTPClient object</span>
+<span class="sd">    :param name: directory path to create</span>
+<span class="sd">    :param mode: permissions for the newly created directory</span>
+<span class="sd">    :return: None</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">sftp_makedirs</span><span class="p">(</span><span class="n">sftpclient</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">mode</span><span class="p">)</span>
+    <span class="k">except</span> <span class="ne">IOError</span><span class="p">:</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">sftp_path_exists</span><span class="p">(</span><span class="n">sftpclient</span><span class="p">,</span> <span class="n">name</span><span class="p">):</span>
+            <span class="k">raise</span>
+
+
+<div class="viewcode-block" id="SftpUploadRunner"><a class="viewcode-back" href="../../../../aodncore.pipeline.steps.html#aodncore.pipeline.steps.upload.SftpUploadRunner">[docs]</a><span class="k">class</span> <span class="nc">SftpUploadRunner</span><span class="p">(</span><span class="n">BaseUploadRunner</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;UploadRunner to upload files to an SFTP server</span>
+
+<span class="sd">    Note: similar to the S3 upload runner, this does not implement any authentication code, as this is better handled by</span>
+<span class="sd">            the environment in the form of public key authentication</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">server</span><span class="p">,</span> <span class="n">prefix</span><span class="p">,</span> <span class="n">config</span><span class="p">,</span> <span class="n">logger</span><span class="p">,</span> <span class="n">archive_mode</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">SftpUploadRunner</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">config</span><span class="p">,</span> <span class="n">logger</span><span class="p">,</span> <span class="n">archive_mode</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">server</span> <span class="o">=</span> <span class="n">server</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">prefix</span> <span class="o">=</span> <span class="n">prefix</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_sshclient</span> <span class="o">=</span> <span class="n">SSHClient</span><span class="p">()</span>
+
+        <span class="c1"># TODO: replace with more sensible policy... predetermined keys?</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_sshclient</span><span class="o">.</span><span class="n">set_missing_host_key_policy</span><span class="p">(</span><span class="n">AutoAddPolicy</span><span class="p">())</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">sftp_client</span> <span class="o">=</span> <span class="kc">None</span>
+
+    <span class="k">def</span> <span class="nf">_connect_sftp</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_sshclient</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">server</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">sftp_client</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_sshclient</span><span class="o">.</span><span class="n">open_sftp</span><span class="p">()</span>
+
+    <span class="k">def</span> <span class="nf">_delete_file</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pipeline_file</span><span class="p">):</span>
+        <span class="n">abs_path</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_absolute_dest_path</span><span class="p">(</span><span class="n">pipeline_file</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">sftp_client</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="n">abs_path</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_get_absolute_dest_uri</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pipeline_file</span><span class="p">):</span>
+        <span class="k">return</span> <span class="s2">&quot;sftp://</span><span class="si">{server}{path}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">server</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">server</span><span class="p">,</span> <span class="n">path</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_get_absolute_dest_path</span><span class="p">(</span><span class="n">pipeline_file</span><span class="p">))</span>
+
+    <span class="k">def</span> <span class="nf">_post_run_hook</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span>
+
+    <span class="k">def</span> <span class="nf">_pre_run_hook</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_connect_sftp</span><span class="p">()</span>
+
+    <span class="k">def</span> <span class="nf">_upload_file</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pipeline_file</span><span class="p">):</span>
+        <span class="n">abs_path</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_absolute_dest_path</span><span class="p">(</span><span class="n">pipeline_file</span><span class="p">)</span>
+        <span class="n">parent_dir</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="n">abs_path</span><span class="p">)</span>
+        <span class="n">sftp_mkdir_p</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">sftp_client</span><span class="p">,</span> <span class="n">parent_dir</span><span class="p">)</span>
+
+        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">pipeline_file</span><span class="o">.</span><span class="n">src_path</span><span class="p">,</span> <span class="s1">&#39;rb&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">sftp_client</span><span class="o">.</span><span class="n">putfo</span><span class="p">(</span><span class="n">f</span><span class="p">,</span> <span class="n">abs_path</span><span class="p">,</span> <span class="n">confirm</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+<div class="viewcode-block" id="SftpUploadRunner.set_is_overwrite"><a class="viewcode-back" href="../../../../aodncore.pipeline.steps.html#aodncore.pipeline.steps.upload.SftpUploadRunner.set_is_overwrite">[docs]</a>    <span class="k">def</span> <span class="nf">set_is_overwrite</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pipeline_files</span><span class="p">):</span>
+        <span class="n">validate_pipelinefilecollection</span><span class="p">(</span><span class="n">pipeline_files</span><span class="p">)</span>
+
+        <span class="k">for</span> <span class="n">pipeline_file</span> <span class="ow">in</span> <span class="n">pipeline_files</span><span class="p">:</span>
+            <span class="n">abs_path</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_absolute_dest_path</span><span class="p">(</span><span class="n">pipeline_file</span><span class="p">)</span>
+            <span class="n">pipeline_file</span><span class="o">.</span><span class="n">is_overwrite</span> <span class="o">=</span> <span class="n">sftp_path_exists</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">sftp_client</span><span class="p">,</span> <span class="n">abs_path</span><span class="p">)</span></div></div>
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper"><div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../../../../index.html">Documentation overview</a><ul>
+  <li><a href="../../../index.html">Module code</a><ul>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="../../../../search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2018, AODN.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.6.7</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.10</a>
+      
+    </div>
+
+    
+
+    
+  </body>
+</html>

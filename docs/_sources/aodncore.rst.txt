@@ -1,0 +1,33 @@
+aodncore package
+================
+
+Subpackages
+-----------
+
+.. toctree::
+
+    aodncore.common
+    aodncore.pipeline
+    aodncore.testlib
+    aodncore.util
+    aodncore.vocab
+
+Submodules
+----------
+
+aodncore\.version module
+------------------------
+
+.. automodule:: aodncore.version
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+
+Module contents
+---------------
+
+.. automodule:: aodncore
+    :members:
+    :undoc-members:
+    :show-inheritance:

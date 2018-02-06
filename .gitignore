@@ -104,3 +104,9 @@ ENV/
 .idea/**/dynamic.xml
 .idea/**/uiDesigner.xml
 
+/sphinx/_build/
+/sphinx/_static/
+/sphinx/_templates/
+/sphinx/*.rst
+!/sphinx/index.rst
+!/sphinx/modules.rst

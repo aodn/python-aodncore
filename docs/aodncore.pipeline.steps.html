@@ -1,0 +1,1186 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>aodncore.pipeline.steps package &#8212; aodncore 0.1 documentation</title>
+    <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    './',
+        VERSION:     '0.1',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true,
+        SOURCELINK_SUFFIX: '.txt'
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+   
+  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head>
+  <body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="aodncore-pipeline-steps-package">
+<h1>aodncore.pipeline.steps package<a class="headerlink" href="#aodncore-pipeline-steps-package" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="submodules">
+<h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="module-aodncore.pipeline.steps.basestep">
+<span id="aodncore-pipeline-steps-basestep-module"></span><h2>aodncore.pipeline.steps.basestep module<a class="headerlink" href="#module-aodncore.pipeline.steps.basestep" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="aodncore.pipeline.steps.basestep.AbstractCollectionStepRunner">
+<em class="property">class </em><code class="descclassname">aodncore.pipeline.steps.basestep.</code><code class="descname">AbstractCollectionStepRunner</code><span class="sig-paren">(</span><em>config</em>, <em>logger</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/aodncore/pipeline/steps/basestep.html#AbstractCollectionStepRunner"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#aodncore.pipeline.steps.basestep.AbstractCollectionStepRunner" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">aodncore.pipeline.steps.basestep.BaseStepRunner</span></code></p>
+<dl class="method">
+<dt id="aodncore.pipeline.steps.basestep.AbstractCollectionStepRunner.run">
+<code class="descname">run</code><span class="sig-paren">(</span><em>pipeline_files</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/aodncore/pipeline/steps/basestep.html#AbstractCollectionStepRunner.run"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#aodncore.pipeline.steps.basestep.AbstractCollectionStepRunner.run" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="aodncore.pipeline.steps.basestep.AbstractNotifyRunner">
+<em class="property">class </em><code class="descclassname">aodncore.pipeline.steps.basestep.</code><code class="descname">AbstractNotifyRunner</code><span class="sig-paren">(</span><em>config</em>, <em>logger</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/aodncore/pipeline/steps/basestep.html#AbstractNotifyRunner"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#aodncore.pipeline.steps.basestep.AbstractNotifyRunner" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">aodncore.pipeline.steps.basestep.BaseStepRunner</span></code></p>
+<dl class="method">
+<dt id="aodncore.pipeline.steps.basestep.AbstractNotifyRunner.run">
+<code class="descname">run</code><span class="sig-paren">(</span><em>notify_list</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/aodncore/pipeline/steps/basestep.html#AbstractNotifyRunner.run"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#aodncore.pipeline.steps.basestep.AbstractNotifyRunner.run" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="aodncore.pipeline.steps.basestep.AbstractResolveRunner">
+<em class="property">class </em><code class="descclassname">aodncore.pipeline.steps.basestep.</code><code class="descname">AbstractResolveRunner</code><span class="sig-paren">(</span><em>config</em>, <em>logger</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/aodncore/pipeline/steps/basestep.html#AbstractResolveRunner"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#aodncore.pipeline.steps.basestep.AbstractResolveRunner" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">aodncore.pipeline.steps.basestep.BaseStepRunner</span></code></p>
+<p>A ResolveRunner is responsible for resolving an input file by:</p>
+<dl class="docutils">
+<dt>1a) when input_file represents multiple files (e.g. ZIP archive, manifest file), the ‘child’ files are</dt>
+<dd>copied/extracted/downloaded to the output_dir using the appropriate mechanism</dd>
+</dl>
+<p>1b) when input_file represents a single file (e.g. NC file), the file itself is copied to the output_dir</p>
+<ol class="arabic simple" start="2">
+<li>the file(s) are added to a PipelineFileCollection set for use by the rest of the handler.</li>
+</ol>
+<p>The ‘__init__’ method is supplied with the input file and the output_dir. The abstract ‘run’ method performs
+the steps above in the most appropriate/efficient way, provided that when it completes:</p>
+<ol class="arabic simple">
+<li>the output_dir contains all of the files being handled in this handler instance</li>
+<li>the run method returns a PipelineFileCollection instance populated with all of these files</li>
+</ol>
+<p>This means the rest of the handler code has no further need to be aware of the source of the files, and files
+may then be processed in a generic way.</p>
+<dl class="method">
+<dt id="aodncore.pipeline.steps.basestep.AbstractResolveRunner.run">
+<code class="descname">run</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/aodncore/pipeline/steps/basestep.html#AbstractResolveRunner.run"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#aodncore.pipeline.steps.basestep.AbstractResolveRunner.run" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-aodncore.pipeline.steps.check">
+<span id="aodncore-pipeline-steps-check-module"></span><h2>aodncore.pipeline.steps.check module<a class="headerlink" href="#module-aodncore.pipeline.steps.check" title="Permalink to this headline">¶</a></h2>
+<dl class="function">
+<dt id="aodncore.pipeline.steps.check.get_check_runner">
+<code class="descclassname">aodncore.pipeline.steps.check.</code><code class="descname">get_check_runner</code><span class="sig-paren">(</span><em>config</em>, <em>logger</em>, <em>check_params=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/aodncore/pipeline/steps/check.html#get_check_runner"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#aodncore.pipeline.steps.check.get_check_runner" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="aodncore.pipeline.steps.check.get_child_check_runner">
+<code class="descclassname">aodncore.pipeline.steps.check.</code><code class="descname">get_child_check_runner</code><span class="sig-paren">(</span><em>check_type</em>, <em>config</em>, <em>logger</em>, <em>check_params=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/aodncore/pipeline/steps/check.html#get_child_check_runner"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#aodncore.pipeline.steps.check.get_child_check_runner" title="Permalink to this definition">¶</a></dt>
+<dd><p>Factory function to return appropriate checker class based on check type value</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>check_type</strong> – attribute of PipelineFileCheckType to determine which CheckRunner is returned</li>
+<li><strong>check_params</strong> – list of parameters to pass to compliance checker library</li>
+<li><strong>config</strong> – LazyConfigManager instance</li>
+<li><strong>logger</strong> – Logger instance</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">BaseCheckRunner sub-class</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="class">
+<dt id="aodncore.pipeline.steps.check.CheckRunnerAdapter">
+<em class="property">class </em><code class="descclassname">aodncore.pipeline.steps.check.</code><code class="descname">CheckRunnerAdapter</code><span class="sig-paren">(</span><em>config</em>, <em>logger</em>, <em>check_params=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/aodncore/pipeline/steps/check.html#CheckRunnerAdapter"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#aodncore.pipeline.steps.check.CheckRunnerAdapter" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">aodncore.pipeline.steps.check.BaseCheckRunner</span></code></p>
+<dl class="method">
+<dt id="aodncore.pipeline.steps.check.CheckRunnerAdapter.run">
+<code class="descname">run</code><span class="sig-paren">(</span><em>pipeline_files</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/aodncore/pipeline/steps/check.html#CheckRunnerAdapter.run"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#aodncore.pipeline.steps.check.CheckRunnerAdapter.run" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="aodncore.pipeline.steps.check.ComplianceCheckerCheckRunner">
+<em class="property">class </em><code class="descclassname">aodncore.pipeline.steps.check.</code><code class="descname">ComplianceCheckerCheckRunner</code><span class="sig-paren">(</span><em>config</em>, <em>logger</em>, <em>check_params=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/aodncore/pipeline/steps/check.html#ComplianceCheckerCheckRunner"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#aodncore.pipeline.steps.check.ComplianceCheckerCheckRunner" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">aodncore.pipeline.steps.check.BaseCheckRunner</span></code></p>
+<dl class="method">
+<dt id="aodncore.pipeline.steps.check.ComplianceCheckerCheckRunner.run">
+<code class="descname">run</code><span class="sig-paren">(</span><em>pipeline_files</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/aodncore/pipeline/steps/check.html#ComplianceCheckerCheckRunner.run"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#aodncore.pipeline.steps.check.ComplianceCheckerCheckRunner.run" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="aodncore.pipeline.steps.check.FormatCheckRunner">
+<em class="property">class </em><code class="descclassname">aodncore.pipeline.steps.check.</code><code class="descname">FormatCheckRunner</code><span class="sig-paren">(</span><em>config</em>, <em>logger</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/aodncore/pipeline/steps/check.html#FormatCheckRunner"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#aodncore.pipeline.steps.check.FormatCheckRunner" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">aodncore.pipeline.steps.check.BaseCheckRunner</span></code></p>
+<dl class="method">
+<dt id="aodncore.pipeline.steps.check.FormatCheckRunner.get_format_check_runner">
+<code class="descname">get_format_check_runner</code><span class="sig-paren">(</span><em>file_type</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/aodncore/pipeline/steps/check.html#FormatCheckRunner.get_format_check_runner"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#aodncore.pipeline.steps.check.FormatCheckRunner.get_format_check_runner" title="Permalink to this definition">¶</a></dt>
+<dd><p>Factory method to return appropriate <a href="#id1"><span class="problematic" id="id2">*</span></a>FormatCheckRunner instance based on file type</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>file_type</strong> – FileType member</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><a href="#id3"><span class="problematic" id="id4">*</span></a>FormatCheckRunner instance</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="aodncore.pipeline.steps.check.FormatCheckRunner.run">
+<code class="descname">run</code><span class="sig-paren">(</span><em>pipeline_files</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/aodncore/pipeline/steps/check.html#FormatCheckRunner.run"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#aodncore.pipeline.steps.check.FormatCheckRunner.run" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="aodncore.pipeline.steps.check.NetcdfFormatCheckRunner">
+<em class="property">class </em><code class="descclassname">aodncore.pipeline.steps.check.</code><code class="descname">NetcdfFormatCheckRunner</code><span class="sig-paren">(</span><em>config</em>, <em>logger</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/aodncore/pipeline/steps/check.html#NetcdfFormatCheckRunner"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#aodncore.pipeline.steps.check.NetcdfFormatCheckRunner" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">aodncore.pipeline.steps.check.BaseCheckRunner</span></code></p>
+<dl class="method">
+<dt id="aodncore.pipeline.steps.check.NetcdfFormatCheckRunner.run">
+<code class="descname">run</code><span class="sig-paren">(</span><em>pipeline_files</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/aodncore/pipeline/steps/check.html#NetcdfFormatCheckRunner.run"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#aodncore.pipeline.steps.check.NetcdfFormatCheckRunner.run" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="aodncore.pipeline.steps.check.NonEmptyCheckRunner">
+<em class="property">class </em><code class="descclassname">aodncore.pipeline.steps.check.</code><code class="descname">NonEmptyCheckRunner</code><span class="sig-paren">(</span><em>config</em>, <em>logger</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/aodncore/pipeline/steps/check.html#NonEmptyCheckRunner"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#aodncore.pipeline.steps.check.NonEmptyCheckRunner" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">aodncore.pipeline.steps.check.BaseCheckRunner</span></code></p>
+<dl class="method">
+<dt id="aodncore.pipeline.steps.check.NonEmptyCheckRunner.run">
+<code class="descname">run</code><span class="sig-paren">(</span><em>pipeline_files</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/aodncore/pipeline/steps/check.html#NonEmptyCheckRunner.run"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#aodncore.pipeline.steps.check.NonEmptyCheckRunner.run" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="function">
+<dt id="aodncore.pipeline.steps.check.get_cc_module_versions">
+<code class="descclassname">aodncore.pipeline.steps.check.</code><code class="descname">get_cc_module_versions</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/aodncore/pipeline/steps/check.html#get_cc_module_versions"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#aodncore.pipeline.steps.check.get_cc_module_versions" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get versions of compliance checker and compliance checker plugin version</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">a tuple containing the version strings</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</div>
+<div class="section" id="module-aodncore.pipeline.steps.harvest">
+<span id="aodncore-pipeline-steps-harvest-module"></span><h2>aodncore.pipeline.steps.harvest module<a class="headerlink" href="#module-aodncore.pipeline.steps.harvest" title="Permalink to this headline">¶</a></h2>
+<dl class="function">
+<dt id="aodncore.pipeline.steps.harvest.get_harvester_runner">
+<code class="descclassname">aodncore.pipeline.steps.harvest.</code><code class="descname">get_harvester_runner</code><span class="sig-paren">(</span><em>harvester_name</em>, <em>upload_runner</em>, <em>harvest_params</em>, <em>tmp_base_dir</em>, <em>config</em>, <em>logger</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/aodncore/pipeline/steps/harvest.html#get_harvester_runner"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#aodncore.pipeline.steps.harvest.get_harvester_runner" title="Permalink to this definition">¶</a></dt>
+<dd><p>Factory function to return appropriate harvester class</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>harvester_name</strong> – harvester name</li>
+<li><strong>upload_runner</strong> – upload runner instance to use for uploads</li>
+<li><strong>harvest_params</strong> – keyword parameters passed to harvest runner</li>
+<li><strong>tmp_base_dir</strong> – base temporary directory</li>
+<li><strong>config</strong> – LazyConfigManager instance</li>
+<li><strong>logger</strong> – Logger instance</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">BaseHarvesterRunner sub-class</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="class">
+<dt id="aodncore.pipeline.steps.harvest.TalendHarvesterRunner">
+<em class="property">class </em><code class="descclassname">aodncore.pipeline.steps.harvest.</code><code class="descname">TalendHarvesterRunner</code><span class="sig-paren">(</span><em>upload_runner</em>, <em>harvest_params</em>, <em>tmp_base_dir</em>, <em>config</em>, <em>logger</em>, <em>deletion=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/aodncore/pipeline/steps/harvest.html#TalendHarvesterRunner"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#aodncore.pipeline.steps.harvest.TalendHarvesterRunner" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">aodncore.pipeline.steps.harvest.BaseHarvesterRunner</span></code></p>
+<p>HarvesterRunner implementation to execute Talend harvesters</p>
+<dl class="staticmethod">
+<dt id="aodncore.pipeline.steps.harvest.TalendHarvesterRunner.create_input_file_list">
+<em class="property">static </em><code class="descname">create_input_file_list</code><span class="sig-paren">(</span><em>talend_base_dir</em>, <em>matched_file_list</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/aodncore/pipeline/steps/harvest.html#TalendHarvesterRunner.create_input_file_list"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#aodncore.pipeline.steps.harvest.TalendHarvesterRunner.create_input_file_list" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="staticmethod">
+<dt id="aodncore.pipeline.steps.harvest.TalendHarvesterRunner.create_symlink">
+<em class="property">static </em><code class="descname">create_symlink</code><span class="sig-paren">(</span><em>talend_base_dir</em>, <em>src_path</em>, <em>dest_path</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/aodncore/pipeline/steps/harvest.html#TalendHarvesterRunner.create_symlink"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#aodncore.pipeline.steps.harvest.TalendHarvesterRunner.create_symlink" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="aodncore.pipeline.steps.harvest.TalendHarvesterRunner.execute_talend">
+<code class="descname">execute_talend</code><span class="sig-paren">(</span><em>executor</em>, <em>matched_files</em>, <em>talend_base_dir</em>, <em>success_attribute='is_harvested'</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/aodncore/pipeline/steps/harvest.html#TalendHarvesterRunner.execute_talend"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#aodncore.pipeline.steps.harvest.TalendHarvesterRunner.execute_talend" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="staticmethod">
+<dt id="aodncore.pipeline.steps.harvest.TalendHarvesterRunner.executor_conversion">
+<em class="property">static </em><code class="descname">executor_conversion</code><span class="sig-paren">(</span><em>executor</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/aodncore/pipeline/steps/harvest.html#TalendHarvesterRunner.executor_conversion"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#aodncore.pipeline.steps.harvest.TalendHarvesterRunner.executor_conversion" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="aodncore.pipeline.steps.harvest.TalendHarvesterRunner.match_harvester_to_files">
+<code class="descname">match_harvester_to_files</code><span class="sig-paren">(</span><em>file_list</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/aodncore/pipeline/steps/harvest.html#TalendHarvesterRunner.match_harvester_to_files"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#aodncore.pipeline.steps.harvest.TalendHarvesterRunner.match_harvester_to_files" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="aodncore.pipeline.steps.harvest.TalendHarvesterRunner.run">
+<code class="descname">run</code><span class="sig-paren">(</span><em>pipeline_files</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/aodncore/pipeline/steps/harvest.html#TalendHarvesterRunner.run"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#aodncore.pipeline.steps.harvest.TalendHarvesterRunner.run" title="Permalink to this definition">¶</a></dt>
+<dd><p>The entry point to the ported talend trigger code to execute the harvester(s) for each file</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body"></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="aodncore.pipeline.steps.harvest.TalendHarvesterRunner.run_additions">
+<code class="descname">run_additions</code><span class="sig-paren">(</span><em>harvester_map</em>, <em>tmp_base_dir</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/aodncore/pipeline/steps/harvest.html#TalendHarvesterRunner.run_additions"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#aodncore.pipeline.steps.harvest.TalendHarvesterRunner.run_additions" title="Permalink to this definition">¶</a></dt>
+<dd><p>Function to harvest and upload files using the appropriate file upload runner
+Operates in newly created temporary directory and creates symlink between source and destination file
+Talend will then operate on the destination file (symlink)</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>harvester_map</strong> – mapping of harvesters to the PipelineFileCollection to operate on</li>
+<li><strong>tmp_base_dir</strong> – temporary directory base for talend operation</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="aodncore.pipeline.steps.harvest.TalendHarvesterRunner.run_deletions">
+<code class="descname">run_deletions</code><span class="sig-paren">(</span><em>harvester_map</em>, <em>tmp_base_dir</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/aodncore/pipeline/steps/harvest.html#TalendHarvesterRunner.run_deletions"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#aodncore.pipeline.steps.harvest.TalendHarvesterRunner.run_deletions" title="Permalink to this definition">¶</a></dt>
+<dd><p>Function to un-harvest and delete files using the appropriate file upload runner
+Operates in newly created temporary directory as talend requires a non-existant file to perform un-harvesting</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>harvester_map</strong> – mapping of harvesters to the PipelineFileCollection to operate on</li>
+<li><strong>tmp_base_dir</strong> – temporary directory base for talend operation</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="aodncore.pipeline.steps.harvest.TalendHarvesterRunner.run_undo_deletions">
+<code class="descname">run_undo_deletions</code><span class="sig-paren">(</span><em>harvester_map</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/aodncore/pipeline/steps/harvest.html#TalendHarvesterRunner.run_undo_deletions"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#aodncore.pipeline.steps.harvest.TalendHarvesterRunner.run_undo_deletions" title="Permalink to this definition">¶</a></dt>
+<dd><p>Function to un-harvest and undo stored files as appropriate in the case of errors
+Operates in newly created temporary directory as talend requires a non-existant file to perform un-harvesting</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>harvester_map</strong> – mapping of harvesters to the PipelineFileCollection to operate on</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="aodncore.pipeline.steps.harvest.TalendHarvesterRunner.undo_processed_files">
+<code class="descname">undo_processed_files</code><span class="sig-paren">(</span><em>undo_map</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/aodncore/pipeline/steps/harvest.html#TalendHarvesterRunner.undo_processed_files"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#aodncore.pipeline.steps.harvest.TalendHarvesterRunner.undo_processed_files" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="staticmethod">
+<dt id="aodncore.pipeline.steps.harvest.TalendHarvesterRunner.validate_harvester_mapping">
+<em class="property">static </em><code class="descname">validate_harvester_mapping</code><span class="sig-paren">(</span><em>file_collection</em>, <em>harvester_map</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/aodncore/pipeline/steps/harvest.html#TalendHarvesterRunner.validate_harvester_mapping"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#aodncore.pipeline.steps.harvest.TalendHarvesterRunner.validate_harvester_mapping" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-aodncore.pipeline.steps.notify">
+<span id="aodncore-pipeline-steps-notify-module"></span><h2>aodncore.pipeline.steps.notify module<a class="headerlink" href="#module-aodncore.pipeline.steps.notify" title="Permalink to this headline">¶</a></h2>
+<dl class="function">
+<dt id="aodncore.pipeline.steps.notify.get_notify_runner">
+<code class="descclassname">aodncore.pipeline.steps.notify.</code><code class="descname">get_notify_runner</code><span class="sig-paren">(</span><em>notification_data</em>, <em>config</em>, <em>logger</em>, <em>notify_params=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/aodncore/pipeline/steps/notify.html#get_notify_runner"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#aodncore.pipeline.steps.notify.get_notify_runner" title="Permalink to this definition">¶</a></dt>
+<dd><p>Factory function to return notify runner class</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>notification_data</strong> – dictionary containing notification data (i.e. template values)</li>
+<li><strong>config</strong> – LazyConfigManager instance</li>
+<li><strong>logger</strong> – Logger instance</li>
+<li><strong>notify_params</strong> – list of parameters to define notification behaviour</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">AbstractNotifyRunner sub-class</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="class">
+<dt id="aodncore.pipeline.steps.notify.NotifyRunnerAdapter">
+<em class="property">class </em><code class="descclassname">aodncore.pipeline.steps.notify.</code><code class="descname">NotifyRunnerAdapter</code><span class="sig-paren">(</span><em>notification_data</em>, <em>config</em>, <em>logger</em>, <em>notify_params</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/aodncore/pipeline/steps/notify.html#NotifyRunnerAdapter"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#aodncore.pipeline.steps.notify.NotifyRunnerAdapter" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">aodncore.pipeline.steps.notify.BaseNotifyRunner</span></code></p>
+<dl class="method">
+<dt id="aodncore.pipeline.steps.notify.NotifyRunnerAdapter.run">
+<code class="descname">run</code><span class="sig-paren">(</span><em>notify_list</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/aodncore/pipeline/steps/notify.html#NotifyRunnerAdapter.run"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#aodncore.pipeline.steps.notify.NotifyRunnerAdapter.run" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="aodncore.pipeline.steps.notify.EmailNotifyRunner">
+<em class="property">class </em><code class="descclassname">aodncore.pipeline.steps.notify.</code><code class="descname">EmailNotifyRunner</code><span class="sig-paren">(</span><em>notification_data</em>, <em>config</em>, <em>logger</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/aodncore/pipeline/steps/notify.html#EmailNotifyRunner"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#aodncore.pipeline.steps.notify.EmailNotifyRunner" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">aodncore.pipeline.steps.notify.BaseNotifyRunner</span></code></p>
+<dl class="method">
+<dt id="aodncore.pipeline.steps.notify.EmailNotifyRunner.run">
+<code class="descname">run</code><span class="sig-paren">(</span><em>notify_list</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/aodncore/pipeline/steps/notify.html#EmailNotifyRunner.run"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#aodncore.pipeline.steps.notify.EmailNotifyRunner.run" title="Permalink to this definition">¶</a></dt>
+<dd><p>Attempt to send notification email to recipients in notify_list paramater.</p>
+<blockquote>
+<div><cite>error_dict</cite> is a dict object as described in the smtplib.SMTP.sendmail method docs, which allows
+per-recipient status inspection/error logging</div></blockquote>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>notify_list</strong> – NotifyList instance</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">None</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="aodncore.pipeline.steps.notify.LogFailuresNotifyRunner">
+<em class="property">class </em><code class="descclassname">aodncore.pipeline.steps.notify.</code><code class="descname">LogFailuresNotifyRunner</code><span class="sig-paren">(</span><em>notification_data</em>, <em>config</em>, <em>logger</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/aodncore/pipeline/steps/notify.html#LogFailuresNotifyRunner"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#aodncore.pipeline.steps.notify.LogFailuresNotifyRunner" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">aodncore.pipeline.steps.notify.BaseNotifyRunner</span></code></p>
+<dl class="method">
+<dt id="aodncore.pipeline.steps.notify.LogFailuresNotifyRunner.run">
+<code class="descname">run</code><span class="sig-paren">(</span><em>notify_list</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/aodncore/pipeline/steps/notify.html#LogFailuresNotifyRunner.run"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#aodncore.pipeline.steps.notify.LogFailuresNotifyRunner.run" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="aodncore.pipeline.steps.notify.NotifyList">
+<em class="property">class </em><code class="descclassname">aodncore.pipeline.steps.notify.</code><code class="descname">NotifyList</code><span class="sig-paren">(</span><em>data=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/aodncore/pipeline/steps/notify.html#NotifyList"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#aodncore.pipeline.steps.notify.NotifyList" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">object</span></code></p>
+<dl class="method">
+<dt id="aodncore.pipeline.steps.notify.NotifyList.add">
+<code class="descname">add</code><span class="sig-paren">(</span><em>recipient</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/aodncore/pipeline/steps/notify.html#NotifyList.add"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#aodncore.pipeline.steps.notify.NotifyList.add" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="aodncore.pipeline.steps.notify.NotifyList.append">
+<code class="descname">append</code><span class="sig-paren">(</span><em>recipient</em><span class="sig-paren">)</span><a class="headerlink" href="#aodncore.pipeline.steps.notify.NotifyList.append" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="aodncore.pipeline.steps.notify.NotifyList.difference">
+<code class="descname">difference</code><span class="sig-paren">(</span><em>sequence</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/aodncore/pipeline/steps/notify.html#NotifyList.difference"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#aodncore.pipeline.steps.notify.NotifyList.difference" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="aodncore.pipeline.steps.notify.NotifyList.discard">
+<code class="descname">discard</code><span class="sig-paren">(</span><em>recipient</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/aodncore/pipeline/steps/notify.html#NotifyList.discard"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#aodncore.pipeline.steps.notify.NotifyList.discard" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="aodncore.pipeline.steps.notify.NotifyList.filter_by_failed">
+<code class="descname">filter_by_failed</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/aodncore/pipeline/steps/notify.html#NotifyList.filter_by_failed"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#aodncore.pipeline.steps.notify.NotifyList.filter_by_failed" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="aodncore.pipeline.steps.notify.NotifyList.filter_by_notify_type">
+<code class="descname">filter_by_notify_type</code><span class="sig-paren">(</span><em>notify_type</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/aodncore/pipeline/steps/notify.html#NotifyList.filter_by_notify_type"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#aodncore.pipeline.steps.notify.NotifyList.filter_by_notify_type" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return a new NotifyList containing only recipients of the given notify_type</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>notify_type</strong> – attribute by which to filter PipelineFiles</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">NotifyList containing only NotifyRecipient objects of the given type</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="aodncore.pipeline.steps.notify.NotifyList.filter_by_succeeded">
+<code class="descname">filter_by_succeeded</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/aodncore/pipeline/steps/notify.html#NotifyList.filter_by_succeeded"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#aodncore.pipeline.steps.notify.NotifyList.filter_by_succeeded" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="classmethod">
+<dt id="aodncore.pipeline.steps.notify.NotifyList.from_collection">
+<em class="property">classmethod </em><code class="descname">from_collection</code><span class="sig-paren">(</span><em>recipient_collection</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/aodncore/pipeline/steps/notify.html#NotifyList.from_collection"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#aodncore.pipeline.steps.notify.NotifyList.from_collection" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="aodncore.pipeline.steps.notify.NotifyList.issubset">
+<code class="descname">issubset</code><span class="sig-paren">(</span><em>sequence</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/aodncore/pipeline/steps/notify.html#NotifyList.issubset"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#aodncore.pipeline.steps.notify.NotifyList.issubset" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="aodncore.pipeline.steps.notify.NotifyList.issuperset">
+<code class="descname">issuperset</code><span class="sig-paren">(</span><em>sequence</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/aodncore/pipeline/steps/notify.html#NotifyList.issuperset"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#aodncore.pipeline.steps.notify.NotifyList.issuperset" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="aodncore.pipeline.steps.notify.NotifyList.set_error">
+<code class="descname">set_error</code><span class="sig-paren">(</span><em>error</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/aodncore/pipeline/steps/notify.html#NotifyList.set_error"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#aodncore.pipeline.steps.notify.NotifyList.set_error" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set the error attribute for all elements</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>error</strong> – Exception instance</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">None</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="aodncore.pipeline.steps.notify.NotifyList.set_notification_attempted">
+<code class="descname">set_notification_attempted</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/aodncore/pipeline/steps/notify.html#NotifyList.set_notification_attempted"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#aodncore.pipeline.steps.notify.NotifyList.set_notification_attempted" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="aodncore.pipeline.steps.notify.NotifyList.union">
+<code class="descname">union</code><span class="sig-paren">(</span><em>sequence</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/aodncore/pipeline/steps/notify.html#NotifyList.union"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#aodncore.pipeline.steps.notify.NotifyList.union" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="aodncore.pipeline.steps.notify.NotifyList.update">
+<code class="descname">update</code><span class="sig-paren">(</span><em>sequence</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/aodncore/pipeline/steps/notify.html#NotifyList.update"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#aodncore.pipeline.steps.notify.NotifyList.update" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="aodncore.pipeline.steps.notify.NotifyList.update_from_error_dict">
+<code class="descname">update_from_error_dict</code><span class="sig-paren">(</span><em>error_dict</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/aodncore/pipeline/steps/notify.html#NotifyList.update_from_error_dict"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#aodncore.pipeline.steps.notify.NotifyList.update_from_error_dict" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="docutils">
+<dt>Update recipient statuses according to the given dict parameter. The absence of an address in the dict keys</dt>
+<dd>will be interpreted as “successfully sent”.</dd>
+</dl>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>error_dict</strong> – dict as returned by smtplib.SMTP.sendmail method</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">None</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="aodncore.pipeline.steps.notify.NotificationRecipient">
+<em class="property">class </em><code class="descclassname">aodncore.pipeline.steps.notify.</code><code class="descname">NotificationRecipient</code><span class="sig-paren">(</span><em>address</em>, <em>notify_type</em>, <em>raw_string=''</em>, <em>error=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/aodncore/pipeline/steps/notify.html#NotificationRecipient"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#aodncore.pipeline.steps.notify.NotificationRecipient" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">object</span></code></p>
+<dl class="attribute">
+<dt id="aodncore.pipeline.steps.notify.NotificationRecipient.address">
+<code class="descname">address</code><a class="headerlink" href="#aodncore.pipeline.steps.notify.NotificationRecipient.address" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="classmethod">
+<dt id="aodncore.pipeline.steps.notify.NotificationRecipient.from_string">
+<em class="property">classmethod </em><code class="descname">from_string</code><span class="sig-paren">(</span><em>recipient_string</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/aodncore/pipeline/steps/notify.html#NotificationRecipient.from_string"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#aodncore.pipeline.steps.notify.NotificationRecipient.from_string" title="Permalink to this definition">¶</a></dt>
+<dd><p>From a given ‘recipient string’, expected to be in the format of ‘protocol:address’, return a
+new NotificationRecipient object with attributes set according to the content/validity of the input string</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>recipient_string</strong> – string in format of ‘protocol:address’</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">NotificationRecipient object</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="aodncore.pipeline.steps.notify.NotificationRecipient.notification_attempted">
+<code class="descname">notification_attempted</code><a class="headerlink" href="#aodncore.pipeline.steps.notify.NotificationRecipient.notification_attempted" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="aodncore.pipeline.steps.notify.NotificationRecipient.notification_succeeded">
+<code class="descname">notification_succeeded</code><a class="headerlink" href="#aodncore.pipeline.steps.notify.NotificationRecipient.notification_succeeded" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="aodncore.pipeline.steps.notify.NotificationRecipient.notify_type">
+<code class="descname">notify_type</code><a class="headerlink" href="#aodncore.pipeline.steps.notify.NotificationRecipient.notify_type" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="aodncore.pipeline.steps.notify.NotificationRecipient.raw_string">
+<code class="descname">raw_string</code><a class="headerlink" href="#aodncore.pipeline.steps.notify.NotificationRecipient.raw_string" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="aodncore.pipeline.steps.notify.SnsNotifyRunner">
+<em class="property">class </em><code class="descclassname">aodncore.pipeline.steps.notify.</code><code class="descname">SnsNotifyRunner</code><span class="sig-paren">(</span><em>notification_data</em>, <em>config</em>, <em>logger</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/aodncore/pipeline/steps/notify.html#SnsNotifyRunner"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#aodncore.pipeline.steps.notify.SnsNotifyRunner" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">aodncore.pipeline.steps.notify.BaseNotifyRunner</span></code></p>
+<dl class="method">
+<dt id="aodncore.pipeline.steps.notify.SnsNotifyRunner.run">
+<code class="descname">run</code><span class="sig-paren">(</span><em>notify_list</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/aodncore/pipeline/steps/notify.html#SnsNotifyRunner.run"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#aodncore.pipeline.steps.notify.SnsNotifyRunner.run" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-aodncore.pipeline.steps.resolve">
+<span id="aodncore-pipeline-steps-resolve-module"></span><h2>aodncore.pipeline.steps.resolve module<a class="headerlink" href="#module-aodncore.pipeline.steps.resolve" title="Permalink to this headline">¶</a></h2>
+<dl class="function">
+<dt id="aodncore.pipeline.steps.resolve.get_resolve_runner">
+<code class="descclassname">aodncore.pipeline.steps.resolve.</code><code class="descname">get_resolve_runner</code><span class="sig-paren">(</span><em>input_file</em>, <em>output_dir</em>, <em>config</em>, <em>logger</em>, <em>resolve_params=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/aodncore/pipeline/steps/resolve.html#get_resolve_runner"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#aodncore.pipeline.steps.resolve.get_resolve_runner" title="Permalink to this definition">¶</a></dt>
+<dd><p>Factory function to return appropriate resolver class based on the file extension</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>input_file</strong> – path to the input file</li>
+<li><strong>output_dir</strong> – directory where the resolved files will be extracted/copied</li>
+<li><strong>config</strong> – reference to the calling handler object</li>
+<li><strong>logger</strong> – reference to a Logger instance to use</li>
+<li><strong>resolve_params</strong> – list of parameters to pass to check runner instances</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">BaseResolveRunner sub-class</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="class">
+<dt id="aodncore.pipeline.steps.resolve.DirManifestResolveRunner">
+<em class="property">class </em><code class="descclassname">aodncore.pipeline.steps.resolve.</code><code class="descname">DirManifestResolveRunner</code><span class="sig-paren">(</span><em>input_file</em>, <em>output_dir</em>, <em>config</em>, <em>logger</em>, <em>resolve_params=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/aodncore/pipeline/steps/resolve.html#DirManifestResolveRunner"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#aodncore.pipeline.steps.resolve.DirManifestResolveRunner" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">aodncore.pipeline.steps.resolve.BaseManifestResolveRunner</span></code></p>
+<dl class="docutils">
+<dt>Handles a simple manifest file which only contains a list of source files or directories, which will have all</dt>
+<dd>files recursively added to the collection</dd>
+</dl>
+<p>File format must be as follows:</p>
+<p>/path/to/source/file1
+/path/to/source/dir1</p>
+<dl class="method">
+<dt id="aodncore.pipeline.steps.resolve.DirManifestResolveRunner.run">
+<code class="descname">run</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/aodncore/pipeline/steps/resolve.html#DirManifestResolveRunner.run"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#aodncore.pipeline.steps.resolve.DirManifestResolveRunner.run" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="aodncore.pipeline.steps.resolve.MapManifestResolveRunner">
+<em class="property">class </em><code class="descclassname">aodncore.pipeline.steps.resolve.</code><code class="descname">MapManifestResolveRunner</code><span class="sig-paren">(</span><em>input_file</em>, <em>output_dir</em>, <em>config</em>, <em>logger</em>, <em>resolve_params=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/aodncore/pipeline/steps/resolve.html#MapManifestResolveRunner"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#aodncore.pipeline.steps.resolve.MapManifestResolveRunner" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">aodncore.pipeline.steps.resolve.BaseManifestResolveRunner</span></code></p>
+<dl class="docutils">
+<dt>Handles a manifest file with a pre-determined destination path. Unlike other resolve runners, this creates</dt>
+<dd>PipelineFile objects to add to the collection rather than allowing the collection to generate the objects.
+This is because dest_path is predetermined in the manifest itself, so no dest_path calculation is required.</dd>
+</dl>
+<p>File format must be as follows:</p>
+<p>/path/to/source/file1,destination/path/for/upload1
+/path/to/source/file2,destination/path/for/upload2</p>
+<dl class="attribute">
+<dt id="aodncore.pipeline.steps.resolve.MapManifestResolveRunner.PATH_SPLIT_CHAR">
+<code class="descname">PATH_SPLIT_CHAR</code><em class="property"> = ','</em><a class="headerlink" href="#aodncore.pipeline.steps.resolve.MapManifestResolveRunner.PATH_SPLIT_CHAR" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="aodncore.pipeline.steps.resolve.MapManifestResolveRunner.run">
+<code class="descname">run</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/aodncore/pipeline/steps/resolve.html#MapManifestResolveRunner.run"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#aodncore.pipeline.steps.resolve.MapManifestResolveRunner.run" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="aodncore.pipeline.steps.resolve.RsyncManifestResolveRunner">
+<em class="property">class </em><code class="descclassname">aodncore.pipeline.steps.resolve.</code><code class="descname">RsyncManifestResolveRunner</code><span class="sig-paren">(</span><em>input_file</em>, <em>output_dir</em>, <em>config</em>, <em>logger</em>, <em>resolve_params=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/aodncore/pipeline/steps/resolve.html#RsyncManifestResolveRunner"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#aodncore.pipeline.steps.resolve.RsyncManifestResolveRunner" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">aodncore.pipeline.steps.resolve.BaseManifestResolveRunner</span></code></p>
+<p>Handles a manifest file as outputted by an rsync process</p>
+<p>File format is expected to have invalid lines(header, whitespace,summary lines), so valid lines are extracted using
+regular expressions to determine the intended action. A file will <em>typically</em> look as follows. The lines should be
+classified as follows (text in square brackets not in actual files):</p>
+<p>receiving incremental file list                                     [HEADER LINE, IGNORED]
+<a href="#id5"><span class="problematic" id="id6">*</span></a>deleting   aoml/1900709/profiles/                                  [DIRECTORY DELETION, IGNORED]
+.d..t…… aoml/1900709/                                           [DIRECTORY ADDITION, IGNORED]
+&gt;f.st…… handlers/dummy/test_manifest.nc                         [FILE ADDITION]
+<a href="#id7"><span class="problematic" id="id8">*</span></a>deleting   handlers/dummy/aoml/1900728/1900728_Rtraj.nc            [FILE DELETION]</p>
+<blockquote>
+<div>[NON-MATCHING LINE, IGNORED]
+[NON-MATCHING LINE, IGNORED]</div></blockquote>
+<p>sent 65477852 bytes  received 407818360 bytes  115508.53 bytes/sec  [NON-MATCHING LINE, IGNORED]
+total size is 169778564604  speedup is 358.72                       [NON-MATCHING LINE, IGNORED]</p>
+<dl class="attribute">
+<dt id="aodncore.pipeline.steps.resolve.RsyncManifestResolveRunner.DELETE_PATTERN">
+<code class="descname">DELETE_PATTERN</code><em class="property"> = &lt;_sre.SRE_Pattern object&gt;</em><a class="headerlink" href="#aodncore.pipeline.steps.resolve.RsyncManifestResolveRunner.DELETE_PATTERN" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="aodncore.pipeline.steps.resolve.RsyncManifestResolveRunner.DIR_ADD_PATTERN">
+<code class="descname">DIR_ADD_PATTERN</code><em class="property"> = &lt;_sre.SRE_Pattern object&gt;</em><a class="headerlink" href="#aodncore.pipeline.steps.resolve.RsyncManifestResolveRunner.DIR_ADD_PATTERN" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="aodncore.pipeline.steps.resolve.RsyncManifestResolveRunner.FILE_ADD_PATTERN">
+<code class="descname">FILE_ADD_PATTERN</code><em class="property"> = &lt;_sre.SRE_Pattern object&gt;</em><a class="headerlink" href="#aodncore.pipeline.steps.resolve.RsyncManifestResolveRunner.FILE_ADD_PATTERN" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="aodncore.pipeline.steps.resolve.RsyncManifestResolveRunner.HEADER_LINE">
+<code class="descname">HEADER_LINE</code><em class="property"> = 'receiving incremental file list'</em><a class="headerlink" href="#aodncore.pipeline.steps.resolve.RsyncManifestResolveRunner.HEADER_LINE" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="aodncore.pipeline.steps.resolve.RsyncManifestResolveRunner.RECORD_PATTERN">
+<code class="descname">RECORD_PATTERN</code><em class="property"> = &lt;_sre.SRE_Pattern object&gt;</em><a class="headerlink" href="#aodncore.pipeline.steps.resolve.RsyncManifestResolveRunner.RECORD_PATTERN" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="classmethod">
+<dt id="aodncore.pipeline.steps.resolve.RsyncManifestResolveRunner.classify_line">
+<em class="property">classmethod </em><code class="descname">classify_line</code><span class="sig-paren">(</span><em>line</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/aodncore/pipeline/steps/resolve.html#RsyncManifestResolveRunner.classify_line"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#aodncore.pipeline.steps.resolve.RsyncManifestResolveRunner.classify_line" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="aodncore.pipeline.steps.resolve.RsyncManifestResolveRunner.run">
+<code class="descname">run</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/aodncore/pipeline/steps/resolve.html#RsyncManifestResolveRunner.run"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#aodncore.pipeline.steps.resolve.RsyncManifestResolveRunner.run" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="aodncore.pipeline.steps.resolve.SimpleManifestResolveRunner">
+<em class="property">class </em><code class="descclassname">aodncore.pipeline.steps.resolve.</code><code class="descname">SimpleManifestResolveRunner</code><span class="sig-paren">(</span><em>input_file</em>, <em>output_dir</em>, <em>config</em>, <em>logger</em>, <em>resolve_params=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/aodncore/pipeline/steps/resolve.html#SimpleManifestResolveRunner"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#aodncore.pipeline.steps.resolve.SimpleManifestResolveRunner" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">aodncore.pipeline.steps.resolve.BaseManifestResolveRunner</span></code></p>
+<p>Handles a simple manifest file which only contains a list of source files</p>
+<p>File format must be as follows:</p>
+<p>/path/to/source/file1
+/path/to/source/file2</p>
+<dl class="method">
+<dt id="aodncore.pipeline.steps.resolve.SimpleManifestResolveRunner.run">
+<code class="descname">run</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/aodncore/pipeline/steps/resolve.html#SimpleManifestResolveRunner.run"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#aodncore.pipeline.steps.resolve.SimpleManifestResolveRunner.run" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="aodncore.pipeline.steps.resolve.SingleFileResolveRunner">
+<em class="property">class </em><code class="descclassname">aodncore.pipeline.steps.resolve.</code><code class="descname">SingleFileResolveRunner</code><span class="sig-paren">(</span><em>input_file</em>, <em>output_dir</em>, <em>config</em>, <em>logger</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/aodncore/pipeline/steps/resolve.html#SingleFileResolveRunner"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#aodncore.pipeline.steps.resolve.SingleFileResolveRunner" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">aodncore.pipeline.steps.resolve.BaseResolveRunner</span></code></p>
+<dl class="method">
+<dt id="aodncore.pipeline.steps.resolve.SingleFileResolveRunner.run">
+<code class="descname">run</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/aodncore/pipeline/steps/resolve.html#SingleFileResolveRunner.run"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#aodncore.pipeline.steps.resolve.SingleFileResolveRunner.run" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="aodncore.pipeline.steps.resolve.ZipFileResolveRunner">
+<em class="property">class </em><code class="descclassname">aodncore.pipeline.steps.resolve.</code><code class="descname">ZipFileResolveRunner</code><span class="sig-paren">(</span><em>input_file</em>, <em>output_dir</em>, <em>config</em>, <em>logger</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/aodncore/pipeline/steps/resolve.html#ZipFileResolveRunner"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#aodncore.pipeline.steps.resolve.ZipFileResolveRunner" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">aodncore.pipeline.steps.resolve.BaseResolveRunner</span></code></p>
+<dl class="method">
+<dt id="aodncore.pipeline.steps.resolve.ZipFileResolveRunner.run">
+<code class="descname">run</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/aodncore/pipeline/steps/resolve.html#ZipFileResolveRunner.run"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#aodncore.pipeline.steps.resolve.ZipFileResolveRunner.run" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-aodncore.pipeline.steps.upload">
+<span id="aodncore-pipeline-steps-upload-module"></span><h2>aodncore.pipeline.steps.upload module<a class="headerlink" href="#module-aodncore.pipeline.steps.upload" title="Permalink to this headline">¶</a></h2>
+<dl class="function">
+<dt id="aodncore.pipeline.steps.upload.get_upload_runner">
+<code class="descclassname">aodncore.pipeline.steps.upload.</code><code class="descname">get_upload_runner</code><span class="sig-paren">(</span><em>upload_base_url</em>, <em>config</em>, <em>logger</em>, <em>archive_mode=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/aodncore/pipeline/steps/upload.html#get_upload_runner"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#aodncore.pipeline.steps.upload.get_upload_runner" title="Permalink to this definition">¶</a></dt>
+<dd><p>Factory function to return appropriate uploader class based on URL scheme</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>upload_base_url</strong> – URL base</li>
+<li><strong>config</strong> – LazyConfigManager instance</li>
+<li><strong>logger</strong> – Logger instance</li>
+<li><strong>archive_mode</strong> – flag to indicate archive</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">BaseUploadRunner sub-class</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="class">
+<dt id="aodncore.pipeline.steps.upload.FileUploadRunner">
+<em class="property">class </em><code class="descclassname">aodncore.pipeline.steps.upload.</code><code class="descname">FileUploadRunner</code><span class="sig-paren">(</span><em>prefix</em>, <em>config</em>, <em>logger</em>, <em>archive_mode=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/aodncore/pipeline/steps/upload.html#FileUploadRunner"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#aodncore.pipeline.steps.upload.FileUploadRunner" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">aodncore.pipeline.steps.upload.BaseUploadRunner</span></code></p>
+<p>UploadRunner to “upload” a file to a local directory</p>
+<dl class="method">
+<dt id="aodncore.pipeline.steps.upload.FileUploadRunner.set_is_overwrite">
+<code class="descname">set_is_overwrite</code><span class="sig-paren">(</span><em>pipeline_files</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/aodncore/pipeline/steps/upload.html#FileUploadRunner.set_is_overwrite"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#aodncore.pipeline.steps.upload.FileUploadRunner.set_is_overwrite" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="aodncore.pipeline.steps.upload.S3UploadRunner">
+<em class="property">class </em><code class="descclassname">aodncore.pipeline.steps.upload.</code><code class="descname">S3UploadRunner</code><span class="sig-paren">(</span><em>bucket</em>, <em>prefix</em>, <em>config</em>, <em>logger</em>, <em>archive_mode=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/aodncore/pipeline/steps/upload.html#S3UploadRunner"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#aodncore.pipeline.steps.upload.S3UploadRunner" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">aodncore.pipeline.steps.upload.BaseUploadRunner</span></code></p>
+<p>UploadRunner to upload files to an S3 bucket</p>
+<dl class="docutils">
+<dt>Note: this does not and should not attempt to support any authentication code. Multiple mechanisms for loading</dt>
+<dd><p class="first">credentials are far more appropriately handled directly by the boto3, and it is expected that the
+credentials are supplied using one of these mechanisms by the environment (e.g. deployed from configuration
+management, set as environment variables etc.)</p>
+<p class="last">Refer: <a class="reference external" href="http://boto3.readthedocs.io/en/latest/guide/configuration.html">http://boto3.readthedocs.io/en/latest/guide/configuration.html</a></p>
+</dd>
+</dl>
+<dl class="method">
+<dt id="aodncore.pipeline.steps.upload.S3UploadRunner.set_is_overwrite">
+<code class="descname">set_is_overwrite</code><span class="sig-paren">(</span><em>pipeline_files</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/aodncore/pipeline/steps/upload.html#S3UploadRunner.set_is_overwrite"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#aodncore.pipeline.steps.upload.S3UploadRunner.set_is_overwrite" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="aodncore.pipeline.steps.upload.SftpUploadRunner">
+<em class="property">class </em><code class="descclassname">aodncore.pipeline.steps.upload.</code><code class="descname">SftpUploadRunner</code><span class="sig-paren">(</span><em>server</em>, <em>prefix</em>, <em>config</em>, <em>logger</em>, <em>archive_mode=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/aodncore/pipeline/steps/upload.html#SftpUploadRunner"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#aodncore.pipeline.steps.upload.SftpUploadRunner" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">aodncore.pipeline.steps.upload.BaseUploadRunner</span></code></p>
+<p>UploadRunner to upload files to an SFTP server</p>
+<dl class="docutils">
+<dt>Note: similar to the S3 upload runner, this does not implement any authentication code, as this is better handled by</dt>
+<dd>the environment in the form of public key authentication</dd>
+</dl>
+<dl class="method">
+<dt id="aodncore.pipeline.steps.upload.SftpUploadRunner.set_is_overwrite">
+<code class="descname">set_is_overwrite</code><span class="sig-paren">(</span><em>pipeline_files</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/aodncore/pipeline/steps/upload.html#SftpUploadRunner.set_is_overwrite"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#aodncore.pipeline.steps.upload.SftpUploadRunner.set_is_overwrite" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-aodncore.pipeline.steps">
+<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-aodncore.pipeline.steps" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="aodncore.pipeline.steps.NotifyList">
+<em class="property">class </em><code class="descclassname">aodncore.pipeline.steps.</code><code class="descname">NotifyList</code><span class="sig-paren">(</span><em>data=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/aodncore/pipeline/steps/notify.html#NotifyList"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#aodncore.pipeline.steps.NotifyList" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">object</span></code></p>
+<dl class="method">
+<dt id="aodncore.pipeline.steps.NotifyList.add">
+<code class="descname">add</code><span class="sig-paren">(</span><em>recipient</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/aodncore/pipeline/steps/notify.html#NotifyList.add"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#aodncore.pipeline.steps.NotifyList.add" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="aodncore.pipeline.steps.NotifyList.append">
+<code class="descname">append</code><span class="sig-paren">(</span><em>recipient</em><span class="sig-paren">)</span><a class="headerlink" href="#aodncore.pipeline.steps.NotifyList.append" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="aodncore.pipeline.steps.NotifyList.difference">
+<code class="descname">difference</code><span class="sig-paren">(</span><em>sequence</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/aodncore/pipeline/steps/notify.html#NotifyList.difference"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#aodncore.pipeline.steps.NotifyList.difference" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="aodncore.pipeline.steps.NotifyList.discard">
+<code class="descname">discard</code><span class="sig-paren">(</span><em>recipient</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/aodncore/pipeline/steps/notify.html#NotifyList.discard"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#aodncore.pipeline.steps.NotifyList.discard" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="aodncore.pipeline.steps.NotifyList.filter_by_failed">
+<code class="descname">filter_by_failed</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/aodncore/pipeline/steps/notify.html#NotifyList.filter_by_failed"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#aodncore.pipeline.steps.NotifyList.filter_by_failed" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="aodncore.pipeline.steps.NotifyList.filter_by_notify_type">
+<code class="descname">filter_by_notify_type</code><span class="sig-paren">(</span><em>notify_type</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/aodncore/pipeline/steps/notify.html#NotifyList.filter_by_notify_type"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#aodncore.pipeline.steps.NotifyList.filter_by_notify_type" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return a new NotifyList containing only recipients of the given notify_type</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>notify_type</strong> – attribute by which to filter PipelineFiles</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">NotifyList containing only NotifyRecipient objects of the given type</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="aodncore.pipeline.steps.NotifyList.filter_by_succeeded">
+<code class="descname">filter_by_succeeded</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/aodncore/pipeline/steps/notify.html#NotifyList.filter_by_succeeded"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#aodncore.pipeline.steps.NotifyList.filter_by_succeeded" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="classmethod">
+<dt id="aodncore.pipeline.steps.NotifyList.from_collection">
+<em class="property">classmethod </em><code class="descname">from_collection</code><span class="sig-paren">(</span><em>recipient_collection</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/aodncore/pipeline/steps/notify.html#NotifyList.from_collection"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#aodncore.pipeline.steps.NotifyList.from_collection" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="aodncore.pipeline.steps.NotifyList.issubset">
+<code class="descname">issubset</code><span class="sig-paren">(</span><em>sequence</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/aodncore/pipeline/steps/notify.html#NotifyList.issubset"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#aodncore.pipeline.steps.NotifyList.issubset" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="aodncore.pipeline.steps.NotifyList.issuperset">
+<code class="descname">issuperset</code><span class="sig-paren">(</span><em>sequence</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/aodncore/pipeline/steps/notify.html#NotifyList.issuperset"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#aodncore.pipeline.steps.NotifyList.issuperset" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="aodncore.pipeline.steps.NotifyList.set_error">
+<code class="descname">set_error</code><span class="sig-paren">(</span><em>error</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/aodncore/pipeline/steps/notify.html#NotifyList.set_error"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#aodncore.pipeline.steps.NotifyList.set_error" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set the error attribute for all elements</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>error</strong> – Exception instance</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">None</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="aodncore.pipeline.steps.NotifyList.set_notification_attempted">
+<code class="descname">set_notification_attempted</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/aodncore/pipeline/steps/notify.html#NotifyList.set_notification_attempted"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#aodncore.pipeline.steps.NotifyList.set_notification_attempted" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="aodncore.pipeline.steps.NotifyList.union">
+<code class="descname">union</code><span class="sig-paren">(</span><em>sequence</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/aodncore/pipeline/steps/notify.html#NotifyList.union"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#aodncore.pipeline.steps.NotifyList.union" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="aodncore.pipeline.steps.NotifyList.update">
+<code class="descname">update</code><span class="sig-paren">(</span><em>sequence</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/aodncore/pipeline/steps/notify.html#NotifyList.update"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#aodncore.pipeline.steps.NotifyList.update" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="aodncore.pipeline.steps.NotifyList.update_from_error_dict">
+<code class="descname">update_from_error_dict</code><span class="sig-paren">(</span><em>error_dict</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/aodncore/pipeline/steps/notify.html#NotifyList.update_from_error_dict"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#aodncore.pipeline.steps.NotifyList.update_from_error_dict" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="docutils">
+<dt>Update recipient statuses according to the given dict parameter. The absence of an address in the dict keys</dt>
+<dd>will be interpreted as “successfully sent”.</dd>
+</dl>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>error_dict</strong> – dict as returned by smtplib.SMTP.sendmail method</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">None</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="aodncore.pipeline.steps.NotificationRecipient">
+<em class="property">class </em><code class="descclassname">aodncore.pipeline.steps.</code><code class="descname">NotificationRecipient</code><span class="sig-paren">(</span><em>address</em>, <em>notify_type</em>, <em>raw_string=''</em>, <em>error=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/aodncore/pipeline/steps/notify.html#NotificationRecipient"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#aodncore.pipeline.steps.NotificationRecipient" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">object</span></code></p>
+<dl class="attribute">
+<dt id="aodncore.pipeline.steps.NotificationRecipient.address">
+<code class="descname">address</code><a class="headerlink" href="#aodncore.pipeline.steps.NotificationRecipient.address" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="classmethod">
+<dt id="aodncore.pipeline.steps.NotificationRecipient.from_string">
+<em class="property">classmethod </em><code class="descname">from_string</code><span class="sig-paren">(</span><em>recipient_string</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/aodncore/pipeline/steps/notify.html#NotificationRecipient.from_string"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#aodncore.pipeline.steps.NotificationRecipient.from_string" title="Permalink to this definition">¶</a></dt>
+<dd><p>From a given ‘recipient string’, expected to be in the format of ‘protocol:address’, return a
+new NotificationRecipient object with attributes set according to the content/validity of the input string</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>recipient_string</strong> – string in format of ‘protocol:address’</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">NotificationRecipient object</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="aodncore.pipeline.steps.NotificationRecipient.notification_attempted">
+<code class="descname">notification_attempted</code><a class="headerlink" href="#aodncore.pipeline.steps.NotificationRecipient.notification_attempted" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="aodncore.pipeline.steps.NotificationRecipient.notification_succeeded">
+<code class="descname">notification_succeeded</code><a class="headerlink" href="#aodncore.pipeline.steps.NotificationRecipient.notification_succeeded" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="aodncore.pipeline.steps.NotificationRecipient.notify_type">
+<code class="descname">notify_type</code><a class="headerlink" href="#aodncore.pipeline.steps.NotificationRecipient.notify_type" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="aodncore.pipeline.steps.NotificationRecipient.raw_string">
+<code class="descname">raw_string</code><a class="headerlink" href="#aodncore.pipeline.steps.NotificationRecipient.raw_string" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="function">
+<dt id="aodncore.pipeline.steps.get_cc_module_versions">
+<code class="descclassname">aodncore.pipeline.steps.</code><code class="descname">get_cc_module_versions</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/aodncore/pipeline/steps/check.html#get_cc_module_versions"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#aodncore.pipeline.steps.get_cc_module_versions" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get versions of compliance checker and compliance checker plugin version</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">a tuple containing the version strings</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="aodncore.pipeline.steps.get_check_runner">
+<code class="descclassname">aodncore.pipeline.steps.</code><code class="descname">get_check_runner</code><span class="sig-paren">(</span><em>config</em>, <em>logger</em>, <em>check_params=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/aodncore/pipeline/steps/check.html#get_check_runner"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#aodncore.pipeline.steps.get_check_runner" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="aodncore.pipeline.steps.get_child_check_runner">
+<code class="descclassname">aodncore.pipeline.steps.</code><code class="descname">get_child_check_runner</code><span class="sig-paren">(</span><em>check_type</em>, <em>config</em>, <em>logger</em>, <em>check_params=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/aodncore/pipeline/steps/check.html#get_child_check_runner"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#aodncore.pipeline.steps.get_child_check_runner" title="Permalink to this definition">¶</a></dt>
+<dd><p>Factory function to return appropriate checker class based on check type value</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>check_type</strong> – attribute of PipelineFileCheckType to determine which CheckRunner is returned</li>
+<li><strong>check_params</strong> – list of parameters to pass to compliance checker library</li>
+<li><strong>config</strong> – LazyConfigManager instance</li>
+<li><strong>logger</strong> – Logger instance</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">BaseCheckRunner sub-class</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="aodncore.pipeline.steps.get_harvester_runner">
+<code class="descclassname">aodncore.pipeline.steps.</code><code class="descname">get_harvester_runner</code><span class="sig-paren">(</span><em>harvester_name</em>, <em>upload_runner</em>, <em>harvest_params</em>, <em>tmp_base_dir</em>, <em>config</em>, <em>logger</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/aodncore/pipeline/steps/harvest.html#get_harvester_runner"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#aodncore.pipeline.steps.get_harvester_runner" title="Permalink to this definition">¶</a></dt>
+<dd><p>Factory function to return appropriate harvester class</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>harvester_name</strong> – harvester name</li>
+<li><strong>upload_runner</strong> – upload runner instance to use for uploads</li>
+<li><strong>harvest_params</strong> – keyword parameters passed to harvest runner</li>
+<li><strong>tmp_base_dir</strong> – base temporary directory</li>
+<li><strong>config</strong> – LazyConfigManager instance</li>
+<li><strong>logger</strong> – Logger instance</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">BaseHarvesterRunner sub-class</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="aodncore.pipeline.steps.get_notify_runner">
+<code class="descclassname">aodncore.pipeline.steps.</code><code class="descname">get_notify_runner</code><span class="sig-paren">(</span><em>notification_data</em>, <em>config</em>, <em>logger</em>, <em>notify_params=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/aodncore/pipeline/steps/notify.html#get_notify_runner"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#aodncore.pipeline.steps.get_notify_runner" title="Permalink to this definition">¶</a></dt>
+<dd><p>Factory function to return notify runner class</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>notification_data</strong> – dictionary containing notification data (i.e. template values)</li>
+<li><strong>config</strong> – LazyConfigManager instance</li>
+<li><strong>logger</strong> – Logger instance</li>
+<li><strong>notify_params</strong> – list of parameters to define notification behaviour</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">AbstractNotifyRunner sub-class</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="aodncore.pipeline.steps.get_resolve_runner">
+<code class="descclassname">aodncore.pipeline.steps.</code><code class="descname">get_resolve_runner</code><span class="sig-paren">(</span><em>input_file</em>, <em>output_dir</em>, <em>config</em>, <em>logger</em>, <em>resolve_params=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/aodncore/pipeline/steps/resolve.html#get_resolve_runner"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#aodncore.pipeline.steps.get_resolve_runner" title="Permalink to this definition">¶</a></dt>
+<dd><p>Factory function to return appropriate resolver class based on the file extension</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>input_file</strong> – path to the input file</li>
+<li><strong>output_dir</strong> – directory where the resolved files will be extracted/copied</li>
+<li><strong>config</strong> – reference to the calling handler object</li>
+<li><strong>logger</strong> – reference to a Logger instance to use</li>
+<li><strong>resolve_params</strong> – list of parameters to pass to check runner instances</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">BaseResolveRunner sub-class</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="aodncore.pipeline.steps.get_upload_runner">
+<code class="descclassname">aodncore.pipeline.steps.</code><code class="descname">get_upload_runner</code><span class="sig-paren">(</span><em>upload_base_url</em>, <em>config</em>, <em>logger</em>, <em>archive_mode=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/aodncore/pipeline/steps/upload.html#get_upload_runner"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#aodncore.pipeline.steps.get_upload_runner" title="Permalink to this definition">¶</a></dt>
+<dd><p>Factory function to return appropriate uploader class based on URL scheme</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>upload_base_url</strong> – URL base</li>
+<li><strong>config</strong> – LazyConfigManager instance</li>
+<li><strong>logger</strong> – Logger instance</li>
+<li><strong>archive_mode</strong> – flag to indicate archive</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">BaseUploadRunner sub-class</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper"><div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="index.html">Documentation overview</a><ul>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2018, AODN.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.6.7</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.10</a>
+      
+      |
+      <a href="_sources/aodncore.pipeline.steps.rst.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>

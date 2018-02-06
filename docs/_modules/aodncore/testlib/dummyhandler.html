@@ -1,0 +1,159 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>aodncore.testlib.dummyhandler &#8212; aodncore 0.1 documentation</title>
+    <link rel="stylesheet" href="../../../_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../../',
+        VERSION:     '0.1',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true,
+        SOURCELINK_SUFFIX: '.txt'
+      };
+    </script>
+    <script type="text/javascript" src="../../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../../_static/doctools.js"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" />
+   
+  <link rel="stylesheet" href="../../../_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head>
+  <body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <h1>Source code for aodncore.testlib.dummyhandler</h1><div class="highlight"><pre>
+<span></span><span class="kn">from</span> <span class="nn">aodncore.pipeline</span> <span class="k">import</span> <span class="n">HandlerBase</span><span class="p">,</span> <span class="n">PipelineFilePublishType</span><span class="p">,</span> <span class="n">PipelineFileCheckType</span>
+
+
+<div class="viewcode-block" id="DummyHandler"><a class="viewcode-back" href="../../../aodncore.testlib.html#aodncore.testlib.dummyhandler.DummyHandler">[docs]</a><span class="k">class</span> <span class="nc">DummyHandler</span><span class="p">(</span><span class="n">HandlerBase</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;This is an example handler, used for testing and also to demonstrate some of the kinds of things that each step</span>
+<span class="sd">        might perform.</span>
+<span class="sd">        </span>
+<span class="sd">        Bear in mind that this inherits everything from the HandlerBase, but only some of the things are suitable to be</span>
+<span class="sd">        overridden in this child class.</span>
+<span class="sd">      </span>
+<span class="sd">        Inherited instance members that will nearly always be relevant:</span>
+<span class="sd">        </span>
+<span class="sd">        * self.file_collection - the main collection of files, which is a PipelineFileCollection object whose elements</span>
+<span class="sd">                                are all PipelineFile instances (see handlerlib.files to see what these are)</span>
+<span class="sd">        </span>
+<span class="sd">        * self.logger - log things!</span>
+
+<span class="sd">        Inherited</span>
+<span class="sd">        Things that you would typically implement here:</span>
+<span class="sd">        </span>
+<span class="sd">        * dest_path static method to </span>
+<span class="sd">        * preprocess </span>
+<span class="sd">        * process</span>
+<span class="sd">        * postprocess methods</span>
+<span class="sd">    </span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">DummyHandler</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">default_addition_publish_type</span> <span class="o">=</span> <span class="n">PipelineFilePublishType</span><span class="o">.</span><span class="n">HARVEST_ARCHIVE_UPLOAD</span>
+
+<div class="viewcode-block" id="DummyHandler.dest_path"><a class="viewcode-back" href="../../../aodncore.testlib.html#aodncore.testlib.dummyhandler.DummyHandler.dest_path">[docs]</a>    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">dest_path</span><span class="p">(</span><span class="n">filename</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;This method is optional, but if it is defined, it will be used to determine the destination path for a given</span>
+<span class="sd">        input path. This could be based purely on the filename, or you could import the netcdf library and open the file</span>
+<span class="sd">        and work it out based on the contents, or of course any other way you want to determine it</span>
+<span class="sd">        :param filename: individual input file</span>
+<span class="sd">        :return: destination path for the input file</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">dest_path</span> <span class="o">=</span> <span class="s2">&quot;DUMMY/path/renamed-from-handler-method-</span><span class="si">{name}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="n">filename</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">dest_path</span></div>
+
+<div class="viewcode-block" id="DummyHandler.preprocess"><a class="viewcode-back" href="../../../aodncore.testlib.html#aodncore.testlib.dummyhandler.DummyHandler.preprocess">[docs]</a>    <span class="k">def</span> <span class="nf">preprocess</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Here you can run code that needs to run before the compliance checker step. This might be where you specify</span>
+<span class="sd">        which files in the &quot;eligible_files&quot; list are &quot;UPLOAD_ONLY&quot;, or not published at all </span>
+<span class="sd">        </span>
+<span class="sd">        :return: None</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Running preprocess from child class&quot;</span><span class="p">)</span>
+
+        <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">file_collection</span><span class="p">:</span>
+            <span class="c1"># You can toggle compliance checking on or off with the &quot;should_compliance_check&quot; property of the file. This</span>
+            <span class="c1"># is an example of something that *must* be done in the preprocess step</span>
+            <span class="k">if</span> <span class="n">f</span><span class="o">.</span><span class="n">src_path</span> <span class="o">==</span> <span class="s1">&#39;not a real file.txt&#39;</span><span class="p">:</span>
+                <span class="n">f</span><span class="o">.</span><span class="n">check_type</span> <span class="o">=</span> <span class="n">PipelineFileCheckType</span><span class="o">.</span><span class="n">NO_ACTION</span></div>
+
+<div class="viewcode-block" id="DummyHandler.process"><a class="viewcode-back" href="../../../aodncore.testlib.html#aodncore.testlib.dummyhandler.DummyHandler.process">[docs]</a>    <span class="k">def</span> <span class="nf">process</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Here you can run code that needs to run *after* the compliance checker step but *before* the publishing step.</span>
+
+<span class="sd">        :return: None</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Running process from child class&quot;</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">file_collection</span><span class="p">:</span>
+            <span class="c1"># This is an example of how you might manipulate what happens to a file by changing the &quot;publish type&quot; to a</span>
+            <span class="c1"># different value in the &quot;PipelineFilePublishType&quot; enum. This could be done in the preprocess step or</span>
+            <span class="c1"># process.</span>
+            <span class="k">if</span> <span class="n">f</span><span class="o">.</span><span class="n">src_path</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="s1">&#39;bad.nc&#39;</span><span class="p">):</span>
+                <span class="n">f</span><span class="o">.</span><span class="n">publish_type</span> <span class="o">=</span> <span class="n">PipelineFilePublishType</span><span class="o">.</span><span class="n">UPLOAD_ONLY</span></div>
+
+<div class="viewcode-block" id="DummyHandler.postprocess"><a class="viewcode-back" href="../../../aodncore.testlib.html#aodncore.testlib.dummyhandler.DummyHandler.postprocess">[docs]</a>    <span class="k">def</span> <span class="nf">postprocess</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Here you can run code that needs to run *after* the publishing step but *before* the notify step</span>
+
+<span class="sd">        :return: None</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Running postprocess from child class&quot;</span><span class="p">)</span></div></div>
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper"><div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../../../index.html">Documentation overview</a><ul>
+  <li><a href="../../index.html">Module code</a><ul>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="../../../search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2018, AODN.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.6.7</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.10</a>
+      
+    </div>
+
+    
+
+    
+  </body>
+</html>
