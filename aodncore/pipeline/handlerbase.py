@@ -139,7 +139,7 @@ Attributes
 
 A handler instance contains a number of attributes which control or modify the behaviour of the handler. The attributes
 are typically set from the **params** key of the watch configuration, or from the ``__init__`` method of a handler
-subclass however when writing tests, it is necessary to manually set the parameters to the desired values for testing.
+subclass (e.g. when writing tests).
 
 Class parameters
 ~~~~~~~~~~~~~~~~

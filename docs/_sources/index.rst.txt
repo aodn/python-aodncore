@@ -10,6 +10,7 @@ Welcome to aodncore's documentation!
    :maxdepth: 20
    :caption: Contents:
 
+   aodncore
 
 Indices and tables
 ==================
