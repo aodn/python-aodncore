@@ -413,6 +413,118 @@
     <span class="sd">&quot;&quot;&quot;Base class for pipeline handler sub-classes.</span>
 
 <span class="sd">    Implements common handler methods and defines state machine states and transitions.</span>
+
+<span class="sd">    :param input_file: Path to the file being handled. A non-existent file will cause the handler to exit with an error</span>
+<span class="sd">        during the initialise step.</span>
+
+<span class="sd">        .. note:: :attr:`input_file` is the only positional argument. Other arguments may be provided in any order.</span>
+<span class="sd">    :type input_file: str</span>
+
+<span class="sd">    :param allowed_extensions: List of allowed extensions for :attr:`input_file`. Non-matching input files with cause</span>
+<span class="sd">        the handler to exit with an error during the initialise step.</span>
+<span class="sd">    :type allowed_extensions: list</span>
+
+<span class="sd">    :param archive_input_file: Flags whether the original input file should be uploaded to the archive, the location of</span>
+<span class="sd">        which is configured by the environment configuration. The file will be archived at</span>
+<span class="sd">        ARCHIVE_URI/PIPELINE_NAME/BASENAME.</span>
+<span class="sd">    :type archive_input_file: bool</span>
+
+<span class="sd">    :param archive_path_function: See :attr:`dest_path_function`. This operates identically, except that it is used to</span>
+<span class="sd">        calculate the :attr:`PipelineFile.archive_path` attribute and that the path is relative to the ARCHIVE_URI.</span>
+<span class="sd">    :type archive_path_function: str, function</span>
+
+<span class="sd">    :param celery_task: A Celery task object, in order for the handler instance to derive runtime information such as</span>
+<span class="sd">        the current task name and UUID.</span>
+
+<span class="sd">        .. note:: If absent (e.g. when unit testing), the handler will revert to having no task information available,</span>
+<span class="sd">            and will log output to standard output.</span>
+<span class="sd">    :type celery_task: :class:`celery.Task`</span>
+
+<span class="sd">    :param check_params: A dict containing parameters passed directly to the check step (e.g. compliance checker</span>
+<span class="sd">        suites). The structure of the dict is defined by the :const:`CHECK_PARAMS_SCHEMA` object in the</span>
+<span class="sd">        :mod:`aodncore.pipeline.schema` module.</span>
+<span class="sd">    :type check_params: dict</span>
+
+<span class="sd">    :param config: A configuration object which the handler uses to retrieve configuration from it&#39;s environment. If</span>
+<span class="sd">        absent, the handler will exit with an error during the :meth:`__init__` method (i.e. will not</span>
+<span class="sd">        instantiate).</span>
+
+<span class="sd">        .. note:: While this attribute is mandatory, it is not generally required to supply it directly in normal use</span>
+<span class="sd">            cases, unless instantiating the handler class manually.</span>
+
+<span class="sd">            When deployed, the parameter is supplied by the worker service configuration.</span>
+
+<span class="sd">            When testing, unit tests inheriting from :class:`HandlerTestCase` contain a pre-prepared config object</span>
+<span class="sd">            available as :attr:`self.config`. The :meth:`HandlerTestCase.run_handler` and</span>
+<span class="sd">            :meth:`HandlerTestCase.run_handler_with_exception` helper methods automatically assign the test config to</span>
+<span class="sd">            the handler being tested.</span>
+<span class="sd">    :type config: :class:`aodncore.pipeline.config.LazyConfigManager`</span>
+
+<span class="sd">    :param dest_path_function: The function used to determine the :attr:`PipelineFile.dest_path` attribute, relative to</span>
+<span class="sd">        the UPLOAD_URI configuration item. If absent, the handler will attempt to use the :meth:`dest_path` method in</span>
+<span class="sd">        the handler itself. If a function is not found by either mechanism, the handler will exit with an error during</span>
+<span class="sd">        the initialise step.</span>
+
+<span class="sd">        .. note:: when value is a string, it is assumed that it refers to the name of a function advertised in the</span>
+<span class="sd">            &#39;pipeline.handlers&#39; entry point group.</span>
+<span class="sd">    :type dest_path_function: str, function</span>
+
+<span class="sd">    :param exclude_regexes: See :attr:`include_regexes`.</span>
+<span class="sd">    :type exclude_regexes: list</span>
+
+<span class="sd">    :param harvest_params: A dict containing parameters passed directly to the harvest step (e.g. slice size,</span>
+<span class="sd">        undo behaviour). The structure of the dict is defined by the :const:`HARVEST_PARAMS_SCHEMA` object in the</span>
+<span class="sd">        :mod:`aodncore.pipeline.schema` module.</span>
+<span class="sd">    :type harvest_params: dict</span>
+
+<span class="sd">    :param harvest_type: String to inform the :mod:`aodncore.pipeline.steps.harvest` step factory function which</span>
+<span class="sd">        HarvesterRunner implementation to use during the publish step.</span>
+
+<span class="sd">        .. note:: Currently the only valid value is &#39;talend&#39;, which is the default.</span>
+<span class="sd">    :type harvest_type: str</span>
+
+<span class="sd">    :param include_regexes: A list of regexes which, when combined with :attr:`exclude_regexes`, determines which files</span>
+<span class="sd">        in the collection are assigned with the :attr:`default_addition_publish_type` or</span>
+<span class="sd">        :attr:`default_deletion_publish_type` types (depending on whether the file is an addition or a deletion). If</span>
+<span class="sd">        set, to be considered included, file paths must match one of the regexes in :attr:`include_regexes` but *not*</span>
+<span class="sd">        any of the regexes in :attr:`exclude_regexes`.</span>
+
+<span class="sd">        Files not matching the inclusion criteria will remain with a :attr:`publish_type` attribute of</span>
+<span class="sd">        :const:`PipelineFilePublishType.NO_ACTION`, meaning they will be ignored by the publish step.</span>
+
+<span class="sd">        .. note:: If omitted, the default is to select *all* files in :attr:`file_collection` for publication.</span>
+
+<span class="sd">        .. note:: This relates only to the files in :attr:`file_collection`, and has no relation to the</span>
+<span class="sd">            :attr:`input_file` path, unless the input file is itself in the collection (e.g. when handling a single</span>
+<span class="sd">            file).</span>
+
+<span class="sd">            For example, a single &#39;.nc&#39; file could feasibly match the :attr:`allowed_extensions` for the handler, but</span>
+<span class="sd">            still be excluded by this mechanism once it is added to :attr:`file_collection` during the</span>
+<span class="sd">            :mod:`aodncore.pipeline.steps.resolve` step.</span>
+
+<span class="sd">    :type include_regexes: list</span>
+
+<span class="sd">    :param notify_params: A dict containing parameters passed directly to the :mod:`aodncore.pipeline.steps.notify` step</span>
+<span class="sd">        (e.g. owner/success/failure notify lists). The structure of the dict is defined by the</span>
+<span class="sd">        :const:`NOTIFY_PARAMS_SCHEMA` object in the :mod:`aodncore.pipeline.schema` module.</span>
+<span class="sd">    :type notify_params: dict</span>
+
+<span class="sd">    :param upload_path: A string attribute to hold the original upload path of the :attr:`input_file`.</span>
+
+<span class="sd">        .. note:: This is intended for information purposes only (e.g. to appear in notification templates), since there</span>
+<span class="sd">            is a distinction between the original path, and the :attr:`input_file` as provided to the handler, which</span>
+<span class="sd">            represents where the file was moved to for processing.</span>
+<span class="sd">    :type upload_path: str</span>
+
+<span class="sd">    :param resolve_params: A dict containing parameters passed directly to the resolve step (e.g. the root path</span>
+<span class="sd">        prepended to relative paths in manifest files). The structure of the dict is defined by the</span>
+<span class="sd">        :const:`RESOLVE_PARAMS_SCHEMA` object in the :mod:`aodncore.pipeline.schema` module.</span>
+<span class="sd">    :type resolve_params: dict</span>
+
+<span class="sd">    :param kwargs: Any additional keyword arguments passed to the handler are ignored by the :class:`HandlerBase`` base</span>
+<span class="sd">        class. This is to leave open the ability for handler specific params to be passed from the watch configuration</span>
+<span class="sd">        to control some arbitrary handler behaviour, without interfering with the core state machine operation.</span>
+
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="n">ordered_states</span> <span class="o">=</span> <span class="p">[</span>
@@ -527,43 +639,6 @@
                  <span class="n">upload_path</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
                  <span class="n">resolve_params</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
                  <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
-
-<span class="sd">        Note: input_file *must* remain the only positional parameter. Any additional arguments *must* be added as</span>
-<span class="sd">        keyword arguments in order to support assumptions about how the class is called by the task handling code.</span>
-
-<span class="sd">        :param input_file: input file being handled</span>
-<span class="sd">        :type input_file: str</span>
-<span class="sd">        :param allowed_extensions: list of allowed extensions for the input file</span>
-<span class="sd">        :type allowed_extensions: list</span>
-<span class="sd">        :param archive_input_file: flag to determine whether the original input file is archived</span>
-<span class="sd">        :type archive_input_file: bool</span>
-<span class="sd">        :param archive_path_function: function reference or entry point used to determine archive_path for a file</span>
-<span class="sd">        :type archive_path_function: str, function</span>
-<span class="sd">        :param celery_task: reference to the Celery task instance which instantiated the handler instance</span>
-<span class="sd">        :type celery_task: celery.Task</span>
-<span class="sd">        :param check_params: list of parameters to passed through to the compliance checker library</span>
-<span class="sd">        :type check_params: dict</span>
-<span class="sd">        :param config: LazyConfigManager instance</span>
-<span class="sd">        :type config: aodncore.pipeline.config.LazyConfigManager</span>
-<span class="sd">        :param dest_path_function: function reference or entry point used to determine dest_path for a file</span>
-<span class="sd">        :type dest_path_function: str, function</span>
-<span class="sd">        :param exclude_regexes: list of regexes that files matching include_regexes must *not* match to be &#39;eligible&#39;</span>
-<span class="sd">        :type exclude_regexes: list</span>
-<span class="sd">        :param harvest_params: keyword parameters passed to the publish step to control harvest runner parameters</span>
-<span class="sd">        :type harvest_params: dict</span>
-<span class="sd">        :param harvest_type: determine which harvest type will be used (supported types in harvest module)</span>
-<span class="sd">        :type harvest_type: str</span>
-<span class="sd">        :param include_regexes: list of regexes that files must match to be &#39;eligible&#39;</span>
-<span class="sd">        :type include_regexes: list</span>
-<span class="sd">        :param notify_params: keyword parameters passed to the notify step to control notification behaviour</span>
-<span class="sd">        :type notify_params: dict</span>
-<span class="sd">        :param upload_path: original path of file (for information only, e.g. notifications)</span>
-<span class="sd">        :type upload_path: str</span>
-<span class="sd">        :param resolve_params: keyword parameters passed to the publish step to control harvest runner parameters</span>
-<span class="sd">        :type resolve_params: dict</span>
-<span class="sd">        :param kwargs: allow additional keyword arguments to allow potential for child handler to use custom arguments</span>
-<span class="sd">        &quot;&quot;&quot;</span>
 
         <span class="c1"># property backing variables</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_cc_versions</span> <span class="o">=</span> <span class="kc">None</span>
@@ -627,33 +702,37 @@
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">celery_task_id</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Read-only property to return Celery task ID</span>
+        <span class="sd">&quot;&quot;&quot;Read-only property to access Celery task ID</span>
 
-<span class="sd">        :return: Celery task ID or None</span>
+<span class="sd">        :return: Celery task ID (if applicable)</span>
+<span class="sd">        :rtype: :class:`str`, :class:`None`</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_celery_task_id</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">celery_task_name</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Read-only property to return Celery task name</span>
+        <span class="sd">&quot;&quot;&quot;Read-only property to access Celery task name</span>
 
-<span class="sd">        :return: Celery task name or None</span>
+<span class="sd">        :return: Celery task name (if applicable)</span>
+<span class="sd">        :rtype: :class:`str`, :class:`None`</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_celery_task_name</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">cc_versions</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Read-only property to retrieve compliance checker module versions</span>
+        <span class="sd">&quot;&quot;&quot;Read-only property to access compliance checker module versions</span>
 
-<span class="sd">        :return: dict containing compliance checker version strings for core and plugin modules</span>
+<span class="sd">        :return: compliance checker version strings for core and plugin modules</span>
+<span class="sd">        :rtype: :class:`dict`</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_cc_versions</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">config</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Property to manage config attribute</span>
+        <span class="sd">&quot;&quot;&quot;Read-only property to access the :attr:`config` attribute</span>
 
-<span class="sd">        :return: LazyConfigManager instance</span>
+<span class="sd">        :return: configuration object</span>
+<span class="sd">        :rtype: :class:`aodncore.pipeline.config.LazyConfigManager`</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_config</span>
 
@@ -664,41 +743,46 @@
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">error</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Read-only property to retrieve Exception object from handler instance</span>
+        <span class="sd">&quot;&quot;&quot;Read-only property to access Exception object from handler instance</span>
 
-<span class="sd">        :return: Exception object or None</span>
+<span class="sd">        :return: the exception object which caused the handler to fail (if applicable)</span>
+<span class="sd">        :rtype: :class:`Exception`, :class:`None`</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_error</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">error_details</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Read-only property to retrieve string description of error (if applicable) from handler instance</span>
+        <span class="sd">&quot;&quot;&quot;Read-only property to retrieve string description of error from handler instance</span>
 
-<span class="sd">        :return: error description or &#39;None&#39;</span>
+<span class="sd">        :return: error description string (if applicable)</span>
+<span class="sd">        :rtype: :class:`str`, :class:`None`</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_error_details</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">file_checksum</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Read-only property to retrieve the input_file checksum</span>
+        <span class="sd">&quot;&quot;&quot;Read-only property to access the input_file checksum</span>
 
-<span class="sd">        :return: checksum string or None</span>
+<span class="sd">        :return: :attr:`input_file` checksum string</span>
+<span class="sd">        :rtype: :class:`str`</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_file_checksum</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">file_extension</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Read-only property to retrieve the input_file extension</span>
+        <span class="sd">&quot;&quot;&quot;Read-only property to access the input_file extension</span>
 
-<span class="sd">        :return: extension string</span>
+<span class="sd">        :return: :attr:`input_file` extension string</span>
+<span class="sd">        :rtype: :class:`str`</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_file_extension</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">file_type</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Read-only property to retrieve the input_file type</span>
+        <span class="sd">&quot;&quot;&quot;Read-only property to access the input_file type</span>
 
-<span class="sd">        :return: FileType member</span>
+<span class="sd">        :return: :attr:`input_file` type</span>
+<span class="sd">        :rtype: :class:`FileType`</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_file_type</span>
 
@@ -707,6 +791,7 @@
         <span class="sd">&quot;&quot;&quot;Read-only property to retrieve the instance working directory</span>
 
 <span class="sd">        :return: string containing path to top level working directory for this instance</span>
+<span class="sd">        :rtype: :class:`str`, :class:`None`</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_instance_working_directory</span>
 
@@ -714,7 +799,8 @@
     <span class="k">def</span> <span class="nf">notification_results</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Read-only property to retrieve the notification results, including the sent status of each recipient</span>
 
-<span class="sd">        :return: NotifyList instance</span>
+<span class="sd">        :return: list of :class:`aodncore.pipeline.steps.notify.NotifyRecipient` instances</span>
+<span class="sd">        :rtype: :class:`aodncore.pipeline.steps.notify.NotifyList`</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_notification_results</span>
 
@@ -722,7 +808,8 @@
     <span class="k">def</span> <span class="nf">result</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Read-only property to retrieve the overall end result of the handler instance</span>
 
-<span class="sd">        :return: HandlerResult member</span>
+<span class="sd">        :return: handler result</span>
+<span class="sd">        :rtype: :class:`aodncore.pipeline.common.HandlerResult`</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_result</span>
 
@@ -730,7 +817,8 @@
     <span class="k">def</span> <span class="nf">should_notify</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Read-only property to retrieve the list of intended recipients *after* being assembled based on notify_params</span>
 
-<span class="sd">        :return: NotifyList instance</span>
+<span class="sd">        :return: list of intended recipients</span>
+<span class="sd">        :rtype: :class:`list`</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_should_notify</span>
 
@@ -738,7 +826,8 @@
     <span class="k">def</span> <span class="nf">start_time</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Read-only property containing the timestamp of when this instance was created</span>
 
-<span class="sd">        :return: datetime instance</span>
+<span class="sd">        :return: timestamp of handler starting time</span>
+<span class="sd">        :rtype: :class:`datetime.datetime`</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_start_time</span>
 
@@ -746,7 +835,8 @@
     <span class="k">def</span> <span class="nf">default_addition_publish_type</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Property to manage attribute which determines the default publish type assigned to &#39;addition&#39; PipelineFiles</span>
 
-<span class="sd">        :return: PipelinePublishType member</span>
+<span class="sd">        :return: default addition publish type</span>
+<span class="sd">        :rtype: :class:`aodncore.pipeline.common.PipelinePublishType`</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_default_addition_publish_type</span>
 
@@ -759,7 +849,8 @@
     <span class="k">def</span> <span class="nf">default_deletion_publish_type</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Property to manage attribute which determines the default publish type assigned to &#39;deletion&#39; PipelineFiles</span>
 
-<span class="sd">        :return: PipelinePublishType member</span>
+<span class="sd">        :return: default deletion publish type</span>
+<span class="sd">        :rtype: :class:`aodncore.pipeline.common.PipelinePublishType`</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_default_deletion_publish_type</span>
 
@@ -772,7 +863,8 @@
     <span class="k">def</span> <span class="nf">is_archived</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Boolean property indicating whether the input_file has been archived</span>
 
-<span class="sd">        :return: bool</span>
+<span class="sd">        :return: whether the :attr:`input_file` has been archived or not</span>
+<span class="sd">        :rtype: :class:`bool`</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_is_archived</span>
 
@@ -785,25 +877,31 @@
     <span class="k">def</span> <span class="nf">collection_dir</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Temporary subdirectory where collection will be unpacked</span>
 
-<span class="sd">        :return: None</span>
+<span class="sd">        .. note:: physical directory should not be manipulated directly by handler, rather the files should be managed</span>
+<span class="sd">            via their corresponding :class:`PipelineFile</span>
+<span class="sd">        :return: collection subdirectory of instance working directory (as populated by</span>
+<span class="sd">            :mod:`aodncore.pipeline.steps.resolve` step)</span>
+<span class="sd">        :rtype: :class:`str`, :class:`None`</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_instance_working_directory</span><span class="p">:</span>
             <span class="k">return</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_instance_working_directory</span><span class="p">,</span> <span class="s1">&#39;collection&#39;</span><span class="p">)</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">products_dir</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Temporary subdirectory in which products will be created</span>
+        <span class="sd">&quot;&quot;&quot;Temporary subdirectory in which products may be created</span>
 
-<span class="sd">        :return: None</span>
+<span class="sd">        :return: products subdirectory of instance working directory</span>
+<span class="sd">        :rtype: :class:`str`, :class:`None`</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_instance_working_directory</span><span class="p">:</span>
             <span class="k">return</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_instance_working_directory</span><span class="p">,</span> <span class="s1">&#39;products&#39;</span><span class="p">)</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">temp_dir</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Temporary subdirectory where any other temporary files may be created by handler sub-classes</span>
+        <span class="sd">&quot;&quot;&quot;Temporary subdirectory where any other arbitrary temporary files may be created by handler sub-classes</span>
 
-<span class="sd">        :return: None</span>
+<span class="sd">        :return: temporary subdirectory of instance working directory</span>
+<span class="sd">        :rtype: :class:`str`, :class:`None`</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_instance_working_directory</span><span class="p">:</span>
             <span class="k">return</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_instance_working_directory</span><span class="p">,</span> <span class="s1">&#39;temp&#39;</span><span class="p">)</span>
@@ -1160,7 +1258,8 @@
     <span class="c1">#</span>
 
 <div class="viewcode-block" id="HandlerBase.run"><a class="viewcode-back" href="../../../aodncore.pipeline.html#aodncore.pipeline.handlerbase.HandlerBase.run">[docs]</a>    <span class="k">def</span> <span class="nf">run</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;The entry point to the handler instance</span>
+        <span class="sd">&quot;&quot;&quot;The entry point to the handler instance. Executes the automatic state machine transitions, and populates the</span>
+<span class="sd">            :attr:`result` attribute to signal success or failure of the handler instance.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_handler_run</span><span class="p">:</span>
             <span class="k">raise</span> <span class="n">HandlerAlreadyRunError</span><span class="p">(</span><span class="s1">&#39;handler instance has already been run&#39;</span><span class="p">)</span>
