@@ -10,7 +10,7 @@ The ``aodncore.pipeline`` package provides the base class for each pipeline hand
 all of the core functionality of each handler, which is then available to the child class via class inheritance.
 
 
-State machine / handler "steps"
+State machine / handler steps
 -------------------------------
 
 In order to provide consistency and structure to the handler, the pipeline is broken into a series of ordered "steps",
@@ -23,7 +23,7 @@ enforces that the ``check`` step may *only* be entered into from the ``resolve``
 Similarly, the ``publish`` step cannot ever be entered into other than from the ``process`` step, which means that the
 step can safely make several assumptions about the overall state of the handler when it does get executed. For example,
 it can automatically assume with a 100% guarantee that the ``initalise``, ``resolve``, ``preprocess``, ``check`` and
-``process`` step have all been run in that order with no errors, allowing to to focus purely on the core concern of the
+``process`` step have all been run in that order with no errors, allowing it to focus purely on the core concern of the
 step; publishing files, and nothing more.
 
 The ordered steps are as follows:
@@ -70,7 +70,7 @@ Responsible for checking the validity and/or compliance of files in the collecti
     #. if NetCDF and compliance checks defined in parameters, check against listed check suites
     #. if NetCDF and no compliance checks defined, validate NetCDF format
     #. if known file type, validate file format (e.g. if .pdf extension, validate PDF format)  # TODO
-    #. if unknown file type, no checks performed
+    #. if unknown file type, check that the file is not empty
 
 process
 ~~~~~~~
@@ -117,9 +117,9 @@ therefore it is possible to manipulate or even override them, however it is mand
 to maintain the integrity of the handler execution.
 
 In addition to any methods starting with one or more underscores, the ``run`` method is also a special case, which must
-*not* be overridden or extended, as this is the entry point for handler execution. This is implemented and run separator
-from the class initialiser (```__init__```) such that the handler instance can be created, and have it's contents
-inspected (e.g. by unit tests) before and after actually executing the file processing code of the handler.
+*not* be overridden or extended, as this is the entry point for handler execution. This is implemented and run
+separately from the class initialiser (```__init__```) such that the handler instance can be created, and have it's
+contents inspected (e.g. by unit tests) before and after actually executing the file processing code of the handler.
 
 *Public methods*
 
