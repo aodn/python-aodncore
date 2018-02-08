@@ -6,6 +6,11 @@
 Welcome to aodncore's documentation!
 ====================================
 
+Getting started
+-----------
+
+* :ref:`Handler user guide`
+
 .. toctree::
    :maxdepth: 20
    :caption: Contents:

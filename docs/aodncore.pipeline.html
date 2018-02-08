@@ -1486,7 +1486,7 @@ on the file, and the actions that <em>were</em></p>
 all of the core functionality of each handler, which is then available to the child class via class inheritance.</p>
 </div>
 <div class="section" id="state-machine-handler-steps">
-<h4>State machine / handler “steps”<a class="headerlink" href="#state-machine-handler-steps" title="Permalink to this headline">¶</a></h4>
+<h4>State machine / handler steps<a class="headerlink" href="#state-machine-handler-steps" title="Permalink to this headline">¶</a></h4>
 <p>In order to provide consistency and structure to the handler, the pipeline is broken into a series of ordered “steps”,
 with each performing a distinct function in the processing of the input file. The “machine” defines a series of states,
 and also controls/enforces the transitions between states.</p>
@@ -1495,7 +1495,7 @@ enforces that the <code class="docutils literal"><span class="pre">check</span><
 <p>Similarly, the <code class="docutils literal"><span class="pre">publish</span></code> step cannot ever be entered into other than from the <code class="docutils literal"><span class="pre">process</span></code> step, which means that the
 step can safely make several assumptions about the overall state of the handler when it does get executed. For example,
 it can automatically assume with a 100% guarantee that the <code class="docutils literal"><span class="pre">initalise</span></code>, <code class="docutils literal"><span class="pre">resolve</span></code>, <code class="docutils literal"><span class="pre">preprocess</span></code>, <code class="docutils literal"><span class="pre">check</span></code> and
-<code class="docutils literal"><span class="pre">process</span></code> step have all been run in that order with no errors, allowing to to focus purely on the core concern of the
+<code class="docutils literal"><span class="pre">process</span></code> step have all been run in that order with no errors, allowing it to focus purely on the core concern of the
 step; publishing files, and nothing more.</p>
 <p>The ordered steps are as follows:</p>
 <div class="section" id="initialise">
@@ -1541,7 +1541,7 @@ creating an entry in the handlers “file_collection” attribute, which is a sp
 <li>if NetCDF and compliance checks defined in parameters, check against listed check suites</li>
 <li>if NetCDF and no compliance checks defined, validate NetCDF format</li>
 <li>if known file type, validate file format (e.g. if .pdf extension, validate PDF format)  # TODO</li>
-<li>if unknown file type, no checks performed</li>
+<li>if unknown file type, check that the file is not empty</li>
 </ol>
 </li>
 </ol>
@@ -1585,9 +1585,9 @@ Python convention, these methods begin with a single underscore (_) character. N
 therefore it is possible to manipulate or even override them, however it is mandatory that the conventions are followed
 to maintain the integrity of the handler execution.</p>
 <p>In addition to any methods starting with one or more underscores, the <code class="docutils literal"><span class="pre">run</span></code> method is also a special case, which must
-<em>not</em> be overridden or extended, as this is the entry point for handler execution. This is implemented and run separator
-from the class initialiser (<code class="docutils literal"><span class="pre">`__init__`</span></code>) such that the handler instance can be created, and have it’s contents
-inspected (e.g. by unit tests) before and after actually executing the file processing code of the handler.</p>
+<em>not</em> be overridden or extended, as this is the entry point for handler execution. This is implemented and run
+separately from the class initialiser (<code class="docutils literal"><span class="pre">`__init__`</span></code>) such that the handler instance can be created, and have it’s
+contents inspected (e.g. by unit tests) before and after actually executing the file processing code of the handler.</p>
 <p><em>Public methods</em></p>
 <p>There are three special methods defined which are <em>intended</em> to be overridden by subclasses in order to provide a
 handler author with the ability to call code in order to modify the behaviour of the handler during it’s execution.</p>
@@ -1687,8 +1687,8 @@ the handler itself. If a function is not found by either mechanism, the handler 
 the initialise step.</p>
 <div class="admonition note">
 <p class="first admonition-title">Note</p>
-<p class="last">when value is a string, it is assumed that it refers to the name of a function advertised in the
-‘pipeline.handlers’ entry point group.</p>
+<p class="last">When the value is a string, it is assumed that it refers to the name of a function advertised in the
+<em>pipeline.handlers</em> entry point group.</p>
 </div>
 </li>
 <li><strong>exclude_regexes</strong> (<em>list</em>) – See <code class="xref py py-attr docutils literal"><span class="pre">include_regexes</span></code>.</li>
@@ -2604,8 +2604,8 @@ the handler itself. If a function is not found by either mechanism, the handler 
 the initialise step.</p>
 <div class="admonition note">
 <p class="first admonition-title">Note</p>
-<p class="last">when value is a string, it is assumed that it refers to the name of a function advertised in the
-‘pipeline.handlers’ entry point group.</p>
+<p class="last">When the value is a string, it is assumed that it refers to the name of a function advertised in the
+<em>pipeline.handlers</em> entry point group.</p>
 </div>
 </li>
 <li><strong>exclude_regexes</strong> (<em>list</em>) – See <code class="xref py py-attr docutils literal"><span class="pre">include_regexes</span></code>.</li>

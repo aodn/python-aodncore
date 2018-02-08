@@ -217,7 +217,7 @@
 <span class="sd">all of the core functionality of each handler, which is then available to the child class via class inheritance.</span>
 
 
-<span class="sd">State machine / handler &quot;steps&quot;</span>
+<span class="sd">State machine / handler steps</span>
 <span class="sd">-------------------------------</span>
 
 <span class="sd">In order to provide consistency and structure to the handler, the pipeline is broken into a series of ordered &quot;steps&quot;,</span>
@@ -230,7 +230,7 @@
 <span class="sd">Similarly, the ``publish`` step cannot ever be entered into other than from the ``process`` step, which means that the</span>
 <span class="sd">step can safely make several assumptions about the overall state of the handler when it does get executed. For example,</span>
 <span class="sd">it can automatically assume with a 100% guarantee that the ``initalise``, ``resolve``, ``preprocess``, ``check`` and</span>
-<span class="sd">``process`` step have all been run in that order with no errors, allowing to to focus purely on the core concern of the</span>
+<span class="sd">``process`` step have all been run in that order with no errors, allowing it to focus purely on the core concern of the</span>
 <span class="sd">step; publishing files, and nothing more.</span>
 
 <span class="sd">The ordered steps are as follows:</span>
@@ -277,7 +277,7 @@
 <span class="sd">    #. if NetCDF and compliance checks defined in parameters, check against listed check suites</span>
 <span class="sd">    #. if NetCDF and no compliance checks defined, validate NetCDF format</span>
 <span class="sd">    #. if known file type, validate file format (e.g. if .pdf extension, validate PDF format)  # TODO</span>
-<span class="sd">    #. if unknown file type, no checks performed</span>
+<span class="sd">    #. if unknown file type, check that the file is not empty</span>
 
 <span class="sd">process</span>
 <span class="sd">~~~~~~~</span>
@@ -324,9 +324,9 @@
 <span class="sd">to maintain the integrity of the handler execution.</span>
 
 <span class="sd">In addition to any methods starting with one or more underscores, the ``run`` method is also a special case, which must</span>
-<span class="sd">*not* be overridden or extended, as this is the entry point for handler execution. This is implemented and run separator</span>
-<span class="sd">from the class initialiser (```__init__```) such that the handler instance can be created, and have it&#39;s contents</span>
-<span class="sd">inspected (e.g. by unit tests) before and after actually executing the file processing code of the handler.</span>
+<span class="sd">*not* be overridden or extended, as this is the entry point for handler execution. This is implemented and run</span>
+<span class="sd">separately from the class initialiser (```__init__```) such that the handler instance can be created, and have it&#39;s</span>
+<span class="sd">contents inspected (e.g. by unit tests) before and after actually executing the file processing code of the handler.</span>
 
 <span class="sd">*Public methods*</span>
 
@@ -465,8 +465,8 @@
 <span class="sd">        the handler itself. If a function is not found by either mechanism, the handler will exit with an error during</span>
 <span class="sd">        the initialise step.</span>
 
-<span class="sd">        .. note:: when value is a string, it is assumed that it refers to the name of a function advertised in the</span>
-<span class="sd">            &#39;pipeline.handlers&#39; entry point group.</span>
+<span class="sd">        .. note:: When the value is a string, it is assumed that it refers to the name of a function advertised in the</span>
+<span class="sd">            *pipeline.handlers* entry point group.</span>
 <span class="sd">    :type dest_path_function: str, function</span>
 
 <span class="sd">    :param exclude_regexes: See :attr:`include_regexes`.</span>
