@@ -1,0 +1,22 @@
+aodncore\.vocab package
+=======================
+
+Submodules
+----------
+
+aodncore\.vocab\.platform\_code\_vocab module
+---------------------------------------------
+
+.. automodule:: aodncore.vocab.platform_code_vocab
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+
+Module contents
+---------------
+
+.. automodule:: aodncore.vocab
+    :members:
+    :undoc-members:
+    :show-inheritance:

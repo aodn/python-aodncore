@@ -1,3 +1,178 @@
+"""
+Handler user guide
+==================
+
+Overview
+--------
+
+The ``aodncore.pipeline`` package provides the base class for each pipeline handler at the
+``aodncore.pipeline.HandlerBase`` namespace. This is the starting point for any new handler development, as it contains
+all of the core functionality of each handler, which is then available to the child class via class inheritance.
+
+
+State machine / handler steps
+-------------------------------
+
+In order to provide consistency and structure to the handler, the pipeline is broken into a series of ordered "steps",
+with each performing a distinct function in the processing of the input file. The "machine" defines a series of states,
+and also controls/enforces the transitions between states.
+
+For example, since it makes no sense to check a collection of files before the collection exists, the state machine
+enforces that the ``check`` step may *only* be entered into from the ``resolve`` step.
+
+Similarly, the ``publish`` step cannot ever be entered into other than from the ``process`` step, which means that the
+step can safely make several assumptions about the overall state of the handler when it does get executed. For example,
+it can automatically assume with a 100% guarantee that the ``initalise``, ``resolve``, ``preprocess``, ``check`` and
+``process`` step have all been run in that order with no errors, allowing it to focus purely on the core concern of the
+step; publishing files, and nothing more.
+
+The ordered steps are as follows:
+
+initialise
+~~~~~~~~~~
+
+Responsible for general setup of handler class and performing initial sanity checking of the input file and parameters
+
+#. validation of parameters
+#. validation of input file (e.g. the file exists, is accessible, is of an allowed type etc.)
+#. setup temporary directories
+
+resolve
+~~~~~~~
+
+Responsible for preparing the central file collection of the handler instance, including handling input files which
+represent multiple files (e.g. ZIP and manifest files). The file collection is used to hold the processing state of all
+"known" files for the duration of the handler. After this step, there is no need to consider the original source format
+of the input file, as this step "resolves" the file into a generic collection for further processing.
+
+#. prepare the "file collection" used by all subsequent steps by placing files into a temporary directory and
+   creating an entry in the handlers "file_collection" attribute, which is a special type of set
+   (PipelineFileCollection object) optimised for dealing with pipeline files (PipelineFile objects)
+
+    #. if single file, copy to temporary directory and add to file collection
+    #. if ZIP file, extract files into temporary directory and add them to the file collection
+    #. if manifest file, add files "in place" to the file collection
+
+#. update files to be included/excluded from processing based on regex filter (if defined in parameter)
+
+preprocess
+~~~~~~~~~~
+
+Special override method (see below for details)
+
+check
+~~~~~
+
+Responsible for checking the validity and/or compliance of files in the collection.
+
+#.  determine the type of check to be performed based on the handler parameters and file type
+
+    #. if NetCDF and compliance checks defined in parameters, check against listed check suites
+    #. if NetCDF and no compliance checks defined, validate NetCDF format
+    #. if known file type, validate file format (e.g. if .pdf extension, validate PDF format)  # TODO
+    #. if unknown file type, check that the file is not empty
+
+process
+~~~~~~~
+
+Special override method (see below for details)
+
+publish
+~~~~~~~
+
+Responsible for publishing the file to external repositories. This is a composite step, and will perform the following
+actions only on files in the collection which have been flagged for that action (as determined by the publish_type
+attribute of the files).
+
+#. determine files flagged as needing to be archived, and upload to 'archive' location
+#. determine files flagged as needing to be harvested, match and execute Talend harvester(s) for files
+#. determine files flagged as needing to be uploaded, and upload to 'upload'
+
+postprocess
+~~~~~~~~~~~
+
+Special override method (see below for details)
+
+notify
+~~~~~~
+
+Responsible for notifying the uploader and/or the pipeline 'owner' of the result of the handler attempt.
+
+#. determine the recipients, based on notification parameters and handler result
+#. send notifications
+
+Customising handler behaviour
+-----------------------------
+
+Methods
+~~~~~~~
+
+The methods in the HandlerBase (and therefore any subclasses inheriting from it) can be separated into two categories:
+
+*Internal / non-public methods*
+
+These methods must *not* be overridden by child handlers, or the handler behaviour will be compromised. In following the
+Python convention, these methods begin with a single underscore (_) character. Note that this is a convention, and
+therefore it is possible to manipulate or even override them, however it is mandatory that the conventions are followed
+to maintain the integrity of the handler execution.
+
+In addition to any methods starting with one or more underscores, the ``run`` method is also a special case, which must
+*not* be overridden or extended, as this is the entry point for handler execution. This is implemented and run
+separately from the class initialiser (```__init__```) such that the handler instance can be created, and have it's
+contents inspected (e.g. by unit tests) before and after actually executing the file processing code of the handler.
+
+*Public methods*
+
+There are three special methods defined which are *intended* to be overridden by subclasses in order to provide a
+handler author with the ability to call code in order to modify the behaviour of the handler during it's execution.
+
+The special methods are: ``preprocess``, ``process`` and ``postprocess``
+
+These methods are deliberately left empty (i.e. they are there but don't do anything) in the base class, so it is purely
+optional whether the subclass implements these.
+
+The only difference between these methods is *when* they are called by the handler state machine. Refer to the above
+section for further details about where they appear in the steps order.
+
+Attributes
+----------
+
+A handler instance contains a number of attributes which control or modify the behaviour of the handler. The attributes
+are typically set from the **params** key of the watch configuration, or from the ``__init__`` method of a handler
+subclass (e.g. when writing tests).
+
+Class parameters
+~~~~~~~~~~~~~~~~
+
+The following class parameters are also assigned to attributes of the same name, as a convenience.
+
+For example, a handler instantiated with any of these class parameters may also access them from the class instance as
+follows::
+
+    from aodncore.pipeline import HandlerBase
+    from aodncore.pipeline.config import CONFIG
+
+
+    class MyHandler(HandlerBase):
+        def print_upload_path(self):
+            # Note: when accessing attributes from within the class itself, the usual Python 'self.attr'
+            # convention applies to access the *current* instance
+            print(self.upload_path)
+
+
+    h = MyHandler('/path/to/input/file.nc', config=CONFIG, upload_path='/original/incoming/path/file.nc')
+    h.input_file
+    '/path/to/input/file.nc'
+    h.upload_path
+    '/original/incoming/path/file.nc'
+    h.config
+    <aodncore.pipeline.configlib.LazyConfigManager object at 0x7f22230c5990>
+
+    h.print_upload_path()
+    /original/incoming/path/file.nc
+
+"""
+
 import logging
 import logging.config
 import os
@@ -31,6 +206,118 @@ class HandlerBase(object):
     """Base class for pipeline handler sub-classes.
 
     Implements common handler methods and defines state machine states and transitions.
+
+    :param input_file: Path to the file being handled. A non-existent file will cause the handler to exit with an error
+        during the initialise step.
+
+        .. note:: :attr:`input_file` is the only positional argument. Other arguments may be provided in any order.
+    :type input_file: str
+
+    :param allowed_extensions: List of allowed extensions for :attr:`input_file`. Non-matching input files with cause
+        the handler to exit with an error during the initialise step.
+    :type allowed_extensions: list
+
+    :param archive_input_file: Flags whether the original input file should be uploaded to the archive, the location of
+        which is configured by the environment configuration. The file will be archived at
+        ARCHIVE_URI/PIPELINE_NAME/BASENAME.
+    :type archive_input_file: bool
+
+    :param archive_path_function: See :attr:`dest_path_function`. This operates identically, except that it is used to
+        calculate the :attr:`PipelineFile.archive_path` attribute and that the path is relative to the ARCHIVE_URI.
+    :type archive_path_function: str, function
+
+    :param celery_task: A Celery task object, in order for the handler instance to derive runtime information such as
+        the current task name and UUID.
+
+        .. note:: If absent (e.g. when unit testing), the handler will revert to having no task information available,
+            and will log output to standard output.
+    :type celery_task: :class:`celery.Task`
+
+    :param check_params: A dict containing parameters passed directly to the check step (e.g. compliance checker
+        suites). The structure of the dict is defined by the :const:`CHECK_PARAMS_SCHEMA` object in the
+        :mod:`aodncore.pipeline.schema` module.
+    :type check_params: dict
+
+    :param config: A configuration object which the handler uses to retrieve configuration from it's environment. If
+        absent, the handler will exit with an error during the :meth:`__init__` method (i.e. will not
+        instantiate).
+
+        .. note:: While this attribute is mandatory, it is not generally required to supply it directly in normal use
+            cases, unless instantiating the handler class manually.
+
+            When deployed, the parameter is supplied by the worker service configuration.
+
+            When testing, unit tests inheriting from :class:`HandlerTestCase` contain a pre-prepared config object
+            available as :attr:`self.config`. The :meth:`HandlerTestCase.run_handler` and
+            :meth:`HandlerTestCase.run_handler_with_exception` helper methods automatically assign the test config to
+            the handler being tested.
+    :type config: :class:`aodncore.pipeline.config.LazyConfigManager`
+
+    :param dest_path_function: The function used to determine the :attr:`PipelineFile.dest_path` attribute, relative to
+        the UPLOAD_URI configuration item. If absent, the handler will attempt to use the :meth:`dest_path` method in
+        the handler itself. If a function is not found by either mechanism, the handler will exit with an error during
+        the initialise step.
+
+        .. note:: When the value is a string, it is assumed that it refers to the name of a function advertised in the
+            *pipeline.handlers* entry point group.
+    :type dest_path_function: str, function
+
+    :param exclude_regexes: See :attr:`include_regexes`.
+    :type exclude_regexes: list
+
+    :param harvest_params: A dict containing parameters passed directly to the harvest step (e.g. slice size,
+        undo behaviour). The structure of the dict is defined by the :const:`HARVEST_PARAMS_SCHEMA` object in the
+        :mod:`aodncore.pipeline.schema` module.
+    :type harvest_params: dict
+
+    :param harvest_type: String to inform the :mod:`aodncore.pipeline.steps.harvest` step factory function which
+        HarvesterRunner implementation to use during the publish step.
+
+        .. note:: Currently the only valid value is 'talend', which is the default.
+    :type harvest_type: str
+
+    :param include_regexes: A list of regexes which, when combined with :attr:`exclude_regexes`, determines which files
+        in the collection are assigned with the :attr:`default_addition_publish_type` or
+        :attr:`default_deletion_publish_type` types (depending on whether the file is an addition or a deletion). If
+        set, to be considered included, file paths must match one of the regexes in :attr:`include_regexes` but *not*
+        any of the regexes in :attr:`exclude_regexes`.
+
+        Files not matching the inclusion criteria will remain with a :attr:`publish_type` attribute of
+        :const:`PipelineFilePublishType.NO_ACTION`, meaning they will be ignored by the publish step.
+
+        .. note:: If omitted, the default is to select *all* files in :attr:`file_collection` for publication.
+
+        .. note:: This relates only to the files in :attr:`file_collection`, and has no relation to the
+            :attr:`input_file` path, unless the input file is itself in the collection (e.g. when handling a single
+            file).
+
+            For example, a single '.nc' file could feasibly match the :attr:`allowed_extensions` for the handler, but
+            still be excluded by this mechanism once it is added to :attr:`file_collection` during the
+            :mod:`aodncore.pipeline.steps.resolve` step.
+
+    :type include_regexes: list
+
+    :param notify_params: A dict containing parameters passed directly to the :mod:`aodncore.pipeline.steps.notify` step
+        (e.g. owner/success/failure notify lists). The structure of the dict is defined by the
+        :const:`NOTIFY_PARAMS_SCHEMA` object in the :mod:`aodncore.pipeline.schema` module.
+    :type notify_params: dict
+
+    :param upload_path: A string attribute to hold the original upload path of the :attr:`input_file`.
+
+        .. note:: This is intended for information purposes only (e.g. to appear in notification templates), since there
+            is a distinction between the original path, and the :attr:`input_file` as provided to the handler, which
+            represents where the file was moved to for processing.
+    :type upload_path: str
+
+    :param resolve_params: A dict containing parameters passed directly to the resolve step (e.g. the root path
+        prepended to relative paths in manifest files). The structure of the dict is defined by the
+        :const:`RESOLVE_PARAMS_SCHEMA` object in the :mod:`aodncore.pipeline.schema` module.
+    :type resolve_params: dict
+
+    :param kwargs: Any additional keyword arguments passed to the handler are ignored by the :class:`HandlerBase`` base
+        class. This is to leave open the ability for handler specific params to be passed from the watch configuration
+        to control some arbitrary handler behaviour, without interfering with the core state machine operation.
+
     """
 
     ordered_states = [
@@ -145,28 +432,6 @@ class HandlerBase(object):
                  upload_path=None,
                  resolve_params=None,
                  **kwargs):
-        """
-
-        Note: input_file *must* remain the only positional parameter. Any additional arguments *must* be added as
-        keyword arguments in order to support assumptions about how the class is called by the task handling code.
-
-        :param input_file: input file being handled
-        :param allowed_extensions: list of allowed extensions for the input file
-        :param archive_input_file: flag to determine whether the original input file is archived
-        :param archive_path_function: function reference or entry point used to determine archive_path for a file
-        :param celery_task: reference to the Celery task instance which instantiated the handler instance
-        :param check_params: list of parameters to passed through to the compliance checker library
-        :param config: LazyConfigManager instance
-        :param dest_path_function: function reference or entry point used to determine dest_path for a file
-        :param exclude_regexes: list of regexes that files matching include_regexes must *not* match to be 'eligible'
-        :param harvest_params: keyword parameters passed to the publish step to control harvest runner parameters
-        :param harvest_type: determine which harvest type will be used (supported types in harvest module)
-        :param include_regexes: list of regexes that files must match to be 'eligible'
-        :param notify_params: keyword parameters passed to the notify step to control notification behaviour
-        :param upload_path: original path of file (for information only, e.g. notifications)
-        :param resolve_params: keyword parameters passed to the publish step to control harvest runner parameters
-        :param kwargs: allow additional keyword arguments to allow potential for child handler to use custom arguments
-        """
 
         # property backing variables
         self._cc_versions = None
@@ -230,33 +495,37 @@ class HandlerBase(object):
 
     @property
     def celery_task_id(self):
-        """Read-only property to return Celery task ID
+        """Read-only property to access Celery task ID
 
-        :return: Celery task ID or None
+        :return: Celery task ID (if applicable)
+        :rtype: :class:`str`, :class:`None`
         """
         return self._celery_task_id
 
     @property
     def celery_task_name(self):
-        """Read-only property to return Celery task name
+        """Read-only property to access Celery task name
 
-        :return: Celery task name or None
+        :return: Celery task name (if applicable)
+        :rtype: :class:`str`, :class:`None`
         """
         return self._celery_task_name
 
     @property
     def cc_versions(self):
-        """Read-only property to retrieve compliance checker module versions
+        """Read-only property to access compliance checker module versions
 
-        :return: dict containing compliance checker version strings for core and plugin modules
+        :return: compliance checker version strings for core and plugin modules
+        :rtype: :class:`dict`
         """
         return self._cc_versions
 
     @property
     def config(self):
-        """Property to manage config attribute
+        """Read-only property to access the :attr:`config` attribute
 
-        :return: LazyConfigManager instance
+        :return: configuration object
+        :rtype: :class:`aodncore.pipeline.config.LazyConfigManager`
         """
         return self._config
 
@@ -267,41 +536,46 @@ class HandlerBase(object):
 
     @property
     def error(self):
-        """Read-only property to retrieve Exception object from handler instance
+        """Read-only property to access Exception object from handler instance
 
-        :return: Exception object or None
+        :return: the exception object which caused the handler to fail (if applicable)
+        :rtype: :class:`Exception`, :class:`None`
         """
         return self._error
 
     @property
     def error_details(self):
-        """Read-only property to retrieve string description of error (if applicable) from handler instance
+        """Read-only property to retrieve string description of error from handler instance
 
-        :return: error description or 'None'
+        :return: error description string (if applicable)
+        :rtype: :class:`str`, :class:`None`
         """
         return self._error_details
 
     @property
     def file_checksum(self):
-        """Read-only property to retrieve the input_file checksum
+        """Read-only property to access the input_file checksum
 
-        :return: checksum string or None
+        :return: :attr:`input_file` checksum string
+        :rtype: :class:`str`
         """
         return self._file_checksum
 
     @property
     def file_extension(self):
-        """Read-only property to retrieve the input_file extension
+        """Read-only property to access the input_file extension
 
-        :return: extension string
+        :return: :attr:`input_file` extension string
+        :rtype: :class:`str`
         """
         return self._file_extension
 
     @property
     def file_type(self):
-        """Read-only property to retrieve the input_file type
+        """Read-only property to access the input_file type
 
-        :return: FileType member
+        :return: :attr:`input_file` type
+        :rtype: :class:`FileType`
         """
         return self._file_type
 
@@ -310,6 +584,7 @@ class HandlerBase(object):
         """Read-only property to retrieve the instance working directory
 
         :return: string containing path to top level working directory for this instance
+        :rtype: :class:`str`, :class:`None`
         """
         return self._instance_working_directory
 
@@ -317,7 +592,8 @@ class HandlerBase(object):
     def notification_results(self):
         """Read-only property to retrieve the notification results, including the sent status of each recipient
 
-        :return: NotifyList instance
+        :return: list of :class:`aodncore.pipeline.steps.notify.NotifyRecipient` instances
+        :rtype: :class:`aodncore.pipeline.steps.notify.NotifyList`
         """
         return self._notification_results
 
@@ -325,7 +601,8 @@ class HandlerBase(object):
     def result(self):
         """Read-only property to retrieve the overall end result of the handler instance
 
-        :return: HandlerResult member
+        :return: handler result
+        :rtype: :class:`aodncore.pipeline.common.HandlerResult`
         """
         return self._result
 
@@ -333,7 +610,8 @@ class HandlerBase(object):
     def should_notify(self):
         """Read-only property to retrieve the list of intended recipients *after* being assembled based on notify_params
 
-        :return: NotifyList instance
+        :return: list of intended recipients
+        :rtype: :class:`list`
         """
         return self._should_notify
 
@@ -341,7 +619,8 @@ class HandlerBase(object):
     def start_time(self):
         """Read-only property containing the timestamp of when this instance was created
 
-        :return: datetime instance
+        :return: timestamp of handler starting time
+        :rtype: :class:`datetime.datetime`
         """
         return self._start_time
 
@@ -349,7 +628,8 @@ class HandlerBase(object):
     def default_addition_publish_type(self):
         """Property to manage attribute which determines the default publish type assigned to 'addition' PipelineFiles
 
-        :return: PipelinePublishType member
+        :return: default addition publish type
+        :rtype: :class:`aodncore.pipeline.common.PipelinePublishType`
         """
         return self._default_addition_publish_type
 
@@ -362,7 +642,8 @@ class HandlerBase(object):
     def default_deletion_publish_type(self):
         """Property to manage attribute which determines the default publish type assigned to 'deletion' PipelineFiles
 
-        :return: PipelinePublishType member
+        :return: default deletion publish type
+        :rtype: :class:`aodncore.pipeline.common.PipelinePublishType`
         """
         return self._default_deletion_publish_type
 
@@ -375,7 +656,8 @@ class HandlerBase(object):
     def is_archived(self):
         """Boolean property indicating whether the input_file has been archived
 
-        :return: bool
+        :return: whether the :attr:`input_file` has been archived or not
+        :rtype: :class:`bool`
         """
         return self._is_archived
 
@@ -388,25 +670,31 @@ class HandlerBase(object):
     def collection_dir(self):
         """Temporary subdirectory where collection will be unpacked
 
-        :return: None
+        .. note:: physical directory should not be manipulated directly by handler, rather the files should be managed
+            via their corresponding :class:`PipelineFile
+        :return: collection subdirectory of instance working directory (as populated by
+            :mod:`aodncore.pipeline.steps.resolve` step)
+        :rtype: :class:`str`, :class:`None`
         """
         if self._instance_working_directory:
             return os.path.join(self._instance_working_directory, 'collection')
 
     @property
     def products_dir(self):
-        """Temporary subdirectory in which products will be created
+        """Temporary subdirectory in which products may be created
 
-        :return: None
+        :return: products subdirectory of instance working directory
+        :rtype: :class:`str`, :class:`None`
         """
         if self._instance_working_directory:
             return os.path.join(self._instance_working_directory, 'products')
 
     @property
     def temp_dir(self):
-        """Temporary subdirectory where any other temporary files may be created by handler sub-classes
+        """Temporary subdirectory where any other arbitrary temporary files may be created by handler sub-classes
 
-        :return: None
+        :return: temporary subdirectory of instance working directory
+        :rtype: :class:`str`, :class:`None`
         """
         if self._instance_working_directory:
             return os.path.join(self._instance_working_directory, 'temp')
@@ -763,7 +1051,8 @@ class HandlerBase(object):
     #
 
     def run(self):
-        """The entry point to the handler instance
+        """The entry point to the handler instance. Executes the automatic state machine transitions, and populates the
+            :attr:`result` attribute to signal success or failure of the handler instance.
         """
         if self._handler_run:
             raise HandlerAlreadyRunError('handler instance has already been run')

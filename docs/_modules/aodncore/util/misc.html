@@ -1,0 +1,619 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>aodncore.util.misc &mdash; aodncore 0.0.17 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  
+    <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" /> 
+
+  
+  <script src="../../../_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="../../../index.html" class="icon icon-home"> aodncore
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                0.0.17
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../aodncore.html">aodncore package</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../aodncore.html#subpackages">Subpackages</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../aodncore.common.html">aodncore.common package</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../aodncore.common.html#submodules">Submodules</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../aodncore.common.html#module-aodncore.common.exceptions">aodncore.common.exceptions module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../aodncore.common.html#module-aodncore.common">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../../aodncore.pipeline.html">aodncore.pipeline package</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../aodncore.pipeline.html#subpackages">Subpackages</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../aodncore.pipeline.html#submodules">Submodules</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../aodncore.pipeline.html#module-aodncore.pipeline.common">aodncore.pipeline.common module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../aodncore.pipeline.html#module-aodncore.pipeline.config">aodncore.pipeline.config module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../aodncore.pipeline.html#module-aodncore.pipeline.configlib">aodncore.pipeline.configlib module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../aodncore.pipeline.html#module-aodncore.pipeline.destpath">aodncore.pipeline.destpath module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../aodncore.pipeline.html#module-aodncore.pipeline.exceptions">aodncore.pipeline.exceptions module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../aodncore.pipeline.html#module-aodncore.pipeline.fileclassifier">aodncore.pipeline.fileclassifier module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../aodncore.pipeline.html#module-aodncore.pipeline.files">aodncore.pipeline.files module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../aodncore.pipeline.html#module-aodncore.pipeline.handlerbase">aodncore.pipeline.handlerbase module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../aodncore.pipeline.html#module-aodncore.pipeline.log">aodncore.pipeline.log module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../aodncore.pipeline.html#module-aodncore.pipeline.schema">aodncore.pipeline.schema module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../aodncore.pipeline.html#aodncore-pipeline-serviceconfig-module">aodncore.pipeline.serviceconfig module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../aodncore.pipeline.html#module-aodncore.pipeline.watch">aodncore.pipeline.watch module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../aodncore.pipeline.html#aodncore-pipeline-watchservice-module">aodncore.pipeline.watchservice module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../aodncore.pipeline.html#module-aodncore.pipeline">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../../aodncore.testlib.html">aodncore.testlib package</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../aodncore.testlib.html#submodules">Submodules</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../aodncore.testlib.html#module-aodncore.testlib.basetest">aodncore.testlib.basetest module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../aodncore.testlib.html#module-aodncore.testlib.dummyhandler">aodncore.testlib.dummyhandler module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../aodncore.testlib.html#module-aodncore.testlib.handlertest">aodncore.testlib.handlertest module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../aodncore.testlib.html#module-aodncore.testlib.testutil">aodncore.testlib.testutil module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../aodncore.testlib.html#module-aodncore.testlib">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../../aodncore.util.html">aodncore.util package</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../aodncore.util.html#subpackages">Subpackages</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../aodncore.util.html#submodules">Submodules</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../aodncore.util.html#module-aodncore.util.fileops">aodncore.util.fileops module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../aodncore.util.html#module-aodncore.util.misc">aodncore.util.misc module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../aodncore.util.html#module-aodncore.util.process">aodncore.util.process module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../aodncore.util.html#module-aodncore.util">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../../aodncore.vocab.html">aodncore.vocab package</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../aodncore.vocab.html#submodules">Submodules</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../aodncore.vocab.html#module-aodncore.vocab.platform_code_vocab">aodncore.vocab.platform_code_vocab module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../aodncore.vocab.html#module-aodncore.vocab">Module contents</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../../aodncore.html#submodules">Submodules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../aodncore.html#module-aodncore.version">aodncore.version module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../aodncore.html#module-aodncore">Module contents</a></li>
+</ul>
+</li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">aodncore</a>
+        
+      </nav>
+
+
+      
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="../../index.html">Module code</a> &raquo;</li>
+        
+      <li>aodncore.util.misc</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <h1>Source code for aodncore.util.misc</h1><div class="highlight"><pre>
+<span></span><span class="kn">import</span> <span class="nn">logging</span>
+<span class="kn">import</span> <span class="nn">re</span>
+<span class="kn">import</span> <span class="nn">sys</span>
+<span class="kn">import</span> <span class="nn">types</span>
+<span class="kn">from</span> <span class="nn">collections</span> <span class="k">import</span> <span class="n">Iterable</span><span class="p">,</span> <span class="n">OrderedDict</span><span class="p">,</span> <span class="n">Mapping</span>
+
+<span class="kn">import</span> <span class="nn">jinja2</span>
+<span class="kn">import</span> <span class="nn">pkg_resources</span>
+<span class="kn">import</span> <span class="nn">six</span>
+<span class="kn">from</span> <span class="nn">six.moves</span> <span class="k">import</span> <span class="nb">range</span>
+
+<span class="n">StringIO</span> <span class="o">=</span> <span class="n">six</span><span class="o">.</span><span class="n">StringIO</span>
+
+<span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="s1">&#39;discover_entry_points&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;format_exception&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;is_nonstring_iterable&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;is_function&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;is_valid_email_address&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;iter_public_attributes&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;matches_regexes&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;merge_dicts&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;slice_sequence&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;str_to_list&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;validate_bool&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;validate_callable&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;validate_dict&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;validate_int&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;validate_mapping&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;validate_mandatory_elements&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;validate_membership&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;validate_nonstring_iterable&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;validate_regex&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;validate_string&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;validate_type&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;CaptureStdIO&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;LoggingContext&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;TemplateRenderer&#39;</span>
+<span class="p">]</span>
+
+
+<div class="viewcode-block" id="discover_entry_points"><a class="viewcode-back" href="../../../aodncore.util.html#aodncore.pipeline.common.discover_entry_points">[docs]</a><span class="k">def</span> <span class="nf">discover_entry_points</span><span class="p">(</span><span class="n">entry_point_group</span><span class="p">,</span> <span class="n">working_set</span><span class="o">=</span><span class="n">pkg_resources</span><span class="o">.</span><span class="n">working_set</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Discover entry points registered under the given entry point group name in the given working_set</span>
+
+<span class="sd">    :param entry_point_group: entry point group name used to find entry points in working set</span>
+<span class="sd">    :param working_set: working set object</span>
+<span class="sd">    :return: dict containing each discovered entry point, with keys being the entry point name and values being a</span>
+<span class="sd">    reference to the object referenced by the entry point</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">entry_points</span> <span class="o">=</span> <span class="p">{}</span>
+    <span class="k">for</span> <span class="n">entry_point</span> <span class="ow">in</span> <span class="n">working_set</span><span class="o">.</span><span class="n">iter_entry_points</span><span class="p">(</span><span class="n">entry_point_group</span><span class="p">):</span>
+        <span class="n">entry_point_object</span> <span class="o">=</span> <span class="n">entry_point</span><span class="o">.</span><span class="n">load</span><span class="p">()</span>
+        <span class="n">entry_points</span><span class="p">[</span><span class="n">entry_point</span><span class="o">.</span><span class="n">name</span><span class="p">]</span> <span class="o">=</span> <span class="n">entry_point_object</span>
+    <span class="k">return</span> <span class="n">entry_points</span></div>
+
+
+<div class="viewcode-block" id="format_exception"><a class="viewcode-back" href="../../../aodncore.util.html#aodncore.pipeline.common.format_exception">[docs]</a><span class="k">def</span> <span class="nf">format_exception</span><span class="p">(</span><span class="n">exception</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Return a pretty string representation of an Exception object containing the Exception name and message</span>
+
+<span class="sd">    :param exception: Exception object</span>
+<span class="sd">    :return: string</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="s2">&quot;</span><span class="si">{cls}</span><span class="s2">: </span><span class="si">{message}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">cls</span><span class="o">=</span><span class="n">exception</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="p">,</span> <span class="n">message</span><span class="o">=</span><span class="n">exception</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="is_function"><a class="viewcode-back" href="../../../aodncore.util.html#aodncore.pipeline.common.is_function">[docs]</a><span class="k">def</span> <span class="nf">is_function</span><span class="p">(</span><span class="n">o</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Check whether a given object is a function</span>
+
+<span class="sd">    :param o: object to check</span>
+<span class="sd">    :return: True if object is a function, otherwise False</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">o</span><span class="p">,</span> <span class="n">types</span><span class="o">.</span><span class="n">FunctionType</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="is_nonstring_iterable"><a class="viewcode-back" href="../../../aodncore.util.html#aodncore.pipeline.common.is_nonstring_iterable">[docs]</a><span class="k">def</span> <span class="nf">is_nonstring_iterable</span><span class="p">(</span><span class="n">sequence</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Check whether an object is a non-string Iterable</span>
+<span class="sd">    </span>
+<span class="sd">    :param sequence: object to check </span>
+<span class="sd">    :return: True if object is a non-string sub class of Iterable</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">sequence</span><span class="p">,</span> <span class="n">Iterable</span><span class="p">)</span> <span class="ow">and</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">sequence</span><span class="p">,</span> <span class="p">(</span><span class="n">six</span><span class="o">.</span><span class="n">string_types</span><span class="p">,</span> <span class="nb">bytes</span><span class="p">,</span> <span class="n">Mapping</span><span class="p">))</span></div>
+
+
+<div class="viewcode-block" id="is_valid_email_address"><a class="viewcode-back" href="../../../aodncore.util.html#aodncore.pipeline.common.is_valid_email_address">[docs]</a><span class="k">def</span> <span class="nf">is_valid_email_address</span><span class="p">(</span><span class="n">address</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Simple email address validation</span>
+
+<span class="sd">    :param address: address to validate</span>
+<span class="sd">    :return: True if address matches the regex, otherwise False</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">pattern</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="sa">r</span><span class="s2">&quot;^[A-Z0-9_.+-]+@(localhost|[A-Z0-9-]+\.[A-Z0-9-.]+)$&quot;</span><span class="p">,</span> <span class="n">re</span><span class="o">.</span><span class="n">IGNORECASE</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">re</span><span class="o">.</span><span class="n">match</span><span class="p">(</span><span class="n">pattern</span><span class="p">,</span> <span class="n">address</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="iter_public_attributes"><a class="viewcode-back" href="../../../aodncore.util.html#aodncore.pipeline.common.iter_public_attributes">[docs]</a><span class="k">def</span> <span class="nf">iter_public_attributes</span><span class="p">(</span><span class="n">instance</span><span class="p">,</span> <span class="n">ignored_attributes</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Get an iterator over an instance&#39;s public attributes, *including* properties</span>
+
+<span class="sd">    :param instance: object instance</span>
+<span class="sd">    :param ignored_attributes: set of attribute names to exclude</span>
+<span class="sd">    :return: iterator over the instances public attributes</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">ignored_attributes</span> <span class="o">=</span> <span class="p">{}</span> <span class="k">if</span> <span class="n">ignored_attributes</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="nb">set</span><span class="p">(</span><span class="n">ignored_attributes</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">includeattr</span><span class="p">(</span><span class="n">attr</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">attr</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s1">&#39;_&#39;</span><span class="p">)</span> <span class="ow">or</span> <span class="n">attr</span> <span class="ow">in</span> <span class="n">ignored_attributes</span><span class="p">:</span>
+            <span class="k">return</span> <span class="kc">False</span>
+        <span class="k">return</span> <span class="kc">True</span>
+
+    <span class="n">attribute_names</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="nb">getattr</span><span class="p">(</span><span class="n">instance</span><span class="p">,</span> <span class="s1">&#39;__slots__&#39;</span><span class="p">,</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">instance</span><span class="p">,</span> <span class="s1">&#39;__dict__&#39;</span><span class="p">,</span> <span class="p">{})))</span>
+    <span class="n">property_names</span> <span class="o">=</span> <span class="p">{</span><span class="n">p</span> <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="nb">dir</span><span class="p">(</span><span class="n">instance</span><span class="o">.</span><span class="vm">__class__</span><span class="p">)</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="nb">getattr</span><span class="p">(</span><span class="n">instance</span><span class="o">.</span><span class="vm">__class__</span><span class="p">,</span> <span class="n">p</span><span class="p">),</span> <span class="nb">property</span><span class="p">)}</span>
+    <span class="n">all_names</span> <span class="o">=</span> <span class="n">attribute_names</span><span class="o">.</span><span class="n">union</span><span class="p">(</span><span class="n">property_names</span><span class="p">)</span>
+
+    <span class="n">public_attrs</span> <span class="o">=</span> <span class="p">{</span><span class="n">a</span><span class="p">:</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">instance</span><span class="p">,</span> <span class="n">a</span><span class="p">)</span> <span class="k">for</span> <span class="n">a</span> <span class="ow">in</span> <span class="n">all_names</span> <span class="k">if</span> <span class="n">includeattr</span><span class="p">(</span><span class="n">a</span><span class="p">)}</span>
+
+    <span class="k">return</span> <span class="n">six</span><span class="o">.</span><span class="n">iteritems</span><span class="p">(</span><span class="n">public_attrs</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="matches_regexes"><a class="viewcode-back" href="../../../aodncore.util.html#aodncore.pipeline.common.matches_regexes">[docs]</a><span class="k">def</span> <span class="nf">matches_regexes</span><span class="p">(</span><span class="n">input_string</span><span class="p">,</span> <span class="n">include_regexes</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">exclude_regexes</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Function to filter a string (e.g. file path) according to regular expression inclusions minus exclusions</span>
+
+<span class="sd">    :param input_string: string for comparison to the regular expressions</span>
+<span class="sd">    :param include_regexes: list of inclusions</span>
+<span class="sd">    :param exclude_regexes: list of exclusions to *subtract* from the list produced by inclusions</span>
+<span class="sd">    :return: True if the of the string matches one of the &#39;include_regexes&#39; but *not* one of the &#39;exclude_regexes&#39;</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">include_regexes</span><span class="p">,</span> <span class="n">six</span><span class="o">.</span><span class="n">string_types</span><span class="p">):</span>
+        <span class="n">include_regexes</span> <span class="o">=</span> <span class="p">[</span><span class="n">include_regexes</span><span class="p">]</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">include_regexes</span><span class="p">:</span>
+        <span class="n">include_regexes</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;.*&#39;</span><span class="p">]</span>
+    <span class="k">if</span> <span class="n">exclude_regexes</span> <span class="ow">and</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">exclude_regexes</span><span class="p">,</span> <span class="n">six</span><span class="o">.</span><span class="n">string_types</span><span class="p">):</span>
+        <span class="n">exclude_regexes</span> <span class="o">=</span> <span class="p">[</span><span class="n">exclude_regexes</span><span class="p">]</span>
+
+    <span class="n">matches_includes</span> <span class="o">=</span> <span class="kc">False</span>
+    <span class="k">for</span> <span class="n">r</span> <span class="ow">in</span> <span class="n">include_regexes</span><span class="p">:</span>
+        <span class="n">validate_regex</span><span class="p">(</span><span class="n">r</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">re</span><span class="o">.</span><span class="n">match</span><span class="p">(</span><span class="n">r</span><span class="p">,</span> <span class="n">input_string</span><span class="p">):</span>
+            <span class="n">matches_includes</span> <span class="o">=</span> <span class="kc">True</span>
+            <span class="k">break</span>
+
+    <span class="n">matches_excludes</span> <span class="o">=</span> <span class="kc">False</span>
+    <span class="k">if</span> <span class="n">matches_includes</span> <span class="ow">and</span> <span class="n">exclude_regexes</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">for</span> <span class="n">r</span> <span class="ow">in</span> <span class="n">exclude_regexes</span><span class="p">:</span>
+            <span class="n">validate_regex</span><span class="p">(</span><span class="n">r</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">re</span><span class="o">.</span><span class="n">match</span><span class="p">(</span><span class="n">r</span><span class="p">,</span> <span class="n">input_string</span><span class="p">):</span>
+                <span class="n">matches_excludes</span> <span class="o">=</span> <span class="kc">True</span>
+                <span class="k">break</span>
+
+    <span class="k">if</span> <span class="n">matches_includes</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">matches_excludes</span><span class="p">:</span>
+        <span class="k">return</span> <span class="kc">True</span>
+    <span class="k">return</span> <span class="kc">False</span></div>
+
+
+<div class="viewcode-block" id="merge_dicts"><a class="viewcode-back" href="../../../aodncore.util.html#aodncore.pipeline.common.merge_dicts">[docs]</a><span class="k">def</span> <span class="nf">merge_dicts</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Recursive dict merge.</span>
+
+<span class="sd">    Dict-like objects are merged sequentially from left to right into a new dict</span>
+
+<span class="sd">    Based on: https://gist.github.com/angstwad/bf22d1822c38a92ec0a9</span>
+
+<span class="sd">    :return: None</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">master</span> <span class="o">=</span> <span class="p">{}</span>
+
+    <span class="k">for</span> <span class="n">current_dict</span> <span class="ow">in</span> <span class="n">args</span><span class="p">:</span>
+        <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">six</span><span class="o">.</span><span class="n">iteritems</span><span class="p">(</span><span class="n">current_dict</span><span class="p">):</span>
+            <span class="k">if</span> <span class="n">k</span> <span class="ow">in</span> <span class="n">master</span> <span class="ow">and</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">master</span><span class="p">[</span><span class="n">k</span><span class="p">],</span> <span class="p">(</span><span class="nb">dict</span><span class="p">,</span> <span class="n">OrderedDict</span><span class="p">))</span> <span class="ow">and</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">current_dict</span><span class="p">[</span><span class="n">k</span><span class="p">],</span> <span class="n">Mapping</span><span class="p">):</span>
+                <span class="n">master</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="o">=</span> <span class="n">merge_dicts</span><span class="p">(</span><span class="n">master</span><span class="p">[</span><span class="n">k</span><span class="p">],</span> <span class="n">current_dict</span><span class="p">[</span><span class="n">k</span><span class="p">])</span>
+            <span class="k">elif</span> <span class="n">k</span> <span class="ow">in</span> <span class="n">master</span> <span class="ow">and</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">master</span><span class="p">[</span><span class="n">k</span><span class="p">],</span> <span class="nb">list</span><span class="p">)</span> <span class="ow">and</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">current_dict</span><span class="p">[</span><span class="n">k</span><span class="p">],</span> <span class="n">Iterable</span><span class="p">):</span>
+                <span class="k">if</span> <span class="n">current_dict</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">master</span><span class="p">[</span><span class="n">k</span><span class="p">]:</span>
+                    <span class="n">master</span><span class="p">[</span><span class="n">k</span><span class="p">]</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">current_dict</span><span class="p">[</span><span class="n">k</span><span class="p">])</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">master</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="o">=</span> <span class="n">current_dict</span><span class="p">[</span><span class="n">k</span><span class="p">]</span>
+
+    <span class="k">return</span> <span class="n">master</span></div>
+
+
+<div class="viewcode-block" id="slice_sequence"><a class="viewcode-back" href="../../../aodncore.util.html#aodncore.pipeline.common.slice_sequence">[docs]</a><span class="k">def</span> <span class="nf">slice_sequence</span><span class="p">(</span><span class="n">sequence</span><span class="p">,</span> <span class="n">slice_size</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Return a list containing the input Sequence sliced into Sequences with a length equal to or less than slice_size</span>
+
+<span class="sd">    :param sequence: input sequence</span>
+<span class="sd">    :param slice_size: size of each sub-Sequence</span>
+<span class="sd">    :return: list of Sequences</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="p">[</span><span class="n">sequence</span><span class="p">[</span><span class="n">x</span><span class="p">:</span><span class="n">x</span> <span class="o">+</span> <span class="n">slice_size</span><span class="p">]</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">sequence</span><span class="p">),</span> <span class="n">slice_size</span><span class="p">)]</span></div>
+
+
+<div class="viewcode-block" id="str_to_list"><a class="viewcode-back" href="../../../aodncore.util.html#aodncore.pipeline.common.str_to_list">[docs]</a><span class="k">def</span> <span class="nf">str_to_list</span><span class="p">(</span><span class="n">string_</span><span class="p">,</span> <span class="n">delimiter</span><span class="o">=</span><span class="s1">&#39;,&#39;</span><span class="p">,</span> <span class="n">strip_method</span><span class="o">=</span><span class="s1">&#39;strip&#39;</span><span class="p">,</span> <span class="n">include_empty</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Return a comma-separated string as native list, with whitespace stripped and empty strings excluded</span>
+
+<span class="sd">    :param string_: input string</span>
+<span class="sd">    :param delimiter: character(s) used to split the string</span>
+<span class="sd">    :param strip_method: which strip method to use for each element (invalid method names</span>
+<span class="sd">    :param include_empty: boolean to control whether empty strings are included in returned list</span>
+<span class="sd">    :return: list representation of the given config option</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">string_</span><span class="p">,</span> <span class="nb">list</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">string_</span>
+
+    <span class="n">valid_methods</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;lstrip&#39;</span><span class="p">,</span> <span class="s1">&#39;rstrip&#39;</span><span class="p">,</span> <span class="s1">&#39;strip&#39;</span><span class="p">}</span>
+    <span class="n">method</span> <span class="o">=</span> <span class="n">strip_method</span> <span class="k">if</span> <span class="n">strip_method</span> <span class="ow">in</span> <span class="n">valid_methods</span> <span class="k">else</span> <span class="s1">&#39;__str__&#39;</span>
+
+    <span class="k">def</span> <span class="nf">_process</span><span class="p">(</span><span class="n">str_</span><span class="p">):</span>
+        <span class="k">for</span> <span class="n">raw</span> <span class="ow">in</span> <span class="n">str_</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="n">delimiter</span><span class="p">):</span>
+            <span class="n">stripped</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">raw</span><span class="p">,</span> <span class="n">method</span><span class="p">)()</span>
+            <span class="k">if</span> <span class="n">include_empty</span> <span class="ow">or</span> <span class="n">stripped</span><span class="p">:</span>
+                <span class="k">yield</span> <span class="n">stripped</span>
+
+    <span class="k">return</span> <span class="p">[</span><span class="n">e</span> <span class="k">for</span> <span class="n">e</span> <span class="ow">in</span> <span class="n">_process</span><span class="p">(</span><span class="n">string_</span><span class="p">)]</span></div>
+
+
+<div class="viewcode-block" id="validate_membership"><a class="viewcode-back" href="../../../aodncore.util.html#aodncore.pipeline.common.validate_membership">[docs]</a><span class="k">def</span> <span class="nf">validate_membership</span><span class="p">(</span><span class="n">c</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">validate_membership_func</span><span class="p">(</span><span class="n">o</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">o</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">c</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;value &#39;</span><span class="si">{o}</span><span class="s2">&#39; must be a member of &#39;</span><span class="si">{c}</span><span class="s2">&#39;&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">o</span><span class="o">=</span><span class="n">o</span><span class="p">,</span> <span class="n">c</span><span class="o">=</span><span class="n">c</span><span class="p">))</span>
+
+    <span class="k">return</span> <span class="n">validate_membership_func</span></div>
+
+
+<div class="viewcode-block" id="validate_type"><a class="viewcode-back" href="../../../aodncore.util.html#aodncore.pipeline.common.validate_type">[docs]</a><span class="k">def</span> <span class="nf">validate_type</span><span class="p">(</span><span class="n">t</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Closure to generate type validation functions</span>
+
+<span class="sd">    :param t: type</span>
+<span class="sd">    :return: function reference to a function which validates a given input is an instance of type `t`</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="nf">validate_type_func</span><span class="p">(</span><span class="n">o</span><span class="p">):</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">o</span><span class="p">,</span> <span class="n">t</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;object &#39;</span><span class="si">{o}</span><span class="s2">&#39; must be of type &#39;</span><span class="si">{t}</span><span class="s2">&#39;&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">o</span><span class="o">=</span><span class="n">o</span><span class="p">,</span> <span class="n">t</span><span class="o">=</span><span class="n">t</span><span class="p">))</span>
+
+    <span class="k">return</span> <span class="n">validate_type_func</span></div>
+
+
+<span class="n">validate_bool</span> <span class="o">=</span> <span class="n">validate_type</span><span class="p">(</span><span class="nb">bool</span><span class="p">)</span>
+<span class="n">validate_dict</span> <span class="o">=</span> <span class="n">validate_type</span><span class="p">(</span><span class="nb">dict</span><span class="p">)</span>
+<span class="n">validate_int</span> <span class="o">=</span> <span class="n">validate_type</span><span class="p">(</span><span class="nb">int</span><span class="p">)</span>
+<span class="n">validate_mapping</span> <span class="o">=</span> <span class="n">validate_type</span><span class="p">(</span><span class="n">Mapping</span><span class="p">)</span>
+<span class="n">validate_string</span> <span class="o">=</span> <span class="n">validate_type</span><span class="p">(</span><span class="n">six</span><span class="o">.</span><span class="n">string_types</span><span class="p">)</span>
+
+
+<div class="viewcode-block" id="validate_callable"><a class="viewcode-back" href="../../../aodncore.util.html#aodncore.pipeline.common.validate_callable">[docs]</a><span class="k">def</span> <span class="nf">validate_callable</span><span class="p">(</span><span class="n">o</span><span class="p">):</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">callable</span><span class="p">(</span><span class="n">o</span><span class="p">):</span>
+        <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s1">&#39;value must be a Callable object&#39;</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="validate_nonstring_iterable"><a class="viewcode-back" href="../../../aodncore.util.html#aodncore.pipeline.common.validate_nonstring_iterable">[docs]</a><span class="k">def</span> <span class="nf">validate_nonstring_iterable</span><span class="p">(</span><span class="n">o</span><span class="p">):</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">is_nonstring_iterable</span><span class="p">(</span><span class="n">o</span><span class="p">):</span>
+        <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s1">&#39;value must be a non-string Iterable&#39;</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="validate_regex"><a class="viewcode-back" href="../../../aodncore.util.html#aodncore.pipeline.common.validate_regex">[docs]</a><span class="k">def</span> <span class="nf">validate_regex</span><span class="p">(</span><span class="n">o</span><span class="p">):</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="n">o</span><span class="p">)</span>
+    <span class="k">except</span> <span class="n">re</span><span class="o">.</span><span class="n">error</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;invalid regex &#39;</span><span class="si">{o}</span><span class="s2">&#39;. </span><span class="si">{e}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">o</span><span class="o">=</span><span class="n">o</span><span class="p">,</span> <span class="n">e</span><span class="o">=</span><span class="n">format_exception</span><span class="p">(</span><span class="n">e</span><span class="p">)))</span></div>
+
+
+<div class="viewcode-block" id="validate_mandatory_elements"><a class="viewcode-back" href="../../../aodncore.util.html#aodncore.pipeline.common.validate_mandatory_elements">[docs]</a><span class="k">def</span> <span class="nf">validate_mandatory_elements</span><span class="p">(</span><span class="n">mandatory</span><span class="p">,</span> <span class="n">actual</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s1">&#39;item&#39;</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Ensure that a collection contains all the elements in a &#39;mandatory&#39; collection of elements</span>
+
+<span class="sd">    :param mandatory: collection of mandatory elements</span>
+<span class="sd">    :param actual: collection to compare against mandatory collection</span>
+<span class="sd">    :param name: name of object being validated for exception message (e.g. &#39;item&#39; or &#39;section&#39;) </span>
+<span class="sd">    :return: None</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">mandatory</span> <span class="o">=</span> <span class="n">mandatory</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">mandatory</span><span class="p">,</span> <span class="nb">set</span><span class="p">)</span> <span class="k">else</span> <span class="nb">set</span><span class="p">(</span><span class="n">mandatory</span><span class="p">)</span>
+    <span class="n">actual</span> <span class="o">=</span> <span class="n">actual</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">actual</span><span class="p">,</span> <span class="nb">set</span><span class="p">)</span> <span class="k">else</span> <span class="nb">set</span><span class="p">(</span><span class="n">actual</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">mandatory</span><span class="o">.</span><span class="n">issubset</span><span class="p">(</span><span class="n">actual</span><span class="p">):</span>
+        <span class="n">missing</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">mandatory</span><span class="o">.</span><span class="n">difference</span><span class="p">(</span><span class="n">actual</span><span class="p">))</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;missing mandatory </span><span class="si">{name}</span><span class="s2">(s): </span><span class="si">{missing}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="n">name</span><span class="p">,</span> <span class="n">missing</span><span class="o">=</span><span class="n">missing</span><span class="p">))</span></div>
+
+
+<div class="viewcode-block" id="CaptureStdIO"><a class="viewcode-back" href="../../../aodncore.util.html#aodncore.pipeline.common.CaptureStdIO">[docs]</a><span class="k">class</span> <span class="nc">CaptureStdIO</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Context manager to capture stdout and stderr emitted from the block into a list. </span>
+<span class="sd">        Optionally merge stdout and stderr streams into stdout.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">merge_streams</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_merge_streams</span> <span class="o">=</span> <span class="n">merge_streams</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">__stdout_lines</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">__stderr_lines</span> <span class="o">=</span> <span class="p">[]</span>
+
+    <span class="k">def</span> <span class="nf">__enter__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">old_stdout</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">old_stderr</span> <span class="o">=</span> <span class="n">sys</span><span class="o">.</span><span class="n">stdout</span><span class="p">,</span> <span class="n">sys</span><span class="o">.</span><span class="n">stderr</span>
+
+        <span class="n">sys</span><span class="o">.</span><span class="n">stdout</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_stdout_stringio</span> <span class="o">=</span> <span class="n">StringIO</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_stderr_stringio</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_stdout_stringio</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_merge_streams</span> <span class="k">else</span> <span class="n">StringIO</span><span class="p">()</span>
+        <span class="n">sys</span><span class="o">.</span><span class="n">stderr</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_stderr_stringio</span>
+
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">__stdout_lines</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">__stderr_lines</span>
+
+    <span class="k">def</span> <span class="nf">__exit__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">__stdout_lines</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_stdout_stringio</span><span class="o">.</span><span class="n">getvalue</span><span class="p">()</span><span class="o">.</span><span class="n">splitlines</span><span class="p">())</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_merge_streams</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">__stderr_lines</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_stderr_stringio</span><span class="o">.</span><span class="n">getvalue</span><span class="p">()</span><span class="o">.</span><span class="n">splitlines</span><span class="p">())</span>
+        <span class="k">del</span> <span class="bp">self</span><span class="o">.</span><span class="n">_stdout_stringio</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_stderr_stringio</span>
+        <span class="n">sys</span><span class="o">.</span><span class="n">stdout</span><span class="p">,</span> <span class="n">sys</span><span class="o">.</span><span class="n">stderr</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">old_stdout</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">old_stderr</span></div>
+
+
+<div class="viewcode-block" id="LoggingContext"><a class="viewcode-back" href="../../../aodncore.util.html#aodncore.pipeline.common.LoggingContext">[docs]</a><span class="k">class</span> <span class="nc">LoggingContext</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Context manager to allow temporary changes to logging configuration within the context of the block</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">logger</span><span class="p">,</span> <span class="n">level</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">format_</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">handler</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">close</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">logger</span> <span class="o">=</span> <span class="n">logger</span><span class="o">.</span><span class="n">logger</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">logger</span><span class="p">,</span> <span class="n">logging</span><span class="o">.</span><span class="n">LoggerAdapter</span><span class="p">)</span> <span class="k">else</span> <span class="n">logger</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">level</span> <span class="o">=</span> <span class="n">level</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">format</span> <span class="o">=</span> <span class="n">format_</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">handler</span> <span class="o">=</span> <span class="n">handler</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">close</span> <span class="o">=</span> <span class="n">close</span>
+
+    <span class="k">def</span> <span class="nf">__enter__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">level</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">old_level</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">level</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">setLevel</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">level</span><span class="p">)</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">format</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">old_formatters</span> <span class="o">=</span> <span class="p">[]</span>
+            <span class="n">temp_formatter</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">Formatter</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">format</span><span class="p">)</span>
+            <span class="k">for</span> <span class="n">h</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">handlers</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">old_formatters</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">h</span><span class="o">.</span><span class="n">formatter</span><span class="p">)</span>
+                <span class="n">h</span><span class="o">.</span><span class="n">setFormatter</span><span class="p">(</span><span class="n">temp_formatter</span><span class="p">)</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">handler</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">addHandler</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">handler</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">__exit__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">et</span><span class="p">,</span> <span class="n">ev</span><span class="p">,</span> <span class="n">tb</span><span class="p">):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">level</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">setLevel</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">old_level</span><span class="p">)</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">format</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">h</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">handlers</span><span class="p">):</span>
+                <span class="n">h</span><span class="o">.</span><span class="n">setFormatter</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">old_formatters</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">handler</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">removeHandler</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">handler</span><span class="p">)</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">handler</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">close</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">handler</span><span class="o">.</span><span class="n">close</span><span class="p">()</span></div>
+
+
+<div class="viewcode-block" id="TemplateRenderer"><a class="viewcode-back" href="../../../aodncore.util.html#aodncore.pipeline.common.TemplateRenderer">[docs]</a><span class="k">class</span> <span class="nc">TemplateRenderer</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Simple template renderer</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">package</span><span class="o">=</span><span class="s1">&#39;aodncore.pipeline&#39;</span><span class="p">,</span> <span class="n">package_path</span><span class="o">=</span><span class="s1">&#39;templates&#39;</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">TemplateRenderer</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_package</span> <span class="o">=</span> <span class="n">package</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_loader</span> <span class="o">=</span> <span class="n">jinja2</span><span class="o">.</span><span class="n">PackageLoader</span><span class="p">(</span><span class="n">package</span><span class="p">,</span> <span class="n">package_path</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_env</span> <span class="o">=</span> <span class="n">jinja2</span><span class="o">.</span><span class="n">Environment</span><span class="p">(</span><span class="n">loader</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_loader</span><span class="p">)</span>
+
+<div class="viewcode-block" id="TemplateRenderer.render"><a class="viewcode-back" href="../../../aodncore.util.html#aodncore.pipeline.common.TemplateRenderer.render">[docs]</a>    <span class="k">def</span> <span class="nf">render</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">values</span><span class="p">):</span>
+        <span class="n">validate_mapping</span><span class="p">(</span><span class="n">values</span><span class="p">)</span>
+        <span class="n">template</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_env</span><span class="o">.</span><span class="n">get_template</span><span class="p">(</span><span class="n">name</span><span class="p">)</span>
+        <span class="n">rendered</span> <span class="o">=</span> <span class="n">template</span><span class="o">.</span><span class="n">render</span><span class="p">(</span><span class="n">values</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">rendered</span></div></div>
+</pre></div>
+
+           </div>
+           
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2018, AODN.
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'../../../',
+            VERSION:'0.0.17',
+            LANGUAGE:'None',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true,
+            SOURCELINK_SUFFIX: '.txt'
+        };
+    </script>
+      <script type="text/javascript" src="../../../_static/jquery.js"></script>
+      <script type="text/javascript" src="../../../_static/underscore.js"></script>
+      <script type="text/javascript" src="../../../_static/doctools.js"></script>
+
+  
+
+  
+  
+    <script type="text/javascript" src="../../../_static/js/theme.js"></script>
+  
+
+  <script type="text/javascript">
+      jQuery(function () {
+          
+          SphinxRtdTheme.Navigation.enableSticky();
+          
+      });
+  </script> 
+
+</body>
+</html>

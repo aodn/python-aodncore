@@ -1,0 +1,45 @@
+aodncore\.util package
+======================
+
+Subpackages
+-----------
+
+.. toctree::
+
+    aodncore.util.external
+
+Submodules
+----------
+
+aodncore\.util\.fileops module
+------------------------------
+
+.. automodule:: aodncore.util.fileops
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+aodncore\.util\.misc module
+---------------------------
+
+.. automodule:: aodncore.util.misc
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+aodncore\.util\.process module
+------------------------------
+
+.. automodule:: aodncore.util.process
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+
+Module contents
+---------------
+
+.. automodule:: aodncore.util
+    :members:
+    :undoc-members:
+    :show-inheritance:

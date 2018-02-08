@@ -1,0 +1,465 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>aodncore.pipeline.configlib &mdash; aodncore 0.0.17 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  
+    <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" /> 
+
+  
+  <script src="../../../_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="../../../index.html" class="icon icon-home"> aodncore
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                0.0.17
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../aodncore.html">aodncore package</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../aodncore.html#subpackages">Subpackages</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../aodncore.common.html">aodncore.common package</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../aodncore.common.html#submodules">Submodules</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../aodncore.common.html#module-aodncore.common.exceptions">aodncore.common.exceptions module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../aodncore.common.html#module-aodncore.common">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../../aodncore.pipeline.html">aodncore.pipeline package</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../aodncore.pipeline.html#subpackages">Subpackages</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../aodncore.pipeline.html#submodules">Submodules</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../aodncore.pipeline.html#module-aodncore.pipeline.common">aodncore.pipeline.common module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../aodncore.pipeline.html#module-aodncore.pipeline.config">aodncore.pipeline.config module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../aodncore.pipeline.html#module-aodncore.pipeline.configlib">aodncore.pipeline.configlib module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../aodncore.pipeline.html#module-aodncore.pipeline.destpath">aodncore.pipeline.destpath module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../aodncore.pipeline.html#module-aodncore.pipeline.exceptions">aodncore.pipeline.exceptions module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../aodncore.pipeline.html#module-aodncore.pipeline.fileclassifier">aodncore.pipeline.fileclassifier module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../aodncore.pipeline.html#module-aodncore.pipeline.files">aodncore.pipeline.files module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../aodncore.pipeline.html#module-aodncore.pipeline.handlerbase">aodncore.pipeline.handlerbase module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../aodncore.pipeline.html#module-aodncore.pipeline.log">aodncore.pipeline.log module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../aodncore.pipeline.html#module-aodncore.pipeline.schema">aodncore.pipeline.schema module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../aodncore.pipeline.html#aodncore-pipeline-serviceconfig-module">aodncore.pipeline.serviceconfig module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../aodncore.pipeline.html#module-aodncore.pipeline.watch">aodncore.pipeline.watch module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../aodncore.pipeline.html#aodncore-pipeline-watchservice-module">aodncore.pipeline.watchservice module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../aodncore.pipeline.html#module-aodncore.pipeline">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../../aodncore.testlib.html">aodncore.testlib package</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../aodncore.testlib.html#submodules">Submodules</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../aodncore.testlib.html#module-aodncore.testlib.basetest">aodncore.testlib.basetest module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../aodncore.testlib.html#module-aodncore.testlib.dummyhandler">aodncore.testlib.dummyhandler module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../aodncore.testlib.html#module-aodncore.testlib.handlertest">aodncore.testlib.handlertest module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../aodncore.testlib.html#module-aodncore.testlib.testutil">aodncore.testlib.testutil module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../aodncore.testlib.html#module-aodncore.testlib">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../../aodncore.util.html">aodncore.util package</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../aodncore.util.html#subpackages">Subpackages</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../aodncore.util.html#submodules">Submodules</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../aodncore.util.html#module-aodncore.util.fileops">aodncore.util.fileops module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../aodncore.util.html#module-aodncore.util.misc">aodncore.util.misc module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../aodncore.util.html#module-aodncore.util.process">aodncore.util.process module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../aodncore.util.html#module-aodncore.util">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../../aodncore.vocab.html">aodncore.vocab package</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../aodncore.vocab.html#submodules">Submodules</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../aodncore.vocab.html#module-aodncore.vocab.platform_code_vocab">aodncore.vocab.platform_code_vocab module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../aodncore.vocab.html#module-aodncore.vocab">Module contents</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../../aodncore.html#submodules">Submodules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../aodncore.html#module-aodncore.version">aodncore.version module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../aodncore.html#module-aodncore">Module contents</a></li>
+</ul>
+</li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">aodncore</a>
+        
+      </nav>
+
+
+      
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="../../index.html">Module code</a> &raquo;</li>
+        
+      <li>aodncore.pipeline.configlib</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <h1>Source code for aodncore.pipeline.configlib</h1><div class="highlight"><pre>
+<span></span><span class="kn">import</span> <span class="nn">json</span>
+<span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">from</span> <span class="nn">collections</span> <span class="k">import</span> <span class="n">OrderedDict</span>
+
+<span class="kn">from</span> <span class="nn">celery</span> <span class="k">import</span> <span class="n">Celery</span>
+<span class="kn">from</span> <span class="nn">six</span> <span class="k">import</span> <span class="n">iteritems</span>
+
+<span class="kn">from</span> <span class="nn">.exceptions</span> <span class="k">import</span> <span class="n">InvalidConfigError</span>
+<span class="kn">from</span> <span class="nn">.log</span> <span class="k">import</span> <span class="n">WorkerLoggingConfigBuilder</span><span class="p">,</span> <span class="n">get_watchservice_logging_config</span>
+<span class="kn">from</span> <span class="nn">.schema</span> <span class="k">import</span> <span class="n">validate_logging_config</span><span class="p">,</span> <span class="n">validate_pipeline_config</span>
+<span class="kn">from</span> <span class="nn">.watch</span> <span class="k">import</span> <span class="n">get_task_name</span><span class="p">,</span> <span class="n">CeleryConfig</span><span class="p">,</span> <span class="n">CeleryContext</span>
+<span class="kn">from</span> <span class="nn">..util</span> <span class="k">import</span> <span class="n">discover_entry_points</span><span class="p">,</span> <span class="n">format_exception</span><span class="p">,</span> <span class="n">validate_type</span>
+
+<span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="s1">&#39;LazyConfigManager&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;load_pipeline_config&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;load_trigger_config&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;load_watch_config&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;validate_lazyconfigmanager&#39;</span>
+<span class="p">]</span>
+
+<span class="n">DEFAULT_CONFIG_FILE</span> <span class="o">=</span> <span class="s1">&#39;/mnt/ebs/aodn-pipeline/etc/pipeline.conf&#39;</span>
+<span class="n">DEFAULT_CONFIG_ENVVAR</span> <span class="o">=</span> <span class="s1">&#39;PIPELINE_CONFIG_FILE&#39;</span>
+<span class="n">DEFAULT_WATCH_CONFIG</span> <span class="o">=</span> <span class="s1">&#39;/mnt/ebs/aodn-pipeline/etc/watches.conf&#39;</span>
+<span class="n">DEFAULT_WATCH_CONFIG_ENVVAR</span> <span class="o">=</span> <span class="s1">&#39;PIPELINE_WATCH_CONFIG_FILE&#39;</span>
+<span class="n">DEFAULT_TRIGGER_CONFIG</span> <span class="o">=</span> <span class="s1">&#39;/usr/local/talend/etc/trigger.conf&#39;</span>
+<span class="n">DEFAULT_TRIGGER_CONFIG_ENVVAR</span> <span class="o">=</span> <span class="s1">&#39;PIPELINE_TRIGGER_CONFIG_FILE&#39;</span>
+
+
+<div class="viewcode-block" id="LazyConfigManager"><a class="viewcode-back" href="../../../aodncore.pipeline.html#aodncore.pipeline.configlib.LazyConfigManager">[docs]</a><span class="k">class</span> <span class="nc">LazyConfigManager</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_celery_application</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_celery_routes</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_discovered_dest_path_functions</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_discovered_handlers</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_watchservice_logging_config</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_worker_logging_config</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_pipeline_config</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_trigger_config</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_watch_config</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_watch_directory_map</span> <span class="o">=</span> <span class="kc">None</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">celery_application</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_celery_application</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">application</span> <span class="o">=</span> <span class="n">Celery</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">pipeline_config</span><span class="p">[</span><span class="s1">&#39;watch&#39;</span><span class="p">][</span><span class="s1">&#39;task_namespace&#39;</span><span class="p">])</span>
+            <span class="n">celeryconfig</span> <span class="o">=</span> <span class="n">CeleryConfig</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">celery_routes</span><span class="p">)</span>
+            <span class="n">celerycontext</span> <span class="o">=</span> <span class="n">CeleryContext</span><span class="p">(</span><span class="n">application</span><span class="p">,</span> <span class="bp">self</span><span class="p">,</span> <span class="n">celeryconfig</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_celery_application</span> <span class="o">=</span> <span class="n">celerycontext</span><span class="o">.</span><span class="n">application</span>
+
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_celery_application</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">celery_routes</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_celery_routes</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">routes</span> <span class="o">=</span> <span class="p">{}</span>
+            <span class="k">for</span> <span class="n">name</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">watch_config</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+                <span class="n">task_name</span> <span class="o">=</span> <span class="n">get_task_name</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">pipeline_config</span><span class="p">[</span><span class="s1">&#39;watch&#39;</span><span class="p">][</span><span class="s1">&#39;task_namespace&#39;</span><span class="p">],</span> <span class="n">name</span><span class="p">)</span>
+                <span class="n">queue_dict</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;queue&#39;</span><span class="p">:</span> <span class="n">name</span><span class="p">,</span> <span class="s1">&#39;routing_key&#39;</span><span class="p">:</span> <span class="n">name</span><span class="p">}</span>
+                <span class="n">routes</span><span class="p">[</span><span class="n">task_name</span><span class="p">]</span> <span class="o">=</span> <span class="n">queue_dict</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_celery_routes</span> <span class="o">=</span> <span class="n">routes</span>
+
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_celery_routes</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">discovered_dest_path_functions</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_discovered_dest_path_functions</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">discovered_dest_path_functions</span> <span class="o">=</span> <span class="n">discover_entry_points</span><span class="p">(</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">pipeline_config</span><span class="p">[</span><span class="s1">&#39;pluggable&#39;</span><span class="p">][</span><span class="s1">&#39;path_function_group&#39;</span><span class="p">])</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_discovered_dest_path_functions</span> <span class="o">=</span> <span class="n">discovered_dest_path_functions</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_discovered_dest_path_functions</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">discovered_handlers</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_discovered_handlers</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">discovered_handlers</span> <span class="o">=</span> <span class="n">discover_entry_points</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">pipeline_config</span><span class="p">[</span><span class="s1">&#39;pluggable&#39;</span><span class="p">][</span><span class="s1">&#39;handlers_group&#39;</span><span class="p">])</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_discovered_handlers</span> <span class="o">=</span> <span class="n">discovered_handlers</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_discovered_handlers</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">watchservice_logging_config</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_watchservice_logging_config</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">watchservice_logging_config</span> <span class="o">=</span> <span class="n">get_watchservice_logging_config</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">pipeline_config</span><span class="p">)</span>
+            <span class="n">validate_logging_config</span><span class="p">(</span><span class="n">watchservice_logging_config</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_watchservice_logging_config</span> <span class="o">=</span> <span class="n">watchservice_logging_config</span>
+
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_watchservice_logging_config</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">worker_logging_config</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_worker_logging_config</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">config_builder</span> <span class="o">=</span> <span class="n">WorkerLoggingConfigBuilder</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">pipeline_config</span><span class="p">)</span>
+
+            <span class="k">for</span> <span class="n">name</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">watch_config</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+                <span class="n">task_name</span> <span class="o">=</span> <span class="n">get_task_name</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">pipeline_config</span><span class="p">[</span><span class="s1">&#39;watch&#39;</span><span class="p">][</span><span class="s1">&#39;task_namespace&#39;</span><span class="p">],</span> <span class="n">name</span><span class="p">)</span>
+                <span class="n">config_builder</span><span class="o">.</span><span class="n">add_watch_config</span><span class="p">(</span><span class="n">task_name</span><span class="p">)</span>
+
+            <span class="n">worker_logging_config</span> <span class="o">=</span> <span class="n">config_builder</span><span class="o">.</span><span class="n">get_config</span><span class="p">()</span>
+
+            <span class="n">validate_logging_config</span><span class="p">(</span><span class="n">worker_logging_config</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_worker_logging_config</span> <span class="o">=</span> <span class="n">worker_logging_config</span>
+
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_worker_logging_config</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">pipeline_config</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_pipeline_config</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">pipeline_config</span> <span class="o">=</span> <span class="n">load_pipeline_config</span><span class="p">(</span><span class="n">DEFAULT_CONFIG_FILE</span><span class="p">,</span> <span class="n">envvar</span><span class="o">=</span><span class="n">DEFAULT_CONFIG_ENVVAR</span><span class="p">)</span>
+            <span class="n">validate_pipeline_config</span><span class="p">(</span><span class="n">pipeline_config</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_pipeline_config</span> <span class="o">=</span> <span class="n">pipeline_config</span>
+
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_pipeline_config</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">watch_config</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_watch_config</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">watch_config</span> <span class="o">=</span> <span class="n">load_watch_config</span><span class="p">(</span><span class="n">DEFAULT_WATCH_CONFIG</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_watch_config</span> <span class="o">=</span> <span class="n">watch_config</span>
+
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_watch_config</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">trigger_config</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_trigger_config</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">trigger_config</span> <span class="o">=</span> <span class="n">load_trigger_config</span><span class="p">(</span><span class="n">DEFAULT_TRIGGER_CONFIG</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_trigger_config</span> <span class="o">=</span> <span class="n">trigger_config</span>
+
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_trigger_config</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">watch_directory_map</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_watch_directory_map</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">directories</span> <span class="o">=</span> <span class="p">{}</span>
+            <span class="c1"># noinspection PyTypeChecker</span>
+            <span class="k">for</span> <span class="n">name</span><span class="p">,</span> <span class="n">items</span> <span class="ow">in</span> <span class="n">iteritems</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">watch_config</span><span class="p">):</span>
+                <span class="k">for</span> <span class="n">rel_path</span> <span class="ow">in</span> <span class="n">items</span><span class="p">[</span><span class="s1">&#39;path&#39;</span><span class="p">]:</span>
+                    <span class="n">path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">pipeline_config</span><span class="p">[</span><span class="s1">&#39;watch&#39;</span><span class="p">][</span><span class="s1">&#39;incoming_dir&#39;</span><span class="p">],</span> <span class="n">rel_path</span><span class="p">)</span>
+                    <span class="n">directories</span><span class="p">[</span><span class="n">path</span><span class="p">]</span> <span class="o">=</span> <span class="n">name</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_watch_directory_map</span> <span class="o">=</span> <span class="n">directories</span>
+
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_watch_directory_map</span>
+
+<div class="viewcode-block" id="LazyConfigManager.purge_lazy_properties"><a class="viewcode-back" href="../../../aodncore.pipeline.html#aodncore.pipeline.configlib.LazyConfigManager.purge_lazy_properties">[docs]</a>    <span class="k">def</span> <span class="nf">purge_lazy_properties</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_celery_application</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_celery_routes</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_worker_logging_config</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_pipeline_config</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_watch_config</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_watch_directory_map</span> <span class="o">=</span> <span class="kc">None</span></div></div>
+
+
+<div class="viewcode-block" id="load_pipeline_config"><a class="viewcode-back" href="../../../aodncore.pipeline.html#aodncore.pipeline.configlib.load_pipeline_config">[docs]</a><span class="k">def</span> <span class="nf">load_pipeline_config</span><span class="p">(</span><span class="n">default_config_file</span><span class="o">=</span><span class="n">DEFAULT_WATCH_CONFIG</span><span class="p">,</span> <span class="n">envvar</span><span class="o">=</span><span class="n">DEFAULT_CONFIG_ENVVAR</span><span class="p">):</span>
+    <span class="n">config_file</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">envvar</span><span class="p">,</span> <span class="n">default_config_file</span><span class="p">)</span>
+    <span class="n">config</span> <span class="o">=</span> <span class="n">load_json_file</span><span class="p">(</span><span class="n">config_file</span><span class="p">,</span> <span class="n">envvar</span><span class="o">=</span><span class="n">envvar</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">config</span></div>
+
+
+<div class="viewcode-block" id="load_watch_config"><a class="viewcode-back" href="../../../aodncore.pipeline.html#aodncore.pipeline.configlib.load_watch_config">[docs]</a><span class="k">def</span> <span class="nf">load_watch_config</span><span class="p">(</span><span class="n">default_config_file</span><span class="o">=</span><span class="n">DEFAULT_WATCH_CONFIG</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+
+<span class="sd">    :param default_config_file: default path to return if not found set in environment variable</span>
+<span class="sd">    :return: dict representation of watch config parsed from json file</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">config</span> <span class="o">=</span> <span class="n">load_json_file</span><span class="p">(</span><span class="n">default_config_file</span><span class="p">,</span> <span class="n">envvar</span><span class="o">=</span><span class="n">DEFAULT_WATCH_CONFIG_ENVVAR</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">config</span></div>
+
+
+<div class="viewcode-block" id="load_trigger_config"><a class="viewcode-back" href="../../../aodncore.pipeline.html#aodncore.pipeline.configlib.load_trigger_config">[docs]</a><span class="k">def</span> <span class="nf">load_trigger_config</span><span class="p">(</span><span class="n">default_config_file</span><span class="o">=</span><span class="n">DEFAULT_TRIGGER_CONFIG</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+
+<span class="sd">    :param default_config_file: default path to return if not found set in environment variable</span>
+<span class="sd">    :return: dict representation of watch config parsed from json file</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">config</span> <span class="o">=</span> <span class="n">load_json_file</span><span class="p">(</span><span class="n">default_config_file</span><span class="p">,</span> <span class="n">envvar</span><span class="o">=</span><span class="n">DEFAULT_TRIGGER_CONFIG_ENVVAR</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">config</span></div>
+
+
+<span class="k">def</span> <span class="nf">load_json_file</span><span class="p">(</span><span class="n">default_config_file</span><span class="p">,</span> <span class="n">envvar</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Load a JSON file into a dict, using either a</span>
+
+<span class="sd">    :param default_config_file:</span>
+<span class="sd">    :param envvar:</span>
+<span class="sd">    :return:</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">config_file</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">envvar</span><span class="p">,</span> <span class="n">default_config_file</span><span class="p">)</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">config_file</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+            <span class="n">config</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">f</span><span class="p">,</span> <span class="n">object_pairs_hook</span><span class="o">=</span><span class="n">OrderedDict</span><span class="p">)</span>
+    <span class="k">except</span> <span class="p">(</span><span class="ne">IOError</span><span class="p">,</span> <span class="ne">OSError</span><span class="p">)</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="n">InvalidConfigError</span><span class="p">(</span><span class="n">format_exception</span><span class="p">(</span><span class="n">e</span><span class="p">))</span>
+
+    <span class="k">return</span> <span class="n">config</span>
+
+
+<span class="n">validate_lazyconfigmanager</span> <span class="o">=</span> <span class="n">validate_type</span><span class="p">(</span><span class="n">LazyConfigManager</span><span class="p">)</span>
+</pre></div>
+
+           </div>
+           
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2018, AODN.
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'../../../',
+            VERSION:'0.0.17',
+            LANGUAGE:'None',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true,
+            SOURCELINK_SUFFIX: '.txt'
+        };
+    </script>
+      <script type="text/javascript" src="../../../_static/jquery.js"></script>
+      <script type="text/javascript" src="../../../_static/underscore.js"></script>
+      <script type="text/javascript" src="../../../_static/doctools.js"></script>
+
+  
+
+  
+  
+    <script type="text/javascript" src="../../../_static/js/theme.js"></script>
+  
+
+  <script type="text/javascript">
+      jQuery(function () {
+          
+          SphinxRtdTheme.Navigation.enableSticky();
+          
+      });
+  </script> 
+
+</body>
+</html>
