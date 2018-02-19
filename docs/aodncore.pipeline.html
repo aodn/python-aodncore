@@ -1601,29 +1601,35 @@ section for further details about where they appear in the steps order.</p>
 <div class="section" id="attributes">
 <h4>Attributes<a class="headerlink" href="#attributes" title="Permalink to this headline">¶</a></h4>
 <p>A handler instance contains a number of attributes which control or modify the behaviour of the handler. The attributes
-are typically set from the <strong>params</strong> key of the watch configuration, or from the <code class="docutils literal"><span class="pre">__init__</span></code> method of a handler
-subclass (e.g. when writing tests).</p>
+are typically set from the <strong>params</strong> key of the watch configuration, or as initialisation parameters to <code class="docutils literal"><span class="pre">__init__</span></code>
+method of a handler subclass (e.g. when writing tests).</p>
 <div class="section" id="class-parameters">
 <h5>Class parameters<a class="headerlink" href="#class-parameters" title="Permalink to this headline">¶</a></h5>
-<p>The following class parameters are also assigned to attributes of the same name, as a convenience.</p>
-<p>For example, a handler instantiated with any of these class parameters may also access them from the class instance as
-follows:</p>
+<p>The class parameters are also assigned to instance attributes of the same name, as a convenience.</p>
+<p>A handler instantiated with any of these class parameters may also access them from the class instance:</p>
 <div class="highlight-default"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">aodncore.pipeline</span> <span class="k">import</span> <span class="n">HandlerBase</span>
 <span class="kn">from</span> <span class="nn">aodncore.pipeline.config</span> <span class="k">import</span> <span class="n">CONFIG</span>
 
 
 <span class="k">class</span> <span class="nc">MyHandler</span><span class="p">(</span><span class="n">HandlerBase</span><span class="p">):</span>
     <span class="k">def</span> <span class="nf">print_upload_path</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="c1"># Note: when accessing attributes from within the class itself, the usual Python &#39;self.attr&#39;</span>
-        <span class="c1"># convention applies to access the *current* instance</span>
+        <span class="c1"># Note: when accessing attributes from within the class itself, the</span>
+        <span class="c1"># usual Python &#39;self.attr&#39; convention applies to access the *current* instance</span>
         <span class="nb">print</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">upload_path</span><span class="p">)</span>
 
 
-<span class="n">h</span> <span class="o">=</span> <span class="n">MyHandler</span><span class="p">(</span><span class="s1">&#39;/path/to/input/file.nc&#39;</span><span class="p">,</span> <span class="n">config</span><span class="o">=</span><span class="n">CONFIG</span><span class="p">,</span> <span class="n">upload_path</span><span class="o">=</span><span class="s1">&#39;/original/incoming/path/file.nc&#39;</span><span class="p">)</span>
+<span class="n">h</span> <span class="o">=</span> <span class="n">MyHandler</span><span class="p">(</span><span class="s1">&#39;/path/to/input/file.nc&#39;</span><span class="p">,</span> <span class="n">config</span><span class="o">=</span><span class="n">CONFIG</span><span class="p">,</span>
+              <span class="n">upload_path</span><span class="o">=</span><span class="s1">&#39;/original/incoming/path/file.nc&#39;</span><span class="p">)</span>
+
+<span class="c1"># &#39;input_file&#39; parameter is now available as the &#39;input_file&#39; attribute</span>
 <span class="n">h</span><span class="o">.</span><span class="n">input_file</span>
 <span class="s1">&#39;/path/to/input/file.nc&#39;</span>
+
+<span class="c1"># &#39;upload_path&#39; parameter is now available as the &#39;upload_path&#39; attribute</span>
 <span class="n">h</span><span class="o">.</span><span class="n">upload_path</span>
 <span class="s1">&#39;/original/incoming/path/file.nc&#39;</span>
+
+<span class="c1"># &#39;config&#39; parameter is now available as the &#39;config&#39; attribute</span>
 <span class="n">h</span><span class="o">.</span><span class="n">config</span>
 <span class="o">&lt;</span><span class="n">aodncore</span><span class="o">.</span><span class="n">pipeline</span><span class="o">.</span><span class="n">configlib</span><span class="o">.</span><span class="n">LazyConfigManager</span> <span class="nb">object</span> <span class="n">at</span> <span class="mh">0x7f22230c5990</span><span class="o">&gt;</span>
 
@@ -1631,6 +1637,94 @@ follows:</p>
 <span class="o">/</span><span class="n">original</span><span class="o">/</span><span class="n">incoming</span><span class="o">/</span><span class="n">path</span><span class="o">/</span><span class="n">file</span><span class="o">.</span><span class="n">nc</span>
 </pre></div>
 </div>
+</div>
+</div>
+<div class="section" id="examples">
+<h4>Examples<a class="headerlink" href="#examples" title="Permalink to this headline">¶</a></h4>
+<div class="section" id="writing-a-dest-path-function">
+<h5>Writing a <code class="xref py py-meth docutils literal"><span class="pre">dest_path()</span></code> function<a class="headerlink" href="#writing-a-dest-path-function" title="Permalink to this headline">¶</a></h5>
+<ul>
+<li><p class="first">Writing a <code class="xref py py-meth docutils literal"><span class="pre">dest_path()</span></code> function with an unmodified filename:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">os</span>
+
+<span class="k">class</span> <span class="nc">MyHandler</span><span class="p">(</span><span class="n">HandlerBase</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">dest_path</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">file_path</span><span class="p">):</span>
+        <span class="n">basename</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">basename</span><span class="p">(</span><span class="n">file_path</span><span class="p">)</span>
+        <span class="n">dest_filename</span> <span class="o">=</span> <span class="s2">&quot;IMOS_filename_01_XX_</span><span class="si">{basename}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">basename</span><span class="o">=</span><span class="n">basename</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="s1">&#39;IMOS/MYFACILITY&#39;</span><span class="p">,</span> <span class="n">dest_filename</span><span class="p">)</span>
+</pre></div>
+</div>
+</li>
+<li><p class="first">Writing a <code class="xref py py-meth docutils literal"><span class="pre">dest_path()</span></code> function based on contents of a NetCDF file:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">from</span> <span class="nn">netCDF4</span> <span class="k">import</span> <span class="n">Dataset</span>
+
+<span class="k">class</span> <span class="nc">MyHandler</span><span class="p">(</span><span class="n">HandlerBase</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">dest_path</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">file_path</span><span class="p">):</span>
+        <span class="k">with</span> <span class="n">Dataset</span><span class="p">(</span><span class="n">file_path</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s1">&#39;r&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">d</span><span class="p">:</span>
+            <span class="n">site_code</span> <span class="o">=</span> <span class="n">d</span><span class="o">.</span><span class="n">site_code</span>
+
+        <span class="n">dest_filename</span> <span class="o">=</span> <span class="s2">&quot;IMOS_filename_00_</span><span class="si">{site_code}</span><span class="s2">.nc&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">site_code</span><span class="o">=</span><span class="n">site_code</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="s1">&#39;IMOS/MYFACILITY&#39;</span><span class="p">,</span> <span class="n">dest_filename</span><span class="p">)</span>
+</pre></div>
+</div>
+</li>
+</ul>
+</div>
+<div class="section" id="creating-products-during-the-handler-lifetime">
+<h5>Creating products during the handler lifetime<a class="headerlink" href="#creating-products-during-the-handler-lifetime" title="Permalink to this headline">¶</a></h5>
+<ul>
+<li><p class="first">Create a simple product during the <code class="xref py py-meth docutils literal"><span class="pre">preprocess()</span></code> step and add to the file collection:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">from</span> <span class="nn">aodncore.pipeline</span> <span class="k">import</span> <span class="n">PipelineFile</span>
+
+<span class="k">class</span> <span class="nc">MyHandler</span><span class="p">(</span><span class="n">HandlerBase</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">preprocess</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="c1"># create the product</span>
+        <span class="n">product_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">products_dir</span><span class="p">,</span> <span class="s1">&#39;product.txt&#39;</span><span class="p">)</span>
+        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">product_path</span><span class="p">,</span> <span class="s1">&#39;w&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+            <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s1">&#39;some file contents&#39;</span> <span class="o">+</span> <span class="n">os</span><span class="o">.</span><span class="n">linesep</span><span class="p">)</span>
+
+        <span class="c1"># create a PipelineFile to represent the product file,</span>
+        <span class="c1"># set it&#39;s &#39;publish type&#39; attribute</span>
+        <span class="c1"># and add it to the handler&#39;s file collection</span>
+        <span class="n">product</span> <span class="o">=</span> <span class="n">PipelineFile</span><span class="p">(</span><span class="n">product_path</span><span class="p">)</span>
+        <span class="n">product</span><span class="o">.</span><span class="n">publish_type</span> <span class="o">=</span> <span class="n">PipelineFilePublishType</span><span class="o">.</span><span class="n">UPLOAD_ONLY</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">collection</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">product</span><span class="p">)</span>
+</pre></div>
+</div>
+</li>
+</ul>
+</div>
+<div class="section" id="overriding-default-file-actions">
+<h5>Overriding default file actions<a class="headerlink" href="#overriding-default-file-actions" title="Permalink to this headline">¶</a></h5>
+<ul>
+<li><p class="first">Set all ‘.txt’ files to UPLOAD_ONLY publish type in the <code class="xref py py-meth docutils literal"><span class="pre">preprocess()</span></code> step:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="k">class</span> <span class="nc">MyHandler</span><span class="p">(</span><span class="n">HandlerBase</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">preprocess</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="c1"># use of filter methods can reduce excessive nesting of &#39;if&#39; and &#39;for&#39; statements</span>
+        <span class="n">txt_files</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">file_collection</span><span class="o">.</span><span class="n">filter_by_attribute_value</span><span class="p">(</span><span class="s1">&#39;extension&#39;</span><span class="p">,</span> <span class="s1">&#39;.txt&#39;</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">pf</span> <span class="ow">in</span> <span class="n">txt_files</span><span class="p">:</span>
+            <span class="n">pf</span><span class="o">.</span><span class="n">publish_type</span> <span class="o">=</span> <span class="n">PipelineFilePublishType</span><span class="o">.</span><span class="n">UPLOAD_ONLY</span>
+
+    <span class="k">def</span> <span class="nf">preprocess</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="c1"># functionally equivalent to the above example</span>
+        <span class="k">for</span> <span class="n">pf</span> <span class="ow">in</span> <span class="n">txt_files</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">pf</span><span class="o">.</span><span class="n">extension</span> <span class="o">==</span> <span class="s1">&#39;.txt&#39;</span><span class="p">:</span>
+                <span class="n">pf</span><span class="o">.</span><span class="n">publish_type</span> <span class="o">=</span> <span class="n">PipelineFilePublishType</span><span class="o">.</span><span class="n">UPLOAD_ONLY</span>
+</pre></div>
+</div>
+</li>
+<li><p class="first">Do not perform any checks on PDF (.pdf) files:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="k">class</span> <span class="nc">MyHandler</span><span class="p">(</span><span class="n">HandlerBase</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">preprocess</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">pdf_files</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">file_collection</span><span class="o">.</span><span class="n">filter_by_attribute_value</span><span class="p">(</span><span class="s1">&#39;extension&#39;</span><span class="p">,</span> <span class="s1">&#39;.pdf&#39;</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">pf</span> <span class="ow">in</span> <span class="n">pdf_files</span><span class="p">:</span>
+            <span class="n">pf</span><span class="o">.</span><span class="n">check_type</span> <span class="o">=</span> <span class="n">PipelineFileCheckType</span><span class="o">.</span><span class="n">NO_ACTION</span>
+</pre></div>
+</div>
+</li>
+</ul>
 <dl class="class">
 <dt id="aodncore.pipeline.handlerbase.HandlerBase">
 <em class="property">class </em><code class="descclassname">aodncore.pipeline.handlerbase.</code><code class="descname">HandlerBase</code><span class="sig-paren">(</span><em>input_file</em>, <em>allowed_extensions=None</em>, <em>archive_input_file=False</em>, <em>archive_path_function=None</em>, <em>celery_task=None</em>, <em>check_params=None</em>, <em>config=None</em>, <em>dest_path_function=None</em>, <em>exclude_regexes=None</em>, <em>harvest_params=None</em>, <em>harvest_type='talend'</em>, <em>include_regexes=None</em>, <em>notify_params=None</em>, <em>upload_path=None</em>, <em>resolve_params=None</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/aodncore/pipeline/handlerbase.html#HandlerBase"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#aodncore.pipeline.handlerbase.HandlerBase" title="Permalink to this definition">¶</a></dt>
