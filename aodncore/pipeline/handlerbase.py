@@ -138,16 +138,15 @@ Attributes
 ----------
 
 A handler instance contains a number of attributes which control or modify the behaviour of the handler. The attributes
-are typically set from the **params** key of the watch configuration, or from the ``__init__`` method of a handler
-subclass (e.g. when writing tests).
+are typically set from the **params** key of the watch configuration, or as initialisation parameters to ``__init__``
+method of a handler subclass (e.g. when writing tests).
 
 Class parameters
 ~~~~~~~~~~~~~~~~
 
-The following class parameters are also assigned to attributes of the same name, as a convenience.
+The class parameters are also assigned to instance attributes of the same name, as a convenience.
 
-For example, a handler instantiated with any of these class parameters may also access them from the class instance as
-follows::
+A handler instantiated with any of these class parameters may also access them from the class instance::
 
     from aodncore.pipeline import HandlerBase
     from aodncore.pipeline.config import CONFIG
@@ -155,21 +154,106 @@ follows::
 
     class MyHandler(HandlerBase):
         def print_upload_path(self):
-            # Note: when accessing attributes from within the class itself, the usual Python 'self.attr'
-            # convention applies to access the *current* instance
+            # Note: when accessing attributes from within the class itself, the
+            # usual Python 'self.attr' convention applies to access the *current* instance
             print(self.upload_path)
 
 
-    h = MyHandler('/path/to/input/file.nc', config=CONFIG, upload_path='/original/incoming/path/file.nc')
+    h = MyHandler('/path/to/input/file.nc', config=CONFIG,
+                  upload_path='/original/incoming/path/file.nc')
+
+    # 'input_file' parameter is now available as the 'input_file' attribute
     h.input_file
     '/path/to/input/file.nc'
+
+    # 'upload_path' parameter is now available as the 'upload_path' attribute
     h.upload_path
     '/original/incoming/path/file.nc'
+
+    # 'config' parameter is now available as the 'config' attribute
     h.config
     <aodncore.pipeline.configlib.LazyConfigManager object at 0x7f22230c5990>
 
     h.print_upload_path()
     /original/incoming/path/file.nc
+
+Examples
+--------
+
+Writing a :meth:`dest_path` function
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+* Writing a :meth:`dest_path` function with an unmodified filename::
+
+    import os
+
+    class MyHandler(HandlerBase):
+        def dest_path(self, file_path):
+            basename = os.path.basename(file_path)
+            dest_filename = "IMOS_filename_01_XX_{basename}".format(basename=basename)
+            return os.path.join('IMOS/MYFACILITY', dest_filename)
+
+* Writing a :meth:`dest_path` function based on contents of a NetCDF file::
+
+    import os
+    from netCDF4 import Dataset
+
+    class MyHandler(HandlerBase):
+        def dest_path(self, file_path):
+            with Dataset(file_path, mode='r') as d:
+                site_code = d.site_code
+
+            dest_filename = "IMOS_filename_00_{site_code}.nc".format(site_code=site_code)
+            return os.path.join('IMOS/MYFACILITY', dest_filename)
+
+Creating products during the handler lifetime
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+* Create a simple product during the :meth:`preprocess` step and add to the file collection::
+
+    import os
+    from aodncore.pipeline import PipelineFile
+
+    class MyHandler(HandlerBase):
+        def preprocess(self):
+            # create the product
+            product_path = os.path.join(self.products_dir, 'product.txt')
+            with open(product_path, 'w') as f:
+                f.write('some file contents' + os.linesep)
+
+            # create a PipelineFile to represent the product file,
+            # set it's 'publish type' attribute
+            # and add it to the handler's file collection
+            product = PipelineFile(product_path)
+            product.publish_type = PipelineFilePublishType.UPLOAD_ONLY
+            self.collection.add(product)
+
+Overriding default file actions
+~~~~~~~~~~~~~~~~
+
+* Set all '.txt' files to UPLOAD_ONLY publish type in the :meth:`preprocess` step::
+
+    class MyHandler(HandlerBase):
+        def preprocess(self):
+            # use of filter methods can reduce excessive nesting of 'if' and 'for' statements
+            txt_files = self.file_collection.filter_by_attribute_value('extension', '.txt')
+            for pf in txt_files:
+                pf.publish_type = PipelineFilePublishType.UPLOAD_ONLY
+
+        def preprocess(self):
+            # functionally equivalent to the above example
+            for pf in txt_files:
+                if pf.extension == '.txt':
+                    pf.publish_type = PipelineFilePublishType.UPLOAD_ONLY
+
+
+* Do not perform any checks on PDF (.pdf) files::
+
+    class MyHandler(HandlerBase):
+        def preprocess(self):
+            pdf_files = self.file_collection.filter_by_attribute_value('extension', '.pdf')
+            for pf in pdf_files:
+                pf.check_type = PipelineFileCheckType.NO_ACTION
 
 """
 
