@@ -1,8 +1,8 @@
 pip
 boto3==1.4.4
-cc-plugin-imos>=1.1.1
+cc-plugin-imos>=1.2.0
 celery==4.0.2
-compliance-checker==2.3.1
+compliance-checker==3.1.1
 enum34==1.1.6
 Jinja2==2.9.6
 jsonschema==2.6.0
