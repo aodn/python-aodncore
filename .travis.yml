@@ -10,11 +10,10 @@ addons:
 before_install:
   - wget https://raw.githubusercontent.com/aodn/utilities/master/jenkins/get_latest_artifact.py
   - pip install boto3
-  - python get_latest_artifact.py --extension .whl --job compliance_checker_prod
   - python get_latest_artifact.py --extension .whl --job cc_plugin_imos_prod
 
 install:
-  - pip install compliance_checker-*.whl
+  - pip install $(grep ^compliance-checker requirements.txt)
   - pip install cc_plugin_imos-*.whl
   - pip install -r requirements.txt
 
