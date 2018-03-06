@@ -688,3 +688,57 @@ class TestPipelineFileCollection(BaseTestCase):
         table_headers, table_data = self.collection.get_table_data()
         self.assertListEqual([], table_headers)
         self.assertListEqual([], table_data)
+
+    @mock.patch("aodncore.pipeline.files.get_file_checksum")
+    @mock.patch("os.path.isfile")
+    def test_set_bool_attribute(self, mock_isfile, mock_get_file_checksum):
+        mock_isfile.return_value = True
+        mock_get_file_checksum.return_value = ''
+
+        f1 = get_nonexistent_path()
+        f2 = get_nonexistent_path()
+        f3 = get_nonexistent_path()
+        fileobj1 = PipelineFile(f1)
+        fileobj2 = PipelineFile(f2, is_deletion=True)
+        fileobj3 = PipelineFile(f3)
+        self.collection.update((fileobj1, fileobj2, fileobj3))
+
+        with self.assertRaises(TypeError):
+            self.collection.set_bool_attribute('is_harvested', 'not_a_bool')
+        with self.assertRaises(TypeError):
+            self.collection.set_bool_attribute('is_harvested', 1)
+        with self.assertRaises(TypeError):
+            self.collection.set_bool_attribute('is_harvested', [])
+
+        try:
+            self.collection.set_bool_attribute('is_harvested', True)
+        except Exception as e:
+            raise AssertionError(
+                "unexpected exception raised. {cls} {msg}".format(cls=e.__class__.__name__, msg=e))
+
+    @mock.patch("aodncore.pipeline.files.get_file_checksum")
+    @mock.patch("os.path.isfile")
+    def test_set_string_attribute(self, mock_isfile, mock_get_file_checksum):
+        mock_isfile.return_value = True
+        mock_get_file_checksum.return_value = ''
+
+        f1 = get_nonexistent_path()
+        f2 = get_nonexistent_path()
+        f3 = get_nonexistent_path()
+        fileobj1 = PipelineFile(f1)
+        fileobj2 = PipelineFile(f2, is_deletion=True)
+        fileobj3 = PipelineFile(f3)
+        self.collection.update((fileobj1, fileobj2, fileobj3))
+
+        with self.assertRaises(TypeError):
+            self.collection.set_string_attribute('dest_path', True)
+        with self.assertRaises(TypeError):
+            self.collection.set_string_attribute('archive_path', 1)
+        with self.assertRaises(TypeError):
+            self.collection.set_string_attribute('dest_path', [])
+
+        try:
+            self.collection.set_string_attribute('dest_path', 'valid/string')
+        except Exception as e:
+            raise AssertionError(
+                "unexpected exception raised. {cls} {msg}".format(cls=e.__class__.__name__, msg=e))

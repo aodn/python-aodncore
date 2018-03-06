@@ -462,6 +462,10 @@ class PipelineFileCollection(MutableSet):
     def __repr__(self):  # pragma: no cover
         return "PipelineFileCollection({repr})".format(repr=repr(list(self.__s)))
 
+    def _set_attribute(self, attribute, value):
+        for f in self.__s:
+            setattr(f, attribute, value)
+
     def add(self, pipeline_file, deletion=False, overwrite=False):
         """Add a file to the collection
 
@@ -763,9 +767,17 @@ class PipelineFileCollection(MutableSet):
         :return: None
         """
         validate_bool(value)
+        self._set_attribute(attribute, value)
 
-        for f in self.__s:
-            setattr(f, attribute, value)
+    def set_string_attribute(self, attribute, value):
+        """Set a string attribute for each file in the collection
+
+        :param attribute: attribute to set
+        :param value: value to set the attribute
+        :return: None
+        """
+        validate_string(value)
+        self._set_attribute(attribute, value)
 
     def set_file_update_callback(self, file_update_callback):
         """Set a callback function in each :py:class:`PipelineFile` in this collection
