@@ -7,7 +7,7 @@ from paramiko import SSHClient, AutoAddPolicy
 from six.moves.urllib.parse import urlparse
 
 from .basestep import AbstractCollectionStepRunner
-from ..exceptions import FileDeleteFailedError, FileUploadFailedError, InvalidUploadUrlError
+from ..exceptions import AttributeNotSetError, FileDeleteFailedError, FileUploadFailedError, InvalidUploadUrlError
 from ..files import validate_pipelinefilecollection
 from ...util import format_exception, mkdir_p, rm_f, safe_copy_file
 
@@ -89,12 +89,23 @@ class BaseUploadRunner(AbstractCollectionStepRunner):
         pass
 
     @abc.abstractmethod  # pragma: no cover
-    def set_is_overwrite(self, pipeline_files):
+    def _get_is_overwrite(self, pipeline_file, abs_path):
         pass
 
     def _get_absolute_dest_path(self, pipeline_file):
         rel_path = getattr(pipeline_file, self.dest_path_attr)
+        if not rel_path:
+            raise AttributeNotSetError(
+                "attribute '{attr}' not set in '{pf}'".format(attr=self.dest_path_attr, pf=pipeline_file))
         return os.path.join(self.prefix, rel_path)
+
+    def set_is_overwrite(self, pipeline_files):
+        validate_pipelinefilecollection(pipeline_files)
+
+        should_upload = pipeline_files.filter_by_bool_attributes_and_not('should_store', 'is_deletion')
+        for pipeline_file in should_upload:
+            abs_path = self._get_absolute_dest_path(pipeline_file)
+            pipeline_file.is_overwrite = self._get_is_overwrite(pipeline_file, abs_path)
 
     def run(self, pipeline_files):
         validate_pipelinefilecollection(pipeline_files)
@@ -156,6 +167,9 @@ class FileUploadRunner(BaseUploadRunner):
     def _get_absolute_dest_uri(self, pipeline_file):
         return "file://{path}".format(path=self._get_absolute_dest_path(pipeline_file))
 
+    def _get_is_overwrite(self, pipeline_file, abs_path):
+        return os.path.exists(abs_path)
+
     def _post_run_hook(self):
         return
 
@@ -166,13 +180,6 @@ class FileUploadRunner(BaseUploadRunner):
         abs_path = self._get_absolute_dest_path(pipeline_file)
         mkdir_p(os.path.dirname(abs_path))
         safe_copy_file(pipeline_file.src_path, abs_path, overwrite=True)
-
-    def set_is_overwrite(self, pipeline_files):
-        validate_pipelinefilecollection(pipeline_files)
-
-        for pipeline_file in pipeline_files:
-            abs_path = self._get_absolute_dest_path(pipeline_file)
-            pipeline_file.is_overwrite = os.path.exists(abs_path)
 
 
 class S3UploadRunner(BaseUploadRunner):
@@ -202,6 +209,10 @@ class S3UploadRunner(BaseUploadRunner):
     def _get_absolute_dest_uri(self, pipeline_file):
         return "s3://{bucket}/{path}".format(bucket=self.bucket, path=self._get_absolute_dest_path(pipeline_file))
 
+    def _get_is_overwrite(self, pipeline_file, abs_path):
+        response = self.s3_client.list_objects_v2(Bucket=self.bucket, Prefix=abs_path)
+        return bool(k for k in response.get('Contents', []) if k['Key'] == abs_path)
+
     def _post_run_hook(self):
         return
 
@@ -221,14 +232,6 @@ class S3UploadRunner(BaseUploadRunner):
         except Exception as e:
             raise InvalidUploadUrlError(
                 "unable to access S3 bucket '{0}': {1}".format(self.bucket, format_exception(e)))
-
-    def set_is_overwrite(self, pipeline_files):
-        validate_pipelinefilecollection(pipeline_files)
-
-        for pipeline_file in pipeline_files:
-            abs_path = self._get_absolute_dest_path(pipeline_file)
-            response = self.s3_client.list_objects_v2(Bucket=self.bucket, Prefix=abs_path)
-            pipeline_file.is_overwrite = bool(k for k in response.get('Contents', []) if k['Key'] == abs_path)
 
 
 def sftp_path_exists(sftpclient, path):
@@ -319,6 +322,9 @@ class SftpUploadRunner(BaseUploadRunner):
     def _get_absolute_dest_uri(self, pipeline_file):
         return "sftp://{server}{path}".format(server=self.server, path=self._get_absolute_dest_path(pipeline_file))
 
+    def _get_is_overwrite(self, pipeline_file, abs_path):
+        return sftp_path_exists(self.sftp_client, abs_path)
+
     def _post_run_hook(self):
         return
 
@@ -332,10 +338,3 @@ class SftpUploadRunner(BaseUploadRunner):
 
         with open(pipeline_file.src_path, 'rb') as f:
             self.sftp_client.putfo(f, abs_path, confirm=True)
-
-    def set_is_overwrite(self, pipeline_files):
-        validate_pipelinefilecollection(pipeline_files)
-
-        for pipeline_file in pipeline_files:
-            abs_path = self._get_absolute_dest_path(pipeline_file)
-            pipeline_file.is_overwrite = sftp_path_exists(self.sftp_client, abs_path)
