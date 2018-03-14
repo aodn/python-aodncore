@@ -7,7 +7,7 @@ from six.moves import range
 
 from aodncore.pipeline import (CheckResult, PipelineFileCollection, PipelineFile, PipelineFileCheckType,
                                PipelineFilePublishType)
-from aodncore.pipeline.exceptions import DuplicatePipelineFileError, MissingFileError
+from aodncore.pipeline.exceptions import DuplicateUniqueAttributeError, DuplicatePipelineFileError, MissingFileError
 from aodncore.pipeline.steps import get_child_check_runner
 from aodncore.testlib import BaseTestCase, get_nonexistent_path, mock
 from test_aodncore import TESTDATA_DIR
@@ -233,6 +233,122 @@ class TestPipelineFileCollection(BaseTestCase):
                 "unexpected exception raised. {cls} {msg}".format(cls=e.__class__.__name__, msg=e))
 
         self.assertSetEqual({p2}, self.collection)
+
+    def test_add_duplicate_dest_path(self):
+        p1 = PipelineFile(GOOD_NC)
+        p1.publish_type = PipelineFilePublishType.UPLOAD_ONLY
+        p1.dest_path = 'FIXED_DEST_PATH'
+        self.collection.add(p1)
+
+        p2 = PipelineFile(BAD_NC)
+        p2.publish_type = PipelineFilePublishType.UPLOAD_ONLY
+        p2.dest_path = 'FIXED_DEST_PATH'
+
+        with self.assertRaises(DuplicateUniqueAttributeError):
+            self.collection.add(p2)
+
+    def test_add_duplicate_archive_path(self):
+        p1 = PipelineFile(GOOD_NC)
+        p1.publish_type = PipelineFilePublishType.ARCHIVE_ONLY
+        p1.archive_path = 'FIXED_ARCHIVE_PATH'
+        self.collection.add(p1)
+
+        p2 = PipelineFile(BAD_NC)
+        p2.publish_type = PipelineFilePublishType.ARCHIVE_ONLY
+        p2.archive_path = 'FIXED_ARCHIVE_PATH'
+
+        with self.assertRaises(DuplicateUniqueAttributeError):
+            self.collection.add(p2)
+
+    def test_set_dest_paths_duplicate(self):
+        def dest_path_static(src_path):
+            return 'FIXED_DEST_PATH'
+
+        p1 = PipelineFile(GOOD_NC)
+        p1.publish_type = PipelineFilePublishType.UPLOAD_ONLY
+        p2 = PipelineFile(BAD_NC)
+        p2.publish_type = PipelineFilePublishType.UPLOAD_ONLY
+        self.collection.update((p1, p2))
+
+        with self.assertRaises(DuplicateUniqueAttributeError):
+            self.collection.set_dest_paths(dest_path_static)
+
+    def test_set_archive_paths_duplicate(self):
+        def archive_path_static(src_path):
+            return 'FIXED_ARCHIVE_PATH'
+
+        p1 = PipelineFile(GOOD_NC)
+        p1.publish_type = PipelineFilePublishType.ARCHIVE_ONLY
+        p2 = PipelineFile(BAD_NC)
+        p2.publish_type = PipelineFilePublishType.ARCHIVE_ONLY
+        self.collection.update((p1, p2))
+
+        with self.assertRaises(DuplicateUniqueAttributeError):
+            self.collection.set_archive_paths(archive_path_static)
+
+    def test_validate_unique_attribute_value_dest_path(self):
+        p1 = PipelineFile(GOOD_NC)
+        p1.publish_type = PipelineFilePublishType.UPLOAD_ONLY
+        p1.dest_path = 'FIXED_DEST_PATH'
+        self.collection.add(p1)
+
+        with self.assertRaises(DuplicateUniqueAttributeError):
+            self.collection.validate_unique_attribute_value('dest_path','FIXED_DEST_PATH')
+
+        try:
+            self.collection.validate_unique_attribute_value('dest_path', 'A_DIFFERENT_DEST_PATH')
+        except Exception as e:
+            raise AssertionError(
+                "unexpected exception raised. {cls} {msg}".format(cls=e.__class__.__name__, msg=e))
+
+    def test_validate_unique_attribute_value_archive_path(self):
+        p1 = PipelineFile(GOOD_NC)
+        p1.publish_type = PipelineFilePublishType.ARCHIVE_ONLY
+        p1.archive_path = 'FIXED_ARCHIVE_PATH'
+        self.collection.add(p1)
+
+        with self.assertRaises(DuplicateUniqueAttributeError):
+            self.collection.validate_unique_attribute_value('archive_path', 'FIXED_ARCHIVE_PATH')
+
+        try:
+            self.collection.validate_unique_attribute_value('archive_path', 'A_DIFFERENT_ARCHIVE_PATH')
+        except Exception as e:
+            raise AssertionError(
+                "unexpected exception raised. {cls} {msg}".format(cls=e.__class__.__name__, msg=e))
+
+    def test_validate_attribute_uniqueness_dest_path(self):
+        p1 = PipelineFile(GOOD_NC)
+        p1.publish_type = PipelineFilePublishType.UPLOAD_ONLY
+        p1.dest_path = 'FIXED_DEST_PATH'
+        self.collection.add(p1)
+
+        p2 = PipelineFile(BAD_NC)
+        p2.publish_type = PipelineFilePublishType.UPLOAD_ONLY
+
+        self.collection.add(p2)
+
+        # edge case where the path is updated in a way that the collection cannot be aware of it
+        p2.dest_path = 'FIXED_DEST_PATH'
+
+        with self.assertRaises(DuplicateUniqueAttributeError):
+            self.collection.validate_attribute_uniqueness('dest_path')
+
+    def test_validate_attribute_uniqueness_archive_path(self):
+        p1 = PipelineFile(GOOD_NC)
+        p1.publish_type = PipelineFilePublishType.ARCHIVE_ONLY
+        p1.archive_path = 'FIXED_ARCHIVE_PATH'
+        self.collection.add(p1)
+
+        p2 = PipelineFile(BAD_NC)
+        p2.publish_type = PipelineFilePublishType.ARCHIVE_ONLY
+
+        self.collection.add(p2)
+
+        # edge case where the path is updated in a way that the collection cannot be aware of it
+        p2.archive_path = 'FIXED_ARCHIVE_PATH'
+
+        with self.assertRaises(DuplicateUniqueAttributeError):
+            self.collection.validate_attribute_uniqueness('archive_path')
 
     def test_invalid_types(self):
         class NothingClass(object):

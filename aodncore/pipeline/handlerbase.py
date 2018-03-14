@@ -783,6 +783,7 @@ class HandlerBase(object):
         self.logger.sysinfo(
             "get_upload_runner (archive) -> '{runner}'".format(runner=archive_runner.__class__.__name__))
 
+        self.file_collection.validate_attribute_uniqueness('archive_path')
         self._archive(archive_runner)
 
         upload_runner = get_upload_runner(self._config.pipeline_config['global']['upload_uri'], self._config,
@@ -793,6 +794,7 @@ class HandlerBase(object):
 
         upload_runner.set_is_overwrite(self.file_collection)
 
+        self.file_collection.validate_attribute_uniqueness('dest_path')
         self._harvest(upload_runner)
         self._store_unharvested(upload_runner)
 
