@@ -58,8 +58,8 @@ class NullUploadRunner(BaseUploadRunner):
     def _get_absolute_dest_uri(self, pipeline_file):
         return "null://{dest_path}".format(dest_path=pipeline_file.dest_path)
 
-    def set_is_overwrite(self, pipeline_files):
-        pass
+    def _get_is_overwrite(self, pipeline_file, abs_path):
+        return not self.fail
 
     def run(self, pipeline_files):
         self.call_count += 1
@@ -74,8 +74,7 @@ class NullUploadRunner(BaseUploadRunner):
             raise AssertionError("run method not called")
 
     def assert_not_called(self):
-        if self.call_count != 0:
-            raise AssertionError("run method call_count: {call_count}".format(call_count=self.call_count))
+        self.assert_call_count(0)
 
 
 def dest_path_testing(filename):

@@ -4,6 +4,7 @@ __all__ = [
     'PipelineProcessingError',
     'PipelineSystemError',
     'ComplianceCheckFailedError',
+    'AttributeNotSetError',
     'DuplicatePipelineFileError',
     'FileDeleteFailedError',
     'FileUploadFailedError',
@@ -61,6 +62,10 @@ class InvalidFileFormatError(PipelineProcessingError):
 
 
 # System errors
+
+class AttributeNotSetError(PipelineSystemError):
+    pass
+
 
 class DuplicatePipelineFileError(PipelineSystemError):
     pass

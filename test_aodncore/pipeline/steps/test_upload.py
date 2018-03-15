@@ -205,6 +205,21 @@ class TestBaseUploadRunner(BaseTestCase):
         runner.run(collection)
         self.assertTrue(collection[0].is_stored)
 
+    def test_set_is_overwrite_with_no_action_file(self):
+        collection = get_upload_collection()
+
+        temp_file = PipelineFile(self.temp_nc_file)
+        self.assertIsNone(temp_file.dest_path)
+        self.assertIs(temp_file.publish_type, PipelineFilePublishType.NO_ACTION)
+        collection.add(temp_file)
+
+        runner = NullUploadRunner("/")
+        try:
+            runner.set_is_overwrite(collection)
+        except Exception as e:
+            raise AssertionError(
+                "unexpected exception raised. {cls} {msg}".format(cls=e.__class__.__name__, msg=e))
+
 
 class TestFileUploadRunner(BaseTestCase):
     @mock.patch('aodncore.pipeline.steps.upload.mkdir_p')
