@@ -10,6 +10,7 @@ from .basestep import AbstractCollectionStepRunner
 from ..exceptions import AttributeNotSetError, FileDeleteFailedError, FileUploadFailedError, InvalidUploadUrlError
 from ..files import validate_pipelinefilecollection
 from ...util import format_exception, mkdir_p, rm_f, safe_copy_file
+from retrying import retry
 
 __all__ = [
     'get_upload_runner',
@@ -202,11 +203,13 @@ class S3UploadRunner(BaseUploadRunner):
 
         self.s3_client = boto3.client('s3')
 
+    @retry(stop_max_attempt_number=4, wait_fixed=3000)
     def _delete_file(self, pipeline_file):
         abs_path = self._get_absolute_dest_path(pipeline_file)
         self.s3_client.delete_object(Bucket=self.bucket, Key=abs_path)
 
     def _get_absolute_dest_uri(self, pipeline_file):
+
         return "s3://{bucket}/{path}".format(bucket=self.bucket, path=self._get_absolute_dest_path(pipeline_file))
 
     def _get_is_overwrite(self, pipeline_file, abs_path):
@@ -219,6 +222,7 @@ class S3UploadRunner(BaseUploadRunner):
     def _pre_run_hook(self):
         self._validate_bucket()
 
+    @retry(stop_max_attempt_number=4, wait_fixed=3000)
     def _upload_file(self, pipeline_file):
         abs_path = self._get_absolute_dest_path(pipeline_file)
 
@@ -226,6 +230,7 @@ class S3UploadRunner(BaseUploadRunner):
             self.s3_client.upload_fileobj(f, Bucket=self.bucket, Key=abs_path,
                                           ExtraArgs={'ContentType': pipeline_file.mime_type})
 
+    @retry(stop_max_attempt_number=4, wait_fixed=3000)
     def _validate_bucket(self):
         try:
             self.s3_client.head_bucket(Bucket=self.bucket)

@@ -291,7 +291,9 @@ class TestS3UploadRunner(BaseTestCase):
         with self.assertRaises(InvalidUploadUrlError):
             s3_upload_runner.run(collection)
 
-        s3_upload_runner.s3_client.head_bucket.assert_called_once_with(Bucket=dummy_bucket)
+        assert(s3_upload_runner.s3_client.head_bucket.call_count == 4)
+
+        s3_upload_runner.s3_client.head_bucket.assert_called_with(Bucket=dummy_bucket)
 
     @mock.patch('aodncore.pipeline.steps.upload.boto3')
     def test_upload(self, mock_boto3):
