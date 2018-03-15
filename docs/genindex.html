@@ -9,7 +9,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Index &mdash; aodncore 0.0.17 documentation</title>
+  <title>Index &mdash; aodncore 0.0.19 documentation</title>
   
 
   
@@ -58,7 +58,7 @@
             
             
               <div class="version">
-                0.0.17
+                0.0.19
               </div>
             
           
@@ -417,6 +417,8 @@
         <li><a href="aodncore.testlib.html#aodncore.testlib.testutil.NullUploadRunner.assert_not_called">(aodncore.testlib.testutil.NullUploadRunner method)</a>
 </li>
       </ul></li>
+      <li><a href="aodncore.pipeline.html#aodncore.pipeline.exceptions.AttributeNotSetError">AttributeNotSetError</a>
+</li>
   </ul></td>
 </tr></table>
 
@@ -696,6 +698,8 @@
 </li>
       </ul></li>
       <li><a href="aodncore.pipeline.html#aodncore.pipeline.exceptions.DuplicatePipelineFileError">DuplicatePipelineFileError</a>
+</li>
+      <li><a href="aodncore.pipeline.html#aodncore.pipeline.exceptions.DuplicateUniqueAttributeError">DuplicateUniqueAttributeError</a>
 </li>
   </ul></td>
 </tr></table>
@@ -2025,18 +2029,6 @@
         <li><a href="aodncore.pipeline.html#aodncore.pipeline.PipelineFileCollection.set_file_update_callback">(aodncore.pipeline.PipelineFileCollection method)</a>
 </li>
       </ul></li>
-      <li><a href="aodncore.pipeline.steps.html#aodncore.pipeline.steps.upload.FileUploadRunner.set_is_overwrite">set_is_overwrite() (aodncore.pipeline.steps.upload.FileUploadRunner method)</a>
-
-      <ul>
-        <li><a href="aodncore.pipeline.steps.html#aodncore.pipeline.steps.upload.S3UploadRunner.set_is_overwrite">(aodncore.pipeline.steps.upload.S3UploadRunner method)</a>
-</li>
-        <li><a href="aodncore.pipeline.steps.html#aodncore.pipeline.steps.upload.SftpUploadRunner.set_is_overwrite">(aodncore.pipeline.steps.upload.SftpUploadRunner method)</a>
-</li>
-        <li><a href="aodncore.testlib.html#aodncore.testlib.NullUploadRunner.set_is_overwrite">(aodncore.testlib.NullUploadRunner method)</a>
-</li>
-        <li><a href="aodncore.testlib.html#aodncore.testlib.testutil.NullUploadRunner.set_is_overwrite">(aodncore.testlib.testutil.NullUploadRunner method)</a>
-</li>
-      </ul></li>
       <li><a href="aodncore.pipeline.steps.html#aodncore.pipeline.steps.notify.NotifyList.set_notification_attempted">set_notification_attempted() (aodncore.pipeline.steps.notify.NotifyList method)</a>
 
       <ul>
@@ -2073,14 +2065,14 @@
         <li><a href="aodncore.pipeline.html#aodncore.pipeline.PipelineFile.should_harvest">(aodncore.pipeline.PipelineFile attribute)</a>
 </li>
       </ul></li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="aodncore.pipeline.html#aodncore.pipeline.HandlerBase.should_notify">should_notify (aodncore.pipeline.HandlerBase attribute)</a>
 
       <ul>
         <li><a href="aodncore.pipeline.html#aodncore.pipeline.handlerbase.HandlerBase.should_notify">(aodncore.pipeline.handlerbase.HandlerBase attribute)</a>
 </li>
       </ul></li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="aodncore.pipeline.html#aodncore.pipeline.files.PipelineFile.should_store">should_store (aodncore.pipeline.files.PipelineFile attribute)</a>
 
       <ul>
@@ -2257,6 +2249,12 @@
         <li><a href="aodncore.util.external.html#aodncore.util.external.boltons.IndexedSet.union">(aodncore.util.external.boltons.IndexedSet method)</a>
 </li>
       </ul></li>
+      <li><a href="aodncore.pipeline.html#aodncore.pipeline.files.PipelineFileCollection.unique_attributes">unique_attributes (aodncore.pipeline.files.PipelineFileCollection attribute)</a>
+
+      <ul>
+        <li><a href="aodncore.pipeline.html#aodncore.pipeline.PipelineFileCollection.unique_attributes">(aodncore.pipeline.PipelineFileCollection attribute)</a>
+</li>
+      </ul></li>
       <li><a href="aodncore.pipeline.html#aodncore.pipeline.common.FileType.UNKNOWN">UNKNOWN (aodncore.pipeline.common.FileType attribute)</a>
 
       <ul>
@@ -2307,6 +2305,12 @@
   <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="aodncore.pipeline.html#aodncore.pipeline.common.validate_addition_publishtype">validate_addition_publishtype() (in module aodncore.pipeline.common)</a>
 </li>
+      <li><a href="aodncore.pipeline.html#aodncore.pipeline.files.PipelineFileCollection.validate_attribute_uniqueness">validate_attribute_uniqueness() (aodncore.pipeline.files.PipelineFileCollection method)</a>
+
+      <ul>
+        <li><a href="aodncore.pipeline.html#aodncore.pipeline.PipelineFileCollection.validate_attribute_uniqueness">(aodncore.pipeline.PipelineFileCollection method)</a>
+</li>
+      </ul></li>
       <li><a href="aodncore.util.html#aodncore.util.validate_bool">validate_bool() (in module aodncore.util)</a>
 
       <ul>
@@ -2431,6 +2435,12 @@
         <li><a href="aodncore.util.html#aodncore.util.misc.validate_type">(in module aodncore.util.misc)</a>
 </li>
       </ul></li>
+      <li><a href="aodncore.pipeline.html#aodncore.pipeline.files.PipelineFileCollection.validate_unique_attribute_value">validate_unique_attribute_value() (aodncore.pipeline.files.PipelineFileCollection method)</a>
+
+      <ul>
+        <li><a href="aodncore.pipeline.html#aodncore.pipeline.PipelineFileCollection.validate_unique_attribute_value">(aodncore.pipeline.PipelineFileCollection method)</a>
+</li>
+      </ul></li>
   </ul></td>
 </tr></table>
 
@@ -2508,7 +2518,7 @@
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'./',
-            VERSION:'0.0.17',
+            VERSION:'0.0.19',
             LANGUAGE:'None',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',

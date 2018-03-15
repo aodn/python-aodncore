@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>aodncore.pipeline package &mdash; aodncore 0.0.17 documentation</title>
+  <title>aodncore.pipeline package &mdash; aodncore 0.0.19 documentation</title>
   
 
   
@@ -59,7 +59,7 @@
             
             
               <div class="version">
-                0.0.17
+                0.0.19
               </div>
             
           
@@ -733,6 +733,18 @@ return to an end user</p>
 </dd></dl>
 
 <dl class="exception">
+<dt id="aodncore.pipeline.exceptions.DuplicateUniqueAttributeError">
+<em class="property">exception </em><code class="descclassname">aodncore.pipeline.exceptions.</code><code class="descname">DuplicateUniqueAttributeError</code><a class="reference internal" href="_modules/aodncore/pipeline/exceptions.html#DuplicateUniqueAttributeError"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#aodncore.pipeline.exceptions.DuplicateUniqueAttributeError" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#aodncore.pipeline.exceptions.PipelineProcessingError" title="aodncore.pipeline.exceptions.PipelineProcessingError"><code class="xref py py-class docutils literal"><span class="pre">aodncore.pipeline.exceptions.PipelineProcessingError</span></code></a></p>
+</dd></dl>
+
+<dl class="exception">
+<dt id="aodncore.pipeline.exceptions.AttributeNotSetError">
+<em class="property">exception </em><code class="descclassname">aodncore.pipeline.exceptions.</code><code class="descname">AttributeNotSetError</code><a class="reference internal" href="_modules/aodncore/pipeline/exceptions.html#AttributeNotSetError"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#aodncore.pipeline.exceptions.AttributeNotSetError" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#aodncore.pipeline.exceptions.PipelineSystemError" title="aodncore.pipeline.exceptions.PipelineSystemError"><code class="xref py py-class docutils literal"><span class="pre">aodncore.pipeline.exceptions.PipelineSystemError</span></code></a></p>
+</dd></dl>
+
+<dl class="exception">
 <dt id="aodncore.pipeline.exceptions.DuplicatePipelineFileError">
 <em class="property">exception </em><code class="descclassname">aodncore.pipeline.exceptions.</code><code class="descname">DuplicatePipelineFileError</code><a class="reference internal" href="_modules/aodncore/pipeline/exceptions.html#DuplicatePipelineFileError"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#aodncore.pipeline.exceptions.DuplicatePipelineFileError" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="#aodncore.pipeline.exceptions.PipelineSystemError" title="aodncore.pipeline.exceptions.PipelineSystemError"><code class="xref py py-class docutils literal"><span class="pre">aodncore.pipeline.exceptions.PipelineSystemError</span></code></a></p>
@@ -1254,10 +1266,54 @@ given id (i.e. refers to the same object)</p>
 <code class="descname">union</code><span class="sig-paren">(</span><em>sequence</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/aodncore/pipeline/files.html#PipelineFileCollection.union"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#aodncore.pipeline.files.PipelineFileCollection.union" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
+<dl class="attribute">
+<dt id="aodncore.pipeline.files.PipelineFileCollection.unique_attributes">
+<code class="descname">unique_attributes</code><em class="property"> = set(['archive_path', 'dest_path'])</em><a class="headerlink" href="#aodncore.pipeline.files.PipelineFileCollection.unique_attributes" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
 <dl class="method">
 <dt id="aodncore.pipeline.files.PipelineFileCollection.update">
 <code class="descname">update</code><span class="sig-paren">(</span><em>sequence</em>, <em>overwrite=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/aodncore/pipeline/files.html#PipelineFileCollection.update"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#aodncore.pipeline.files.PipelineFileCollection.update" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
+
+<dl class="method">
+<dt id="aodncore.pipeline.files.PipelineFileCollection.validate_attribute_uniqueness">
+<code class="descname">validate_attribute_uniqueness</code><span class="sig-paren">(</span><em>attribute</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/aodncore/pipeline/files.html#PipelineFileCollection.validate_attribute_uniqueness"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#aodncore.pipeline.files.PipelineFileCollection.validate_attribute_uniqueness" title="Permalink to this definition">¶</a></dt>
+<dd><p>Check that the given PipelineFile attribute is unique amongst all PipelineFiles currently in the collection,
+and raise an exception if any duplicates are found</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>attribute</strong> – the attribute to compare</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">None</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="aodncore.pipeline.files.PipelineFileCollection.validate_unique_attribute_value">
+<code class="descname">validate_unique_attribute_value</code><span class="sig-paren">(</span><em>attribute</em>, <em>value</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/aodncore/pipeline/files.html#PipelineFileCollection.validate_unique_attribute_value"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#aodncore.pipeline.files.PipelineFileCollection.validate_unique_attribute_value" title="Permalink to this definition">¶</a></dt>
+<dd><p>Check that a given value is not already in the collection for the given PipelineFile attribute, and
+raise an exception if it is</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>attribute</strong> – the attribute to check</li>
+<li><strong>value</strong> – the value being tested for uniqueness for the given attribute</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">None</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
 
 </dd></dl>
 
@@ -3728,10 +3784,54 @@ given id (i.e. refers to the same object)</p>
 <code class="descname">union</code><span class="sig-paren">(</span><em>sequence</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/aodncore/pipeline/files.html#PipelineFileCollection.union"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#aodncore.pipeline.PipelineFileCollection.union" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
+<dl class="attribute">
+<dt id="aodncore.pipeline.PipelineFileCollection.unique_attributes">
+<code class="descname">unique_attributes</code><em class="property"> = set(['archive_path', 'dest_path'])</em><a class="headerlink" href="#aodncore.pipeline.PipelineFileCollection.unique_attributes" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
 <dl class="method">
 <dt id="aodncore.pipeline.PipelineFileCollection.update">
 <code class="descname">update</code><span class="sig-paren">(</span><em>sequence</em>, <em>overwrite=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/aodncore/pipeline/files.html#PipelineFileCollection.update"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#aodncore.pipeline.PipelineFileCollection.update" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
+
+<dl class="method">
+<dt id="aodncore.pipeline.PipelineFileCollection.validate_attribute_uniqueness">
+<code class="descname">validate_attribute_uniqueness</code><span class="sig-paren">(</span><em>attribute</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/aodncore/pipeline/files.html#PipelineFileCollection.validate_attribute_uniqueness"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#aodncore.pipeline.PipelineFileCollection.validate_attribute_uniqueness" title="Permalink to this definition">¶</a></dt>
+<dd><p>Check that the given PipelineFile attribute is unique amongst all PipelineFiles currently in the collection,
+and raise an exception if any duplicates are found</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>attribute</strong> – the attribute to compare</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">None</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="aodncore.pipeline.PipelineFileCollection.validate_unique_attribute_value">
+<code class="descname">validate_unique_attribute_value</code><span class="sig-paren">(</span><em>attribute</em>, <em>value</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/aodncore/pipeline/files.html#PipelineFileCollection.validate_unique_attribute_value"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#aodncore.pipeline.PipelineFileCollection.validate_unique_attribute_value" title="Permalink to this definition">¶</a></dt>
+<dd><p>Check that a given value is not already in the collection for the given PipelineFile attribute, and
+raise an exception if it is</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>attribute</strong> – the attribute to check</li>
+<li><strong>value</strong> – the value being tested for uniqueness for the given attribute</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">None</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
 
 </dd></dl>
 
@@ -3888,7 +3988,7 @@ to the __init__ for each member (since confusingly, each Enum member is an <em>i
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'./',
-            VERSION:'0.0.17',
+            VERSION:'0.0.19',
             LANGUAGE:'None',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',

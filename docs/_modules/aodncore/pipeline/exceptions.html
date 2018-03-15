@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>aodncore.pipeline.exceptions &mdash; aodncore 0.0.17 documentation</title>
+  <title>aodncore.pipeline.exceptions &mdash; aodncore 0.0.19 documentation</title>
   
 
   
@@ -57,7 +57,7 @@
             
             
               <div class="version">
-                0.0.17
+                0.0.19
               </div>
             
           
@@ -211,6 +211,8 @@
     <span class="s1">&#39;PipelineProcessingError&#39;</span><span class="p">,</span>
     <span class="s1">&#39;PipelineSystemError&#39;</span><span class="p">,</span>
     <span class="s1">&#39;ComplianceCheckFailedError&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;DuplicateUniqueAttributeError&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;AttributeNotSetError&#39;</span><span class="p">,</span>
     <span class="s1">&#39;DuplicatePipelineFileError&#39;</span><span class="p">,</span>
     <span class="s1">&#39;FileDeleteFailedError&#39;</span><span class="p">,</span>
     <span class="s1">&#39;FileUploadFailedError&#39;</span><span class="p">,</span>
@@ -255,6 +257,10 @@
     <span class="k">pass</span></div>
 
 
+<div class="viewcode-block" id="DuplicateUniqueAttributeError"><a class="viewcode-back" href="../../../aodncore.pipeline.html#aodncore.pipeline.exceptions.DuplicateUniqueAttributeError">[docs]</a><span class="k">class</span> <span class="nc">DuplicateUniqueAttributeError</span><span class="p">(</span><span class="n">PipelineProcessingError</span><span class="p">):</span>
+    <span class="k">pass</span></div>
+
+
 <div class="viewcode-block" id="InvalidFileNameError"><a class="viewcode-back" href="../../../aodncore.pipeline.html#aodncore.pipeline.exceptions.InvalidFileNameError">[docs]</a><span class="k">class</span> <span class="nc">InvalidFileNameError</span><span class="p">(</span><span class="n">PipelineProcessingError</span><span class="p">):</span>
     <span class="k">pass</span></div>
 
@@ -268,6 +274,10 @@
 
 
 <span class="c1"># System errors</span>
+
+<div class="viewcode-block" id="AttributeNotSetError"><a class="viewcode-back" href="../../../aodncore.pipeline.html#aodncore.pipeline.exceptions.AttributeNotSetError">[docs]</a><span class="k">class</span> <span class="nc">AttributeNotSetError</span><span class="p">(</span><span class="n">PipelineSystemError</span><span class="p">):</span>
+    <span class="k">pass</span></div>
+
 
 <div class="viewcode-block" id="DuplicatePipelineFileError"><a class="viewcode-back" href="../../../aodncore.pipeline.html#aodncore.pipeline.exceptions.DuplicatePipelineFileError">[docs]</a><span class="k">class</span> <span class="nc">DuplicatePipelineFileError</span><span class="p">(</span><span class="n">PipelineSystemError</span><span class="p">):</span>
     <span class="k">pass</span></div>
@@ -369,7 +379,7 @@
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'../../../',
-            VERSION:'0.0.17',
+            VERSION:'0.0.19',
             LANGUAGE:'None',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',

@@ -4,6 +4,7 @@ __all__ = [
     'PipelineProcessingError',
     'PipelineSystemError',
     'ComplianceCheckFailedError',
+    'DuplicateUniqueAttributeError',
     'AttributeNotSetError',
     'DuplicatePipelineFileError',
     'FileDeleteFailedError',
@@ -46,6 +47,10 @@ class PipelineSystemError(AodnBaseError):
 # Processing errors
 
 class ComplianceCheckFailedError(PipelineProcessingError):
+    pass
+
+
+class DuplicateUniqueAttributeError(PipelineProcessingError):
     pass
 
 

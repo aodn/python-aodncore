@@ -1,13 +1,13 @@
 import mimetypes
 import os
 import re
-from collections import MutableSet, OrderedDict
+from collections import Counter, MutableSet, OrderedDict
 
 import six
 
 from .common import (FileType, PipelineFilePublishType, PipelineFileCheckType, validate_addition_publishtype,
                      validate_checkresult, validate_checktype, validate_deletion_publishtype, validate_publishtype)
-from .exceptions import DuplicatePipelineFileError, MissingFileError
+from .exceptions import DuplicateUniqueAttributeError, DuplicatePipelineFileError, MissingFileError
 from ..util import (IndexedSet, format_exception, get_file_checksum, iter_public_attributes, matches_regexes,
                     slice_sequence, validate_bool, validate_callable, validate_dict, validate_mapping,
                     validate_nonstring_iterable, validate_regex, validate_string, validate_type)
@@ -408,6 +408,8 @@ class PipelineFileCollection(MutableSet):
     """
     __slots__ = ['__s']
 
+    unique_attributes = {'archive_path', 'dest_path'}
+
     def __init__(self, data=None):
         super(PipelineFileCollection, self).__init__()
 
@@ -461,6 +463,11 @@ class PipelineFileCollection(MutableSet):
         if overwrite:
             self.__s.discard(fileobj)
             result = True
+
+        for attribute in self.unique_attributes:
+            value = getattr(fileobj, attribute)
+            if value is not None:
+                self.validate_unique_attribute_value(attribute, value)
 
         self.__s.add(fileobj)
         return result
@@ -679,7 +686,9 @@ class PipelineFileCollection(MutableSet):
 
         for f in self.__s:
             if f.archive_path is None and f.should_archive:
-                f.archive_path = archive_path_function(f.src_path)
+                candidate_path = archive_path_function(f.src_path)
+                self.validate_unique_attribute_value('archive_path', candidate_path)
+                f.archive_path = candidate_path
 
     def set_dest_paths(self, dest_path_function):
         """Set dest_path attributes for each file in the collection
@@ -691,7 +700,9 @@ class PipelineFileCollection(MutableSet):
 
         for f in self.__s:
             if f.dest_path is None and any((f.should_store, f.should_harvest)):
-                f.dest_path = dest_path_function(f.src_path)
+                candidate_path = dest_path_function(f.src_path)
+                self.validate_unique_attribute_value('dest_path', candidate_path)
+                f.dest_path = candidate_path
 
     def set_bool_attribute(self, attribute, value):
         """Set a boolean attribute for each file in the collection
@@ -726,6 +737,37 @@ class PipelineFileCollection(MutableSet):
         for f in self.__s:
             if matches_regexes(f.name, include_regexes, exclude_regexes):
                 f.publish_type = deletion_type if f.is_deletion else addition_type
+
+    def validate_unique_attribute_value(self, attribute, value):
+        """Check that a given value is not already in the collection for the given PipelineFile attribute, and
+        raise an exception if it is
+
+        :param attribute: the attribute to check
+        :param value: the value being tested for uniqueness for the given attribute
+        :return: None
+        """
+        duplicates = [f for f in self.__s if getattr(f, attribute) == value]
+        if duplicates:
+            raise DuplicateUniqueAttributeError(
+                "{attribute} value '{value}' already set for file(s) '{duplicates}'".format(attribute=attribute,
+                                                                                            value=value,
+                                                                                            duplicates=duplicates))
+
+    def validate_attribute_uniqueness(self, attribute):
+        """Check that the given PipelineFile attribute is unique amongst all PipelineFiles currently in the collection,
+        and raise an exception if any duplicates are found
+
+        :param attribute: the attribute to compare
+        :return: None
+        """
+        counter = Counter(getattr(f, attribute) for f in self.__s if getattr(f, attribute) is not None)
+        duplicate_values = [k for k, v in counter.items() if v > 1]
+        if duplicate_values:
+            duplicates = []
+            for value in duplicate_values:
+                duplicates.extend(f for f in self.__s if getattr(f, attribute) == value)
+            raise DuplicateUniqueAttributeError(
+                "duplicate paths found for files '{duplicates}'".format(duplicates=duplicates))
 
 
 validate_pipelinefilecollection = validate_type(PipelineFileCollection)
