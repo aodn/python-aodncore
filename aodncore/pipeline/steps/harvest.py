@@ -1,3 +1,4 @@
+import itertools
 import os
 import re
 from collections import OrderedDict
@@ -6,11 +7,12 @@ from tempfile import mkstemp
 from .basestep import AbstractCollectionStepRunner
 from ..exceptions import InvalidHarvesterError, UnmappedFilesError
 from ..files import PipelineFileCollection, validate_pipelinefilecollection
-from ...util import mkdir_p, LoggingContext, SystemProcess, TemporaryDirectory
+from ...util import merge_dicts, mkdir_p, LoggingContext, SystemProcess, TemporaryDirectory
 
 __all__ = [
     'get_harvester_runner',
-    'TalendHarvesterRunner'
+    'TalendHarvesterRunner',
+    'TriggerEvent'
 ]
 
 
@@ -30,6 +32,22 @@ def get_harvester_runner(harvester_name, upload_runner, harvest_params, tmp_base
         return TalendHarvesterRunner(upload_runner, harvest_params, tmp_base_dir, config, logger)
     else:
         raise InvalidHarvesterError("invalid harvester '{name}'".format(name=harvester_name))
+
+
+class TriggerEvent(object):
+    __slots__ = ['_extra_params', '_matched_files']
+
+    def __init__(self, extra_params, matched_files):
+        self._extra_params = extra_params
+        self._matched_files = matched_files
+
+    @property
+    def extra_params(self):
+        return self._extra_params
+
+    @property
+    def matched_files(self):
+        return self._matched_files
 
 
 # noinspection PyAbstractClass
@@ -54,7 +72,7 @@ class TalendHarvesterRunner(BaseHarvesterRunner):
         self.params = harvest_params
         self.tmp_base_dir = tmp_base_dir
         self.upload_runner = upload_runner
-        self.harvested_file_map = []
+        self.harvested_file_map = OrderedDict()
 
     def run(self, pipeline_files):
         """The entry point to the ported talend trigger code to execute the harvester(s) for each file
@@ -84,12 +102,15 @@ class TalendHarvesterRunner(BaseHarvesterRunner):
         harvester_map = OrderedDict()
 
         for harvester, config_item in self._config.trigger_config.items():
-            matched_files = PipelineFileCollection()
+            harvester_map[harvester] = []
 
             for event in config_item['events']:
-                for config_type, patterns in event.items():
+                extra_params = None
+                matched_files = PipelineFileCollection()
+
+                for config_type, value in event.items():
                     if config_type == 'regex':
-                        for pattern in patterns:
+                        for pattern in value:
                             matched_files_for_pattern = file_list.filter_by_attribute_regex('dest_path', pattern)
                             if matched_files_for_pattern:
                                 for mf in matched_files_for_pattern:
@@ -97,19 +118,22 @@ class TalendHarvesterRunner(BaseHarvesterRunner):
                                         harvester=harvester, mf=mf))
 
                                 matched_files.update(matched_files_for_pattern, overwrite=True)
+                    elif config_type == 'extra_params':
+                        extra_params = value
 
-                            # TODO: implement extra parameters
-
-            if matched_files:
-                harvester_map[harvester] = matched_files
+                if matched_files:
+                    event_obj = TriggerEvent(extra_params, matched_files)
+                    harvester_map[harvester].append(event_obj)
 
         return harvester_map
 
     @staticmethod
     def validate_harvester_mapping(file_collection, harvester_map):
         all_matched_files = PipelineFileCollection()
-        for matched_files in harvester_map.values():
-            all_matched_files.update(matched_files, overwrite=True)
+        all_events = itertools.chain.from_iterable(harvester_map.values())
+
+        for event in all_events:
+            all_matched_files.update(event.matched_files, overwrite=True)
 
         if not file_collection.issubset(all_matched_files):
             unmapped_files = [m.src_path for m in file_collection - all_matched_files]
@@ -138,11 +162,11 @@ class TalendHarvesterRunner(BaseHarvesterRunner):
         return input_file_list
 
     def undo_processed_files(self, undo_map):
-        for file_map in undo_map:
-            for file_collection in file_map.values():
-                file_collection.set_bool_attribute('should_undo', True)
+        all_events = itertools.chain.from_iterable(undo_map.values())
+        for event in all_events:
+            event.matched_files.set_bool_attribute('should_undo', True)
 
-            self.run_undo_deletions(file_map)
+        self.run_undo_deletions(undo_map)
 
     def execute_talend(self, executor, matched_files, talend_base_dir, success_attribute='is_harvested'):
         matched_file_list = [mf.dest_path for mf in matched_files]
@@ -178,15 +202,21 @@ class TalendHarvesterRunner(BaseHarvesterRunner):
         :param harvester_map: mapping of harvesters to the PipelineFileCollection to operate on
         :param tmp_base_dir: temporary directory base for talend operation
         """
-        for harvester, matched_files in harvester_map.items():
+        for harvester, events in harvester_map.items():
             self._logger.info("running deletions for harvester '{harvester}'".format(harvester=harvester))
 
-            with TemporaryDirectory(prefix='talend_base', dir=tmp_base_dir) as talend_base_dir:
-                self.execute_talend(self._config.trigger_config[harvester]['exec'], matched_files, talend_base_dir)
+            for event in events:
+                with TemporaryDirectory(prefix='talend_base', dir=tmp_base_dir) as talend_base_dir:
+                    harvester_command = self._config.trigger_config[harvester]['exec']
+                    if event.extra_params:
+                        harvester_command = "{harvester_command} {extra_params}".format(
+                            harvester_command=harvester_command, extra_params=event.extra_params)
 
-            files_to_delete = matched_files.filter_by_bool_attribute('pending_store_deletion')
-            if files_to_delete:
-                self.upload_runner.run(files_to_delete)
+                    self.execute_talend(harvester_command, event.matched_files, talend_base_dir)
+
+                files_to_delete = event.matched_files.filter_by_bool_attribute('pending_store_deletion')
+                if files_to_delete:
+                    self.upload_runner.run(files_to_delete)
 
     def run_undo_deletions(self, harvester_map):
         """Function to un-harvest and undo stored files as appropriate in the case of errors
@@ -195,16 +225,22 @@ class TalendHarvesterRunner(BaseHarvesterRunner):
 
         :param harvester_map: mapping of harvesters to the PipelineFileCollection to operate on
         """
-        for harvester, matched_files in harvester_map.items():
+        for harvester, events in harvester_map.items():
             self._logger.info("running undo deletions for harvester '{harvester}'".format(harvester=harvester))
 
-            with TemporaryDirectory(prefix='talend_base', dir=self.tmp_base_dir) as talend_base_dir:
-                self.execute_talend(self._config.trigger_config[harvester]['exec'], matched_files, talend_base_dir,
-                                    'is_harvest_undone')
+            for event in events:
+                with TemporaryDirectory(prefix='talend_base', dir=self.tmp_base_dir) as talend_base_dir:
+                    harvester_command = self._config.trigger_config[harvester]['exec']
+                    if event.extra_params:
+                        harvester_command = "{harvester_command} {extra_params}".format(
+                            harvester_command=harvester_command, extra_params=event.extra_params)
 
-            files_to_delete = matched_files.filter_by_bool_attributes_and('pending_undo', 'is_stored')
-            if files_to_delete:
-                self.upload_runner.run(files_to_delete)
+                    self.execute_talend(harvester_command, event.matched_files, talend_base_dir,
+                                        success_attribute='is_harvest_undone')
+
+                files_to_delete = event.matched_files.filter_by_bool_attributes_and('pending_undo', 'is_stored')
+                if files_to_delete:
+                    self.upload_runner.run(files_to_delete)
 
     def run_additions(self, harvester_map, tmp_base_dir):
         """Function to harvest and upload files using the appropriate file upload runner
@@ -215,25 +251,39 @@ class TalendHarvesterRunner(BaseHarvesterRunner):
         :param harvester_map: mapping of harvesters to the PipelineFileCollection to operate on
         :param tmp_base_dir: temporary directory base for talend operation
         """
-        for harvester, matched_files in harvester_map.items():
+        for harvester, events in harvester_map.items():
             self._logger.info("running additions for harvester '{harvester}'".format(harvester=harvester))
 
-            with TemporaryDirectory(prefix='talend_base', dir=tmp_base_dir) as talend_base_dir:
-                for pf in matched_files:
-                    self.create_symlink(talend_base_dir, pf.src_path, pf.dest_path)
+            for event in events:
+                with TemporaryDirectory(prefix='talend_base', dir=tmp_base_dir) as talend_base_dir:
+                    for pf in event.matched_files:
+                        self.create_symlink(talend_base_dir, pf.src_path, pf.dest_path)
 
-                try:
-                    self.execute_talend(self._config.trigger_config[harvester]['exec'], matched_files, talend_base_dir)
-                except Exception:
-                    undo_map = [{harvester: matched_files}]
-                    if self.undo_previous_slices:
-                        undo_map.extend(self.harvested_file_map)
+                    harvester_command = self._config.trigger_config[harvester]['exec']
+                    if event.extra_params:
+                        harvester_command = "{harvester_command} {extra_params}".format(
+                            harvester_command=harvester_command, extra_params=event.extra_params)
 
-                    self.undo_processed_files(undo_map)
-                    raise
+                    try:
+                        self.execute_talend(harvester_command, event.matched_files, talend_base_dir)
+                    except Exception:
+                        # add current event to undo_map
+                        undo_map = OrderedDict([(harvester, [event])])
 
-            self.harvested_file_map.append({harvester: matched_files})
+                        # if 'undo_previous_slices' is enabled, combine the map of previously harvested events into the
+                        # undo_map in order to undo all previously successful events
+                        if self.undo_previous_slices:
+                            undo_map = merge_dicts(undo_map, self.harvested_file_map)
 
-            files_to_upload = matched_files.filter_by_bool_attribute('pending_store_addition')
-            if files_to_upload:
-                self.upload_runner.run(files_to_upload)
+                        self.undo_processed_files(undo_map)
+                        raise
+
+                    # on success, register this event in the instance 'harvested_file_map' attribute
+                    try:
+                        self.harvested_file_map[harvester].append(event)
+                    except KeyError:
+                        self.harvested_file_map[harvester] = [event]
+
+                files_to_upload = event.matched_files.filter_by_bool_attribute('pending_store_addition')
+                if files_to_upload:
+                    self.upload_runner.run(files_to_upload)
