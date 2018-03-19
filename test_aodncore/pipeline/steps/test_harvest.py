@@ -5,7 +5,8 @@ from mock import patch
 from aodncore.common import SystemCommandFailedError
 from aodncore.pipeline import PipelineFile, PipelineFileCollection, PipelineFilePublishType
 from aodncore.pipeline.exceptions import InvalidHarvesterError, UnmappedFilesError
-from aodncore.pipeline.steps.harvest import get_harvester_runner, TalendHarvesterRunner, TriggerEvent
+from aodncore.pipeline.steps.harvest import (get_harvester_runner, HarvesterMap, TalendHarvesterRunner, TriggerEvent,
+                                             validate_harvester_mapping)
 from aodncore.testlib import BaseTestCase, NullUploadRunner
 from test_aodncore import TESTDATA_DIR
 
@@ -52,6 +53,16 @@ class TestPipelineStepsHarvest(BaseTestCase):
         with self.assertRaises(InvalidHarvesterError):
             _ = get_harvester_runner('nonexistent_harvester', self.uploader, None, TESTDATA_DIR, None, self.test_logger)
 
+    def test_validate_harvester_mapping(self):
+        collection = get_harvest_collection()
+        subset = collection.filter_by_attribute_value('src_path', GOOD_NC)
+
+        matched_file_map = HarvesterMap()
+        matched_file_map.add_event('my_test_harvester', TriggerEvent(subset))
+
+        with self.assertRaises(UnmappedFilesError):
+            validate_harvester_mapping(collection, matched_file_map)
+
 
 class TestTalendHarvesterRunner(BaseTestCase):
     def setUp(self):
@@ -69,7 +80,7 @@ class TestTalendHarvesterRunner(BaseTestCase):
 
         expected_extra_params = "--collection my_test_collection"
         self.assertEqual(expected_extra_params,
-                         harvester_runner.harvested_file_map['aaa_my_test_harvester'][0].extra_params)
+                         harvester_runner.harvested_file_map.map['aaa_my_test_harvester'][0].extra_params)
 
         called_commands = [c[1][0] for c in mock_subprocess.Popen.mock_calls if c[1]]
 
@@ -77,16 +88,6 @@ class TestTalendHarvesterRunner(BaseTestCase):
         self.assertTrue(called_commands[1].endswith(expected_extra_params))
         self.assertFalse(called_commands[2].endswith(expected_extra_params))
         self.assertFalse(called_commands[3].endswith(expected_extra_params))
-
-    def test_validate_harvester_mapping(self):
-        collection = get_harvest_collection()
-        subset = collection.filter_by_attribute_value('src_path', GOOD_NC)
-        matched_file_map = {'my_test_harvester': [TriggerEvent(None, subset)]}
-
-        harvester_runner = TalendHarvesterRunner(self.uploader, None, TESTDATA_DIR, self.config, self.test_logger)
-
-        with self.assertRaises(UnmappedFilesError):
-            harvester_runner.validate_harvester_mapping(collection, matched_file_map)
 
     @patch('aodncore.util.process.subprocess')
     def test_harvest_only_deletion(self, mock_subprocess):

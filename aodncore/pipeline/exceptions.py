@@ -19,6 +19,7 @@ __all__ = [
     'InvalidPathFunctionError',
     'InvalidHandlerError',
     'InvalidHarvesterError',
+    'InvalidHarvestMapError',
     'InvalidInputFileError',
     'InvalidRecipientError',
     'InvalidUploadUrlError',
@@ -105,6 +106,10 @@ class InvalidHandlerError(PipelineSystemError):
 
 
 class InvalidHarvesterError(PipelineSystemError):
+    pass
+
+
+class InvalidHarvestMapError(PipelineSystemError):
     pass
 
 
