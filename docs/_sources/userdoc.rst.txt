@@ -1,14 +1,16 @@
+User documentation
+==================
+
 Overview
 --------
 
-The ``aodncore.pipeline`` package provides the base class for each pipeline handler,
-:py:class:`aodncore.pipeline.HandlerBase`. This is the starting point for any new handler development, as
-it contains all of the core functionality of each handler, which is then available to the child class via class
-inheritance.
+The ``aodncore.pipeline`` package provides the base class for each pipeline handler at the
+``aodncore.pipeline.HandlerBase`` namespace. This is the starting point for any new handler development, as it contains
+all of the core functionality of each handler, which is then available to the child class via class inheritance.
 
 
 State machine / handler steps
------------------------------
+-------------------------------
 
 In order to provide consistency and structure to the handler, the pipeline is broken into a series of ordered "steps",
 with each performing a distinct function in the processing of the input file. The "machine" defines a series of states,
