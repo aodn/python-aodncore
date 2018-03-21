@@ -9,11 +9,21 @@ Welcome to aodncore's documentation!
 Getting started
 -----------
 
-* :ref:`Handler user guide`
+.. toctree::
+   :maxdepth: 20
+   :caption: User documentation:
+
+   userdoc
 
 .. toctree::
    :maxdepth: 20
-   :caption: Contents:
+   :caption: Developer documentation:
+
+   developerdoc
+
+.. toctree::
+   :maxdepth: 20
+   :caption: Module contents:
 
    aodncore
 

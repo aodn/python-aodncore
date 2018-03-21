@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>aodncore.pipeline.steps package &mdash; aodncore 0.0.19 documentation</title>
+  <title>aodncore.pipeline.steps package &mdash; aodncore 0.0.20 documentation</title>
   
 
   
@@ -59,7 +59,7 @@
             
             
               <div class="version">
-                0.0.19
+                0.0.20
               </div>
             
           
@@ -83,7 +83,37 @@
               
             
             
-              <p class="caption"><span class="caption-text">Contents:</span></p>
+              <p class="caption"><span class="caption-text">User documentation:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="userdoc.html">User documentation</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="userdoc.html#overview">Overview</a></li>
+<li class="toctree-l2"><a class="reference internal" href="userdoc.html#state-machine-handler-steps">State machine / handler steps</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="userdoc.html#initialise">initialise</a></li>
+<li class="toctree-l3"><a class="reference internal" href="userdoc.html#resolve">resolve</a></li>
+<li class="toctree-l3"><a class="reference internal" href="userdoc.html#preprocess">preprocess</a></li>
+<li class="toctree-l3"><a class="reference internal" href="userdoc.html#check">check</a></li>
+<li class="toctree-l3"><a class="reference internal" href="userdoc.html#process">process</a></li>
+<li class="toctree-l3"><a class="reference internal" href="userdoc.html#publish">publish</a></li>
+<li class="toctree-l3"><a class="reference internal" href="userdoc.html#postprocess">postprocess</a></li>
+<li class="toctree-l3"><a class="reference internal" href="userdoc.html#notify">notify</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="userdoc.html#customising-handler-behaviour">Customising handler behaviour</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="userdoc.html#methods">Methods</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="userdoc.html#attributes">Attributes</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="userdoc.html#class-parameters">Class parameters</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p class="caption"><span class="caption-text">Developer documentation:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="developerdoc.html">Developer documentation</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Module contents:</span></p>
 <ul class="current">
 <li class="toctree-l1 current"><a class="reference internal" href="aodncore.html">aodncore package</a><ul class="current">
 <li class="toctree-l2 current"><a class="reference internal" href="aodncore.html#subpackages">Subpackages</a><ul class="current">
@@ -389,6 +419,21 @@ may then be processed in a generic way.</p>
 <div class="section" id="module-aodncore.pipeline.steps.harvest">
 <span id="aodncore-pipeline-steps-harvest-module"></span><h2>aodncore.pipeline.steps.harvest module<a class="headerlink" href="#module-aodncore.pipeline.steps.harvest" title="Permalink to this headline">¶</a></h2>
 <dl class="function">
+<dt id="aodncore.pipeline.steps.harvest.create_input_file_list">
+<code class="descclassname">aodncore.pipeline.steps.harvest.</code><code class="descname">create_input_file_list</code><span class="sig-paren">(</span><em>talend_base_dir</em>, <em>matched_file_list</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/aodncore/pipeline/steps/harvest.html#create_input_file_list"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#aodncore.pipeline.steps.harvest.create_input_file_list" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="aodncore.pipeline.steps.harvest.create_symlink">
+<code class="descclassname">aodncore.pipeline.steps.harvest.</code><code class="descname">create_symlink</code><span class="sig-paren">(</span><em>base_dir</em>, <em>src_path</em>, <em>dest_path</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/aodncore/pipeline/steps/harvest.html#create_symlink"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#aodncore.pipeline.steps.harvest.create_symlink" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="aodncore.pipeline.steps.harvest.executor_conversion">
+<code class="descclassname">aodncore.pipeline.steps.harvest.</code><code class="descname">executor_conversion</code><span class="sig-paren">(</span><em>executor</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/aodncore/pipeline/steps/harvest.html#executor_conversion"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#aodncore.pipeline.steps.harvest.executor_conversion" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
 <dt id="aodncore.pipeline.steps.harvest.get_harvester_runner">
 <code class="descclassname">aodncore.pipeline.steps.harvest.</code><code class="descname">get_harvester_runner</code><span class="sig-paren">(</span><em>harvester_name</em>, <em>upload_runner</em>, <em>harvest_params</em>, <em>tmp_base_dir</em>, <em>config</em>, <em>logger</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/aodncore/pipeline/steps/harvest.html#get_harvester_runner"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#aodncore.pipeline.steps.harvest.get_harvester_runner" title="Permalink to this definition">¶</a></dt>
 <dd><p>Factory function to return appropriate harvester class</p>
@@ -414,33 +459,131 @@ may then be processed in a generic way.</p>
 </dd></dl>
 
 <dl class="class">
+<dt id="aodncore.pipeline.steps.harvest.HarvesterMap">
+<em class="property">class </em><code class="descclassname">aodncore.pipeline.steps.harvest.</code><code class="descname">HarvesterMap</code><a class="reference internal" href="_modules/aodncore/pipeline/steps/harvest.html#HarvesterMap"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#aodncore.pipeline.steps.harvest.HarvesterMap" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">object</span></code></p>
+<dl class="method">
+<dt id="aodncore.pipeline.steps.harvest.HarvesterMap.add_event">
+<code class="descname">add_event</code><span class="sig-paren">(</span><em>harvester</em>, <em>event</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/aodncore/pipeline/steps/harvest.html#HarvesterMap.add_event"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#aodncore.pipeline.steps.harvest.HarvesterMap.add_event" title="Permalink to this definition">¶</a></dt>
+<dd><p>Add a TriggerEvent to this map, under the given harvester</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>harvester</strong> – harvester name</li>
+<li><strong>event</strong> – TriggerEvent ovject</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">None</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="aodncore.pipeline.steps.harvest.HarvesterMap.all_events">
+<code class="descname">all_events</code><a class="headerlink" href="#aodncore.pipeline.steps.harvest.HarvesterMap.all_events" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get a flattened list of all events from all harvesters.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">list of all TriggerEvents from all harvesters</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="aodncore.pipeline.steps.harvest.HarvesterMap.all_pipeline_files">
+<code class="descname">all_pipeline_files</code><a class="headerlink" href="#aodncore.pipeline.steps.harvest.HarvesterMap.all_pipeline_files" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get a flattened collection containing all PipelineFile objects from all harvester events</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">PipelineFileCollection containing all PipelineFile objects in map</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="aodncore.pipeline.steps.harvest.HarvesterMap.is_collection_superset">
+<code class="descname">is_collection_superset</code><span class="sig-paren">(</span><em>pipeline_files</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/aodncore/pipeline/steps/harvest.html#HarvesterMap.is_collection_superset"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#aodncore.pipeline.steps.harvest.HarvesterMap.is_collection_superset" title="Permalink to this definition">¶</a></dt>
+<dd><p>Determine whether all PipelineFiles in the given PipelineFileCollection are present in this map</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>pipeline_files</strong> – </td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">True if all files in the collection are in one or more events in this map</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="aodncore.pipeline.steps.harvest.HarvesterMap.map">
+<code class="descname">map</code><a class="headerlink" href="#aodncore.pipeline.steps.harvest.HarvesterMap.map" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="aodncore.pipeline.steps.harvest.HarvesterMap.merge">
+<code class="descname">merge</code><span class="sig-paren">(</span><em>other</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/aodncore/pipeline/steps/harvest.html#HarvesterMap.merge"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#aodncore.pipeline.steps.harvest.HarvesterMap.merge" title="Permalink to this definition">¶</a></dt>
+<dd><p>Merge another HarvesterMap object into this one</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>other</strong> – other HarvesterMap object</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">None</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="aodncore.pipeline.steps.harvest.HarvesterMap.set_pipelinefile_bool_attribute">
+<code class="descname">set_pipelinefile_bool_attribute</code><span class="sig-paren">(</span><em>attribute</em>, <em>value</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/aodncore/pipeline/steps/harvest.html#HarvesterMap.set_pipelinefile_bool_attribute"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#aodncore.pipeline.steps.harvest.HarvesterMap.set_pipelinefile_bool_attribute" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set a boolean attribute on all PipelineFiles in all events</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>attribute</strong> – attribute to set</li>
+<li><strong>value</strong> – value to set</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">None</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
 <dt id="aodncore.pipeline.steps.harvest.TalendHarvesterRunner">
 <em class="property">class </em><code class="descclassname">aodncore.pipeline.steps.harvest.</code><code class="descname">TalendHarvesterRunner</code><span class="sig-paren">(</span><em>upload_runner</em>, <em>harvest_params</em>, <em>tmp_base_dir</em>, <em>config</em>, <em>logger</em>, <em>deletion=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/aodncore/pipeline/steps/harvest.html#TalendHarvesterRunner"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#aodncore.pipeline.steps.harvest.TalendHarvesterRunner" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">aodncore.pipeline.steps.harvest.BaseHarvesterRunner</span></code></p>
 <p>HarvesterRunner implementation to execute Talend harvesters</p>
-<dl class="staticmethod">
-<dt id="aodncore.pipeline.steps.harvest.TalendHarvesterRunner.create_input_file_list">
-<em class="property">static </em><code class="descname">create_input_file_list</code><span class="sig-paren">(</span><em>talend_base_dir</em>, <em>matched_file_list</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/aodncore/pipeline/steps/harvest.html#TalendHarvesterRunner.create_input_file_list"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#aodncore.pipeline.steps.harvest.TalendHarvesterRunner.create_input_file_list" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="staticmethod">
-<dt id="aodncore.pipeline.steps.harvest.TalendHarvesterRunner.create_symlink">
-<em class="property">static </em><code class="descname">create_symlink</code><span class="sig-paren">(</span><em>talend_base_dir</em>, <em>src_path</em>, <em>dest_path</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/aodncore/pipeline/steps/harvest.html#TalendHarvesterRunner.create_symlink"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#aodncore.pipeline.steps.harvest.TalendHarvesterRunner.create_symlink" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
 <dl class="method">
 <dt id="aodncore.pipeline.steps.harvest.TalendHarvesterRunner.execute_talend">
-<code class="descname">execute_talend</code><span class="sig-paren">(</span><em>executor</em>, <em>matched_files</em>, <em>talend_base_dir</em>, <em>success_attribute='is_harvested'</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/aodncore/pipeline/steps/harvest.html#TalendHarvesterRunner.execute_talend"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#aodncore.pipeline.steps.harvest.TalendHarvesterRunner.execute_talend" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="staticmethod">
-<dt id="aodncore.pipeline.steps.harvest.TalendHarvesterRunner.executor_conversion">
-<em class="property">static </em><code class="descname">executor_conversion</code><span class="sig-paren">(</span><em>executor</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/aodncore/pipeline/steps/harvest.html#TalendHarvesterRunner.executor_conversion"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#aodncore.pipeline.steps.harvest.TalendHarvesterRunner.executor_conversion" title="Permalink to this definition">¶</a></dt>
+<code class="descname">execute_talend</code><span class="sig-paren">(</span><em>executor</em>, <em>pipeline_files</em>, <em>talend_base_dir</em>, <em>success_attribute='is_harvested'</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/aodncore/pipeline/steps/harvest.html#TalendHarvesterRunner.execute_talend"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#aodncore.pipeline.steps.harvest.TalendHarvesterRunner.execute_talend" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="method">
 <dt id="aodncore.pipeline.steps.harvest.TalendHarvesterRunner.match_harvester_to_files">
-<code class="descname">match_harvester_to_files</code><span class="sig-paren">(</span><em>file_list</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/aodncore/pipeline/steps/harvest.html#TalendHarvesterRunner.match_harvester_to_files"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#aodncore.pipeline.steps.harvest.TalendHarvesterRunner.match_harvester_to_files" title="Permalink to this definition">¶</a></dt>
+<code class="descname">match_harvester_to_files</code><span class="sig-paren">(</span><em>pipeline_files</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/aodncore/pipeline/steps/harvest.html#TalendHarvesterRunner.match_harvester_to_files"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#aodncore.pipeline.steps.harvest.TalendHarvesterRunner.match_harvester_to_files" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="method">
@@ -516,12 +659,54 @@ Operates in newly created temporary directory as talend requires a non-existant 
 <code class="descname">undo_processed_files</code><span class="sig-paren">(</span><em>undo_map</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/aodncore/pipeline/steps/harvest.html#TalendHarvesterRunner.undo_processed_files"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#aodncore.pipeline.steps.harvest.TalendHarvesterRunner.undo_processed_files" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
-<dl class="staticmethod">
-<dt id="aodncore.pipeline.steps.harvest.TalendHarvesterRunner.validate_harvester_mapping">
-<em class="property">static </em><code class="descname">validate_harvester_mapping</code><span class="sig-paren">(</span><em>file_collection</em>, <em>harvester_map</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/aodncore/pipeline/steps/harvest.html#TalendHarvesterRunner.validate_harvester_mapping"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#aodncore.pipeline.steps.harvest.TalendHarvesterRunner.validate_harvester_mapping" title="Permalink to this definition">¶</a></dt>
+</dd></dl>
+
+<dl class="class">
+<dt id="aodncore.pipeline.steps.harvest.TriggerEvent">
+<em class="property">class </em><code class="descclassname">aodncore.pipeline.steps.harvest.</code><code class="descname">TriggerEvent</code><span class="sig-paren">(</span><em>matched_files</em>, <em>extra_params=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/aodncore/pipeline/steps/harvest.html#TriggerEvent"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#aodncore.pipeline.steps.harvest.TriggerEvent" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">object</span></code></p>
+<dl class="attribute">
+<dt id="aodncore.pipeline.steps.harvest.TriggerEvent.extra_params">
+<code class="descname">extra_params</code><a class="headerlink" href="#aodncore.pipeline.steps.harvest.TriggerEvent.extra_params" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="aodncore.pipeline.steps.harvest.TriggerEvent.matched_files">
+<code class="descname">matched_files</code><a class="headerlink" href="#aodncore.pipeline.steps.harvest.TriggerEvent.matched_files" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 </dd></dl>
+
+<dl class="function">
+<dt id="aodncore.pipeline.steps.harvest.validate_harvestermap">
+<code class="descclassname">aodncore.pipeline.steps.harvest.</code><code class="descname">validate_harvestermap</code><span class="sig-paren">(</span><em>o</em><span class="sig-paren">)</span><a class="headerlink" href="#aodncore.pipeline.steps.harvest.validate_harvestermap" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="aodncore.pipeline.steps.harvest.validate_harvester_mapping">
+<code class="descclassname">aodncore.pipeline.steps.harvest.</code><code class="descname">validate_harvester_mapping</code><span class="sig-paren">(</span><em>pipeline_files</em>, <em>harvester_map</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/aodncore/pipeline/steps/harvest.html#validate_harvester_mapping"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#aodncore.pipeline.steps.harvest.validate_harvester_mapping" title="Permalink to this definition">¶</a></dt>
+<dd><p>Validate whether all files in the given PipelineFileCollection are present at least once in the given HarvesterMap</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>pipeline_files</strong> – PipelineFileCollection to</li>
+<li><strong>harvester_map</strong> – </li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">None</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="aodncore.pipeline.steps.harvest.validate_triggerevent">
+<code class="descclassname">aodncore.pipeline.steps.harvest.</code><code class="descname">validate_triggerevent</code><span class="sig-paren">(</span><em>o</em><span class="sig-paren">)</span><a class="headerlink" href="#aodncore.pipeline.steps.harvest.validate_triggerevent" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
 
 </div>
 <div class="section" id="module-aodncore.pipeline.steps.notify">
@@ -1342,7 +1527,7 @@ new NotificationRecipient object with attributes set according to the content/va
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'./',
-            VERSION:'0.0.19',
+            VERSION:'0.0.20',
             LANGUAGE:'None',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',

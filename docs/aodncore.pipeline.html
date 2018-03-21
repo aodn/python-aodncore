@@ -59,7 +59,7 @@
             
             
               <div class="version">
-                0.0.19
+                0.0.20
               </div>
             
           
@@ -83,7 +83,37 @@
               
             
             
-              <p class="caption"><span class="caption-text">Contents:</span></p>
+              <p class="caption"><span class="caption-text">User documentation:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="userdoc.html">User documentation</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="userdoc.html#overview">Overview</a></li>
+<li class="toctree-l2"><a class="reference internal" href="userdoc.html#state-machine-handler-steps">State machine / handler steps</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="userdoc.html#initialise">initialise</a></li>
+<li class="toctree-l3"><a class="reference internal" href="userdoc.html#resolve">resolve</a></li>
+<li class="toctree-l3"><a class="reference internal" href="userdoc.html#preprocess">preprocess</a></li>
+<li class="toctree-l3"><a class="reference internal" href="userdoc.html#check">check</a></li>
+<li class="toctree-l3"><a class="reference internal" href="userdoc.html#process">process</a></li>
+<li class="toctree-l3"><a class="reference internal" href="userdoc.html#publish">publish</a></li>
+<li class="toctree-l3"><a class="reference internal" href="userdoc.html#postprocess">postprocess</a></li>
+<li class="toctree-l3"><a class="reference internal" href="userdoc.html#notify">notify</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="userdoc.html#customising-handler-behaviour">Customising handler behaviour</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="userdoc.html#methods">Methods</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="userdoc.html#attributes">Attributes</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="userdoc.html#class-parameters">Class parameters</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p class="caption"><span class="caption-text">Developer documentation:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="developerdoc.html">Developer documentation</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Module contents:</span></p>
 <ul class="current">
 <li class="toctree-l1 current"><a class="reference internal" href="aodncore.html">aodncore package</a><ul class="current">
 <li class="toctree-l2 current"><a class="reference internal" href="aodncore.html#subpackages">Subpackages</a><ul class="current">
@@ -819,6 +849,12 @@ return to an end user</p>
 <dl class="exception">
 <dt id="aodncore.pipeline.exceptions.InvalidHarvesterError">
 <em class="property">exception </em><code class="descclassname">aodncore.pipeline.exceptions.</code><code class="descname">InvalidHarvesterError</code><a class="reference internal" href="_modules/aodncore/pipeline/exceptions.html#InvalidHarvesterError"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#aodncore.pipeline.exceptions.InvalidHarvesterError" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#aodncore.pipeline.exceptions.PipelineSystemError" title="aodncore.pipeline.exceptions.PipelineSystemError"><code class="xref py py-class docutils literal"><span class="pre">aodncore.pipeline.exceptions.PipelineSystemError</span></code></a></p>
+</dd></dl>
+
+<dl class="exception">
+<dt id="aodncore.pipeline.exceptions.InvalidHarvestMapError">
+<em class="property">exception </em><code class="descclassname">aodncore.pipeline.exceptions.</code><code class="descname">InvalidHarvestMapError</code><a class="reference internal" href="_modules/aodncore/pipeline/exceptions.html#InvalidHarvestMapError"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#aodncore.pipeline.exceptions.InvalidHarvestMapError" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="#aodncore.pipeline.exceptions.PipelineSystemError" title="aodncore.pipeline.exceptions.PipelineSystemError"><code class="xref py py-class docutils literal"><span class="pre">aodncore.pipeline.exceptions.PipelineSystemError</span></code></a></p>
 </dd></dl>
 
@@ -2302,9 +2338,6 @@ via their corresponding :class:<a href="#id1"><span class="problematic" id="id2"
 
 </dd></dl>
 
-</div>
-</div>
-</div>
 </div>
 <div class="section" id="module-aodncore.pipeline.log">
 <span id="aodncore-pipeline-log-module"></span><h2>aodncore.pipeline.log module<a class="headerlink" href="#module-aodncore.pipeline.log" title="Permalink to this headline">¶</a></h2>
@@ -4082,7 +4115,7 @@ to the __init__ for each member (since confusingly, each Enum member is an <em>i
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'./',
-            VERSION:'0.0.19',
+            VERSION:'0.0.20',
             LANGUAGE:'None',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',

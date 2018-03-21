@@ -9,7 +9,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Index &mdash; aodncore 0.0.19 documentation</title>
+  <title>Index &mdash; aodncore 0.0.20 documentation</title>
   
 
   
@@ -58,7 +58,7 @@
             
             
               <div class="version">
-                0.0.19
+                0.0.20
               </div>
             
           
@@ -82,7 +82,37 @@
               
             
             
-              <p class="caption"><span class="caption-text">Contents:</span></p>
+              <p class="caption"><span class="caption-text">User documentation:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="userdoc.html">User documentation</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="userdoc.html#overview">Overview</a></li>
+<li class="toctree-l2"><a class="reference internal" href="userdoc.html#state-machine-handler-steps">State machine / handler steps</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="userdoc.html#initialise">initialise</a></li>
+<li class="toctree-l3"><a class="reference internal" href="userdoc.html#resolve">resolve</a></li>
+<li class="toctree-l3"><a class="reference internal" href="userdoc.html#preprocess">preprocess</a></li>
+<li class="toctree-l3"><a class="reference internal" href="userdoc.html#check">check</a></li>
+<li class="toctree-l3"><a class="reference internal" href="userdoc.html#process">process</a></li>
+<li class="toctree-l3"><a class="reference internal" href="userdoc.html#publish">publish</a></li>
+<li class="toctree-l3"><a class="reference internal" href="userdoc.html#postprocess">postprocess</a></li>
+<li class="toctree-l3"><a class="reference internal" href="userdoc.html#notify">notify</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="userdoc.html#customising-handler-behaviour">Customising handler behaviour</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="userdoc.html#methods">Methods</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="userdoc.html#attributes">Attributes</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="userdoc.html#class-parameters">Class parameters</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p class="caption"><span class="caption-text">Developer documentation:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="developerdoc.html">Developer documentation</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Module contents:</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="aodncore.html">aodncore package</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="aodncore.html#subpackages">Subpackages</a><ul>
@@ -259,6 +289,8 @@
         <li><a href="aodncore.util.external.html#aodncore.util.external.boltons.IndexedSet.add">(aodncore.util.external.boltons.IndexedSet method)</a>
 </li>
       </ul></li>
+      <li><a href="aodncore.pipeline.steps.html#aodncore.pipeline.steps.harvest.HarvesterMap.add_event">add_event() (aodncore.pipeline.steps.harvest.HarvesterMap method)</a>
+</li>
       <li><a href="aodncore.pipeline.html#aodncore.pipeline.log.WorkerLoggingConfigBuilder.add_watch_config">add_watch_config() (aodncore.pipeline.log.WorkerLoggingConfigBuilder method)</a>
 </li>
       <li><a href="aodncore.pipeline.html#aodncore.pipeline.log.WorkerLoggingConfigBuilder.add_watches">add_watches() (aodncore.pipeline.log.WorkerLoggingConfigBuilder method)</a>
@@ -287,6 +319,10 @@
         <li><a href="aodncore.pipeline.html#aodncore.pipeline.PipelineFilePublishType.all_deletion_types">(aodncore.pipeline.PipelineFilePublishType attribute)</a>
 </li>
       </ul></li>
+      <li><a href="aodncore.pipeline.steps.html#aodncore.pipeline.steps.harvest.HarvesterMap.all_events">all_events (aodncore.pipeline.steps.harvest.HarvesterMap attribute)</a>
+</li>
+      <li><a href="aodncore.pipeline.steps.html#aodncore.pipeline.steps.harvest.HarvesterMap.all_pipeline_files">all_pipeline_files (aodncore.pipeline.steps.harvest.HarvesterMap attribute)</a>
+</li>
       <li><a href="aodncore.pipeline.html#aodncore.pipeline.HandlerBase.all_states">all_states (aodncore.pipeline.HandlerBase attribute)</a>
 
       <ul>
@@ -325,10 +361,10 @@
 </li>
       <li><a href="aodncore.pipeline.html#module-aodncore.pipeline.handlerbase">aodncore.pipeline.handlerbase (module)</a>
 </li>
-      <li><a href="aodncore.pipeline.html#module-aodncore.pipeline.log">aodncore.pipeline.log (module)</a>
-</li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="aodncore.pipeline.html#module-aodncore.pipeline.log">aodncore.pipeline.log (module)</a>
+</li>
       <li><a href="aodncore.pipeline.html#module-aodncore.pipeline.schema">aodncore.pipeline.schema (module)</a>
 </li>
       <li><a href="aodncore.pipeline.steps.html#module-aodncore.pipeline.steps">aodncore.pipeline.steps (module)</a>
@@ -569,9 +605,9 @@
         <li><a href="aodncore.util.external.html#aodncore.util.external.IndexedSet.count">(aodncore.util.external.IndexedSet method)</a>
 </li>
       </ul></li>
-      <li><a href="aodncore.pipeline.steps.html#aodncore.pipeline.steps.harvest.TalendHarvesterRunner.create_input_file_list">create_input_file_list() (aodncore.pipeline.steps.harvest.TalendHarvesterRunner static method)</a>
+      <li><a href="aodncore.pipeline.steps.html#aodncore.pipeline.steps.harvest.create_input_file_list">create_input_file_list() (in module aodncore.pipeline.steps.harvest)</a>
 </li>
-      <li><a href="aodncore.pipeline.steps.html#aodncore.pipeline.steps.harvest.TalendHarvesterRunner.create_symlink">create_symlink() (aodncore.pipeline.steps.harvest.TalendHarvesterRunner static method)</a>
+      <li><a href="aodncore.pipeline.steps.html#aodncore.pipeline.steps.harvest.create_symlink">create_symlink() (in module aodncore.pipeline.steps.harvest)</a>
 </li>
       <li><a href="aodncore.pipeline.html#aodncore.pipeline.common.FileType.CSV">CSV (aodncore.pipeline.common.FileType attribute)</a>
 
@@ -755,7 +791,7 @@
       </ul></li>
       <li><a href="aodncore.pipeline.steps.html#aodncore.pipeline.steps.harvest.TalendHarvesterRunner.execute_talend">execute_talend() (aodncore.pipeline.steps.harvest.TalendHarvesterRunner method)</a>
 </li>
-      <li><a href="aodncore.pipeline.steps.html#aodncore.pipeline.steps.harvest.TalendHarvesterRunner.executor_conversion">executor_conversion() (aodncore.pipeline.steps.harvest.TalendHarvesterRunner static method)</a>
+      <li><a href="aodncore.pipeline.steps.html#aodncore.pipeline.steps.harvest.executor_conversion">executor_conversion() (in module aodncore.pipeline.steps.harvest)</a>
 </li>
       <li><a href="aodncore.pipeline.html#aodncore.pipeline.common.FileType.extension">extension (aodncore.pipeline.common.FileType attribute)</a>
 
@@ -767,6 +803,8 @@
         <li><a href="aodncore.pipeline.html#aodncore.pipeline.files.PipelineFile.extension">(aodncore.pipeline.files.PipelineFile attribute)</a>
 </li>
       </ul></li>
+      <li><a href="aodncore.pipeline.steps.html#aodncore.pipeline.steps.harvest.TriggerEvent.extra_params">extra_params (aodncore.pipeline.steps.harvest.TriggerEvent attribute)</a>
+</li>
       <li><a href="aodncore.util.html#aodncore.util.extract_zip">extract_zip() (in module aodncore.util)</a>
 
       <ul>
@@ -1083,14 +1121,14 @@
         <li><a href="aodncore.testlib.html#aodncore.testlib.handlertest.HandlerTestCase">(class in aodncore.testlib.handlertest)</a>
 </li>
       </ul></li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="aodncore.pipeline.html#aodncore.pipeline.common.PipelineFilePublishType.HARVEST_ARCHIVE">HARVEST_ARCHIVE (aodncore.pipeline.common.PipelineFilePublishType attribute)</a>
 
       <ul>
         <li><a href="aodncore.pipeline.html#aodncore.pipeline.PipelineFilePublishType.HARVEST_ARCHIVE">(aodncore.pipeline.PipelineFilePublishType attribute)</a>
 </li>
       </ul></li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="aodncore.pipeline.html#aodncore.pipeline.common.PipelineFilePublishType.HARVEST_ARCHIVE_UPLOAD">HARVEST_ARCHIVE_UPLOAD (aodncore.pipeline.common.PipelineFilePublishType attribute)</a>
 
       <ul>
@@ -1109,6 +1147,8 @@
         <li><a href="aodncore.pipeline.html#aodncore.pipeline.PipelineFilePublishType.HARVEST_UPLOAD">(aodncore.pipeline.PipelineFilePublishType attribute)</a>
 </li>
       </ul></li>
+      <li><a href="aodncore.pipeline.steps.html#aodncore.pipeline.steps.harvest.HarvesterMap">HarvesterMap (class in aodncore.pipeline.steps.harvest)</a>
+</li>
       <li><a href="aodncore.pipeline.steps.html#aodncore.pipeline.steps.resolve.RsyncManifestResolveRunner.HEADER_LINE">HEADER_LINE (aodncore.pipeline.steps.resolve.RsyncManifestResolveRunner attribute)</a>
 </li>
   </ul></td>
@@ -1179,6 +1219,8 @@
 </li>
       <li><a href="aodncore.pipeline.html#aodncore.pipeline.exceptions.InvalidHarvesterError">InvalidHarvesterError</a>
 </li>
+      <li><a href="aodncore.pipeline.html#aodncore.pipeline.exceptions.InvalidHarvestMapError">InvalidHarvestMapError</a>
+</li>
       <li><a href="aodncore.pipeline.html#aodncore.pipeline.exceptions.InvalidInputFileError">InvalidInputFileError</a>
 </li>
       <li><a href="aodncore.pipeline.html#aodncore.pipeline.exceptions.InvalidPathFunctionError">InvalidPathFunctionError</a>
@@ -1215,6 +1257,8 @@
         <li><a href="aodncore.pipeline.html#aodncore.pipeline.PipelineFile.is_checked">(aodncore.pipeline.PipelineFile attribute)</a>
 </li>
       </ul></li>
+      <li><a href="aodncore.pipeline.steps.html#aodncore.pipeline.steps.harvest.HarvesterMap.is_collection_superset">is_collection_superset() (aodncore.pipeline.steps.harvest.HarvesterMap method)</a>
+</li>
       <li><a href="aodncore.pipeline.html#aodncore.pipeline.files.PipelineFile.is_deleted">is_deleted (aodncore.pipeline.files.PipelineFile attribute)</a>
 
       <ul>
@@ -1247,14 +1291,14 @@
         <li><a href="aodncore.util.html#aodncore.util.misc.is_function">(in module aodncore.util.misc)</a>
 </li>
       </ul></li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="aodncore.pipeline.html#aodncore.pipeline.common.PipelineFilePublishType.is_harvest_type">is_harvest_type (aodncore.pipeline.common.PipelineFilePublishType attribute)</a>
 
       <ul>
         <li><a href="aodncore.pipeline.html#aodncore.pipeline.PipelineFilePublishType.is_harvest_type">(aodncore.pipeline.PipelineFilePublishType attribute)</a>
 </li>
       </ul></li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="aodncore.pipeline.html#aodncore.pipeline.files.PipelineFile.is_harvest_undone">is_harvest_undone (aodncore.pipeline.files.PipelineFile attribute)</a>
 
       <ul>
@@ -1457,6 +1501,8 @@
         <li><a href="aodncore.testlib.html#aodncore.testlib.testutil.make_zip">(in module aodncore.testlib.testutil)</a>
 </li>
       </ul></li>
+      <li><a href="aodncore.pipeline.steps.html#aodncore.pipeline.steps.harvest.HarvesterMap.map">map (aodncore.pipeline.steps.harvest.HarvesterMap attribute)</a>
+</li>
       <li><a href="aodncore.pipeline.html#aodncore.pipeline.common.FileType.MAP_MANIFEST">MAP_MANIFEST (aodncore.pipeline.common.FileType attribute)</a>
 
       <ul>
@@ -1467,6 +1513,8 @@
 </li>
       <li><a href="aodncore.pipeline.steps.html#aodncore.pipeline.steps.harvest.TalendHarvesterRunner.match_harvester_to_files">match_harvester_to_files() (aodncore.pipeline.steps.harvest.TalendHarvesterRunner method)</a>
 </li>
+      <li><a href="aodncore.pipeline.steps.html#aodncore.pipeline.steps.harvest.TriggerEvent.matched_files">matched_files (aodncore.pipeline.steps.harvest.TriggerEvent attribute)</a>
+</li>
       <li><a href="aodncore.util.html#aodncore.util.matches_regexes">matches_regexes() (in module aodncore.util)</a>
 
       <ul>
@@ -1475,6 +1523,8 @@
       </ul></li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="aodncore.pipeline.steps.html#aodncore.pipeline.steps.harvest.HarvesterMap.merge">merge() (aodncore.pipeline.steps.harvest.HarvesterMap method)</a>
+</li>
       <li><a href="aodncore.util.html#aodncore.util.merge_dicts">merge_dicts() (in module aodncore.util)</a>
 
       <ul>
@@ -2035,6 +2085,8 @@
         <li><a href="aodncore.pipeline.steps.html#aodncore.pipeline.steps.NotifyList.set_notification_attempted">(aodncore.pipeline.steps.NotifyList method)</a>
 </li>
       </ul></li>
+      <li><a href="aodncore.pipeline.steps.html#aodncore.pipeline.steps.harvest.HarvesterMap.set_pipelinefile_bool_attribute">set_pipelinefile_bool_attribute() (aodncore.pipeline.steps.harvest.HarvesterMap method)</a>
+</li>
       <li><a href="aodncore.testlib.html#aodncore.testlib.basetest.BaseTestCase.setUp">setUp() (aodncore.testlib.basetest.BaseTestCase method)</a>
 
       <ul>
@@ -2219,6 +2271,8 @@
       </ul></li>
       <li><a href="aodncore.pipeline.html#aodncore.pipeline.configlib.LazyConfigManager.trigger_config">trigger_config (aodncore.pipeline.configlib.LazyConfigManager attribute)</a>
 </li>
+      <li><a href="aodncore.pipeline.steps.html#aodncore.pipeline.steps.harvest.TriggerEvent">TriggerEvent (class in aodncore.pipeline.steps.harvest)</a>
+</li>
   </ul></td>
 </tr></table>
 
@@ -2357,7 +2411,9 @@
       </ul></li>
       <li><a href="aodncore.pipeline.html#aodncore.pipeline.schema.validate_harvest_params">validate_harvest_params() (in module aodncore.pipeline.schema)</a>
 </li>
-      <li><a href="aodncore.pipeline.steps.html#aodncore.pipeline.steps.harvest.TalendHarvesterRunner.validate_harvester_mapping">validate_harvester_mapping() (aodncore.pipeline.steps.harvest.TalendHarvesterRunner static method)</a>
+      <li><a href="aodncore.pipeline.steps.html#aodncore.pipeline.steps.harvest.validate_harvester_mapping">validate_harvester_mapping() (in module aodncore.pipeline.steps.harvest)</a>
+</li>
+      <li><a href="aodncore.pipeline.steps.html#aodncore.pipeline.steps.harvest.validate_harvestermap">validate_harvestermap() (in module aodncore.pipeline.steps.harvest)</a>
 </li>
       <li><a href="aodncore.util.html#aodncore.util.validate_int">validate_int() (in module aodncore.util)</a>
 
@@ -2429,6 +2485,8 @@
         <li><a href="aodncore.util.html#aodncore.util.misc.validate_string">(in module aodncore.util.misc)</a>
 </li>
       </ul></li>
+      <li><a href="aodncore.pipeline.steps.html#aodncore.pipeline.steps.harvest.validate_triggerevent">validate_triggerevent() (in module aodncore.pipeline.steps.harvest)</a>
+</li>
       <li><a href="aodncore.util.html#aodncore.util.validate_type">validate_type() (in module aodncore.util)</a>
 
       <ul>
@@ -2518,7 +2576,7 @@
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'./',
-            VERSION:'0.0.19',
+            VERSION:'0.0.20',
             LANGUAGE:'None',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
