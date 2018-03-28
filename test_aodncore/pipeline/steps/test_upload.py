@@ -2,6 +2,8 @@ import errno
 import os
 from uuid import uuid4
 
+from botocore.exceptions import ClientError
+
 from aodncore.pipeline import PipelineFile, PipelineFileCollection, PipelineFilePublishType
 from aodncore.pipeline.exceptions import FileDeleteFailedError, FileUploadFailedError, InvalidUploadUrlError
 from aodncore.pipeline.steps.upload import (get_upload_runner, sftp_path_exists, sftp_makedirs, sftp_mkdir_p,
@@ -287,11 +289,17 @@ class TestS3UploadRunner(BaseTestCase):
 
         mock_boto3.client.assert_called_once_with('s3')
 
-        s3_upload_runner.s3_client.head_bucket.side_effect = InvalidUploadUrlError()
-        with self.assertRaises(InvalidUploadUrlError):
-            s3_upload_runner.run(collection)
+        dummy_error = ClientError({'Error': {'Code': 'ServiceUnavailable'}}, 'ListObjects')
+        s3_upload_runner.s3_client.head_bucket.side_effect = dummy_error
 
-        s3_upload_runner.s3_client.head_bucket.assert_called_once_with(Bucket=dummy_bucket)
+        with self.assertRaises(InvalidUploadUrlError):
+            # mock out sleep to avoid long and unnecessary waiting during tests
+            with mock.patch('aodncore.util.external.retry.api.time.sleep', new=lambda x: None):
+                s3_upload_runner.run(collection)
+
+        self.assertEqual(s3_upload_runner.s3_client.head_bucket.call_count, s3_upload_runner.retry_kwargs['tries'])
+
+        s3_upload_runner.s3_client.head_bucket.assert_called_with(Bucket=dummy_bucket)
 
     @mock.patch('aodncore.pipeline.steps.upload.boto3')
     def test_upload(self, mock_boto3):

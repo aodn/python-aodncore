@@ -3,13 +3,14 @@ import errno
 import os
 
 import boto3
+from botocore.exceptions import ClientError
 from paramiko import SSHClient, AutoAddPolicy
 from six.moves.urllib.parse import urlparse
 
 from .basestep import AbstractCollectionStepRunner
 from ..exceptions import AttributeNotSetError, FileDeleteFailedError, FileUploadFailedError, InvalidUploadUrlError
 from ..files import validate_pipelinefilecollection
-from ...util import format_exception, mkdir_p, rm_f, safe_copy_file
+from ...util import format_exception, mkdir_p, retry_decorator, rm_f, safe_copy_file
 
 __all__ = [
     'get_upload_runner',
@@ -194,6 +195,13 @@ class S3UploadRunner(BaseUploadRunner):
 
     """
 
+    retry_kwargs = {
+        'tries': 3,
+        'delay': 5,
+        'backoff': 2,
+        'exceptions': (ClientError,)
+    }
+
     def __init__(self, bucket, prefix, config, logger, archive_mode=False):
         super(S3UploadRunner, self).__init__(config, logger, archive_mode)
 
@@ -202,6 +210,7 @@ class S3UploadRunner(BaseUploadRunner):
 
         self.s3_client = boto3.client('s3')
 
+    @retry_decorator(**retry_kwargs)
     def _delete_file(self, pipeline_file):
         abs_path = self._get_absolute_dest_path(pipeline_file)
         self.s3_client.delete_object(Bucket=self.bucket, Key=abs_path)
@@ -209,6 +218,7 @@ class S3UploadRunner(BaseUploadRunner):
     def _get_absolute_dest_uri(self, pipeline_file):
         return "s3://{bucket}/{path}".format(bucket=self.bucket, path=self._get_absolute_dest_path(pipeline_file))
 
+    @retry_decorator(**retry_kwargs)
     def _get_is_overwrite(self, pipeline_file, abs_path):
         response = self.s3_client.list_objects_v2(Bucket=self.bucket, Prefix=abs_path)
         return bool(k for k in response.get('Contents', []) if k['Key'] == abs_path)
@@ -217,8 +227,13 @@ class S3UploadRunner(BaseUploadRunner):
         return
 
     def _pre_run_hook(self):
-        self._validate_bucket()
+        try:
+            self._validate_bucket()
+        except Exception as e:
+            raise InvalidUploadUrlError(
+                "unable to access S3 bucket '{0}': {1}".format(self.bucket, format_exception(e)))
 
+    @retry_decorator(**retry_kwargs)
     def _upload_file(self, pipeline_file):
         abs_path = self._get_absolute_dest_path(pipeline_file)
 
@@ -226,12 +241,9 @@ class S3UploadRunner(BaseUploadRunner):
             self.s3_client.upload_fileobj(f, Bucket=self.bucket, Key=abs_path,
                                           ExtraArgs={'ContentType': pipeline_file.mime_type})
 
+    @retry_decorator(**retry_kwargs)
     def _validate_bucket(self):
-        try:
-            self.s3_client.head_bucket(Bucket=self.bucket)
-        except Exception as e:
-            raise InvalidUploadUrlError(
-                "unable to access S3 bucket '{0}': {1}".format(self.bucket, format_exception(e)))
+        self.s3_client.head_bucket(Bucket=self.bucket)
 
 
 def sftp_path_exists(sftpclient, path):
