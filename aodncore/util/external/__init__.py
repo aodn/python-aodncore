@@ -2,15 +2,15 @@
     unnecessary dependencies.
 
 Code taken from:
-    * awsretry :: https://github.com/linuxdynasty/awsretry (MIT License)
+    * retry :: https://github.com/invl/retry (Apache 2.0 License)
     * boltons :: https://boltons.readthedocs.io/en/latest/index.html (BSD License)
 
 """
-from .awsretry import AWSRetry
+from .retry import retry as retry_decorator
 from .boltons import IndexedSet, classproperty
 
 __all__ = [
-    'AWSRetry',
     'IndexedSet',
-    'classproperty'
+    'classproperty',
+    'retry_decorator'
 ]

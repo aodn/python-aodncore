@@ -1,4 +1,4 @@
-from .external import AWSRetry, IndexedSet, classproperty
+from .external import retry_decorator, IndexedSet, classproperty
 from .fileops import (TemporaryDirectory, extract_zip, get_file_checksum, is_dir_writable, is_netcdffile, is_zipfile,
                       list_regular_files, mkdir_p, rm_f, rm_r, rm_rf, safe_copy_file, safe_move_file,
                       validate_dir_writable, validate_file_writable)
@@ -10,7 +10,6 @@ from .misc import (CaptureStdIO, LoggingContext, TemplateRenderer, discover_entr
 from .process import SystemProcess
 
 __all__ = [
-    'AWSRetry',
     'CaptureStdIO',
     'IndexedSet',
     'LoggingContext',
@@ -33,6 +32,7 @@ __all__ = [
     'merge_dicts',
     'list_regular_files',
     'mkdir_p',
+    'retry_decorator',
     'rm_f',
     'rm_r',
     'rm_rf',
