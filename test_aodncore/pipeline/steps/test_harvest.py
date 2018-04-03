@@ -84,9 +84,16 @@ class TestTalendHarvesterRunner(BaseTestCase):
 
         called_commands = [c[1][0] for c in mock_subprocess.Popen.mock_calls if c[1]]
 
+        self.assertTrue(called_commands[0].startswith('echo zzz_my_test_harvester '))
         self.assertFalse(called_commands[0].endswith(expected_extra_params))
+
+        self.assertTrue(called_commands[1].startswith('echo aaa_my_test_harvester '))
         self.assertTrue(called_commands[1].endswith(expected_extra_params))
+
+        self.assertTrue(called_commands[2].startswith('echo aaa_my_test_harvester '))
         self.assertFalse(called_commands[2].endswith(expected_extra_params))
+
+        self.assertTrue(called_commands[3].startswith('echo mmm_my_test_harvester '))
         self.assertFalse(called_commands[3].endswith(expected_extra_params))
 
     @patch('aodncore.util.process.subprocess')
