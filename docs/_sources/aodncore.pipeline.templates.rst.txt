@@ -1,0 +1,10 @@
+aodncore.pipeline.templates package
+===================================
+
+Module contents
+---------------
+
+.. automodule:: aodncore.pipeline.templates
+    :members:
+    :undoc-members:
+    :show-inheritance:

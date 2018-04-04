@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>aodncore.vocab package &mdash; aodncore 0.0.20 documentation</title>
+  <title>aodncore.testlib.conf package &mdash; aodncore 0.0.20 documentation</title>
   
 
   
@@ -29,7 +29,8 @@
   <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="prev" title="aodncore.util.external.retry package" href="aodncore.util.external.retry.html" /> 
+    <link rel="next" title="aodncore.util package" href="aodncore.util.html" />
+    <link rel="prev" title="aodncore.testlib package" href="aodncore.testlib.html" /> 
 
   
   <script src="_static/js/modernizr.min.js"></script>
@@ -141,8 +142,8 @@
 <li class="toctree-l4"><a class="reference internal" href="aodncore.pipeline.html#module-aodncore.pipeline">Module contents</a></li>
 </ul>
 </li>
-<li class="toctree-l3"><a class="reference internal" href="aodncore.testlib.html">aodncore.testlib package</a><ul>
-<li class="toctree-l4"><a class="reference internal" href="aodncore.testlib.html#subpackages">Subpackages</a></li>
+<li class="toctree-l3 current"><a class="reference internal" href="aodncore.testlib.html">aodncore.testlib package</a><ul class="current">
+<li class="toctree-l4 current"><a class="reference internal" href="aodncore.testlib.html#subpackages">Subpackages</a></li>
 <li class="toctree-l4"><a class="reference internal" href="aodncore.testlib.html#submodules">Submodules</a></li>
 <li class="toctree-l4"><a class="reference internal" href="aodncore.testlib.html#module-aodncore.testlib.basetest">aodncore.testlib.basetest module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="aodncore.testlib.html#module-aodncore.testlib.dummyhandler">aodncore.testlib.dummyhandler module</a></li>
@@ -160,10 +161,10 @@
 <li class="toctree-l4"><a class="reference internal" href="aodncore.util.html#module-aodncore.util">Module contents</a></li>
 </ul>
 </li>
-<li class="toctree-l3 current"><a class="current reference internal" href="#">aodncore.vocab package</a><ul>
-<li class="toctree-l4"><a class="reference internal" href="#submodules">Submodules</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#module-aodncore.vocab.platform_code_vocab">aodncore.vocab.platform_code_vocab module</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#module-aodncore.vocab">Module contents</a></li>
+<li class="toctree-l3"><a class="reference internal" href="aodncore.vocab.html">aodncore.vocab package</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="aodncore.vocab.html#submodules">Submodules</a></li>
+<li class="toctree-l4"><a class="reference internal" href="aodncore.vocab.html#module-aodncore.vocab.platform_code_vocab">aodncore.vocab.platform_code_vocab module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="aodncore.vocab.html#module-aodncore.vocab">Module contents</a></li>
 </ul>
 </li>
 </ul>
@@ -221,13 +222,15 @@
         
           <li><a href="aodncore.html">aodncore package</a> &raquo;</li>
         
-      <li>aodncore.vocab package</li>
+          <li><a href="aodncore.testlib.html">aodncore.testlib package</a> &raquo;</li>
+        
+      <li>aodncore.testlib.conf package</li>
     
     
       <li class="wy-breadcrumbs-aside">
         
             
-            <a href="_sources/aodncore.vocab.rst.txt" rel="nofollow"> View page source</a>
+            <a href="_sources/aodncore.testlib.conf.rst.txt" rel="nofollow"> View page source</a>
           
         
       </li>
@@ -240,69 +243,10 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <div class="section" id="aodncore-vocab-package">
-<h1>aodncore.vocab package<a class="headerlink" href="#aodncore-vocab-package" title="Permalink to this headline">¶</a></h1>
-<div class="section" id="submodules">
-<h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this headline">¶</a></h2>
-</div>
-<div class="section" id="module-aodncore.vocab.platform_code_vocab">
-<span id="aodncore-vocab-platform-code-vocab-module"></span><h2>aodncore.vocab.platform_code_vocab module<a class="headerlink" href="#module-aodncore.vocab.platform_code_vocab" title="Permalink to this headline">¶</a></h2>
-<p>Find the platform_code platform_name equivalence from poolparty platform vocab
-xml file stored in content.aodn.org.au</p>
-<dl class="docutils">
-<dt>How to use:</dt>
-<dd><p class="first">from platform_code_vocab import *</p>
-<p class="last">platform_altlabels_per_preflabel()
-platform_type_uris_by_category()
-platform_altlabels_per_preflabel(‘Fixed station’)
-platform_altlabels_per_preflabel(‘Mooring and buoy’)
-platform_altlabels_per_preflabel(‘Vessel’)</p>
-</dd>
-</dl>
-<p>author : Besnard, Laurent</p>
-<dl class="function">
-<dt id="aodncore.vocab.platform_code_vocab.platform_altlabels_per_preflabel">
-<code class="descclassname">aodncore.vocab.platform_code_vocab.</code><code class="descname">platform_altlabels_per_preflabel</code><span class="sig-paren">(</span><em>category_name=None</em>, <em>platform_vocab_url='http://content.aodn.org.au/Vocabularies/platform/aodn_aodn-platform-vocabulary.rdf'</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/aodncore/vocab/platform_code_vocab.html#platform_altlabels_per_preflabel"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#aodncore.vocab.platform_code_vocab.platform_altlabels_per_preflabel" title="Permalink to this definition">¶</a></dt>
-<dd><p>retrieves a list of platform code - platform name dictionnary.
-The function can either retrieves ALL platform codes, or only platform codes
-for a specific category, which can be found in platform_type_uris_by_category()</p>
-<dl class="docutils">
-<dt>Example:</dt>
-<dd>platform_altlabels_per_preflabel()
-platform_altlabels_per_preflabel(‘Vessel’)</dd>
-</dl>
-</dd></dl>
-
-<dl class="function">
-<dt id="aodncore.vocab.platform_code_vocab.platform_type_uris_by_category">
-<code class="descclassname">aodncore.vocab.platform_code_vocab.</code><code class="descname">platform_type_uris_by_category</code><span class="sig-paren">(</span><em>platform_cat_vocab_url='http://content.aodn.org.au/Vocabularies/platform-category/aodn_aodn-platform-category-vocabulary.rdf'</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/aodncore/vocab/platform_code_vocab.html#platform_type_uris_by_category"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#aodncore.vocab.platform_code_vocab.platform_type_uris_by_category" title="Permalink to this definition">¶</a></dt>
-<dd><p>retrieves a list of platform category and their narrowMatch url type which
-defines their category</p>
-</dd></dl>
-
-</div>
-<div class="section" id="module-aodncore.vocab">
-<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-aodncore.vocab" title="Permalink to this headline">¶</a></h2>
-<dl class="function">
-<dt id="aodncore.vocab.platform_altlabels_per_preflabel">
-<code class="descclassname">aodncore.vocab.</code><code class="descname">platform_altlabels_per_preflabel</code><span class="sig-paren">(</span><em>category_name=None</em>, <em>platform_vocab_url='http://content.aodn.org.au/Vocabularies/platform/aodn_aodn-platform-vocabulary.rdf'</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/aodncore/vocab/platform_code_vocab.html#platform_altlabels_per_preflabel"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#aodncore.vocab.platform_altlabels_per_preflabel" title="Permalink to this definition">¶</a></dt>
-<dd><p>retrieves a list of platform code - platform name dictionnary.
-The function can either retrieves ALL platform codes, or only platform codes
-for a specific category, which can be found in platform_type_uris_by_category()</p>
-<dl class="docutils">
-<dt>Example:</dt>
-<dd>platform_altlabels_per_preflabel()
-platform_altlabels_per_preflabel(‘Vessel’)</dd>
-</dl>
-</dd></dl>
-
-<dl class="function">
-<dt id="aodncore.vocab.platform_type_uris_by_category">
-<code class="descclassname">aodncore.vocab.</code><code class="descname">platform_type_uris_by_category</code><span class="sig-paren">(</span><em>platform_cat_vocab_url='http://content.aodn.org.au/Vocabularies/platform-category/aodn_aodn-platform-category-vocabulary.rdf'</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/aodncore/vocab/platform_code_vocab.html#platform_type_uris_by_category"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#aodncore.vocab.platform_type_uris_by_category" title="Permalink to this definition">¶</a></dt>
-<dd><p>retrieves a list of platform category and their narrowMatch url type which
-defines their category</p>
-</dd></dl>
-
+  <div class="section" id="aodncore-testlib-conf-package">
+<h1>aodncore.testlib.conf package<a class="headerlink" href="#aodncore-testlib-conf-package" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="module-aodncore.testlib.conf">
+<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-aodncore.testlib.conf" title="Permalink to this headline">¶</a></h2>
 </div>
 </div>
 
@@ -314,8 +258,10 @@ defines their category</p>
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
+        <a href="aodncore.util.html" class="btn btn-neutral float-right" title="aodncore.util package" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
       
-        <a href="aodncore.util.external.retry.html" class="btn btn-neutral" title="aodncore.util.external.retry package" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+        <a href="aodncore.testlib.html" class="btn btn-neutral" title="aodncore.testlib package" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
       
     </div>
   

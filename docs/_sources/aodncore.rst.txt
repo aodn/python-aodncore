@@ -15,8 +15,8 @@ Subpackages
 Submodules
 ----------
 
-aodncore\.version module
-------------------------
+aodncore.version module
+-----------------------
 
 .. automodule:: aodncore.version
     :members:

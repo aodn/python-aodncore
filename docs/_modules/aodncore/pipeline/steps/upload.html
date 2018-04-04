@@ -141,6 +141,7 @@
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="../../../../aodncore.testlib.html">aodncore.testlib package</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../../aodncore.testlib.html#subpackages">Subpackages</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../../aodncore.testlib.html#submodules">Submodules</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../../aodncore.testlib.html#module-aodncore.testlib.basetest">aodncore.testlib.basetest module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../../aodncore.testlib.html#module-aodncore.testlib.dummyhandler">aodncore.testlib.dummyhandler module</a></li>
@@ -240,13 +241,14 @@
 <span class="kn">import</span> <span class="nn">os</span>
 
 <span class="kn">import</span> <span class="nn">boto3</span>
+<span class="kn">from</span> <span class="nn">botocore.exceptions</span> <span class="k">import</span> <span class="n">ClientError</span>
 <span class="kn">from</span> <span class="nn">paramiko</span> <span class="k">import</span> <span class="n">SSHClient</span><span class="p">,</span> <span class="n">AutoAddPolicy</span>
 <span class="kn">from</span> <span class="nn">six.moves.urllib.parse</span> <span class="k">import</span> <span class="n">urlparse</span>
 
 <span class="kn">from</span> <span class="nn">.basestep</span> <span class="k">import</span> <span class="n">AbstractCollectionStepRunner</span>
 <span class="kn">from</span> <span class="nn">..exceptions</span> <span class="k">import</span> <span class="n">AttributeNotSetError</span><span class="p">,</span> <span class="n">FileDeleteFailedError</span><span class="p">,</span> <span class="n">FileUploadFailedError</span><span class="p">,</span> <span class="n">InvalidUploadUrlError</span>
 <span class="kn">from</span> <span class="nn">..files</span> <span class="k">import</span> <span class="n">validate_pipelinefilecollection</span>
-<span class="kn">from</span> <span class="nn">...util</span> <span class="k">import</span> <span class="n">format_exception</span><span class="p">,</span> <span class="n">mkdir_p</span><span class="p">,</span> <span class="n">rm_f</span><span class="p">,</span> <span class="n">safe_copy_file</span>
+<span class="kn">from</span> <span class="nn">...util</span> <span class="k">import</span> <span class="n">format_exception</span><span class="p">,</span> <span class="n">mkdir_p</span><span class="p">,</span> <span class="n">retry_decorator</span><span class="p">,</span> <span class="n">rm_f</span><span class="p">,</span> <span class="n">safe_copy_file</span>
 
 <span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span>
     <span class="s1">&#39;get_upload_runner&#39;</span><span class="p">,</span>
@@ -431,6 +433,13 @@
 
 <span class="sd">    &quot;&quot;&quot;</span>
 
+    <span class="n">retry_kwargs</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="s1">&#39;tries&#39;</span><span class="p">:</span> <span class="mi">3</span><span class="p">,</span>
+        <span class="s1">&#39;delay&#39;</span><span class="p">:</span> <span class="mi">5</span><span class="p">,</span>
+        <span class="s1">&#39;backoff&#39;</span><span class="p">:</span> <span class="mi">2</span><span class="p">,</span>
+        <span class="s1">&#39;exceptions&#39;</span><span class="p">:</span> <span class="p">(</span><span class="n">ClientError</span><span class="p">,)</span>
+    <span class="p">}</span>
+
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">bucket</span><span class="p">,</span> <span class="n">prefix</span><span class="p">,</span> <span class="n">config</span><span class="p">,</span> <span class="n">logger</span><span class="p">,</span> <span class="n">archive_mode</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
         <span class="nb">super</span><span class="p">(</span><span class="n">S3UploadRunner</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">config</span><span class="p">,</span> <span class="n">logger</span><span class="p">,</span> <span class="n">archive_mode</span><span class="p">)</span>
 
@@ -439,6 +448,7 @@
 
         <span class="bp">self</span><span class="o">.</span><span class="n">s3_client</span> <span class="o">=</span> <span class="n">boto3</span><span class="o">.</span><span class="n">client</span><span class="p">(</span><span class="s1">&#39;s3&#39;</span><span class="p">)</span>
 
+    <span class="nd">@retry_decorator</span><span class="p">(</span><span class="o">**</span><span class="n">retry_kwargs</span><span class="p">)</span>
     <span class="k">def</span> <span class="nf">_delete_file</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pipeline_file</span><span class="p">):</span>
         <span class="n">abs_path</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_absolute_dest_path</span><span class="p">(</span><span class="n">pipeline_file</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">s3_client</span><span class="o">.</span><span class="n">delete_object</span><span class="p">(</span><span class="n">Bucket</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">bucket</span><span class="p">,</span> <span class="n">Key</span><span class="o">=</span><span class="n">abs_path</span><span class="p">)</span>
@@ -446,6 +456,7 @@
     <span class="k">def</span> <span class="nf">_get_absolute_dest_uri</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pipeline_file</span><span class="p">):</span>
         <span class="k">return</span> <span class="s2">&quot;s3://</span><span class="si">{bucket}</span><span class="s2">/</span><span class="si">{path}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">bucket</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">bucket</span><span class="p">,</span> <span class="n">path</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_get_absolute_dest_path</span><span class="p">(</span><span class="n">pipeline_file</span><span class="p">))</span>
 
+    <span class="nd">@retry_decorator</span><span class="p">(</span><span class="o">**</span><span class="n">retry_kwargs</span><span class="p">)</span>
     <span class="k">def</span> <span class="nf">_get_is_overwrite</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pipeline_file</span><span class="p">,</span> <span class="n">abs_path</span><span class="p">):</span>
         <span class="n">response</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">s3_client</span><span class="o">.</span><span class="n">list_objects_v2</span><span class="p">(</span><span class="n">Bucket</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">bucket</span><span class="p">,</span> <span class="n">Prefix</span><span class="o">=</span><span class="n">abs_path</span><span class="p">)</span>
         <span class="k">return</span> <span class="nb">bool</span><span class="p">(</span><span class="n">k</span> <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="n">response</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;Contents&#39;</span><span class="p">,</span> <span class="p">[])</span> <span class="k">if</span> <span class="n">k</span><span class="p">[</span><span class="s1">&#39;Key&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="n">abs_path</span><span class="p">)</span>
@@ -454,8 +465,13 @@
         <span class="k">return</span>
 
     <span class="k">def</span> <span class="nf">_pre_run_hook</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_validate_bucket</span><span class="p">()</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_validate_bucket</span><span class="p">()</span>
+        <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">InvalidUploadUrlError</span><span class="p">(</span>
+                <span class="s2">&quot;unable to access S3 bucket &#39;</span><span class="si">{0}</span><span class="s2">&#39;: </span><span class="si">{1}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">bucket</span><span class="p">,</span> <span class="n">format_exception</span><span class="p">(</span><span class="n">e</span><span class="p">)))</span>
 
+    <span class="nd">@retry_decorator</span><span class="p">(</span><span class="o">**</span><span class="n">retry_kwargs</span><span class="p">)</span>
     <span class="k">def</span> <span class="nf">_upload_file</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pipeline_file</span><span class="p">):</span>
         <span class="n">abs_path</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_absolute_dest_path</span><span class="p">(</span><span class="n">pipeline_file</span><span class="p">)</span>
 
@@ -463,12 +479,9 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">s3_client</span><span class="o">.</span><span class="n">upload_fileobj</span><span class="p">(</span><span class="n">f</span><span class="p">,</span> <span class="n">Bucket</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">bucket</span><span class="p">,</span> <span class="n">Key</span><span class="o">=</span><span class="n">abs_path</span><span class="p">,</span>
                                           <span class="n">ExtraArgs</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;ContentType&#39;</span><span class="p">:</span> <span class="n">pipeline_file</span><span class="o">.</span><span class="n">mime_type</span><span class="p">})</span>
 
+    <span class="nd">@retry_decorator</span><span class="p">(</span><span class="o">**</span><span class="n">retry_kwargs</span><span class="p">)</span>
     <span class="k">def</span> <span class="nf">_validate_bucket</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">try</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">s3_client</span><span class="o">.</span><span class="n">head_bucket</span><span class="p">(</span><span class="n">Bucket</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">bucket</span><span class="p">)</span>
-        <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="n">InvalidUploadUrlError</span><span class="p">(</span>
-                <span class="s2">&quot;unable to access S3 bucket &#39;</span><span class="si">{0}</span><span class="s2">&#39;: </span><span class="si">{1}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">bucket</span><span class="p">,</span> <span class="n">format_exception</span><span class="p">(</span><span class="n">e</span><span class="p">)))</span></div>
+        <span class="bp">self</span><span class="o">.</span><span class="n">s3_client</span><span class="o">.</span><span class="n">head_bucket</span><span class="p">(</span><span class="n">Bucket</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">bucket</span><span class="p">)</span></div>
 
 
 <span class="k">def</span> <span class="nf">sftp_path_exists</span><span class="p">(</span><span class="n">sftpclient</span><span class="p">,</span> <span class="n">path</span><span class="p">):</span>

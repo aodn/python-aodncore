@@ -1,11 +1,18 @@
-aodncore\.util\.external package
-================================
+aodncore.util.external package
+==============================
+
+Subpackages
+-----------
+
+.. toctree::
+
+    aodncore.util.external.retry
 
 Submodules
 ----------
 
-aodncore\.util\.external\.boltons module
-----------------------------------------
+aodncore.util.external.boltons module
+-------------------------------------
 
 .. automodule:: aodncore.util.external.boltons
     :members:

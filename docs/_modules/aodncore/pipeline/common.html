@@ -141,6 +141,7 @@
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="../../../aodncore.testlib.html">aodncore.testlib package</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../aodncore.testlib.html#subpackages">Subpackages</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../aodncore.testlib.html#submodules">Submodules</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../aodncore.testlib.html#module-aodncore.testlib.basetest">aodncore.testlib.basetest module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../aodncore.testlib.html#module-aodncore.testlib.dummyhandler">aodncore.testlib.dummyhandler module</a></li>
@@ -319,9 +320,9 @@
     <span class="k">def</span> <span class="nf">error_string</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_error_string</span>
 
-<div class="viewcode-block" id="NotificationRecipientType.get_type_from_protocol"><a class="viewcode-back" href="../../../aodncore.pipeline.html#aodncore.pipeline.common.NotificationRecipientType.get_type_from_protocol">[docs]</a>    <span class="nd">@classmethod</span>
+    <span class="nd">@classmethod</span>
     <span class="k">def</span> <span class="nf">get_type_from_protocol</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">protocol</span><span class="p">):</span>
-        <span class="k">return</span> <span class="nb">next</span><span class="p">((</span><span class="n">t</span> <span class="k">for</span> <span class="n">t</span> <span class="ow">in</span> <span class="bp">cls</span> <span class="k">if</span> <span class="n">t</span><span class="o">.</span><span class="n">protocol</span> <span class="o">==</span> <span class="n">protocol</span><span class="p">),</span> <span class="bp">cls</span><span class="o">.</span><span class="n">INVALID</span><span class="p">)</span></div></div>
+        <span class="k">return</span> <span class="nb">next</span><span class="p">((</span><span class="n">t</span> <span class="k">for</span> <span class="n">t</span> <span class="ow">in</span> <span class="bp">cls</span> <span class="k">if</span> <span class="n">t</span><span class="o">.</span><span class="n">protocol</span> <span class="o">==</span> <span class="n">protocol</span><span class="p">),</span> <span class="bp">cls</span><span class="o">.</span><span class="n">INVALID</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="FileType"><a class="viewcode-back" href="../../../aodncore.pipeline.html#aodncore.pipeline.common.FileType">[docs]</a><span class="k">class</span> <span class="nc">FileType</span><span class="p">(</span><span class="n">Enum</span><span class="p">):</span>
@@ -368,14 +369,14 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">mime_type</span> <span class="o">=</span> <span class="n">mime_type</span>
 
     <span class="c1"># noinspection PyTypeChecker</span>
-<div class="viewcode-block" id="FileType.get_type_from_extension"><a class="viewcode-back" href="../../../aodncore.pipeline.html#aodncore.pipeline.common.FileType.get_type_from_extension">[docs]</a>    <span class="nd">@classmethod</span>
+    <span class="nd">@classmethod</span>
     <span class="k">def</span> <span class="nf">get_type_from_extension</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">extension</span><span class="p">):</span>
-        <span class="k">return</span> <span class="nb">next</span><span class="p">((</span><span class="n">t</span> <span class="k">for</span> <span class="n">t</span> <span class="ow">in</span> <span class="bp">cls</span> <span class="k">if</span> <span class="n">t</span><span class="o">.</span><span class="n">extension</span> <span class="o">==</span> <span class="n">extension</span><span class="p">),</span> <span class="bp">cls</span><span class="o">.</span><span class="n">UNKNOWN</span><span class="p">)</span></div>
+        <span class="k">return</span> <span class="nb">next</span><span class="p">((</span><span class="n">t</span> <span class="k">for</span> <span class="n">t</span> <span class="ow">in</span> <span class="bp">cls</span> <span class="k">if</span> <span class="n">t</span><span class="o">.</span><span class="n">extension</span> <span class="o">==</span> <span class="n">extension</span><span class="p">),</span> <span class="bp">cls</span><span class="o">.</span><span class="n">UNKNOWN</span><span class="p">)</span>
 
-<div class="viewcode-block" id="FileType.get_type_from_name"><a class="viewcode-back" href="../../../aodncore.pipeline.html#aodncore.pipeline.common.FileType.get_type_from_name">[docs]</a>    <span class="nd">@classmethod</span>
+    <span class="nd">@classmethod</span>
     <span class="k">def</span> <span class="nf">get_type_from_name</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">name</span><span class="p">):</span>
         <span class="n">_</span><span class="p">,</span> <span class="n">extension</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">splitext</span><span class="p">(</span><span class="n">name</span><span class="p">)</span>
-        <span class="k">return</span> <span class="bp">cls</span><span class="o">.</span><span class="n">get_type_from_extension</span><span class="p">(</span><span class="n">extension</span><span class="p">)</span></div></div>
+        <span class="k">return</span> <span class="bp">cls</span><span class="o">.</span><span class="n">get_type_from_extension</span><span class="p">(</span><span class="n">extension</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="PipelineFileCheckType"><a class="viewcode-back" href="../../../aodncore.pipeline.html#aodncore.pipeline.common.PipelineFileCheckType">[docs]</a><span class="k">class</span> <span class="nc">PipelineFileCheckType</span><span class="p">(</span><span class="n">Enum</span><span class="p">):</span>
