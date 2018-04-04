@@ -143,6 +143,7 @@
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="aodncore.testlib.html">aodncore.testlib package</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="aodncore.testlib.html#subpackages">Subpackages</a></li>
 <li class="toctree-l4"><a class="reference internal" href="aodncore.testlib.html#submodules">Submodules</a></li>
 <li class="toctree-l4"><a class="reference internal" href="aodncore.testlib.html#module-aodncore.testlib.basetest">aodncore.testlib.basetest module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="aodncore.testlib.html#module-aodncore.testlib.dummyhandler">aodncore.testlib.dummyhandler module</a></li>
@@ -242,8 +243,8 @@
 <h1>User documentation<a class="headerlink" href="#user-documentation" title="Permalink to this headline">¶</a></h1>
 <div class="section" id="overview">
 <h2>Overview<a class="headerlink" href="#overview" title="Permalink to this headline">¶</a></h2>
-<p>The <code class="docutils literal"><span class="pre">aodncore.pipeline</span></code> package provides the base class for each pipeline handler at the
-<code class="docutils literal"><span class="pre">aodncore.pipeline.HandlerBase</span></code> namespace. This is the starting point for any new handler development, as it contains
+<p>The <code class="docutils literal notranslate"><span class="pre">aodncore.pipeline</span></code> package provides the base class for each pipeline handler at the
+<code class="docutils literal notranslate"><span class="pre">aodncore.pipeline.HandlerBase</span></code> namespace. This is the starting point for any new handler development, as it contains
 all of the core functionality of each handler, which is then available to the child class via class inheritance.</p>
 </div>
 <div class="section" id="state-machine-handler-steps">
@@ -252,11 +253,11 @@ all of the core functionality of each handler, which is then available to the ch
 with each performing a distinct function in the processing of the input file. The “machine” defines a series of states,
 and also controls/enforces the transitions between states.</p>
 <p>For example, since it makes no sense to check a collection of files before the collection exists, the state machine
-enforces that the <code class="docutils literal"><span class="pre">check</span></code> step may <em>only</em> be entered into from the <code class="docutils literal"><span class="pre">resolve</span></code> step.</p>
-<p>Similarly, the <code class="docutils literal"><span class="pre">publish</span></code> step cannot ever be entered into other than from the <code class="docutils literal"><span class="pre">process</span></code> step, which means that the
+enforces that the <code class="docutils literal notranslate"><span class="pre">check</span></code> step may <em>only</em> be entered into from the <code class="docutils literal notranslate"><span class="pre">resolve</span></code> step.</p>
+<p>Similarly, the <code class="docutils literal notranslate"><span class="pre">publish</span></code> step cannot ever be entered into other than from the <code class="docutils literal notranslate"><span class="pre">process</span></code> step, which means that the
 step can safely make several assumptions about the overall state of the handler when it does get executed. For example,
-it can automatically assume with a 100% guarantee that the <code class="docutils literal"><span class="pre">initalise</span></code>, <code class="docutils literal"><span class="pre">resolve</span></code>, <code class="docutils literal"><span class="pre">preprocess</span></code>, <code class="docutils literal"><span class="pre">check</span></code> and
-<code class="docutils literal"><span class="pre">process</span></code> step have all been run in that order with no errors, allowing it to focus purely on the core concern of the
+it can automatically assume with a 100% guarantee that the <code class="docutils literal notranslate"><span class="pre">initalise</span></code>, <code class="docutils literal notranslate"><span class="pre">resolve</span></code>, <code class="docutils literal notranslate"><span class="pre">preprocess</span></code>, <code class="docutils literal notranslate"><span class="pre">check</span></code> and
+<code class="docutils literal notranslate"><span class="pre">process</span></code> step have all been run in that order with no errors, allowing it to focus purely on the core concern of the
 step; publishing files, and nothing more.</p>
 <p>The ordered steps are as follows:</p>
 <div class="section" id="initialise">
@@ -345,14 +346,14 @@ attribute of the files).</p>
 Python convention, these methods begin with a single underscore (_) character. Note that this is a convention, and
 therefore it is possible to manipulate or even override them, however it is mandatory that the conventions are followed
 to maintain the integrity of the handler execution.</p>
-<p>In addition to any methods starting with one or more underscores, the <code class="docutils literal"><span class="pre">run</span></code> method is also a special case, which must
+<p>In addition to any methods starting with one or more underscores, the <code class="docutils literal notranslate"><span class="pre">run</span></code> method is also a special case, which must
 <em>not</em> be overridden or extended, as this is the entry point for handler execution. This is implemented and run
-separately from the class initialiser (<code class="docutils literal"><span class="pre">`__init__`</span></code>) such that the handler instance can be created, and have it’s
+separately from the class initialiser (<code class="docutils literal notranslate"><span class="pre">`__init__`</span></code>) such that the handler instance can be created, and have it’s
 contents inspected (e.g. by unit tests) before and after actually executing the file processing code of the handler.</p>
 <p><em>Public methods</em></p>
 <p>There are three special methods defined which are <em>intended</em> to be overridden by subclasses in order to provide a
 handler author with the ability to call code in order to modify the behaviour of the handler during it’s execution.</p>
-<p>The special methods are: <code class="docutils literal"><span class="pre">preprocess</span></code>, <code class="docutils literal"><span class="pre">process</span></code> and <code class="docutils literal"><span class="pre">postprocess</span></code></p>
+<p>The special methods are: <code class="docutils literal notranslate"><span class="pre">preprocess</span></code>, <code class="docutils literal notranslate"><span class="pre">process</span></code> and <code class="docutils literal notranslate"><span class="pre">postprocess</span></code></p>
 <p>These methods are deliberately left empty (i.e. they are there but don’t do anything) in the base class, so it is purely
 optional whether the subclass implements these.</p>
 <p>The only difference between these methods is <em>when</em> they are called by the handler state machine. Refer to the above
@@ -362,14 +363,14 @@ section for further details about where they appear in the steps order.</p>
 <div class="section" id="attributes">
 <h2>Attributes<a class="headerlink" href="#attributes" title="Permalink to this headline">¶</a></h2>
 <p>A handler instance contains a number of attributes which control or modify the behaviour of the handler. The attributes
-are typically set from the <strong>params</strong> key of the watch configuration, or from the <code class="docutils literal"><span class="pre">__init__</span></code> method of a handler
+are typically set from the <strong>params</strong> key of the watch configuration, or from the <code class="docutils literal notranslate"><span class="pre">__init__</span></code> method of a handler
 subclass (e.g. when writing tests).</p>
 <div class="section" id="class-parameters">
 <h3>Class parameters<a class="headerlink" href="#class-parameters" title="Permalink to this headline">¶</a></h3>
 <p>The following class parameters are also assigned to attributes of the same name, as a convenience.</p>
 <p>For example, a handler instantiated with any of these class parameters may also access them from the class instance as
 follows:</p>
-<div class="highlight-default"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">aodncore.pipeline</span> <span class="k">import</span> <span class="n">HandlerBase</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">aodncore.pipeline</span> <span class="k">import</span> <span class="n">HandlerBase</span>
 <span class="kn">from</span> <span class="nn">aodncore.pipeline.config</span> <span class="k">import</span> <span class="n">CONFIG</span>
 
 

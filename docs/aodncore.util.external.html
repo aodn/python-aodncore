@@ -29,7 +29,7 @@
   <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="aodncore.vocab package" href="aodncore.vocab.html" />
+    <link rel="next" title="aodncore.util.external.retry package" href="aodncore.util.external.retry.html" />
     <link rel="prev" title="aodncore.util package" href="aodncore.util.html" /> 
 
   
@@ -143,6 +143,7 @@
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="aodncore.testlib.html">aodncore.testlib package</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="aodncore.testlib.html#subpackages">Subpackages</a></li>
 <li class="toctree-l4"><a class="reference internal" href="aodncore.testlib.html#submodules">Submodules</a></li>
 <li class="toctree-l4"><a class="reference internal" href="aodncore.testlib.html#module-aodncore.testlib.basetest">aodncore.testlib.basetest module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="aodncore.testlib.html#module-aodncore.testlib.dummyhandler">aodncore.testlib.dummyhandler module</a></li>
@@ -244,31 +245,45 @@
             
   <div class="section" id="aodncore-util-external-package">
 <h1>aodncore.util.external package<a class="headerlink" href="#aodncore-util-external-package" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="subpackages">
+<h2>Subpackages<a class="headerlink" href="#subpackages" title="Permalink to this headline">¶</a></h2>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="aodncore.util.external.retry.html">aodncore.util.external.retry package</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="aodncore.util.external.retry.html#submodules">Submodules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="aodncore.util.external.retry.html#module-aodncore.util.external.retry.api">aodncore.util.external.retry.api module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="aodncore.util.external.retry.html#module-aodncore.util.external.retry.compat">aodncore.util.external.retry.compat module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="aodncore.util.external.retry.html#module-aodncore.util.external.retry">Module contents</a></li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
 <div class="section" id="submodules">
 <h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this headline">¶</a></h2>
 </div>
 <div class="section" id="module-aodncore.util.external.boltons">
 <span id="aodncore-util-external-boltons-module"></span><h2>aodncore.util.external.boltons module<a class="headerlink" href="#module-aodncore.util.external.boltons" title="Permalink to this headline">¶</a></h2>
-<p>The <code class="xref py py-class docutils literal"><span class="pre">set</span></code> type brings the practical expressiveness of
+<p>The <code class="xref py py-class docutils literal notranslate"><span class="pre">set</span></code> type brings the practical expressiveness of
 set theory to Python. It has a very rich API overall, but lacks a
 couple of fundamental features. For one, sets are not ordered. On top
-of this, sets are not indexable, i.e, <code class="docutils literal"><span class="pre">my_set[8]</span></code> will raise an
-<code class="xref py py-exc docutils literal"><span class="pre">TypeError</span></code>. The <a class="reference internal" href="#aodncore.util.external.boltons.IndexedSet" title="aodncore.util.external.boltons.IndexedSet"><code class="xref py py-class docutils literal"><span class="pre">IndexedSet</span></code></a> type remedies both of these
+of this, sets are not indexable, i.e, <code class="docutils literal notranslate"><span class="pre">my_set[8]</span></code> will raise an
+<code class="xref py py-exc docutils literal notranslate"><span class="pre">TypeError</span></code>. The <a class="reference internal" href="#aodncore.util.external.boltons.IndexedSet" title="aodncore.util.external.boltons.IndexedSet"><code class="xref py py-class docutils literal notranslate"><span class="pre">IndexedSet</span></code></a> type remedies both of these
 issues without compromising on the excellent complexity
 characteristics of Python’s built-in set implementation.</p>
 <dl class="class">
 <dt id="aodncore.util.external.boltons.IndexedSet">
 <em class="property">class </em><code class="descclassname">aodncore.util.external.boltons.</code><code class="descname">IndexedSet</code><span class="sig-paren">(</span><em>other=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/aodncore/util/external/boltons.html#IndexedSet"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#aodncore.util.external.boltons.IndexedSet" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">_abcoll.MutableSet</span></code></p>
-<p><code class="docutils literal"><span class="pre">IndexedSet</span></code> is a <code class="xref py py-class docutils literal"><span class="pre">collections.MutableSet</span></code> that maintains
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">_abcoll.MutableSet</span></code></p>
+<p><code class="docutils literal notranslate"><span class="pre">IndexedSet</span></code> is a <code class="xref py py-class docutils literal notranslate"><span class="pre">collections.MutableSet</span></code> that maintains
 insertion order and uniqueness of inserted elements. It’s a hybrid
-type, mostly like an OrderedSet, but also <code class="xref py py-class docutils literal"><span class="pre">list</span></code>-like, in
+type, mostly like an OrderedSet, but also <code class="xref py py-class docutils literal notranslate"><span class="pre">list</span></code>-like, in
 that it supports indexing and slicing.</p>
 <dl class="docutils">
 <dt>Args:</dt>
 <dd>other (iterable): An optional iterable used to initialize the set.</dd>
 </dl>
-<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">x</span> <span class="o">=</span> <span class="n">IndexedSet</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="mi">4</span><span class="p">))</span> <span class="o">+</span> <span class="nb">list</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="mi">8</span><span class="p">)))</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">x</span> <span class="o">=</span> <span class="n">IndexedSet</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="mi">4</span><span class="p">))</span> <span class="o">+</span> <span class="nb">list</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="mi">8</span><span class="p">)))</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">x</span>
 <span class="go">IndexedSet([0, 1, 2, 3, 4, 5, 6, 7])</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">x</span> <span class="o">-</span> <span class="nb">set</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="mi">2</span><span class="p">))</span>
@@ -280,27 +295,27 @@ that it supports indexing and slicing.</p>
 <span class="go">&#39;frecditpo&#39;</span>
 </pre></div>
 </div>
-<p>Standard set operators and interoperation with <code class="xref py py-class docutils literal"><span class="pre">set</span></code> are
+<p>Standard set operators and interoperation with <code class="xref py py-class docutils literal notranslate"><span class="pre">set</span></code> are
 all supported:</p>
-<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">fcr</span> <span class="o">&amp;</span> <span class="nb">set</span><span class="p">(</span><span class="s1">&#39;cash4gold.com&#39;</span><span class="p">)</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">fcr</span> <span class="o">&amp;</span> <span class="nb">set</span><span class="p">(</span><span class="s1">&#39;cash4gold.com&#39;</span><span class="p">)</span>
 <span class="go">IndexedSet([&#39;c&#39;, &#39;d&#39;, &#39;o&#39;, &#39;.&#39;, &#39;m&#39;])</span>
 </pre></div>
 </div>
-<p>As you can see, the <code class="docutils literal"><span class="pre">IndexedSet</span></code> is almost like a <code class="docutils literal"><span class="pre">UniqueList</span></code>,
+<p>As you can see, the <code class="docutils literal notranslate"><span class="pre">IndexedSet</span></code> is almost like a <code class="docutils literal notranslate"><span class="pre">UniqueList</span></code>,
 retaining only one copy of a given value, in the order it was
 first added. For the curious, the reason why IndexedSet does not
-support setting items based on index (i.e, <code class="docutils literal"><span class="pre">__setitem__()</span></code>),
+support setting items based on index (i.e, <code class="docutils literal notranslate"><span class="pre">__setitem__()</span></code>),
 consider the following dilemma:</p>
-<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">my_indexed_set</span> <span class="o">=</span> <span class="p">[</span><span class="n">A</span><span class="p">,</span> <span class="n">B</span><span class="p">,</span> <span class="n">C</span><span class="p">,</span> <span class="n">D</span><span class="p">]</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">my_indexed_set</span> <span class="o">=</span> <span class="p">[</span><span class="n">A</span><span class="p">,</span> <span class="n">B</span><span class="p">,</span> <span class="n">C</span><span class="p">,</span> <span class="n">D</span><span class="p">]</span>
 <span class="n">my_indexed_set</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">=</span> <span class="n">A</span>
 </pre></div>
 </div>
-<p>At this point, a set requires only one <em>A</em>, but a <code class="xref py py-class docutils literal"><span class="pre">list</span></code> would
+<p>At this point, a set requires only one <em>A</em>, but a <code class="xref py py-class docutils literal notranslate"><span class="pre">list</span></code> would
 overwrite <em>C</em>. Overwriting <em>C</em> would change the length of the list,
-meaning that <code class="docutils literal"><span class="pre">my_indexed_set[2]</span></code> would not be <em>A</em>, as expected with a
-list, but rather <em>D</em>. So, no <code class="docutils literal"><span class="pre">__setitem__()</span></code>.</p>
+meaning that <code class="docutils literal notranslate"><span class="pre">my_indexed_set[2]</span></code> would not be <em>A</em>, as expected with a
+list, but rather <em>D</em>. So, no <code class="docutils literal notranslate"><span class="pre">__setitem__()</span></code>.</p>
 <p>Otherwise, the API strives to be as complete a union of the
-<code class="xref py py-class docutils literal"><span class="pre">list</span></code> and <code class="xref py py-class docutils literal"><span class="pre">set</span></code> APIs as possible.</p>
+<code class="xref py py-class docutils literal notranslate"><span class="pre">list</span></code> and <code class="xref py py-class docutils literal notranslate"><span class="pre">set</span></code> APIs as possible.</p>
 <dl class="method">
 <dt id="aodncore.util.external.boltons.IndexedSet.add">
 <code class="descname">add</code><span class="sig-paren">(</span><em>item</em><span class="sig-paren">)</span> &#x2192; add item to the set<a class="reference internal" href="_modules/aodncore/util/external/boltons.html#IndexedSet.add"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#aodncore.util.external.boltons.IndexedSet.add" title="Permalink to this definition">¶</a></dt>
@@ -427,8 +442,8 @@ list, but rather <em>D</em>. So, no <code class="docutils literal"><span class="
 <dl class="class">
 <dt id="aodncore.util.external.boltons.classproperty">
 <em class="property">class </em><code class="descclassname">aodncore.util.external.boltons.</code><code class="descname">classproperty</code><span class="sig-paren">(</span><em>fn</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/aodncore/util/external/boltons.html#classproperty"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#aodncore.util.external.boltons.classproperty" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">object</span></code></p>
-<p>Much like a <code class="xref py py-class docutils literal"><span class="pre">property</span></code>, but the wrapped get function is a
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Much like a <code class="xref py py-class docutils literal notranslate"><span class="pre">property</span></code>, but the wrapped get function is a
 class method.  For simplicity, only read-only properties are
 implemented.</p>
 </dd></dl>
@@ -439,26 +454,26 @@ implemented.</p>
 <dl class="docutils">
 <dt>This sub-module contains freely available <em>external</em> code which has been copied into this project to avoid</dt>
 <dd>unnecessary dependencies.</dd>
-</dl>
-<p>Code taken from:</p>
-<blockquote>
-<div><ul class="simple">
+<dt>Code taken from:</dt>
+<dd><ul class="first last simple">
+<li>retry :: <a class="reference external" href="https://github.com/invl/retry">https://github.com/invl/retry</a> (Apache 2.0 License)</li>
 <li>boltons :: <a class="reference external" href="https://boltons.readthedocs.io/en/latest/index.html">https://boltons.readthedocs.io/en/latest/index.html</a> (BSD License)</li>
 </ul>
-</div></blockquote>
+</dd>
+</dl>
 <dl class="class">
 <dt id="aodncore.util.external.IndexedSet">
 <em class="property">class </em><code class="descclassname">aodncore.util.external.</code><code class="descname">IndexedSet</code><span class="sig-paren">(</span><em>other=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/aodncore/util/external/boltons.html#IndexedSet"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#aodncore.util.external.IndexedSet" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">_abcoll.MutableSet</span></code></p>
-<p><code class="docutils literal"><span class="pre">IndexedSet</span></code> is a <code class="xref py py-class docutils literal"><span class="pre">collections.MutableSet</span></code> that maintains
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">_abcoll.MutableSet</span></code></p>
+<p><code class="docutils literal notranslate"><span class="pre">IndexedSet</span></code> is a <code class="xref py py-class docutils literal notranslate"><span class="pre">collections.MutableSet</span></code> that maintains
 insertion order and uniqueness of inserted elements. It’s a hybrid
-type, mostly like an OrderedSet, but also <code class="xref py py-class docutils literal"><span class="pre">list</span></code>-like, in
+type, mostly like an OrderedSet, but also <code class="xref py py-class docutils literal notranslate"><span class="pre">list</span></code>-like, in
 that it supports indexing and slicing.</p>
 <dl class="docutils">
 <dt>Args:</dt>
 <dd>other (iterable): An optional iterable used to initialize the set.</dd>
 </dl>
-<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">x</span> <span class="o">=</span> <span class="n">IndexedSet</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="mi">4</span><span class="p">))</span> <span class="o">+</span> <span class="nb">list</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="mi">8</span><span class="p">)))</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">x</span> <span class="o">=</span> <span class="n">IndexedSet</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="mi">4</span><span class="p">))</span> <span class="o">+</span> <span class="nb">list</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="mi">8</span><span class="p">)))</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">x</span>
 <span class="go">IndexedSet([0, 1, 2, 3, 4, 5, 6, 7])</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">x</span> <span class="o">-</span> <span class="nb">set</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="mi">2</span><span class="p">))</span>
@@ -470,27 +485,27 @@ that it supports indexing and slicing.</p>
 <span class="go">&#39;frecditpo&#39;</span>
 </pre></div>
 </div>
-<p>Standard set operators and interoperation with <code class="xref py py-class docutils literal"><span class="pre">set</span></code> are
+<p>Standard set operators and interoperation with <code class="xref py py-class docutils literal notranslate"><span class="pre">set</span></code> are
 all supported:</p>
-<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">fcr</span> <span class="o">&amp;</span> <span class="nb">set</span><span class="p">(</span><span class="s1">&#39;cash4gold.com&#39;</span><span class="p">)</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">fcr</span> <span class="o">&amp;</span> <span class="nb">set</span><span class="p">(</span><span class="s1">&#39;cash4gold.com&#39;</span><span class="p">)</span>
 <span class="go">IndexedSet([&#39;c&#39;, &#39;d&#39;, &#39;o&#39;, &#39;.&#39;, &#39;m&#39;])</span>
 </pre></div>
 </div>
-<p>As you can see, the <code class="docutils literal"><span class="pre">IndexedSet</span></code> is almost like a <code class="docutils literal"><span class="pre">UniqueList</span></code>,
+<p>As you can see, the <code class="docutils literal notranslate"><span class="pre">IndexedSet</span></code> is almost like a <code class="docutils literal notranslate"><span class="pre">UniqueList</span></code>,
 retaining only one copy of a given value, in the order it was
 first added. For the curious, the reason why IndexedSet does not
-support setting items based on index (i.e, <code class="docutils literal"><span class="pre">__setitem__()</span></code>),
+support setting items based on index (i.e, <code class="docutils literal notranslate"><span class="pre">__setitem__()</span></code>),
 consider the following dilemma:</p>
-<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">my_indexed_set</span> <span class="o">=</span> <span class="p">[</span><span class="n">A</span><span class="p">,</span> <span class="n">B</span><span class="p">,</span> <span class="n">C</span><span class="p">,</span> <span class="n">D</span><span class="p">]</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">my_indexed_set</span> <span class="o">=</span> <span class="p">[</span><span class="n">A</span><span class="p">,</span> <span class="n">B</span><span class="p">,</span> <span class="n">C</span><span class="p">,</span> <span class="n">D</span><span class="p">]</span>
 <span class="n">my_indexed_set</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">=</span> <span class="n">A</span>
 </pre></div>
 </div>
-<p>At this point, a set requires only one <em>A</em>, but a <code class="xref py py-class docutils literal"><span class="pre">list</span></code> would
+<p>At this point, a set requires only one <em>A</em>, but a <code class="xref py py-class docutils literal notranslate"><span class="pre">list</span></code> would
 overwrite <em>C</em>. Overwriting <em>C</em> would change the length of the list,
-meaning that <code class="docutils literal"><span class="pre">my_indexed_set[2]</span></code> would not be <em>A</em>, as expected with a
-list, but rather <em>D</em>. So, no <code class="docutils literal"><span class="pre">__setitem__()</span></code>.</p>
+meaning that <code class="docutils literal notranslate"><span class="pre">my_indexed_set[2]</span></code> would not be <em>A</em>, as expected with a
+list, but rather <em>D</em>. So, no <code class="docutils literal notranslate"><span class="pre">__setitem__()</span></code>.</p>
 <p>Otherwise, the API strives to be as complete a union of the
-<code class="xref py py-class docutils literal"><span class="pre">list</span></code> and <code class="xref py py-class docutils literal"><span class="pre">set</span></code> APIs as possible.</p>
+<code class="xref py py-class docutils literal notranslate"><span class="pre">list</span></code> and <code class="xref py py-class docutils literal notranslate"><span class="pre">set</span></code> APIs as possible.</p>
 <dl class="method">
 <dt id="aodncore.util.external.IndexedSet.add">
 <code class="descname">add</code><span class="sig-paren">(</span><em>item</em><span class="sig-paren">)</span> &#x2192; add item to the set<a class="reference internal" href="_modules/aodncore/util/external/boltons.html#IndexedSet.add"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#aodncore.util.external.IndexedSet.add" title="Permalink to this definition">¶</a></dt>
@@ -617,10 +632,38 @@ list, but rather <em>D</em>. So, no <code class="docutils literal"><span class="
 <dl class="class">
 <dt id="aodncore.util.external.classproperty">
 <em class="property">class </em><code class="descclassname">aodncore.util.external.</code><code class="descname">classproperty</code><span class="sig-paren">(</span><em>fn</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/aodncore/util/external/boltons.html#classproperty"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#aodncore.util.external.classproperty" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">object</span></code></p>
-<p>Much like a <code class="xref py py-class docutils literal"><span class="pre">property</span></code>, but the wrapped get function is a
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Much like a <code class="xref py py-class docutils literal notranslate"><span class="pre">property</span></code>, but the wrapped get function is a
 class method.  For simplicity, only read-only properties are
 implemented.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="aodncore.util.external.retry_decorator">
+<code class="descclassname">aodncore.util.external.</code><code class="descname">retry_decorator</code><span class="sig-paren">(</span><em>exceptions=&lt;type 'exceptions.Exception'&gt;</em>, <em>tries=-1</em>, <em>delay=0</em>, <em>max_delay=None</em>, <em>backoff=1</em>, <em>jitter=0</em>, <em>logger=&lt;logging.Logger object&gt;</em><span class="sig-paren">)</span><a class="headerlink" href="#aodncore.util.external.retry_decorator" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns a retry decorator.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>exceptions</strong> – an exception or a tuple of exceptions to catch. default: Exception.</li>
+<li><strong>tries</strong> – the maximum number of attempts. default: -1 (infinite).</li>
+<li><strong>delay</strong> – initial delay between attempts. default: 0.</li>
+<li><strong>max_delay</strong> – the maximum value of delay. default: None (no limit).</li>
+<li><strong>backoff</strong> – multiplier applied to delay between attempts. default: 1 (no backoff).</li>
+<li><strong>jitter</strong> – extra seconds added to delay between attempts. default: 0.
+fixed if a number, random if a range tuple (min, max)</li>
+<li><strong>logger</strong> – logger.warning(fmt, error, delay) will be called on failed attempts.
+default: retry.logging_logger. if None, logging is disabled.</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">a retry decorator.</p>
+</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 </div>
@@ -634,7 +677,7 @@ implemented.</p>
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
-        <a href="aodncore.vocab.html" class="btn btn-neutral float-right" title="aodncore.vocab package" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+        <a href="aodncore.util.external.retry.html" class="btn btn-neutral float-right" title="aodncore.util.external.retry package" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
         <a href="aodncore.util.html" class="btn btn-neutral" title="aodncore.util package" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>

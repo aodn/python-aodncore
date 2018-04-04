@@ -1,0 +1,10 @@
+aodncore.testlib.conf package
+=============================
+
+Module contents
+---------------
+
+.. automodule:: aodncore.testlib.conf
+    :members:
+    :undoc-members:
+    :show-inheritance:

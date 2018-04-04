@@ -29,8 +29,8 @@
   <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="aodncore.util package" href="aodncore.util.html" />
-    <link rel="prev" title="aodncore.pipeline.steps package" href="aodncore.pipeline.steps.html" /> 
+    <link rel="next" title="aodncore.testlib.conf package" href="aodncore.testlib.conf.html" />
+    <link rel="prev" title="aodncore.pipeline.templates package" href="aodncore.pipeline.templates.html" /> 
 
   
   <script src="_static/js/modernizr.min.js"></script>
@@ -143,6 +143,7 @@
 </ul>
 </li>
 <li class="toctree-l3 current"><a class="current reference internal" href="#">aodncore.testlib package</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#subpackages">Subpackages</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#submodules">Submodules</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#module-aodncore.testlib.basetest">aodncore.testlib.basetest module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#module-aodncore.testlib.dummyhandler">aodncore.testlib.dummyhandler module</a></li>
@@ -242,6 +243,17 @@
             
   <div class="section" id="aodncore-testlib-package">
 <h1>aodncore.testlib package<a class="headerlink" href="#aodncore-testlib-package" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="subpackages">
+<h2>Subpackages<a class="headerlink" href="#subpackages" title="Permalink to this headline">¶</a></h2>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="aodncore.testlib.conf.html">aodncore.testlib.conf package</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="aodncore.testlib.conf.html#module-aodncore.testlib.conf">Module contents</a></li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
 <div class="section" id="submodules">
 <h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this headline">¶</a></h2>
 </div>
@@ -250,7 +262,7 @@
 <dl class="class">
 <dt id="aodncore.testlib.basetest.BaseTestCase">
 <em class="property">class </em><code class="descclassname">aodncore.testlib.basetest.</code><code class="descname">BaseTestCase</code><span class="sig-paren">(</span><em>methodName='runTest'</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/aodncore/testlib/basetest.html#BaseTestCase"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#aodncore.testlib.basetest.BaseTestCase" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">unittest.case.TestCase</span></code></p>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">unittest.case.TestCase</span></code></p>
 <dl class="attribute">
 <dt id="aodncore.testlib.basetest.BaseTestCase.config">
 <code class="descname">config</code><a class="headerlink" href="#aodncore.testlib.basetest.BaseTestCase.config" title="Permalink to this definition">¶</a></dt>
@@ -259,12 +271,14 @@
 <dl class="method">
 <dt id="aodncore.testlib.basetest.BaseTestCase.setUp">
 <code class="descname">setUp</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/aodncore/testlib/basetest.html#BaseTestCase.setUp"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#aodncore.testlib.basetest.BaseTestCase.setUp" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>Hook method for setting up the test fixture before exercising it.</p>
+</dd></dl>
 
 <dl class="method">
 <dt id="aodncore.testlib.basetest.BaseTestCase.tearDown">
 <code class="descname">tearDown</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/aodncore/testlib/basetest.html#BaseTestCase.tearDown"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#aodncore.testlib.basetest.BaseTestCase.tearDown" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>Hook method for deconstructing the test fixture after testing it.</p>
+</dd></dl>
 
 <dl class="attribute">
 <dt id="aodncore.testlib.basetest.BaseTestCase.temp_dir">
@@ -284,7 +298,7 @@
 <dl class="class">
 <dt id="aodncore.testlib.dummyhandler.DummyHandler">
 <em class="property">class </em><code class="descclassname">aodncore.testlib.dummyhandler.</code><code class="descname">DummyHandler</code><span class="sig-paren">(</span><em>*args</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/aodncore/testlib/dummyhandler.html#DummyHandler"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#aodncore.testlib.dummyhandler.DummyHandler" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <a class="reference internal" href="aodncore.pipeline.html#aodncore.pipeline.handlerbase.HandlerBase" title="aodncore.pipeline.handlerbase.HandlerBase"><code class="xref py py-class docutils literal"><span class="pre">aodncore.pipeline.handlerbase.HandlerBase</span></code></a></p>
+<dd><p>Bases: <a class="reference internal" href="aodncore.pipeline.html#aodncore.pipeline.handlerbase.HandlerBase" title="aodncore.pipeline.handlerbase.HandlerBase"><code class="xref py py-class docutils literal notranslate"><span class="pre">aodncore.pipeline.handlerbase.HandlerBase</span></code></a></p>
 <p>This is an example handler, used for testing and also to demonstrate some of the kinds of things that each step
 might perform.</p>
 <p>Bear in mind that this inherits everything from the HandlerBase, but only some of the things are suitable to be
@@ -308,7 +322,7 @@ Things that you would typically implement here:</p>
 </ul>
 <dl class="staticmethod">
 <dt id="aodncore.testlib.dummyhandler.DummyHandler.dest_path">
-<em class="property">static </em><code class="descname">dest_path</code><span class="sig-paren">(</span><em>filename</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/aodncore/testlib/dummyhandler.html#DummyHandler.dest_path"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#aodncore.testlib.dummyhandler.DummyHandler.dest_path" title="Permalink to this definition">¶</a></dt>
+<em class="property">static </em><code class="descname">dest_path</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/aodncore/testlib/dummyhandler.html#DummyHandler.dest_path"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#aodncore.testlib.dummyhandler.DummyHandler.dest_path" title="Permalink to this definition">¶</a></dt>
 <dd><p>This method is optional, but if it is defined, it will be used to determine the destination path for a given
 input path. This could be based purely on the filename, or you could import the netcdf library and open the file
 and work it out based on the contents, or of course any other way you want to determine it
@@ -367,7 +381,7 @@ which files in the “eligible_files” list are “UPLOAD_ONLY”, or not publi
 <dl class="class">
 <dt id="aodncore.testlib.handlertest.HandlerTestCase">
 <em class="property">class </em><code class="descclassname">aodncore.testlib.handlertest.</code><code class="descname">HandlerTestCase</code><span class="sig-paren">(</span><em>methodName='runTest'</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/aodncore/testlib/handlertest.html#HandlerTestCase"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#aodncore.testlib.handlertest.HandlerTestCase" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <a class="reference internal" href="#aodncore.testlib.basetest.BaseTestCase" title="aodncore.testlib.basetest.BaseTestCase"><code class="xref py py-class docutils literal"><span class="pre">aodncore.testlib.basetest.BaseTestCase</span></code></a></p>
+<dd><p>Bases: <a class="reference internal" href="#aodncore.testlib.basetest.BaseTestCase" title="aodncore.testlib.basetest.BaseTestCase"><code class="xref py py-class docutils literal notranslate"><span class="pre">aodncore.testlib.basetest.BaseTestCase</span></code></a></p>
 <dl class="method">
 <dt id="aodncore.testlib.handlertest.HandlerTestCase.run_handler">
 <code class="descname">run_handler</code><span class="sig-paren">(</span><em>*args</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/aodncore/testlib/handlertest.html#HandlerTestCase.run_handler"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#aodncore.testlib.handlertest.HandlerTestCase.run_handler" title="Permalink to this definition">¶</a></dt>
@@ -421,12 +435,14 @@ class</dd>
 <dl class="method">
 <dt id="aodncore.testlib.handlertest.HandlerTestCase.setUp">
 <code class="descname">setUp</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/aodncore/testlib/handlertest.html#HandlerTestCase.setUp"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#aodncore.testlib.handlertest.HandlerTestCase.setUp" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>Hook method for setting up the test fixture before exercising it.</p>
+</dd></dl>
 
 <dl class="classmethod">
 <dt id="aodncore.testlib.handlertest.HandlerTestCase.setUpClass">
 <em class="property">classmethod </em><code class="descname">setUpClass</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/aodncore/testlib/handlertest.html#HandlerTestCase.setUpClass"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#aodncore.testlib.handlertest.HandlerTestCase.setUpClass" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>Hook method for setting up class fixture before running tests in the class.</p>
+</dd></dl>
 
 <dl class="method">
 <dt id="aodncore.testlib.handlertest.HandlerTestCase.test_base">
@@ -441,7 +457,7 @@ class</dd>
 <dl class="class">
 <dt id="aodncore.testlib.testutil.NullUploadRunner">
 <em class="property">class </em><code class="descclassname">aodncore.testlib.testutil.</code><code class="descname">NullUploadRunner</code><span class="sig-paren">(</span><em>prefix</em>, <em>fail=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/aodncore/testlib/testutil.html#NullUploadRunner"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#aodncore.testlib.testutil.NullUploadRunner" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">aodncore.pipeline.steps.upload.BaseUploadRunner</span></code></p>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">aodncore.pipeline.steps.upload.BaseUploadRunner</span></code></p>
 <dl class="method">
 <dt id="aodncore.testlib.testutil.NullUploadRunner.assert_call_count">
 <code class="descname">assert_call_count</code><span class="sig-paren">(</span><em>count</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/aodncore/testlib/testutil.html#NullUploadRunner.assert_call_count"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#aodncore.testlib.testutil.NullUploadRunner.assert_call_count" title="Permalink to this definition">¶</a></dt>
@@ -570,7 +586,7 @@ Return the full path to the zip file.</p>
 <dl class="class">
 <dt id="aodncore.testlib.BaseTestCase">
 <em class="property">class </em><code class="descclassname">aodncore.testlib.</code><code class="descname">BaseTestCase</code><span class="sig-paren">(</span><em>methodName='runTest'</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/aodncore/testlib/basetest.html#BaseTestCase"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#aodncore.testlib.BaseTestCase" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">unittest.case.TestCase</span></code></p>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">unittest.case.TestCase</span></code></p>
 <dl class="attribute">
 <dt id="aodncore.testlib.BaseTestCase.config">
 <code class="descname">config</code><a class="headerlink" href="#aodncore.testlib.BaseTestCase.config" title="Permalink to this definition">¶</a></dt>
@@ -579,12 +595,14 @@ Return the full path to the zip file.</p>
 <dl class="method">
 <dt id="aodncore.testlib.BaseTestCase.setUp">
 <code class="descname">setUp</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/aodncore/testlib/basetest.html#BaseTestCase.setUp"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#aodncore.testlib.BaseTestCase.setUp" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>Hook method for setting up the test fixture before exercising it.</p>
+</dd></dl>
 
 <dl class="method">
 <dt id="aodncore.testlib.BaseTestCase.tearDown">
 <code class="descname">tearDown</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/aodncore/testlib/basetest.html#BaseTestCase.tearDown"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#aodncore.testlib.BaseTestCase.tearDown" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>Hook method for deconstructing the test fixture after testing it.</p>
+</dd></dl>
 
 <dl class="attribute">
 <dt id="aodncore.testlib.BaseTestCase.temp_dir">
@@ -601,7 +619,7 @@ Return the full path to the zip file.</p>
 <dl class="class">
 <dt id="aodncore.testlib.DummyHandler">
 <em class="property">class </em><code class="descclassname">aodncore.testlib.</code><code class="descname">DummyHandler</code><span class="sig-paren">(</span><em>*args</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/aodncore/testlib/dummyhandler.html#DummyHandler"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#aodncore.testlib.DummyHandler" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <a class="reference internal" href="aodncore.pipeline.html#aodncore.pipeline.handlerbase.HandlerBase" title="aodncore.pipeline.handlerbase.HandlerBase"><code class="xref py py-class docutils literal"><span class="pre">aodncore.pipeline.handlerbase.HandlerBase</span></code></a></p>
+<dd><p>Bases: <a class="reference internal" href="aodncore.pipeline.html#aodncore.pipeline.handlerbase.HandlerBase" title="aodncore.pipeline.handlerbase.HandlerBase"><code class="xref py py-class docutils literal notranslate"><span class="pre">aodncore.pipeline.handlerbase.HandlerBase</span></code></a></p>
 <p>This is an example handler, used for testing and also to demonstrate some of the kinds of things that each step
 might perform.</p>
 <p>Bear in mind that this inherits everything from the HandlerBase, but only some of the things are suitable to be
@@ -625,7 +643,7 @@ Things that you would typically implement here:</p>
 </ul>
 <dl class="staticmethod">
 <dt id="aodncore.testlib.DummyHandler.dest_path">
-<em class="property">static </em><code class="descname">dest_path</code><span class="sig-paren">(</span><em>filename</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/aodncore/testlib/dummyhandler.html#DummyHandler.dest_path"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#aodncore.testlib.DummyHandler.dest_path" title="Permalink to this definition">¶</a></dt>
+<em class="property">static </em><code class="descname">dest_path</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/aodncore/testlib/dummyhandler.html#DummyHandler.dest_path"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#aodncore.testlib.DummyHandler.dest_path" title="Permalink to this definition">¶</a></dt>
 <dd><p>This method is optional, but if it is defined, it will be used to determine the destination path for a given
 input path. This could be based purely on the filename, or you could import the netcdf library and open the file
 and work it out based on the contents, or of course any other way you want to determine it
@@ -681,7 +699,7 @@ which files in the “eligible_files” list are “UPLOAD_ONLY”, or not publi
 <dl class="class">
 <dt id="aodncore.testlib.HandlerTestCase">
 <em class="property">class </em><code class="descclassname">aodncore.testlib.</code><code class="descname">HandlerTestCase</code><span class="sig-paren">(</span><em>methodName='runTest'</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/aodncore/testlib/handlertest.html#HandlerTestCase"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#aodncore.testlib.HandlerTestCase" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <a class="reference internal" href="#aodncore.testlib.basetest.BaseTestCase" title="aodncore.testlib.basetest.BaseTestCase"><code class="xref py py-class docutils literal"><span class="pre">aodncore.testlib.basetest.BaseTestCase</span></code></a></p>
+<dd><p>Bases: <a class="reference internal" href="#aodncore.testlib.basetest.BaseTestCase" title="aodncore.testlib.basetest.BaseTestCase"><code class="xref py py-class docutils literal notranslate"><span class="pre">aodncore.testlib.basetest.BaseTestCase</span></code></a></p>
 <dl class="method">
 <dt id="aodncore.testlib.HandlerTestCase.run_handler">
 <code class="descname">run_handler</code><span class="sig-paren">(</span><em>*args</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/aodncore/testlib/handlertest.html#HandlerTestCase.run_handler"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#aodncore.testlib.HandlerTestCase.run_handler" title="Permalink to this definition">¶</a></dt>
@@ -735,12 +753,14 @@ class</dd>
 <dl class="method">
 <dt id="aodncore.testlib.HandlerTestCase.setUp">
 <code class="descname">setUp</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/aodncore/testlib/handlertest.html#HandlerTestCase.setUp"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#aodncore.testlib.HandlerTestCase.setUp" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>Hook method for setting up the test fixture before exercising it.</p>
+</dd></dl>
 
 <dl class="classmethod">
 <dt id="aodncore.testlib.HandlerTestCase.setUpClass">
 <em class="property">classmethod </em><code class="descname">setUpClass</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/aodncore/testlib/handlertest.html#HandlerTestCase.setUpClass"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#aodncore.testlib.HandlerTestCase.setUpClass" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>Hook method for setting up class fixture before running tests in the class.</p>
+</dd></dl>
 
 <dl class="method">
 <dt id="aodncore.testlib.HandlerTestCase.test_base">
@@ -752,7 +772,7 @@ class</dd>
 <dl class="class">
 <dt id="aodncore.testlib.NullUploadRunner">
 <em class="property">class </em><code class="descclassname">aodncore.testlib.</code><code class="descname">NullUploadRunner</code><span class="sig-paren">(</span><em>prefix</em>, <em>fail=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/aodncore/testlib/testutil.html#NullUploadRunner"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#aodncore.testlib.NullUploadRunner" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">aodncore.pipeline.steps.upload.BaseUploadRunner</span></code></p>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">aodncore.pipeline.steps.upload.BaseUploadRunner</span></code></p>
 <dl class="method">
 <dt id="aodncore.testlib.NullUploadRunner.assert_call_count">
 <code class="descname">assert_call_count</code><span class="sig-paren">(</span><em>count</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/aodncore/testlib/testutil.html#NullUploadRunner.assert_call_count"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#aodncore.testlib.NullUploadRunner.assert_call_count" title="Permalink to this definition">¶</a></dt>
@@ -864,10 +884,10 @@ Return the full path to the zip file.</p>
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
-        <a href="aodncore.util.html" class="btn btn-neutral float-right" title="aodncore.util package" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+        <a href="aodncore.testlib.conf.html" class="btn btn-neutral float-right" title="aodncore.testlib.conf package" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
-        <a href="aodncore.pipeline.steps.html" class="btn btn-neutral" title="aodncore.pipeline.steps package" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+        <a href="aodncore.pipeline.templates.html" class="btn btn-neutral" title="aodncore.pipeline.templates package" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
       
     </div>
   
