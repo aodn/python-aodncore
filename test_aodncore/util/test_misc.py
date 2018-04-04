@@ -1,6 +1,7 @@
 import os
 import sys
 import uuid
+from collections import OrderedDict
 
 import six
 
@@ -188,6 +189,13 @@ class TestUtilMisc(BaseTestCase):
             }
         }
 
+        reference_ordered_dict = OrderedDict(sorted(reference_dict.items()))
+        reference_ordered_dict['key7'] = {
+            'subkey4': {
+                'subsubkey2': 'subsubvalue3'
+            }
+        }
+
         dict1 = {
             'key1': 'value1',
             'key2': 'value2',
@@ -228,9 +236,20 @@ class TestUtilMisc(BaseTestCase):
                 }
             }
         }
+        dict8 = {
+            'key7': {
+                'subkey4': {
+                    'subsubkey2': 'subsubvalue3'
+                }
+            }
+        }
 
         merged_dict = merge_dicts(dict1, dict2, dict3, dict4, dict5, dict6, dict7)
         self.assertDictEqual(merged_dict, reference_dict)
+
+        ordered_merged_dict = merge_dicts(reference_ordered_dict, dict8)
+        self.assertIsInstance(ordered_merged_dict, OrderedDict)
+        self.assertDictEqual(ordered_merged_dict, reference_ordered_dict)
 
     def test_slice_sequence(self):
         test_sequence = ('a', 'b', 'c')

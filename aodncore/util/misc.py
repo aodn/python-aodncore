@@ -158,7 +158,10 @@ def merge_dicts(*args):
 
     :return: None
     """
-    master = {}
+    if args and isinstance(args[0], OrderedDict):
+        master = OrderedDict()
+    else:
+        master = {}
 
     for current_dict in args:
         for k, v in six.iteritems(current_dict):

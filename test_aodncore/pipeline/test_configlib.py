@@ -55,7 +55,7 @@ REFERENCE_TRIGGER_CONFIG = OrderedDict([
     ("zzz_my_test_harvester", OrderedDict([
         (
             "exec",
-            'echo --context_param paramFile="/usr/local/talend/jobs/param_file.conf" --context_param base=%{base} --context_param fileList=%{file_list} --context_param logDir=%{log_dir}'
+            'echo zzz_my_test_harvester --context_param paramFile="/usr/local/talend/jobs/param_file.conf" --context_param base=%{base} --context_param fileList=%{file_list} --context_param logDir=%{log_dir}'
         ),
         (
             "events", [
@@ -68,20 +68,24 @@ REFERENCE_TRIGGER_CONFIG = OrderedDict([
     ("aaa_my_test_harvester", OrderedDict([
         (
             "exec",
-            'echo --context_param paramFile="/usr/local/talend/jobs/param_file.conf" --context_param base=%{base} --context_param fileList=%{file_list} --context_param logDir=%{log_dir}'
+            'echo aaa_my_test_harvester --context_param paramFile="/usr/local/talend/jobs/param_file.conf" --context_param base=%{base} --context_param fileList=%{file_list} --context_param logDir=%{log_dir}'
         ),
         (
             "events", [
                 OrderedDict([
+                    ("regex", [".*"]),
+                    ("extra_params", "--collection my_test_collection")
+                ]),
+                OrderedDict([
                     ("regex", [".*"])
                 ])
             ]
-        )
+        ),
     ])),
     ("mmm_my_test_harvester", OrderedDict([
         (
             "exec",
-            'echo --context_param paramFile="/usr/local/talend/jobs/param_file.conf" --context_param base=%{base} --context_param fileList=%{file_list} --context_param logDir=%{log_dir}'
+            'echo mmm_my_test_harvester --context_param paramFile="/usr/local/talend/jobs/param_file.conf" --context_param base=%{base} --context_param fileList=%{file_list} --context_param logDir=%{log_dir}'
         ),
         (
             "events", [
