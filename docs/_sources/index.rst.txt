@@ -6,9 +6,6 @@
 Welcome to aodncore's documentation!
 ====================================
 
-Getting started
------------
-
 .. toctree::
    :maxdepth: 20
    :caption: User documentation:
@@ -25,7 +22,7 @@ Getting started
    :maxdepth: 20
    :caption: Module contents:
 
-   aodncore
+   modules
 
 Indices and tables
 ==================
