@@ -964,8 +964,10 @@ class HandlerBase(object):
     def _handle_success(self):
         self._result = HandlerResult.SUCCESS
 
+        should_notify = []
         notify_params_dict = self.notify_params or {}
-        should_notify = notify_params_dict.get('success_notify_list', [])
+
+        should_notify.extend(notify_params_dict.get('success_notify_list', []))
 
         if notify_params_dict.get('notify_owner_success', False):
             should_notify.extend(notify_params_dict.get('owner_notify_list', []))
