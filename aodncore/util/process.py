@@ -1,3 +1,6 @@
+"""This module provides general purpose code for interacting with operating system subprocesses
+"""
+
 import os
 import subprocess
 

@@ -1,3 +1,6 @@
+"""This module provides custom exceptions used throughout the :py:mod:`aodncore.pipeline` package.
+"""
+
 from ..common.exceptions import AodnBaseError
 
 __all__ = [

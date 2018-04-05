@@ -1,3 +1,15 @@
+"""This module provides the step runner classes for the "upload" step, which is a sub-step of the :ref:`publish` step.
+
+    Uploading/deleting is performed by a :py:class:`BaseUploadRunner` class.
+
+    Despite the name of UploadRunner, the classes perform the role of a general storage "broker", by abstracting the
+    details of interacting with a given storage protocol, while exposing a generic interface to the handler class. The
+    handler class itself then only needs to understand the concept of "uploading" and "deleting" without needing to
+    understand the differences between interacting with a local directory or with S3, for example.
+
+    The most common use of this step is to upload files to S3 after they have been checked and harvested.
+"""
+
 import abc
 import errno
 import os
@@ -24,10 +36,10 @@ def get_upload_runner(upload_base_url, config, logger, archive_mode=False):
     """Factory function to return appropriate uploader class based on URL scheme
 
     :param upload_base_url: URL base
-    :param config: LazyConfigManager instance
-    :param logger: Logger instance
-    :param archive_mode: flag to indicate archive
-    :return: BaseUploadRunner sub-class
+    :param config: :py:class:`LazyConfigManager` instance
+    :param logger: :py:class:`Logger` instance
+    :param archive_mode: :py:class:`bool` flag to indicate archive
+    :return: :py:class:`BaseUploadRunner` class
     """
 
     url = urlparse(upload_base_url)
@@ -186,13 +198,12 @@ class FileUploadRunner(BaseUploadRunner):
 class S3UploadRunner(BaseUploadRunner):
     """UploadRunner to upload files to an S3 bucket
 
-    Note: this does not and should not attempt to support any authentication code. Multiple mechanisms for loading
-            credentials are far more appropriately handled directly by the boto3, and it is expected that the
+        .. warning:: This does not and should not attempt to support any authentication code. Multiple mechanisms for
+            loading credentials are far more appropriately handled directly by the boto3, and it is expected that the
             credentials are supplied using one of these mechanisms by the environment (e.g. deployed from configuration
-            management, set as environment variables etc.)
+            management, set as environment variables etc.).
 
-            Refer: http://boto3.readthedocs.io/en/latest/guide/configuration.html
-
+        .. seealso:: http://boto3.readthedocs.io/en/latest/guide/configuration.html
     """
 
     retry_kwargs = {
@@ -306,8 +317,8 @@ def sftp_mkdir_p(sftpclient, name, mode=0o755):
 class SftpUploadRunner(BaseUploadRunner):
     """UploadRunner to upload files to an SFTP server
 
-    Note: similar to the S3 upload runner, this does not implement any authentication code, as this is better handled by
-            the environment in the form of public key authentication
+        .. warning:: Similarly to the S3 upload runner, this does not implement any authentication code, as this is better
+            handled by the environment in the form of public key authentication.
 
     """
 

@@ -1,3 +1,7 @@
+"""This module holds schema definitions for validating the various :py:class:`dicts` which are used through the
+pipeline, and also the helper functions necessary to validate an object against their respective schema.
+"""
+
 import jsonschema
 
 __all__ = [

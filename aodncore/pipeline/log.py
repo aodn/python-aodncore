@@ -1,3 +1,7 @@
+"""This module provides logging related objects for dynamically constructing logging configurations and retrieving
+configured :py:class:`LoggerAdapter`/:py:class:`Logger` instances
+"""
+
 import logging
 import os
 
@@ -83,9 +87,10 @@ class WorkerLoggingConfigBuilder(object):
 
 
 def get_watchservice_logging_config(pipeline_config):
-    """Generate logging configuration for the 'watchservice' service, suitable for use by logging.config.dictConfig
+    """Generate logging configuration for the 'watchservice' service, suitable for use by
+    :py:meth:`logging.config.dictConfig`
 
-    :param pipeline_config: LazyConfigManager.pipeline_config dict
+    :param pipeline_config: :py:attr:`LazyConfigManager.pipeline_config` instance
     :return: rendered watchservice logging config
     """
     watchservice_logging_config = {
@@ -118,15 +123,16 @@ def get_pipeline_logger(name, extra=None, logger_function=logging.getLogger):
     """Return a logger adapter prepared with given extra metadata and SYSINFO logging level
 
     :param name: logger name
-    :param extra: extra dict to pass to LoggerAdapter
-    :param logger_function: function which accepts logger name and returns a Logger instance
-    :return: Logger instance
+    :param extra: extra dict to pass to :py:class:`LoggerAdapter`
+    :param logger_function: factory function which accepts a logger name and returns a :py:class:`Logger` instance
+    :return: :py:class:`Logger` instance
     """
     if extra is None:
         extra = {}
     logger = logger_function(name)
     logger_adapter = logging.LoggerAdapter(logger, extra)
+
+    # patch a sysinfo helper method into the logger
     setattr(logger_adapter, 'sysinfo', lambda *args: logger_adapter.log(SYSINFO, *args))
+
     return logger_adapter
-
-

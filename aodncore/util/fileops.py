@@ -1,3 +1,6 @@
+"""This module provides utility functions relating to various filesystem operations
+"""
+
 import errno
 import hashlib
 import locale
@@ -41,7 +44,7 @@ __all__ = [
 
 
 class _TemporaryDirectory(object):
-    """Context manager for tempfile.mkdtemp() (available in core library in v3.2+).
+    """Context manager for :py:function:`tempfile.mkdtemp` (available in core library in v3.2+).
     """
 
     def __init__(self, suffix="", prefix=None, dir=None):
@@ -91,11 +94,11 @@ def extract_zip(zip_path, dest_dir):
 
 
 def get_file_checksum(filepath, block_size=65536, algorithm='sha256'):
-    """Get the hash of a file
+    """Get the hash (checksum) of a file
 
     :param filepath: path to the input file
     :param block_size: number of bytes to hash each iteration
-    :param algorithm: hash algorithm (from hashlib module)
+    :param algorithm: hash algorithm (from :py:mod:`hashlib` module)
     :return: hash of the input file
     """
     hash_function = getattr(hashlib, algorithm)
@@ -125,7 +128,7 @@ def is_dir_writable(path):
 def is_file_writable(path):
     """Check whether a file is writable
 
-        Note: not as reliable as the is_dir_writable function since that actually writes a file
+        .. note:: Not as reliable as the :py:func:`is_dir_writable` function since that actually writes a file
 
     :param path: file path to check
     :return: None
@@ -165,7 +168,7 @@ def list_regular_files(path, recursive=False, sort_key=cmp_to_key(locale.strcoll
 
     :param sort_key: callable used to sort directory listings
     :param path: input directory to list
-    :param recursive: boolean flag to enable recursive listing
+    :param recursive: :py:class:`bool` flag to enable recursive listing
     :return: iterator returning only regular files
     """
     if not callable(sort_key):

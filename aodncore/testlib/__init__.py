@@ -1,3 +1,6 @@
+"""This package contains test "helper" code, which may also be used by other packages (e.g. aodndata).
+"""
+
 from .basetest import BaseTestCase
 from .dummyhandler import DummyHandler
 from .handlertest import HandlerTestCase

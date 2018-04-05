@@ -1,3 +1,9 @@
+"""This module provides code to determine which function/method will be used in order for the handler to generate the
+destination path (dest_path) and/or archive path (archive_path) for each file being processed. Since the path function
+may be in the handler class itself, or provided as a runtime parameter, this code is to ensure that the discovery
+mechanism is consistent.
+"""
+
 import six
 
 from .exceptions import InvalidPathFunctionError
@@ -9,12 +15,12 @@ __all__ = [
 
 
 def get_path_function(handler_instance, entry_point_group, archive_mode=False):
-    """Return a tuple containing a reference to a path function, and the function's fully qualified  printable name
+    """Return a tuple containing a reference to a path function, and the function's fully qualified, printable name
 
-    :param handler_instance: handler instance
+    :param handler_instance: :py:class:`HandlerBase` instance
     :param entry_point_group: name of the entry point group used discover path functions
-    :param archive_mode: flag to modify which attributes are used
-    :return: result of PathFunctionResolver.resolve method
+    :param archive_mode: :py:class:`bool` flag to modify which attributes are used
+    :return: result of :py:meth:`PathFunctionResolver.resolve` method
     """
     resolver = PathFunctionResolver(handler_instance, entry_point_group, archive_mode)
     return resolver.resolve()

@@ -1,3 +1,11 @@
+"""This module provides the step runner classes for the :ref:`notify` step.
+
+Notification is performed by a :py:class:`BaseNotifyRunner` class, which interacts with an endpoint representing a
+notification protocol, in order to send a report detailing the status of the files processed by a handler class.
+
+The most common use of this step is to send email notifications.
+"""
+
 import os
 import smtplib
 from collections import OrderedDict
@@ -10,11 +18,11 @@ from zipfile import ZipFile
 
 from tabulate import tabulate
 
-from aodncore.util import validate_bool, validate_type
 from .basestep import AbstractNotifyRunner
 from ..common import (NotificationRecipientType, validate_recipienttype)
 from ..exceptions import InvalidRecipientError, NotificationFailedError
-from ...util import IndexedSet, TemplateRenderer, format_exception, validate_dict, validate_nonstring_iterable
+from ...util import (IndexedSet, TemplateRenderer, format_exception, validate_bool, validate_dict,
+                     validate_nonstring_iterable, validate_type)
 
 __all__ = [
     'get_notify_runner',
@@ -31,10 +39,10 @@ def get_notify_runner(notification_data, config, logger, notify_params=None):
     """Factory function to return notify runner class
 
     :param notification_data: dictionary containing notification data (i.e. template values)
-    :param config: LazyConfigManager instance
-    :param logger: Logger instance
-    :param notify_params: list of parameters to define notification behaviour
-    :return: AbstractNotifyRunner sub-class
+    :param config: :py:class:`LazyConfigManager` instance
+    :param logger: :py:class:`Logger` instance
+    :param notify_params: dict of parameters to pass to :py:class:`BaseNotifyRunner` class for runtime configuration
+    :return: :py:class:`BaseNotifyRunner` class
     """
     return NotifyRunnerAdapter(notification_data, config, logger, notify_params)
 
@@ -42,11 +50,11 @@ def get_notify_runner(notification_data, config, logger, notify_params=None):
 def get_child_notify_runner(recipient_type, notification_data, config, logger):
     """Factory function to return appropriate notify runner based on recipient type value
 
-    :param recipient_type: element of the NotificationRecipientType enum
+    :param recipient_type: :py:class:`NotificationRecipientType` enum member
     :param notification_data: dict containing values used in templating etc.
-    :param config: LazyConfigManager instance
-    :param logger: Logger instance
-    :return: BaseNotifyRunner sub-class
+    :param config: :py:class:`LazyConfigManager` instance
+    :param logger: :py:class:`Logger` instance
+    :return: :py:class:`BaseNotifyRunner` class
     """
     validate_recipienttype(recipient_type)
 
@@ -116,10 +124,10 @@ class BaseNotifyRunner(AbstractNotifyRunner):
     def _get_file_tables(self):
         """Render tables for use in notifications
 
-            Note: everything in this method assumes *strict ordering* of elements, hence use of lists and OrderedDicts,
-                rather than potentially more efficient dict and set types
+            .. note:: everything in this method assumes *strict ordering* of elements, hence use of :py:class:`list` and
+                :py:class:`OrderedDict` types, rather than potentially more efficient :py:class:`dict` and set types
 
-        :return: dict containing rendered input file and file collection tables, in text and HTML format
+        :return: :py:class:`dict` containing rendered input file and file collection tables, in text and HTML format
         """
 
         input_file_table_data = OrderedDict([
@@ -164,10 +172,10 @@ class BaseNotifyRunner(AbstractNotifyRunner):
 
     @staticmethod
     def _get_recipient_addresses(notify_list):
-        """Get a list of *only* the address attributes of the NotifyList
+        """Get a list of *only* the address attributes of the :py:class:`NotifyList`
 
-        :param notify_list:
-        :return:
+        :param notify_list: :py:class:`NotifyList` instance from which to retrieve addresses
+        :return: :py:class:`list` of addresses
         """
         recipient_addresses = [r.address for r in notify_list]
         return recipient_addresses
@@ -206,7 +214,8 @@ class NotifyRunnerAdapter(BaseNotifyRunner):
         for notify_type in notify_types:
             type_notify_list = notify_list_object.filter_by_notify_type(notify_type)
             notify_runner = get_child_notify_runner(notify_type, self.notification_data, self._config, self._logger)
-            self._logger.sysinfo("get_child_notify_runner -> '{runner}'".format(runner=notify_runner.__class__.__name__))
+            self._logger.sysinfo(
+                "get_child_notify_runner -> '{runner}'".format(runner=notify_runner.__class__.__name__))
             notify_runner.run(type_notify_list)
 
         failed_notifications = notify_list_object.filter_by_failed()
@@ -289,12 +298,12 @@ class EmailNotifyRunner(BaseNotifyRunner):
         return sendmail_result
 
     def run(self, notify_list):
-        """Attempt to send notification email to recipients in notify_list paramater.
+        """Attempt to send notification email to recipients in notify_list parameter.
 
-            `error_dict` is a dict object as described in the smtplib.SMTP.sendmail method docs, which allows
-            per-recipient status inspection/error logging
+        The status of each individual attempt is stored in a :py:class:`dict` instance, as described in the
+        :py:meth:`smtplib.SMTP.sendmail` method docs, which allows per-recipient status inspection/error logging.
 
-        :param notify_list: NotifyList instance
+        :param notify_list: :py:class:`NotifyList` instance
         :return: None
         """
         validate_notifylist(notify_list)
@@ -412,10 +421,11 @@ class NotifyList(object):
         return NotifyList(r for r in self.__s if r.notification_attempted and r.notification_succeeded)
 
     def filter_by_notify_type(self, notify_type):
-        """Return a new NotifyList containing only recipients of the given notify_type
+        """Return a new :py:class:`NotifyList` containing only recipients of the given notify_type
 
-        :param notify_type: attribute by which to filter PipelineFiles
-        :return: NotifyList containing only NotifyRecipient objects of the given type
+        :param notify_type: :py:class:`NotificationRecipientType` enum member by which to filter
+            :py:class:`PipelineFile` instances
+        :return: :py:class:`NotifyList` containing only :py:class:`NotifyRecipient` instances of the given type
         """
         validate_recipienttype(notify_type)
         collection = NotifyList(r for r in self.__s if r.notify_type is notify_type)
@@ -432,17 +442,17 @@ class NotifyList(object):
     def set_error(self, error):
         """Set the error attribute for all elements
 
-        :param error: Exception instance
+        :param error: :py:class:`Exception` instance
         :return: None
         """
         for recipient in self.__s:
             recipient.error = error
 
     def update_from_error_dict(self, error_dict):
-        """Update recipient statuses according to the given dict parameter. The absence of an address in the dict keys
-            will be interpreted as "successfully sent".
+        """Update recipient statuses according to the given error dictionary parameter. The absence of an address in the
+        dict keys will be interpreted as "successfully sent".
 
-        :param error_dict: dict as returned by smtplib.SMTP.sendmail method
+        :param error_dict: dict as returned by :py:meth:`smtplib.SMTP.sendmail` method
         :return: None
         """
         validate_dict(error_dict)
@@ -458,6 +468,7 @@ class NotifyList(object):
 class NotificationRecipient(object):
     def __init__(self, address, notify_type, raw_string='', error=None):
         self._address = address
+        self._notify_type = None
         self.notify_type = notify_type
         self._raw_string = raw_string
         self.error = error
@@ -505,11 +516,12 @@ class NotificationRecipient(object):
 
     @classmethod
     def from_string(cls, recipient_string):
-        """From a given 'recipient string', expected to be in the format of 'protocol:address', return a
-        new NotificationRecipient object with attributes set according to the content/validity of the input string
+        """From a given 'recipient string', expected to be in the format of 'protocol:address', return a new
+        :py:class:`NotificationRecipient` object with attributes set according to the content/validity of the input
+        string
 
         :param recipient_string: string in format of 'protocol:address'
-        :return: NotificationRecipient object
+        :return: :py:class:`NotificationRecipient` object
         """
         try:
             protocol, address = recipient_string.split(':', 1)

@@ -22,7 +22,20 @@ __all__ = [
 
 class PipelineFile(object):
     """Represents a single file in order to store state information relating to the intended actions to be performed
-        on the file, and the actions that *were*
+    on the file, and the actions that *were* performed on the file
+
+    :param src_path: absolute source path to the file being represented
+    :type src_path: :py:class:`str`
+    :param name: arbitrary name (defaults to the output of :py:func:`os.path.basename` on src_path)
+    :type name: :py:class:`str`
+    :param archive_path: relative path used when archiving the file
+    :type archive_path: :py:class:`str`
+    :param dest_path: relative path used when publishing the file
+    :type dest_path: :py:class:`str`
+    :param is_deletion: flag designating whether this is a deletion
+    :type is_deletion: :py:class:`bool`
+    :param file_update_callback: optional callback to call when a file property is updated
+    :type file_update_callback: :py:class:`callable`
     """
     __slots__ = ['_file_checksum', '_name', '_src_path', '_archive_path', '_dest_path', '_extension', 'file_type',
                  '_file_update_callback', '_check_type', '_is_deletion', '_publish_type', '_should_archive',
@@ -32,14 +45,6 @@ class PipelineFile(object):
 
     def __init__(self, src_path, name=None, archive_path=None, dest_path=None, is_deletion=False,
                  file_update_callback=None):
-        """
-        :param src_path: absolute source path to the file being represented
-        :param name: arbitrary name (defaults to os.path.basename)
-        :param archive_path: relative path used when archiving the file
-        :param dest_path: relative path used when publishing the file
-        :param is_deletion: boolean designating whether this is a deletion
-        :param file_update_callback: optional callback to call when a file property is updated
-        """
         try:
             self._file_checksum = None if is_deletion else get_file_checksum(src_path)
         except (IOError, OSError) as e:
@@ -149,11 +154,6 @@ class PipelineFile(object):
 
     @check_result.setter
     def check_result(self, check_result):
-        """
-
-        :param check_result: 
-        :return: 
-        """
         validate_checkresult(check_result)
 
         self._is_checked = True
@@ -404,7 +404,13 @@ class PipelineFile(object):
 
 
 class PipelineFileCollection(MutableSet):
-    """A collection which implements the MutableSet abstract base class, with pipeline file specific functionality
+    """A collection which implements the MutableSet abstract base class to allow clean set operations, but limited to
+    containing only :py:class:`PipelineFile` elements and providing specific functionality for handling a collection of
+    them (e.g. filtering, managing attributes, generating tabular data, etc.)
+
+    :param data: data to add during initialisation of the collection, either a single :py:class:`PipelineFile` or file
+        path, or an :py:class:`Iterable` whose elements are :py:class:`PipelineFile` instances or file paths
+    :type data: :py:class:`PipelineFile`, :py:class:`str`, :py:class:`Iterable`
     """
     __slots__ = ['__s']
 
@@ -445,6 +451,13 @@ class PipelineFileCollection(MutableSet):
         return "PipelineFileCollection({repr})".format(repr=repr(list(self.__s)))
 
     def add(self, pipeline_file, deletion=False, overwrite=False):
+        """Add a file to the collection
+
+        :param pipeline_file: :py:class:`PipelineFile` or file path
+        :param deletion: :py:class:`bool` which, if True, designates the file as a deletion
+        :param overwrite: :py:class:`bool` which, if True, will overwrite an existing matching file in the collection
+        :return: :py:class:`bool` which indicates whether the file was successfully added
+        """
         validate_pipelinefile_or_string(pipeline_file)
         validate_bool(deletion)
         validate_bool(overwrite)
@@ -476,6 +489,11 @@ class PipelineFileCollection(MutableSet):
     append = add
 
     def discard(self, pipeline_file):
+        """Remove an element from the collection. Do not raise an exception if absent.
+
+        :param pipeline_file: :py:class:`PipelineFile` or file path
+        :return: :py:class:`bool` which indicates whether the file was in the collection AND was successfully discarded
+        """
         validate_pipelinefile_or_string(pipeline_file)
         if isinstance(pipeline_file, PipelineFile):
             fileobj = pipeline_file
@@ -502,6 +520,14 @@ class PipelineFileCollection(MutableSet):
         return PipelineFileCollection(self.__s.union(sequence))
 
     def update(self, sequence, overwrite=False):
+        """Add the elements of an existing :py:class:`Sequence` to this collection
+
+        :param sequence: :py:class:`Sequence` containing :py:class:`PipelineFile` or file path elements to be added to
+            the collection
+        :param overwrite: :param overwrite: :py:class:`bool` which, if True, will overwrite any existing matching files
+            in the collection
+        :return: :py:class:`bool` which indicates whether any files were successfully added
+        """
         validate_nonstring_iterable(sequence)
 
         results = []
@@ -512,49 +538,53 @@ class PipelineFileCollection(MutableSet):
     def get_pipelinefile_from_src_path(self, src_path):
         """Get PipelineFile for a given src_path
 
-        :param src_path: source path string for which to retrieve corresponding PipelineFile
-        :return: matching PipelineFile or None if it is not in the collection
+        :param src_path: source path string for which to retrieve corresponding :py:class:`PipelineFile` instances
+        :return: matching :py:class:`PipelineFile` instance or :py:const:`None` if it is not in the collection
         """
         pipeline_file = next((f for f in self.__s if f.src_path == src_path), None)
         return pipeline_file
 
     def get_slices(self, slice_size):
-        """Slice this collection into a list of PipelineFileCollections with maximum length of slice_size
+        """Slice this collection into a list of :py:class:`PipelineFileCollections` with maximum length of slice_size
 
         :param slice_size: maximum length of each slice
-        :return: list containing the current object sliced into new PipelineFileCollections of max length slice_size
+        :return: list containing the current object sliced into new :py:class:`PipelineFileCollection` instances of max
+            length slice_size
         """
         return slice_sequence(self, slice_size)
 
     def filter_by_attribute_id(self, attribute, value):
-        """Return a new PipelineFileCollection containing only elements where the id of the given attribute *is* the
-        given id (i.e. refers to the same object)
+        """Return a new :py:class:`PipelineFileCollection` containing only elements where the id of the given attribute
+        *is* the given id (i.e. refers to the same object)
         
-        :param attribute: attribute by which to filter PipelineFiles
+        :param attribute: attribute by which to filter :py:class:`PipelineFile` instances
         :param value: attribute id to filter on
-        :return: PipelineFileCollection containing only PipelineFiles with the given attribute matching the given value
+        :return: :py:class:`PipelineFileCollection` containing only :py:class:`PipelineFile` instances with the given
+            attribute matching the given value
         """
         collection = PipelineFileCollection(f for f in self.__s if getattr(f, attribute) is value)
         return collection
 
     def filter_by_attribute_value(self, attribute, value):
-        """Return a new PipelineFileCollection containing only elements where the value of the given attribute is equal
-            to the given value
+        """Return a new :py:class:`PipelineFileCollection` containing only elements where the value of the given
+        attribute is equal to the given value
 
-        :param attribute: attribute by which to filter PipelineFiles
+        :param attribute: attribute by which to filter :py:class:`PipelineFile` instances
         :param value: attribute value to filter on
-        :return: PipelineFileCollection containing only PipelineFiles with the given attribute matching the given value
+        :return: :py:class:`PipelineFileCollection` containing only :py:class:`PipelineFile`instances with the given
+            attribute matching the given value
         """
         collection = PipelineFileCollection(f for f in self.__s if getattr(f, attribute) == value)
         return collection
 
     def filter_by_attribute_regex(self, attribute, pattern):
-        """Return a new PipelineFileCollection containing only elements where the value of the named attribute matches a
-            given regex pattern
+        """Return a new :py:class:`PipelineFileCollection` containing only elements where the value of the named
+        attribute matches a given regex pattern
 
         :param attribute: attribute to filter on
         :param pattern: regex pattern by which to filter PipelineFiles
-        :return: PipelineFileCollection containing only PipelineFiles with the attribute matching the given pattern
+        :return: :py:class:`PipelineFileCollection` containing only :py:class:`PipelineFile` instances with the
+            attribute matching the given pattern
         """
         validate_regex(pattern)
         collection = PipelineFileCollection(
@@ -562,29 +592,34 @@ class PipelineFileCollection(MutableSet):
         return collection
 
     def filter_by_bool_attribute(self, attribute):
-        """Return a new PipelineFileCollection containing only elements where the named attribute resolves to True
+        """Return a new :py:class:`PipelineFileCollection` containing only elements where the named attribute resolves
+        to True
 
-        :param attribute: attribute by which to filter PipelineFiles
-        :return: PipelineFileCollection containing only PipelineFiles with a True value for the given attribute
+        :param attribute: attribute by which to filter :py:class:`PipelineFile` instances
+        :return: :py:class:`PipelineFileCollection` containing only :py:class:`PipelineFile` instances with a True value
+            for the given attribute
         """
         collection = PipelineFileCollection(f for f in self.__s if getattr(f, attribute))
         return collection
 
     def filter_by_bool_attribute_not(self, attribute):
-        """Return a new PipelineFileCollection containing only elements where the named attribute resolves to False
+        """Return a new :py:class:`PipelineFileCollection` containing only elements where the named attribute resolves
+        to False
 
-        :param attribute: attribute by which to filter PipelineFiles
-        :return: PipelineFileCollection containing only PipelineFiles with a False value for the given attribute
+        :param attribute: attribute by which to filter :py:class:`PipelineFile` instances
+        :return: :py:class:`PipelineFileCollection` containing only :py:class:`PipelineFile` instances with a False
+            value for the given attribute
         """
         collection = PipelineFileCollection(f for f in self.__s if not getattr(f, attribute))
         return collection
 
     def filter_by_bool_attributes_and(self, *attributes):
-        """Return a new PipelineFileCollection containing only elements where *all* of the named attributes resolve to
-            True
+        """Return a new :py:class:`PipelineFileCollection` containing only elements where *all* of the named attributes
+        resolve to True
 
-        :param attributes: attributes by which to filter PipelineFiles
-        :return: PipelineFileCollection containing only PipelineFiles with a True value for all of the given attributes
+        :param attributes: attributes by which to filter :py:class:`PipelineFile` instances
+        :return: :py:class:`PipelineFileCollection` containing only :py:class:`PipelineFile` instances with a True value
+            for all of the given attributes
         """
         attributes_set = set(attributes)
 
@@ -595,13 +630,13 @@ class PipelineFileCollection(MutableSet):
         return collection
 
     def filter_by_bool_attributes_and_not(self, true_attributes, false_attributes):
-        """Return a new PipelineFileCollection containing only elements where *all* of the named true_attributes have a
-            value of True and all of the false_attributes have a value of False
+        """Return a new :py:class:`PipelineFileCollection` containing only elements where *all* of the named
+        true_attributes have a value of True and all of the false_attributes have a value of False
 
         :param true_attributes: attributes which *must* be True
         :param false_attributes: attributes which *must* be False
-        :return: PipelineFileCollection containing only PipelineFiles with a True value for all attributes named in
-        true_attributes and a False value for all attributes named in false_attributes
+        :return: :py:class:`PipelineFileCollection` containing only :py:class:`PipelineFile` instances with a True value
+            for all attributes named in true_attributes and a False value for all attributes named in false_attributes
         """
         if isinstance(true_attributes, six.string_types):
             true_attributes = [true_attributes]
@@ -622,11 +657,12 @@ class PipelineFileCollection(MutableSet):
         return collection
 
     def filter_by_bool_attributes_not(self, *attributes):
-        """Return a new PipelineFileCollection containing only elements where *all* of the named attributes resolve to
-            False
+        """Return a new :py:class:`PipelineFileCollection` containing only elements where *all* of the named attributes
+        resolve to False
 
-        :param attributes: attributes by which to filter PipelineFiles
-        :return: PipelineFileCollection containing only PipelineFiles with a False value for all of the given attributes
+        :param attributes: attributes by which to filter :py:class:`PipelineFile` instances
+        :return: :py:class:`PipelineFileCollection` containing only :py:class:`PipelineFile` instances with a False
+            value for all of the given attributes
         """
         attributes_set = set(attributes)
 
@@ -637,11 +673,12 @@ class PipelineFileCollection(MutableSet):
         return collection
 
     def filter_by_bool_attributes_or(self, *attributes):
-        """Return a new PipelineFileCollection containing only elements where *any* of the named attributes resolve to
-            True
+        """Return a new :py:class:`PipelineFileCollection` containing only elements where *any* of the named attributes
+        resolve to True
 
-        :param attributes: attributes by which to filter PipelineFiles
-        :return: PipelineFileCollection containing only PipelineFiles with a True value for any of the given attributes
+        :param attributes: attributes by which to filter :py:class:`PipelineFile` instances
+        :return: :py:class:`PipelineFileCollection` containing only :py:class:`PipelineFile` instances with a True value
+            for any of the given attributes
         """
         attributes_set = set(attributes)
 
@@ -652,9 +689,11 @@ class PipelineFileCollection(MutableSet):
         return collection
 
     def get_table_data(self):
-        """Return PipelineFile members in a simple tabular data format suitable for rendering into formatted tables
+        """Return :py:class:`PipelineFile` members in a simple tabular data format suitable for rendering into formatted
+        tables
 
-        :return: a tuple with the first element being a list of columns, and the second being a 2D list of the data
+        :return: a :py:class:`tuple` with the first element being a list of columns, and the second being a 2D list of
+            the data
         """
         data = [OrderedDict(e) for e in self.__s]
         try:
@@ -705,7 +744,7 @@ class PipelineFileCollection(MutableSet):
                 f.dest_path = candidate_path
 
     def set_bool_attribute(self, attribute, value):
-        """Set a boolean attribute for each file in the collection
+        """Set a :py:class:`bool` attribute for each file in the collection
 
         :param attribute: attribute to set
         :param value: value to set the attribute
@@ -717,30 +756,34 @@ class PipelineFileCollection(MutableSet):
             setattr(f, attribute, value)
 
     def set_file_update_callback(self, file_update_callback):
-        """Set a callback function in each PipelineFile in this collection
+        """Set a callback function in each :py:class:`PipelineFile` in this collection
 
         :param file_update_callback: callback (function)
-        :return:
+        :return: None
         """
         for f in self.__s:
             f.file_update_callback = file_update_callback
 
     def set_default_publish_types(self, include_regexes, exclude_regexes, addition_type, deletion_type):
-        """
+        """Set publish_type attribute for each file in the collection depending on whether it is considered "included"
+        according to the regex parameters
 
-        :param include_regexes:
-        :param exclude_regexes:
-        :param addition_type:
-        :param deletion_type:
-        :return:
+        :param include_regexes: regex(es) for which a file must match one or more to be included
+        :param exclude_regexes: regex(es) which will exclude an already included file
+        :param addition_type: :py:class:`PipefileFilePublishType` enum member set for included addition files
+        :param deletion_type: :py:class:`PipefileFilePublishType` enum member set for included deletion files
+        :return: None
         """
         for f in self.__s:
             if matches_regexes(f.name, include_regexes, exclude_regexes):
                 f.publish_type = deletion_type if f.is_deletion else addition_type
 
     def validate_unique_attribute_value(self, attribute, value):
-        """Check that a given value is not already in the collection for the given PipelineFile attribute, and
-        raise an exception if it is
+        """Check that a given value is not already in the collection for the given :py:class:`PipelineFile` attribute,
+        and raise an exception if it is
+
+        This is intended for the use case of when an *intended* value is known for a particular attribute, and it is
+        desirable to check uniqueness before setting it (e.g. when adding new files to the collection).
 
         :param attribute: the attribute to check
         :param value: the value being tested for uniqueness for the given attribute
@@ -754,8 +797,11 @@ class PipelineFileCollection(MutableSet):
                                                                                             duplicates=duplicates))
 
     def validate_attribute_uniqueness(self, attribute):
-        """Check that the given PipelineFile attribute is unique amongst all PipelineFiles currently in the collection,
-        and raise an exception if any duplicates are found
+        """Check that the given :py:class:`PipelineFile` attribute is unique amongst all :py:class:`PipelineFile`
+        instances currently in the collection, and raise an exception if any duplicates are found
+
+        This is intended for the use case of a final sanity check of the collection before using it (e.g. before
+        progressing to the :ref:`publish` step).
 
         :param attribute: the attribute to compare
         :return: None

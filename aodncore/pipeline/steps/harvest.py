@@ -1,3 +1,12 @@
+"""This module provides the step runner classes for the "harvest" step, which is a sub-step of the :ref:`publish` step.
+
+Harvesting is performed by a :py:class:`BaseHarvesterRunner` class.
+
+This currently only supports "talend" as a harvesting tool, which requires it to perform the steps necessary to generate
+the inputs expected by the AODN Talend wrapper scripts, but is written generically to support other hypothetical
+harvesting processes.
+"""
+
 import itertools
 import os
 import re
@@ -27,13 +36,13 @@ __all__ = [
 def get_harvester_runner(harvester_name, upload_runner, harvest_params, tmp_base_dir, config, logger):
     """Factory function to return appropriate harvester class
 
-    :param harvester_name: harvester name
-    :param upload_runner: upload runner instance to use for uploads
-    :param harvest_params: keyword parameters passed to harvest runner
+    :param harvester_name: harvester name used to retrieve :py:class:`BaseHarvesterRunner` class
+    :param upload_runner: :py:class:`BaseUploadRunner` instance to use for uploads
+    :param harvest_params: dict of parameters to pass to :py:class:`BaseCheckRunner` class for runtime configuration
     :param tmp_base_dir: base temporary directory
-    :param config: LazyConfigManager instance
-    :param logger: Logger instance
-    :return: BaseHarvesterRunner sub-class
+    :param config: :py:class:`LazyConfigManager` instance
+    :param logger: :py:class:`Logger` instance
+    :return: :py:class:`BaseHarvesterRunner` class
     """
 
     if harvester_name == 'talend':
@@ -55,15 +64,15 @@ class HarvesterMap(object):
     def all_events(self):
         """Get a flattened list of all events from all harvesters.
 
-        :return: list of all TriggerEvents from all harvesters
+        :return: list of all :py:class:`TriggerEvent` instances from all harvesters
         """
         return itertools.chain.from_iterable(self._map.values())
 
     @property
     def all_pipeline_files(self):
-        """Get a flattened collection containing all PipelineFile objects from all harvester events
+        """Get a flattened collection containing all :py:class:`PipelineFile` instances from all harvester events
 
-        :return: PipelineFileCollection containing all PipelineFile objects in map
+        :return: :py:class:`PipelineFileCollection` containing all :py:class:`PipelineFile` objects in map
         """
         all_pipeline_files = PipelineFileCollection()
         for event in self.all_events:
@@ -75,10 +84,10 @@ class HarvesterMap(object):
         return self._map
 
     def add_event(self, harvester, event):
-        """Add a TriggerEvent to this map, under the given harvester
+        """Add a :py:class:`TriggerEvent` to this map, under the given harvester
 
         :param harvester: harvester name
-        :param event: TriggerEvent ovject
+        :param event: :py:class:`TriggerEvent` object
         :return: None
         """
         validate_string(harvester)
@@ -90,16 +99,16 @@ class HarvesterMap(object):
             self.map[harvester] = [event]
 
     def merge(self, other):
-        """Merge another HarvesterMap object into this one
+        """Merge another :py:class:`HarvesterMap` instance into this one
 
-        :param other: other HarvesterMap object
+        :param other: other :py:class:`HarvesterMap` instance
         :return: None
         """
         validate_harvestermap(other)
         self._map = merge_dicts(self._map, other.map)
 
     def set_pipelinefile_bool_attribute(self, attribute, value):
-        """Set a boolean attribute on all PipelineFiles in all events
+        """Set a boolean attribute on all :py:class:`PipelineFile` instances in all events
 
         :param attribute: attribute to set
         :param value: value to set
@@ -108,9 +117,10 @@ class HarvesterMap(object):
         self.all_pipeline_files.set_bool_attribute(attribute, value)
 
     def is_collection_superset(self, pipeline_files):
-        """Determine whether all PipelineFiles in the given PipelineFileCollection are present in this map
+        """Determine whether all :py:class:`PipelineFile` instances in the given :py:class:`PipelineFileCollection` are
+        present in this map
 
-        :param pipeline_files:
+        :param pipeline_files: :py:class:`PipelineFileCollection` for comparison
         :return: True if all files in the collection are in one or more events in this map
         """
         validate_pipelinefilecollection(pipeline_files)
@@ -158,10 +168,11 @@ def executor_conversion(executor):
 
 
 def validate_harvester_mapping(pipeline_files, harvester_map):
-    """Validate whether all files in the given PipelineFileCollection are present at least once in the given HarvesterMap
+    """Validate whether all files in the given :py:class:`PipelineFileCollection` are present at least once in the
+    given :py:class:`HarvesterMap`
 
-    :param pipeline_files: PipelineFileCollection to
-    :param harvester_map:
+    :param pipeline_files: :py:class:`PipelineFileCollection` instance
+    :param harvester_map: :py:class:`HarvesterMap` instance
     :return: None
     """
     validate_pipelinefilecollection(pipeline_files)
@@ -181,7 +192,7 @@ class BaseHarvesterRunner(AbstractCollectionStepRunner):
 
 
 class TalendHarvesterRunner(BaseHarvesterRunner):
-    """HarvesterRunner implementation to execute Talend harvesters
+    """:py:class:`BaseHarvesterRunner` implementation to execute Talend harvesters
     """
 
     def __init__(self, upload_runner, harvest_params, tmp_base_dir, config, logger, deletion=False):
@@ -200,7 +211,7 @@ class TalendHarvesterRunner(BaseHarvesterRunner):
     def run(self, pipeline_files):
         """The entry point to the ported talend trigger code to execute the harvester(s) for each file
 
-        :return:
+        :return: None
         """
         validate_pipelinefilecollection(pipeline_files)
 
@@ -286,10 +297,11 @@ class TalendHarvesterRunner(BaseHarvesterRunner):
                 self._logger.info('--- END TALEND OUTPUT ---')
 
     def run_deletions(self, harvester_map, tmp_base_dir):
-        """Function to un-harvest and delete files using the appropriate file upload runner
-        Operates in newly created temporary directory as talend requires a non-existant file to perform un-harvesting
+        """Function to un-harvest and delete files using the appropriate file upload runner.
 
-        :param harvester_map: mapping of harvesters to the PipelineFileCollection to operate on
+        Operates in newly created temporary directory as talend requires a non-existent file to perform un-harvesting
+
+        :param harvester_map: :py:class:`HarvesterMap` containing the events to be deleted
         :param tmp_base_dir: temporary directory base for talend operation
         """
         validate_harvestermap(harvester_map)
@@ -311,10 +323,11 @@ class TalendHarvesterRunner(BaseHarvesterRunner):
                     self.upload_runner.run(files_to_delete)
 
     def run_undo_deletions(self, harvester_map):
-        """Function to un-harvest and undo stored files as appropriate in the case of errors
-        Operates in newly created temporary directory as talend requires a non-existant file to perform un-harvesting
+        """Function to un-harvest and undo stored files as appropriate in the case of errors.
 
-        :param harvester_map: mapping of harvesters to the PipelineFileCollection to operate on
+        Operates in newly created temporary directory as talend requires a non-existent file to perform "unharvesting"
+
+        :param harvester_map: :py:class:`HarvesterMap` containing the events to be undone
         """
         validate_harvestermap(harvester_map)
 
@@ -336,11 +349,12 @@ class TalendHarvesterRunner(BaseHarvesterRunner):
                     self.upload_runner.run(files_to_delete)
 
     def run_additions(self, harvester_map, tmp_base_dir):
-        """Function to harvest and upload files using the appropriate file upload runner
-        Operates in newly created temporary directory and creates symlink between source and destination file
-        Talend will then operate on the destination file (symlink)
+        """Function to harvest and upload files using the appropriate file upload runner.
 
-        :param harvester_map: mapping of harvesters to the PipelineFileCollection to operate on
+        Operates in newly created temporary directory and creates symlink between source and destination file. Talend
+        will then operate on the destination file (symlink).
+
+        :param harvester_map: :py:class:`HarvesterMap` containing the events to be added
         :param tmp_base_dir: temporary directory base for talend operation
         """
         validate_harvestermap(harvester_map)

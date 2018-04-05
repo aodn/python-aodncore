@@ -1,3 +1,8 @@
+"""This module provides code to support loading and accessing a central configuration object. Other modules should
+typically access the configuration by importing :py:const:`CONFIG` from :py:mod:`aodncore.pipeline.config` rather than
+manually creating a new :py:class:`LazyConfigManager` instance.
+"""
+
 import json
 import os
 from collections import OrderedDict
@@ -28,6 +33,11 @@ DEFAULT_TRIGGER_CONFIG_ENVVAR = 'PIPELINE_TRIGGER_CONFIG_FILE'
 
 
 class LazyConfigManager(object):
+    """Configuration object to consolidate configuration values.
+
+    Different configuration sources are represented as lazy properties so that it is still efficient to pass an instance
+    of this class to several modules, even if they only require one particular type of configuration to operate.
+    """
     def __init__(self):
         self._celery_application = None
         self._celery_routes = None
@@ -176,7 +186,7 @@ def load_trigger_config(default_config_file=DEFAULT_TRIGGER_CONFIG):
 
 
 def load_json_file(default_config_file, envvar=None):
-    """Load a JSON file into a dict, using either a
+    """Load a JSON file into a :py:class:`dict`
 
     :param default_config_file:
     :param envvar:
