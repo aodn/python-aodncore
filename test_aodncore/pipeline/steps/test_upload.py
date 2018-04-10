@@ -302,6 +302,44 @@ class TestS3UploadRunner(BaseTestCase):
         s3_upload_runner.s3_client.head_bucket.assert_called_with(Bucket=dummy_bucket)
 
     @mock.patch('aodncore.pipeline.steps.upload.boto3')
+    def test_set_is_overwrite_not_present_s3(self, mock_boto3):
+        collection = get_upload_collection()
+        dummy_bucket = str(uuid4())
+        dummy_prefix = str(uuid4())
+        s3_upload_runner = S3UploadRunner(dummy_bucket, dummy_prefix, None, self.test_logger)
+        s3_upload_runner.set_is_overwrite(collection)
+        self.assertEqual(s3_upload_runner.s3_client.list_objects_v2.call_count, 4)
+        self.assertFalse(any(f.is_overwrite for f in collection))
+
+    @mock.patch('aodncore.pipeline.steps.upload.boto3')
+    def test_set_is_overwrite_present_s3(self, mock_boto3):
+        collection = get_upload_collection()
+        dummy_bucket = str(uuid4())
+        dummy_prefix = str(uuid4())
+        s3_upload_runner = S3UploadRunner(dummy_bucket, dummy_prefix, None, self.test_logger)
+        dest_path = os.path.join('subdirectory', 'targetfile.nc')
+        abs_path = os.path.join(dummy_prefix, dest_path)
+        s3_upload_runner.s3_client.list_objects_v2.return_value = {'Contents': [{'Key': abs_path}]}
+        s3_upload_runner.set_is_overwrite(collection)
+        self.assertEqual(s3_upload_runner.s3_client.list_objects_v2.call_count, 4)
+        self.assertTrue(all(f.is_overwrite for f in collection.filter_by_attribute_value('dest_path', dest_path)))
+
+    @mock.patch('aodncore.pipeline.steps.upload.boto3')
+    def test_set_is_overwrite_prefix_present_s3(self, mock_boto3):
+        collection = get_upload_collection()
+        dummy_bucket = str(uuid4())
+        dummy_prefix = str(uuid4())
+        s3_upload_runner = S3UploadRunner(dummy_bucket, dummy_prefix, None, self.test_logger)
+        abs_path_prefix = os.path.join(dummy_prefix, 'subdirectory')
+        dest_path = os.path.join('subdirectory', 'targetfile.nc')
+        abs_path = os.path.join(dummy_prefix, dest_path)
+        s3_upload_runner.s3_client.list_objects_v2.return_value = {'Prefix': abs_path_prefix,
+                                                                   'Contents': [{'Key': abs_path}]}
+        s3_upload_runner.set_is_overwrite(collection)
+        self.assertEqual(s3_upload_runner.s3_client.list_objects_v2.call_count, 4)
+        self.assertTrue(all(f.is_overwrite for f in collection.filter_by_attribute_value('dest_path', dest_path)))
+
+    @mock.patch('aodncore.pipeline.steps.upload.boto3')
     def test_upload(self, mock_boto3):
         collection = get_upload_collection()
         netcdf_file, png_file, ico_file, unknown_file = collection

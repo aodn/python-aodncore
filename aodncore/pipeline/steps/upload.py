@@ -221,7 +221,7 @@ class S3UploadRunner(BaseUploadRunner):
     @retry_decorator(**retry_kwargs)
     def _get_is_overwrite(self, pipeline_file, abs_path):
         response = self.s3_client.list_objects_v2(Bucket=self.bucket, Prefix=abs_path)
-        return bool(k for k in response.get('Contents', []) if k['Key'] == abs_path)
+        return bool([k for k in response.get('Contents', []) if k['Key'] == abs_path])
 
     def _post_run_hook(self):
         return
