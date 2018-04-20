@@ -6,6 +6,7 @@ notification protocol, in order to send a report detailing the status of the fil
 The most common use of this step is to send email notifications.
 """
 
+import abc
 import os
 import smtplib
 from collections import OrderedDict
@@ -18,7 +19,8 @@ from zipfile import ZipFile
 
 from tabulate import tabulate
 
-from .basestep import AbstractNotifyRunner
+from aodncore.util import validate_bool, validate_type
+from .basestep import BaseStepRunner
 from ..common import (NotificationRecipientType, validate_recipienttype)
 from ..exceptions import InvalidRecipientError, NotificationFailedError
 from ...util import (IndexedSet, TemplateRenderer, format_exception, validate_bool, validate_dict,
@@ -66,10 +68,12 @@ def get_child_notify_runner(recipient_type, notification_data, config, logger):
         return LogFailuresNotifyRunner(notification_data, config, logger)
 
 
-class BaseNotifyRunner(AbstractNotifyRunner):
+class BaseNotifyRunner(BaseStepRunner):
     """Base class for NotifyRunner classes, provides *protocol agnostic* helper methods and properties for child
         NotifyRunner classes
     """
+
+    __metaclass__ = abc.ABCMeta
 
     def __init__(self, notification_data, config, logger):
         super(BaseNotifyRunner, self).__init__(config, logger)
@@ -78,6 +82,10 @@ class BaseNotifyRunner(AbstractNotifyRunner):
         self.error = None
         self._message_parts = None
         self._template_values = None
+
+    @abc.abstractmethod
+    def run(self, notify_list):
+        pass
 
     @property
     def message_parts(self):

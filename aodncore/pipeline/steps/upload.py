@@ -19,7 +19,7 @@ from botocore.exceptions import ClientError
 from paramiko import SSHClient, AutoAddPolicy
 from six.moves.urllib.parse import urlparse
 
-from .basestep import AbstractCollectionStepRunner
+from .basestep import BaseStepRunner
 from ..exceptions import AttributeNotSetError, FileDeleteFailedError, FileUploadFailedError, InvalidUploadUrlError
 from ..files import validate_pipelinefilecollection
 from ...util import format_exception, mkdir_p, retry_decorator, rm_f, safe_copy_file
@@ -53,7 +53,7 @@ def get_upload_runner(upload_base_url, config, logger, archive_mode=False):
         raise InvalidUploadUrlError("invalid URL scheme '{scheme}'".format(scheme=url.scheme))
 
 
-class BaseUploadRunner(AbstractCollectionStepRunner):
+class BaseUploadRunner(BaseStepRunner):
     __metaclass__ = abc.ABCMeta
 
     def __init__(self, config, logger, archive_mode=False):

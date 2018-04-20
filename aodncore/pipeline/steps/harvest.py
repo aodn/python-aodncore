@@ -7,13 +7,14 @@ the inputs expected by the AODN Talend wrapper scripts, but is written generical
 harvesting processes.
 """
 
+import abc
 import itertools
 import os
 import re
 from collections import OrderedDict
 from tempfile import mkstemp
 
-from .basestep import AbstractCollectionStepRunner
+from .basestep import BaseStepRunner
 from ..exceptions import InvalidHarvesterError, UnmappedFilesError
 from ..files import PipelineFileCollection, validate_pipelinefilecollection
 from ...util import (LoggingContext, SystemProcess, TemporaryDirectory, merge_dicts, mkdir_p, validate_string,
@@ -184,11 +185,15 @@ def validate_harvester_mapping(pipeline_files, harvester_map):
             "no matching harvester(s) found for: {unmapped_files}".format(unmapped_files=unmapped_files))
 
 
-# noinspection PyAbstractClass
-class BaseHarvesterRunner(AbstractCollectionStepRunner):
+class BaseHarvesterRunner(BaseStepRunner):
     """Base class for HarvesterRunner classes
     """
-    pass
+
+    __metaclass__ = abc.ABCMeta
+
+    @abc.abstractmethod
+    def run(self, pipeline_files):
+        pass
 
 
 class TalendHarvesterRunner(BaseHarvesterRunner):
