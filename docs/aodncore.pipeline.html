@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>aodncore.pipeline package &mdash; aodncore 0.0.20 documentation</title>
+  <title>aodncore.pipeline package &mdash; aodncore 0.9.0 documentation</title>
   
 
   
@@ -59,7 +59,7 @@
             
             
               <div class="version">
-                0.0.20
+                0.9.0
               </div>
             
           
@@ -2322,18 +2322,11 @@ for debugging.</p>
 <dl class="class">
 <dt id="aodncore.pipeline.watch.IncomingFileEventHandler">
 <em class="property">class </em><code class="descclassname">aodncore.pipeline.watch.</code><code class="descname">IncomingFileEventHandler</code><span class="sig-paren">(</span><em>config</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/aodncore/pipeline/watch.html#IncomingFileEventHandler"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#aodncore.pipeline.watch.IncomingFileEventHandler" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">pyinotify.ProcessEvent</span></code></p>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">aodncore.pipeline.watch.ProcessEvent</span></code></p>
 <dl class="method">
 <dt id="aodncore.pipeline.watch.IncomingFileEventHandler.process_default">
 <code class="descname">process_default</code><span class="sig-paren">(</span><em>event</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/aodncore/pipeline/watch.html#IncomingFileEventHandler.process_default"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#aodncore.pipeline.watch.IncomingFileEventHandler.process_default" title="Permalink to this definition">¶</a></dt>
-<dd><p>Default processing event method. By default does nothing. Subclass
-ProcessEvent and redefine this method in order to modify its behavior.</p>
-<dl class="docutils">
-<dt>&#64;param event: Event to be processed. Can be of any type of events but</dt>
-<dd>IN_Q_OVERFLOW events (see method process_IN_Q_OVERFLOW).</dd>
-</dl>
-<p>&#64;type event: Event instance</p>
-</dd></dl>
+<dd></dd></dl>
 
 <dl class="method">
 <dt id="aodncore.pipeline.watch.IncomingFileEventHandler.queue_task">
@@ -2372,7 +2365,7 @@ ProcessEvent and redefine this method in order to modify its behavior.</p>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <dl class="attribute">
 <dt id="aodncore.pipeline.watch.WatchServiceManager.EVENT_MASK">
-<code class="descname">EVENT_MASK</code><em class="property"> = 136</em><a class="headerlink" href="#aodncore.pipeline.watch.WatchServiceManager.EVENT_MASK" title="Permalink to this definition">¶</a></dt>
+<code class="descname">EVENT_MASK</code><em class="property"> = 0</em><a class="headerlink" href="#aodncore.pipeline.watch.WatchServiceManager.EVENT_MASK" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="method">
@@ -3953,7 +3946,7 @@ class).</p>
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'./',
-            VERSION:'0.0.20',
+            VERSION:'0.9.0',
             LANGUAGE:'None',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
