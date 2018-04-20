@@ -7,7 +7,8 @@ from aodncore.pipeline import PipelineFile, PipelineFileCollection, PipelineFile
 from aodncore.pipeline.exceptions import InvalidHarvesterError, UnmappedFilesError
 from aodncore.pipeline.steps.harvest import (get_harvester_runner, HarvesterMap, TalendHarvesterRunner, TriggerEvent,
                                              validate_harvester_mapping)
-from aodncore.testlib import BaseTestCase, NullUploadRunner
+from aodncore.pipeline.steps.upload import UploadRunner
+from aodncore.testlib import BaseTestCase, NullStorageBroker
 from test_aodncore import TESTDATA_DIR
 
 TEST_ROOT = os.path.dirname(__file__)
@@ -43,7 +44,7 @@ class TestPipelineStepsHarvest(BaseTestCase):
     def setUp(self):
         super(TestPipelineStepsHarvest, self).setUp()
 
-        self.uploader = NullUploadRunner("/")
+        self.uploader = UploadRunner(NullStorageBroker("/"), None, None)
 
     def test_get_harvester_runner(self):
         harvester_runner = get_harvester_runner('talend', self.uploader, None, TESTDATA_DIR, None, self.test_logger)
@@ -67,7 +68,7 @@ class TestPipelineStepsHarvest(BaseTestCase):
 class TestTalendHarvesterRunner(BaseTestCase):
     def setUp(self):
         super(TestTalendHarvesterRunner, self).setUp()
-        self.uploader = NullUploadRunner("/")
+        self.uploader = UploadRunner(NullStorageBroker("/"), None, None)
 
     @patch('aodncore.util.process.subprocess')
     def test_extra_params(self, mock_subprocess):
@@ -106,7 +107,7 @@ class TestTalendHarvesterRunner(BaseTestCase):
 
         harvester_runner.run(collection)
 
-        harvester_runner.upload_runner.assert_not_called()
+        harvester_runner.upload_runner.broker.assert_not_called()
 
         self.assertTrue(all(f.is_deletion for f in collection))
         self.assertTrue(all(f.is_harvested for f in collection))
@@ -123,7 +124,7 @@ class TestTalendHarvesterRunner(BaseTestCase):
 
         harvester_runner.run(collection)
 
-        harvester_runner.upload_runner.assert_not_called()
+        harvester_runner.upload_runner.broker.assert_not_called()
 
         self.assertTrue(all(f.is_deletion for f in collection))
         self.assertTrue(all(f.is_harvested for f in collection))
@@ -139,7 +140,7 @@ class TestTalendHarvesterRunner(BaseTestCase):
 
         harvester_runner.run(collection)
 
-        harvester_runner.upload_runner.assert_call_count(1)
+        harvester_runner.upload_runner.broker.assert_call_count(1)
 
         self.assertTrue(all(f.is_deletion for f in collection))
         self.assertTrue(all(f.is_harvested for f in collection))
@@ -156,7 +157,7 @@ class TestTalendHarvesterRunner(BaseTestCase):
 
         harvester_runner.run(collection)
 
-        harvester_runner.upload_runner.assert_call_count(3)
+        harvester_runner.upload_runner.broker.assert_call_count(3)
 
         self.assertTrue(all(f.is_deletion for f in collection))
         self.assertTrue(all(f.is_harvested for f in collection))
@@ -173,7 +174,7 @@ class TestTalendHarvesterRunner(BaseTestCase):
         with self.assertRaises(SystemCommandFailedError):
             harvester_runner.run(collection)
 
-        harvester_runner.upload_runner.assert_not_called()
+        harvester_runner.upload_runner.broker.assert_not_called()
 
         self.assertFalse(any(f.is_harvested for f in collection))
         self.assertFalse(any(f.is_stored for f in collection))
@@ -190,7 +191,7 @@ class TestTalendHarvesterRunner(BaseTestCase):
         with self.assertRaises(SystemCommandFailedError):
             harvester_runner.run(collection)
 
-        harvester_runner.upload_runner.assert_not_called()
+        harvester_runner.upload_runner.broker.assert_not_called()
 
         self.assertFalse(any(f.is_harvested for f in collection))
         self.assertFalse(any(f.is_uploaded for f in collection))
@@ -206,7 +207,7 @@ class TestTalendHarvesterRunner(BaseTestCase):
         with self.assertRaises(SystemCommandFailedError):
             harvester_runner.run(collection)
 
-        harvester_runner.upload_runner.assert_not_called()
+        harvester_runner.upload_runner.broker.assert_not_called()
 
         self.assertFalse(any(f.is_harvested for f in collection))
         self.assertFalse(any(f.is_uploaded for f in collection))
@@ -223,7 +224,7 @@ class TestTalendHarvesterRunner(BaseTestCase):
         with self.assertRaises(SystemCommandFailedError):
             harvester_runner.run(collection)
 
-        harvester_runner.upload_runner.assert_not_called()
+        harvester_runner.upload_runner.broker.assert_not_called()
 
         self.assertFalse(any(f.is_harvested for f in collection))
         self.assertFalse(any(f.is_uploaded for f in collection))
@@ -238,7 +239,7 @@ class TestTalendHarvesterRunner(BaseTestCase):
 
         harvester_runner.run(collection)
 
-        harvester_runner.upload_runner.assert_not_called()
+        harvester_runner.upload_runner.broker.assert_not_called()
 
         self.assertTrue(all(f.is_harvested for f in collection))
         self.assertFalse(any(f.is_uploaded for f in collection))
@@ -254,7 +255,7 @@ class TestTalendHarvesterRunner(BaseTestCase):
 
         harvester_runner.run(collection)
 
-        harvester_runner.upload_runner.assert_not_called()
+        harvester_runner.upload_runner.broker.assert_not_called()
 
         self.assertTrue(all(f.is_harvested for f in collection))
         self.assertFalse(any(f.is_uploaded for f in collection))
@@ -270,7 +271,7 @@ class TestTalendHarvesterRunner(BaseTestCase):
 
         harvester_runner.run(collection)
 
-        harvester_runner.upload_runner.assert_call_count(1)
+        harvester_runner.upload_runner.broker.assert_call_count(1)
 
         self.assertTrue(all(f.is_harvested for f in collection))
         self.assertTrue(all(f.is_uploaded for f in collection))
@@ -289,7 +290,7 @@ class TestTalendHarvesterRunner(BaseTestCase):
 
         harvester_runner.run(collection)
 
-        harvester_runner.upload_runner.assert_call_count(3)
+        harvester_runner.upload_runner.broker.assert_call_count(3)
 
         self.assertTrue(all(f.is_harvested for f in collection))
         self.assertTrue(all(f.is_uploaded for f in collection))
@@ -309,7 +310,7 @@ class TestTalendHarvesterRunner(BaseTestCase):
         with self.assertRaises(SystemCommandFailedError):
             harvester_runner.run(collection)
 
-        harvester_runner.upload_runner.assert_not_called()
+        harvester_runner.upload_runner.broker.assert_not_called()
 
         self.assertTrue(all(f.is_harvest_undone for f in collection))  # *should* be undone
 
@@ -335,7 +336,7 @@ class TestTalendHarvesterRunner(BaseTestCase):
         with self.assertRaises(SystemCommandFailedError):
             harvester_runner.run(collection)
 
-            harvester_runner.upload_runner.assert_not_called()
+            harvester_runner.upload_runner.broker.assert_not_called()
 
         success_slice, fail_slice, pending_slice = collection.get_slices(harvester_runner.slice_size)
 
@@ -360,7 +361,7 @@ class TestTalendHarvesterRunner(BaseTestCase):
         with self.assertRaises(SystemCommandFailedError):
             harvester_runner.run(collection)
 
-        harvester_runner.upload_runner.assert_not_called()
+        harvester_runner.upload_runner.broker.assert_not_called()
 
         self.assertFalse(all(f.is_harvested for f in collection))
         self.assertFalse(all(f.is_uploaded for f in collection))
@@ -426,7 +427,7 @@ class TestTalendHarvesterRunner(BaseTestCase):
         with self.assertRaises(SystemCommandFailedError):
             harvester_runner.run(collection)
 
-            harvester_runner.upload_runner.assert_not_called()
+            harvester_runner.upload_runner.broker.assert_not_called()
 
         success_slice, fail_slice, pending_slice = collection.get_slices(harvester_runner.slice_size)
 
@@ -457,7 +458,7 @@ class TestTalendHarvesterRunner(BaseTestCase):
         with self.assertRaises(SystemCommandFailedError):
             harvester_runner.run(collection)
 
-            harvester_runner.upload_runner.assert_not_called()
+            harvester_runner.upload_runner.broker.assert_not_called()
 
         success_slice, fail_slice, pending_slice = collection.get_slices(harvester_runner.slice_size)
 

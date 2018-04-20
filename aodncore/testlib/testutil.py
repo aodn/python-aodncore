@@ -7,8 +7,8 @@ from netCDF4 import Dataset
 from six import iteritems
 from six.moves.urllib.parse import urlunsplit
 
-from aodncore.pipeline.steps.upload import BaseUploadRunner
 from ..pipeline.configlib import LazyConfigManager
+from ..pipeline.storage import BaseStorageBroker
 from ..testlib.dummyhandler import DummyHandler
 
 try:
@@ -17,7 +17,7 @@ except ImportError:
     import mock
 
 __all__ = [
-    'NullUploadRunner',
+    'NullStorageBroker',
     'dest_path_testing',
     'get_nonexistent_path',
     'make_test_file',
@@ -32,10 +32,10 @@ GLOBAL_TEST_BASE = os.path.dirname(os.path.dirname(__file__))
 TESTLIB_CONF_DIR = os.path.join(os.path.dirname(__file__), 'conf')
 
 
-class NullUploadRunner(BaseUploadRunner):
+class NullStorageBroker(BaseStorageBroker):
     def __init__(self, prefix, fail=False):
         mock_logger = mock.MagicMock()
-        super(NullUploadRunner, self).__init__(None, mock_logger)
+        super(NullStorageBroker, self).__init__(None, mock_logger)
         self.prefix = prefix
         self.fail = fail
 
@@ -63,7 +63,7 @@ class NullUploadRunner(BaseUploadRunner):
 
     def run(self, pipeline_files):
         self.call_count += 1
-        super(NullUploadRunner, self).run(pipeline_files)
+        super(NullStorageBroker, self).run(pipeline_files)
 
     def assert_call_count(self, count):
         if self.call_count != count:

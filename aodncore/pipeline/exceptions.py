@@ -25,7 +25,7 @@ __all__ = [
     'InvalidHarvestMapError',
     'InvalidInputFileError',
     'InvalidRecipientError',
-    'InvalidUploadUrlError',
+    'InvalidStoreUrlError',
     'MissingConfigParameterError',
     'MissingFileError',
     'NotificationFailedError',
@@ -128,7 +128,7 @@ class InvalidRecipientError(PipelineSystemError):
     pass
 
 
-class InvalidUploadUrlError(PipelineSystemError):
+class InvalidStoreUrlError(PipelineSystemError):
     pass
 
 
