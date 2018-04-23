@@ -39,9 +39,10 @@ class NullStorageBroker(BaseStorageBroker):
         self.prefix = prefix
         self.fail = fail
 
-        self.call_count = 0
+        self.upload_call_count = 0
+        self.delete_call_count = 0
 
-    def _delete_file(self, pipeline_file):
+    def _delete_file(self, pipeline_file, dest_path_attr):
         if self.fail:
             raise Exception('deliberate failure requested')
 
@@ -51,30 +52,45 @@ class NullStorageBroker(BaseStorageBroker):
     def _pre_run_hook(self):
         pass
 
-    def _upload_file(self, pipeline_file):
+    def _upload_file(self, pipeline_file, dest_path_attr):
         if self.fail:
             raise Exception('deliberate failure requested')
 
-    def _get_absolute_dest_uri(self, pipeline_file):
+    def _get_absolute_dest_uri(self, pipeline_file, dest_path_attr):
         return "null://{dest_path}".format(dest_path=pipeline_file.dest_path)
 
     def _get_is_overwrite(self, pipeline_file, abs_path):
         return not self.fail
 
-    def run(self, pipeline_files):
-        self.call_count += 1
-        super(NullStorageBroker, self).run(pipeline_files)
+    def upload(self, pipeline_files, is_stored_attr, dest_path_attr):
+        self.upload_call_count += 1
+        super(NullStorageBroker, self).upload(pipeline_files, is_stored_attr, dest_path_attr)
 
-    def assert_call_count(self, count):
-        if self.call_count != count:
-            raise AssertionError("run method call_count: {call_count}".format(call_count=self.call_count))
+    def delete(self, pipeline_files, is_stored_attr, dest_path_attr):
+        self.delete_call_count += 1
+        super(NullStorageBroker, self).delete(pipeline_files, is_stored_attr, dest_path_attr)
 
-    def assert_called(self):
-        if self.call_count == 0:
-            raise AssertionError("run method not called")
+    def assert_upload_call_count(self, count):
+        if self.upload_call_count != count:
+            raise AssertionError("upload method call count: {call_count}".format(call_count=self.upload_call_count))
 
-    def assert_not_called(self):
-        self.assert_call_count(0)
+    def assert_upload_called(self):
+        if self.upload_call_count == 0:
+            raise AssertionError("upload method not called")
+
+    def assert_upload_not_called(self):
+        self.assert_upload_call_count(0)
+
+    def assert_delete_call_count(self, count):
+        if self.delete_call_count != count:
+            raise AssertionError("delete method call count: {call_count}".format(call_count=self.delete_call_count))
+
+    def assert_delete_called(self):
+        if self.delete_call_count == 0:
+            raise AssertionError("delete method not called")
+
+    def assert_delete_not_called(self):
+        self.assert_delete_call_count(0)
 
 
 def dest_path_testing(filename):

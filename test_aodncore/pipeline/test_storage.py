@@ -185,26 +185,26 @@ class TestBaseStorageBroker(BaseTestCase):
         collection = get_upload_collection(delete=True)
         broker = NullStorageBroker("/", fail=True)
         with self.assertRaises(FileDeleteFailedError):
-            broker.run(collection)
+            broker.delete(pipeline_files=collection, is_stored_attr='is_stored', dest_path_attr='dest_path')
 
         self.assertFalse(collection[0].is_stored)
 
     def test_delete_success(self):
         collection = get_upload_collection(delete=True)
         broker = NullStorageBroker("/")
-        broker.run(collection)
+        broker.delete(pipeline_files=collection, is_stored_attr='is_stored', dest_path_attr='dest_path')
         self.assertTrue(collection[0].is_stored)
 
     def test_upload_fail(self):
         collection = get_upload_collection()
         broker = NullStorageBroker("/", fail=True)
         with self.assertRaises(FileUploadFailedError):
-            broker.run(collection)
+            broker.upload(pipeline_files=collection, is_stored_attr='is_stored', dest_path_attr='dest_path')
 
     def test_upload_success(self):
         collection = get_upload_collection()
         broker = NullStorageBroker("/")
-        broker.run(collection)
+        broker.upload(pipeline_files=collection, is_stored_attr='is_stored', dest_path_attr='dest_path')
         self.assertTrue(collection[0].is_stored)
 
     def test_set_is_overwrite_with_no_action_file(self):
@@ -231,7 +231,7 @@ class TestLocalFileStorageBroker(BaseTestCase):
         netcdf_file, png_file, ico_file, unknown_file = collection
 
         file_storage_broker = LocalFileStorageBroker('/tmp/probably/doesnt/exist/upload', None, self.test_logger)
-        file_storage_broker.run(collection)
+        file_storage_broker.upload(collection)
 
         netcdf_dest_path = os.path.join(file_storage_broker.prefix, netcdf_file.dest_path)
         netcdf_dest_dir = os.path.dirname(netcdf_dest_path)
@@ -262,7 +262,7 @@ class TestLocalFileStorageBroker(BaseTestCase):
         netcdf_file, png_file, ico_file, unknown_file = collection
 
         file_storage_broker = LocalFileStorageBroker('/tmp/probably/doesnt/exist/upload', None, self.test_logger)
-        file_storage_broker.run(collection)
+        file_storage_broker.delete(collection)
 
         netcdf_dest_path = os.path.join(file_storage_broker.prefix, netcdf_file.dest_path)
         png_dest_path = os.path.join(file_storage_broker.prefix, png_file.dest_path)
@@ -295,7 +295,7 @@ class TestS3StorageBroker(BaseTestCase):
         with self.assertRaises(InvalidStoreUrlError):
             # mock out sleep to avoid long and unnecessary waiting during tests
             with mock.patch('aodncore.util.external.retry.api.time.sleep', new=lambda x: None):
-                s3_storage_broker.run(collection)
+                s3_storage_broker.upload(collection)
 
         self.assertEqual(s3_storage_broker.s3_client.head_bucket.call_count, s3_storage_broker.retry_kwargs['tries'])
 
@@ -351,7 +351,7 @@ class TestS3StorageBroker(BaseTestCase):
         mock_boto3.client.assert_called_once_with('s3')
 
         with mock.patch('aodncore.pipeline.storage.open', mock.mock_open(read_data='')) as m:
-            s3_storage_broker.run(collection)
+            s3_storage_broker.upload(collection)
         self.assertEqual(m.call_count, 4)
         m.assert_any_call(netcdf_file.src_path, 'rb')
         m.assert_any_call(png_file.src_path, 'rb')
@@ -396,7 +396,7 @@ class TestS3StorageBroker(BaseTestCase):
         mock_boto3.client.assert_called_once_with('s3')
 
         with mock.patch('aodncore.pipeline.storage.open', mock.mock_open(read_data='')) as m:
-            s3_storage_broker.run(collection)
+            s3_storage_broker.delete(collection)
         m.assert_not_called()
 
         netcdf_dest_path = os.path.join(s3_storage_broker.prefix, netcdf_file.dest_path)
@@ -437,7 +437,7 @@ class TestSftpStorageBroker(BaseTestCase):
         sftp_storage_broker = SftpStorageBroker(dummy_server, dummy_prefix, None, self.test_logger)
 
         with mock.patch('aodncore.pipeline.storage.open', mock.mock_open(read_data='')) as m:
-            sftp_storage_broker.run(collection)
+            sftp_storage_broker.upload(collection)
 
         sftp_storage_broker._sshclient.connect.assert_called_once_with(sftp_storage_broker.server)
 
@@ -474,7 +474,7 @@ class TestSftpStorageBroker(BaseTestCase):
         dummy_prefix = "/tmp/{uuid}".format(uuid=str(uuid4()))
 
         sftp_storage_broker = SftpStorageBroker(dummy_server, dummy_prefix, None, self.test_logger)
-        sftp_storage_broker.run(collection)
+        sftp_storage_broker.delete(collection)
 
         sftp_storage_broker._sshclient.connect.assert_called_once_with(sftp_storage_broker.server)
 

@@ -3,7 +3,7 @@ from uuid import uuid4
 
 from aodncore.pipeline import PipelineFile, PipelineFileCollection, PipelineFilePublishType
 from aodncore.pipeline.exceptions import FileDeleteFailedError, FileUploadFailedError, InvalidStoreUrlError
-from aodncore.pipeline.steps.upload import UploadRunner, get_upload_runner
+from aodncore.pipeline.steps.store import StoreRunner, get_store_runner
 from aodncore.pipeline.storage import LocalFileStorageBroker, S3StorageBroker, SftpStorageBroker
 from aodncore.testlib import BaseTestCase, NullStorageBroker
 from test_aodncore import TESTDATA_DIR
@@ -48,28 +48,28 @@ def get_undo_collection():
 
 
 # noinspection PyUnusedLocal
-class TestPipelineStepsUpload(BaseTestCase):
-    def test_get_upload_runner(self):
+class TestPipelineStepsStore(BaseTestCase):
+    def test_get_store_runner(self):
         file_uri = 'file:///tmp/probably/doesnt/exist/upload'
-        file_upload_runner = get_upload_runner(file_uri, None, self.test_logger)
-        self.assertIsInstance(file_upload_runner.broker, LocalFileStorageBroker)
+        file_store_runner = get_store_runner(file_uri, None, self.test_logger)
+        self.assertIsInstance(file_store_runner.broker, LocalFileStorageBroker)
 
         s3_uri = "s3://{dummy_bucket}/{dummy_prefix}".format(dummy_bucket=str(uuid4()), dummy_prefix=str(uuid4()))
-        s3_upload_runner = get_upload_runner(s3_uri, None, self.test_logger)
-        self.assertIsInstance(s3_upload_runner.broker, S3StorageBroker)
+        s3_store_runner = get_store_runner(s3_uri, None, self.test_logger)
+        self.assertIsInstance(s3_store_runner.broker, S3StorageBroker)
 
         sftp_uri = "sftp://{dummy_host}/{dummy_path}".format(dummy_host=str(uuid4()), dummy_path=str(uuid4()))
-        sftp_upload_runner = get_upload_runner(sftp_uri, None, self.test_logger)
-        self.assertIsInstance(sftp_upload_runner.broker, SftpStorageBroker)
+        sftp_store_runner = get_store_runner(sftp_uri, None, self.test_logger)
+        self.assertIsInstance(sftp_store_runner.broker, SftpStorageBroker)
 
         with self.assertRaises(InvalidStoreUrlError):
-            _ = get_upload_runner('invalid_uri', None, self.test_logger)
+            _ = get_store_runner('invalid_uri', None, self.test_logger)
 
 
-class TestBaseUploadRunner(BaseTestCase):
+class TestBaseStoreRunner(BaseTestCase):
     def test_delete_fail(self):
         collection = get_upload_collection(delete=True)
-        runner = UploadRunner(NullStorageBroker("/", fail=True), None, None)
+        runner = StoreRunner(NullStorageBroker("/", fail=True), None, None)
         with self.assertRaises(FileDeleteFailedError):
             runner.run(collection)
 
@@ -77,19 +77,19 @@ class TestBaseUploadRunner(BaseTestCase):
 
     def test_delete_success(self):
         collection = get_upload_collection(delete=True)
-        runner = UploadRunner(NullStorageBroker("/"), None, None)
+        runner = StoreRunner(NullStorageBroker("/"), None, None)
         runner.run(collection)
         self.assertTrue(collection[0].is_stored)
 
     def test_upload_fail(self):
         collection = get_upload_collection()
-        runner = UploadRunner(NullStorageBroker("/", fail=True), None, None)
+        runner = StoreRunner(NullStorageBroker("/", fail=True), None, None)
         with self.assertRaises(FileUploadFailedError):
             runner.run(collection)
 
     def test_upload_success(self):
         collection = get_upload_collection()
-        runner = UploadRunner(NullStorageBroker("/"), None, None)
+        runner = StoreRunner(NullStorageBroker("/"), None, None)
         runner.run(collection)
         self.assertTrue(collection[0].is_stored)
 
@@ -101,7 +101,7 @@ class TestBaseUploadRunner(BaseTestCase):
         self.assertIs(temp_file.publish_type, PipelineFilePublishType.NO_ACTION)
         collection.add(temp_file)
 
-        runner = UploadRunner(NullStorageBroker("/"), None, None)
+        runner = StoreRunner(NullStorageBroker("/"), None, None)
         try:
             runner.set_is_overwrite(collection)
         except Exception as e:

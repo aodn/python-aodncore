@@ -15,7 +15,7 @@ from .files import PipelineFile, PipelineFileCollection
 from .log import SYSINFO, get_pipeline_logger
 from .schema import validate_check_params, validate_harvest_params, validate_notify_params, validate_resolve_params
 from .steps import (get_cc_module_versions, get_check_runner, get_harvester_runner, get_notify_runner,
-                    get_resolve_runner, get_upload_runner)
+                    get_resolve_runner, get_store_runner)
 from ..util import (format_exception, get_file_checksum, iter_public_attributes, merge_dicts, validate_bool,
                     TemporaryDirectory)
 
@@ -568,7 +568,7 @@ class HandlerBase(object):
         if files_to_check:
             check_runner.run(files_to_check)
 
-    def _archive(self, upload_runner):
+    def _archive(self, store_runner):
         files_to_archive = self.file_collection.filter_by_bool_attribute('pending_archive')
 
         if self.archive_input_file:
@@ -576,15 +576,15 @@ class HandlerBase(object):
                                                                                      os.path.basename(self.input_file)))
             input_file_obj.publish_type = PipelineFilePublishType.ARCHIVE_ONLY
             infile_collection = PipelineFileCollection(input_file_obj)
-            upload_runner.run(infile_collection)
+            store_runner.run(infile_collection)
             self.is_archived = input_file_obj.is_archived
 
         if files_to_archive:
             self.file_collection.set_archive_paths(self._archive_path_function_ref)
-            upload_runner.run(files_to_archive)
+            store_runner.run(files_to_archive)
 
-    def _harvest(self, upload_runner):
-        harvest_runner = get_harvester_runner(self.harvest_type, upload_runner, self.harvest_params, self.temp_dir,
+    def _harvest(self, store_runner):
+        harvest_runner = get_harvester_runner(self.harvest_type, store_runner, self.harvest_params, self.temp_dir,
                                               self.config, self.logger)
         self.logger.sysinfo("get_harvester_runner -> '{runner}'".format(runner=harvest_runner.__class__.__name__))
         files_to_harvest = self.file_collection.filter_by_bool_attribute('pending_harvest')
@@ -592,24 +592,24 @@ class HandlerBase(object):
         if files_to_harvest:
             harvest_runner.run(files_to_harvest)
 
-    def _store_unharvested(self, upload_runner):
+    def _store_unharvested(self, store_runner):
         files_to_store = self.file_collection.filter_by_bool_attribute('pending_store')
 
         if files_to_store:
-            upload_runner.run(files_to_store)
+            store_runner.run(files_to_store)
 
     def _publish(self):
-        archive_runner = get_upload_runner(self._config.pipeline_config['global']['archive_uri'], self._config,
-                                           self.logger, archive_mode=True)
+        archive_runner = get_store_runner(self._config.pipeline_config['global']['archive_uri'], self._config,
+                                          self.logger, archive_mode=True)
         self.logger.sysinfo(
-            "get_upload_runner (archive) -> '{runner}'".format(runner=archive_runner.__class__.__name__))
+            "get_store_runner (archive) -> '{runner}'".format(runner=archive_runner.__class__.__name__))
 
         self.file_collection.validate_attribute_uniqueness('archive_path')
         self._archive(archive_runner)
 
-        upload_runner = get_upload_runner(self._config.pipeline_config['global']['upload_uri'], self._config,
-                                          self.logger)
-        self.logger.sysinfo("get_upload_runner -> '{runner}'".format(runner=upload_runner.__class__.__name__))
+        upload_runner = get_store_runner(self._config.pipeline_config['global']['upload_uri'], self._config,
+                                         self.logger)
+        self.logger.sysinfo("get_store_runner -> '{runner}'".format(runner=upload_runner.__class__.__name__))
 
         self.file_collection.set_dest_paths(self._dest_path_function_ref)
 
