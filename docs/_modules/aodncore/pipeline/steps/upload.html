@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>aodncore.pipeline.steps.upload &mdash; aodncore 0.0.19 documentation</title>
+  <title>aodncore.pipeline.steps.upload &mdash; aodncore 0.9.0 documentation</title>
   
 
   
@@ -57,7 +57,7 @@
             
             
               <div class="version">
-                0.0.19
+                0.9.0
               </div>
             
           
@@ -81,64 +81,50 @@
               
             
             
-              <p class="caption"><span class="caption-text">Contents:</span></p>
+              <p class="caption"><span class="caption-text">User documentation:</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../../aodncore.html">aodncore package</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="../../../../aodncore.html#subpackages">Subpackages</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="../../../../aodncore.common.html">aodncore.common package</a><ul>
-<li class="toctree-l4"><a class="reference internal" href="../../../../aodncore.common.html#submodules">Submodules</a></li>
-<li class="toctree-l4"><a class="reference internal" href="../../../../aodncore.common.html#module-aodncore.common.exceptions">aodncore.common.exceptions module</a></li>
-<li class="toctree-l4"><a class="reference internal" href="../../../../aodncore.common.html#module-aodncore.common">Module contents</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../userdoc.html">Overview</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../userdoc.html#state-machine-handler-steps">State machine / handler steps</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../../userdoc.html#initialise">initialise</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../userdoc.html#resolve">resolve</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../userdoc.html#preprocess">preprocess</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../userdoc.html#check">check</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../userdoc.html#process">process</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../userdoc.html#publish">publish</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../userdoc.html#postprocess">postprocess</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../userdoc.html#notify">notify</a></li>
 </ul>
 </li>
-<li class="toctree-l3"><a class="reference internal" href="../../../../aodncore.pipeline.html">aodncore.pipeline package</a><ul>
-<li class="toctree-l4"><a class="reference internal" href="../../../../aodncore.pipeline.html#subpackages">Subpackages</a></li>
-<li class="toctree-l4"><a class="reference internal" href="../../../../aodncore.pipeline.html#submodules">Submodules</a></li>
-<li class="toctree-l4"><a class="reference internal" href="../../../../aodncore.pipeline.html#module-aodncore.pipeline.common">aodncore.pipeline.common module</a></li>
-<li class="toctree-l4"><a class="reference internal" href="../../../../aodncore.pipeline.html#module-aodncore.pipeline.config">aodncore.pipeline.config module</a></li>
-<li class="toctree-l4"><a class="reference internal" href="../../../../aodncore.pipeline.html#module-aodncore.pipeline.configlib">aodncore.pipeline.configlib module</a></li>
-<li class="toctree-l4"><a class="reference internal" href="../../../../aodncore.pipeline.html#module-aodncore.pipeline.destpath">aodncore.pipeline.destpath module</a></li>
-<li class="toctree-l4"><a class="reference internal" href="../../../../aodncore.pipeline.html#module-aodncore.pipeline.exceptions">aodncore.pipeline.exceptions module</a></li>
-<li class="toctree-l4"><a class="reference internal" href="../../../../aodncore.pipeline.html#module-aodncore.pipeline.fileclassifier">aodncore.pipeline.fileclassifier module</a></li>
-<li class="toctree-l4"><a class="reference internal" href="../../../../aodncore.pipeline.html#module-aodncore.pipeline.files">aodncore.pipeline.files module</a></li>
-<li class="toctree-l4"><a class="reference internal" href="../../../../aodncore.pipeline.html#module-aodncore.pipeline.handlerbase">aodncore.pipeline.handlerbase module</a></li>
-<li class="toctree-l4"><a class="reference internal" href="../../../../aodncore.pipeline.html#module-aodncore.pipeline.log">aodncore.pipeline.log module</a></li>
-<li class="toctree-l4"><a class="reference internal" href="../../../../aodncore.pipeline.html#module-aodncore.pipeline.schema">aodncore.pipeline.schema module</a></li>
-<li class="toctree-l4"><a class="reference internal" href="../../../../aodncore.pipeline.html#aodncore-pipeline-serviceconfig-module">aodncore.pipeline.serviceconfig module</a></li>
-<li class="toctree-l4"><a class="reference internal" href="../../../../aodncore.pipeline.html#module-aodncore.pipeline.watch">aodncore.pipeline.watch module</a></li>
-<li class="toctree-l4"><a class="reference internal" href="../../../../aodncore.pipeline.html#aodncore-pipeline-watchservice-module">aodncore.pipeline.watchservice module</a></li>
-<li class="toctree-l4"><a class="reference internal" href="../../../../aodncore.pipeline.html#module-aodncore.pipeline">Module contents</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../userdoc.html#customising-handler-behaviour">Customising handler behaviour</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../../userdoc.html#methods">Methods</a></li>
 </ul>
 </li>
-<li class="toctree-l3"><a class="reference internal" href="../../../../aodncore.testlib.html">aodncore.testlib package</a><ul>
-<li class="toctree-l4"><a class="reference internal" href="../../../../aodncore.testlib.html#submodules">Submodules</a></li>
-<li class="toctree-l4"><a class="reference internal" href="../../../../aodncore.testlib.html#module-aodncore.testlib.basetest">aodncore.testlib.basetest module</a></li>
-<li class="toctree-l4"><a class="reference internal" href="../../../../aodncore.testlib.html#module-aodncore.testlib.dummyhandler">aodncore.testlib.dummyhandler module</a></li>
-<li class="toctree-l4"><a class="reference internal" href="../../../../aodncore.testlib.html#module-aodncore.testlib.handlertest">aodncore.testlib.handlertest module</a></li>
-<li class="toctree-l4"><a class="reference internal" href="../../../../aodncore.testlib.html#module-aodncore.testlib.testutil">aodncore.testlib.testutil module</a></li>
-<li class="toctree-l4"><a class="reference internal" href="../../../../aodncore.testlib.html#module-aodncore.testlib">Module contents</a></li>
-</ul>
-</li>
-<li class="toctree-l3"><a class="reference internal" href="../../../../aodncore.util.html">aodncore.util package</a><ul>
-<li class="toctree-l4"><a class="reference internal" href="../../../../aodncore.util.html#subpackages">Subpackages</a></li>
-<li class="toctree-l4"><a class="reference internal" href="../../../../aodncore.util.html#submodules">Submodules</a></li>
-<li class="toctree-l4"><a class="reference internal" href="../../../../aodncore.util.html#module-aodncore.util.fileops">aodncore.util.fileops module</a></li>
-<li class="toctree-l4"><a class="reference internal" href="../../../../aodncore.util.html#module-aodncore.util.misc">aodncore.util.misc module</a></li>
-<li class="toctree-l4"><a class="reference internal" href="../../../../aodncore.util.html#module-aodncore.util.process">aodncore.util.process module</a></li>
-<li class="toctree-l4"><a class="reference internal" href="../../../../aodncore.util.html#module-aodncore.util">Module contents</a></li>
-</ul>
-</li>
-<li class="toctree-l3"><a class="reference internal" href="../../../../aodncore.vocab.html">aodncore.vocab package</a><ul>
-<li class="toctree-l4"><a class="reference internal" href="../../../../aodncore.vocab.html#submodules">Submodules</a></li>
-<li class="toctree-l4"><a class="reference internal" href="../../../../aodncore.vocab.html#module-aodncore.vocab.platform_code_vocab">aodncore.vocab.platform_code_vocab module</a></li>
-<li class="toctree-l4"><a class="reference internal" href="../../../../aodncore.vocab.html#module-aodncore.vocab">Module contents</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../userdoc.html#attributes">Attributes</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../../userdoc.html#class-parameters">Class parameters</a></li>
 </ul>
 </li>
 </ul>
+<p class="caption"><span class="caption-text">Developer documentation:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../developerdoc.html">Overview</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Module contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../modules.html">aodncore</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../../aodncore.html">aodncore package</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../../aodncore.html#subpackages">Subpackages</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../../aodncore.common.html">aodncore.common package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../aodncore.pipeline.html">aodncore.pipeline package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../aodncore.testlib.html">aodncore.testlib package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../aodncore.util.html">aodncore.util package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../aodncore.vocab.html">aodncore.vocab package</a></li>
+</ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="../../../../aodncore.html#submodules">Submodules</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../../../aodncore.html#module-aodncore.version">aodncore.version module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../../../aodncore.html#module-aodncore">Module contents</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../aodncore.html#submodules">Submodules</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../aodncore.html#module-aodncore.version">aodncore.version module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../aodncore.html#module-aodncore">Module contents</a></li>
+</ul>
+</li>
 </ul>
 </li>
 </ul>
@@ -205,18 +191,31 @@
            <div itemprop="articleBody">
             
   <h1>Source code for aodncore.pipeline.steps.upload</h1><div class="highlight"><pre>
-<span></span><span class="kn">import</span> <span class="nn">abc</span>
+<span></span><span class="sd">&quot;&quot;&quot;This module provides the step runner classes for the &quot;upload&quot; step, which is a sub-step of the :ref:`publish` step.</span>
+
+<span class="sd">    Uploading/deleting is performed by a :py:class:`BaseUploadRunner` class.</span>
+
+<span class="sd">    Despite the name of UploadRunner, the classes perform the role of a general storage &quot;broker&quot;, by abstracting the</span>
+<span class="sd">    details of interacting with a given storage protocol, while exposing a generic interface to the handler class. The</span>
+<span class="sd">    handler class itself then only needs to understand the concept of &quot;uploading&quot; and &quot;deleting&quot; without needing to</span>
+<span class="sd">    understand the differences between interacting with a local directory or with S3, for example.</span>
+
+<span class="sd">    The most common use of this step is to upload files to S3 after they have been checked and harvested.</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="kn">import</span> <span class="nn">abc</span>
 <span class="kn">import</span> <span class="nn">errno</span>
 <span class="kn">import</span> <span class="nn">os</span>
 
 <span class="kn">import</span> <span class="nn">boto3</span>
+<span class="kn">from</span> <span class="nn">botocore.exceptions</span> <span class="k">import</span> <span class="n">ClientError</span>
 <span class="kn">from</span> <span class="nn">paramiko</span> <span class="k">import</span> <span class="n">SSHClient</span><span class="p">,</span> <span class="n">AutoAddPolicy</span>
 <span class="kn">from</span> <span class="nn">six.moves.urllib.parse</span> <span class="k">import</span> <span class="n">urlparse</span>
 
 <span class="kn">from</span> <span class="nn">.basestep</span> <span class="k">import</span> <span class="n">AbstractCollectionStepRunner</span>
 <span class="kn">from</span> <span class="nn">..exceptions</span> <span class="k">import</span> <span class="n">AttributeNotSetError</span><span class="p">,</span> <span class="n">FileDeleteFailedError</span><span class="p">,</span> <span class="n">FileUploadFailedError</span><span class="p">,</span> <span class="n">InvalidUploadUrlError</span>
 <span class="kn">from</span> <span class="nn">..files</span> <span class="k">import</span> <span class="n">validate_pipelinefilecollection</span>
-<span class="kn">from</span> <span class="nn">...util</span> <span class="k">import</span> <span class="n">format_exception</span><span class="p">,</span> <span class="n">mkdir_p</span><span class="p">,</span> <span class="n">rm_f</span><span class="p">,</span> <span class="n">safe_copy_file</span>
+<span class="kn">from</span> <span class="nn">...util</span> <span class="k">import</span> <span class="n">format_exception</span><span class="p">,</span> <span class="n">mkdir_p</span><span class="p">,</span> <span class="n">retry_decorator</span><span class="p">,</span> <span class="n">rm_f</span><span class="p">,</span> <span class="n">safe_copy_file</span>
 
 <span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span>
     <span class="s1">&#39;get_upload_runner&#39;</span><span class="p">,</span>
@@ -230,10 +229,10 @@
     <span class="sd">&quot;&quot;&quot;Factory function to return appropriate uploader class based on URL scheme</span>
 
 <span class="sd">    :param upload_base_url: URL base</span>
-<span class="sd">    :param config: LazyConfigManager instance</span>
-<span class="sd">    :param logger: Logger instance</span>
-<span class="sd">    :param archive_mode: flag to indicate archive</span>
-<span class="sd">    :return: BaseUploadRunner sub-class</span>
+<span class="sd">    :param config: :py:class:`LazyConfigManager` instance</span>
+<span class="sd">    :param logger: :py:class:`Logger` instance</span>
+<span class="sd">    :param archive_mode: :py:class:`bool` flag to indicate archive</span>
+<span class="sd">    :return: :py:class:`BaseUploadRunner` class</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="n">url</span> <span class="o">=</span> <span class="n">urlparse</span><span class="p">(</span><span class="n">upload_base_url</span><span class="p">)</span>
@@ -392,14 +391,20 @@
 <div class="viewcode-block" id="S3UploadRunner"><a class="viewcode-back" href="../../../../aodncore.pipeline.steps.html#aodncore.pipeline.steps.upload.S3UploadRunner">[docs]</a><span class="k">class</span> <span class="nc">S3UploadRunner</span><span class="p">(</span><span class="n">BaseUploadRunner</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;UploadRunner to upload files to an S3 bucket</span>
 
-<span class="sd">    Note: this does not and should not attempt to support any authentication code. Multiple mechanisms for loading</span>
-<span class="sd">            credentials are far more appropriately handled directly by the boto3, and it is expected that the</span>
+<span class="sd">        .. warning:: This does not and should not attempt to support any authentication code. Multiple mechanisms for</span>
+<span class="sd">            loading credentials are far more appropriately handled directly by the boto3, and it is expected that the</span>
 <span class="sd">            credentials are supplied using one of these mechanisms by the environment (e.g. deployed from configuration</span>
-<span class="sd">            management, set as environment variables etc.)</span>
+<span class="sd">            management, set as environment variables etc.).</span>
 
-<span class="sd">            Refer: http://boto3.readthedocs.io/en/latest/guide/configuration.html</span>
-
+<span class="sd">        .. seealso:: http://boto3.readthedocs.io/en/latest/guide/configuration.html</span>
 <span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">retry_kwargs</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="s1">&#39;tries&#39;</span><span class="p">:</span> <span class="mi">3</span><span class="p">,</span>
+        <span class="s1">&#39;delay&#39;</span><span class="p">:</span> <span class="mi">5</span><span class="p">,</span>
+        <span class="s1">&#39;backoff&#39;</span><span class="p">:</span> <span class="mi">2</span><span class="p">,</span>
+        <span class="s1">&#39;exceptions&#39;</span><span class="p">:</span> <span class="p">(</span><span class="n">ClientError</span><span class="p">,)</span>
+    <span class="p">}</span>
 
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">bucket</span><span class="p">,</span> <span class="n">prefix</span><span class="p">,</span> <span class="n">config</span><span class="p">,</span> <span class="n">logger</span><span class="p">,</span> <span class="n">archive_mode</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
         <span class="nb">super</span><span class="p">(</span><span class="n">S3UploadRunner</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">config</span><span class="p">,</span> <span class="n">logger</span><span class="p">,</span> <span class="n">archive_mode</span><span class="p">)</span>
@@ -409,6 +414,7 @@
 
         <span class="bp">self</span><span class="o">.</span><span class="n">s3_client</span> <span class="o">=</span> <span class="n">boto3</span><span class="o">.</span><span class="n">client</span><span class="p">(</span><span class="s1">&#39;s3&#39;</span><span class="p">)</span>
 
+    <span class="nd">@retry_decorator</span><span class="p">(</span><span class="o">**</span><span class="n">retry_kwargs</span><span class="p">)</span>
     <span class="k">def</span> <span class="nf">_delete_file</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pipeline_file</span><span class="p">):</span>
         <span class="n">abs_path</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_absolute_dest_path</span><span class="p">(</span><span class="n">pipeline_file</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">s3_client</span><span class="o">.</span><span class="n">delete_object</span><span class="p">(</span><span class="n">Bucket</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">bucket</span><span class="p">,</span> <span class="n">Key</span><span class="o">=</span><span class="n">abs_path</span><span class="p">)</span>
@@ -416,16 +422,22 @@
     <span class="k">def</span> <span class="nf">_get_absolute_dest_uri</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pipeline_file</span><span class="p">):</span>
         <span class="k">return</span> <span class="s2">&quot;s3://</span><span class="si">{bucket}</span><span class="s2">/</span><span class="si">{path}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">bucket</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">bucket</span><span class="p">,</span> <span class="n">path</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_get_absolute_dest_path</span><span class="p">(</span><span class="n">pipeline_file</span><span class="p">))</span>
 
+    <span class="nd">@retry_decorator</span><span class="p">(</span><span class="o">**</span><span class="n">retry_kwargs</span><span class="p">)</span>
     <span class="k">def</span> <span class="nf">_get_is_overwrite</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pipeline_file</span><span class="p">,</span> <span class="n">abs_path</span><span class="p">):</span>
         <span class="n">response</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">s3_client</span><span class="o">.</span><span class="n">list_objects_v2</span><span class="p">(</span><span class="n">Bucket</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">bucket</span><span class="p">,</span> <span class="n">Prefix</span><span class="o">=</span><span class="n">abs_path</span><span class="p">)</span>
-        <span class="k">return</span> <span class="nb">bool</span><span class="p">(</span><span class="n">k</span> <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="n">response</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;Contents&#39;</span><span class="p">,</span> <span class="p">[])</span> <span class="k">if</span> <span class="n">k</span><span class="p">[</span><span class="s1">&#39;Key&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="n">abs_path</span><span class="p">)</span>
+        <span class="k">return</span> <span class="nb">bool</span><span class="p">([</span><span class="n">k</span> <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="n">response</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;Contents&#39;</span><span class="p">,</span> <span class="p">[])</span> <span class="k">if</span> <span class="n">k</span><span class="p">[</span><span class="s1">&#39;Key&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="n">abs_path</span><span class="p">])</span>
 
     <span class="k">def</span> <span class="nf">_post_run_hook</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span>
 
     <span class="k">def</span> <span class="nf">_pre_run_hook</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_validate_bucket</span><span class="p">()</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_validate_bucket</span><span class="p">()</span>
+        <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">InvalidUploadUrlError</span><span class="p">(</span>
+                <span class="s2">&quot;unable to access S3 bucket &#39;</span><span class="si">{0}</span><span class="s2">&#39;: </span><span class="si">{1}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">bucket</span><span class="p">,</span> <span class="n">format_exception</span><span class="p">(</span><span class="n">e</span><span class="p">)))</span>
 
+    <span class="nd">@retry_decorator</span><span class="p">(</span><span class="o">**</span><span class="n">retry_kwargs</span><span class="p">)</span>
     <span class="k">def</span> <span class="nf">_upload_file</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pipeline_file</span><span class="p">):</span>
         <span class="n">abs_path</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_absolute_dest_path</span><span class="p">(</span><span class="n">pipeline_file</span><span class="p">)</span>
 
@@ -433,12 +445,9 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">s3_client</span><span class="o">.</span><span class="n">upload_fileobj</span><span class="p">(</span><span class="n">f</span><span class="p">,</span> <span class="n">Bucket</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">bucket</span><span class="p">,</span> <span class="n">Key</span><span class="o">=</span><span class="n">abs_path</span><span class="p">,</span>
                                           <span class="n">ExtraArgs</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;ContentType&#39;</span><span class="p">:</span> <span class="n">pipeline_file</span><span class="o">.</span><span class="n">mime_type</span><span class="p">})</span>
 
+    <span class="nd">@retry_decorator</span><span class="p">(</span><span class="o">**</span><span class="n">retry_kwargs</span><span class="p">)</span>
     <span class="k">def</span> <span class="nf">_validate_bucket</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">try</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">s3_client</span><span class="o">.</span><span class="n">head_bucket</span><span class="p">(</span><span class="n">Bucket</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">bucket</span><span class="p">)</span>
-        <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="n">InvalidUploadUrlError</span><span class="p">(</span>
-                <span class="s2">&quot;unable to access S3 bucket &#39;</span><span class="si">{0}</span><span class="s2">&#39;: </span><span class="si">{1}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">bucket</span><span class="p">,</span> <span class="n">format_exception</span><span class="p">(</span><span class="n">e</span><span class="p">)))</span></div>
+        <span class="bp">self</span><span class="o">.</span><span class="n">s3_client</span><span class="o">.</span><span class="n">head_bucket</span><span class="p">(</span><span class="n">Bucket</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">bucket</span><span class="p">)</span></div>
 
 
 <span class="k">def</span> <span class="nf">sftp_path_exists</span><span class="p">(</span><span class="n">sftpclient</span><span class="p">,</span> <span class="n">path</span><span class="p">):</span>
@@ -501,8 +510,8 @@
 <div class="viewcode-block" id="SftpUploadRunner"><a class="viewcode-back" href="../../../../aodncore.pipeline.steps.html#aodncore.pipeline.steps.upload.SftpUploadRunner">[docs]</a><span class="k">class</span> <span class="nc">SftpUploadRunner</span><span class="p">(</span><span class="n">BaseUploadRunner</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;UploadRunner to upload files to an SFTP server</span>
 
-<span class="sd">    Note: similar to the S3 upload runner, this does not implement any authentication code, as this is better handled by</span>
-<span class="sd">            the environment in the form of public key authentication</span>
+<span class="sd">        .. warning:: Similarly to the S3 upload runner, this does not implement any authentication code, as this is better</span>
+<span class="sd">            handled by the environment in the form of public key authentication.</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
 
@@ -579,7 +588,7 @@
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'../../../../',
-            VERSION:'0.0.19',
+            VERSION:'0.9.0',
             LANGUAGE:'None',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',

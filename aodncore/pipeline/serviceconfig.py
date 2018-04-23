@@ -1,6 +1,5 @@
 """This module acts as an entry-point for Celery worker processes and the inotify service, in order for them to access
 the configured Celery application and other runtime configuration (as required)
-
 """
 
 from .config import CONFIG

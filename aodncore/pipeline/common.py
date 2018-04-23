@@ -1,3 +1,7 @@
+"""This module contains common "types" (typically enums or simple data classes) used by more than one module in the
+    project.
+"""
+
 import os
 
 from enum import Enum
@@ -90,25 +94,24 @@ class NotificationRecipientType(Enum):
 class FileType(Enum):
     """Represents each known file type, including extension and mime type
 
-        Each enum member may have it's attributes accessed by name when required for comparisons and filtering, e.g.
+    Each enum member may have it's attributes accessed by name when required for comparisons and filtering, e.g.
 
-        # lookup the extension for a PNG file type in general
+    - lookup the extension for PNG file types in general::
 
-        > FileType.PNG.extension
+        FileType.PNG.extension
         '.png'
 
-        # assign a type attribute to an object, and query the type-specific values directly from the object
+    - assign a type attribute to an object, and query the type-specific values directly from the object::
 
-        > class Object(object):
-                pass
+        class Object(object):
+            pass
 
-        > o = Object()
-        > o.file_type = FileType.ZIP
-        > o.file_type.extension
+        o = Object()
+        o.file_type = FileType.ZIP
+        o.file_type.extension
         '.zip'
-        > o.file_type.mime_type
+        o.file_type.mime_type
         'application/zip'
-
     """
     __slots__ = ('extension', 'mime_type')
 
@@ -142,7 +145,7 @@ class FileType(Enum):
 
 
 class PipelineFileCheckType(Enum):
-    """Each PipelineFile may individually specify which checks are performed against it
+    """Each :py:class:`PipelineFile` may individually specify which checks are performed against it
     """
     NO_ACTION = 0
     NONEMPTY_CHECK = 1
@@ -151,15 +154,16 @@ class PipelineFileCheckType(Enum):
 
 
 class PipelineFilePublishType(Enum):
-    """Each PipelineFile may individually specify which combination of archive/upload/harvest actions must occur before
-        it is considered "published"
+    """Each :py:class:`PipelineFile` may individually specify which combination of archive/upload/harvest actions must
+    occur before it is considered "published"
 
-        Enum member values are a tuple containing boolean flags used for querying/validating types, which are provided
-        to the __init__ for each member (since confusingly, each Enum member is an *instance* of this class).
+    Enum member values are a tuple containing boolean flags used for querying/validating types, which are provided
+    to the :py:meth:`__init__` for each member (since confusingly, each :py:class:`Enum` member is an *instance* of this
+    class).
 
-        Each member's valid is therefore a tuple of bools representing the following flags:
+    Each member's valid is therefore a tuple of :py:class:`bool` values representing the following flags::
 
-            (is_addition_type, is_deletion_type, is_archive_type, is_store_type, is_harvest_type)
+        (is_addition_type, is_deletion_type, is_archive_type, is_store_type, is_harvest_type)
 
     """
     __slots__ = ('_is_addition_type', '_is_deletion_type', '_is_archive_type', '_is_store_type', '_is_harvest_type')

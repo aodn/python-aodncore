@@ -1,5 +1,5 @@
-aodncore\.util package
-======================
+aodncore.util package
+=====================
 
 Subpackages
 -----------
@@ -11,24 +11,24 @@ Subpackages
 Submodules
 ----------
 
-aodncore\.util\.fileops module
-------------------------------
+aodncore.util.fileops module
+----------------------------
 
 .. automodule:: aodncore.util.fileops
     :members:
     :undoc-members:
     :show-inheritance:
 
-aodncore\.util\.misc module
----------------------------
+aodncore.util.misc module
+-------------------------
 
 .. automodule:: aodncore.util.misc
     :members:
     :undoc-members:
     :show-inheritance:
 
-aodncore\.util\.process module
-------------------------------
+aodncore.util.process module
+----------------------------
 
 .. automodule:: aodncore.util.process
     :members:

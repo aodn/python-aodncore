@@ -18,6 +18,7 @@
 #
 import os
 import sys
+
 sys.path.insert(0, os.path.abspath('..'))
 import aodncore.version
 
@@ -32,7 +33,7 @@ import aodncore.version
 # ones.
 extensions = ['sphinx.ext.autodoc',
               'sphinx.ext.autosectionlabel',
-    'sphinx.ext.viewcode']
+              'sphinx.ext.viewcode']
 
 # Add any paths that contain templates here, relative to this directory.
 templates_path = ['_templates']
@@ -70,14 +71,24 @@ language = None
 # List of patterns, relative to source directory, that match files and
 # directories to ignore when looking for source files.
 # This patterns also effect to html_static_path and html_extra_path
-exclude_patterns = ['_build', '_themes', 'Thumbs.db', '.DS_Store']
+exclude_patterns = [
+    '_build',
+    '_themes',
+    'Thumbs.db',
+    '.DS_Store',
+    'aodncore.pipeline.config.rst',
+    'aodncore.pipeline.handlerbase.rst',
+    'aodncore.pipeline.serviceconfig.rst',
+    'aodncore.testlib.conf.rst',
+    'aodncore.util.external.rst',
+    'aodncore.util.external.*.rst'
+]
 
 # The name of the Pygments (syntax highlighting) style to use.
 pygments_style = 'sphinx'
 
 # If true, `todo` and `todoList` produce output, else they produce nothing.
 todo_include_todos = True
-
 
 # -- Options for HTML output ----------------------------------------------
 
@@ -111,12 +122,10 @@ html_sidebars = {
     ]
 }
 
-
 # -- Options for HTMLHelp output ------------------------------------------
 
 # Output file base name for HTML help builder.
 htmlhelp_basename = 'aodncoredoc'
-
 
 # -- Options for LaTeX output ---------------------------------------------
 
@@ -146,7 +155,6 @@ latex_documents = [
      u'AODN', 'manual'),
 ]
 
-
 # -- Options for manual page output ---------------------------------------
 
 # One entry per manual page. List of tuples
@@ -155,7 +163,6 @@ man_pages = [
     (master_doc, 'aodncore', u'aodncore Documentation',
      [author], 1)
 ]
-
 
 # -- Options for Texinfo output -------------------------------------------
 
@@ -167,6 +174,3 @@ texinfo_documents = [
      author, 'aodncore', 'One line description of project.',
      'Miscellaneous'),
 ]
-
-
-

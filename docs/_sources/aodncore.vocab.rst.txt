@@ -1,11 +1,11 @@
-aodncore\.vocab package
-=======================
+aodncore.vocab package
+======================
 
 Submodules
 ----------
 
-aodncore\.vocab\.platform\_code\_vocab module
----------------------------------------------
+aodncore.vocab.platform\_code\_vocab module
+-------------------------------------------
 
 .. automodule:: aodncore.vocab.platform_code_vocab
     :members:

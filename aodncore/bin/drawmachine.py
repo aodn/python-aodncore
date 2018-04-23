@@ -2,7 +2,8 @@
 
 """Simple script to generate a nice state machine diagram of the HandlerBase Machine
 
-Note: requires pygraphviz to be installed, which is omitted from requirements.txt due to not being required in prod.
+    .. note:: requires pygraphviz to be installed, which is omitted from requirements.txt due to not being required in
+        prod.
 """
 
 import argparse

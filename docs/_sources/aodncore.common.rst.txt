@@ -1,11 +1,11 @@
-aodncore\.common package
-========================
+aodncore.common package
+=======================
 
 Submodules
 ----------
 
-aodncore\.common\.exceptions module
------------------------------------
+aodncore.common.exceptions module
+---------------------------------
 
 .. automodule:: aodncore.common.exceptions
     :members:

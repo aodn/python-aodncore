@@ -3,7 +3,7 @@ a file to be published. The idea is to define the common functionality
 here, then create subclasses to customise for each specific incoming
 handler. 
 
-Expected use:
+Expected use::
 
     class MyFileClassifier(FileClassifier):
         def dest_path(self, input_file):
@@ -15,7 +15,7 @@ Expected use:
         dest_path = MyFileClassifier.dest_path(input_file)
     except FileClassifierException, e:
         print >>sys.stderr, e
-        exit(1)
+        raise
 
     print dest_path
 

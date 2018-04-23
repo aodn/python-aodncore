@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>aodncore.pipeline.exceptions &mdash; aodncore 0.0.19 documentation</title>
+  <title>aodncore.pipeline.exceptions &mdash; aodncore 0.9.0 documentation</title>
   
 
   
@@ -57,7 +57,7 @@
             
             
               <div class="version">
-                0.0.19
+                0.9.0
               </div>
             
           
@@ -81,64 +81,50 @@
               
             
             
-              <p class="caption"><span class="caption-text">Contents:</span></p>
+              <p class="caption"><span class="caption-text">User documentation:</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../aodncore.html">aodncore package</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="../../../aodncore.html#subpackages">Subpackages</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="../../../aodncore.common.html">aodncore.common package</a><ul>
-<li class="toctree-l4"><a class="reference internal" href="../../../aodncore.common.html#submodules">Submodules</a></li>
-<li class="toctree-l4"><a class="reference internal" href="../../../aodncore.common.html#module-aodncore.common.exceptions">aodncore.common.exceptions module</a></li>
-<li class="toctree-l4"><a class="reference internal" href="../../../aodncore.common.html#module-aodncore.common">Module contents</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../userdoc.html">Overview</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../userdoc.html#state-machine-handler-steps">State machine / handler steps</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../userdoc.html#initialise">initialise</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../userdoc.html#resolve">resolve</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../userdoc.html#preprocess">preprocess</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../userdoc.html#check">check</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../userdoc.html#process">process</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../userdoc.html#publish">publish</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../userdoc.html#postprocess">postprocess</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../userdoc.html#notify">notify</a></li>
 </ul>
 </li>
-<li class="toctree-l3"><a class="reference internal" href="../../../aodncore.pipeline.html">aodncore.pipeline package</a><ul>
-<li class="toctree-l4"><a class="reference internal" href="../../../aodncore.pipeline.html#subpackages">Subpackages</a></li>
-<li class="toctree-l4"><a class="reference internal" href="../../../aodncore.pipeline.html#submodules">Submodules</a></li>
-<li class="toctree-l4"><a class="reference internal" href="../../../aodncore.pipeline.html#module-aodncore.pipeline.common">aodncore.pipeline.common module</a></li>
-<li class="toctree-l4"><a class="reference internal" href="../../../aodncore.pipeline.html#module-aodncore.pipeline.config">aodncore.pipeline.config module</a></li>
-<li class="toctree-l4"><a class="reference internal" href="../../../aodncore.pipeline.html#module-aodncore.pipeline.configlib">aodncore.pipeline.configlib module</a></li>
-<li class="toctree-l4"><a class="reference internal" href="../../../aodncore.pipeline.html#module-aodncore.pipeline.destpath">aodncore.pipeline.destpath module</a></li>
-<li class="toctree-l4"><a class="reference internal" href="../../../aodncore.pipeline.html#module-aodncore.pipeline.exceptions">aodncore.pipeline.exceptions module</a></li>
-<li class="toctree-l4"><a class="reference internal" href="../../../aodncore.pipeline.html#module-aodncore.pipeline.fileclassifier">aodncore.pipeline.fileclassifier module</a></li>
-<li class="toctree-l4"><a class="reference internal" href="../../../aodncore.pipeline.html#module-aodncore.pipeline.files">aodncore.pipeline.files module</a></li>
-<li class="toctree-l4"><a class="reference internal" href="../../../aodncore.pipeline.html#module-aodncore.pipeline.handlerbase">aodncore.pipeline.handlerbase module</a></li>
-<li class="toctree-l4"><a class="reference internal" href="../../../aodncore.pipeline.html#module-aodncore.pipeline.log">aodncore.pipeline.log module</a></li>
-<li class="toctree-l4"><a class="reference internal" href="../../../aodncore.pipeline.html#module-aodncore.pipeline.schema">aodncore.pipeline.schema module</a></li>
-<li class="toctree-l4"><a class="reference internal" href="../../../aodncore.pipeline.html#aodncore-pipeline-serviceconfig-module">aodncore.pipeline.serviceconfig module</a></li>
-<li class="toctree-l4"><a class="reference internal" href="../../../aodncore.pipeline.html#module-aodncore.pipeline.watch">aodncore.pipeline.watch module</a></li>
-<li class="toctree-l4"><a class="reference internal" href="../../../aodncore.pipeline.html#aodncore-pipeline-watchservice-module">aodncore.pipeline.watchservice module</a></li>
-<li class="toctree-l4"><a class="reference internal" href="../../../aodncore.pipeline.html#module-aodncore.pipeline">Module contents</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../userdoc.html#customising-handler-behaviour">Customising handler behaviour</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../userdoc.html#methods">Methods</a></li>
 </ul>
 </li>
-<li class="toctree-l3"><a class="reference internal" href="../../../aodncore.testlib.html">aodncore.testlib package</a><ul>
-<li class="toctree-l4"><a class="reference internal" href="../../../aodncore.testlib.html#submodules">Submodules</a></li>
-<li class="toctree-l4"><a class="reference internal" href="../../../aodncore.testlib.html#module-aodncore.testlib.basetest">aodncore.testlib.basetest module</a></li>
-<li class="toctree-l4"><a class="reference internal" href="../../../aodncore.testlib.html#module-aodncore.testlib.dummyhandler">aodncore.testlib.dummyhandler module</a></li>
-<li class="toctree-l4"><a class="reference internal" href="../../../aodncore.testlib.html#module-aodncore.testlib.handlertest">aodncore.testlib.handlertest module</a></li>
-<li class="toctree-l4"><a class="reference internal" href="../../../aodncore.testlib.html#module-aodncore.testlib.testutil">aodncore.testlib.testutil module</a></li>
-<li class="toctree-l4"><a class="reference internal" href="../../../aodncore.testlib.html#module-aodncore.testlib">Module contents</a></li>
-</ul>
-</li>
-<li class="toctree-l3"><a class="reference internal" href="../../../aodncore.util.html">aodncore.util package</a><ul>
-<li class="toctree-l4"><a class="reference internal" href="../../../aodncore.util.html#subpackages">Subpackages</a></li>
-<li class="toctree-l4"><a class="reference internal" href="../../../aodncore.util.html#submodules">Submodules</a></li>
-<li class="toctree-l4"><a class="reference internal" href="../../../aodncore.util.html#module-aodncore.util.fileops">aodncore.util.fileops module</a></li>
-<li class="toctree-l4"><a class="reference internal" href="../../../aodncore.util.html#module-aodncore.util.misc">aodncore.util.misc module</a></li>
-<li class="toctree-l4"><a class="reference internal" href="../../../aodncore.util.html#module-aodncore.util.process">aodncore.util.process module</a></li>
-<li class="toctree-l4"><a class="reference internal" href="../../../aodncore.util.html#module-aodncore.util">Module contents</a></li>
-</ul>
-</li>
-<li class="toctree-l3"><a class="reference internal" href="../../../aodncore.vocab.html">aodncore.vocab package</a><ul>
-<li class="toctree-l4"><a class="reference internal" href="../../../aodncore.vocab.html#submodules">Submodules</a></li>
-<li class="toctree-l4"><a class="reference internal" href="../../../aodncore.vocab.html#module-aodncore.vocab.platform_code_vocab">aodncore.vocab.platform_code_vocab module</a></li>
-<li class="toctree-l4"><a class="reference internal" href="../../../aodncore.vocab.html#module-aodncore.vocab">Module contents</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../userdoc.html#attributes">Attributes</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../userdoc.html#class-parameters">Class parameters</a></li>
 </ul>
 </li>
 </ul>
+<p class="caption"><span class="caption-text">Developer documentation:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../developerdoc.html">Overview</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Module contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../modules.html">aodncore</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../aodncore.html">aodncore package</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../aodncore.html#subpackages">Subpackages</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../aodncore.common.html">aodncore.common package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../aodncore.pipeline.html">aodncore.pipeline package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../aodncore.testlib.html">aodncore.testlib package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../aodncore.util.html">aodncore.util package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../aodncore.vocab.html">aodncore.vocab package</a></li>
+</ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="../../../aodncore.html#submodules">Submodules</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../../aodncore.html#module-aodncore.version">aodncore.version module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../../aodncore.html#module-aodncore">Module contents</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../aodncore.html#submodules">Submodules</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../aodncore.html#module-aodncore.version">aodncore.version module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../aodncore.html#module-aodncore">Module contents</a></li>
+</ul>
+</li>
 </ul>
 </li>
 </ul>
@@ -205,7 +191,10 @@
            <div itemprop="articleBody">
             
   <h1>Source code for aodncore.pipeline.exceptions</h1><div class="highlight"><pre>
-<span></span><span class="kn">from</span> <span class="nn">..common.exceptions</span> <span class="k">import</span> <span class="n">AodnBaseError</span>
+<span></span><span class="sd">&quot;&quot;&quot;This module provides custom exceptions used throughout the :py:mod:`aodncore.pipeline` package.</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="kn">from</span> <span class="nn">..common.exceptions</span> <span class="k">import</span> <span class="n">AodnBaseError</span>
 
 <span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span>
     <span class="s1">&#39;PipelineProcessingError&#39;</span><span class="p">,</span>
@@ -226,6 +215,7 @@
     <span class="s1">&#39;InvalidPathFunctionError&#39;</span><span class="p">,</span>
     <span class="s1">&#39;InvalidHandlerError&#39;</span><span class="p">,</span>
     <span class="s1">&#39;InvalidHarvesterError&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;InvalidHarvestMapError&#39;</span><span class="p">,</span>
     <span class="s1">&#39;InvalidInputFileError&#39;</span><span class="p">,</span>
     <span class="s1">&#39;InvalidRecipientError&#39;</span><span class="p">,</span>
     <span class="s1">&#39;InvalidUploadUrlError&#39;</span><span class="p">,</span>
@@ -315,6 +305,10 @@
     <span class="k">pass</span></div>
 
 
+<div class="viewcode-block" id="InvalidHarvestMapError"><a class="viewcode-back" href="../../../aodncore.pipeline.html#aodncore.pipeline.exceptions.InvalidHarvestMapError">[docs]</a><span class="k">class</span> <span class="nc">InvalidHarvestMapError</span><span class="p">(</span><span class="n">PipelineSystemError</span><span class="p">):</span>
+    <span class="k">pass</span></div>
+
+
 <div class="viewcode-block" id="InvalidInputFileError"><a class="viewcode-back" href="../../../aodncore.pipeline.html#aodncore.pipeline.exceptions.InvalidInputFileError">[docs]</a><span class="k">class</span> <span class="nc">InvalidInputFileError</span><span class="p">(</span><span class="n">PipelineSystemError</span><span class="p">):</span>
     <span class="k">pass</span></div>
 
@@ -379,7 +373,7 @@
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'../../../',
-            VERSION:'0.0.19',
+            VERSION:'0.9.0',
             LANGUAGE:'None',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',

@@ -1,3 +1,12 @@
+"""This module provides the step runner classes for the :ref:`check` step.
+
+Checking is performed by a :py:class:`BaseCheckRunner` class, which is used to determine whether a file conforms to a
+"check", the definition of which is contained in the specific class. A check typically involves reading a file, and
+testing whether the file conforms to some arbitrary criteria.
+
+The most common use of this step is to test for compliance using the IOOS Compliance Checker.
+"""
+
 import itertools
 import os
 
@@ -28,11 +37,11 @@ def get_check_runner(config, logger, check_params=None):
 def get_child_check_runner(check_type, config, logger, check_params=None):
     """Factory function to return appropriate checker class based on check type value
 
-    :param check_type: attribute of PipelineFileCheckType to determine which CheckRunner is returned
-    :param check_params: list of parameters to pass to compliance checker library
-    :param config: LazyConfigManager instance
-    :param logger: Logger instance
-    :return: BaseCheckRunner sub-class
+    :param check_type: :py:class:`PipelineFileCheckType` enum member
+    :param check_params: dict of parameters to pass to :py:class:`BaseCheckRunner` class for runtime configuration
+    :param config: :py:class:`LazyConfigManager` instance
+    :param logger: :py:class:`Logger` instance
+    :return: :py:class:`BaseCheckRunner` sub-class
     """
     validate_checktype(check_type)
 
@@ -146,7 +155,7 @@ class ComplianceCheckerCheckRunner(BaseCheckRunner):
 
         :param str file_path: Full path to the file
         :param str check: Name of check suite to run.
-        :return: CheckResult object
+        :return: :py:class:`aodncore.pipeline.CheckResult` object
         """
         stdout_log = []
         stderr_log = []
@@ -182,10 +191,10 @@ class FormatCheckRunner(BaseCheckRunner):
             format_check_runner.run(check_list)
 
     def get_format_check_runner(self, file_type):
-        """Factory method to return appropriate *FormatCheckRunner instance based on file type
+        """Factory method to return appropriate FormatCheckRunner instance based on file type
         
-        :param file_type: FileType member
-        :return: *FormatCheckRunner instance
+        :param file_type: :py:class:`FileType` enum member
+        :return: :py:class:`FormatCheckRunner` instance
         """
         if file_type is FileType.NETCDF:
             return NetcdfFormatCheckRunner(self._config, self._logger)

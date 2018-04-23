@@ -101,29 +101,29 @@ def get_nonexistent_path(relative=False):
 
 def make_test_file(filename, attributes=None, **variables):
     """Create a netcdf file with the given global and variable
-    attributes. Variables are created as dimensionless doubles.
+        attributes. Variables are created as dimensionless doubles.
 
-    For example this:
+        For example this::
 
-        make_test_file(testfile,
-                       {'title': 'test file', 'site_code': 'NRSMAI'},
-                       TEMP = {'standard_name': 'sea_water_temperature'},
-                       PSAL = {'standard_name': 'sea_water_salinity'}
-        )
+            make_test_file(testfile,
+                           {'title': 'test file', 'site_code': 'NRSMAI'},
+                           TEMP = {'standard_name': 'sea_water_temperature'},
+                           PSAL = {'standard_name': 'sea_water_salinity'}
+            )
 
-    will create (in cdl):
+        will create (in cdl)::
 
-        netcdf testfile {
-        variables:
-            double PSAL ;
-                    PSAL:standard_name = "sea_water_salinity" ;
-            double TEMP ;
-                    TEMP:standard_name = "sea_water_temperature" ;
+            netcdf testfile {
+            variables:
+                double PSAL ;
+                        PSAL:standard_name = "sea_water_salinity" ;
+                double TEMP ;
+                        TEMP:standard_name = "sea_water_temperature" ;
 
-        // global attributes:
-                    :site_code = "NRSMAI" ;
-                    :title = "test file" ;
-        }
+            // global attributes:
+                        :site_code = "NRSMAI" ;
+                        :title = "test file" ;
+            }
 
     """
     if attributes is None:

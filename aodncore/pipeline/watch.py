@@ -1,3 +1,20 @@
+"""This module provides the code to implement the "watchservice" component of the pipeline.
+
+This includes setting up directory watches, handling incoming inotify events, defining the Celery tasks and
+routing/queuing events.
+
+The watchservice itself is designed as an `executable module <https://wiki.python.org/moin/ExecutableModules>`_, with
+the entry point being the :py:mod:`aodncore.pipeline.watchservice` module.
+
+This means that once :py:mod:`aodncore` is installed, running the
+watchservice is simply a matter of running the following::
+
+    python -m aodncore.pipeline.watchservice
+
+This is typically run as an operating system service by something like supervisord, but can be run from the command-line
+for debugging.
+"""
+
 import abc
 import logging.config
 import os
@@ -43,10 +60,10 @@ __all__ = [
 
 
 def get_task_name(namespace, function_name):
-    """Convenience function for CeleryManager.get_task_name
+    """Convenience function for :py:meth:`CeleryManager.get_task_name`
 
     :param namespace: task namespace
-    :param function_name: name of function to
+    :param function_name: name of function
     :return: string containing qualified task name
     """
     task_name = "{namespace}.{function_name}".format(namespace=namespace, function_name=function_name)
@@ -92,7 +109,7 @@ class CeleryContext(object):
             class through the use of partial.
 
         :param pipeline_name: explicit task name for handling by celery Workers
-        :param handler_class: HandlerBase sub-class object which the task will instantiate
+        :param handler_class: :py:class:`HandlerBase` instance which the task will instantiate
         :param kwargs: dictionary containing the keyword arguments for use by the handler class
         :return: reference to a Celery task function which runs the given handler with the given keywords
         """

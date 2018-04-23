@@ -1,3 +1,8 @@
+"""This module provides miscellaneous utility functions *not* related to filesystem or subprocess operations.
+
+These are typically functions which query, manipulate or transform Python objects.
+"""
+
 import logging
 import re
 import sys
@@ -40,12 +45,13 @@ __all__ = [
 
 
 def discover_entry_points(entry_point_group, working_set=pkg_resources.working_set):
-    """Discover entry points registered under the given entry point group name in the given working_set
+    """Discover entry points registered under the given entry point group name in the given
+    :py:class:`pkg_resources.WorkingSet` instance
 
     :param entry_point_group: entry point group name used to find entry points in working set
-    :param working_set: working set object
-    :return: dict containing each discovered entry point, with keys being the entry point name and values being a
-    reference to the object referenced by the entry point
+    :param working_set: :py:class:`pkg_resources.WorkingSet` instance
+    :return: :py:class:`dict` containing each discovered entry point, with keys being the entry point name and values
+        being a reference to the object referenced by the entry point
     """
     entry_points = {}
     for entry_point in working_set.iter_entry_points(entry_point_group):
@@ -57,7 +63,7 @@ def discover_entry_points(entry_point_group, working_set=pkg_resources.working_s
 def format_exception(exception):
     """Return a pretty string representation of an Exception object containing the Exception name and message
 
-    :param exception: Exception object
+    :param exception: :py:class:`Exception` object
     :return: string
     """
     return "{cls}: {message}".format(cls=exception.__class__.__name__, message=exception)
@@ -73,10 +79,10 @@ def is_function(o):
 
 
 def is_nonstring_iterable(sequence):
-    """Check whether an object is a non-string Iterable
+    """Check whether an object is a non-string :py:class:`Iterable`
     
     :param sequence: object to check 
-    :return: True if object is a non-string sub class of Iterable
+    :return: True if object is a non-string sub class of :py:class:`Iterable`
     """
     return isinstance(sequence, Iterable) and not isinstance(sequence, (six.string_types, bytes, Mapping))
 
@@ -150,9 +156,9 @@ def matches_regexes(input_string, include_regexes=None, exclude_regexes=None):
 
 
 def merge_dicts(*args):
-    """Recursive dict merge.
+    """Recursive :py:class:`dict` merge
 
-    Dict-like objects are merged sequentially from left to right into a new dict
+    Dict-like objects are merged sequentially from left to right into a new :py:class:`dict`
 
     Based on: https://gist.github.com/angstwad/bf22d1822c38a92ec0a9
 
@@ -177,11 +183,15 @@ def merge_dicts(*args):
 
 
 def slice_sequence(sequence, slice_size):
-    """Return a list containing the input Sequence sliced into Sequences with a length equal to or less than slice_size
+    """Return a :py:class:`list` containing the input :py:class:`Sequence` sliced into :py:class:`Sequence` instances
+    with a length equal to or less than :py:attr:`slice_size`
+
+    .. note:: The type of the elements should be the same type as the original sequence based on the usual Python
+        slicing behaviour, but the outer sequence will always be a :py:class:`list` type.
 
     :param sequence: input sequence
     :param slice_size: size of each sub-Sequence
-    :return: list of Sequences
+    :return: :py:class:`list` of :py:class:`Sequence` instances
     """
     return [sequence[x:x + slice_size] for x in range(0, len(sequence), slice_size)]
 
@@ -346,6 +356,12 @@ class TemplateRenderer(object):
         self._env = jinja2.Environment(loader=self._loader)
 
     def render(self, name, values):
+        """Render a template with the given values and return as a :py:class:`str`
+
+        :param name: name of the template to find in the :py:class:`jinja2.Environment`
+        :param values: :py:class:`dict` containing values to render into the template
+        :return: :py:class:`str` containing the rendered template
+        """
         validate_mapping(values)
         template = self._env.get_template(name)
         rendered = template.render(values)
