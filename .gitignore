@@ -108,5 +108,6 @@ ENV/
 /sphinx/_static/
 /sphinx/_templates/
 /sphinx/*.rst
-!/sphinx/index.rst
+!/sphinx/developerdoc.rst
 !/sphinx/modules.rst
+!/sphinx/userdoc.rst
