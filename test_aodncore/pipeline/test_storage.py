@@ -59,23 +59,23 @@ def get_undo_collection():
 class TestPipelineStorage(BaseTestCase):
     def test_get_storage_broker(self):
         file_url = 'file:///tmp/probably/doesnt/exist/upload'
-        file_storage_broker = get_storage_broker(file_url, None, self.test_logger)
+        file_storage_broker = get_storage_broker(file_url)
         self.assertIsInstance(file_storage_broker, LocalFileStorageBroker)
 
         relative_file_url = 'file://tmp/probably/doesnt/exist/upload'
         with self.assertRaises(InvalidStoreUrlError):
-            _ = get_storage_broker(relative_file_url, None, self.test_logger)
+            _ = get_storage_broker(relative_file_url)
 
         s3_url = "s3://{dummy_bucket}/{dummy_prefix}".format(dummy_bucket=str(uuid4()), dummy_prefix=str(uuid4()))
-        s3_storage_broker = get_storage_broker(s3_url, None, self.test_logger)
+        s3_storage_broker = get_storage_broker(s3_url)
         self.assertIsInstance(s3_storage_broker, S3StorageBroker)
 
         sftp_url = "sftp://{dummy_host}/{dummy_path}".format(dummy_host=str(uuid4()), dummy_path=str(uuid4()))
-        sftp_storage_broker = get_storage_broker(sftp_url, None, self.test_logger)
+        sftp_storage_broker = get_storage_broker(sftp_url)
         self.assertIsInstance(sftp_storage_broker, SftpStorageBroker)
 
         with self.assertRaises(InvalidStoreUrlError):
-            _ = get_storage_broker('invalid_url', None, self.test_logger)
+            _ = get_storage_broker('invalid_url')
 
     def test_sftp_path_exists_error(self):
         sftpclient = mock.MagicMock()
@@ -239,7 +239,7 @@ class TestLocalFileStorageBroker(BaseTestCase):
         collection = get_upload_collection()
         netcdf_file, png_file, ico_file, unknown_file = collection
 
-        file_storage_broker = LocalFileStorageBroker('/tmp/probably/doesnt/exist/upload', None, self.test_logger)
+        file_storage_broker = LocalFileStorageBroker('/tmp/probably/doesnt/exist/upload')
         file_storage_broker.upload(collection)
 
         netcdf_dest_path = os.path.join(file_storage_broker.prefix, netcdf_file.dest_path)
@@ -270,7 +270,7 @@ class TestLocalFileStorageBroker(BaseTestCase):
         collection = get_upload_collection(delete=True)
         netcdf_file, png_file, ico_file, unknown_file = collection
 
-        file_storage_broker = LocalFileStorageBroker('/tmp/probably/doesnt/exist/upload', None, self.test_logger)
+        file_storage_broker = LocalFileStorageBroker('/tmp/probably/doesnt/exist/upload')
         file_storage_broker.delete(collection)
 
         netcdf_dest_path = os.path.join(file_storage_broker.prefix, netcdf_file.dest_path)
@@ -294,7 +294,7 @@ class TestLocalFileStorageBroker(BaseTestCase):
             _, temp_file2 = tempfile.mkstemp(suffix='.txt', prefix='qwerty', dir=subdir)
             _, temp_file3 = tempfile.mkstemp(suffix='.txt', prefix='qwerty', dir=subdir)
 
-            file_storage_broker = LocalFileStorageBroker(d, None, self.test_logger)
+            file_storage_broker = LocalFileStorageBroker(d)
             result = file_storage_broker.query('subdir/')
 
         self.assertItemsEqual(result.keys(), [temp_file1, temp_file2, temp_file3])
@@ -310,7 +310,7 @@ class TestLocalFileStorageBroker(BaseTestCase):
             _, temp_file3 = tempfile.mkstemp(suffix='.txt', prefix='asdfgh', dir=subdir)
             _, temp_file4 = tempfile.mkstemp(suffix='.txt', prefix='asdfgh', dir=subdir)
 
-            file_storage_broker = LocalFileStorageBroker(d, None, self.test_logger)
+            file_storage_broker = LocalFileStorageBroker(d)
             result = file_storage_broker.query('subdir/qwerty')
 
         self.assertItemsEqual(result.keys(), [temp_file1, temp_file2])
@@ -327,7 +327,7 @@ class TestLocalFileStorageBroker(BaseTestCase):
             os.mkdir(subdir)
             _, temp_file1 = tempfile.mkstemp(suffix='.txt', prefix='qwerty', dir=subdir)
 
-            file_storage_broker = LocalFileStorageBroker(d, None, self.test_logger)
+            file_storage_broker = LocalFileStorageBroker(d)
             with self.assertRaises(StorageQueryError):
                 _ = file_storage_broker.query('subdir/qwerty')
 
@@ -339,7 +339,7 @@ class TestS3StorageBroker(BaseTestCase):
 
         dummy_bucket = str(uuid4())
         dummy_prefix = str(uuid4())
-        s3_storage_broker = S3StorageBroker(dummy_bucket, dummy_prefix, None, self.test_logger)
+        s3_storage_broker = S3StorageBroker(dummy_bucket, dummy_prefix)
 
         mock_boto3.client.assert_called_once_with('s3')
 
@@ -360,7 +360,7 @@ class TestS3StorageBroker(BaseTestCase):
         collection = get_upload_collection()
         dummy_bucket = str(uuid4())
         dummy_prefix = str(uuid4())
-        s3_storage_broker = S3StorageBroker(dummy_bucket, dummy_prefix, None, self.test_logger)
+        s3_storage_broker = S3StorageBroker(dummy_bucket, dummy_prefix)
         s3_storage_broker.set_is_overwrite(collection)
         self.assertEqual(s3_storage_broker.s3_client.list_objects_v2.call_count, 4)
         self.assertFalse(any(f.is_overwrite for f in collection))
@@ -370,7 +370,7 @@ class TestS3StorageBroker(BaseTestCase):
         collection = get_upload_collection()
         dummy_bucket = str(uuid4())
         dummy_prefix = str(uuid4())
-        s3_storage_broker = S3StorageBroker(dummy_bucket, dummy_prefix, None, self.test_logger)
+        s3_storage_broker = S3StorageBroker(dummy_bucket, dummy_prefix)
         dest_path = os.path.join('subdirectory', 'targetfile.nc')
         abs_path = os.path.join(dummy_prefix, dest_path)
         s3_storage_broker.s3_client.list_objects_v2.return_value = {'Contents': [{'Key': abs_path}]}
@@ -383,7 +383,7 @@ class TestS3StorageBroker(BaseTestCase):
         collection = get_upload_collection()
         dummy_bucket = str(uuid4())
         dummy_prefix = str(uuid4())
-        s3_storage_broker = S3StorageBroker(dummy_bucket, dummy_prefix, None, self.test_logger)
+        s3_storage_broker = S3StorageBroker(dummy_bucket, dummy_prefix)
         abs_path_prefix = os.path.join(dummy_prefix, 'subdirectory')
         dest_path = os.path.join('subdirectory', 'targetfile.nc')
         abs_path = os.path.join(dummy_prefix, dest_path)
@@ -400,7 +400,7 @@ class TestS3StorageBroker(BaseTestCase):
 
         dummy_bucket = str(uuid4())
         dummy_prefix = str(uuid4())
-        s3_storage_broker = S3StorageBroker(dummy_bucket, dummy_prefix, None, self.test_logger)
+        s3_storage_broker = S3StorageBroker(dummy_bucket, dummy_prefix)
 
         mock_boto3.client.assert_called_once_with('s3')
 
@@ -445,7 +445,7 @@ class TestS3StorageBroker(BaseTestCase):
 
         dummy_bucket = str(uuid4())
         dummy_prefix = str(uuid4())
-        s3_storage_broker = S3StorageBroker(dummy_bucket, dummy_prefix, None, self.test_logger)
+        s3_storage_broker = S3StorageBroker(dummy_bucket, dummy_prefix)
 
         mock_boto3.client.assert_called_once_with('s3')
 
@@ -487,7 +487,7 @@ class TestS3StorageBroker(BaseTestCase):
              u'Key': 'Department_of_Defence/DSTG/slocum_glider/PerthCanyonA20140213/PerthCanyonA20140213_TEMP.jpg',
              u'Size': 106141}]}
 
-        s3_storage_broker = S3StorageBroker('imos-data', '', None, self.test_logger)
+        s3_storage_broker = S3StorageBroker('imos-data', '')
         result = s3_storage_broker.query('Department_of_Defence/DSTG/slocum_glider/PerthCanyonA20140213/')
 
         self.assertItemsEqual(result.keys(),
@@ -529,7 +529,7 @@ class TestS3StorageBroker(BaseTestCase):
              u'Key': 'Department_of_Defence/DSTG/slocum_glider/PerthCanyonB20140213/PerthCanyonB20140213_TEMP.jpg',
              u'Size': 132122}]}
 
-        s3_storage_broker = S3StorageBroker('imos-data', '', None, self.test_logger)
+        s3_storage_broker = S3StorageBroker('imos-data', '')
         result = s3_storage_broker.query('Department_of_Defence/DSTG/slocum_glider/Perth')
 
         self.assertItemsEqual(result.keys(),
@@ -542,7 +542,7 @@ class TestS3StorageBroker(BaseTestCase):
         dummy_error = ClientError({'Error': {'Code': 'ServiceUnavailable'}}, 'ListObjects')
         mock_boto3.client().list_objects_v2.side_effect = dummy_error
 
-        s3_storage_broker = S3StorageBroker('imos-data', '', None, self.test_logger)
+        s3_storage_broker = S3StorageBroker('imos-data', '')
         with self.assertRaises(StorageQueryError):
             _ = s3_storage_broker.query('Department_of_Defence/DSTG/slocum_glider/Perth')
 
@@ -552,7 +552,7 @@ class TestSftpStorageBroker(BaseTestCase):
     @mock.patch('aodncore.pipeline.storage.SSHClient')
     @mock.patch('aodncore.pipeline.storage.AutoAddPolicy')
     def test_init(self, mock_autoaddpolicy, mock_sshclient):
-        sftp_storage_broker = SftpStorageBroker('', '', None, self.test_logger)
+        sftp_storage_broker = SftpStorageBroker('', '')
 
         mock_sshclient.assert_called_once_with()
         sftp_storage_broker._sshclient.set_missing_host_key_policy.assert_called_once_with(mock_autoaddpolicy())
@@ -566,7 +566,7 @@ class TestSftpStorageBroker(BaseTestCase):
         dummy_server = str(uuid4())
         dummy_prefix = "/tmp/{uuid}".format(uuid=str(uuid4()))
 
-        sftp_storage_broker = SftpStorageBroker(dummy_server, dummy_prefix, None, self.test_logger)
+        sftp_storage_broker = SftpStorageBroker(dummy_server, dummy_prefix)
 
         with mock.patch('aodncore.pipeline.storage.open', mock.mock_open(read_data='')) as m:
             sftp_storage_broker.upload(collection)
@@ -605,7 +605,7 @@ class TestSftpStorageBroker(BaseTestCase):
         dummy_server = str(uuid4())
         dummy_prefix = "/tmp/{uuid}".format(uuid=str(uuid4()))
 
-        sftp_storage_broker = SftpStorageBroker(dummy_server, dummy_prefix, None, self.test_logger)
+        sftp_storage_broker = SftpStorageBroker(dummy_server, dummy_prefix)
         sftp_storage_broker.delete(collection)
 
         sftp_storage_broker._sshclient.connect.assert_called_once_with(sftp_storage_broker.server)

@@ -34,8 +34,7 @@ TESTLIB_CONF_DIR = os.path.join(os.path.dirname(__file__), 'conf')
 
 class NullStorageBroker(BaseStorageBroker):
     def __init__(self, prefix, fail=False):
-        mock_logger = mock.MagicMock()
-        super(NullStorageBroker, self).__init__(None, mock_logger)
+        super(NullStorageBroker, self).__init__()
         self.prefix = prefix
         self.fail = fail
 

@@ -29,7 +29,7 @@ __all__ = [
 ]
 
 
-def get_storage_broker(store_url, config, logger):
+def get_storage_broker(store_url):
     """Factory function to return appropriate storage broker class based on URL scheme
 
     :param store_url: URL base
@@ -42,11 +42,11 @@ def get_storage_broker(store_url, config, logger):
     if url.scheme == 'file':
         if url.netloc:
             raise InvalidStoreUrlError("invalid URL '{url}'. Must be an absolute path".format(url=store_url))
-        return LocalFileStorageBroker(url.path, config, logger)
+        return LocalFileStorageBroker(url.path)
     elif url.scheme == 's3':
-        return S3StorageBroker(url.netloc, url.path, config, logger)
+        return S3StorageBroker(url.netloc, url.path)
     elif url.scheme == 'sftp':
-        return SftpStorageBroker(url.netloc, url.path, config, logger)
+        return SftpStorageBroker(url.netloc, url.path)
     else:
         raise InvalidStoreUrlError("invalid URL scheme '{scheme}'".format(scheme=url.scheme))
 
@@ -54,9 +54,7 @@ def get_storage_broker(store_url, config, logger):
 class BaseStorageBroker(object):
     __metaclass__ = abc.ABCMeta
 
-    def __init__(self, config, logger):
-        self._config = config
-        self._logger = logger
+    def __init__(self):
         self.prefix = None
 
     @abc.abstractmethod  # pragma: no cover
@@ -73,10 +71,6 @@ class BaseStorageBroker(object):
 
     @abc.abstractmethod  # pragma: no cover
     def _upload_file(self, pipeline_file, dest_path_attr):
-        pass
-
-    @abc.abstractmethod  # pragma: no cover
-    def _get_absolute_dest_uri(self, pipeline_file, dest_path_attr):
         pass
 
     @abc.abstractmethod  # pragma: no cover
@@ -119,11 +113,6 @@ class BaseStorageBroker(object):
         self._pre_run_hook()
 
         for pipeline_file in pipeline_files:
-            self._logger.info(
-                "uploading '{source_path}' to '{uri}'".format(source_path=pipeline_file.src_path,
-                                                              uri=self._get_absolute_dest_uri(
-                                                                  pipeline_file=pipeline_file,
-                                                                  dest_path_attr=dest_path_attr)))
             try:
                 self._upload_file(pipeline_file=pipeline_file, dest_path_attr=dest_path_attr)
             except Exception as e:
@@ -140,8 +129,6 @@ class BaseStorageBroker(object):
         self._pre_run_hook()
 
         for pipeline_file in pipeline_files:
-            self._logger.info("deleting '{uri}'".format(
-                uri=self._get_absolute_dest_path(pipeline_file=pipeline_file, dest_path_attr=dest_path_attr)))
             try:
                 self._delete_file(pipeline_file=pipeline_file, dest_path_attr=dest_path_attr)
             except Exception as e:
@@ -157,17 +144,13 @@ class LocalFileStorageBroker(BaseStorageBroker):
     """StorageBroker to interact with a local directory
     """
 
-    def __init__(self, prefix, config, logger):
-        super(LocalFileStorageBroker, self).__init__(config, logger)
+    def __init__(self, prefix):
+        super(LocalFileStorageBroker, self).__init__()
         self.prefix = prefix
 
     def _delete_file(self, pipeline_file, dest_path_attr):
         abs_path = self._get_absolute_dest_path(pipeline_file=pipeline_file, dest_path_attr=dest_path_attr)
         rm_f(abs_path)
-
-    def _get_absolute_dest_uri(self, pipeline_file, dest_path_attr):
-        return "file://{path}".format(
-            path=self._get_absolute_dest_path(pipeline_file=pipeline_file, dest_path_attr=dest_path_attr))
 
     def _get_is_overwrite(self, pipeline_file, abs_path):
         return os.path.exists(abs_path)
@@ -223,8 +206,8 @@ class S3StorageBroker(BaseStorageBroker):
         'exceptions': (ClientError,)
     }
 
-    def __init__(self, bucket, prefix, config, logger):
-        super(S3StorageBroker, self).__init__(config, logger)
+    def __init__(self, bucket, prefix):
+        super(S3StorageBroker, self).__init__()
 
         self.bucket = bucket
         self.prefix = prefix
@@ -235,11 +218,6 @@ class S3StorageBroker(BaseStorageBroker):
     def _delete_file(self, pipeline_file, dest_path_attr):
         abs_path = self._get_absolute_dest_path(pipeline_file=pipeline_file, dest_path_attr=dest_path_attr)
         self.s3_client.delete_object(Bucket=self.bucket, Key=abs_path)
-
-    def _get_absolute_dest_uri(self, pipeline_file, dest_path_attr):
-        return "s3://{bucket}/{path}".format(bucket=self.bucket,
-                                             path=self._get_absolute_dest_path(pipeline_file=pipeline_file,
-                                                                               dest_path_attr=dest_path_attr))
 
     @retry_decorator(**retry_kwargs)
     def _get_is_overwrite(self, pipeline_file, abs_path):
@@ -344,8 +322,8 @@ class SftpStorageBroker(BaseStorageBroker):
     by the environment in the form of public key authentication
     """
 
-    def __init__(self, server, prefix, config, logger):
-        super(SftpStorageBroker, self).__init__(config, logger)
+    def __init__(self, server, prefix):
+        super(SftpStorageBroker, self).__init__()
         self.server = server
         self.prefix = prefix
 
@@ -363,11 +341,6 @@ class SftpStorageBroker(BaseStorageBroker):
     def _delete_file(self, pipeline_file, dest_path_attr):
         abs_path = self._get_absolute_dest_path(pipeline_file=pipeline_file, dest_path_attr=dest_path_attr)
         self.sftp_client.remove(abs_path)
-
-    def _get_absolute_dest_uri(self, pipeline_file, dest_path_attr):
-        return "sftp://{server}{path}".format(server=self.server,
-                                              path=self._get_absolute_dest_path(pipeline_file=pipeline_file,
-                                                                                dest_path_attr=dest_path_attr))
 
     def _get_is_overwrite(self, pipeline_file, abs_path):
         return sftp_path_exists(self.sftp_client, abs_path)
@@ -388,3 +361,11 @@ class SftpStorageBroker(BaseStorageBroker):
 
     def query(self, query):
         raise NotImplementedError
+
+
+# class SimpleQuery(object):
+#     def __init__(self, config):
+#         self._broker = get_storage_broker(config.pipeline_config['global']['upload_uri'], config, None)
+#
+#
+#     def query_storage(self):

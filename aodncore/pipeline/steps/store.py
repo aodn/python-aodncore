@@ -18,7 +18,7 @@ def get_store_runner(store_base_url, config, logger, archive_mode=False):
     :param archive_mode: flag to indicate archive
     :return: StoreRunner instance
     """
-    broker = get_storage_broker(store_base_url, config, logger)
+    broker = get_storage_broker(store_base_url)
     return StoreRunner(broker, config, logger, archive_mode)
 
 
