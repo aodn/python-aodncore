@@ -200,7 +200,7 @@ class TalendHarvesterRunner(BaseHarvesterRunner):
     """:py:class:`BaseHarvesterRunner` implementation to execute Talend harvesters
     """
 
-    def __init__(self, store_runner, harvest_params, tmp_base_dir, config, logger, deletion=False):
+    def __init__(self, storage_broker, harvest_params, tmp_base_dir, config, logger, deletion=False):
         super(TalendHarvesterRunner, self).__init__(config, logger)
         if harvest_params is None:
             harvest_params = {}
@@ -210,7 +210,7 @@ class TalendHarvesterRunner(BaseHarvesterRunner):
         self.undo_previous_slices = harvest_params.get('undo_previous_slices', True)
         self.params = harvest_params
         self.tmp_base_dir = tmp_base_dir
-        self.store_runner = store_runner
+        self.storage_broker = storage_broker
         self.harvested_file_map = HarvesterMap()
 
     def run(self, pipeline_files):
@@ -325,7 +325,7 @@ class TalendHarvesterRunner(BaseHarvesterRunner):
 
                 files_to_delete = event.matched_files.filter_by_bool_attribute('pending_store_deletion')
                 if files_to_delete:
-                    self.store_runner.run(files_to_delete)
+                    self.storage_broker.delete(pipeline_files=files_to_delete)
 
     def run_undo_deletions(self, harvester_map):
         """Function to un-harvest and undo stored files as appropriate in the case of errors.
@@ -351,7 +351,7 @@ class TalendHarvesterRunner(BaseHarvesterRunner):
 
                 files_to_delete = event.matched_files.filter_by_bool_attributes_and('pending_undo', 'is_stored')
                 if files_to_delete:
-                    self.store_runner.run(files_to_delete)
+                    self.storage_broker.delete(pipeline_files=files_to_delete, is_stored_attr='is_upload_undone')
 
     def run_additions(self, harvester_map, tmp_base_dir):
         """Function to harvest and upload files using the appropriate file upload runner.
@@ -397,7 +397,7 @@ class TalendHarvesterRunner(BaseHarvesterRunner):
 
                 files_to_upload = event.matched_files.filter_by_bool_attribute('pending_store_addition')
                 if files_to_upload:
-                    self.store_runner.run(files_to_upload)
+                    self.storage_broker.upload(pipeline_files=files_to_upload)
 
 
 validate_triggerevent = validate_type(TriggerEvent)

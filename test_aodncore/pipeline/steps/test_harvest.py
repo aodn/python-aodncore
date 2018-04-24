@@ -68,7 +68,7 @@ class TestPipelineStepsHarvest(BaseTestCase):
 class TestTalendHarvesterRunner(BaseTestCase):
     def setUp(self):
         super(TestTalendHarvesterRunner, self).setUp()
-        self.uploader = StoreRunner(NullStorageBroker("/"), None, None)
+        self.uploader = NullStorageBroker("/")
 
     @patch('aodncore.util.process.subprocess')
     def test_extra_params(self, mock_subprocess):
@@ -107,8 +107,8 @@ class TestTalendHarvesterRunner(BaseTestCase):
 
         harvester_runner.run(collection)
 
-        harvester_runner.store_runner.broker.assert_upload_not_called()
-        harvester_runner.store_runner.broker.assert_delete_not_called()
+        harvester_runner.storage_broker.assert_upload_not_called()
+        harvester_runner.storage_broker.assert_delete_not_called()
 
         self.assertTrue(all(f.is_deletion for f in collection))
         self.assertTrue(all(f.is_harvested for f in collection))
@@ -125,8 +125,8 @@ class TestTalendHarvesterRunner(BaseTestCase):
 
         harvester_runner.run(collection)
 
-        harvester_runner.store_runner.broker.assert_upload_not_called()
-        harvester_runner.store_runner.broker.assert_delete_not_called()
+        harvester_runner.storage_broker.assert_upload_not_called()
+        harvester_runner.storage_broker.assert_delete_not_called()
 
         self.assertTrue(all(f.is_deletion for f in collection))
         self.assertTrue(all(f.is_harvested for f in collection))
@@ -142,8 +142,8 @@ class TestTalendHarvesterRunner(BaseTestCase):
 
         harvester_runner.run(collection)
 
-        harvester_runner.store_runner.broker.assert_upload_call_count(0)
-        harvester_runner.store_runner.broker.assert_delete_call_count(1)
+        harvester_runner.storage_broker.assert_upload_call_count(0)
+        harvester_runner.storage_broker.assert_delete_call_count(1)
 
         self.assertTrue(all(f.is_deletion for f in collection))
         self.assertTrue(all(f.is_harvested for f in collection))
@@ -160,8 +160,8 @@ class TestTalendHarvesterRunner(BaseTestCase):
 
         harvester_runner.run(collection)
 
-        harvester_runner.store_runner.broker.assert_upload_call_count(0)
-        harvester_runner.store_runner.broker.assert_delete_call_count(3)
+        harvester_runner.storage_broker.assert_upload_call_count(0)
+        harvester_runner.storage_broker.assert_delete_call_count(3)
 
         self.assertTrue(all(f.is_deletion for f in collection))
         self.assertTrue(all(f.is_harvested for f in collection))
@@ -178,8 +178,8 @@ class TestTalendHarvesterRunner(BaseTestCase):
         with self.assertRaises(SystemCommandFailedError):
             harvester_runner.run(collection)
 
-        harvester_runner.store_runner.broker.assert_upload_not_called()
-        harvester_runner.store_runner.broker.assert_delete_not_called()
+        harvester_runner.storage_broker.assert_upload_not_called()
+        harvester_runner.storage_broker.assert_delete_not_called()
 
         self.assertFalse(any(f.is_harvested for f in collection))
         self.assertFalse(any(f.is_stored for f in collection))
@@ -196,8 +196,8 @@ class TestTalendHarvesterRunner(BaseTestCase):
         with self.assertRaises(SystemCommandFailedError):
             harvester_runner.run(collection)
 
-        harvester_runner.store_runner.broker.assert_upload_not_called()
-        harvester_runner.store_runner.broker.assert_delete_not_called()
+        harvester_runner.storage_broker.assert_upload_not_called()
+        harvester_runner.storage_broker.assert_delete_not_called()
 
         self.assertFalse(any(f.is_harvested for f in collection))
         self.assertFalse(any(f.is_uploaded for f in collection))
@@ -213,8 +213,8 @@ class TestTalendHarvesterRunner(BaseTestCase):
         with self.assertRaises(SystemCommandFailedError):
             harvester_runner.run(collection)
 
-        harvester_runner.store_runner.broker.assert_upload_not_called()
-        harvester_runner.store_runner.broker.assert_delete_not_called()
+        harvester_runner.storage_broker.assert_upload_not_called()
+        harvester_runner.storage_broker.assert_delete_not_called()
 
         self.assertFalse(any(f.is_harvested for f in collection))
         self.assertFalse(any(f.is_uploaded for f in collection))
@@ -231,8 +231,8 @@ class TestTalendHarvesterRunner(BaseTestCase):
         with self.assertRaises(SystemCommandFailedError):
             harvester_runner.run(collection)
 
-        harvester_runner.store_runner.broker.assert_upload_not_called()
-        harvester_runner.store_runner.broker.assert_delete_not_called()
+        harvester_runner.storage_broker.assert_upload_not_called()
+        harvester_runner.storage_broker.assert_delete_not_called()
 
         self.assertFalse(any(f.is_harvested for f in collection))
         self.assertFalse(any(f.is_uploaded for f in collection))
@@ -247,8 +247,8 @@ class TestTalendHarvesterRunner(BaseTestCase):
 
         harvester_runner.run(collection)
 
-        harvester_runner.store_runner.broker.assert_upload_not_called()
-        harvester_runner.store_runner.broker.assert_delete_not_called()
+        harvester_runner.storage_broker.assert_upload_not_called()
+        harvester_runner.storage_broker.assert_delete_not_called()
 
         self.assertTrue(all(f.is_harvested for f in collection))
         self.assertFalse(any(f.is_uploaded for f in collection))
@@ -264,8 +264,8 @@ class TestTalendHarvesterRunner(BaseTestCase):
 
         harvester_runner.run(collection)
 
-        harvester_runner.store_runner.broker.assert_upload_not_called()
-        harvester_runner.store_runner.broker.assert_delete_not_called()
+        harvester_runner.storage_broker.assert_upload_not_called()
+        harvester_runner.storage_broker.assert_delete_not_called()
 
         self.assertTrue(all(f.is_harvested for f in collection))
         self.assertFalse(any(f.is_uploaded for f in collection))
@@ -281,8 +281,8 @@ class TestTalendHarvesterRunner(BaseTestCase):
 
         harvester_runner.run(collection)
 
-        harvester_runner.store_runner.broker.assert_upload_call_count(1)
-        harvester_runner.store_runner.broker.assert_delete_call_count(0)
+        harvester_runner.storage_broker.assert_upload_call_count(1)
+        harvester_runner.storage_broker.assert_delete_call_count(0)
 
         self.assertTrue(all(f.is_harvested for f in collection))
         self.assertTrue(all(f.is_uploaded for f in collection))
@@ -301,8 +301,8 @@ class TestTalendHarvesterRunner(BaseTestCase):
 
         harvester_runner.run(collection)
 
-        harvester_runner.store_runner.broker.assert_upload_call_count(3)
-        harvester_runner.store_runner.broker.assert_delete_call_count(0)
+        harvester_runner.storage_broker.assert_upload_call_count(3)
+        harvester_runner.storage_broker.assert_delete_call_count(0)
 
         self.assertTrue(all(f.is_harvested for f in collection))
         self.assertTrue(all(f.is_uploaded for f in collection))
@@ -322,8 +322,8 @@ class TestTalendHarvesterRunner(BaseTestCase):
         with self.assertRaises(SystemCommandFailedError):
             harvester_runner.run(collection)
 
-        harvester_runner.store_runner.broker.assert_upload_not_called()
-        harvester_runner.store_runner.broker.assert_delete_not_called()
+        harvester_runner.storage_broker.assert_upload_not_called()
+        harvester_runner.storage_broker.assert_delete_not_called()
 
         self.assertTrue(all(f.is_harvest_undone for f in collection))  # *should* be undone
 
@@ -349,8 +349,8 @@ class TestTalendHarvesterRunner(BaseTestCase):
         with self.assertRaises(SystemCommandFailedError):
             harvester_runner.run(collection)
 
-        harvester_runner.store_runner.broker.assert_upload_not_called()
-        harvester_runner.store_runner.broker.assert_delete_not_called()
+        harvester_runner.storage_broker.assert_upload_not_called()
+        harvester_runner.storage_broker.assert_delete_not_called()
 
         success_slice, fail_slice, pending_slice = collection.get_slices(harvester_runner.slice_size)
 
@@ -375,8 +375,8 @@ class TestTalendHarvesterRunner(BaseTestCase):
         with self.assertRaises(SystemCommandFailedError):
             harvester_runner.run(collection)
 
-        harvester_runner.store_runner.broker.assert_upload_not_called()
-        harvester_runner.store_runner.broker.assert_delete_not_called()
+        harvester_runner.storage_broker.assert_upload_not_called()
+        harvester_runner.storage_broker.assert_delete_not_called()
 
         self.assertFalse(all(f.is_harvested for f in collection))
         self.assertFalse(all(f.is_uploaded for f in collection))
@@ -405,8 +405,8 @@ class TestTalendHarvesterRunner(BaseTestCase):
         with self.assertRaises(SystemCommandFailedError):
             harvester_runner.run(collection)
 
-        harvester_runner.store_runner.broker.assert_upload_call_count(1)
-        harvester_runner.store_runner.broker.assert_delete_call_count(1)
+        harvester_runner.storage_broker.assert_upload_call_count(1)
+        harvester_runner.storage_broker.assert_delete_call_count(1)
 
         success_slice, fail_slice, pending_slice = collection.get_slices(harvester_runner.slice_size)
 
@@ -443,8 +443,8 @@ class TestTalendHarvesterRunner(BaseTestCase):
         with self.assertRaises(SystemCommandFailedError):
             harvester_runner.run(collection)
 
-        harvester_runner.store_runner.broker.assert_upload_not_called()
-        harvester_runner.store_runner.broker.assert_delete_not_called()
+        harvester_runner.storage_broker.assert_upload_not_called()
+        harvester_runner.storage_broker.assert_delete_not_called()
 
         success_slice, fail_slice, pending_slice = collection.get_slices(harvester_runner.slice_size)
 
@@ -475,9 +475,9 @@ class TestTalendHarvesterRunner(BaseTestCase):
         with self.assertRaises(SystemCommandFailedError):
             harvester_runner.run(collection)
 
-        harvester_runner.store_runner.broker.assert_upload_call_count(1)
+        harvester_runner.storage_broker.assert_upload_call_count(1)
         # no delete call expected, since fail slice failed during harvesting, and did not call upload
-        harvester_runner.store_runner.broker.assert_delete_call_count(0)
+        harvester_runner.storage_broker.assert_delete_call_count(0)
 
         success_slice, fail_slice, pending_slice = collection.get_slices(harvester_runner.slice_size)
 

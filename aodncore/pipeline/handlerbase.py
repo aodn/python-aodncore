@@ -583,8 +583,8 @@ class HandlerBase(object):
             self.file_collection.set_archive_paths(self._archive_path_function_ref)
             store_runner.run(files_to_archive)
 
-    def _harvest(self, store_runner):
-        harvest_runner = get_harvester_runner(self.harvest_type, store_runner, self.harvest_params, self.temp_dir,
+    def _harvest(self, storage_broker):
+        harvest_runner = get_harvester_runner(self.harvest_type, storage_broker, self.harvest_params, self.temp_dir,
                                               self.config, self.logger)
         self.logger.sysinfo("get_harvester_runner -> '{runner}'".format(runner=harvest_runner.__class__.__name__))
         files_to_harvest = self.file_collection.filter_by_bool_attribute('pending_harvest')
@@ -616,7 +616,7 @@ class HandlerBase(object):
         upload_runner.set_is_overwrite(self.file_collection)
 
         self.file_collection.validate_attribute_uniqueness('dest_path')
-        self._harvest(upload_runner)
+        self._harvest(upload_runner.broker)
         self._store_unharvested(upload_runner)
 
     #
