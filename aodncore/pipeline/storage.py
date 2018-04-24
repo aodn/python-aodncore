@@ -13,8 +13,7 @@ try:
 except ImportError:
     from scandir import walk
 
-from .exceptions import (AttributeNotSetError, FileDeleteFailedError, FileUploadFailedError, InvalidStoreUrlError,
-                         StorageQueryError)
+from .exceptions import AttributeNotSetError, InvalidStoreUrlError, StorageBrokerError
 from .files import validate_pipelinefilecollection
 from ..util import format_exception, mkdir_p, retry_decorator, rm_f, safe_copy_file
 
@@ -112,9 +111,9 @@ class BaseStorageBroker(object):
             try:
                 self._upload_file(pipeline_file=pipeline_file, dest_path_attr=dest_path_attr)
             except Exception as e:
-                raise FileUploadFailedError(
-                    "{e}: '{dest_path}'".format(e=format_exception(e),
-                                                dest_path=getattr(pipeline_file, dest_path_attr)))
+                raise StorageBrokerError("error uploading '{dest_path}': {e}".format(
+                    dest_path=getattr(pipeline_file, dest_path_attr), e=format_exception(e)))
+
             setattr(pipeline_file, is_stored_attr, True)
 
         self._post_run_hook()
@@ -135,9 +134,9 @@ class BaseStorageBroker(object):
             try:
                 self._delete_file(pipeline_file=pipeline_file, dest_path_attr=dest_path_attr)
             except Exception as e:
-                raise FileDeleteFailedError(
-                    "{e}: '{dest_path}'".format(e=format_exception(e),
-                                                dest_path=getattr(pipeline_file, dest_path_attr)))
+                raise StorageBrokerError("error deleting '{dest_path}': {e}".format(
+                    dest_path=getattr(pipeline_file, dest_path_attr), e=format_exception(e)))
+
             setattr(pipeline_file, is_stored_attr, True)
 
         self._post_run_hook()
@@ -154,7 +153,10 @@ class BaseStorageBroker(object):
         :param query: S3 prefix style string
         :return: a dict with keys being the matching objects, and values being a metadata dict for the object
         """
-        return self._run_query(query)
+        try:
+            return self._run_query(query)
+        except Exception as e:
+            raise StorageBrokerError("error querying storage: {e}".format(query=query, e=format_exception(e)))
 
 
 class LocalFileStorageBroker(BaseStorageBroker):
@@ -191,11 +193,7 @@ class LocalFileStorageBroker(BaseStorageBroker):
                         yield os.path.abspath(fullpath), {'last_modified': datetime.fromtimestamp(stats.st_mtime),
                                                           'size': stats.st_size}
 
-        try:
-            result = dict(_find_prefix(full_query))
-        except Exception as e:
-            raise StorageQueryError(format_exception(e))
-
+        result = dict(_find_prefix(full_query))
         return result
 
     def _upload_file(self, pipeline_file, dest_path_attr):
@@ -253,12 +251,7 @@ class S3StorageBroker(BaseStorageBroker):
 
     def _run_query(self, query):
         full_query = os.path.join(self.prefix, query)
-
-        try:
-            raw_result = self.s3_client.list_objects_v2(Bucket=self.bucket, Prefix=full_query)
-        except Exception as e:
-            raise StorageQueryError(format_exception(e))
-
+        raw_result = self.s3_client.list_objects_v2(Bucket=self.bucket, Prefix=full_query)
         result = {k['Key']: {'last_modified': k['LastModified'], 'size': k['Size']} for k in raw_result['Contents']}
         return result
 

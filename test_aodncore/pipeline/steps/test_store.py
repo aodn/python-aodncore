@@ -2,7 +2,7 @@ import os
 from uuid import uuid4
 
 from aodncore.pipeline import PipelineFile, PipelineFileCollection, PipelineFilePublishType
-from aodncore.pipeline.exceptions import FileDeleteFailedError, FileUploadFailedError, InvalidStoreUrlError
+from aodncore.pipeline.exceptions import InvalidStoreUrlError, StorageBrokerError
 from aodncore.pipeline.steps.store import StoreRunner, get_store_runner
 from aodncore.pipeline.storage import LocalFileStorageBroker, S3StorageBroker, SftpStorageBroker
 from aodncore.testlib import BaseTestCase, NullStorageBroker
@@ -70,7 +70,7 @@ class TestBaseStoreRunner(BaseTestCase):
     def test_delete_fail(self):
         collection = get_upload_collection(delete=True)
         runner = StoreRunner(NullStorageBroker("/", fail=True), None, None)
-        with self.assertRaises(FileDeleteFailedError):
+        with self.assertRaises(StorageBrokerError):
             runner.run(collection)
 
         self.assertFalse(collection[0].is_stored)
@@ -84,7 +84,7 @@ class TestBaseStoreRunner(BaseTestCase):
     def test_upload_fail(self):
         collection = get_upload_collection()
         runner = StoreRunner(NullStorageBroker("/", fail=True), None, None)
-        with self.assertRaises(FileUploadFailedError):
+        with self.assertRaises(StorageBrokerError):
             runner.run(collection)
 
     def test_upload_success(self):

@@ -40,6 +40,7 @@ class NullStorageBroker(BaseStorageBroker):
 
         self.upload_call_count = 0
         self.delete_call_count = 0
+        self.query_call_count = 0
 
     def _delete_file(self, pipeline_file, dest_path_attr):
         if self.fail:
@@ -59,7 +60,8 @@ class NullStorageBroker(BaseStorageBroker):
         return not self.fail
 
     def _run_query(self, query):
-        raise NotImplementedError
+        if self.fail:
+            raise Exception('deliberate failure requested')
 
     def upload(self, pipeline_files, is_stored_attr='is_stored', dest_path_attr='dest_path'):
         self.upload_call_count += 1
@@ -68,6 +70,10 @@ class NullStorageBroker(BaseStorageBroker):
     def delete(self, pipeline_files, is_stored_attr='is_stored', dest_path_attr='dest_path'):
         self.delete_call_count += 1
         super(NullStorageBroker, self).delete(pipeline_files, is_stored_attr, dest_path_attr)
+
+    def query(self, query):
+        self.query_call_count += 1
+        super(NullStorageBroker, self).query(query)
 
     def assert_upload_call_count(self, count):
         if self.upload_call_count != count:
@@ -90,6 +96,17 @@ class NullStorageBroker(BaseStorageBroker):
 
     def assert_delete_not_called(self):
         self.assert_delete_call_count(0)
+
+    def assert_query_call_count(self, count):
+        if self.query_call_count != count:
+            raise AssertionError("query method call count: {call_count}".format(call_count=self.delete_call_count))
+
+    def assert_query_called(self):
+        if self.query_call_count == 0:
+            raise AssertionError("query method not called")
+
+    def assert_query_not_called(self):
+        self.assert_query_call_count(0)
 
 
 def dest_path_testing(filename):

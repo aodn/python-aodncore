@@ -10,8 +10,6 @@ __all__ = [
     'DuplicateUniqueAttributeError',
     'AttributeNotSetError',
     'DuplicatePipelineFileError',
-    'FileDeleteFailedError',
-    'FileUploadFailedError',
     'HandlerAlreadyRunError',
     'InvalidCheckSuiteError',
     'InvalidFileContentError',
@@ -29,7 +27,7 @@ __all__ = [
     'MissingConfigParameterError',
     'MissingFileError',
     'NotificationFailedError',
-    'StorageQueryError',
+    'StorageBrokerError',
     'UnmappedFilesError'
 ]
 
@@ -78,14 +76,6 @@ class AttributeNotSetError(PipelineSystemError):
 
 
 class DuplicatePipelineFileError(PipelineSystemError):
-    pass
-
-
-class FileDeleteFailedError(PipelineSystemError):
-    pass
-
-
-class FileUploadFailedError(PipelineSystemError):
     pass
 
 
@@ -145,7 +135,7 @@ class NotificationFailedError(PipelineSystemError):
     pass
 
 
-class StorageQueryError(PipelineSystemError):
+class StorageBrokerError(PipelineSystemError):
     pass
 
 

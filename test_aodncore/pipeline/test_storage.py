@@ -8,8 +8,7 @@ from botocore.exceptions import ClientError
 from dateutil.tz import tzutc
 
 from aodncore.pipeline import PipelineFile, PipelineFileCollection, PipelineFilePublishType
-from aodncore.pipeline.exceptions import (FileDeleteFailedError, FileUploadFailedError, InvalidStoreUrlError,
-                                          StorageQueryError)
+from aodncore.pipeline.exceptions import InvalidStoreUrlError, StorageBrokerError
 from aodncore.pipeline.storage import (get_storage_broker, sftp_path_exists, sftp_makedirs, sftp_mkdir_p,
                                        LocalFileStorageBroker, S3StorageBroker, SftpStorageBroker)
 from aodncore.testlib import BaseTestCase, NullStorageBroker, get_nonexistent_path, mock
@@ -193,7 +192,7 @@ class TestBaseStorageBroker(BaseTestCase):
     def test_delete_fail(self):
         collection = get_upload_collection(delete=True)
         broker = NullStorageBroker("/", fail=True)
-        with self.assertRaises(FileDeleteFailedError):
+        with self.assertRaises(StorageBrokerError):
             broker.delete(pipeline_files=collection, is_stored_attr='is_stored', dest_path_attr='dest_path')
 
         self.assertFalse(collection[0].is_stored)
@@ -207,7 +206,7 @@ class TestBaseStorageBroker(BaseTestCase):
     def test_upload_fail(self):
         collection = get_upload_collection()
         broker = NullStorageBroker("/", fail=True)
-        with self.assertRaises(FileUploadFailedError):
+        with self.assertRaises(StorageBrokerError):
             broker.upload(pipeline_files=collection, is_stored_attr='is_stored', dest_path_attr='dest_path')
 
     def test_upload_success(self):
@@ -215,6 +214,11 @@ class TestBaseStorageBroker(BaseTestCase):
         broker = NullStorageBroker("/")
         broker.upload(pipeline_files=collection, is_stored_attr='is_stored', dest_path_attr='dest_path')
         self.assertTrue(collection[0].is_stored)
+
+    def test_query_fail(self):
+        broker = NullStorageBroker("/", fail=True)
+        with self.assertRaises(StorageBrokerError):
+            broker.query('')
 
     def test_set_is_overwrite_with_no_action_file(self):
         collection = get_upload_collection()
@@ -328,7 +332,7 @@ class TestLocalFileStorageBroker(BaseTestCase):
             _, temp_file1 = tempfile.mkstemp(suffix='.txt', prefix='qwerty', dir=subdir)
 
             file_storage_broker = LocalFileStorageBroker(d)
-            with self.assertRaises(StorageQueryError):
+            with self.assertRaises(StorageBrokerError):
                 _ = file_storage_broker.query('subdir/qwerty')
 
 
@@ -543,7 +547,7 @@ class TestS3StorageBroker(BaseTestCase):
         mock_boto3.client().list_objects_v2.side_effect = dummy_error
 
         s3_storage_broker = S3StorageBroker('imos-data', '')
-        with self.assertRaises(StorageQueryError):
+        with self.assertRaises(StorageBrokerError):
             _ = s3_storage_broker.query('Department_of_Defence/DSTG/slocum_glider/Perth')
 
 
