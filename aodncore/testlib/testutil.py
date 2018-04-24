@@ -55,20 +55,17 @@ class NullStorageBroker(BaseStorageBroker):
         if self.fail:
             raise Exception('deliberate failure requested')
 
-    def _get_absolute_dest_uri(self, pipeline_file, dest_path_attr):
-        return "null://{dest_path}".format(dest_path=pipeline_file.dest_path)
-
     def _get_is_overwrite(self, pipeline_file, abs_path):
         return not self.fail
 
-    def query(self, query):
+    def _run_query(self, query):
         raise NotImplementedError
 
-    def upload(self, pipeline_files, is_stored_attr, dest_path_attr):
+    def upload(self, pipeline_files, is_stored_attr='is_stored', dest_path_attr='dest_path'):
         self.upload_call_count += 1
         super(NullStorageBroker, self).upload(pipeline_files, is_stored_attr, dest_path_attr)
 
-    def delete(self, pipeline_files, is_stored_attr, dest_path_attr):
+    def delete(self, pipeline_files, is_stored_attr='is_stored', dest_path_attr='dest_path'):
         self.delete_call_count += 1
         super(NullStorageBroker, self).delete(pipeline_files, is_stored_attr, dest_path_attr)
 

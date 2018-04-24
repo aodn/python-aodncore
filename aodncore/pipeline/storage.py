@@ -70,6 +70,10 @@ class BaseStorageBroker(object):
         pass
 
     @abc.abstractmethod  # pragma: no cover
+    def _run_query(self, query):
+        pass
+
+    @abc.abstractmethod  # pragma: no cover
     def _upload_file(self, pipeline_file, dest_path_attr):
         pass
 
@@ -84,21 +88,6 @@ class BaseStorageBroker(object):
                 "attribute '{attr}' not set in '{pf}'".format(attr=dest_path_attr, pf=pipeline_file))
         return os.path.join(self.prefix, rel_path)
 
-    @abc.abstractmethod  # pragma: no cover
-    def query(self, query):
-        """Query the storage for existing files
-
-        A trailing slash will result in a directory listing type of query, recursively listing all files underneath
-        the given directory.
-
-        Omitting the trailing slash will cause a prefix style query, where the results will be any path that matches the
-        query *including* partial file names.
-
-        :param query: S3 prefix style string
-        :return: a dict with keys being the matching objects, and values being a metadata dict for the object
-        """
-        pass
-
     def set_is_overwrite(self, pipeline_files, dest_path_attr='dest_path'):
         validate_pipelinefilecollection(pipeline_files)
 
@@ -108,6 +97,13 @@ class BaseStorageBroker(object):
             pipeline_file.is_overwrite = self._get_is_overwrite(pipeline_file, abs_path)
 
     def upload(self, pipeline_files, is_stored_attr='is_stored', dest_path_attr='dest_path'):
+        """Upload the given PipelineFileCollection to the storage backend
+
+        :param pipeline_files: collection to upload
+        :param is_stored_attr: PipelineFile attribute which will be set to True if upload is successful
+        :param dest_path_attr: PipelineFile attribute containing the destination path
+        :return: None
+        """
         validate_pipelinefilecollection(pipeline_files)
 
         self._pre_run_hook()
@@ -124,6 +120,13 @@ class BaseStorageBroker(object):
         self._post_run_hook()
 
     def delete(self, pipeline_files, is_stored_attr='is_stored', dest_path_attr='dest_path'):
+        """Delete the given PipelineFileCollection from the storage backend
+
+        :param pipeline_files: collection to delete
+        :param is_stored_attr: PipelineFile attribute which will be set to True if delete is successful
+        :param dest_path_attr: PipelineFile attribute containing the destination path
+        :return: None
+        """
         validate_pipelinefilecollection(pipeline_files)
 
         self._pre_run_hook()
@@ -138,6 +141,20 @@ class BaseStorageBroker(object):
             setattr(pipeline_file, is_stored_attr, True)
 
         self._post_run_hook()
+
+    def query(self, query):
+        """Query the storage for existing files
+
+        A trailing slash will result in a directory listing type of query, recursively listing all files underneath
+        the given directory.
+
+        Omitting the trailing slash will cause a prefix style query, where the results will be any path that matches the
+        query *including* partial file names.
+
+        :param query: S3 prefix style string
+        :return: a dict with keys being the matching objects, and values being a metadata dict for the object
+        """
+        return self._run_query(query)
 
 
 class LocalFileStorageBroker(BaseStorageBroker):
@@ -161,12 +178,7 @@ class LocalFileStorageBroker(BaseStorageBroker):
     def _pre_run_hook(self):
         return
 
-    def _upload_file(self, pipeline_file, dest_path_attr):
-        abs_path = self._get_absolute_dest_path(pipeline_file=pipeline_file, dest_path_attr=dest_path_attr)
-        mkdir_p(os.path.dirname(abs_path))
-        safe_copy_file(pipeline_file.src_path, abs_path, overwrite=True)
-
-    def query(self, query):
+    def _run_query(self, query):
         full_query = os.path.join(self.prefix, query)
 
         def _find_prefix(path):
@@ -185,6 +197,11 @@ class LocalFileStorageBroker(BaseStorageBroker):
             raise StorageQueryError(format_exception(e))
 
         return result
+
+    def _upload_file(self, pipeline_file, dest_path_attr):
+        abs_path = self._get_absolute_dest_path(pipeline_file=pipeline_file, dest_path_attr=dest_path_attr)
+        mkdir_p(os.path.dirname(abs_path))
+        safe_copy_file(pipeline_file.src_path, abs_path, overwrite=True)
 
 
 class S3StorageBroker(BaseStorageBroker):
@@ -234,6 +251,17 @@ class S3StorageBroker(BaseStorageBroker):
             raise InvalidStoreUrlError(
                 "unable to access S3 bucket '{0}': {1}".format(self.bucket, format_exception(e)))
 
+    def _run_query(self, query):
+        full_query = os.path.join(self.prefix, query)
+
+        try:
+            raw_result = self.s3_client.list_objects_v2(Bucket=self.bucket, Prefix=full_query)
+        except Exception as e:
+            raise StorageQueryError(format_exception(e))
+
+        result = {k['Key']: {'last_modified': k['LastModified'], 'size': k['Size']} for k in raw_result['Contents']}
+        return result
+
     @retry_decorator(**retry_kwargs)
     def _upload_file(self, pipeline_file, dest_path_attr):
         abs_path = self._get_absolute_dest_path(pipeline_file=pipeline_file, dest_path_attr=dest_path_attr)
@@ -245,17 +273,6 @@ class S3StorageBroker(BaseStorageBroker):
     @retry_decorator(**retry_kwargs)
     def _validate_bucket(self):
         self.s3_client.head_bucket(Bucket=self.bucket)
-
-    def query(self, query):
-        full_query = os.path.join(self.prefix, query)
-
-        try:
-            raw_result = self.s3_client.list_objects_v2(Bucket=self.bucket, Prefix=full_query)
-        except Exception as e:
-            raise StorageQueryError(format_exception(e))
-
-        result = {k['Key']: {'last_modified': k['LastModified'], 'size': k['Size']} for k in raw_result['Contents']}
-        return result
 
 
 def sftp_path_exists(sftpclient, path):
@@ -351,6 +368,9 @@ class SftpStorageBroker(BaseStorageBroker):
     def _pre_run_hook(self):
         self._connect_sftp()
 
+    def _run_query(self, query):
+        raise NotImplementedError
+
     def _upload_file(self, pipeline_file, dest_path_attr):
         abs_path = self._get_absolute_dest_path(pipeline_file, dest_path_attr=dest_path_attr)
         parent_dir = os.path.dirname(abs_path)
@@ -358,14 +378,3 @@ class SftpStorageBroker(BaseStorageBroker):
 
         with open(pipeline_file.src_path, 'rb') as f:
             self.sftp_client.putfo(f, abs_path, confirm=True)
-
-    def query(self, query):
-        raise NotImplementedError
-
-
-# class SimpleQuery(object):
-#     def __init__(self, config):
-#         self._broker = get_storage_broker(config.pipeline_config['global']['upload_uri'], config, None)
-#
-#
-#     def query_storage(self):
