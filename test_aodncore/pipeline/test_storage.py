@@ -1,14 +1,19 @@
 import errno
 import os
+import tempfile
 from uuid import uuid4
 
+import datetime
 from botocore.exceptions import ClientError
+from dateutil.tz import tzutc
 
 from aodncore.pipeline import PipelineFile, PipelineFileCollection, PipelineFilePublishType
-from aodncore.pipeline.exceptions import FileDeleteFailedError, FileUploadFailedError, InvalidStoreUrlError
+from aodncore.pipeline.exceptions import (FileDeleteFailedError, FileUploadFailedError, InvalidStoreUrlError,
+                                          StorageQueryError)
 from aodncore.pipeline.storage import (get_storage_broker, sftp_path_exists, sftp_makedirs, sftp_mkdir_p,
                                        LocalFileStorageBroker, S3StorageBroker, SftpStorageBroker)
 from aodncore.testlib import BaseTestCase, NullStorageBroker, get_nonexistent_path, mock
+from aodncore.util import TemporaryDirectory
 from test_aodncore import TESTDATA_DIR
 
 GOOD_NC = os.path.join(TESTDATA_DIR, 'good.nc')
@@ -53,20 +58,24 @@ def get_undo_collection():
 # noinspection PyUnusedLocal
 class TestPipelineStorage(BaseTestCase):
     def test_get_storage_broker(self):
-        file_uri = 'file:///tmp/probably/doesnt/exist/upload'
-        file_storage_broker = get_storage_broker(file_uri, None, self.test_logger)
+        file_url = 'file:///tmp/probably/doesnt/exist/upload'
+        file_storage_broker = get_storage_broker(file_url, None, self.test_logger)
         self.assertIsInstance(file_storage_broker, LocalFileStorageBroker)
 
-        s3_uri = "s3://{dummy_bucket}/{dummy_prefix}".format(dummy_bucket=str(uuid4()), dummy_prefix=str(uuid4()))
-        s3_storage_broker = get_storage_broker(s3_uri, None, self.test_logger)
+        relative_file_url = 'file://tmp/probably/doesnt/exist/upload'
+        with self.assertRaises(InvalidStoreUrlError):
+            _ = get_storage_broker(relative_file_url, None, self.test_logger)
+
+        s3_url = "s3://{dummy_bucket}/{dummy_prefix}".format(dummy_bucket=str(uuid4()), dummy_prefix=str(uuid4()))
+        s3_storage_broker = get_storage_broker(s3_url, None, self.test_logger)
         self.assertIsInstance(s3_storage_broker, S3StorageBroker)
 
-        sftp_uri = "sftp://{dummy_host}/{dummy_path}".format(dummy_host=str(uuid4()), dummy_path=str(uuid4()))
-        sftp_storage_broker = get_storage_broker(sftp_uri, None, self.test_logger)
+        sftp_url = "sftp://{dummy_host}/{dummy_path}".format(dummy_host=str(uuid4()), dummy_path=str(uuid4()))
+        sftp_storage_broker = get_storage_broker(sftp_url, None, self.test_logger)
         self.assertIsInstance(sftp_storage_broker, SftpStorageBroker)
 
         with self.assertRaises(InvalidStoreUrlError):
-            _ = get_storage_broker('invalid_uri', None, self.test_logger)
+            _ = get_storage_broker('invalid_url', None, self.test_logger)
 
     def test_sftp_path_exists_error(self):
         sftpclient = mock.MagicMock()
@@ -277,6 +286,51 @@ class TestLocalFileStorageBroker(BaseTestCase):
 
         self.assertTrue(all(p.is_stored for p in collection))
 
+    def test_directory_query(self):
+        with TemporaryDirectory() as d:
+            subdir = os.path.join(d, 'subdir')
+            os.mkdir(subdir)
+            _, temp_file1 = tempfile.mkstemp(suffix='.txt', prefix='qwerty', dir=subdir)
+            _, temp_file2 = tempfile.mkstemp(suffix='.txt', prefix='qwerty', dir=subdir)
+            _, temp_file3 = tempfile.mkstemp(suffix='.txt', prefix='qwerty', dir=subdir)
+
+            file_storage_broker = LocalFileStorageBroker(d, None, self.test_logger)
+            result = file_storage_broker.query('subdir/')
+
+        self.assertItemsEqual(result.keys(), [temp_file1, temp_file2, temp_file3])
+        self.assertTrue(all(isinstance(v['last_modified'], datetime.datetime) for k, v in result.items()))
+        self.assertTrue(all(isinstance(v['size'], int) for k, v in result.items()))
+
+    def test_prefix_query(self):
+        with TemporaryDirectory() as d:
+            subdir = os.path.join(d, 'subdir')
+            os.mkdir(subdir)
+            _, temp_file1 = tempfile.mkstemp(suffix='.txt', prefix='qwerty', dir=subdir)
+            _, temp_file2 = tempfile.mkstemp(suffix='.txt', prefix='qwerty', dir=subdir)
+            _, temp_file3 = tempfile.mkstemp(suffix='.txt', prefix='asdfgh', dir=subdir)
+            _, temp_file4 = tempfile.mkstemp(suffix='.txt', prefix='asdfgh', dir=subdir)
+
+            file_storage_broker = LocalFileStorageBroker(d, None, self.test_logger)
+            result = file_storage_broker.query('subdir/qwerty')
+
+        self.assertItemsEqual(result.keys(), [temp_file1, temp_file2])
+        self.assertTrue(all(isinstance(v['last_modified'], datetime.datetime) for k, v in result.items()))
+        self.assertTrue(all(isinstance(v['size'], int) for k, v in result.items()))
+
+    @mock.patch('aodncore.pipeline.storage.os.stat')
+    def test_query_error(self, mock_stat):
+        dummy_error = IOError()
+        mock_stat.side_effect = dummy_error
+
+        with TemporaryDirectory() as d:
+            subdir = os.path.join(d, 'subdir')
+            os.mkdir(subdir)
+            _, temp_file1 = tempfile.mkstemp(suffix='.txt', prefix='qwerty', dir=subdir)
+
+            file_storage_broker = LocalFileStorageBroker(d, None, self.test_logger)
+            with self.assertRaises(StorageQueryError):
+                _ = file_storage_broker.query('subdir/qwerty')
+
 
 class TestS3StorageBroker(BaseTestCase):
     @mock.patch('aodncore.pipeline.storage.boto3')
@@ -413,6 +467,84 @@ class TestS3StorageBroker(BaseTestCase):
         s3_storage_broker.s3_client.delete_object.assert_any_call(Bucket=dummy_bucket, Key=unknown_dest_path)
 
         self.assertTrue(all(p.is_stored for p in collection))
+
+    @mock.patch('aodncore.pipeline.storage.boto3')
+    def test_directory_query(self, mock_boto3):
+        mock_boto3.client().list_objects_v2.return_value = {'Contents': [
+            {u'LastModified': datetime.datetime(2016, 4, 27, 2, 30, 9, tzinfo=tzutc()),
+             u'Key': 'Department_of_Defence/DSTG/slocum_glider/PerthCanyonA20140213/DSTO_MD_CEPSTUV_20140213T050333Z_SL085_FV01_timeseries_END-20140312T003551Z.nc',
+             u'Size': 39203028},
+            {u'LastModified': datetime.datetime(2016, 4, 27, 2, 30, 9, tzinfo=tzutc()),
+             u'Key': 'Department_of_Defence/DSTG/slocum_glider/PerthCanyonA20140213/PerthCanyonA20140213.kml',
+             u'Size': 48877},
+            {u'LastModified': datetime.datetime(2016, 4, 27, 2, 30, 10, tzinfo=tzutc()),
+             u'Key': 'Department_of_Defence/DSTG/slocum_glider/PerthCanyonA20140213/PerthCanyonA20140213_CNDC.jpg',
+             u'Size': 104238},
+            {u'LastModified': datetime.datetime(2016, 4, 27, 2, 30, 10, tzinfo=tzutc()),
+             u'Key': 'Department_of_Defence/DSTG/slocum_glider/PerthCanyonA20140213/PerthCanyonA20140213_PSAL.jpg',
+             u'Size': 115044},
+            {u'LastModified': datetime.datetime(2016, 4, 27, 2, 30, 10, tzinfo=tzutc()),
+             u'Key': 'Department_of_Defence/DSTG/slocum_glider/PerthCanyonA20140213/PerthCanyonA20140213_TEMP.jpg',
+             u'Size': 106141}]}
+
+        s3_storage_broker = S3StorageBroker('imos-data', '', None, self.test_logger)
+        result = s3_storage_broker.query('Department_of_Defence/DSTG/slocum_glider/PerthCanyonA20140213/')
+
+        self.assertItemsEqual(result.keys(),
+                              [l['Key'] for l in mock_boto3.client().list_objects_v2.return_value['Contents']])
+        self.assertTrue(all(isinstance(v['last_modified'], datetime.datetime) for k, v in result.items()))
+        self.assertTrue(all(isinstance(v['size'], int) for k, v in result.items()))
+
+    @mock.patch('aodncore.pipeline.storage.boto3')
+    def test_prefix_query(self, mock_boto3):
+        mock_boto3.client().list_objects_v2.return_value = {'Contents': [
+            {u'LastModified': datetime.datetime(2016, 4, 27, 2, 30, 9, tzinfo=tzutc()),
+             u'Key': 'Department_of_Defence/DSTG/slocum_glider/PerthCanyonA20140213/DSTO_MD_CEPSTUV_20140213T050333Z_SL085_FV01_timeseries_END-20140312T003551Z.nc',
+             u'Size': 39203028},
+            {u'LastModified': datetime.datetime(2016, 4, 27, 2, 30, 9, tzinfo=tzutc()),
+             u'Key': 'Department_of_Defence/DSTG/slocum_glider/PerthCanyonA20140213/PerthCanyonA20140213.kml',
+             u'Size': 48877},
+            {u'LastModified': datetime.datetime(2016, 4, 27, 2, 30, 10, tzinfo=tzutc()),
+             u'Key': 'Department_of_Defence/DSTG/slocum_glider/PerthCanyonA20140213/PerthCanyonA20140213_CNDC.jpg',
+             u'Size': 104238},
+            {u'LastModified': datetime.datetime(2016, 4, 27, 2, 30, 10, tzinfo=tzutc()),
+             u'Key': 'Department_of_Defence/DSTG/slocum_glider/PerthCanyonA20140213/PerthCanyonA20140213_PSAL.jpg',
+             u'Size': 115044},
+            {u'LastModified': datetime.datetime(2016, 4, 27, 2, 30, 10, tzinfo=tzutc()),
+             u'Key': 'Department_of_Defence/DSTG/slocum_glider/PerthCanyonA20140213/PerthCanyonA20140213_TEMP.jpg',
+             u'Size': 106141},
+            {u'LastModified': datetime.datetime(2016, 4, 27, 2, 30, 9, tzinfo=tzutc()),
+             u'Key': 'Department_of_Defence/DSTG/slocum_glider/PerthCanyonB20140213/DSTO_MD_CEPSTUV_20140213T050730Z_SL090_FV01_timeseries_END-20140221T102451Z.nc',
+             u'Size': 11622292},
+            {u'LastModified': datetime.datetime(2016, 4, 27, 2, 30, 8, tzinfo=tzutc()),
+             u'Key': 'Department_of_Defence/DSTG/slocum_glider/PerthCanyonB20140213/PerthCanyonB20140213.kml',
+             u'Size': 21574},
+            {u'LastModified': datetime.datetime(2016, 4, 27, 2, 30, 9, tzinfo=tzutc()),
+             u'Key': 'Department_of_Defence/DSTG/slocum_glider/PerthCanyonB20140213/PerthCanyonB20140213_CNDC.jpg',
+             u'Size': 131749},
+            {u'LastModified': datetime.datetime(2016, 4, 27, 2, 30, 10, tzinfo=tzutc()),
+             u'Key': 'Department_of_Defence/DSTG/slocum_glider/PerthCanyonB20140213/PerthCanyonB20140213_PSAL.jpg',
+             u'Size': 139704},
+            {u'LastModified': datetime.datetime(2016, 4, 27, 2, 30, 8, tzinfo=tzutc()),
+             u'Key': 'Department_of_Defence/DSTG/slocum_glider/PerthCanyonB20140213/PerthCanyonB20140213_TEMP.jpg',
+             u'Size': 132122}]}
+
+        s3_storage_broker = S3StorageBroker('imos-data', '', None, self.test_logger)
+        result = s3_storage_broker.query('Department_of_Defence/DSTG/slocum_glider/Perth')
+
+        self.assertItemsEqual(result.keys(),
+                              [l['Key'] for l in mock_boto3.client().list_objects_v2.return_value['Contents']])
+        self.assertTrue(all(isinstance(v['last_modified'], datetime.datetime) for k, v in result.items()))
+        self.assertTrue(all(isinstance(v['size'], int) for k, v in result.items()))
+
+    @mock.patch('aodncore.pipeline.storage.boto3')
+    def test_query_error(self, mock_boto3):
+        dummy_error = ClientError({'Error': {'Code': 'ServiceUnavailable'}}, 'ListObjects')
+        mock_boto3.client().list_objects_v2.side_effect = dummy_error
+
+        s3_storage_broker = S3StorageBroker('imos-data', '', None, self.test_logger)
+        with self.assertRaises(StorageQueryError):
+            _ = s3_storage_broker.query('Department_of_Defence/DSTG/slocum_glider/Perth')
 
 
 # noinspection PyUnusedLocal

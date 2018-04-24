@@ -29,6 +29,7 @@ __all__ = [
     'MissingConfigParameterError',
     'MissingFileError',
     'NotificationFailedError',
+    'StorageQueryError',
     'UnmappedFilesError'
 ]
 
@@ -141,6 +142,10 @@ class MissingFileError(PipelineSystemError):
 
 
 class NotificationFailedError(PipelineSystemError):
+    pass
+
+
+class StorageQueryError(PipelineSystemError):
     pass
 
 

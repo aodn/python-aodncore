@@ -4,10 +4,17 @@ import os
 
 import boto3
 from botocore.exceptions import ClientError
+from datetime import datetime
 from paramiko import SSHClient, AutoAddPolicy
 from six.moves.urllib.parse import urlparse
 
-from .exceptions import AttributeNotSetError, FileDeleteFailedError, FileUploadFailedError, InvalidStoreUrlError
+try:
+    from os import walk
+except ImportError:
+    from scandir import walk
+
+from .exceptions import (AttributeNotSetError, FileDeleteFailedError, FileUploadFailedError, InvalidStoreUrlError,
+                         StorageQueryError)
 from .files import validate_pipelinefilecollection
 from ..util import format_exception, mkdir_p, retry_decorator, rm_f, safe_copy_file
 
@@ -33,6 +40,8 @@ def get_storage_broker(store_url, config, logger):
 
     url = urlparse(store_url)
     if url.scheme == 'file':
+        if url.netloc:
+            raise InvalidStoreUrlError("invalid URL '{url}'. Must be an absolute path".format(url=store_url))
         return LocalFileStorageBroker(url.path, config, logger)
     elif url.scheme == 's3':
         return S3StorageBroker(url.netloc, url.path, config, logger)
@@ -80,6 +89,21 @@ class BaseStorageBroker(object):
             raise AttributeNotSetError(
                 "attribute '{attr}' not set in '{pf}'".format(attr=dest_path_attr, pf=pipeline_file))
         return os.path.join(self.prefix, rel_path)
+
+    @abc.abstractmethod  # pragma: no cover
+    def query(self, query):
+        """Query the storage for existing files
+
+        A trailing slash will result in a directory listing type of query, recursively listing all files underneath
+        the given directory.
+
+        Omitting the trailing slash will cause a prefix style query, where the results will be any path that matches the
+        query *including* partial file names.
+
+        :param query: S3 prefix style string
+        :return: a dict with keys being the matching objects, and values being a metadata dict for the object
+        """
+        pass
 
     def set_is_overwrite(self, pipeline_files, dest_path_attr='dest_path'):
         validate_pipelinefilecollection(pipeline_files)
@@ -159,6 +183,26 @@ class LocalFileStorageBroker(BaseStorageBroker):
         mkdir_p(os.path.dirname(abs_path))
         safe_copy_file(pipeline_file.src_path, abs_path, overwrite=True)
 
+    def query(self, query):
+        full_query = os.path.join(self.prefix, query)
+
+        def _find_prefix(path):
+            parent_path = os.path.dirname(path)
+            for root, dirs, files in walk(parent_path):
+                for name in files:
+                    fullpath = os.path.join(root, name)
+                    if fullpath.startswith(full_query) and not os.path.islink(fullpath):
+                        stats = os.stat(fullpath)
+                        yield os.path.abspath(fullpath), {'last_modified': datetime.fromtimestamp(stats.st_mtime),
+                                                          'size': stats.st_size}
+
+        try:
+            result = dict(_find_prefix(full_query))
+        except Exception as e:
+            raise StorageQueryError(format_exception(e))
+
+        return result
+
 
 class S3StorageBroker(BaseStorageBroker):
     """StorageBroker to interact with an S3
@@ -223,6 +267,17 @@ class S3StorageBroker(BaseStorageBroker):
     @retry_decorator(**retry_kwargs)
     def _validate_bucket(self):
         self.s3_client.head_bucket(Bucket=self.bucket)
+
+    def query(self, query):
+        full_query = os.path.join(self.prefix, query)
+
+        try:
+            raw_result = self.s3_client.list_objects_v2(Bucket=self.bucket, Prefix=full_query)
+        except Exception as e:
+            raise StorageQueryError(format_exception(e))
+
+        result = {k['Key']: {'last_modified': k['LastModified'], 'size': k['Size']} for k in raw_result['Contents']}
+        return result
 
 
 def sftp_path_exists(sftpclient, path):
@@ -330,3 +385,6 @@ class SftpStorageBroker(BaseStorageBroker):
 
         with open(pipeline_file.src_path, 'rb') as f:
             self.sftp_client.putfo(f, abs_path, confirm=True)
+
+    def query(self, query):
+        raise NotImplementedError

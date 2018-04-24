@@ -62,6 +62,9 @@ class NullStorageBroker(BaseStorageBroker):
     def _get_is_overwrite(self, pipeline_file, abs_path):
         return not self.fail
 
+    def query(self, query):
+        raise NotImplementedError
+
     def upload(self, pipeline_files, is_stored_attr, dest_path_attr):
         self.upload_call_count += 1
         super(NullStorageBroker, self).upload(pipeline_files, is_stored_attr, dest_path_attr)
