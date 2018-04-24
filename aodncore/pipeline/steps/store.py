@@ -1,3 +1,10 @@
+"""This module provides the step runner class for the "store" step, which is a sub-step of the :ref:`publish` step.
+
+The step runner delegates the low level storage operations to an internal :py:class:`BaseStorageBroker` instance, and so
+it's primary purpose is to abstract the storage operations from the :py:class:`HandlerBase` by providing an interface
+similar to the other handler steps.
+"""
+
 from .basestep import BaseStepRunner
 from ..files import validate_pipelinefilecollection
 from ..storage import get_storage_broker
@@ -59,6 +66,11 @@ class StoreRunner(BaseStepRunner):
         self.broker.set_is_overwrite(pipeline_files=pipeline_files, dest_path_attr=self.dest_path_attr)
 
     def run(self, pipeline_files):
+        """Execute the pending storage operation(s) for each file in the given collection
+
+        :param pipeline_files: PipelineFileCollection instance
+        :return: None
+        """
         validate_pipelinefilecollection(pipeline_files)
 
         additions = pipeline_files.filter_by_bool_attribute(self.pending_addition_attr)
