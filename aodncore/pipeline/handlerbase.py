@@ -293,13 +293,12 @@ class HandlerBase(object):
         self.upload_path = upload_path
         self.resolve_params = resolve_params
 
-        self.file_collection = PipelineFileCollection()
-
         self._archive_path_function_ref = None
         self._archive_path_function_name = None
         self._dest_path_function_ref = None
         self._dest_path_function_name = None
         self._error_details = None
+        self._file_collection = None
         self._handler_run = False
         self._instance_working_directory = None
         self._notification_results = None
@@ -384,6 +383,15 @@ class HandlerBase(object):
         :rtype: :class:`str`, :class:`None`
         """
         return self._error_details
+
+    @property
+    def file_collection(self):
+        """Read-only property to access the handler's primary PipelineFileCollection instance
+
+        :return: handler file collection
+        :rtype: :class:`PipelineFileCollection`
+        """
+        return self._file_collection
 
     @property
     def file_checksum(self):
@@ -550,6 +558,8 @@ class HandlerBase(object):
     #
 
     def _initialise(self):
+        self._file_collection = PipelineFileCollection()
+
         self._init_logging()
         self._validate_params()
         self._set_checksum()
