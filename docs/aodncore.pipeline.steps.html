@@ -216,39 +216,6 @@ class for each step, inheriting from this one)</p>
 <p>Common parent class of all “step runner” child classes</p>
 </dd></dl>
 
-<dl class="class">
-<dt id="aodncore.pipeline.steps.basestep.AbstractCollectionStepRunner">
-<em class="property">class </em><code class="descclassname">aodncore.pipeline.steps.basestep.</code><code class="descname">AbstractCollectionStepRunner</code><span class="sig-paren">(</span><em>config</em>, <em>logger</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/aodncore/pipeline/steps/basestep.html#AbstractCollectionStepRunner"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#aodncore.pipeline.steps.basestep.AbstractCollectionStepRunner" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <a class="reference internal" href="#aodncore.pipeline.steps.basestep.BaseStepRunner" title="aodncore.pipeline.steps.basestep.BaseStepRunner"><code class="xref py py-class docutils literal notranslate"><span class="pre">aodncore.pipeline.steps.basestep.BaseStepRunner</span></code></a></p>
-<dl class="method">
-<dt id="aodncore.pipeline.steps.basestep.AbstractCollectionStepRunner.run">
-<code class="descname">run</code><span class="sig-paren">(</span><em>pipeline_files</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/aodncore/pipeline/steps/basestep.html#AbstractCollectionStepRunner.run"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#aodncore.pipeline.steps.basestep.AbstractCollectionStepRunner.run" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-</dd></dl>
-
-<dl class="class">
-<dt id="aodncore.pipeline.steps.basestep.AbstractNotifyRunner">
-<em class="property">class </em><code class="descclassname">aodncore.pipeline.steps.basestep.</code><code class="descname">AbstractNotifyRunner</code><span class="sig-paren">(</span><em>config</em>, <em>logger</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/aodncore/pipeline/steps/basestep.html#AbstractNotifyRunner"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#aodncore.pipeline.steps.basestep.AbstractNotifyRunner" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <a class="reference internal" href="#aodncore.pipeline.steps.basestep.BaseStepRunner" title="aodncore.pipeline.steps.basestep.BaseStepRunner"><code class="xref py py-class docutils literal notranslate"><span class="pre">aodncore.pipeline.steps.basestep.BaseStepRunner</span></code></a></p>
-<dl class="method">
-<dt id="aodncore.pipeline.steps.basestep.AbstractNotifyRunner.run">
-<code class="descname">run</code><span class="sig-paren">(</span><em>notify_list</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/aodncore/pipeline/steps/basestep.html#AbstractNotifyRunner.run"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#aodncore.pipeline.steps.basestep.AbstractNotifyRunner.run" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-</dd></dl>
-
-<dl class="class">
-<dt id="aodncore.pipeline.steps.basestep.AbstractResolveRunner">
-<em class="property">class </em><code class="descclassname">aodncore.pipeline.steps.basestep.</code><code class="descname">AbstractResolveRunner</code><span class="sig-paren">(</span><em>config</em>, <em>logger</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/aodncore/pipeline/steps/basestep.html#AbstractResolveRunner"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#aodncore.pipeline.steps.basestep.AbstractResolveRunner" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <a class="reference internal" href="#aodncore.pipeline.steps.basestep.BaseStepRunner" title="aodncore.pipeline.steps.basestep.BaseStepRunner"><code class="xref py py-class docutils literal notranslate"><span class="pre">aodncore.pipeline.steps.basestep.BaseStepRunner</span></code></a></p>
-<dl class="method">
-<dt id="aodncore.pipeline.steps.basestep.AbstractResolveRunner.run">
-<code class="descname">run</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/aodncore/pipeline/steps/basestep.html#AbstractResolveRunner.run"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#aodncore.pipeline.steps.basestep.AbstractResolveRunner.run" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-</dd></dl>
-
 </div>
 <div class="section" id="module-aodncore.pipeline.steps.check">
 <span id="aodncore-pipeline-steps-check-module"></span><h2>aodncore.pipeline.steps.check module<a class="headerlink" href="#module-aodncore.pipeline.steps.check" title="Permalink to this headline">¶</a></h2>
@@ -395,7 +362,7 @@ harvesting processes.</p>
 
 <dl class="function">
 <dt id="aodncore.pipeline.steps.harvest.get_harvester_runner">
-<code class="descclassname">aodncore.pipeline.steps.harvest.</code><code class="descname">get_harvester_runner</code><span class="sig-paren">(</span><em>harvester_name</em>, <em>upload_runner</em>, <em>harvest_params</em>, <em>tmp_base_dir</em>, <em>config</em>, <em>logger</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/aodncore/pipeline/steps/harvest.html#get_harvester_runner"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#aodncore.pipeline.steps.harvest.get_harvester_runner" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">aodncore.pipeline.steps.harvest.</code><code class="descname">get_harvester_runner</code><span class="sig-paren">(</span><em>harvester_name</em>, <em>store_runner</em>, <em>harvest_params</em>, <em>tmp_base_dir</em>, <em>config</em>, <em>logger</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/aodncore/pipeline/steps/harvest.html#get_harvester_runner"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#aodncore.pipeline.steps.harvest.get_harvester_runner" title="Permalink to this definition">¶</a></dt>
 <dd><p>Factory function to return appropriate harvester class</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -403,7 +370,7 @@ harvesting processes.</p>
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
 <li><strong>harvester_name</strong> – harvester name used to retrieve <code class="xref py py-class docutils literal notranslate"><span class="pre">BaseHarvesterRunner</span></code> class</li>
-<li><strong>upload_runner</strong> – <code class="xref py py-class docutils literal notranslate"><span class="pre">BaseUploadRunner</span></code> instance to use for uploads</li>
+<li><strong>store_runner</strong> – <code class="xref py py-class docutils literal notranslate"><span class="pre">BaseStoreRunner</span></code> instance to use for uploads</li>
 <li><strong>harvest_params</strong> – dict of parameters to pass to <code class="xref py py-class docutils literal notranslate"><span class="pre">BaseCheckRunner</span></code> class for runtime configuration</li>
 <li><strong>tmp_base_dir</strong> – base temporary directory</li>
 <li><strong>config</strong> – <code class="xref py py-class docutils literal notranslate"><span class="pre">LazyConfigManager</span></code> instance</li>
@@ -534,7 +501,7 @@ present in this map</p>
 
 <dl class="class">
 <dt id="aodncore.pipeline.steps.harvest.TalendHarvesterRunner">
-<em class="property">class </em><code class="descclassname">aodncore.pipeline.steps.harvest.</code><code class="descname">TalendHarvesterRunner</code><span class="sig-paren">(</span><em>upload_runner</em>, <em>harvest_params</em>, <em>tmp_base_dir</em>, <em>config</em>, <em>logger</em>, <em>deletion=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/aodncore/pipeline/steps/harvest.html#TalendHarvesterRunner"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#aodncore.pipeline.steps.harvest.TalendHarvesterRunner" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descclassname">aodncore.pipeline.steps.harvest.</code><code class="descname">TalendHarvesterRunner</code><span class="sig-paren">(</span><em>storage_broker</em>, <em>harvest_params</em>, <em>tmp_base_dir</em>, <em>config</em>, <em>logger</em>, <em>deletion=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/aodncore/pipeline/steps/harvest.html#TalendHarvesterRunner"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#aodncore.pipeline.steps.harvest.TalendHarvesterRunner" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">aodncore.pipeline.steps.harvest.BaseHarvesterRunner</span></code></p>
 <p><code class="xref py py-class docutils literal notranslate"><span class="pre">BaseHarvesterRunner</span></code> implementation to execute Talend harvesters</p>
 <dl class="method">
@@ -1104,32 +1071,29 @@ classified as follows (text in square brackets not in actual files):</p>
 </dd></dl>
 
 </div>
-<div class="section" id="module-aodncore.pipeline.steps.upload">
-<span id="aodncore-pipeline-steps-upload-module"></span><h2>aodncore.pipeline.steps.upload module<a class="headerlink" href="#module-aodncore.pipeline.steps.upload" title="Permalink to this headline">¶</a></h2>
-<p>This module provides the step runner classes for the “upload” step, which is a sub-step of the <a class="reference internal" href="userdoc.html#publish"><span class="std std-ref">publish</span></a> step.</p>
-<p>Uploading/deleting is performed by a <code class="xref py py-class docutils literal notranslate"><span class="pre">BaseUploadRunner</span></code> class.</p>
-<p>Despite the name of UploadRunner, the classes perform the role of a general storage “broker”, by abstracting the
-details of interacting with a given storage protocol, while exposing a generic interface to the handler class. The
-handler class itself then only needs to understand the concept of “uploading” and “deleting” without needing to
-understand the differences between interacting with a local directory or with S3, for example.</p>
-<p>The most common use of this step is to upload files to S3 after they have been checked and harvested.</p>
+<div class="section" id="module-aodncore.pipeline.steps.store">
+<span id="aodncore-pipeline-steps-store-module"></span><h2>aodncore.pipeline.steps.store module<a class="headerlink" href="#module-aodncore.pipeline.steps.store" title="Permalink to this headline">¶</a></h2>
+<p>This module provides the step runner class for the “store” step, which is a sub-step of the <a class="reference internal" href="userdoc.html#publish"><span class="std std-ref">publish</span></a> step.</p>
+<p>The step runner delegates the low level storage operations to an internal <code class="xref py py-class docutils literal notranslate"><span class="pre">BaseStorageBroker</span></code> instance, and so
+it’s primary purpose is to abstract the storage operations from the <code class="xref py py-class docutils literal notranslate"><span class="pre">HandlerBase</span></code> by providing an interface
+similar to the other handler steps.</p>
 <dl class="function">
-<dt id="aodncore.pipeline.steps.upload.get_upload_runner">
-<code class="descclassname">aodncore.pipeline.steps.upload.</code><code class="descname">get_upload_runner</code><span class="sig-paren">(</span><em>upload_base_url</em>, <em>config</em>, <em>logger</em>, <em>archive_mode=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/aodncore/pipeline/steps/upload.html#get_upload_runner"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#aodncore.pipeline.steps.upload.get_upload_runner" title="Permalink to this definition">¶</a></dt>
-<dd><p>Factory function to return appropriate uploader class based on URL scheme</p>
+<dt id="aodncore.pipeline.steps.store.get_store_runner">
+<code class="descclassname">aodncore.pipeline.steps.store.</code><code class="descname">get_store_runner</code><span class="sig-paren">(</span><em>store_base_url</em>, <em>config</em>, <em>logger</em>, <em>archive_mode=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/aodncore/pipeline/steps/store.html#get_store_runner"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#aodncore.pipeline.steps.store.get_store_runner" title="Permalink to this definition">¶</a></dt>
+<dd><p>Factory function to return store runner class, with it’s storage broker based on URL scheme</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>upload_base_url</strong> – URL base</li>
-<li><strong>config</strong> – <code class="xref py py-class docutils literal notranslate"><span class="pre">LazyConfigManager</span></code> instance</li>
-<li><strong>logger</strong> – <code class="xref py py-class docutils literal notranslate"><span class="pre">Logger</span></code> instance</li>
-<li><strong>archive_mode</strong> – <code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code> flag to indicate archive</li>
+<li><strong>store_base_url</strong> – URL base for storage location</li>
+<li><strong>config</strong> – LazyConfigManager instance</li>
+<li><strong>logger</strong> – Logger instance</li>
+<li><strong>archive_mode</strong> – flag to indicate archive</li>
 </ul>
 </td>
 </tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"><code class="xref py py-class docutils literal notranslate"><span class="pre">BaseUploadRunner</span></code> class</p>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">StoreRunner instance</p>
 </td>
 </tr>
 </tbody>
@@ -1137,45 +1101,74 @@ understand the differences between interacting with a local directory or with S3
 </dd></dl>
 
 <dl class="class">
-<dt id="aodncore.pipeline.steps.upload.FileUploadRunner">
-<em class="property">class </em><code class="descclassname">aodncore.pipeline.steps.upload.</code><code class="descname">FileUploadRunner</code><span class="sig-paren">(</span><em>prefix</em>, <em>config</em>, <em>logger</em>, <em>archive_mode=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/aodncore/pipeline/steps/upload.html#FileUploadRunner"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#aodncore.pipeline.steps.upload.FileUploadRunner" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">aodncore.pipeline.steps.upload.BaseUploadRunner</span></code></p>
-<p>UploadRunner to “upload” a file to a local directory</p>
+<dt id="aodncore.pipeline.steps.store.StoreRunner">
+<em class="property">class </em><code class="descclassname">aodncore.pipeline.steps.store.</code><code class="descname">StoreRunner</code><span class="sig-paren">(</span><em>broker</em>, <em>config</em>, <em>logger</em>, <em>archive_mode=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/aodncore/pipeline/steps/store.html#StoreRunner"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#aodncore.pipeline.steps.store.StoreRunner" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#aodncore.pipeline.steps.basestep.BaseStepRunner" title="aodncore.pipeline.steps.basestep.BaseStepRunner"><code class="xref py py-class docutils literal notranslate"><span class="pre">aodncore.pipeline.steps.basestep.BaseStepRunner</span></code></a></p>
+<dl class="attribute">
+<dt id="aodncore.pipeline.steps.store.StoreRunner.dest_path_attr">
+<code class="descname">dest_path_attr</code><a class="headerlink" href="#aodncore.pipeline.steps.store.StoreRunner.dest_path_attr" title="Permalink to this definition">¶</a></dt>
+<dd><p>PipelineFile attribute containing the destination path</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">bool</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
-<dl class="class">
-<dt id="aodncore.pipeline.steps.upload.S3UploadRunner">
-<em class="property">class </em><code class="descclassname">aodncore.pipeline.steps.upload.</code><code class="descname">S3UploadRunner</code><span class="sig-paren">(</span><em>bucket</em>, <em>prefix</em>, <em>config</em>, <em>logger</em>, <em>archive_mode=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/aodncore/pipeline/steps/upload.html#S3UploadRunner"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#aodncore.pipeline.steps.upload.S3UploadRunner" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">aodncore.pipeline.steps.upload.BaseUploadRunner</span></code></p>
-<p>UploadRunner to upload files to an S3 bucket</p>
-<div class="admonition warning">
-<p class="first admonition-title">Warning</p>
-<p class="last">This does not and should not attempt to support any authentication code. Multiple mechanisms for
-loading credentials are far more appropriately handled directly by the boto3, and it is expected that the
-credentials are supplied using one of these mechanisms by the environment (e.g. deployed from configuration
-management, set as environment variables etc.).</p>
-</div>
-<div class="admonition seealso">
-<p class="first admonition-title">See also</p>
-<p class="last"><a class="reference external" href="http://boto3.readthedocs.io/en/latest/guide/configuration.html">http://boto3.readthedocs.io/en/latest/guide/configuration.html</a></p>
-</div>
 <dl class="attribute">
-<dt id="aodncore.pipeline.steps.upload.S3UploadRunner.retry_kwargs">
-<code class="descname">retry_kwargs</code><em class="property"> = {'backoff': 2, 'delay': 5, 'exceptions': (&lt;class 'botocore.exceptions.ClientError'&gt;,), 'tries': 3}</em><a class="headerlink" href="#aodncore.pipeline.steps.upload.S3UploadRunner.retry_kwargs" title="Permalink to this definition">¶</a></dt>
+<dt id="aodncore.pipeline.steps.store.StoreRunner.is_stored_attr">
+<code class="descname">is_stored_attr</code><a class="headerlink" href="#aodncore.pipeline.steps.store.StoreRunner.is_stored_attr" title="Permalink to this definition">¶</a></dt>
+<dd><p>PipelineFile attribute to flag completion of upload operation</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">bool</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="aodncore.pipeline.steps.store.StoreRunner.pending_addition_attr">
+<code class="descname">pending_addition_attr</code><a class="headerlink" href="#aodncore.pipeline.steps.store.StoreRunner.pending_addition_attr" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
+<dl class="method">
+<dt id="aodncore.pipeline.steps.store.StoreRunner.run">
+<code class="descname">run</code><span class="sig-paren">(</span><em>pipeline_files</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/aodncore/pipeline/steps/store.html#StoreRunner.run"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#aodncore.pipeline.steps.store.StoreRunner.run" title="Permalink to this definition">¶</a></dt>
+<dd><p>Execute the pending storage operation(s) for each file in the given collection</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>pipeline_files</strong> – PipelineFileCollection instance</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">None</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
-<dl class="class">
-<dt id="aodncore.pipeline.steps.upload.SftpUploadRunner">
-<em class="property">class </em><code class="descclassname">aodncore.pipeline.steps.upload.</code><code class="descname">SftpUploadRunner</code><span class="sig-paren">(</span><em>server</em>, <em>prefix</em>, <em>config</em>, <em>logger</em>, <em>archive_mode=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/aodncore/pipeline/steps/upload.html#SftpUploadRunner"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#aodncore.pipeline.steps.upload.SftpUploadRunner" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">aodncore.pipeline.steps.upload.BaseUploadRunner</span></code></p>
-<p>UploadRunner to upload files to an SFTP server</p>
-<div class="admonition warning">
-<p class="first admonition-title">Warning</p>
-<p class="last">Similarly to the S3 upload runner, this does not implement any authentication code, as this is better
-handled by the environment in the form of public key authentication.</p>
-</div>
+<dl class="method">
+<dt id="aodncore.pipeline.steps.store.StoreRunner.set_is_overwrite">
+<code class="descname">set_is_overwrite</code><span class="sig-paren">(</span><em>pipeline_files</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/aodncore/pipeline/steps/store.html#StoreRunner.set_is_overwrite"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#aodncore.pipeline.steps.store.StoreRunner.set_is_overwrite" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set the “is_overwrite” attribute for each file in the given collection</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>pipeline_files</strong> – collection to</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">None</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
 </dd></dl>
 
 </div>
@@ -1390,7 +1383,7 @@ string</p>
 
 <dl class="function">
 <dt id="aodncore.pipeline.steps.get_harvester_runner">
-<code class="descclassname">aodncore.pipeline.steps.</code><code class="descname">get_harvester_runner</code><span class="sig-paren">(</span><em>harvester_name</em>, <em>upload_runner</em>, <em>harvest_params</em>, <em>tmp_base_dir</em>, <em>config</em>, <em>logger</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/aodncore/pipeline/steps/harvest.html#get_harvester_runner"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#aodncore.pipeline.steps.get_harvester_runner" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">aodncore.pipeline.steps.</code><code class="descname">get_harvester_runner</code><span class="sig-paren">(</span><em>harvester_name</em>, <em>store_runner</em>, <em>harvest_params</em>, <em>tmp_base_dir</em>, <em>config</em>, <em>logger</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/aodncore/pipeline/steps/harvest.html#get_harvester_runner"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#aodncore.pipeline.steps.get_harvester_runner" title="Permalink to this definition">¶</a></dt>
 <dd><p>Factory function to return appropriate harvester class</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -1398,7 +1391,7 @@ string</p>
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
 <li><strong>harvester_name</strong> – harvester name used to retrieve <code class="xref py py-class docutils literal notranslate"><span class="pre">BaseHarvesterRunner</span></code> class</li>
-<li><strong>upload_runner</strong> – <code class="xref py py-class docutils literal notranslate"><span class="pre">BaseUploadRunner</span></code> instance to use for uploads</li>
+<li><strong>store_runner</strong> – <code class="xref py py-class docutils literal notranslate"><span class="pre">BaseStoreRunner</span></code> instance to use for uploads</li>
 <li><strong>harvest_params</strong> – dict of parameters to pass to <code class="xref py py-class docutils literal notranslate"><span class="pre">BaseCheckRunner</span></code> class for runtime configuration</li>
 <li><strong>tmp_base_dir</strong> – base temporary directory</li>
 <li><strong>config</strong> – <code class="xref py py-class docutils literal notranslate"><span class="pre">LazyConfigManager</span></code> instance</li>
@@ -1461,22 +1454,22 @@ string</p>
 </dd></dl>
 
 <dl class="function">
-<dt id="aodncore.pipeline.steps.get_upload_runner">
-<code class="descclassname">aodncore.pipeline.steps.</code><code class="descname">get_upload_runner</code><span class="sig-paren">(</span><em>upload_base_url</em>, <em>config</em>, <em>logger</em>, <em>archive_mode=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/aodncore/pipeline/steps/upload.html#get_upload_runner"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#aodncore.pipeline.steps.get_upload_runner" title="Permalink to this definition">¶</a></dt>
-<dd><p>Factory function to return appropriate uploader class based on URL scheme</p>
+<dt id="aodncore.pipeline.steps.get_store_runner">
+<code class="descclassname">aodncore.pipeline.steps.</code><code class="descname">get_store_runner</code><span class="sig-paren">(</span><em>store_base_url</em>, <em>config</em>, <em>logger</em>, <em>archive_mode=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/aodncore/pipeline/steps/store.html#get_store_runner"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#aodncore.pipeline.steps.get_store_runner" title="Permalink to this definition">¶</a></dt>
+<dd><p>Factory function to return store runner class, with it’s storage broker based on URL scheme</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>upload_base_url</strong> – URL base</li>
-<li><strong>config</strong> – <code class="xref py py-class docutils literal notranslate"><span class="pre">LazyConfigManager</span></code> instance</li>
-<li><strong>logger</strong> – <code class="xref py py-class docutils literal notranslate"><span class="pre">Logger</span></code> instance</li>
-<li><strong>archive_mode</strong> – <code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code> flag to indicate archive</li>
+<li><strong>store_base_url</strong> – URL base for storage location</li>
+<li><strong>config</strong> – LazyConfigManager instance</li>
+<li><strong>logger</strong> – Logger instance</li>
+<li><strong>archive_mode</strong> – flag to indicate archive</li>
 </ul>
 </td>
 </tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"><code class="xref py py-class docutils literal notranslate"><span class="pre">BaseUploadRunner</span></code> class</p>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">StoreRunner instance</p>
 </td>
 </tr>
 </tbody>

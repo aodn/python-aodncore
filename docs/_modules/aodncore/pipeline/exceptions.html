@@ -203,8 +203,6 @@
     <span class="s1">&#39;DuplicateUniqueAttributeError&#39;</span><span class="p">,</span>
     <span class="s1">&#39;AttributeNotSetError&#39;</span><span class="p">,</span>
     <span class="s1">&#39;DuplicatePipelineFileError&#39;</span><span class="p">,</span>
-    <span class="s1">&#39;FileDeleteFailedError&#39;</span><span class="p">,</span>
-    <span class="s1">&#39;FileUploadFailedError&#39;</span><span class="p">,</span>
     <span class="s1">&#39;HandlerAlreadyRunError&#39;</span><span class="p">,</span>
     <span class="s1">&#39;InvalidCheckSuiteError&#39;</span><span class="p">,</span>
     <span class="s1">&#39;InvalidFileContentError&#39;</span><span class="p">,</span>
@@ -218,10 +216,11 @@
     <span class="s1">&#39;InvalidHarvestMapError&#39;</span><span class="p">,</span>
     <span class="s1">&#39;InvalidInputFileError&#39;</span><span class="p">,</span>
     <span class="s1">&#39;InvalidRecipientError&#39;</span><span class="p">,</span>
-    <span class="s1">&#39;InvalidUploadUrlError&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;InvalidStoreUrlError&#39;</span><span class="p">,</span>
     <span class="s1">&#39;MissingConfigParameterError&#39;</span><span class="p">,</span>
     <span class="s1">&#39;MissingFileError&#39;</span><span class="p">,</span>
     <span class="s1">&#39;NotificationFailedError&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;StorageBrokerError&#39;</span><span class="p">,</span>
     <span class="s1">&#39;UnmappedFilesError&#39;</span>
 <span class="p">]</span>
 
@@ -273,14 +272,6 @@
     <span class="k">pass</span></div>
 
 
-<div class="viewcode-block" id="FileDeleteFailedError"><a class="viewcode-back" href="../../../aodncore.pipeline.html#aodncore.pipeline.exceptions.FileDeleteFailedError">[docs]</a><span class="k">class</span> <span class="nc">FileDeleteFailedError</span><span class="p">(</span><span class="n">PipelineSystemError</span><span class="p">):</span>
-    <span class="k">pass</span></div>
-
-
-<div class="viewcode-block" id="FileUploadFailedError"><a class="viewcode-back" href="../../../aodncore.pipeline.html#aodncore.pipeline.exceptions.FileUploadFailedError">[docs]</a><span class="k">class</span> <span class="nc">FileUploadFailedError</span><span class="p">(</span><span class="n">PipelineSystemError</span><span class="p">):</span>
-    <span class="k">pass</span></div>
-
-
 <div class="viewcode-block" id="HandlerAlreadyRunError"><a class="viewcode-back" href="../../../aodncore.pipeline.html#aodncore.pipeline.exceptions.HandlerAlreadyRunError">[docs]</a><span class="k">class</span> <span class="nc">HandlerAlreadyRunError</span><span class="p">(</span><span class="n">PipelineSystemError</span><span class="p">):</span>
     <span class="k">pass</span></div>
 
@@ -321,7 +312,7 @@
     <span class="k">pass</span></div>
 
 
-<div class="viewcode-block" id="InvalidUploadUrlError"><a class="viewcode-back" href="../../../aodncore.pipeline.html#aodncore.pipeline.exceptions.InvalidUploadUrlError">[docs]</a><span class="k">class</span> <span class="nc">InvalidUploadUrlError</span><span class="p">(</span><span class="n">PipelineSystemError</span><span class="p">):</span>
+<div class="viewcode-block" id="InvalidStoreUrlError"><a class="viewcode-back" href="../../../aodncore.pipeline.html#aodncore.pipeline.exceptions.InvalidStoreUrlError">[docs]</a><span class="k">class</span> <span class="nc">InvalidStoreUrlError</span><span class="p">(</span><span class="n">PipelineSystemError</span><span class="p">):</span>
     <span class="k">pass</span></div>
 
 
@@ -334,6 +325,10 @@
 
 
 <div class="viewcode-block" id="NotificationFailedError"><a class="viewcode-back" href="../../../aodncore.pipeline.html#aodncore.pipeline.exceptions.NotificationFailedError">[docs]</a><span class="k">class</span> <span class="nc">NotificationFailedError</span><span class="p">(</span><span class="n">PipelineSystemError</span><span class="p">):</span>
+    <span class="k">pass</span></div>
+
+
+<div class="viewcode-block" id="StorageBrokerError"><a class="viewcode-back" href="../../../aodncore.pipeline.html#aodncore.pipeline.exceptions.StorageBrokerError">[docs]</a><span class="k">class</span> <span class="nc">StorageBrokerError</span><span class="p">(</span><span class="n">PipelineSystemError</span><span class="p">):</span>
     <span class="k">pass</span></div>
 
 

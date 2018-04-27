@@ -195,13 +195,8 @@
 <span class="sd">class for each step, inheriting from this one)</span>
 <span class="sd">&quot;&quot;&quot;</span>
 
-<span class="kn">import</span> <span class="nn">abc</span>
-
 <span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span>
-    <span class="s1">&#39;BaseStepRunner&#39;</span><span class="p">,</span>
-    <span class="s1">&#39;AbstractCollectionStepRunner&#39;</span><span class="p">,</span>
-    <span class="s1">&#39;AbstractNotifyRunner&#39;</span><span class="p">,</span>
-    <span class="s1">&#39;AbstractResolveRunner&#39;</span>
+    <span class="s1">&#39;BaseStepRunner&#39;</span>
 <span class="p">]</span>
 
 
@@ -212,32 +207,6 @@
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">config</span><span class="p">,</span> <span class="n">logger</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_config</span> <span class="o">=</span> <span class="n">config</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_logger</span> <span class="o">=</span> <span class="n">logger</span></div>
-
-
-<span class="c1"># TODO: these Abstract classes are an unnecessary complications, and should be removed/consolidated with the step runner</span>
-<span class="c1"># parent classes</span>
-<div class="viewcode-block" id="AbstractCollectionStepRunner"><a class="viewcode-back" href="../../../../aodncore.pipeline.steps.html#aodncore.pipeline.steps.basestep.AbstractCollectionStepRunner">[docs]</a><span class="k">class</span> <span class="nc">AbstractCollectionStepRunner</span><span class="p">(</span><span class="n">BaseStepRunner</span><span class="p">):</span>
-    <span class="n">__metaclass__</span> <span class="o">=</span> <span class="n">abc</span><span class="o">.</span><span class="n">ABCMeta</span>
-
-<div class="viewcode-block" id="AbstractCollectionStepRunner.run"><a class="viewcode-back" href="../../../../aodncore.pipeline.steps.html#aodncore.pipeline.steps.basestep.AbstractCollectionStepRunner.run">[docs]</a>    <span class="nd">@abc</span><span class="o">.</span><span class="n">abstractmethod</span>  <span class="c1"># pragma: no cover</span>
-    <span class="k">def</span> <span class="nf">run</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pipeline_files</span><span class="p">):</span>
-        <span class="k">pass</span></div></div>
-
-
-<div class="viewcode-block" id="AbstractNotifyRunner"><a class="viewcode-back" href="../../../../aodncore.pipeline.steps.html#aodncore.pipeline.steps.basestep.AbstractNotifyRunner">[docs]</a><span class="k">class</span> <span class="nc">AbstractNotifyRunner</span><span class="p">(</span><span class="n">BaseStepRunner</span><span class="p">):</span>
-    <span class="n">__metaclass__</span> <span class="o">=</span> <span class="n">abc</span><span class="o">.</span><span class="n">ABCMeta</span>
-
-<div class="viewcode-block" id="AbstractNotifyRunner.run"><a class="viewcode-back" href="../../../../aodncore.pipeline.steps.html#aodncore.pipeline.steps.basestep.AbstractNotifyRunner.run">[docs]</a>    <span class="nd">@abc</span><span class="o">.</span><span class="n">abstractmethod</span>  <span class="c1"># pragma: no cover</span>
-    <span class="k">def</span> <span class="nf">run</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">notify_list</span><span class="p">):</span>
-        <span class="k">pass</span></div></div>
-
-
-<div class="viewcode-block" id="AbstractResolveRunner"><a class="viewcode-back" href="../../../../aodncore.pipeline.steps.html#aodncore.pipeline.steps.basestep.AbstractResolveRunner">[docs]</a><span class="k">class</span> <span class="nc">AbstractResolveRunner</span><span class="p">(</span><span class="n">BaseStepRunner</span><span class="p">):</span>
-    <span class="n">__metaclass__</span> <span class="o">=</span> <span class="n">abc</span><span class="o">.</span><span class="n">ABCMeta</span>
-
-<div class="viewcode-block" id="AbstractResolveRunner.run"><a class="viewcode-back" href="../../../../aodncore.pipeline.steps.html#aodncore.pipeline.steps.basestep.AbstractResolveRunner.run">[docs]</a>    <span class="nd">@abc</span><span class="o">.</span><span class="n">abstractmethod</span>  <span class="c1"># pragma: no cover</span>
-    <span class="k">def</span> <span class="nf">run</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">pass</span></div></div>
 </pre></div>
 
            </div>

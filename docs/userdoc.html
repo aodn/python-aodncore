@@ -274,8 +274,12 @@ attribute of the files).</p>
 <ol class="arabic simple">
 <li>determine files flagged as needing to be archived, and upload to ‘archive’ location</li>
 <li>determine files flagged as needing to be harvested, match and execute Talend harvester(s) for files</li>
-<li>determine files flagged as needing to be uploaded, and upload to ‘upload’</li>
+<li>determine files flagged as needing to be uploaded or deleted, and perform the necessary storage operation</li>
 </ol>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">upload/delete operations are collectively referred to in the handler and supporting code as “store” operations</p>
+</div>
 </div>
 <div class="section" id="postprocess">
 <h2>postprocess<a class="headerlink" href="#postprocess" title="Permalink to this headline">¶</a></h2>

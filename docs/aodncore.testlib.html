@@ -406,28 +406,117 @@ class</dd>
 <div class="section" id="module-aodncore.testlib.testutil">
 <span id="aodncore-testlib-testutil-module"></span><h2>aodncore.testlib.testutil module<a class="headerlink" href="#module-aodncore.testlib.testutil" title="Permalink to this headline">¶</a></h2>
 <dl class="class">
-<dt id="aodncore.testlib.testutil.NullUploadRunner">
-<em class="property">class </em><code class="descclassname">aodncore.testlib.testutil.</code><code class="descname">NullUploadRunner</code><span class="sig-paren">(</span><em>prefix</em>, <em>fail=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/aodncore/testlib/testutil.html#NullUploadRunner"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#aodncore.testlib.testutil.NullUploadRunner" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">aodncore.pipeline.steps.upload.BaseUploadRunner</span></code></p>
+<dt id="aodncore.testlib.testutil.NullStorageBroker">
+<em class="property">class </em><code class="descclassname">aodncore.testlib.testutil.</code><code class="descname">NullStorageBroker</code><span class="sig-paren">(</span><em>prefix</em>, <em>fail=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/aodncore/testlib/testutil.html#NullStorageBroker"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#aodncore.testlib.testutil.NullStorageBroker" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">aodncore.pipeline.storage.BaseStorageBroker</span></code></p>
 <dl class="method">
-<dt id="aodncore.testlib.testutil.NullUploadRunner.assert_call_count">
-<code class="descname">assert_call_count</code><span class="sig-paren">(</span><em>count</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/aodncore/testlib/testutil.html#NullUploadRunner.assert_call_count"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#aodncore.testlib.testutil.NullUploadRunner.assert_call_count" title="Permalink to this definition">¶</a></dt>
+<dt id="aodncore.testlib.testutil.NullStorageBroker.assert_delete_call_count">
+<code class="descname">assert_delete_call_count</code><span class="sig-paren">(</span><em>count</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/aodncore/testlib/testutil.html#NullStorageBroker.assert_delete_call_count"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#aodncore.testlib.testutil.NullStorageBroker.assert_delete_call_count" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="method">
-<dt id="aodncore.testlib.testutil.NullUploadRunner.assert_called">
-<code class="descname">assert_called</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/aodncore/testlib/testutil.html#NullUploadRunner.assert_called"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#aodncore.testlib.testutil.NullUploadRunner.assert_called" title="Permalink to this definition">¶</a></dt>
+<dt id="aodncore.testlib.testutil.NullStorageBroker.assert_delete_called">
+<code class="descname">assert_delete_called</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/aodncore/testlib/testutil.html#NullStorageBroker.assert_delete_called"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#aodncore.testlib.testutil.NullStorageBroker.assert_delete_called" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="method">
-<dt id="aodncore.testlib.testutil.NullUploadRunner.assert_not_called">
-<code class="descname">assert_not_called</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/aodncore/testlib/testutil.html#NullUploadRunner.assert_not_called"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#aodncore.testlib.testutil.NullUploadRunner.assert_not_called" title="Permalink to this definition">¶</a></dt>
+<dt id="aodncore.testlib.testutil.NullStorageBroker.assert_delete_not_called">
+<code class="descname">assert_delete_not_called</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/aodncore/testlib/testutil.html#NullStorageBroker.assert_delete_not_called"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#aodncore.testlib.testutil.NullStorageBroker.assert_delete_not_called" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="method">
-<dt id="aodncore.testlib.testutil.NullUploadRunner.run">
-<code class="descname">run</code><span class="sig-paren">(</span><em>pipeline_files</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/aodncore/testlib/testutil.html#NullUploadRunner.run"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#aodncore.testlib.testutil.NullUploadRunner.run" title="Permalink to this definition">¶</a></dt>
+<dt id="aodncore.testlib.testutil.NullStorageBroker.assert_query_call_count">
+<code class="descname">assert_query_call_count</code><span class="sig-paren">(</span><em>count</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/aodncore/testlib/testutil.html#NullStorageBroker.assert_query_call_count"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#aodncore.testlib.testutil.NullStorageBroker.assert_query_call_count" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
+
+<dl class="method">
+<dt id="aodncore.testlib.testutil.NullStorageBroker.assert_query_called">
+<code class="descname">assert_query_called</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/aodncore/testlib/testutil.html#NullStorageBroker.assert_query_called"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#aodncore.testlib.testutil.NullStorageBroker.assert_query_called" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="aodncore.testlib.testutil.NullStorageBroker.assert_query_not_called">
+<code class="descname">assert_query_not_called</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/aodncore/testlib/testutil.html#NullStorageBroker.assert_query_not_called"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#aodncore.testlib.testutil.NullStorageBroker.assert_query_not_called" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="aodncore.testlib.testutil.NullStorageBroker.assert_upload_call_count">
+<code class="descname">assert_upload_call_count</code><span class="sig-paren">(</span><em>count</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/aodncore/testlib/testutil.html#NullStorageBroker.assert_upload_call_count"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#aodncore.testlib.testutil.NullStorageBroker.assert_upload_call_count" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="aodncore.testlib.testutil.NullStorageBroker.assert_upload_called">
+<code class="descname">assert_upload_called</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/aodncore/testlib/testutil.html#NullStorageBroker.assert_upload_called"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#aodncore.testlib.testutil.NullStorageBroker.assert_upload_called" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="aodncore.testlib.testutil.NullStorageBroker.assert_upload_not_called">
+<code class="descname">assert_upload_not_called</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/aodncore/testlib/testutil.html#NullStorageBroker.assert_upload_not_called"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#aodncore.testlib.testutil.NullStorageBroker.assert_upload_not_called" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="aodncore.testlib.testutil.NullStorageBroker.delete">
+<code class="descname">delete</code><span class="sig-paren">(</span><em>pipeline_files</em>, <em>is_stored_attr='is_stored'</em>, <em>dest_path_attr='dest_path'</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/aodncore/testlib/testutil.html#NullStorageBroker.delete"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#aodncore.testlib.testutil.NullStorageBroker.delete" title="Permalink to this definition">¶</a></dt>
+<dd><p>Delete the given PipelineFileCollection from the storage backend</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>pipeline_files</strong> – collection to delete</li>
+<li><strong>is_stored_attr</strong> – PipelineFile attribute which will be set to True if delete is successful</li>
+<li><strong>dest_path_attr</strong> – PipelineFile attribute containing the destination path</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">None</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="aodncore.testlib.testutil.NullStorageBroker.query">
+<code class="descname">query</code><span class="sig-paren">(</span><em>query</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/aodncore/testlib/testutil.html#NullStorageBroker.query"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#aodncore.testlib.testutil.NullStorageBroker.query" title="Permalink to this definition">¶</a></dt>
+<dd><p>Query the storage for existing files</p>
+<p>A trailing slash will result in a directory listing type of query, recursively listing all files underneath
+the given directory.</p>
+<p>Omitting the trailing slash will cause a prefix style query, where the results will be any path that matches the
+query <em>including</em> partial file names.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>query</strong> – S3 prefix style string</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">a dict with keys being the matching objects, and values being a metadata dict for the object</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="aodncore.testlib.testutil.NullStorageBroker.upload">
+<code class="descname">upload</code><span class="sig-paren">(</span><em>pipeline_files</em>, <em>is_stored_attr='is_stored'</em>, <em>dest_path_attr='dest_path'</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/aodncore/testlib/testutil.html#NullStorageBroker.upload"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#aodncore.testlib.testutil.NullStorageBroker.upload" title="Permalink to this definition">¶</a></dt>
+<dd><p>Upload the given PipelineFileCollection to the storage backend</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>pipeline_files</strong> – collection to upload</li>
+<li><strong>is_stored_attr</strong> – PipelineFile attribute which will be set to True if upload is successful</li>
+<li><strong>dest_path_attr</strong> – PipelineFile attribute containing the destination path</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">None</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
 
 </dd></dl>
 
@@ -715,28 +804,117 @@ class</dd>
 </dd></dl>
 
 <dl class="class">
-<dt id="aodncore.testlib.NullUploadRunner">
-<em class="property">class </em><code class="descclassname">aodncore.testlib.</code><code class="descname">NullUploadRunner</code><span class="sig-paren">(</span><em>prefix</em>, <em>fail=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/aodncore/testlib/testutil.html#NullUploadRunner"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#aodncore.testlib.NullUploadRunner" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">aodncore.pipeline.steps.upload.BaseUploadRunner</span></code></p>
+<dt id="aodncore.testlib.NullStorageBroker">
+<em class="property">class </em><code class="descclassname">aodncore.testlib.</code><code class="descname">NullStorageBroker</code><span class="sig-paren">(</span><em>prefix</em>, <em>fail=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/aodncore/testlib/testutil.html#NullStorageBroker"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#aodncore.testlib.NullStorageBroker" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">aodncore.pipeline.storage.BaseStorageBroker</span></code></p>
 <dl class="method">
-<dt id="aodncore.testlib.NullUploadRunner.assert_call_count">
-<code class="descname">assert_call_count</code><span class="sig-paren">(</span><em>count</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/aodncore/testlib/testutil.html#NullUploadRunner.assert_call_count"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#aodncore.testlib.NullUploadRunner.assert_call_count" title="Permalink to this definition">¶</a></dt>
+<dt id="aodncore.testlib.NullStorageBroker.assert_delete_call_count">
+<code class="descname">assert_delete_call_count</code><span class="sig-paren">(</span><em>count</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/aodncore/testlib/testutil.html#NullStorageBroker.assert_delete_call_count"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#aodncore.testlib.NullStorageBroker.assert_delete_call_count" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="method">
-<dt id="aodncore.testlib.NullUploadRunner.assert_called">
-<code class="descname">assert_called</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/aodncore/testlib/testutil.html#NullUploadRunner.assert_called"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#aodncore.testlib.NullUploadRunner.assert_called" title="Permalink to this definition">¶</a></dt>
+<dt id="aodncore.testlib.NullStorageBroker.assert_delete_called">
+<code class="descname">assert_delete_called</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/aodncore/testlib/testutil.html#NullStorageBroker.assert_delete_called"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#aodncore.testlib.NullStorageBroker.assert_delete_called" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="method">
-<dt id="aodncore.testlib.NullUploadRunner.assert_not_called">
-<code class="descname">assert_not_called</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/aodncore/testlib/testutil.html#NullUploadRunner.assert_not_called"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#aodncore.testlib.NullUploadRunner.assert_not_called" title="Permalink to this definition">¶</a></dt>
+<dt id="aodncore.testlib.NullStorageBroker.assert_delete_not_called">
+<code class="descname">assert_delete_not_called</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/aodncore/testlib/testutil.html#NullStorageBroker.assert_delete_not_called"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#aodncore.testlib.NullStorageBroker.assert_delete_not_called" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="method">
-<dt id="aodncore.testlib.NullUploadRunner.run">
-<code class="descname">run</code><span class="sig-paren">(</span><em>pipeline_files</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/aodncore/testlib/testutil.html#NullUploadRunner.run"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#aodncore.testlib.NullUploadRunner.run" title="Permalink to this definition">¶</a></dt>
+<dt id="aodncore.testlib.NullStorageBroker.assert_query_call_count">
+<code class="descname">assert_query_call_count</code><span class="sig-paren">(</span><em>count</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/aodncore/testlib/testutil.html#NullStorageBroker.assert_query_call_count"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#aodncore.testlib.NullStorageBroker.assert_query_call_count" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
+
+<dl class="method">
+<dt id="aodncore.testlib.NullStorageBroker.assert_query_called">
+<code class="descname">assert_query_called</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/aodncore/testlib/testutil.html#NullStorageBroker.assert_query_called"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#aodncore.testlib.NullStorageBroker.assert_query_called" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="aodncore.testlib.NullStorageBroker.assert_query_not_called">
+<code class="descname">assert_query_not_called</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/aodncore/testlib/testutil.html#NullStorageBroker.assert_query_not_called"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#aodncore.testlib.NullStorageBroker.assert_query_not_called" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="aodncore.testlib.NullStorageBroker.assert_upload_call_count">
+<code class="descname">assert_upload_call_count</code><span class="sig-paren">(</span><em>count</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/aodncore/testlib/testutil.html#NullStorageBroker.assert_upload_call_count"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#aodncore.testlib.NullStorageBroker.assert_upload_call_count" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="aodncore.testlib.NullStorageBroker.assert_upload_called">
+<code class="descname">assert_upload_called</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/aodncore/testlib/testutil.html#NullStorageBroker.assert_upload_called"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#aodncore.testlib.NullStorageBroker.assert_upload_called" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="aodncore.testlib.NullStorageBroker.assert_upload_not_called">
+<code class="descname">assert_upload_not_called</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/aodncore/testlib/testutil.html#NullStorageBroker.assert_upload_not_called"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#aodncore.testlib.NullStorageBroker.assert_upload_not_called" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="aodncore.testlib.NullStorageBroker.delete">
+<code class="descname">delete</code><span class="sig-paren">(</span><em>pipeline_files</em>, <em>is_stored_attr='is_stored'</em>, <em>dest_path_attr='dest_path'</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/aodncore/testlib/testutil.html#NullStorageBroker.delete"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#aodncore.testlib.NullStorageBroker.delete" title="Permalink to this definition">¶</a></dt>
+<dd><p>Delete the given PipelineFileCollection from the storage backend</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>pipeline_files</strong> – collection to delete</li>
+<li><strong>is_stored_attr</strong> – PipelineFile attribute which will be set to True if delete is successful</li>
+<li><strong>dest_path_attr</strong> – PipelineFile attribute containing the destination path</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">None</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="aodncore.testlib.NullStorageBroker.query">
+<code class="descname">query</code><span class="sig-paren">(</span><em>query</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/aodncore/testlib/testutil.html#NullStorageBroker.query"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#aodncore.testlib.NullStorageBroker.query" title="Permalink to this definition">¶</a></dt>
+<dd><p>Query the storage for existing files</p>
+<p>A trailing slash will result in a directory listing type of query, recursively listing all files underneath
+the given directory.</p>
+<p>Omitting the trailing slash will cause a prefix style query, where the results will be any path that matches the
+query <em>including</em> partial file names.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>query</strong> – S3 prefix style string</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">a dict with keys being the matching objects, and values being a metadata dict for the object</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="aodncore.testlib.NullStorageBroker.upload">
+<code class="descname">upload</code><span class="sig-paren">(</span><em>pipeline_files</em>, <em>is_stored_attr='is_stored'</em>, <em>dest_path_attr='dest_path'</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/aodncore/testlib/testutil.html#NullStorageBroker.upload"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#aodncore.testlib.NullStorageBroker.upload" title="Permalink to this definition">¶</a></dt>
+<dd><p>Upload the given PipelineFileCollection to the storage backend</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>pipeline_files</strong> – collection to upload</li>
+<li><strong>is_stored_attr</strong> – PipelineFile attribute which will be set to True if upload is successful</li>
+<li><strong>dest_path_attr</strong> – PipelineFile attribute containing the destination path</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">None</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
 
 </dd></dl>
 
