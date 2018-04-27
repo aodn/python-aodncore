@@ -14,6 +14,7 @@ from .exceptions import (PipelineProcessingError, HandlerAlreadyRunError, Invali
 from .files import PipelineFile, PipelineFileCollection
 from .log import SYSINFO, get_pipeline_logger
 from .schema import validate_check_params, validate_harvest_params, validate_notify_params, validate_resolve_params
+from .statequery import StateQuery
 from .steps import (get_cc_module_versions, get_check_runner, get_harvester_runner, get_notify_runner,
                     get_resolve_runner, get_store_runner)
 from ..util import (format_exception, get_file_checksum, iter_public_attributes, merge_dicts, validate_bool,
@@ -303,6 +304,9 @@ class HandlerBase(object):
         self._instance_working_directory = None
         self._notification_results = None
         self._should_notify = None
+        self._state_query = None
+        self._upload_runner = None
+        self._upload_runner_archive = None
 
         self._machine = Machine(model=self, states=HandlerBase.all_states, initial='HANDLER_INITIAL',
                                 auto_transitions=False, transitions=HandlerBase.all_transitions,
@@ -455,6 +459,15 @@ class HandlerBase(object):
         return self._start_time
 
     @property
+    def state_query(self):
+        """Read-only property containing an initialised StateQuery instance, for querying existing pipeline state
+
+        :return: StateQuery instance
+        :rtype: :py:class:`StateQuery`
+        """
+        return self._state_query
+
+    @property
     def default_addition_publish_type(self):
         """Property to manage attribute which determines the default publish type assigned to 'addition'
         :py:class:`PipelineFile` instances
@@ -544,6 +557,7 @@ class HandlerBase(object):
         self._set_cc_versions()
         self._set_path_functions()
         self._init_working_directory()
+        self._init_upload_runners()
 
     def _resolve(self):
         resolve_runner = get_resolve_runner(self.input_file, self.collection_dir, self.config, self.logger,
@@ -580,44 +594,35 @@ class HandlerBase(object):
             self.is_archived = input_file_obj.is_archived
 
         if files_to_archive:
-            self.file_collection.set_archive_paths(self._archive_path_function_ref)
             store_runner.run(files_to_archive)
 
-    def _harvest(self, storage_broker):
-        harvest_runner = get_harvester_runner(self.harvest_type, storage_broker, self.harvest_params, self.temp_dir,
-                                              self.config, self.logger)
+    def _harvest(self):
+        harvest_runner = get_harvester_runner(self.harvest_type, self._upload_runner.broker, self.harvest_params,
+                                              self.temp_dir, self.config, self.logger)
         self.logger.sysinfo("get_harvester_runner -> '{runner}'".format(runner=harvest_runner.__class__.__name__))
         files_to_harvest = self.file_collection.filter_by_bool_attribute('pending_harvest')
 
         if files_to_harvest:
             harvest_runner.run(files_to_harvest)
 
-    def _store_unharvested(self, store_runner):
+    def _store_unharvested(self):
         files_to_store = self.file_collection.filter_by_bool_attribute('pending_store')
 
         if files_to_store:
-            store_runner.run(files_to_store)
+            self._upload_runner.run(files_to_store)
 
     def _publish(self):
-        archive_runner = get_store_runner(self._config.pipeline_config['global']['archive_uri'], self._config,
-                                          self.logger, archive_mode=True)
-        self.logger.sysinfo(
-            "get_store_runner (archive) -> '{runner}'".format(runner=archive_runner.__class__.__name__))
-
+        self.file_collection.set_archive_paths(self._archive_path_function_ref)
         self.file_collection.validate_attribute_uniqueness('archive_path')
-        self._archive(archive_runner)
-
-        upload_runner = get_store_runner(self._config.pipeline_config['global']['upload_uri'], self._config,
-                                         self.logger)
-        self.logger.sysinfo("get_store_runner -> '{runner}'".format(runner=upload_runner.__class__.__name__))
+        self._archive(self._upload_runner_archive)
 
         self.file_collection.set_dest_paths(self._dest_path_function_ref)
-
-        upload_runner.set_is_overwrite(self.file_collection)
-
         self.file_collection.validate_attribute_uniqueness('dest_path')
-        self._harvest(upload_runner.broker)
-        self._store_unharvested(upload_runner)
+
+        self._upload_runner.set_is_overwrite(self.file_collection)
+
+        self._harvest()
+        self._store_unharvested()
 
     #
     # 'before' methods for non-ordered state machine transitions
@@ -719,6 +724,18 @@ class HandlerBase(object):
         self._pipeline_name = pipeline_name
 
         self.logger.info("running handler -> '{str}'".format(str=self))
+
+    def _init_upload_runners(self):
+        self._upload_runner = get_store_runner(self._config.pipeline_config['global']['upload_uri'], self._config,
+                                               self.logger)
+        self.logger.sysinfo("get_store_runner -> '{runner}'".format(runner=self._upload_runner.__class__.__name__))
+
+        self._upload_runner_archive = get_store_runner(self._config.pipeline_config['global']['archive_uri'],
+                                                       self._config, self.logger, archive_mode=True)
+        self.logger.sysinfo(
+            "get_store_runner (archive) -> '{runner}'".format(runner=self._upload_runner_archive.__class__.__name__))
+
+        self._state_query = StateQuery(self._upload_runner.broker)
 
     def _init_working_directory(self):
         for subdirectory in ('collection', 'products', 'temp'):

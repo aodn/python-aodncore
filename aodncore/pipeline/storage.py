@@ -32,8 +32,6 @@ def get_storage_broker(store_url):
     """Factory function to return appropriate storage broker class based on URL scheme
 
     :param store_url: URL base
-    :param config: LazyConfigManager instance
-    :param logger: Logger instance
     :return: BaseStorageBroker sub-class
     """
 
