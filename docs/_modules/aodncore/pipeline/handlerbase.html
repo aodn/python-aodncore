@@ -207,8 +207,9 @@
 <span class="kn">from</span> <span class="nn">.files</span> <span class="k">import</span> <span class="n">PipelineFile</span><span class="p">,</span> <span class="n">PipelineFileCollection</span>
 <span class="kn">from</span> <span class="nn">.log</span> <span class="k">import</span> <span class="n">SYSINFO</span><span class="p">,</span> <span class="n">get_pipeline_logger</span>
 <span class="kn">from</span> <span class="nn">.schema</span> <span class="k">import</span> <span class="n">validate_check_params</span><span class="p">,</span> <span class="n">validate_harvest_params</span><span class="p">,</span> <span class="n">validate_notify_params</span><span class="p">,</span> <span class="n">validate_resolve_params</span>
+<span class="kn">from</span> <span class="nn">.statequery</span> <span class="k">import</span> <span class="n">StateQuery</span>
 <span class="kn">from</span> <span class="nn">.steps</span> <span class="k">import</span> <span class="p">(</span><span class="n">get_cc_module_versions</span><span class="p">,</span> <span class="n">get_check_runner</span><span class="p">,</span> <span class="n">get_harvester_runner</span><span class="p">,</span> <span class="n">get_notify_runner</span><span class="p">,</span>
-                    <span class="n">get_resolve_runner</span><span class="p">,</span> <span class="n">get_upload_runner</span><span class="p">)</span>
+                    <span class="n">get_resolve_runner</span><span class="p">,</span> <span class="n">get_store_runner</span><span class="p">)</span>
 <span class="kn">from</span> <span class="nn">..util</span> <span class="k">import</span> <span class="p">(</span><span class="n">format_exception</span><span class="p">,</span> <span class="n">get_file_checksum</span><span class="p">,</span> <span class="n">iter_public_attributes</span><span class="p">,</span> <span class="n">merge_dicts</span><span class="p">,</span> <span class="n">validate_bool</span><span class="p">,</span>
                     <span class="n">TemporaryDirectory</span><span class="p">)</span>
 
@@ -485,17 +486,19 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">upload_path</span> <span class="o">=</span> <span class="n">upload_path</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">resolve_params</span> <span class="o">=</span> <span class="n">resolve_params</span>
 
-        <span class="bp">self</span><span class="o">.</span><span class="n">file_collection</span> <span class="o">=</span> <span class="n">PipelineFileCollection</span><span class="p">()</span>
-
         <span class="bp">self</span><span class="o">.</span><span class="n">_archive_path_function_ref</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_archive_path_function_name</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_dest_path_function_ref</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_dest_path_function_name</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_error_details</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_file_collection</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_handler_run</span> <span class="o">=</span> <span class="kc">False</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_instance_working_directory</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_notification_results</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_should_notify</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_state_query</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_upload_runner</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_upload_runner_archive</span> <span class="o">=</span> <span class="kc">None</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">_machine</span> <span class="o">=</span> <span class="n">Machine</span><span class="p">(</span><span class="n">model</span><span class="o">=</span><span class="bp">self</span><span class="p">,</span> <span class="n">states</span><span class="o">=</span><span class="n">HandlerBase</span><span class="o">.</span><span class="n">all_states</span><span class="p">,</span> <span class="n">initial</span><span class="o">=</span><span class="s1">&#39;HANDLER_INITIAL&#39;</span><span class="p">,</span>
                                 <span class="n">auto_transitions</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">transitions</span><span class="o">=</span><span class="n">HandlerBase</span><span class="o">.</span><span class="n">all_transitions</span><span class="p">,</span>
@@ -575,6 +578,15 @@
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_error_details</span>
 
     <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">file_collection</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Read-only property to access the handler&#39;s primary PipelineFileCollection instance</span>
+
+<span class="sd">        :return: handler file collection</span>
+<span class="sd">        :rtype: :class:`PipelineFileCollection`</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_file_collection</span>
+
+    <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">file_checksum</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Read-only property to access the :py:attr:`input_file` checksum</span>
 
@@ -646,6 +658,15 @@
 <span class="sd">        :rtype: :py:class:`datetime.datetime`</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_start_time</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">state_query</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Read-only property containing an initialised StateQuery instance, for querying existing pipeline state</span>
+
+<span class="sd">        :return: StateQuery instance</span>
+<span class="sd">        :rtype: :py:class:`StateQuery`</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_state_query</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">default_addition_publish_type</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
@@ -730,6 +751,8 @@
     <span class="c1">#</span>
 
     <span class="k">def</span> <span class="nf">_initialise</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_file_collection</span> <span class="o">=</span> <span class="n">PipelineFileCollection</span><span class="p">()</span>
+
         <span class="bp">self</span><span class="o">.</span><span class="n">_init_logging</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_validate_params</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_set_checksum</span><span class="p">()</span>
@@ -737,6 +760,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">_set_cc_versions</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_set_path_functions</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_init_working_directory</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_init_upload_runners</span><span class="p">()</span>
 
     <span class="k">def</span> <span class="nf">_resolve</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="n">resolve_runner</span> <span class="o">=</span> <span class="n">get_resolve_runner</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">input_file</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">collection_dir</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="p">,</span>
@@ -761,7 +785,7 @@
         <span class="k">if</span> <span class="n">files_to_check</span><span class="p">:</span>
             <span class="n">check_runner</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">files_to_check</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">_archive</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">upload_runner</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">_archive</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">store_runner</span><span class="p">):</span>
         <span class="n">files_to_archive</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">file_collection</span><span class="o">.</span><span class="n">filter_by_bool_attribute</span><span class="p">(</span><span class="s1">&#39;pending_archive&#39;</span><span class="p">)</span>
 
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">archive_input_file</span><span class="p">:</span>
@@ -769,48 +793,39 @@
                                                                                      <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">basename</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">input_file</span><span class="p">)))</span>
             <span class="n">input_file_obj</span><span class="o">.</span><span class="n">publish_type</span> <span class="o">=</span> <span class="n">PipelineFilePublishType</span><span class="o">.</span><span class="n">ARCHIVE_ONLY</span>
             <span class="n">infile_collection</span> <span class="o">=</span> <span class="n">PipelineFileCollection</span><span class="p">(</span><span class="n">input_file_obj</span><span class="p">)</span>
-            <span class="n">upload_runner</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">infile_collection</span><span class="p">)</span>
+            <span class="n">store_runner</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">infile_collection</span><span class="p">)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">is_archived</span> <span class="o">=</span> <span class="n">input_file_obj</span><span class="o">.</span><span class="n">is_archived</span>
 
         <span class="k">if</span> <span class="n">files_to_archive</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">file_collection</span><span class="o">.</span><span class="n">set_archive_paths</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_archive_path_function_ref</span><span class="p">)</span>
-            <span class="n">upload_runner</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">files_to_archive</span><span class="p">)</span>
+            <span class="n">store_runner</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">files_to_archive</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">_harvest</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">upload_runner</span><span class="p">):</span>
-        <span class="n">harvest_runner</span> <span class="o">=</span> <span class="n">get_harvester_runner</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">harvest_type</span><span class="p">,</span> <span class="n">upload_runner</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">harvest_params</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">temp_dir</span><span class="p">,</span>
-                                              <span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="p">)</span>
+    <span class="k">def</span> <span class="nf">_harvest</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">harvest_runner</span> <span class="o">=</span> <span class="n">get_harvester_runner</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">harvest_type</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_upload_runner</span><span class="o">.</span><span class="n">broker</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">harvest_params</span><span class="p">,</span>
+                                              <span class="bp">self</span><span class="o">.</span><span class="n">temp_dir</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">sysinfo</span><span class="p">(</span><span class="s2">&quot;get_harvester_runner -&gt; &#39;</span><span class="si">{runner}</span><span class="s2">&#39;&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">runner</span><span class="o">=</span><span class="n">harvest_runner</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="p">))</span>
         <span class="n">files_to_harvest</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">file_collection</span><span class="o">.</span><span class="n">filter_by_bool_attribute</span><span class="p">(</span><span class="s1">&#39;pending_harvest&#39;</span><span class="p">)</span>
 
         <span class="k">if</span> <span class="n">files_to_harvest</span><span class="p">:</span>
             <span class="n">harvest_runner</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">files_to_harvest</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">_store_unharvested</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">upload_runner</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">_store_unharvested</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="n">files_to_store</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">file_collection</span><span class="o">.</span><span class="n">filter_by_bool_attribute</span><span class="p">(</span><span class="s1">&#39;pending_store&#39;</span><span class="p">)</span>
 
         <span class="k">if</span> <span class="n">files_to_store</span><span class="p">:</span>
-            <span class="n">upload_runner</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">files_to_store</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_upload_runner</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">files_to_store</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">_publish</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="n">archive_runner</span> <span class="o">=</span> <span class="n">get_upload_runner</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_config</span><span class="o">.</span><span class="n">pipeline_config</span><span class="p">[</span><span class="s1">&#39;global&#39;</span><span class="p">][</span><span class="s1">&#39;archive_uri&#39;</span><span class="p">],</span> <span class="bp">self</span><span class="o">.</span><span class="n">_config</span><span class="p">,</span>
-                                           <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="p">,</span> <span class="n">archive_mode</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">sysinfo</span><span class="p">(</span>
-            <span class="s2">&quot;get_upload_runner (archive) -&gt; &#39;</span><span class="si">{runner}</span><span class="s2">&#39;&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">runner</span><span class="o">=</span><span class="n">archive_runner</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="p">))</span>
-
+        <span class="bp">self</span><span class="o">.</span><span class="n">file_collection</span><span class="o">.</span><span class="n">set_archive_paths</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_archive_path_function_ref</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">file_collection</span><span class="o">.</span><span class="n">validate_attribute_uniqueness</span><span class="p">(</span><span class="s1">&#39;archive_path&#39;</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_archive</span><span class="p">(</span><span class="n">archive_runner</span><span class="p">)</span>
-
-        <span class="n">upload_runner</span> <span class="o">=</span> <span class="n">get_upload_runner</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_config</span><span class="o">.</span><span class="n">pipeline_config</span><span class="p">[</span><span class="s1">&#39;global&#39;</span><span class="p">][</span><span class="s1">&#39;upload_uri&#39;</span><span class="p">],</span> <span class="bp">self</span><span class="o">.</span><span class="n">_config</span><span class="p">,</span>
-                                          <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">sysinfo</span><span class="p">(</span><span class="s2">&quot;get_upload_runner -&gt; &#39;</span><span class="si">{runner}</span><span class="s2">&#39;&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">runner</span><span class="o">=</span><span class="n">upload_runner</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_archive</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_upload_runner_archive</span><span class="p">)</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">file_collection</span><span class="o">.</span><span class="n">set_dest_paths</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_dest_path_function_ref</span><span class="p">)</span>
-
-        <span class="n">upload_runner</span><span class="o">.</span><span class="n">set_is_overwrite</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">file_collection</span><span class="p">)</span>
-
         <span class="bp">self</span><span class="o">.</span><span class="n">file_collection</span><span class="o">.</span><span class="n">validate_attribute_uniqueness</span><span class="p">(</span><span class="s1">&#39;dest_path&#39;</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_harvest</span><span class="p">(</span><span class="n">upload_runner</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_store_unharvested</span><span class="p">(</span><span class="n">upload_runner</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_upload_runner</span><span class="o">.</span><span class="n">set_is_overwrite</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">file_collection</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_harvest</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_store_unharvested</span><span class="p">()</span>
 
     <span class="c1">#</span>
     <span class="c1"># &#39;before&#39; methods for non-ordered state machine transitions</span>
@@ -912,6 +927,18 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">_pipeline_name</span> <span class="o">=</span> <span class="n">pipeline_name</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;running handler -&gt; &#39;</span><span class="si">{str}</span><span class="s2">&#39;&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="nb">str</span><span class="o">=</span><span class="bp">self</span><span class="p">))</span>
+
+    <span class="k">def</span> <span class="nf">_init_upload_runners</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_upload_runner</span> <span class="o">=</span> <span class="n">get_store_runner</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_config</span><span class="o">.</span><span class="n">pipeline_config</span><span class="p">[</span><span class="s1">&#39;global&#39;</span><span class="p">][</span><span class="s1">&#39;upload_uri&#39;</span><span class="p">],</span> <span class="bp">self</span><span class="o">.</span><span class="n">_config</span><span class="p">,</span>
+                                               <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">sysinfo</span><span class="p">(</span><span class="s2">&quot;get_store_runner -&gt; &#39;</span><span class="si">{runner}</span><span class="s2">&#39;&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">runner</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_upload_runner</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="p">))</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_upload_runner_archive</span> <span class="o">=</span> <span class="n">get_store_runner</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_config</span><span class="o">.</span><span class="n">pipeline_config</span><span class="p">[</span><span class="s1">&#39;global&#39;</span><span class="p">][</span><span class="s1">&#39;archive_uri&#39;</span><span class="p">],</span>
+                                                       <span class="bp">self</span><span class="o">.</span><span class="n">_config</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="p">,</span> <span class="n">archive_mode</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">sysinfo</span><span class="p">(</span>
+            <span class="s2">&quot;get_store_runner (archive) -&gt; &#39;</span><span class="si">{runner}</span><span class="s2">&#39;&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">runner</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_upload_runner_archive</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="p">))</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_state_query</span> <span class="o">=</span> <span class="n">StateQuery</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_upload_runner</span><span class="o">.</span><span class="n">broker</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">_init_working_directory</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">for</span> <span class="n">subdirectory</span> <span class="ow">in</span> <span class="p">(</span><span class="s1">&#39;collection&#39;</span><span class="p">,</span> <span class="s1">&#39;products&#39;</span><span class="p">,</span> <span class="s1">&#39;temp&#39;</span><span class="p">):</span>

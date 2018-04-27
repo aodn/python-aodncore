@@ -17,12 +17,13 @@ This means the rest of the handler code has no further need to be aware of the s
 collection may then be processed in a generic way.
 """
 
+import abc
 import os
 import re
 
 from enum import Enum
 
-from .basestep import AbstractResolveRunner
+from .basestep import BaseStepRunner
 from ..common import FileType
 from ..files import PipelineFile, PipelineFileCollection
 from ...util import extract_zip, list_regular_files, is_zipfile, safe_copy_file
@@ -64,13 +65,18 @@ def get_resolve_runner(input_file, output_dir, config, logger, resolve_params=No
         return SingleFileResolveRunner(input_file, output_dir, config, logger)
 
 
-# noinspection PyAbstractClass
-class BaseResolveRunner(AbstractResolveRunner):
+class BaseResolveRunner(BaseStepRunner):
+    __metaclass__ = abc.ABCMeta
+
     def __init__(self, input_file, output_dir, config, logger):
-        super(AbstractResolveRunner, self).__init__(config, logger)
+        super(BaseResolveRunner, self).__init__(config, logger)
         self.input_file = input_file
         self.output_dir = output_dir
         self._collection = PipelineFileCollection()
+
+    @abc.abstractmethod
+    def run(self):
+        pass
 
 
 class SingleFileResolveRunner(BaseResolveRunner):

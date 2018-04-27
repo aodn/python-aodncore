@@ -210,12 +210,13 @@
 <span class="sd">collection may then be processed in a generic way.</span>
 <span class="sd">&quot;&quot;&quot;</span>
 
+<span class="kn">import</span> <span class="nn">abc</span>
 <span class="kn">import</span> <span class="nn">os</span>
 <span class="kn">import</span> <span class="nn">re</span>
 
 <span class="kn">from</span> <span class="nn">enum</span> <span class="k">import</span> <span class="n">Enum</span>
 
-<span class="kn">from</span> <span class="nn">.basestep</span> <span class="k">import</span> <span class="n">AbstractResolveRunner</span>
+<span class="kn">from</span> <span class="nn">.basestep</span> <span class="k">import</span> <span class="n">BaseStepRunner</span>
 <span class="kn">from</span> <span class="nn">..common</span> <span class="k">import</span> <span class="n">FileType</span>
 <span class="kn">from</span> <span class="nn">..files</span> <span class="k">import</span> <span class="n">PipelineFile</span><span class="p">,</span> <span class="n">PipelineFileCollection</span>
 <span class="kn">from</span> <span class="nn">...util</span> <span class="k">import</span> <span class="n">extract_zip</span><span class="p">,</span> <span class="n">list_regular_files</span><span class="p">,</span> <span class="n">is_zipfile</span><span class="p">,</span> <span class="n">safe_copy_file</span>
@@ -257,13 +258,18 @@
         <span class="k">return</span> <span class="n">SingleFileResolveRunner</span><span class="p">(</span><span class="n">input_file</span><span class="p">,</span> <span class="n">output_dir</span><span class="p">,</span> <span class="n">config</span><span class="p">,</span> <span class="n">logger</span><span class="p">)</span></div>
 
 
-<span class="c1"># noinspection PyAbstractClass</span>
-<span class="k">class</span> <span class="nc">BaseResolveRunner</span><span class="p">(</span><span class="n">AbstractResolveRunner</span><span class="p">):</span>
+<span class="k">class</span> <span class="nc">BaseResolveRunner</span><span class="p">(</span><span class="n">BaseStepRunner</span><span class="p">):</span>
+    <span class="n">__metaclass__</span> <span class="o">=</span> <span class="n">abc</span><span class="o">.</span><span class="n">ABCMeta</span>
+
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">input_file</span><span class="p">,</span> <span class="n">output_dir</span><span class="p">,</span> <span class="n">config</span><span class="p">,</span> <span class="n">logger</span><span class="p">):</span>
-        <span class="nb">super</span><span class="p">(</span><span class="n">AbstractResolveRunner</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">config</span><span class="p">,</span> <span class="n">logger</span><span class="p">)</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">BaseResolveRunner</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">config</span><span class="p">,</span> <span class="n">logger</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">input_file</span> <span class="o">=</span> <span class="n">input_file</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">output_dir</span> <span class="o">=</span> <span class="n">output_dir</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_collection</span> <span class="o">=</span> <span class="n">PipelineFileCollection</span><span class="p">()</span>
+
+    <span class="nd">@abc</span><span class="o">.</span><span class="n">abstractmethod</span>
+    <span class="k">def</span> <span class="nf">run</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">pass</span>
 
 
 <div class="viewcode-block" id="SingleFileResolveRunner"><a class="viewcode-back" href="../../../../aodncore.pipeline.steps.html#aodncore.pipeline.steps.resolve.SingleFileResolveRunner">[docs]</a><span class="k">class</span> <span class="nc">SingleFileResolveRunner</span><span class="p">(</span><span class="n">BaseResolveRunner</span><span class="p">):</span>

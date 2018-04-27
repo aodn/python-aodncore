@@ -7,6 +7,7 @@ from jsonschema import ValidationError
 from aodncore.pipeline import PipelineFilePublishType, HandlerResult
 from aodncore.pipeline.exceptions import (ComplianceCheckFailedError, HandlerAlreadyRunError, InvalidCheckSuiteError,
                                           InvalidInputFileError, InvalidFileFormatError, InvalidRecipientError)
+from aodncore.pipeline.statequery import StateQuery
 from aodncore.pipeline.steps import NotifyList
 from aodncore.testlib import DummyHandler, HandlerTestCase, dest_path_testing, get_nonexistent_path, mock
 from test_aodncore import TESTDATA_DIR
@@ -284,6 +285,10 @@ class TestDummyHandler(HandlerTestCase):
 
         with self.assertRaises(ValueError):
             handler.default_deletion_publish_type = 'invalid'
+
+    def test_state_query(self):
+        handler = self.run_handler(self.temp_nc_file)
+        self.assertIsInstance(handler.state_query, StateQuery)
 
 
 if __name__ == '__main__':

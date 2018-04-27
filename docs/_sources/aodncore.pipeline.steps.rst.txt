@@ -44,10 +44,10 @@ aodncore.pipeline.steps.resolve module
     :undoc-members:
     :show-inheritance:
 
-aodncore.pipeline.steps.upload module
--------------------------------------
+aodncore.pipeline.steps.store module
+------------------------------------
 
-.. automodule:: aodncore.pipeline.steps.upload
+.. automodule:: aodncore.pipeline.steps.store
     :members:
     :undoc-members:
     :show-inheritance:

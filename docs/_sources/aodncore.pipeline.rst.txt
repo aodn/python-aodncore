@@ -100,6 +100,22 @@ aodncore.pipeline.serviceconfig module
     :undoc-members:
     :show-inheritance:
 
+aodncore.pipeline.statequery module
+-----------------------------------
+
+.. automodule:: aodncore.pipeline.statequery
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+aodncore.pipeline.storage module
+--------------------------------
+
+.. automodule:: aodncore.pipeline.storage
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
 aodncore.pipeline.watch module
 ------------------------------
 

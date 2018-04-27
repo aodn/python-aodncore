@@ -10,8 +10,6 @@ __all__ = [
     'DuplicateUniqueAttributeError',
     'AttributeNotSetError',
     'DuplicatePipelineFileError',
-    'FileDeleteFailedError',
-    'FileUploadFailedError',
     'HandlerAlreadyRunError',
     'InvalidCheckSuiteError',
     'InvalidFileContentError',
@@ -25,10 +23,11 @@ __all__ = [
     'InvalidHarvestMapError',
     'InvalidInputFileError',
     'InvalidRecipientError',
-    'InvalidUploadUrlError',
+    'InvalidStoreUrlError',
     'MissingConfigParameterError',
     'MissingFileError',
     'NotificationFailedError',
+    'StorageBrokerError',
     'UnmappedFilesError'
 ]
 
@@ -80,14 +79,6 @@ class DuplicatePipelineFileError(PipelineSystemError):
     pass
 
 
-class FileDeleteFailedError(PipelineSystemError):
-    pass
-
-
-class FileUploadFailedError(PipelineSystemError):
-    pass
-
-
 class HandlerAlreadyRunError(PipelineSystemError):
     pass
 
@@ -128,7 +119,7 @@ class InvalidRecipientError(PipelineSystemError):
     pass
 
 
-class InvalidUploadUrlError(PipelineSystemError):
+class InvalidStoreUrlError(PipelineSystemError):
     pass
 
 
@@ -141,6 +132,10 @@ class MissingFileError(PipelineSystemError):
 
 
 class NotificationFailedError(PipelineSystemError):
+    pass
+
+
+class StorageBrokerError(PipelineSystemError):
     pass
 
 

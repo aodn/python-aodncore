@@ -7,13 +7,14 @@ the inputs expected by the AODN Talend wrapper scripts, but is written generical
 harvesting processes.
 """
 
+import abc
 import itertools
 import os
 import re
 from collections import OrderedDict
 from tempfile import mkstemp
 
-from .basestep import AbstractCollectionStepRunner
+from .basestep import BaseStepRunner
 from ..exceptions import InvalidHarvesterError, UnmappedFilesError
 from ..files import PipelineFileCollection, validate_pipelinefilecollection
 from ...util import (LoggingContext, SystemProcess, TemporaryDirectory, merge_dicts, mkdir_p, validate_string,
@@ -33,11 +34,11 @@ __all__ = [
 ]
 
 
-def get_harvester_runner(harvester_name, upload_runner, harvest_params, tmp_base_dir, config, logger):
+def get_harvester_runner(harvester_name, store_runner, harvest_params, tmp_base_dir, config, logger):
     """Factory function to return appropriate harvester class
 
     :param harvester_name: harvester name used to retrieve :py:class:`BaseHarvesterRunner` class
-    :param upload_runner: :py:class:`BaseUploadRunner` instance to use for uploads
+    :param store_runner: :py:class:`BaseStoreRunner` instance to use for uploads
     :param harvest_params: dict of parameters to pass to :py:class:`BaseCheckRunner` class for runtime configuration
     :param tmp_base_dir: base temporary directory
     :param config: :py:class:`LazyConfigManager` instance
@@ -46,7 +47,7 @@ def get_harvester_runner(harvester_name, upload_runner, harvest_params, tmp_base
     """
 
     if harvester_name == 'talend':
-        return TalendHarvesterRunner(upload_runner, harvest_params, tmp_base_dir, config, logger)
+        return TalendHarvesterRunner(store_runner, harvest_params, tmp_base_dir, config, logger)
     else:
         raise InvalidHarvesterError("invalid harvester '{name}'".format(name=harvester_name))
 
@@ -184,18 +185,22 @@ def validate_harvester_mapping(pipeline_files, harvester_map):
             "no matching harvester(s) found for: {unmapped_files}".format(unmapped_files=unmapped_files))
 
 
-# noinspection PyAbstractClass
-class BaseHarvesterRunner(AbstractCollectionStepRunner):
+class BaseHarvesterRunner(BaseStepRunner):
     """Base class for HarvesterRunner classes
     """
-    pass
+
+    __metaclass__ = abc.ABCMeta
+
+    @abc.abstractmethod
+    def run(self, pipeline_files):
+        pass
 
 
 class TalendHarvesterRunner(BaseHarvesterRunner):
     """:py:class:`BaseHarvesterRunner` implementation to execute Talend harvesters
     """
 
-    def __init__(self, upload_runner, harvest_params, tmp_base_dir, config, logger, deletion=False):
+    def __init__(self, storage_broker, harvest_params, tmp_base_dir, config, logger, deletion=False):
         super(TalendHarvesterRunner, self).__init__(config, logger)
         if harvest_params is None:
             harvest_params = {}
@@ -205,7 +210,7 @@ class TalendHarvesterRunner(BaseHarvesterRunner):
         self.undo_previous_slices = harvest_params.get('undo_previous_slices', True)
         self.params = harvest_params
         self.tmp_base_dir = tmp_base_dir
-        self.upload_runner = upload_runner
+        self.storage_broker = storage_broker
         self.harvested_file_map = HarvesterMap()
 
     def run(self, pipeline_files):
@@ -320,7 +325,7 @@ class TalendHarvesterRunner(BaseHarvesterRunner):
 
                 files_to_delete = event.matched_files.filter_by_bool_attribute('pending_store_deletion')
                 if files_to_delete:
-                    self.upload_runner.run(files_to_delete)
+                    self.storage_broker.delete(pipeline_files=files_to_delete)
 
     def run_undo_deletions(self, harvester_map):
         """Function to un-harvest and undo stored files as appropriate in the case of errors.
@@ -346,7 +351,7 @@ class TalendHarvesterRunner(BaseHarvesterRunner):
 
                 files_to_delete = event.matched_files.filter_by_bool_attributes_and('pending_undo', 'is_stored')
                 if files_to_delete:
-                    self.upload_runner.run(files_to_delete)
+                    self.storage_broker.delete(pipeline_files=files_to_delete, is_stored_attr='is_upload_undone')
 
     def run_additions(self, harvester_map, tmp_base_dir):
         """Function to harvest and upload files using the appropriate file upload runner.
@@ -392,7 +397,7 @@ class TalendHarvesterRunner(BaseHarvesterRunner):
 
                 files_to_upload = event.matched_files.filter_by_bool_attribute('pending_store_addition')
                 if files_to_upload:
-                    self.upload_runner.run(files_to_upload)
+                    self.storage_broker.upload(pipeline_files=files_to_upload)
 
 
 validate_triggerevent = validate_type(TriggerEvent)

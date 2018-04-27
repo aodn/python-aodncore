@@ -211,7 +211,7 @@
 <li class="toctree-l2"><a class="reference internal" href="aodncore.pipeline.steps.html#module-aodncore.pipeline.steps.harvest">aodncore.pipeline.steps.harvest module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="aodncore.pipeline.steps.html#module-aodncore.pipeline.steps.notify">aodncore.pipeline.steps.notify module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="aodncore.pipeline.steps.html#module-aodncore.pipeline.steps.resolve">aodncore.pipeline.steps.resolve module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="aodncore.pipeline.steps.html#module-aodncore.pipeline.steps.upload">aodncore.pipeline.steps.upload module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="aodncore.pipeline.steps.html#module-aodncore.pipeline.steps.store">aodncore.pipeline.steps.store module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="aodncore.pipeline.steps.html#module-aodncore.pipeline.steps">Module contents</a></li>
 </ul>
 </li>
@@ -690,18 +690,6 @@ return to an end user</p>
 </dd></dl>
 
 <dl class="exception">
-<dt id="aodncore.pipeline.exceptions.FileDeleteFailedError">
-<em class="property">exception </em><code class="descclassname">aodncore.pipeline.exceptions.</code><code class="descname">FileDeleteFailedError</code><a class="reference internal" href="_modules/aodncore/pipeline/exceptions.html#FileDeleteFailedError"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#aodncore.pipeline.exceptions.FileDeleteFailedError" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <a class="reference internal" href="#aodncore.pipeline.exceptions.PipelineSystemError" title="aodncore.pipeline.exceptions.PipelineSystemError"><code class="xref py py-class docutils literal notranslate"><span class="pre">aodncore.pipeline.exceptions.PipelineSystemError</span></code></a></p>
-</dd></dl>
-
-<dl class="exception">
-<dt id="aodncore.pipeline.exceptions.FileUploadFailedError">
-<em class="property">exception </em><code class="descclassname">aodncore.pipeline.exceptions.</code><code class="descname">FileUploadFailedError</code><a class="reference internal" href="_modules/aodncore/pipeline/exceptions.html#FileUploadFailedError"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#aodncore.pipeline.exceptions.FileUploadFailedError" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <a class="reference internal" href="#aodncore.pipeline.exceptions.PipelineSystemError" title="aodncore.pipeline.exceptions.PipelineSystemError"><code class="xref py py-class docutils literal notranslate"><span class="pre">aodncore.pipeline.exceptions.PipelineSystemError</span></code></a></p>
-</dd></dl>
-
-<dl class="exception">
 <dt id="aodncore.pipeline.exceptions.HandlerAlreadyRunError">
 <em class="property">exception </em><code class="descclassname">aodncore.pipeline.exceptions.</code><code class="descname">HandlerAlreadyRunError</code><a class="reference internal" href="_modules/aodncore/pipeline/exceptions.html#HandlerAlreadyRunError"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#aodncore.pipeline.exceptions.HandlerAlreadyRunError" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="#aodncore.pipeline.exceptions.PipelineSystemError" title="aodncore.pipeline.exceptions.PipelineSystemError"><code class="xref py py-class docutils literal notranslate"><span class="pre">aodncore.pipeline.exceptions.PipelineSystemError</span></code></a></p>
@@ -780,8 +768,8 @@ return to an end user</p>
 </dd></dl>
 
 <dl class="exception">
-<dt id="aodncore.pipeline.exceptions.InvalidUploadUrlError">
-<em class="property">exception </em><code class="descclassname">aodncore.pipeline.exceptions.</code><code class="descname">InvalidUploadUrlError</code><a class="reference internal" href="_modules/aodncore/pipeline/exceptions.html#InvalidUploadUrlError"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#aodncore.pipeline.exceptions.InvalidUploadUrlError" title="Permalink to this definition">¶</a></dt>
+<dt id="aodncore.pipeline.exceptions.InvalidStoreUrlError">
+<em class="property">exception </em><code class="descclassname">aodncore.pipeline.exceptions.</code><code class="descname">InvalidStoreUrlError</code><a class="reference internal" href="_modules/aodncore/pipeline/exceptions.html#InvalidStoreUrlError"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#aodncore.pipeline.exceptions.InvalidStoreUrlError" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="#aodncore.pipeline.exceptions.PipelineSystemError" title="aodncore.pipeline.exceptions.PipelineSystemError"><code class="xref py py-class docutils literal notranslate"><span class="pre">aodncore.pipeline.exceptions.PipelineSystemError</span></code></a></p>
 </dd></dl>
 
@@ -800,6 +788,12 @@ return to an end user</p>
 <dl class="exception">
 <dt id="aodncore.pipeline.exceptions.NotificationFailedError">
 <em class="property">exception </em><code class="descclassname">aodncore.pipeline.exceptions.</code><code class="descname">NotificationFailedError</code><a class="reference internal" href="_modules/aodncore/pipeline/exceptions.html#NotificationFailedError"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#aodncore.pipeline.exceptions.NotificationFailedError" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#aodncore.pipeline.exceptions.PipelineSystemError" title="aodncore.pipeline.exceptions.PipelineSystemError"><code class="xref py py-class docutils literal notranslate"><span class="pre">aodncore.pipeline.exceptions.PipelineSystemError</span></code></a></p>
+</dd></dl>
+
+<dl class="exception">
+<dt id="aodncore.pipeline.exceptions.StorageBrokerError">
+<em class="property">exception </em><code class="descclassname">aodncore.pipeline.exceptions.</code><code class="descname">StorageBrokerError</code><a class="reference internal" href="_modules/aodncore/pipeline/exceptions.html#StorageBrokerError"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#aodncore.pipeline.exceptions.StorageBrokerError" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="#aodncore.pipeline.exceptions.PipelineSystemError" title="aodncore.pipeline.exceptions.PipelineSystemError"><code class="xref py py-class docutils literal notranslate"><span class="pre">aodncore.pipeline.exceptions.PipelineSystemError</span></code></a></p>
 </dd></dl>
 
@@ -1662,15 +1656,15 @@ any of the regexes in <code class="xref py py-attr docutils literal notranslate"
 <code class="xref py py-attr docutils literal notranslate"><span class="pre">PipelineFilePublishType.NO_ACTION</span></code>, meaning they will be ignored by the publish step.</p>
 <div class="admonition note">
 <p class="first admonition-title">Note</p>
-<p class="last">If omitted, the default is to select <em>all</em> files in <code class="xref py py-attr docutils literal notranslate"><span class="pre">file_collection</span></code> for publication.</p>
+<p class="last">If omitted, the default is to select <em>all</em> files in <a class="reference internal" href="#aodncore.pipeline.handlerbase.HandlerBase.file_collection" title="aodncore.pipeline.handlerbase.HandlerBase.file_collection"><code class="xref py py-attr docutils literal notranslate"><span class="pre">file_collection</span></code></a> for publication.</p>
 </div>
 <div class="admonition note">
 <p class="first admonition-title">Note</p>
-<p>This relates only to the files in <code class="xref py py-attr docutils literal notranslate"><span class="pre">file_collection</span></code>, and has no relation to the
+<p>This relates only to the files in <a class="reference internal" href="#aodncore.pipeline.handlerbase.HandlerBase.file_collection" title="aodncore.pipeline.handlerbase.HandlerBase.file_collection"><code class="xref py py-attr docutils literal notranslate"><span class="pre">file_collection</span></code></a>, and has no relation to the
 <code class="xref py py-attr docutils literal notranslate"><span class="pre">input_file</span></code> path, unless the input file is itself in the collection (e.g. when handling a single
 file).</p>
 <p class="last">For example, a single ‘.nc’ file could feasibly match the <code class="xref py py-attr docutils literal notranslate"><span class="pre">allowed_extensions</span></code> for the handler, but
-still be excluded by this mechanism once it is added to <code class="xref py py-attr docutils literal notranslate"><span class="pre">file_collection</span></code> during the
+still be excluded by this mechanism once it is added to <a class="reference internal" href="#aodncore.pipeline.handlerbase.HandlerBase.file_collection" title="aodncore.pipeline.handlerbase.HandlerBase.file_collection"><code class="xref py py-attr docutils literal notranslate"><span class="pre">file_collection</span></code></a> during the
 <a class="reference internal" href="aodncore.pipeline.steps.html#module-aodncore.pipeline.steps.resolve" title="aodncore.pipeline.steps.resolve"><code class="xref py py-mod docutils literal notranslate"><span class="pre">aodncore.pipeline.steps.resolve</span></code></a> step.</p>
 </div>
 </li>
@@ -1870,6 +1864,22 @@ should be created in <code class="xref py py-attr docutils literal notranslate">
 <tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body"><code class="xref py py-attr docutils literal notranslate"><span class="pre">input_file</span></code> checksum string</td>
 </tr>
 <tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="aodncore.pipeline.handlerbase.HandlerBase.file_collection">
+<code class="descname">file_collection</code><a class="headerlink" href="#aodncore.pipeline.handlerbase.HandlerBase.file_collection" title="Permalink to this definition">¶</a></dt>
+<dd><p>Read-only property to access the handler’s primary PipelineFileCollection instance</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">handler file collection</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body"><code class="xref py py-class docutils literal notranslate"><span class="pre">PipelineFileCollection</span></code></td>
 </tr>
 </tbody>
 </table>
@@ -2090,6 +2100,22 @@ should be created in <code class="xref py py-attr docutils literal notranslate">
 </dd></dl>
 
 <dl class="attribute">
+<dt id="aodncore.pipeline.handlerbase.HandlerBase.state_query">
+<code class="descname">state_query</code><a class="headerlink" href="#aodncore.pipeline.handlerbase.HandlerBase.state_query" title="Permalink to this definition">¶</a></dt>
+<dd><p>Read-only property containing an initialised StateQuery instance, for querying existing pipeline state</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">StateQuery instance</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body"><code class="xref py py-class docutils literal notranslate"><span class="pre">StateQuery</span></code></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="attribute">
 <dt id="aodncore.pipeline.handlerbase.HandlerBase.temp_dir">
 <code class="descname">temp_dir</code><a class="headerlink" href="#aodncore.pipeline.handlerbase.HandlerBase.temp_dir" title="Permalink to this definition">¶</a></dt>
 <dd><p>Temporary subdirectory where any other arbitrary temporary files may be created by handler sub-classes</p>
@@ -2228,6 +2254,163 @@ pipeline, and also the helper functions necessary to validate an object against 
 <div class="section" id="aodncore-pipeline-serviceconfig-module">
 <h2>aodncore.pipeline.serviceconfig module<a class="headerlink" href="#aodncore-pipeline-serviceconfig-module" title="Permalink to this headline">¶</a></h2>
 </div>
+<div class="section" id="module-aodncore.pipeline.statequery">
+<span id="aodncore-pipeline-statequery-module"></span><h2>aodncore.pipeline.statequery module<a class="headerlink" href="#module-aodncore.pipeline.statequery" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="aodncore.pipeline.statequery.StateQuery">
+<em class="property">class </em><code class="descclassname">aodncore.pipeline.statequery.</code><code class="descname">StateQuery</code><span class="sig-paren">(</span><em>broker</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/aodncore/pipeline/statequery.html#StateQuery"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#aodncore.pipeline.statequery.StateQuery" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Simple state query interface, to provide user friendly access for querying existing Pipeline state</p>
+<dl class="method">
+<dt id="aodncore.pipeline.statequery.StateQuery.query_storage">
+<code class="descname">query_storage</code><span class="sig-paren">(</span><em>query</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/aodncore/pipeline/statequery.html#StateQuery.query_storage"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#aodncore.pipeline.statequery.StateQuery.query_storage" title="Permalink to this definition">¶</a></dt>
+<dd><p>Query the storage backend and return existing files matching the given query</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>query</strong> – S3-style prefix for filtering query results</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">dict containing the query results</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="aodncore.pipeline.statequery.StateQuery.query_wfs">
+<code class="descname">query_wfs</code><span class="sig-paren">(</span><em>query</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/aodncore/pipeline/statequery.html#StateQuery.query_wfs"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#aodncore.pipeline.statequery.StateQuery.query_wfs" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-aodncore.pipeline.storage">
+<span id="aodncore-pipeline-storage-module"></span><h2>aodncore.pipeline.storage module<a class="headerlink" href="#module-aodncore.pipeline.storage" title="Permalink to this headline">¶</a></h2>
+<dl class="function">
+<dt id="aodncore.pipeline.storage.get_storage_broker">
+<code class="descclassname">aodncore.pipeline.storage.</code><code class="descname">get_storage_broker</code><span class="sig-paren">(</span><em>store_url</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/aodncore/pipeline/storage.html#get_storage_broker"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#aodncore.pipeline.storage.get_storage_broker" title="Permalink to this definition">¶</a></dt>
+<dd><p>Factory function to return appropriate storage broker class based on URL scheme</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>store_url</strong> – URL base</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">BaseStorageBroker sub-class</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="class">
+<dt id="aodncore.pipeline.storage.LocalFileStorageBroker">
+<em class="property">class </em><code class="descclassname">aodncore.pipeline.storage.</code><code class="descname">LocalFileStorageBroker</code><span class="sig-paren">(</span><em>prefix</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/aodncore/pipeline/storage.html#LocalFileStorageBroker"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#aodncore.pipeline.storage.LocalFileStorageBroker" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">aodncore.pipeline.storage.BaseStorageBroker</span></code></p>
+<p>StorageBroker to interact with a local directory</p>
+</dd></dl>
+
+<dl class="class">
+<dt id="aodncore.pipeline.storage.S3StorageBroker">
+<em class="property">class </em><code class="descclassname">aodncore.pipeline.storage.</code><code class="descname">S3StorageBroker</code><span class="sig-paren">(</span><em>bucket</em>, <em>prefix</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/aodncore/pipeline/storage.html#S3StorageBroker"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#aodncore.pipeline.storage.S3StorageBroker" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">aodncore.pipeline.storage.BaseStorageBroker</span></code></p>
+<p>StorageBroker to interact with an S3</p>
+<dl class="docutils">
+<dt>Note: this does not and should not attempt to support any authentication code. Multiple mechanisms for loading</dt>
+<dd><p class="first">credentials are far more appropriately handled directly by the boto3, and it is expected that the
+credentials are supplied using one of these mechanisms by the environment (e.g. deployed from configuration
+management, set as environment variables etc.)</p>
+<p class="last">Refer: <a class="reference external" href="http://boto3.readthedocs.io/en/latest/guide/configuration.html">http://boto3.readthedocs.io/en/latest/guide/configuration.html</a></p>
+</dd>
+</dl>
+<dl class="attribute">
+<dt id="aodncore.pipeline.storage.S3StorageBroker.retry_kwargs">
+<code class="descname">retry_kwargs</code><em class="property"> = {'backoff': 2, 'delay': 5, 'exceptions': (&lt;class 'botocore.exceptions.ClientError'&gt;,), 'tries': 3}</em><a class="headerlink" href="#aodncore.pipeline.storage.S3StorageBroker.retry_kwargs" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="aodncore.pipeline.storage.SftpStorageBroker">
+<em class="property">class </em><code class="descclassname">aodncore.pipeline.storage.</code><code class="descname">SftpStorageBroker</code><span class="sig-paren">(</span><em>server</em>, <em>prefix</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/aodncore/pipeline/storage.html#SftpStorageBroker"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#aodncore.pipeline.storage.SftpStorageBroker" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">aodncore.pipeline.storage.BaseStorageBroker</span></code></p>
+<p>StorageBroker to interact with a directory on a remote SFTP server</p>
+<p>Note: similar to the S3 storage broker, this does not implement any authentication code, as this is better handled
+by the environment in the form of public key authentication</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="aodncore.pipeline.storage.sftp_makedirs">
+<code class="descclassname">aodncore.pipeline.storage.</code><code class="descname">sftp_makedirs</code><span class="sig-paren">(</span><em>sftpclient</em>, <em>name</em>, <em>mode=493</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/aodncore/pipeline/storage.html#sftp_makedirs"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#aodncore.pipeline.storage.sftp_makedirs" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="docutils">
+<dt>Recursively create a directory path on a remote SFTP server</dt>
+<dd>Based on os.makedirs, with local calls replaced with SFTPClient equivalents calls.</dd>
+</dl>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>sftpclient</strong> – SFTPClient object</li>
+<li><strong>name</strong> – directory path to create</li>
+<li><strong>mode</strong> – permissions for the newly created directory</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">None</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="aodncore.pipeline.storage.sftp_mkdir_p">
+<code class="descclassname">aodncore.pipeline.storage.</code><code class="descname">sftp_mkdir_p</code><span class="sig-paren">(</span><em>sftpclient</em>, <em>name</em>, <em>mode=493</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/aodncore/pipeline/storage.html#sftp_mkdir_p"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#aodncore.pipeline.storage.sftp_mkdir_p" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="docutils">
+<dt>Replicate ‘mkdir -p’ shell command behaviour by wrapping sftp_makedirs and suppressing exceptions where the</dt>
+<dd>directory already exists.</dd>
+</dl>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>sftpclient</strong> – SFTPClient object</li>
+<li><strong>name</strong> – directory path to create</li>
+<li><strong>mode</strong> – permissions for the newly created directory</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">None</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="aodncore.pipeline.storage.sftp_path_exists">
+<code class="descclassname">aodncore.pipeline.storage.</code><code class="descname">sftp_path_exists</code><span class="sig-paren">(</span><em>sftpclient</em>, <em>path</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/aodncore/pipeline/storage.html#sftp_path_exists"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#aodncore.pipeline.storage.sftp_path_exists" title="Permalink to this definition">¶</a></dt>
+<dd><p>Test whether a path exists on a remote SFTP server</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>sftpclient</strong> – SFTPClient object</li>
+<li><strong>path</strong> – path to test for existence</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">True if the path exists, False if not</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</div>
 <div class="section" id="module-aodncore.pipeline.watch">
 <span id="aodncore-pipeline-watch-module"></span><h2>aodncore.pipeline.watch module<a class="headerlink" href="#module-aodncore.pipeline.watch" title="Permalink to this headline">¶</a></h2>
 <p>This module provides the code to implement the “watchservice” component of the pipeline.</p>
@@ -2322,11 +2505,18 @@ for debugging.</p>
 <dl class="class">
 <dt id="aodncore.pipeline.watch.IncomingFileEventHandler">
 <em class="property">class </em><code class="descclassname">aodncore.pipeline.watch.</code><code class="descname">IncomingFileEventHandler</code><span class="sig-paren">(</span><em>config</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/aodncore/pipeline/watch.html#IncomingFileEventHandler"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#aodncore.pipeline.watch.IncomingFileEventHandler" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">aodncore.pipeline.watch.ProcessEvent</span></code></p>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">pyinotify.ProcessEvent</span></code></p>
 <dl class="method">
 <dt id="aodncore.pipeline.watch.IncomingFileEventHandler.process_default">
 <code class="descname">process_default</code><span class="sig-paren">(</span><em>event</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/aodncore/pipeline/watch.html#IncomingFileEventHandler.process_default"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#aodncore.pipeline.watch.IncomingFileEventHandler.process_default" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>Default processing event method. By default does nothing. Subclass
+ProcessEvent and redefine this method in order to modify its behavior.</p>
+<dl class="docutils">
+<dt>&#64;param event: Event to be processed. Can be of any type of events but</dt>
+<dd>IN_Q_OVERFLOW events (see method process_IN_Q_OVERFLOW).</dd>
+</dl>
+<p>&#64;type event: Event instance</p>
+</dd></dl>
 
 <dl class="method">
 <dt id="aodncore.pipeline.watch.IncomingFileEventHandler.queue_task">
@@ -2365,7 +2555,7 @@ for debugging.</p>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <dl class="attribute">
 <dt id="aodncore.pipeline.watch.WatchServiceManager.EVENT_MASK">
-<code class="descname">EVENT_MASK</code><em class="property"> = 0</em><a class="headerlink" href="#aodncore.pipeline.watch.WatchServiceManager.EVENT_MASK" title="Permalink to this definition">¶</a></dt>
+<code class="descname">EVENT_MASK</code><em class="property"> = 136</em><a class="headerlink" href="#aodncore.pipeline.watch.WatchServiceManager.EVENT_MASK" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="method">
@@ -2585,15 +2775,15 @@ any of the regexes in <code class="xref py py-attr docutils literal notranslate"
 <a class="reference internal" href="#aodncore.pipeline.PipelineFilePublishType.NO_ACTION" title="aodncore.pipeline.PipelineFilePublishType.NO_ACTION"><code class="xref py py-attr docutils literal notranslate"><span class="pre">PipelineFilePublishType.NO_ACTION</span></code></a>, meaning they will be ignored by the publish step.</p>
 <div class="admonition note">
 <p class="first admonition-title">Note</p>
-<p class="last">If omitted, the default is to select <em>all</em> files in <code class="xref py py-attr docutils literal notranslate"><span class="pre">file_collection</span></code> for publication.</p>
+<p class="last">If omitted, the default is to select <em>all</em> files in <a class="reference internal" href="#aodncore.pipeline.HandlerBase.file_collection" title="aodncore.pipeline.HandlerBase.file_collection"><code class="xref py py-attr docutils literal notranslate"><span class="pre">file_collection</span></code></a> for publication.</p>
 </div>
 <div class="admonition note">
 <p class="first admonition-title">Note</p>
-<p>This relates only to the files in <code class="xref py py-attr docutils literal notranslate"><span class="pre">file_collection</span></code>, and has no relation to the
+<p>This relates only to the files in <a class="reference internal" href="#aodncore.pipeline.HandlerBase.file_collection" title="aodncore.pipeline.HandlerBase.file_collection"><code class="xref py py-attr docutils literal notranslate"><span class="pre">file_collection</span></code></a>, and has no relation to the
 <code class="xref py py-attr docutils literal notranslate"><span class="pre">input_file</span></code> path, unless the input file is itself in the collection (e.g. when handling a single
 file).</p>
 <p class="last">For example, a single ‘.nc’ file could feasibly match the <code class="xref py py-attr docutils literal notranslate"><span class="pre">allowed_extensions</span></code> for the handler, but
-still be excluded by this mechanism once it is added to <code class="xref py py-attr docutils literal notranslate"><span class="pre">file_collection</span></code> during the
+still be excluded by this mechanism once it is added to <a class="reference internal" href="#aodncore.pipeline.HandlerBase.file_collection" title="aodncore.pipeline.HandlerBase.file_collection"><code class="xref py py-attr docutils literal notranslate"><span class="pre">file_collection</span></code></a> during the
 <a class="reference internal" href="aodncore.pipeline.steps.html#module-aodncore.pipeline.steps.resolve" title="aodncore.pipeline.steps.resolve"><code class="xref py py-mod docutils literal notranslate"><span class="pre">aodncore.pipeline.steps.resolve</span></code></a> step.</p>
 </div>
 </li>
@@ -2793,6 +2983,22 @@ should be created in <code class="xref py py-attr docutils literal notranslate">
 <tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body"><code class="xref py py-attr docutils literal notranslate"><span class="pre">input_file</span></code> checksum string</td>
 </tr>
 <tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="aodncore.pipeline.HandlerBase.file_collection">
+<code class="descname">file_collection</code><a class="headerlink" href="#aodncore.pipeline.HandlerBase.file_collection" title="Permalink to this definition">¶</a></dt>
+<dd><p>Read-only property to access the handler’s primary PipelineFileCollection instance</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">handler file collection</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference internal" href="#aodncore.pipeline.PipelineFileCollection" title="aodncore.pipeline.PipelineFileCollection"><code class="xref py py-class docutils literal notranslate"><span class="pre">PipelineFileCollection</span></code></a></td>
 </tr>
 </tbody>
 </table>
@@ -3007,6 +3213,22 @@ should be created in <code class="xref py py-attr docutils literal notranslate">
 <tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">timestamp of handler starting time</td>
 </tr>
 <tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body"><code class="xref py py-class docutils literal notranslate"><span class="pre">datetime.datetime</span></code></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="aodncore.pipeline.HandlerBase.state_query">
+<code class="descname">state_query</code><a class="headerlink" href="#aodncore.pipeline.HandlerBase.state_query" title="Permalink to this definition">¶</a></dt>
+<dd><p>Read-only property containing an initialised StateQuery instance, for querying existing pipeline state</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">StateQuery instance</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body"><code class="xref py py-class docutils literal notranslate"><span class="pre">StateQuery</span></code></td>
 </tr>
 </tbody>
 </table>

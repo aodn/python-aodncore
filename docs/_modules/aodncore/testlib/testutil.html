@@ -200,8 +200,8 @@
 <span class="kn">from</span> <span class="nn">six</span> <span class="k">import</span> <span class="n">iteritems</span>
 <span class="kn">from</span> <span class="nn">six.moves.urllib.parse</span> <span class="k">import</span> <span class="n">urlunsplit</span>
 
-<span class="kn">from</span> <span class="nn">aodncore.pipeline.steps.upload</span> <span class="k">import</span> <span class="n">BaseUploadRunner</span>
 <span class="kn">from</span> <span class="nn">..pipeline.configlib</span> <span class="k">import</span> <span class="n">LazyConfigManager</span>
+<span class="kn">from</span> <span class="nn">..pipeline.storage</span> <span class="k">import</span> <span class="n">BaseStorageBroker</span>
 <span class="kn">from</span> <span class="nn">..testlib.dummyhandler</span> <span class="k">import</span> <span class="n">DummyHandler</span>
 
 <span class="k">try</span><span class="p">:</span>
@@ -210,7 +210,7 @@
     <span class="kn">import</span> <span class="nn">mock</span>
 
 <span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span>
-    <span class="s1">&#39;NullUploadRunner&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;NullStorageBroker&#39;</span><span class="p">,</span>
     <span class="s1">&#39;dest_path_testing&#39;</span><span class="p">,</span>
     <span class="s1">&#39;get_nonexistent_path&#39;</span><span class="p">,</span>
     <span class="s1">&#39;make_test_file&#39;</span><span class="p">,</span>
@@ -225,16 +225,17 @@
 <span class="n">TESTLIB_CONF_DIR</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="vm">__file__</span><span class="p">),</span> <span class="s1">&#39;conf&#39;</span><span class="p">)</span>
 
 
-<div class="viewcode-block" id="NullUploadRunner"><a class="viewcode-back" href="../../../aodncore.testlib.html#aodncore.testlib.testutil.NullUploadRunner">[docs]</a><span class="k">class</span> <span class="nc">NullUploadRunner</span><span class="p">(</span><span class="n">BaseUploadRunner</span><span class="p">):</span>
+<div class="viewcode-block" id="NullStorageBroker"><a class="viewcode-back" href="../../../aodncore.testlib.html#aodncore.testlib.testutil.NullStorageBroker">[docs]</a><span class="k">class</span> <span class="nc">NullStorageBroker</span><span class="p">(</span><span class="n">BaseStorageBroker</span><span class="p">):</span>
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">prefix</span><span class="p">,</span> <span class="n">fail</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
-        <span class="n">mock_logger</span> <span class="o">=</span> <span class="n">mock</span><span class="o">.</span><span class="n">MagicMock</span><span class="p">()</span>
-        <span class="nb">super</span><span class="p">(</span><span class="n">NullUploadRunner</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="n">mock_logger</span><span class="p">)</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">NullStorageBroker</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">prefix</span> <span class="o">=</span> <span class="n">prefix</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">fail</span> <span class="o">=</span> <span class="n">fail</span>
 
-        <span class="bp">self</span><span class="o">.</span><span class="n">call_count</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">upload_call_count</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">delete_call_count</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">query_call_count</span> <span class="o">=</span> <span class="mi">0</span>
 
-    <span class="k">def</span> <span class="nf">_delete_file</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pipeline_file</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">_delete_file</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pipeline_file</span><span class="p">,</span> <span class="n">dest_path_attr</span><span class="p">):</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">fail</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s1">&#39;deliberate failure requested&#39;</span><span class="p">)</span>
 
@@ -244,30 +245,61 @@
     <span class="k">def</span> <span class="nf">_pre_run_hook</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">pass</span>
 
-    <span class="k">def</span> <span class="nf">_upload_file</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pipeline_file</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">_upload_file</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pipeline_file</span><span class="p">,</span> <span class="n">dest_path_attr</span><span class="p">):</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">fail</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s1">&#39;deliberate failure requested&#39;</span><span class="p">)</span>
-
-    <span class="k">def</span> <span class="nf">_get_absolute_dest_uri</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pipeline_file</span><span class="p">):</span>
-        <span class="k">return</span> <span class="s2">&quot;null://</span><span class="si">{dest_path}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">dest_path</span><span class="o">=</span><span class="n">pipeline_file</span><span class="o">.</span><span class="n">dest_path</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">_get_is_overwrite</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pipeline_file</span><span class="p">,</span> <span class="n">abs_path</span><span class="p">):</span>
         <span class="k">return</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">fail</span>
 
-<div class="viewcode-block" id="NullUploadRunner.run"><a class="viewcode-back" href="../../../aodncore.testlib.html#aodncore.testlib.testutil.NullUploadRunner.run">[docs]</a>    <span class="k">def</span> <span class="nf">run</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pipeline_files</span><span class="p">):</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">call_count</span> <span class="o">+=</span> <span class="mi">1</span>
-        <span class="nb">super</span><span class="p">(</span><span class="n">NullUploadRunner</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">pipeline_files</span><span class="p">)</span></div>
+    <span class="k">def</span> <span class="nf">_run_query</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">query</span><span class="p">):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">fail</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s1">&#39;deliberate failure requested&#39;</span><span class="p">)</span>
 
-<div class="viewcode-block" id="NullUploadRunner.assert_call_count"><a class="viewcode-back" href="../../../aodncore.testlib.html#aodncore.testlib.testutil.NullUploadRunner.assert_call_count">[docs]</a>    <span class="k">def</span> <span class="nf">assert_call_count</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">count</span><span class="p">):</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">call_count</span> <span class="o">!=</span> <span class="n">count</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">AssertionError</span><span class="p">(</span><span class="s2">&quot;run method call_count: </span><span class="si">{call_count}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">call_count</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">call_count</span><span class="p">))</span></div>
+<div class="viewcode-block" id="NullStorageBroker.upload"><a class="viewcode-back" href="../../../aodncore.testlib.html#aodncore.testlib.testutil.NullStorageBroker.upload">[docs]</a>    <span class="k">def</span> <span class="nf">upload</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pipeline_files</span><span class="p">,</span> <span class="n">is_stored_attr</span><span class="o">=</span><span class="s1">&#39;is_stored&#39;</span><span class="p">,</span> <span class="n">dest_path_attr</span><span class="o">=</span><span class="s1">&#39;dest_path&#39;</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">upload_call_count</span> <span class="o">+=</span> <span class="mi">1</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">NullStorageBroker</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">upload</span><span class="p">(</span><span class="n">pipeline_files</span><span class="p">,</span> <span class="n">is_stored_attr</span><span class="p">,</span> <span class="n">dest_path_attr</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="NullUploadRunner.assert_called"><a class="viewcode-back" href="../../../aodncore.testlib.html#aodncore.testlib.testutil.NullUploadRunner.assert_called">[docs]</a>    <span class="k">def</span> <span class="nf">assert_called</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">call_count</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">AssertionError</span><span class="p">(</span><span class="s2">&quot;run method not called&quot;</span><span class="p">)</span></div>
+<div class="viewcode-block" id="NullStorageBroker.delete"><a class="viewcode-back" href="../../../aodncore.testlib.html#aodncore.testlib.testutil.NullStorageBroker.delete">[docs]</a>    <span class="k">def</span> <span class="nf">delete</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pipeline_files</span><span class="p">,</span> <span class="n">is_stored_attr</span><span class="o">=</span><span class="s1">&#39;is_stored&#39;</span><span class="p">,</span> <span class="n">dest_path_attr</span><span class="o">=</span><span class="s1">&#39;dest_path&#39;</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">delete_call_count</span> <span class="o">+=</span> <span class="mi">1</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">NullStorageBroker</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">delete</span><span class="p">(</span><span class="n">pipeline_files</span><span class="p">,</span> <span class="n">is_stored_attr</span><span class="p">,</span> <span class="n">dest_path_attr</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="NullUploadRunner.assert_not_called"><a class="viewcode-back" href="../../../aodncore.testlib.html#aodncore.testlib.testutil.NullUploadRunner.assert_not_called">[docs]</a>    <span class="k">def</span> <span class="nf">assert_not_called</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">assert_call_count</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span></div></div>
+<div class="viewcode-block" id="NullStorageBroker.query"><a class="viewcode-back" href="../../../aodncore.testlib.html#aodncore.testlib.testutil.NullStorageBroker.query">[docs]</a>    <span class="k">def</span> <span class="nf">query</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">query</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">query_call_count</span> <span class="o">+=</span> <span class="mi">1</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">NullStorageBroker</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">query</span><span class="p">(</span><span class="n">query</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="NullStorageBroker.assert_upload_call_count"><a class="viewcode-back" href="../../../aodncore.testlib.html#aodncore.testlib.testutil.NullStorageBroker.assert_upload_call_count">[docs]</a>    <span class="k">def</span> <span class="nf">assert_upload_call_count</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">count</span><span class="p">):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">upload_call_count</span> <span class="o">!=</span> <span class="n">count</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">AssertionError</span><span class="p">(</span><span class="s2">&quot;upload method call count: </span><span class="si">{call_count}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">call_count</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">upload_call_count</span><span class="p">))</span></div>
+
+<div class="viewcode-block" id="NullStorageBroker.assert_upload_called"><a class="viewcode-back" href="../../../aodncore.testlib.html#aodncore.testlib.testutil.NullStorageBroker.assert_upload_called">[docs]</a>    <span class="k">def</span> <span class="nf">assert_upload_called</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">upload_call_count</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">AssertionError</span><span class="p">(</span><span class="s2">&quot;upload method not called&quot;</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="NullStorageBroker.assert_upload_not_called"><a class="viewcode-back" href="../../../aodncore.testlib.html#aodncore.testlib.testutil.NullStorageBroker.assert_upload_not_called">[docs]</a>    <span class="k">def</span> <span class="nf">assert_upload_not_called</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assert_upload_call_count</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="NullStorageBroker.assert_delete_call_count"><a class="viewcode-back" href="../../../aodncore.testlib.html#aodncore.testlib.testutil.NullStorageBroker.assert_delete_call_count">[docs]</a>    <span class="k">def</span> <span class="nf">assert_delete_call_count</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">count</span><span class="p">):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">delete_call_count</span> <span class="o">!=</span> <span class="n">count</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">AssertionError</span><span class="p">(</span><span class="s2">&quot;delete method call count: </span><span class="si">{call_count}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">call_count</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">delete_call_count</span><span class="p">))</span></div>
+
+<div class="viewcode-block" id="NullStorageBroker.assert_delete_called"><a class="viewcode-back" href="../../../aodncore.testlib.html#aodncore.testlib.testutil.NullStorageBroker.assert_delete_called">[docs]</a>    <span class="k">def</span> <span class="nf">assert_delete_called</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">delete_call_count</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">AssertionError</span><span class="p">(</span><span class="s2">&quot;delete method not called&quot;</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="NullStorageBroker.assert_delete_not_called"><a class="viewcode-back" href="../../../aodncore.testlib.html#aodncore.testlib.testutil.NullStorageBroker.assert_delete_not_called">[docs]</a>    <span class="k">def</span> <span class="nf">assert_delete_not_called</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assert_delete_call_count</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="NullStorageBroker.assert_query_call_count"><a class="viewcode-back" href="../../../aodncore.testlib.html#aodncore.testlib.testutil.NullStorageBroker.assert_query_call_count">[docs]</a>    <span class="k">def</span> <span class="nf">assert_query_call_count</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">count</span><span class="p">):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">query_call_count</span> <span class="o">!=</span> <span class="n">count</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">AssertionError</span><span class="p">(</span><span class="s2">&quot;query method call count: </span><span class="si">{call_count}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">call_count</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">delete_call_count</span><span class="p">))</span></div>
+
+<div class="viewcode-block" id="NullStorageBroker.assert_query_called"><a class="viewcode-back" href="../../../aodncore.testlib.html#aodncore.testlib.testutil.NullStorageBroker.assert_query_called">[docs]</a>    <span class="k">def</span> <span class="nf">assert_query_called</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">query_call_count</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">AssertionError</span><span class="p">(</span><span class="s2">&quot;query method not called&quot;</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="NullStorageBroker.assert_query_not_called"><a class="viewcode-back" href="../../../aodncore.testlib.html#aodncore.testlib.testutil.NullStorageBroker.assert_query_not_called">[docs]</a>    <span class="k">def</span> <span class="nf">assert_query_not_called</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assert_query_call_count</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span></div></div>
 
 
 <div class="viewcode-block" id="dest_path_testing"><a class="viewcode-back" href="../../../aodncore.testlib.html#aodncore.testlib.testutil.dest_path_testing">[docs]</a><span class="k">def</span> <span class="nf">dest_path_testing</span><span class="p">(</span><span class="n">filename</span><span class="p">):</span>
