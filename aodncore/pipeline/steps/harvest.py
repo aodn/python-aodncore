@@ -12,7 +12,7 @@ import itertools
 import os
 import re
 from collections import OrderedDict
-from tempfile import mkstemp
+from tempfile import NamedTemporaryFile
 
 from .basestep import BaseStepRunner
 from ..exceptions import InvalidHarvesterError, UnmappedFilesError
@@ -148,12 +148,10 @@ class TriggerEvent(object):
 
 
 def create_input_file_list(talend_base_dir, matched_file_list):
-    _, input_file_list = mkstemp(prefix='file_list', suffix='.txt', dir=talend_base_dir)
-
-    with open(input_file_list, 'w') as f:
+    with NamedTemporaryFile(mode='w', prefix='file_list', suffix='.txt', dir=talend_base_dir, delete=False) as f:
         f.writelines("{line}{sep}".format(line=l, sep=os.linesep) for l in matched_file_list)
 
-    return input_file_list
+    return f.name
 
 
 def create_symlink(base_dir, src_path, dest_path):
