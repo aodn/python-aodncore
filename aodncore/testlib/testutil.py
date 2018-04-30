@@ -173,7 +173,9 @@ def make_zip(temp_dir, file_list):
     """Create a zip file in tmp_dir containing the files listed in file_list.
     Return the full path to the zip file.
     """
-    _, zip_file = tempfile.mkstemp(dir=temp_dir, suffix='.zip')
+    with tempfile.NamedTemporaryFile(dir=temp_dir, suffix='.zip') as f:
+        pass
+    zip_file = f.name
 
     with zipfile.ZipFile(zip_file, 'w', zipfile.ZIP_DEFLATED) as zf:
         for file_path in file_list:
