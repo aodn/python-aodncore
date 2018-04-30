@@ -29,7 +29,9 @@ class BaseTestCase(unittest.TestCase):
     @property
     def temp_nc_file(self):
         if not hasattr(self, '_temp_nc_file'):
-            _, self._temp_nc_file = tempfile.mkstemp(suffix='.nc', prefix=self.__class__.__name__, dir=self.temp_dir)
+            with tempfile.NamedTemporaryFile(suffix='.nc', prefix=self.__class__.__name__, dir=self.temp_dir) as f:
+                pass
+            self._temp_nc_file = f.name
             make_test_file(self._temp_nc_file)
         return self._temp_nc_file
 
