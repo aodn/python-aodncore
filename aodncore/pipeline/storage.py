@@ -250,7 +250,8 @@ class S3StorageBroker(BaseStorageBroker):
     def _run_query(self, query):
         full_query = os.path.join(self.prefix, query)
         raw_result = self.s3_client.list_objects_v2(Bucket=self.bucket, Prefix=full_query)
-        result = {k['Key']: {'last_modified': k['LastModified'], 'size': k['Size']} for k in raw_result['Contents']}
+        result = {k['Key']: {'last_modified': k['LastModified'], 'size': k['Size']}
+                  for k in raw_result.get('Contents', [])}
         return result
 
     @retry_decorator(**retry_kwargs)
