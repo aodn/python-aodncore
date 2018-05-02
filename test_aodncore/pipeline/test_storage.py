@@ -321,6 +321,21 @@ class TestLocalFileStorageBroker(BaseTestCase):
         self.assertTrue(all(isinstance(v['last_modified'], datetime.datetime) for k, v in result.items()))
         self.assertTrue(all(isinstance(v['size'], int) for k, v in result.items()))
 
+    def test_query_empty(self):
+        with TemporaryDirectory() as d:
+            subdir = os.path.join(d, 'subdir')
+            os.mkdir(subdir)
+            _, temp_file3 = tempfile.mkstemp(suffix='.txt', prefix='asdfgh', dir=subdir)
+
+            file_storage_broker = LocalFileStorageBroker(d)
+
+            try:
+                result = file_storage_broker.query('subdir/qwerty')
+            except Exception as e:
+                raise AssertionError("unexpected exception raised. {e}".format(e=format_exception(e)))
+
+        self.assertDictEqual(result, {})
+
     @mock.patch('aodncore.pipeline.storage.os.stat')
     def test_query_error(self, mock_stat):
         dummy_error = IOError()
@@ -550,6 +565,7 @@ class TestS3StorageBroker(BaseTestCase):
             result = s3_storage_broker.query('Department_of_Defence/DSTG/slocum_glider/Perth')
         except Exception as e:
             raise AssertionError("unexpected exception raised. {e}".format(e=format_exception(e)))
+
         self.assertDictEqual(result, {})
 
     @mock.patch('aodncore.pipeline.storage.boto3')
