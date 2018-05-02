@@ -8,11 +8,9 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>aodncore.pipeline.files &mdash; aodncore 0.9.0 documentation</title>
+  <title>aodncore.pipeline.files &mdash; aodncore 0.10.1 documentation</title>
   
 
-  
-  
   
   
 
@@ -25,19 +23,26 @@
   
 
   
+  
     <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
-  <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
-    <link rel="index" title="Index" href="../../../genindex.html" />
-    <link rel="search" title="Search" href="../../../search.html" /> 
+  
+
+  
+
+  
+        <link rel="index" title="Index"
+              href="../../../genindex.html"/>
+        <link rel="search" title="Search" href="../../../search.html"/>
+    <link rel="top" title="aodncore 0.10.1 documentation" href="../../../index.html"/>
+        <link rel="up" title="Module code" href="../../index.html"/> 
 
   
   <script src="../../../_static/js/modernizr.min.js"></script>
 
 </head>
 
-<body class="wy-body-for-nav">
+<body class="wy-body-for-nav" role="document">
 
-   
   <div class="wy-grid-for-nav">
 
     
@@ -57,7 +62,7 @@
             
             
               <div class="version">
-                0.9.0
+                0.10.1
               </div>
             
           
@@ -78,31 +83,16 @@
           
             
             
-              
-            
-            
-              <p class="caption"><span class="caption-text">User documentation:</span></p>
+                <p class="caption"><span class="caption-text">Quick Start:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../quickstartdoc.html">Query Storage</a></li>
+</ul>
+<p class="caption"><span class="caption-text">User documentation:</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../userdoc.html">Overview</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../userdoc.html#state-machine-handler-steps">State machine / handler steps</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="../../../userdoc.html#initialise">initialise</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../../userdoc.html#resolve">resolve</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../../userdoc.html#preprocess">preprocess</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../../userdoc.html#check">check</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../../userdoc.html#process">process</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../../userdoc.html#publish">publish</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../../userdoc.html#postprocess">postprocess</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../../userdoc.html#notify">notify</a></li>
-</ul>
-</li>
-<li class="toctree-l1"><a class="reference internal" href="../../../userdoc.html#customising-handler-behaviour">Customising handler behaviour</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="../../../userdoc.html#methods">Methods</a></li>
-</ul>
-</li>
-<li class="toctree-l1"><a class="reference internal" href="../../../userdoc.html#attributes">Attributes</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="../../../userdoc.html#class-parameters">Class parameters</a></li>
-</ul>
-</li>
+<li class="toctree-l1"><a class="reference internal" href="../../../userdoc.html#state-machine-handler-steps">State machine / handler steps</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../userdoc.html#customising-handler-behaviour">Customising handler behaviour</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../userdoc.html#attributes">Attributes</a></li>
 </ul>
 <p class="caption"><span class="caption-text">Developer documentation:</span></p>
 <ul>
@@ -110,23 +100,7 @@
 </ul>
 <p class="caption"><span class="caption-text">Module contents:</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../modules.html">aodncore</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="../../../aodncore.html">aodncore package</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="../../../aodncore.html#subpackages">Subpackages</a><ul>
-<li class="toctree-l4"><a class="reference internal" href="../../../aodncore.common.html">aodncore.common package</a></li>
-<li class="toctree-l4"><a class="reference internal" href="../../../aodncore.pipeline.html">aodncore.pipeline package</a></li>
-<li class="toctree-l4"><a class="reference internal" href="../../../aodncore.testlib.html">aodncore.testlib package</a></li>
-<li class="toctree-l4"><a class="reference internal" href="../../../aodncore.util.html">aodncore.util package</a></li>
-<li class="toctree-l4"><a class="reference internal" href="../../../aodncore.vocab.html">aodncore.vocab package</a></li>
-</ul>
-</li>
-<li class="toctree-l3"><a class="reference internal" href="../../../aodncore.html#submodules">Submodules</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../../../aodncore.html#module-aodncore.version">aodncore.version module</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../../../aodncore.html#module-aodncore">Module contents</a></li>
-</ul>
-</li>
-</ul>
-</li>
+<li class="toctree-l1"><a class="reference internal" href="../../../modules.html">aodncore</a></li>
 </ul>
 
             
@@ -138,60 +112,41 @@
     <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
 
       
-      <nav class="wy-nav-top" aria-label="top navigation">
-        
-          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
-          <a href="../../../index.html">aodncore</a>
-        
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+        <a href="../../../index.html">aodncore</a>
       </nav>
 
 
       
       <div class="wy-nav-content">
-        
         <div class="rst-content">
-        
           
 
 
 
 
 
-
-
-
-
-
-
-
-
-
-
 <div role="navigation" aria-label="breadcrumbs navigation">
-
   <ul class="wy-breadcrumbs">
-    
-      <li><a href="../../../index.html">Docs</a> &raquo;</li>
-        
+    <li><a href="../../../index.html">Docs</a> &raquo;</li>
+      
           <li><a href="../../index.html">Module code</a> &raquo;</li>
-        
-      <li>aodncore.pipeline.files</li>
-    
-    
+      
+    <li>aodncore.pipeline.files</li>
       <li class="wy-breadcrumbs-aside">
         
+          
+        
       </li>
-    
   </ul>
-
-  
   <hr/>
 </div>
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
   <h1>Source code for aodncore.pipeline.files</h1><div class="highlight"><pre>
-<span></span><span class="kn">import</span> <span class="nn">mimetypes</span>
+<span class="kn">import</span> <span class="nn">mimetypes</span>
 <span class="kn">import</span> <span class="nn">os</span>
 <span class="kn">import</span> <span class="nn">re</span>
 <span class="kn">from</span> <span class="nn">collections</span> <span class="k">import</span> <span class="n">Counter</span><span class="p">,</span> <span class="n">MutableSet</span><span class="p">,</span> <span class="n">OrderedDict</span>
@@ -230,7 +185,7 @@
 <span class="sd">    :param file_update_callback: optional callback to call when a file property is updated</span>
 <span class="sd">    :type file_update_callback: :py:class:`callable`</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="vm">__slots__</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;_file_checksum&#39;</span><span class="p">,</span> <span class="s1">&#39;_name&#39;</span><span class="p">,</span> <span class="s1">&#39;_src_path&#39;</span><span class="p">,</span> <span class="s1">&#39;_archive_path&#39;</span><span class="p">,</span> <span class="s1">&#39;_dest_path&#39;</span><span class="p">,</span> <span class="s1">&#39;_extension&#39;</span><span class="p">,</span> <span class="s1">&#39;file_type&#39;</span><span class="p">,</span>
+    <span class="n">__slots__</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;_file_checksum&#39;</span><span class="p">,</span> <span class="s1">&#39;_name&#39;</span><span class="p">,</span> <span class="s1">&#39;_src_path&#39;</span><span class="p">,</span> <span class="s1">&#39;_archive_path&#39;</span><span class="p">,</span> <span class="s1">&#39;_dest_path&#39;</span><span class="p">,</span> <span class="s1">&#39;_extension&#39;</span><span class="p">,</span> <span class="s1">&#39;file_type&#39;</span><span class="p">,</span>
                  <span class="s1">&#39;_file_update_callback&#39;</span><span class="p">,</span> <span class="s1">&#39;_check_type&#39;</span><span class="p">,</span> <span class="s1">&#39;_is_deletion&#39;</span><span class="p">,</span> <span class="s1">&#39;_publish_type&#39;</span><span class="p">,</span> <span class="s1">&#39;_should_archive&#39;</span><span class="p">,</span>
                  <span class="s1">&#39;_should_harvest&#39;</span><span class="p">,</span> <span class="s1">&#39;_should_store&#39;</span><span class="p">,</span> <span class="s1">&#39;_should_undo&#39;</span><span class="p">,</span> <span class="s1">&#39;_is_checked&#39;</span><span class="p">,</span> <span class="s1">&#39;_is_archived&#39;</span><span class="p">,</span> <span class="s1">&#39;_is_harvested&#39;</span><span class="p">,</span>
                  <span class="s1">&#39;_is_overwrite&#39;</span><span class="p">,</span> <span class="s1">&#39;_is_stored&#39;</span><span class="p">,</span> <span class="s1">&#39;_is_harvest_undone&#39;</span><span class="p">,</span> <span class="s2">&quot;_is_upload_undone&quot;</span><span class="p">,</span> <span class="s1">&#39;_check_result&#39;</span><span class="p">,</span>
@@ -242,7 +197,7 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">_file_checksum</span> <span class="o">=</span> <span class="kc">None</span> <span class="k">if</span> <span class="n">is_deletion</span> <span class="k">else</span> <span class="n">get_file_checksum</span><span class="p">(</span><span class="n">src_path</span><span class="p">)</span>
         <span class="k">except</span> <span class="p">(</span><span class="ne">IOError</span><span class="p">,</span> <span class="ne">OSError</span><span class="p">)</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
             <span class="k">raise</span> <span class="n">MissingFileError</span><span class="p">(</span>
-                <span class="s2">&quot;failed to create PipelineFile addition for &#39;</span><span class="si">{src_path}</span><span class="s2">&#39;. </span><span class="si">{e}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">src_path</span><span class="o">=</span><span class="n">src_path</span><span class="p">,</span>
+                <span class="s2">&quot;failed to create PipelineFile addition for &#39;{src_path}&#39;. {e}&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">src_path</span><span class="o">=</span><span class="n">src_path</span><span class="p">,</span>
                                                                                       <span class="n">e</span><span class="o">=</span><span class="n">format_exception</span><span class="p">(</span><span class="n">e</span><span class="p">)))</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">_name</span> <span class="o">=</span> <span class="n">name</span> <span class="k">if</span> <span class="n">name</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="k">else</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">basename</span><span class="p">(</span><span class="n">src_path</span><span class="p">)</span>
@@ -294,10 +249,10 @@
         <span class="k">return</span> <span class="n">iter_public_attributes</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>  <span class="c1"># pragma: no cover</span>
-        <span class="k">return</span> <span class="s2">&quot;</span><span class="si">{cls}</span><span class="s2">(</span><span class="si">{repr}</span><span class="s2">)&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">cls</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="p">,</span> <span class="nb">repr</span><span class="o">=</span><span class="nb">repr</span><span class="p">(</span><span class="nb">dict</span><span class="p">(</span><span class="bp">self</span><span class="p">)))</span>
+        <span class="k">return</span> <span class="s2">&quot;{cls}({repr})&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">cls</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">__class__</span><span class="o">.</span><span class="n">__name__</span><span class="p">,</span> <span class="nb">repr</span><span class="o">=</span><span class="nb">repr</span><span class="p">(</span><span class="nb">dict</span><span class="p">(</span><span class="bp">self</span><span class="p">)))</span>
 
     <span class="k">def</span> <span class="nf">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">return</span> <span class="s2">&quot;</span><span class="si">{cls}</span><span class="s2">(</span><span class="si">{str}</span><span class="s2">)&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">cls</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="p">,</span> <span class="nb">str</span><span class="o">=</span><span class="nb">dict</span><span class="p">(</span><span class="bp">self</span><span class="p">))</span>
+        <span class="k">return</span> <span class="s2">&quot;{cls}({str})&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">cls</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">__class__</span><span class="o">.</span><span class="n">__name__</span><span class="p">,</span> <span class="nb">str</span><span class="o">=</span><span class="nb">dict</span><span class="p">(</span><span class="bp">self</span><span class="p">))</span>
 
     <span class="c1">#</span>
     <span class="c1"># Static properties (read-only, should never change during the lifecycle of the object)</span>
@@ -593,7 +548,7 @@
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">file_update_callback</span><span class="p">:</span>
             <span class="n">log_output</span> <span class="o">=</span> <span class="n">properties</span> <span class="k">if</span> <span class="n">include_values</span> <span class="k">else</span> <span class="n">properties</span><span class="o">.</span><span class="n">keys</span><span class="p">()</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">file_update_callback</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">,</span>
-                                      <span class="n">message</span><span class="o">=</span><span class="s2">&quot;updated: </span><span class="si">{properties}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">properties</span><span class="o">=</span><span class="n">log_output</span><span class="p">))</span></div>
+                                      <span class="n">message</span><span class="o">=</span><span class="s2">&quot;updated: {properties}&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">properties</span><span class="o">=</span><span class="n">log_output</span><span class="p">))</span></div>
 
 
 <div class="viewcode-block" id="PipelineFileCollection"><a class="viewcode-back" href="../../../aodncore.pipeline.html#aodncore.pipeline.files.PipelineFileCollection">[docs]</a><span class="k">class</span> <span class="nc">PipelineFileCollection</span><span class="p">(</span><span class="n">MutableSet</span><span class="p">):</span>
@@ -605,12 +560,12 @@
 <span class="sd">        path, or an :py:class:`Iterable` whose elements are :py:class:`PipelineFile` instances or file paths</span>
 <span class="sd">    :type data: :py:class:`PipelineFile`, :py:class:`str`, :py:class:`Iterable`</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="vm">__slots__</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;__s&#39;</span><span class="p">]</span>
+    <span class="n">__slots__</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;__s&#39;</span><span class="p">]</span>
 
     <span class="n">unique_attributes</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;archive_path&#39;</span><span class="p">,</span> <span class="s1">&#39;dest_path&#39;</span><span class="p">}</span>
 
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-        <span class="nb">super</span><span class="p">(</span><span class="n">PipelineFileCollection</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">PipelineFileCollection</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">__init__</span><span class="p">()</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">__s</span> <span class="o">=</span> <span class="n">IndexedSet</span><span class="p">()</span>
 
@@ -641,7 +596,7 @@
         <span class="k">return</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">__s</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>  <span class="c1"># pragma: no cover</span>
-        <span class="k">return</span> <span class="s2">&quot;PipelineFileCollection(</span><span class="si">{repr}</span><span class="s2">)&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="nb">repr</span><span class="o">=</span><span class="nb">repr</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">__s</span><span class="p">)))</span>
+        <span class="k">return</span> <span class="s2">&quot;PipelineFileCollection({repr})&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="nb">repr</span><span class="o">=</span><span class="nb">repr</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">__s</span><span class="p">)))</span>
 
 <div class="viewcode-block" id="PipelineFileCollection.add"><a class="viewcode-back" href="../../../aodncore.pipeline.html#aodncore.pipeline.files.PipelineFileCollection.add">[docs]</a>    <span class="k">def</span> <span class="nf">add</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pipeline_file</span><span class="p">,</span> <span class="n">deletion</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">overwrite</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Add a file to the collection</span>
@@ -659,12 +614,12 @@
             <span class="n">fileobj</span> <span class="o">=</span> <span class="n">pipeline_file</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="k">if</span> <span class="ow">not</span> <span class="n">deletion</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isfile</span><span class="p">(</span><span class="n">pipeline_file</span><span class="p">):</span>
-                <span class="k">raise</span> <span class="n">MissingFileError</span><span class="p">(</span><span class="s2">&quot;file &#39;</span><span class="si">{src}</span><span class="s2">&#39; doesn&#39;t exist&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">src</span><span class="o">=</span><span class="n">pipeline_file</span><span class="p">))</span>
+                <span class="k">raise</span> <span class="n">MissingFileError</span><span class="p">(</span><span class="s2">&quot;file &#39;{src}&#39; doesn&#39;t exist&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">src</span><span class="o">=</span><span class="n">pipeline_file</span><span class="p">))</span>
             <span class="n">fileobj</span> <span class="o">=</span> <span class="n">PipelineFile</span><span class="p">(</span><span class="n">pipeline_file</span><span class="p">,</span> <span class="n">is_deletion</span><span class="o">=</span><span class="n">deletion</span><span class="p">)</span>
 
         <span class="n">result</span> <span class="o">=</span> <span class="n">fileobj</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">__s</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="n">result</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">overwrite</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="n">DuplicatePipelineFileError</span><span class="p">(</span><span class="s2">&quot;</span><span class="si">{f.name}</span><span class="s2"> already in collection&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">f</span><span class="o">=</span><span class="n">fileobj</span><span class="p">))</span>
+            <span class="k">raise</span> <span class="n">DuplicatePipelineFileError</span><span class="p">(</span><span class="s2">&quot;{f.name} already in collection&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">f</span><span class="o">=</span><span class="n">fileobj</span><span class="p">))</span>
 
         <span class="k">if</span> <span class="n">overwrite</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">__s</span><span class="o">.</span><span class="n">discard</span><span class="p">(</span><span class="n">fileobj</span><span class="p">)</span>
@@ -985,7 +940,7 @@
         <span class="n">duplicates</span> <span class="o">=</span> <span class="p">[</span><span class="n">f</span> <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">__s</span> <span class="k">if</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">f</span><span class="p">,</span> <span class="n">attribute</span><span class="p">)</span> <span class="o">==</span> <span class="n">value</span><span class="p">]</span>
         <span class="k">if</span> <span class="n">duplicates</span><span class="p">:</span>
             <span class="k">raise</span> <span class="n">DuplicateUniqueAttributeError</span><span class="p">(</span>
-                <span class="s2">&quot;</span><span class="si">{attribute}</span><span class="s2"> value &#39;</span><span class="si">{value}</span><span class="s2">&#39; already set for file(s) &#39;</span><span class="si">{duplicates}</span><span class="s2">&#39;&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">attribute</span><span class="o">=</span><span class="n">attribute</span><span class="p">,</span>
+                <span class="s2">&quot;{attribute} value &#39;{value}&#39; already set for file(s) &#39;{duplicates}&#39;&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">attribute</span><span class="o">=</span><span class="n">attribute</span><span class="p">,</span>
                                                                                             <span class="n">value</span><span class="o">=</span><span class="n">value</span><span class="p">,</span>
                                                                                             <span class="n">duplicates</span><span class="o">=</span><span class="n">duplicates</span><span class="p">))</span></div>
 
@@ -1006,7 +961,7 @@
             <span class="k">for</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">duplicate_values</span><span class="p">:</span>
                 <span class="n">duplicates</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">f</span> <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">__s</span> <span class="k">if</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">f</span><span class="p">,</span> <span class="n">attribute</span><span class="p">)</span> <span class="o">==</span> <span class="n">value</span><span class="p">)</span>
             <span class="k">raise</span> <span class="n">DuplicateUniqueAttributeError</span><span class="p">(</span>
-                <span class="s2">&quot;duplicate paths found for files &#39;</span><span class="si">{duplicates}</span><span class="s2">&#39;&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">duplicates</span><span class="o">=</span><span class="n">duplicates</span><span class="p">))</span></div></div>
+                <span class="s2">&quot;duplicate paths found for files &#39;{duplicates}&#39;&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">duplicates</span><span class="o">=</span><span class="n">duplicates</span><span class="p">))</span></div></div>
 
 
 <span class="n">validate_pipelinefilecollection</span> <span class="o">=</span> <span class="n">validate_type</span><span class="p">(</span><span class="n">PipelineFileCollection</span><span class="p">)</span>
@@ -1014,7 +969,6 @@
 </pre></div>
 
            </div>
-           
           </div>
           <footer>
   
@@ -1027,7 +981,7 @@
 
     </p>
   </div>
-  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
 
 </footer>
 
@@ -1045,12 +999,10 @@
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'../../../',
-            VERSION:'0.9.0',
-            LANGUAGE:'None',
+            VERSION:'0.10.1',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
-            HAS_SOURCE:  true,
-            SOURCELINK_SUFFIX: '.txt'
+            HAS_SOURCE:  true
         };
     </script>
       <script type="text/javascript" src="../../../_static/jquery.js"></script>
@@ -1064,13 +1016,14 @@
     <script type="text/javascript" src="../../../_static/js/theme.js"></script>
   
 
+  
+  
   <script type="text/javascript">
       jQuery(function () {
-          
-          SphinxRtdTheme.Navigation.enableSticky();
-          
+          SphinxRtdTheme.StickyNav.enable();
       });
-  </script> 
+  </script>
+   
 
 </body>
 </html>

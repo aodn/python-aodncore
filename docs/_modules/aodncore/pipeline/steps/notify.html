@@ -8,11 +8,9 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>aodncore.pipeline.steps.notify &mdash; aodncore 0.9.0 documentation</title>
+  <title>aodncore.pipeline.steps.notify &mdash; aodncore 0.10.1 documentation</title>
   
 
-  
-  
   
   
 
@@ -25,19 +23,26 @@
   
 
   
+  
     <link rel="stylesheet" href="../../../../_static/css/theme.css" type="text/css" />
-  <link rel="stylesheet" href="../../../../_static/pygments.css" type="text/css" />
-    <link rel="index" title="Index" href="../../../../genindex.html" />
-    <link rel="search" title="Search" href="../../../../search.html" /> 
+  
+
+  
+
+  
+        <link rel="index" title="Index"
+              href="../../../../genindex.html"/>
+        <link rel="search" title="Search" href="../../../../search.html"/>
+    <link rel="top" title="aodncore 0.10.1 documentation" href="../../../../index.html"/>
+        <link rel="up" title="Module code" href="../../../index.html"/> 
 
   
   <script src="../../../../_static/js/modernizr.min.js"></script>
 
 </head>
 
-<body class="wy-body-for-nav">
+<body class="wy-body-for-nav" role="document">
 
-   
   <div class="wy-grid-for-nav">
 
     
@@ -57,7 +62,7 @@
             
             
               <div class="version">
-                0.9.0
+                0.10.1
               </div>
             
           
@@ -78,31 +83,16 @@
           
             
             
-              
-            
-            
-              <p class="caption"><span class="caption-text">User documentation:</span></p>
+                <p class="caption"><span class="caption-text">Quick Start:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../quickstartdoc.html">Query Storage</a></li>
+</ul>
+<p class="caption"><span class="caption-text">User documentation:</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../../userdoc.html">Overview</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../userdoc.html#state-machine-handler-steps">State machine / handler steps</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="../../../../userdoc.html#initialise">initialise</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../../../userdoc.html#resolve">resolve</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../../../userdoc.html#preprocess">preprocess</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../../../userdoc.html#check">check</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../../../userdoc.html#process">process</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../../../userdoc.html#publish">publish</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../../../userdoc.html#postprocess">postprocess</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../../../userdoc.html#notify">notify</a></li>
-</ul>
-</li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../userdoc.html#customising-handler-behaviour">Customising handler behaviour</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="../../../../userdoc.html#methods">Methods</a></li>
-</ul>
-</li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../userdoc.html#attributes">Attributes</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="../../../../userdoc.html#class-parameters">Class parameters</a></li>
-</ul>
-</li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../userdoc.html#state-machine-handler-steps">State machine / handler steps</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../userdoc.html#customising-handler-behaviour">Customising handler behaviour</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../userdoc.html#attributes">Attributes</a></li>
 </ul>
 <p class="caption"><span class="caption-text">Developer documentation:</span></p>
 <ul>
@@ -110,23 +100,7 @@
 </ul>
 <p class="caption"><span class="caption-text">Module contents:</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../../modules.html">aodncore</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="../../../../aodncore.html">aodncore package</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="../../../../aodncore.html#subpackages">Subpackages</a><ul>
-<li class="toctree-l4"><a class="reference internal" href="../../../../aodncore.common.html">aodncore.common package</a></li>
-<li class="toctree-l4"><a class="reference internal" href="../../../../aodncore.pipeline.html">aodncore.pipeline package</a></li>
-<li class="toctree-l4"><a class="reference internal" href="../../../../aodncore.testlib.html">aodncore.testlib package</a></li>
-<li class="toctree-l4"><a class="reference internal" href="../../../../aodncore.util.html">aodncore.util package</a></li>
-<li class="toctree-l4"><a class="reference internal" href="../../../../aodncore.vocab.html">aodncore.vocab package</a></li>
-</ul>
-</li>
-<li class="toctree-l3"><a class="reference internal" href="../../../../aodncore.html#submodules">Submodules</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../../../../aodncore.html#module-aodncore.version">aodncore.version module</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../../../../aodncore.html#module-aodncore">Module contents</a></li>
-</ul>
-</li>
-</ul>
-</li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../modules.html">aodncore</a></li>
 </ul>
 
             
@@ -138,60 +112,41 @@
     <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
 
       
-      <nav class="wy-nav-top" aria-label="top navigation">
-        
-          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
-          <a href="../../../../index.html">aodncore</a>
-        
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+        <a href="../../../../index.html">aodncore</a>
       </nav>
 
 
       
       <div class="wy-nav-content">
-        
         <div class="rst-content">
-        
           
 
 
 
 
 
-
-
-
-
-
-
-
-
-
-
 <div role="navigation" aria-label="breadcrumbs navigation">
-
   <ul class="wy-breadcrumbs">
-    
-      <li><a href="../../../../index.html">Docs</a> &raquo;</li>
-        
+    <li><a href="../../../../index.html">Docs</a> &raquo;</li>
+      
           <li><a href="../../../index.html">Module code</a> &raquo;</li>
-        
-      <li>aodncore.pipeline.steps.notify</li>
-    
-    
+      
+    <li>aodncore.pipeline.steps.notify</li>
       <li class="wy-breadcrumbs-aside">
         
+          
+        
       </li>
-    
   </ul>
-
-  
   <hr/>
 </div>
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
   <h1>Source code for aodncore.pipeline.steps.notify</h1><div class="highlight"><pre>
-<span></span><span class="sd">&quot;&quot;&quot;This module provides the step runner classes for the :ref:`notify` step.</span>
+<span class="sd">&quot;&quot;&quot;This module provides the step runner classes for the :ref:`notify` step.</span>
 
 <span class="sd">Notification is performed by a :py:class:`BaseNotifyRunner` class, which interacts with an endpoint representing a</span>
 <span class="sd">notification protocol, in order to send a report detailing the status of the files processed by a handler class.</span>
@@ -269,7 +224,7 @@
     <span class="n">__metaclass__</span> <span class="o">=</span> <span class="n">abc</span><span class="o">.</span><span class="n">ABCMeta</span>
 
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">notification_data</span><span class="p">,</span> <span class="n">config</span><span class="p">,</span> <span class="n">logger</span><span class="p">):</span>
-        <span class="nb">super</span><span class="p">(</span><span class="n">BaseNotifyRunner</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">config</span><span class="p">,</span> <span class="n">logger</span><span class="p">)</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">BaseNotifyRunner</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">__init__</span><span class="p">(</span><span class="n">config</span><span class="p">,</span> <span class="n">logger</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">notification_data</span> <span class="o">=</span> <span class="n">notification_data</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">error</span> <span class="o">=</span> <span class="kc">None</span>
@@ -306,7 +261,7 @@
     <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">_get_html_input_file_table</span><span class="p">(</span><span class="n">table_data</span><span class="p">):</span>
         <span class="n">html_lines</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;&lt;table&gt;&lt;tbody&gt;&quot;</span><span class="p">]</span>
-        <span class="n">row_template</span> <span class="o">=</span> <span class="s1">&#39;&lt;tr&gt;&lt;th style=&quot;text-align: left;&quot;&gt;</span><span class="si">{k}</span><span class="s1">&lt;/th&gt;&lt;td style=&quot;text-align: left;&quot;&gt;</span><span class="si">{v}</span><span class="s1">&lt;/td&gt;&lt;/tr&gt;&#39;</span>
+        <span class="n">row_template</span> <span class="o">=</span> <span class="s1">&#39;&lt;tr&gt;&lt;th style=&quot;text-align: left;&quot;&gt;{k}&lt;/th&gt;&lt;td style=&quot;text-align: left;&quot;&gt;{v}&lt;/td&gt;&lt;/tr&gt;&#39;</span>
         <span class="n">rows</span> <span class="o">=</span> <span class="p">[</span><span class="n">row_template</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">k</span><span class="o">=</span><span class="n">k</span><span class="p">,</span> <span class="n">v</span><span class="o">=</span><span class="n">v</span><span class="p">)</span> <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">table_data</span><span class="o">.</span><span class="n">items</span><span class="p">()]</span>
         <span class="n">html_lines</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">rows</span><span class="p">)</span>
         <span class="n">html_lines</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;&lt;/tbody&gt;&lt;/table&gt;&quot;</span><span class="p">)</span>
@@ -316,7 +271,7 @@
     <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">_get_text_input_file_table</span><span class="p">(</span><span class="n">table_data</span><span class="p">):</span>
         <span class="n">text_lines</span> <span class="o">=</span> <span class="p">[]</span>
-        <span class="n">row_template</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="si">{k}</span><span class="s1">: </span><span class="si">{v}</span><span class="s1">&#39;</span>
+        <span class="n">row_template</span> <span class="o">=</span> <span class="s1">&#39;{k}: {v}&#39;</span>
         <span class="n">rows</span> <span class="o">=</span> <span class="p">[</span><span class="n">row_template</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">k</span><span class="o">=</span><span class="n">k</span><span class="p">,</span> <span class="n">v</span><span class="o">=</span><span class="n">v</span><span class="p">)</span> <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">table_data</span><span class="o">.</span><span class="n">items</span><span class="p">()]</span>
         <span class="n">text_lines</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">rows</span><span class="p">)</span>
         <span class="n">text</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">linesep</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">text_lines</span><span class="p">)</span>
@@ -392,7 +347,7 @@
 
 <div class="viewcode-block" id="NotifyRunnerAdapter"><a class="viewcode-back" href="../../../../aodncore.pipeline.steps.html#aodncore.pipeline.steps.notify.NotifyRunnerAdapter">[docs]</a><span class="k">class</span> <span class="nc">NotifyRunnerAdapter</span><span class="p">(</span><span class="n">BaseNotifyRunner</span><span class="p">):</span>
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">notification_data</span><span class="p">,</span> <span class="n">config</span><span class="p">,</span> <span class="n">logger</span><span class="p">,</span> <span class="n">notify_params</span><span class="p">):</span>
-        <span class="nb">super</span><span class="p">(</span><span class="n">NotifyRunnerAdapter</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">notification_data</span><span class="p">,</span> <span class="n">config</span><span class="p">,</span> <span class="n">logger</span><span class="p">)</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">NotifyRunnerAdapter</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">__init__</span><span class="p">(</span><span class="n">notification_data</span><span class="p">,</span> <span class="n">config</span><span class="p">,</span> <span class="n">logger</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">notification_data</span> <span class="o">=</span> <span class="n">notification_data</span>
 
         <span class="k">if</span> <span class="n">notify_params</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
@@ -405,7 +360,7 @@
         <span class="n">invalid_recipients</span> <span class="o">=</span> <span class="n">notify_list_object</span><span class="o">.</span><span class="n">filter_by_notify_type</span><span class="p">(</span><span class="n">NotificationRecipientType</span><span class="o">.</span><span class="n">INVALID</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">invalid_recipients</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span>
-                <span class="s2">&quot;notifications unable to be sent to invalid recipients: </span><span class="si">{invalid}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                <span class="s2">&quot;notifications unable to be sent to invalid recipients: {invalid}&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
                     <span class="n">invalid</span><span class="o">=</span><span class="nb">list</span><span class="p">((</span><span class="n">r</span><span class="o">.</span><span class="n">raw_string</span><span class="p">,</span> <span class="n">r</span><span class="o">.</span><span class="n">error</span><span class="p">)</span> <span class="k">for</span> <span class="n">r</span> <span class="ow">in</span> <span class="n">invalid_recipients</span><span class="p">)))</span>
             <span class="n">invalid_recipients</span><span class="o">.</span><span class="n">set_notification_attempted</span><span class="p">()</span>
 
@@ -416,17 +371,17 @@
             <span class="n">type_notify_list</span> <span class="o">=</span> <span class="n">notify_list_object</span><span class="o">.</span><span class="n">filter_by_notify_type</span><span class="p">(</span><span class="n">notify_type</span><span class="p">)</span>
             <span class="n">notify_runner</span> <span class="o">=</span> <span class="n">get_child_notify_runner</span><span class="p">(</span><span class="n">notify_type</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">notification_data</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_config</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_logger</span><span class="p">)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_logger</span><span class="o">.</span><span class="n">sysinfo</span><span class="p">(</span>
-                <span class="s2">&quot;get_child_notify_runner -&gt; &#39;</span><span class="si">{runner}</span><span class="s2">&#39;&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">runner</span><span class="o">=</span><span class="n">notify_runner</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="p">))</span>
+                <span class="s2">&quot;get_child_notify_runner -&gt; &#39;{runner}&#39;&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">runner</span><span class="o">=</span><span class="n">notify_runner</span><span class="o">.</span><span class="n">__class__</span><span class="o">.</span><span class="n">__name__</span><span class="p">))</span>
             <span class="n">notify_runner</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">type_notify_list</span><span class="p">)</span>
 
         <span class="n">failed_notifications</span> <span class="o">=</span> <span class="n">notify_list_object</span><span class="o">.</span><span class="n">filter_by_failed</span><span class="p">()</span>
         <span class="k">if</span> <span class="n">failed_notifications</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span>
-                <span class="s2">&quot;notifications failed to the following recipients: </span><span class="si">{failed}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                <span class="s2">&quot;notifications failed to the following recipients: {failed}&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
                     <span class="n">failed</span><span class="o">=</span><span class="nb">list</span><span class="p">((</span><span class="n">r</span><span class="o">.</span><span class="n">raw_string</span><span class="p">,</span> <span class="n">r</span><span class="o">.</span><span class="n">error</span><span class="p">)</span> <span class="k">for</span> <span class="n">r</span> <span class="ow">in</span> <span class="n">failed_notifications</span><span class="p">)))</span>
             <span class="n">succeeded_notifications</span> <span class="o">=</span> <span class="n">notify_list_object</span><span class="o">.</span><span class="n">filter_by_succeeded</span><span class="p">()</span>
             <span class="k">if</span> <span class="n">succeeded_notifications</span><span class="p">:</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">_logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;notifications succeeded to the following recipients: </span><span class="si">{succeeded}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;notifications succeeded to the following recipients: {succeeded}&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
                     <span class="n">succeeded</span><span class="o">=</span><span class="nb">list</span><span class="p">(</span><span class="n">r</span><span class="o">.</span><span class="n">raw_string</span> <span class="k">for</span> <span class="n">r</span> <span class="ow">in</span> <span class="n">succeeded_notifications</span><span class="p">)))</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;all notification attempts were successful&#39;</span><span class="p">)</span>
@@ -463,7 +418,7 @@
             <span class="k">with</span> <span class="n">SpooledTemporaryFile</span><span class="p">(</span><span class="n">prefix</span><span class="o">=</span><span class="s1">&#39;error_logs&#39;</span><span class="p">,</span> <span class="n">suffix</span><span class="o">=</span><span class="s1">&#39;.zip&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">attachment_file</span><span class="p">:</span>
                 <span class="k">with</span> <span class="n">ZipFile</span><span class="p">(</span><span class="n">attachment_file</span><span class="p">,</span> <span class="s1">&#39;w&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">z</span><span class="p">:</span>
                     <span class="k">for</span> <span class="n">failed_file</span> <span class="ow">in</span> <span class="n">failed_files</span><span class="p">:</span>
-                        <span class="n">path</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="si">{failed_file[name]}</span><span class="s2">.log.txt&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">failed_file</span><span class="o">=</span><span class="n">failed_file</span><span class="p">)</span>
+                        <span class="n">path</span> <span class="o">=</span> <span class="s2">&quot;{failed_file[name]}.log.txt&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">failed_file</span><span class="o">=</span><span class="n">failed_file</span><span class="p">)</span>
                         <span class="n">content</span> <span class="o">=</span> <span class="n">failed_file</span><span class="p">[</span><span class="s1">&#39;check_log&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="s1">&#39;utf-8&#39;</span><span class="p">)</span>
                         <span class="n">z</span><span class="o">.</span><span class="n">writestr</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="n">content</span><span class="p">)</span>
 
@@ -494,7 +449,7 @@
             <span class="k">except</span> <span class="n">smtplib</span><span class="o">.</span><span class="n">SMTPServerDisconnected</span><span class="p">:</span>
                 <span class="k">pass</span>
             <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">_logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s2">&quot;exception thrown when closing SMTP. </span><span class="si">{e}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">e</span><span class="o">=</span><span class="n">format_exception</span><span class="p">(</span><span class="n">e</span><span class="p">)))</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s2">&quot;exception thrown when closing SMTP. {e}&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">e</span><span class="o">=</span><span class="n">format_exception</span><span class="p">(</span><span class="n">e</span><span class="p">)))</span>
 
         <span class="k">return</span> <span class="n">sendmail_result</span>
 
@@ -510,7 +465,7 @@
         <span class="n">validate_notifylist</span><span class="p">(</span><span class="n">notify_list</span><span class="p">)</span>
 
         <span class="n">recipient_addresses</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_recipient_addresses</span><span class="p">(</span><span class="n">notify_list</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;email recipients: </span><span class="si">{recipients}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">recipients</span><span class="o">=</span><span class="n">recipient_addresses</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;email recipients: {recipients}&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">recipients</span><span class="o">=</span><span class="n">recipient_addresses</span><span class="p">))</span>
 
         <span class="n">subject</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_config</span><span class="o">.</span><span class="n">pipeline_config</span><span class="p">[</span><span class="s1">&#39;mail&#39;</span><span class="p">][</span><span class="s1">&#39;subject&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="o">**</span><span class="bp">self</span><span class="o">.</span><span class="n">template_values</span><span class="p">)</span>
         <span class="n">from_address</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_config</span><span class="o">.</span><span class="n">pipeline_config</span><span class="p">[</span><span class="s1">&#39;mail&#39;</span><span class="p">][</span><span class="s1">&#39;from&#39;</span><span class="p">]</span>
@@ -548,14 +503,14 @@
         <span class="n">validate_notifylist</span><span class="p">(</span><span class="n">notify_list</span><span class="p">)</span>
 
         <span class="n">recipients</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">r</span><span class="o">.</span><span class="n">raw_string</span> <span class="k">for</span> <span class="n">r</span> <span class="ow">in</span> <span class="n">notify_list</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s2">&quot;recipients unable to be notified: </span><span class="si">{recipients}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">recipients</span><span class="o">=</span><span class="n">recipients</span><span class="p">))</span></div></div>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s2">&quot;recipients unable to be notified: {recipients}&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">recipients</span><span class="o">=</span><span class="n">recipients</span><span class="p">))</span></div></div>
 
 
 <div class="viewcode-block" id="NotifyList"><a class="viewcode-back" href="../../../../aodncore.pipeline.steps.html#aodncore.pipeline.steps.notify.NotifyList">[docs]</a><span class="k">class</span> <span class="nc">NotifyList</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
-    <span class="vm">__slots__</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;__s&#39;</span><span class="p">]</span>
+    <span class="n">__slots__</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;__s&#39;</span><span class="p">]</span>
 
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-        <span class="nb">super</span><span class="p">(</span><span class="n">NotifyList</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">NotifyList</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">__init__</span><span class="p">()</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">__s</span> <span class="o">=</span> <span class="n">IndexedSet</span><span class="p">()</span>
 
@@ -576,7 +531,7 @@
         <span class="k">return</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">__s</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>  <span class="c1"># pragma: no cover</span>
-        <span class="k">return</span> <span class="s2">&quot;NotifyList(</span><span class="si">{repr}</span><span class="s2">)&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="nb">repr</span><span class="o">=</span><span class="nb">repr</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">__s</span><span class="p">)))</span>
+        <span class="k">return</span> <span class="s2">&quot;NotifyList({repr})&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="nb">repr</span><span class="o">=</span><span class="nb">repr</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">__s</span><span class="p">)))</span>
 
 <div class="viewcode-block" id="NotifyList.add"><a class="viewcode-back" href="../../../../aodncore.pipeline.steps.html#aodncore.pipeline.steps.notify.NotifyList.add">[docs]</a>    <span class="k">def</span> <span class="nf">add</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">recipient</span><span class="p">):</span>
         <span class="n">validate_notificationrecipient</span><span class="p">(</span><span class="n">recipient</span><span class="p">)</span>
@@ -633,8 +588,8 @@
         <span class="k">return</span> <span class="n">collection</span></div>
 
 <div class="viewcode-block" id="NotifyList.from_collection"><a class="viewcode-back" href="../../../../aodncore.pipeline.steps.html#aodncore.pipeline.steps.notify.NotifyList.from_collection">[docs]</a>    <span class="nd">@classmethod</span>
-    <span class="k">def</span> <span class="nf">from_collection</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">recipient_collection</span><span class="p">):</span>
-        <span class="k">return</span> <span class="bp">cls</span><span class="p">(</span><span class="n">NotificationRecipient</span><span class="o">.</span><span class="n">from_string</span><span class="p">(</span><span class="n">r</span><span class="p">)</span> <span class="k">for</span> <span class="n">r</span> <span class="ow">in</span> <span class="n">recipient_collection</span><span class="p">)</span></div>
+    <span class="k">def</span> <span class="nf">from_collection</span><span class="p">(</span><span class="n">cls</span><span class="p">,</span> <span class="n">recipient_collection</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">cls</span><span class="p">(</span><span class="n">NotificationRecipient</span><span class="o">.</span><span class="n">from_string</span><span class="p">(</span><span class="n">r</span><span class="p">)</span> <span class="k">for</span> <span class="n">r</span> <span class="ow">in</span> <span class="n">recipient_collection</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="NotifyList.set_notification_attempted"><a class="viewcode-back" href="../../../../aodncore.pipeline.steps.html#aodncore.pipeline.steps.notify.NotifyList.set_notification_attempted">[docs]</a>    <span class="k">def</span> <span class="nf">set_notification_attempted</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">for</span> <span class="n">recipient</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">__s</span><span class="p">:</span>
@@ -661,7 +616,7 @@
         <span class="k">for</span> <span class="n">recipient</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">__s</span><span class="p">:</span>
             <span class="n">error_log</span> <span class="o">=</span> <span class="n">error_dict</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">recipient</span><span class="o">.</span><span class="n">address</span><span class="p">)</span>
             <span class="k">if</span> <span class="n">error_log</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-                <span class="n">recipient</span><span class="o">.</span><span class="n">error</span> <span class="o">=</span> <span class="n">NotificationFailedError</span><span class="p">(</span><span class="s2">&quot;</span><span class="si">{0}</span><span class="s2">: </span><span class="si">{1}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="o">*</span><span class="n">error_log</span><span class="p">))</span>
+                <span class="n">recipient</span><span class="o">.</span><span class="n">error</span> <span class="o">=</span> <span class="n">NotificationFailedError</span><span class="p">(</span><span class="s2">&quot;{0}: {1}&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="o">*</span><span class="n">error_log</span><span class="p">))</span>
             <span class="k">else</span><span class="p">:</span>
                 <span class="n">recipient</span><span class="o">.</span><span class="n">notification_succeeded</span> <span class="o">=</span> <span class="kc">True</span></div></div>
 
@@ -678,7 +633,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">_notification_succeeded</span> <span class="o">=</span> <span class="kc">False</span>
 
     <span class="k">def</span> <span class="nf">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>  <span class="c1"># pragma: no cover</span>
-        <span class="k">return</span> <span class="s2">&quot;NotificationRecipient(</span><span class="si">{str}</span><span class="s2">)&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="nb">str</span><span class="o">=</span><span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="vm">__dict__</span><span class="p">))</span>
+        <span class="k">return</span> <span class="s2">&quot;NotificationRecipient({str})&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="nb">str</span><span class="o">=</span><span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">__dict__</span><span class="p">))</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">address</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
@@ -716,7 +671,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">_notification_succeeded</span> <span class="o">=</span> <span class="n">notification_succeeded</span>
 
 <div class="viewcode-block" id="NotificationRecipient.from_string"><a class="viewcode-back" href="../../../../aodncore.pipeline.steps.html#aodncore.pipeline.steps.notify.NotificationRecipient.from_string">[docs]</a>    <span class="nd">@classmethod</span>
-    <span class="k">def</span> <span class="nf">from_string</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">recipient_string</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">from_string</span><span class="p">(</span><span class="n">cls</span><span class="p">,</span> <span class="n">recipient_string</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;From a given &#39;recipient string&#39;, expected to be in the format of &#39;protocol:address&#39;, return a new</span>
 <span class="sd">        :py:class:`NotificationRecipient` object with attributes set according to the content/validity of the input</span>
 <span class="sd">        string</span>
@@ -739,7 +694,7 @@
                 <span class="n">error</span> <span class="o">=</span> <span class="n">InvalidRecipientError</span><span class="p">(</span><span class="n">recipient_type</span><span class="o">.</span><span class="n">error_string</span><span class="p">)</span>
                 <span class="n">recipient_type</span> <span class="o">=</span> <span class="n">NotificationRecipientType</span><span class="o">.</span><span class="n">INVALID</span>
 
-        <span class="k">return</span> <span class="bp">cls</span><span class="p">(</span><span class="n">address</span><span class="p">,</span> <span class="n">recipient_type</span><span class="p">,</span> <span class="n">recipient_string</span><span class="p">,</span> <span class="n">error</span><span class="p">)</span></div></div>
+        <span class="k">return</span> <span class="n">cls</span><span class="p">(</span><span class="n">address</span><span class="p">,</span> <span class="n">recipient_type</span><span class="p">,</span> <span class="n">recipient_string</span><span class="p">,</span> <span class="n">error</span><span class="p">)</span></div></div>
 
 
 <span class="n">validate_notifylist</span> <span class="o">=</span> <span class="n">validate_type</span><span class="p">(</span><span class="n">NotifyList</span><span class="p">)</span>
@@ -747,7 +702,6 @@
 </pre></div>
 
            </div>
-           
           </div>
           <footer>
   
@@ -760,7 +714,7 @@
 
     </p>
   </div>
-  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
 
 </footer>
 
@@ -778,12 +732,10 @@
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'../../../../',
-            VERSION:'0.9.0',
-            LANGUAGE:'None',
+            VERSION:'0.10.1',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
-            HAS_SOURCE:  true,
-            SOURCELINK_SUFFIX: '.txt'
+            HAS_SOURCE:  true
         };
     </script>
       <script type="text/javascript" src="../../../../_static/jquery.js"></script>
@@ -797,13 +749,14 @@
     <script type="text/javascript" src="../../../../_static/js/theme.js"></script>
   
 
+  
+  
   <script type="text/javascript">
       jQuery(function () {
-          
-          SphinxRtdTheme.Navigation.enableSticky();
-          
+          SphinxRtdTheme.StickyNav.enable();
       });
-  </script> 
+  </script>
+   
 
 </body>
 </html>

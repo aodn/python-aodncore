@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Overview &mdash; aodncore 0.10.1 documentation</title>
+  <title>Query Storage &mdash; aodncore 0.10.1 documentation</title>
   
 
   
@@ -34,8 +34,8 @@
               href="genindex.html"/>
         <link rel="search" title="Search" href="search.html"/>
     <link rel="top" title="aodncore 0.10.1 documentation" href="index.html"/>
-        <link rel="next" title="aodncore" href="modules.html"/>
-        <link rel="prev" title="Overview" href="userdoc.html"/> 
+        <link rel="next" title="Overview" href="userdoc.html"/>
+        <link rel="prev" title="Welcome to aodncore’s documentation!" href="index.html"/> 
 
   
   <script src="_static/js/modernizr.min.js"></script>
@@ -85,8 +85,8 @@
             
             
                 <p class="caption"><span class="caption-text">Quick Start:</span></p>
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="quickstartdoc.html">Query Storage</a></li>
+<ul class="current">
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Query Storage</a></li>
 </ul>
 <p class="caption"><span class="caption-text">User documentation:</span></p>
 <ul>
@@ -96,8 +96,8 @@
 <li class="toctree-l1"><a class="reference internal" href="userdoc.html#attributes">Attributes</a></li>
 </ul>
 <p class="caption"><span class="caption-text">Developer documentation:</span></p>
-<ul class="current">
-<li class="toctree-l1 current"><a class="current reference internal" href="#">Overview</a></li>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="developerdoc.html">Overview</a></li>
 </ul>
 <p class="caption"><span class="caption-text">Module contents:</span></p>
 <ul>
@@ -132,11 +132,11 @@
   <ul class="wy-breadcrumbs">
     <li><a href="index.html">Docs</a> &raquo;</li>
       
-    <li>Overview</li>
+    <li>Query Storage</li>
       <li class="wy-breadcrumbs-aside">
         
           
-            <a href="_sources/developerdoc.rst.txt" rel="nofollow"> View page source</a>
+            <a href="_sources/quickstartdoc.rst.txt" rel="nofollow"> View page source</a>
           
         
       </li>
@@ -146,9 +146,21 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <div class="section" id="overview">
-<h1>Overview<a class="headerlink" href="#overview" title="Permalink to this headline">¶</a></h1>
-<p>Coming soon…</p>
+  <div class="section" id="query-storage">
+<h1>Query Storage<a class="headerlink" href="#query-storage" title="Permalink to this headline">¶</a></h1>
+<p>Query the existing pipeline storage for files matching a string:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span class="kn">from</span> <span class="nn">aodncore.pipeline</span> <span class="k">import</span> <span class="n">HandlerBase</span>
+<span class="kn">from</span> <span class="nn">aodncore.pipeline.config</span> <span class="k">import</span> <span class="n">CONFIG</span>
+
+<span class="k">class</span> <span class="nc">MyHandler</span><span class="p">(</span><span class="n">HandlerBase</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">preprocess</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">results</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">state_query</span><span class="o">.</span><span class="n">query_storage</span><span class="p">(</span><span class="s1">&#39;Department_of_Defence/DSTG/slocum_glider/Perth&#39;</span><span class="p">)</span>
+        <span class="c1"># test the results somehow, usually  to see if there is a &quot;hit&quot; for a particular file</span>
+
+<span class="n">h</span> <span class="o">=</span> <span class="n">MyHandler</span><span class="p">(</span><span class="s1">&#39;/path/to/input/file.nc&#39;</span><span class="p">,</span> <span class="n">config</span><span class="o">=</span><span class="n">CONFIG</span><span class="p">,</span> <span class="n">upload_path</span><span class="o">=</span><span class="s1">&#39;/original/incoming/path/file.nc&#39;</span><span class="p">)</span>
+<span class="n">h</span><span class="o">.</span><span class="n">run</span><span class="p">()</span>
+</pre></div>
+</div>
 </div>
 
 
@@ -158,10 +170,10 @@
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
-        <a href="modules.html" class="btn btn-neutral float-right" title="aodncore" accesskey="n">Next <span class="fa fa-arrow-circle-right"></span></a>
+        <a href="userdoc.html" class="btn btn-neutral float-right" title="Overview" accesskey="n">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
-        <a href="userdoc.html" class="btn btn-neutral" title="Overview" accesskey="p"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+        <a href="index.html" class="btn btn-neutral" title="Welcome to aodncore’s documentation!" accesskey="p"><span class="fa fa-arrow-circle-left"></span> Previous</a>
       
     </div>
   
