@@ -12,7 +12,7 @@ from aodncore.pipeline.exceptions import InvalidStoreUrlError, StorageBrokerErro
 from aodncore.pipeline.storage import (get_storage_broker, sftp_path_exists, sftp_makedirs, sftp_mkdir_p,
                                        LocalFileStorageBroker, S3StorageBroker, SftpStorageBroker)
 from aodncore.testlib import BaseTestCase, NullStorageBroker, get_nonexistent_path, mock
-from aodncore.util import TemporaryDirectory
+from aodncore.util import TemporaryDirectory, format_exception
 from test_aodncore import TESTDATA_DIR
 
 GOOD_NC = os.path.join(TESTDATA_DIR, 'good.nc')
@@ -540,6 +540,17 @@ class TestS3StorageBroker(BaseTestCase):
                               [l['Key'] for l in mock_boto3.client().list_objects_v2.return_value['Contents']])
         self.assertTrue(all(isinstance(v['last_modified'], datetime.datetime) for k, v in result.items()))
         self.assertTrue(all(isinstance(v['size'], int) for k, v in result.items()))
+
+    @mock.patch('aodncore.pipeline.storage.boto3')
+    def test_query_empty(self, mock_boto3):
+        mock_boto3.client().list_objects_v2.return_value = {}
+
+        s3_storage_broker = S3StorageBroker('imos-data', '')
+        try:
+            result = s3_storage_broker.query('Department_of_Defence/DSTG/slocum_glider/Perth')
+        except Exception as e:
+            raise AssertionError("unexpected exception raised. {e}".format(e=format_exception(e)))
+        self.assertDictEqual(result, {})
 
     @mock.patch('aodncore.pipeline.storage.boto3')
     def test_query_error(self, mock_boto3):
