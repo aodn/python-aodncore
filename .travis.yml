@@ -7,14 +7,17 @@ addons:
     packages:
     - libudunits2-0
 
+env:
+  global:
+    - AODNFETCHER_URL="git+https://github.com/aodn/python-aodnfetcher.git@master"
+    - CC_PLUGIN_IMOS_URL="jenkins://imos-binary/cc_plugin_imos_prod?pattern=^.*\.whl$"
+
 before_install:
-  - wget https://raw.githubusercontent.com/aodn/utilities/master/jenkins/get_latest_artifact.py
-  - pip install boto3
-  - python get_latest_artifact.py --extension .whl --job cc_plugin_imos_prod
+  - pip install ${AODNFETCHER_URL}
 
 install:
   - pip install $(grep ^compliance-checker requirements.txt)
-  - pip install cc_plugin_imos-*.whl
+  - pip install $(aodnfetcher ${CC_PLUGIN_IMOS_URL} | python -c "import sys, json; print json.load(sys.stdin)['${CC_PLUGIN_IMOS_URL}']['local_file']")
   - pip install -r requirements.txt
 
 script:
