@@ -8,11 +8,9 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>aodncore.pipeline.common &mdash; aodncore 0.9.0 documentation</title>
+  <title>aodncore.pipeline.common &mdash; aodncore 0.10.1 documentation</title>
   
 
-  
-  
   
   
 
@@ -25,19 +23,26 @@
   
 
   
+  
     <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
-  <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
-    <link rel="index" title="Index" href="../../../genindex.html" />
-    <link rel="search" title="Search" href="../../../search.html" /> 
+  
+
+  
+
+  
+        <link rel="index" title="Index"
+              href="../../../genindex.html"/>
+        <link rel="search" title="Search" href="../../../search.html"/>
+    <link rel="top" title="aodncore 0.10.1 documentation" href="../../../index.html"/>
+        <link rel="up" title="Module code" href="../../index.html"/> 
 
   
   <script src="../../../_static/js/modernizr.min.js"></script>
 
 </head>
 
-<body class="wy-body-for-nav">
+<body class="wy-body-for-nav" role="document">
 
-   
   <div class="wy-grid-for-nav">
 
     
@@ -57,7 +62,7 @@
             
             
               <div class="version">
-                0.9.0
+                0.10.1
               </div>
             
           
@@ -78,31 +83,16 @@
           
             
             
-              
-            
-            
-              <p class="caption"><span class="caption-text">User documentation:</span></p>
+                <p class="caption"><span class="caption-text">Quick Start:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../quickstartdoc.html">Query Storage</a></li>
+</ul>
+<p class="caption"><span class="caption-text">User documentation:</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../userdoc.html">Overview</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../userdoc.html#state-machine-handler-steps">State machine / handler steps</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="../../../userdoc.html#initialise">initialise</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../../userdoc.html#resolve">resolve</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../../userdoc.html#preprocess">preprocess</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../../userdoc.html#check">check</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../../userdoc.html#process">process</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../../userdoc.html#publish">publish</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../../userdoc.html#postprocess">postprocess</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../../userdoc.html#notify">notify</a></li>
-</ul>
-</li>
-<li class="toctree-l1"><a class="reference internal" href="../../../userdoc.html#customising-handler-behaviour">Customising handler behaviour</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="../../../userdoc.html#methods">Methods</a></li>
-</ul>
-</li>
-<li class="toctree-l1"><a class="reference internal" href="../../../userdoc.html#attributes">Attributes</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="../../../userdoc.html#class-parameters">Class parameters</a></li>
-</ul>
-</li>
+<li class="toctree-l1"><a class="reference internal" href="../../../userdoc.html#state-machine-handler-steps">State machine / handler steps</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../userdoc.html#customising-handler-behaviour">Customising handler behaviour</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../userdoc.html#attributes">Attributes</a></li>
 </ul>
 <p class="caption"><span class="caption-text">Developer documentation:</span></p>
 <ul>
@@ -110,23 +100,7 @@
 </ul>
 <p class="caption"><span class="caption-text">Module contents:</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../modules.html">aodncore</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="../../../aodncore.html">aodncore package</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="../../../aodncore.html#subpackages">Subpackages</a><ul>
-<li class="toctree-l4"><a class="reference internal" href="../../../aodncore.common.html">aodncore.common package</a></li>
-<li class="toctree-l4"><a class="reference internal" href="../../../aodncore.pipeline.html">aodncore.pipeline package</a></li>
-<li class="toctree-l4"><a class="reference internal" href="../../../aodncore.testlib.html">aodncore.testlib package</a></li>
-<li class="toctree-l4"><a class="reference internal" href="../../../aodncore.util.html">aodncore.util package</a></li>
-<li class="toctree-l4"><a class="reference internal" href="../../../aodncore.vocab.html">aodncore.vocab package</a></li>
-</ul>
-</li>
-<li class="toctree-l3"><a class="reference internal" href="../../../aodncore.html#submodules">Submodules</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../../../aodncore.html#module-aodncore.version">aodncore.version module</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../../../aodncore.html#module-aodncore">Module contents</a></li>
-</ul>
-</li>
-</ul>
-</li>
+<li class="toctree-l1"><a class="reference internal" href="../../../modules.html">aodncore</a></li>
 </ul>
 
             
@@ -138,60 +112,41 @@
     <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
 
       
-      <nav class="wy-nav-top" aria-label="top navigation">
-        
-          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
-          <a href="../../../index.html">aodncore</a>
-        
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+        <a href="../../../index.html">aodncore</a>
       </nav>
 
 
       
       <div class="wy-nav-content">
-        
         <div class="rst-content">
-        
           
 
 
 
 
 
-
-
-
-
-
-
-
-
-
-
 <div role="navigation" aria-label="breadcrumbs navigation">
-
   <ul class="wy-breadcrumbs">
-    
-      <li><a href="../../../index.html">Docs</a> &raquo;</li>
-        
+    <li><a href="../../../index.html">Docs</a> &raquo;</li>
+      
           <li><a href="../../index.html">Module code</a> &raquo;</li>
-        
-      <li>aodncore.pipeline.common</li>
-    
-    
+      
+    <li>aodncore.pipeline.common</li>
       <li class="wy-breadcrumbs-aside">
         
+          
+        
       </li>
-    
   </ul>
-
-  
   <hr/>
 </div>
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
   <h1>Source code for aodncore.pipeline.common</h1><div class="highlight"><pre>
-<span></span><span class="sd">&quot;&quot;&quot;This module contains common &quot;types&quot; (typically enums or simple data classes) used by more than one module in the</span>
+<span class="sd">&quot;&quot;&quot;This module contains common &quot;types&quot; (typically enums or simple data classes) used by more than one module in the</span>
 <span class="sd">    project.</span>
 <span class="sd">&quot;&quot;&quot;</span>
 
@@ -280,8 +235,8 @@
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_error_string</span>
 
     <span class="nd">@classmethod</span>
-    <span class="k">def</span> <span class="nf">get_type_from_protocol</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">protocol</span><span class="p">):</span>
-        <span class="k">return</span> <span class="nb">next</span><span class="p">((</span><span class="n">t</span> <span class="k">for</span> <span class="n">t</span> <span class="ow">in</span> <span class="bp">cls</span> <span class="k">if</span> <span class="n">t</span><span class="o">.</span><span class="n">protocol</span> <span class="o">==</span> <span class="n">protocol</span><span class="p">),</span> <span class="bp">cls</span><span class="o">.</span><span class="n">INVALID</span><span class="p">)</span></div>
+    <span class="k">def</span> <span class="nf">get_type_from_protocol</span><span class="p">(</span><span class="n">cls</span><span class="p">,</span> <span class="n">protocol</span><span class="p">):</span>
+        <span class="k">return</span> <span class="nb">next</span><span class="p">((</span><span class="n">t</span> <span class="k">for</span> <span class="n">t</span> <span class="ow">in</span> <span class="n">cls</span> <span class="k">if</span> <span class="n">t</span><span class="o">.</span><span class="n">protocol</span> <span class="o">==</span> <span class="n">protocol</span><span class="p">),</span> <span class="n">cls</span><span class="o">.</span><span class="n">INVALID</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="FileType"><a class="viewcode-back" href="../../../aodncore.pipeline.html#aodncore.pipeline.common.FileType">[docs]</a><span class="k">class</span> <span class="nc">FileType</span><span class="p">(</span><span class="n">Enum</span><span class="p">):</span>
@@ -306,7 +261,7 @@
 <span class="sd">        o.file_type.mime_type</span>
 <span class="sd">        &#39;application/zip&#39;</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="vm">__slots__</span> <span class="o">=</span> <span class="p">(</span><span class="s1">&#39;extension&#39;</span><span class="p">,</span> <span class="s1">&#39;mime_type&#39;</span><span class="p">)</span>
+    <span class="n">__slots__</span> <span class="o">=</span> <span class="p">(</span><span class="s1">&#39;extension&#39;</span><span class="p">,</span> <span class="s1">&#39;mime_type&#39;</span><span class="p">)</span>
 
     <span class="n">UNKNOWN</span> <span class="o">=</span> <span class="p">()</span>
 
@@ -328,13 +283,13 @@
 
     <span class="c1"># noinspection PyTypeChecker</span>
     <span class="nd">@classmethod</span>
-    <span class="k">def</span> <span class="nf">get_type_from_extension</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">extension</span><span class="p">):</span>
-        <span class="k">return</span> <span class="nb">next</span><span class="p">((</span><span class="n">t</span> <span class="k">for</span> <span class="n">t</span> <span class="ow">in</span> <span class="bp">cls</span> <span class="k">if</span> <span class="n">t</span><span class="o">.</span><span class="n">extension</span> <span class="o">==</span> <span class="n">extension</span><span class="p">),</span> <span class="bp">cls</span><span class="o">.</span><span class="n">UNKNOWN</span><span class="p">)</span>
+    <span class="k">def</span> <span class="nf">get_type_from_extension</span><span class="p">(</span><span class="n">cls</span><span class="p">,</span> <span class="n">extension</span><span class="p">):</span>
+        <span class="k">return</span> <span class="nb">next</span><span class="p">((</span><span class="n">t</span> <span class="k">for</span> <span class="n">t</span> <span class="ow">in</span> <span class="n">cls</span> <span class="k">if</span> <span class="n">t</span><span class="o">.</span><span class="n">extension</span> <span class="o">==</span> <span class="n">extension</span><span class="p">),</span> <span class="n">cls</span><span class="o">.</span><span class="n">UNKNOWN</span><span class="p">)</span>
 
     <span class="nd">@classmethod</span>
-    <span class="k">def</span> <span class="nf">get_type_from_name</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">name</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">get_type_from_name</span><span class="p">(</span><span class="n">cls</span><span class="p">,</span> <span class="n">name</span><span class="p">):</span>
         <span class="n">_</span><span class="p">,</span> <span class="n">extension</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">splitext</span><span class="p">(</span><span class="n">name</span><span class="p">)</span>
-        <span class="k">return</span> <span class="bp">cls</span><span class="o">.</span><span class="n">get_type_from_extension</span><span class="p">(</span><span class="n">extension</span><span class="p">)</span></div>
+        <span class="k">return</span> <span class="n">cls</span><span class="o">.</span><span class="n">get_type_from_extension</span><span class="p">(</span><span class="n">extension</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="PipelineFileCheckType"><a class="viewcode-back" href="../../../aodncore.pipeline.html#aodncore.pipeline.common.PipelineFileCheckType">[docs]</a><span class="k">class</span> <span class="nc">PipelineFileCheckType</span><span class="p">(</span><span class="n">Enum</span><span class="p">):</span>
@@ -359,7 +314,7 @@
 <span class="sd">        (is_addition_type, is_deletion_type, is_archive_type, is_store_type, is_harvest_type)</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="vm">__slots__</span> <span class="o">=</span> <span class="p">(</span><span class="s1">&#39;_is_addition_type&#39;</span><span class="p">,</span> <span class="s1">&#39;_is_deletion_type&#39;</span><span class="p">,</span> <span class="s1">&#39;_is_archive_type&#39;</span><span class="p">,</span> <span class="s1">&#39;_is_store_type&#39;</span><span class="p">,</span> <span class="s1">&#39;_is_harvest_type&#39;</span><span class="p">)</span>
+    <span class="n">__slots__</span> <span class="o">=</span> <span class="p">(</span><span class="s1">&#39;_is_addition_type&#39;</span><span class="p">,</span> <span class="s1">&#39;_is_deletion_type&#39;</span><span class="p">,</span> <span class="s1">&#39;_is_archive_type&#39;</span><span class="p">,</span> <span class="s1">&#39;_is_store_type&#39;</span><span class="p">,</span> <span class="s1">&#39;_is_harvest_type&#39;</span><span class="p">)</span>
 
     <span class="c1"># valid for both addition and deletion types</span>
     <span class="n">NO_ACTION</span> <span class="o">=</span> <span class="p">(</span><span class="kc">True</span><span class="p">,</span> <span class="kc">True</span><span class="p">,</span> <span class="kc">False</span><span class="p">,</span> <span class="kc">False</span><span class="p">,</span> <span class="kc">False</span><span class="p">)</span>
@@ -406,13 +361,13 @@
 
     <span class="c1"># noinspection PyMethodParameters,PyTypeChecker</span>
     <span class="nd">@classproperty</span>
-    <span class="k">def</span> <span class="nf">all_addition_types</span><span class="p">(</span><span class="bp">cls</span><span class="p">):</span>
-        <span class="k">return</span> <span class="p">{</span><span class="n">t</span> <span class="k">for</span> <span class="n">t</span> <span class="ow">in</span> <span class="bp">cls</span> <span class="k">if</span> <span class="n">t</span><span class="o">.</span><span class="n">is_addition_type</span><span class="p">}</span>
+    <span class="k">def</span> <span class="nf">all_addition_types</span><span class="p">(</span><span class="n">cls</span><span class="p">):</span>
+        <span class="k">return</span> <span class="p">{</span><span class="n">t</span> <span class="k">for</span> <span class="n">t</span> <span class="ow">in</span> <span class="n">cls</span> <span class="k">if</span> <span class="n">t</span><span class="o">.</span><span class="n">is_addition_type</span><span class="p">}</span>
 
     <span class="c1"># noinspection PyMethodParameters,PyTypeChecker</span>
     <span class="nd">@classproperty</span>
-    <span class="k">def</span> <span class="nf">all_deletion_types</span><span class="p">(</span><span class="bp">cls</span><span class="p">):</span>
-        <span class="k">return</span> <span class="p">{</span><span class="n">t</span> <span class="k">for</span> <span class="n">t</span> <span class="ow">in</span> <span class="bp">cls</span> <span class="k">if</span> <span class="n">t</span><span class="o">.</span><span class="n">is_deletion_type</span><span class="p">}</span></div>
+    <span class="k">def</span> <span class="nf">all_deletion_types</span><span class="p">(</span><span class="n">cls</span><span class="p">):</span>
+        <span class="k">return</span> <span class="p">{</span><span class="n">t</span> <span class="k">for</span> <span class="n">t</span> <span class="ow">in</span> <span class="n">cls</span> <span class="k">if</span> <span class="n">t</span><span class="o">.</span><span class="n">is_deletion_type</span><span class="p">}</span></div>
 
 
 <span class="n">validate_addition_publishtype</span> <span class="o">=</span> <span class="n">validate_membership</span><span class="p">(</span><span class="n">PipelineFilePublishType</span><span class="o">.</span><span class="n">all_addition_types</span><span class="p">)</span>
@@ -424,7 +379,6 @@
 </pre></div>
 
            </div>
-           
           </div>
           <footer>
   
@@ -437,7 +391,7 @@
 
     </p>
   </div>
-  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
 
 </footer>
 
@@ -455,12 +409,10 @@
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'../../../',
-            VERSION:'0.9.0',
-            LANGUAGE:'None',
+            VERSION:'0.10.1',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
-            HAS_SOURCE:  true,
-            SOURCELINK_SUFFIX: '.txt'
+            HAS_SOURCE:  true
         };
     </script>
       <script type="text/javascript" src="../../../_static/jquery.js"></script>
@@ -474,13 +426,14 @@
     <script type="text/javascript" src="../../../_static/js/theme.js"></script>
   
 
+  
+  
   <script type="text/javascript">
       jQuery(function () {
-          
-          SphinxRtdTheme.Navigation.enableSticky();
-          
+          SphinxRtdTheme.StickyNav.enable();
       });
-  </script> 
+  </script>
+   
 
 </body>
 </html>

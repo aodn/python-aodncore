@@ -8,11 +8,9 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>aodncore &mdash; aodncore 0.9.0 documentation</title>
+  <title>aodncore &mdash; aodncore 0.10.1 documentation</title>
   
 
-  
-  
   
   
 
@@ -25,21 +23,27 @@
   
 
   
+  
     <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
-  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
-    <link rel="index" title="Index" href="genindex.html" />
-    <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="aodncore package" href="aodncore.html" />
-    <link rel="prev" title="Overview" href="developerdoc.html" /> 
+  
+
+  
+
+  
+        <link rel="index" title="Index"
+              href="genindex.html"/>
+        <link rel="search" title="Search" href="search.html"/>
+    <link rel="top" title="aodncore 0.10.1 documentation" href="index.html"/>
+        <link rel="next" title="aodncore package" href="aodncore.html"/>
+        <link rel="prev" title="Overview" href="developerdoc.html"/> 
 
   
   <script src="_static/js/modernizr.min.js"></script>
 
 </head>
 
-<body class="wy-body-for-nav">
+<body class="wy-body-for-nav" role="document">
 
-   
   <div class="wy-grid-for-nav">
 
     
@@ -59,7 +63,7 @@
             
             
               <div class="version">
-                0.9.0
+                0.10.1
               </div>
             
           
@@ -80,31 +84,16 @@
           
             
             
-              
-            
-            
-              <p class="caption"><span class="caption-text">User documentation:</span></p>
+                <p class="caption"><span class="caption-text">Quick Start:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="quickstartdoc.html">Query Storage</a></li>
+</ul>
+<p class="caption"><span class="caption-text">User documentation:</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="userdoc.html">Overview</a></li>
-<li class="toctree-l1"><a class="reference internal" href="userdoc.html#state-machine-handler-steps">State machine / handler steps</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="userdoc.html#initialise">initialise</a></li>
-<li class="toctree-l2"><a class="reference internal" href="userdoc.html#resolve">resolve</a></li>
-<li class="toctree-l2"><a class="reference internal" href="userdoc.html#preprocess">preprocess</a></li>
-<li class="toctree-l2"><a class="reference internal" href="userdoc.html#check">check</a></li>
-<li class="toctree-l2"><a class="reference internal" href="userdoc.html#process">process</a></li>
-<li class="toctree-l2"><a class="reference internal" href="userdoc.html#publish">publish</a></li>
-<li class="toctree-l2"><a class="reference internal" href="userdoc.html#postprocess">postprocess</a></li>
-<li class="toctree-l2"><a class="reference internal" href="userdoc.html#notify">notify</a></li>
-</ul>
-</li>
-<li class="toctree-l1"><a class="reference internal" href="userdoc.html#customising-handler-behaviour">Customising handler behaviour</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="userdoc.html#methods">Methods</a></li>
-</ul>
-</li>
-<li class="toctree-l1"><a class="reference internal" href="userdoc.html#attributes">Attributes</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="userdoc.html#class-parameters">Class parameters</a></li>
-</ul>
-</li>
+<li class="toctree-l1"><a class="reference internal" href="userdoc.html#state-machine-handler-steps">State machine / handler steps</a></li>
+<li class="toctree-l1"><a class="reference internal" href="userdoc.html#customising-handler-behaviour">Customising handler behaviour</a></li>
+<li class="toctree-l1"><a class="reference internal" href="userdoc.html#attributes">Attributes</a></li>
 </ul>
 <p class="caption"><span class="caption-text">Developer documentation:</span></p>
 <ul>
@@ -113,20 +102,7 @@
 <p class="caption"><span class="caption-text">Module contents:</span></p>
 <ul class="current">
 <li class="toctree-l1 current"><a class="current reference internal" href="#">aodncore</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="aodncore.html">aodncore package</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="aodncore.html#subpackages">Subpackages</a><ul>
-<li class="toctree-l4"><a class="reference internal" href="aodncore.common.html">aodncore.common package</a></li>
-<li class="toctree-l4"><a class="reference internal" href="aodncore.pipeline.html">aodncore.pipeline package</a></li>
-<li class="toctree-l4"><a class="reference internal" href="aodncore.testlib.html">aodncore.testlib package</a></li>
-<li class="toctree-l4"><a class="reference internal" href="aodncore.util.html">aodncore.util package</a></li>
-<li class="toctree-l4"><a class="reference internal" href="aodncore.vocab.html">aodncore.vocab package</a></li>
-</ul>
-</li>
-<li class="toctree-l3"><a class="reference internal" href="aodncore.html#submodules">Submodules</a></li>
-<li class="toctree-l3"><a class="reference internal" href="aodncore.html#module-aodncore.version">aodncore.version module</a></li>
-<li class="toctree-l3"><a class="reference internal" href="aodncore.html#module-aodncore">Module contents</a></li>
-</ul>
-</li>
+<li class="toctree-l2"><a class="reference internal" href="aodncore.html">aodncore package</a></li>
 </ul>
 </li>
 </ul>
@@ -140,55 +116,34 @@
     <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
 
       
-      <nav class="wy-nav-top" aria-label="top navigation">
-        
-          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
-          <a href="index.html">aodncore</a>
-        
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+        <a href="index.html">aodncore</a>
       </nav>
 
 
       
       <div class="wy-nav-content">
-        
         <div class="rst-content">
-        
           
 
-
-
-
-
-
-
-
-
-
-
-
+ 
 
 
 
 <div role="navigation" aria-label="breadcrumbs navigation">
-
   <ul class="wy-breadcrumbs">
-    
-      <li><a href="index.html">Docs</a> &raquo;</li>
-        
-      <li>aodncore</li>
-    
-    
+    <li><a href="index.html">Docs</a> &raquo;</li>
+      
+    <li>aodncore</li>
       <li class="wy-breadcrumbs-aside">
         
-            
+          
             <a href="_sources/modules.rst.txt" rel="nofollow"> View page source</a>
           
         
       </li>
-    
   </ul>
-
-  
   <hr/>
 </div>
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
@@ -265,16 +220,15 @@
 
 
            </div>
-           
           </div>
           <footer>
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
-        <a href="aodncore.html" class="btn btn-neutral float-right" title="aodncore package" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+        <a href="aodncore.html" class="btn btn-neutral float-right" title="aodncore package" accesskey="n">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
-        <a href="developerdoc.html" class="btn btn-neutral" title="Overview" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+        <a href="developerdoc.html" class="btn btn-neutral" title="Overview" accesskey="p"><span class="fa fa-arrow-circle-left"></span> Previous</a>
       
     </div>
   
@@ -287,7 +241,7 @@
 
     </p>
   </div>
-  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
 
 </footer>
 
@@ -305,12 +259,10 @@
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'./',
-            VERSION:'0.9.0',
-            LANGUAGE:'None',
+            VERSION:'0.10.1',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
-            HAS_SOURCE:  true,
-            SOURCELINK_SUFFIX: '.txt'
+            HAS_SOURCE:  true
         };
     </script>
       <script type="text/javascript" src="_static/jquery.js"></script>
@@ -324,13 +276,14 @@
     <script type="text/javascript" src="_static/js/theme.js"></script>
   
 
+  
+  
   <script type="text/javascript">
       jQuery(function () {
-          
-          SphinxRtdTheme.Navigation.enableSticky();
-          
+          SphinxRtdTheme.StickyNav.enable();
       });
-  </script> 
+  </script>
+   
 
 </body>
 </html>

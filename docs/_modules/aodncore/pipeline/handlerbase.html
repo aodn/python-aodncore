@@ -8,11 +8,9 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>aodncore.pipeline.handlerbase &mdash; aodncore 0.9.0 documentation</title>
+  <title>aodncore.pipeline.handlerbase &mdash; aodncore 0.10.1 documentation</title>
   
 
-  
-  
   
   
 
@@ -25,19 +23,26 @@
   
 
   
+  
     <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
-  <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
-    <link rel="index" title="Index" href="../../../genindex.html" />
-    <link rel="search" title="Search" href="../../../search.html" /> 
+  
+
+  
+
+  
+        <link rel="index" title="Index"
+              href="../../../genindex.html"/>
+        <link rel="search" title="Search" href="../../../search.html"/>
+    <link rel="top" title="aodncore 0.10.1 documentation" href="../../../index.html"/>
+        <link rel="up" title="Module code" href="../../index.html"/> 
 
   
   <script src="../../../_static/js/modernizr.min.js"></script>
 
 </head>
 
-<body class="wy-body-for-nav">
+<body class="wy-body-for-nav" role="document">
 
-   
   <div class="wy-grid-for-nav">
 
     
@@ -57,7 +62,7 @@
             
             
               <div class="version">
-                0.9.0
+                0.10.1
               </div>
             
           
@@ -78,31 +83,16 @@
           
             
             
-              
-            
-            
-              <p class="caption"><span class="caption-text">User documentation:</span></p>
+                <p class="caption"><span class="caption-text">Quick Start:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../quickstartdoc.html">Query Storage</a></li>
+</ul>
+<p class="caption"><span class="caption-text">User documentation:</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../userdoc.html">Overview</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../userdoc.html#state-machine-handler-steps">State machine / handler steps</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="../../../userdoc.html#initialise">initialise</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../../userdoc.html#resolve">resolve</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../../userdoc.html#preprocess">preprocess</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../../userdoc.html#check">check</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../../userdoc.html#process">process</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../../userdoc.html#publish">publish</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../../userdoc.html#postprocess">postprocess</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../../userdoc.html#notify">notify</a></li>
-</ul>
-</li>
-<li class="toctree-l1"><a class="reference internal" href="../../../userdoc.html#customising-handler-behaviour">Customising handler behaviour</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="../../../userdoc.html#methods">Methods</a></li>
-</ul>
-</li>
-<li class="toctree-l1"><a class="reference internal" href="../../../userdoc.html#attributes">Attributes</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="../../../userdoc.html#class-parameters">Class parameters</a></li>
-</ul>
-</li>
+<li class="toctree-l1"><a class="reference internal" href="../../../userdoc.html#state-machine-handler-steps">State machine / handler steps</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../userdoc.html#customising-handler-behaviour">Customising handler behaviour</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../userdoc.html#attributes">Attributes</a></li>
 </ul>
 <p class="caption"><span class="caption-text">Developer documentation:</span></p>
 <ul>
@@ -110,23 +100,7 @@
 </ul>
 <p class="caption"><span class="caption-text">Module contents:</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../modules.html">aodncore</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="../../../aodncore.html">aodncore package</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="../../../aodncore.html#subpackages">Subpackages</a><ul>
-<li class="toctree-l4"><a class="reference internal" href="../../../aodncore.common.html">aodncore.common package</a></li>
-<li class="toctree-l4"><a class="reference internal" href="../../../aodncore.pipeline.html">aodncore.pipeline package</a></li>
-<li class="toctree-l4"><a class="reference internal" href="../../../aodncore.testlib.html">aodncore.testlib package</a></li>
-<li class="toctree-l4"><a class="reference internal" href="../../../aodncore.util.html">aodncore.util package</a></li>
-<li class="toctree-l4"><a class="reference internal" href="../../../aodncore.vocab.html">aodncore.vocab package</a></li>
-</ul>
-</li>
-<li class="toctree-l3"><a class="reference internal" href="../../../aodncore.html#submodules">Submodules</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../../../aodncore.html#module-aodncore.version">aodncore.version module</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../../../aodncore.html#module-aodncore">Module contents</a></li>
-</ul>
-</li>
-</ul>
-</li>
+<li class="toctree-l1"><a class="reference internal" href="../../../modules.html">aodncore</a></li>
 </ul>
 
             
@@ -138,60 +112,41 @@
     <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
 
       
-      <nav class="wy-nav-top" aria-label="top navigation">
-        
-          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
-          <a href="../../../index.html">aodncore</a>
-        
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+        <a href="../../../index.html">aodncore</a>
       </nav>
 
 
       
       <div class="wy-nav-content">
-        
         <div class="rst-content">
-        
           
 
 
 
 
 
-
-
-
-
-
-
-
-
-
-
 <div role="navigation" aria-label="breadcrumbs navigation">
-
   <ul class="wy-breadcrumbs">
-    
-      <li><a href="../../../index.html">Docs</a> &raquo;</li>
-        
+    <li><a href="../../../index.html">Docs</a> &raquo;</li>
+      
           <li><a href="../../index.html">Module code</a> &raquo;</li>
-        
-      <li>aodncore.pipeline.handlerbase</li>
-    
-    
+      
+    <li>aodncore.pipeline.handlerbase</li>
       <li class="wy-breadcrumbs-aside">
         
+          
+        
       </li>
-    
   </ul>
-
-  
   <hr/>
 </div>
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
   <h1>Source code for aodncore.pipeline.handlerbase</h1><div class="highlight"><pre>
-<span></span><span class="kn">import</span> <span class="nn">logging</span>
+<span class="kn">import</span> <span class="nn">logging</span>
 <span class="kn">import</span> <span class="nn">logging.config</span>
 <span class="kn">import</span> <span class="nn">os</span>
 <span class="kn">from</span> <span class="nn">datetime</span> <span class="k">import</span> <span class="n">datetime</span>
@@ -507,12 +462,12 @@
     <span class="k">def</span> <span class="nf">__iter__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="n">ignored_attributes</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;celery_task&#39;</span><span class="p">,</span> <span class="s1">&#39;config&#39;</span><span class="p">,</span> <span class="s1">&#39;default_addition_publish_type&#39;</span><span class="p">,</span> <span class="s1">&#39;default_deletion_publish_type&#39;</span><span class="p">,</span>
                               <span class="s1">&#39;logger&#39;</span><span class="p">,</span> <span class="s1">&#39;state&#39;</span><span class="p">,</span> <span class="s1">&#39;trigger&#39;</span><span class="p">}</span>
-        <span class="n">ignored_attributes</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="s2">&quot;is_</span><span class="si">{state}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">state</span><span class="o">=</span><span class="n">s</span><span class="p">)</span> <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">all_states</span><span class="p">)</span>
+        <span class="n">ignored_attributes</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="s2">&quot;is_{state}&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">state</span><span class="o">=</span><span class="n">s</span><span class="p">)</span> <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">all_states</span><span class="p">)</span>
 
         <span class="k">return</span> <span class="n">iter_public_attributes</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ignored_attributes</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">return</span> <span class="s2">&quot;</span><span class="si">{cls}</span><span class="s2">(</span><span class="si">{attrs}</span><span class="s2">)&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">cls</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="p">,</span> <span class="n">attrs</span><span class="o">=</span><span class="nb">dict</span><span class="p">(</span><span class="bp">self</span><span class="p">))</span>
+        <span class="k">return</span> <span class="s2">&quot;{cls}({attrs})&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">cls</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">__class__</span><span class="o">.</span><span class="n">__name__</span><span class="p">,</span> <span class="n">attrs</span><span class="o">=</span><span class="nb">dict</span><span class="p">(</span><span class="bp">self</span><span class="p">))</span>
 
     <span class="c1">#</span>
     <span class="c1"># properties</span>
@@ -765,7 +720,7 @@
     <span class="k">def</span> <span class="nf">_resolve</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="n">resolve_runner</span> <span class="o">=</span> <span class="n">get_resolve_runner</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">input_file</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">collection_dir</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="p">,</span>
                                             <span class="bp">self</span><span class="o">.</span><span class="n">resolve_params</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">sysinfo</span><span class="p">(</span><span class="s2">&quot;get_resolve_runner -&gt; &#39;</span><span class="si">{runner}</span><span class="s2">&#39;&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">runner</span><span class="o">=</span><span class="n">resolve_runner</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">sysinfo</span><span class="p">(</span><span class="s2">&quot;get_resolve_runner -&gt; &#39;{runner}&#39;&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">runner</span><span class="o">=</span><span class="n">resolve_runner</span><span class="o">.</span><span class="n">__class__</span><span class="o">.</span><span class="n">__name__</span><span class="p">))</span>
         <span class="n">resolved_files</span> <span class="o">=</span> <span class="n">resolve_runner</span><span class="o">.</span><span class="n">run</span><span class="p">()</span>
 
         <span class="n">resolved_files</span><span class="o">.</span><span class="n">set_file_update_callback</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_file_update_callback</span><span class="p">)</span>
@@ -777,7 +732,7 @@
 
     <span class="k">def</span> <span class="nf">_check</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="n">check_runner</span> <span class="o">=</span> <span class="n">get_check_runner</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">check_params</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">sysinfo</span><span class="p">(</span><span class="s2">&quot;get_check_runner -&gt; &#39;</span><span class="si">{runner}</span><span class="s2">&#39;&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">runner</span><span class="o">=</span><span class="n">check_runner</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">sysinfo</span><span class="p">(</span><span class="s2">&quot;get_check_runner -&gt; &#39;{runner}&#39;&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">runner</span><span class="o">=</span><span class="n">check_runner</span><span class="o">.</span><span class="n">__class__</span><span class="o">.</span><span class="n">__name__</span><span class="p">))</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">file_collection</span><span class="o">.</span><span class="n">set_check_types</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">check_params</span><span class="p">)</span>
         <span class="n">files_to_check</span> <span class="o">=</span> <span class="n">PipelineFileCollection</span><span class="p">(</span>
             <span class="n">f</span> <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">file_collection</span> <span class="k">if</span> <span class="n">f</span><span class="o">.</span><span class="n">check_type</span> <span class="ow">is</span> <span class="ow">not</span> <span class="n">PipelineFileCheckType</span><span class="o">.</span><span class="n">NO_ACTION</span><span class="p">)</span>
@@ -802,7 +757,7 @@
     <span class="k">def</span> <span class="nf">_harvest</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="n">harvest_runner</span> <span class="o">=</span> <span class="n">get_harvester_runner</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">harvest_type</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_upload_runner</span><span class="o">.</span><span class="n">broker</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">harvest_params</span><span class="p">,</span>
                                               <span class="bp">self</span><span class="o">.</span><span class="n">temp_dir</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">sysinfo</span><span class="p">(</span><span class="s2">&quot;get_harvester_runner -&gt; &#39;</span><span class="si">{runner}</span><span class="s2">&#39;&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">runner</span><span class="o">=</span><span class="n">harvest_runner</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">sysinfo</span><span class="p">(</span><span class="s2">&quot;get_harvester_runner -&gt; &#39;{runner}&#39;&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">runner</span><span class="o">=</span><span class="n">harvest_runner</span><span class="o">.</span><span class="n">__class__</span><span class="o">.</span><span class="n">__name__</span><span class="p">))</span>
         <span class="n">files_to_harvest</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">file_collection</span><span class="o">.</span><span class="n">filter_by_bool_attribute</span><span class="p">(</span><span class="s1">&#39;pending_harvest&#39;</span><span class="p">)</span>
 
         <span class="k">if</span> <span class="n">files_to_harvest</span><span class="p">:</span>
@@ -849,7 +804,7 @@
         <span class="n">notification_data</span> <span class="o">=</span> <span class="n">merge_dicts</span><span class="p">(</span><span class="n">class_dict</span><span class="p">,</span> <span class="n">extra</span><span class="p">)</span>
 
         <span class="n">notify_runner</span> <span class="o">=</span> <span class="n">get_notify_runner</span><span class="p">(</span><span class="n">notification_data</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">notify_params</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">sysinfo</span><span class="p">(</span><span class="s2">&quot;get_notify_runner -&gt; &#39;</span><span class="si">{runner}</span><span class="s2">&#39;&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">runner</span><span class="o">=</span><span class="n">notify_runner</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">sysinfo</span><span class="p">(</span><span class="s2">&quot;get_notify_runner -&gt; &#39;{runner}&#39;&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">runner</span><span class="o">=</span><span class="n">notify_runner</span><span class="o">.</span><span class="n">__class__</span><span class="o">.</span><span class="n">__name__</span><span class="p">))</span>
 
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_should_notify</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_notification_results</span> <span class="o">=</span> <span class="n">notify_runner</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_should_notify</span><span class="p">)</span>
@@ -862,7 +817,7 @@
 
     <span class="k">def</span> <span class="nf">_complete_common</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span>
-            <span class="s2">&quot;handler result for input_file &#39;</span><span class="si">{name}</span><span class="s2">&#39;: </span><span class="si">{result}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">input_file</span><span class="p">,</span> <span class="n">result</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_result</span><span class="o">.</span><span class="n">name</span><span class="p">))</span>
+            <span class="s2">&quot;handler result for input_file &#39;{name}&#39;: {result}&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">input_file</span><span class="p">,</span> <span class="n">result</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_result</span><span class="o">.</span><span class="n">name</span><span class="p">))</span>
 
     <span class="k">def</span> <span class="nf">_complete_success</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_complete_common</span><span class="p">()</span>
@@ -876,12 +831,12 @@
 
     <span class="k">def</span> <span class="nf">_after_state_change</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">sysinfo</span><span class="p">(</span>
-            <span class="s2">&quot;</span><span class="si">{name}</span><span class="s2"> transitioned to state: </span><span class="si">{state}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="p">,</span> <span class="n">state</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">state</span><span class="p">))</span>
+            <span class="s2">&quot;{name} transitioned to state: {state}&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">__class__</span><span class="o">.</span><span class="n">__name__</span><span class="p">,</span> <span class="n">state</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">state</span><span class="p">))</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">celery_task</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">celery_task</span><span class="o">.</span><span class="n">update_state</span><span class="p">(</span><span class="n">state</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">state</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">_file_update_callback</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">message</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;file: &#39;</span><span class="si">{name}</span><span class="s2">&#39; </span><span class="si">{message}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="n">name</span><span class="p">,</span> <span class="n">message</span><span class="o">=</span><span class="n">message</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;file: &#39;{name}&#39; {message}&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="n">name</span><span class="p">,</span> <span class="n">message</span><span class="o">=</span><span class="n">message</span><span class="p">))</span>
 
     <span class="c1">#</span>
     <span class="c1"># &quot;internal&quot; helper methods</span>
@@ -890,7 +845,7 @@
     <span class="k">def</span> <span class="nf">_check_extension</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">allowed_extensions</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">file_extension</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">allowed_extensions</span><span class="p">:</span>
             <span class="k">raise</span> <span class="n">InvalidFileFormatError</span><span class="p">(</span>
-                <span class="s2">&quot;input file extension &#39;</span><span class="si">{extension}</span><span class="s2">&#39; not in allowed_extensions list: </span><span class="si">{allowed}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                <span class="s2">&quot;input file extension &#39;{extension}&#39; not in allowed_extensions list: {allowed}&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
                     <span class="n">extension</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">file_extension</span><span class="p">,</span> <span class="n">allowed</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">allowed_extensions</span><span class="p">))</span>
 
     <span class="k">def</span> <span class="nf">_init_logging</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
@@ -919,24 +874,24 @@
                 <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="n">lib</span><span class="p">)</span><span class="o">.</span><span class="n">setLevel</span><span class="p">(</span><span class="n">liblevel</span><span class="p">)</span>
 
             <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s1">&#39;no logger parameter or celery task found, falling back to root logger&#39;</span><span class="p">)</span>
-            <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;_init_logging exception: </span><span class="si">{e}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">e</span><span class="o">=</span><span class="n">e</span><span class="p">))</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;_init_logging exception: {e}&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">e</span><span class="o">=</span><span class="n">e</span><span class="p">))</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">logger</span> <span class="o">=</span> <span class="n">logger</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">_celery_task_id</span> <span class="o">=</span> <span class="n">celery_task_id</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_celery_task_name</span> <span class="o">=</span> <span class="n">celery_task_name</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_pipeline_name</span> <span class="o">=</span> <span class="n">pipeline_name</span>
 
-        <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;running handler -&gt; &#39;</span><span class="si">{str}</span><span class="s2">&#39;&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="nb">str</span><span class="o">=</span><span class="bp">self</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;running handler -&gt; &#39;{str}&#39;&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="nb">str</span><span class="o">=</span><span class="bp">self</span><span class="p">))</span>
 
     <span class="k">def</span> <span class="nf">_init_upload_runners</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_upload_runner</span> <span class="o">=</span> <span class="n">get_store_runner</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_config</span><span class="o">.</span><span class="n">pipeline_config</span><span class="p">[</span><span class="s1">&#39;global&#39;</span><span class="p">][</span><span class="s1">&#39;upload_uri&#39;</span><span class="p">],</span> <span class="bp">self</span><span class="o">.</span><span class="n">_config</span><span class="p">,</span>
                                                <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">sysinfo</span><span class="p">(</span><span class="s2">&quot;get_store_runner -&gt; &#39;</span><span class="si">{runner}</span><span class="s2">&#39;&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">runner</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_upload_runner</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">sysinfo</span><span class="p">(</span><span class="s2">&quot;get_store_runner -&gt; &#39;{runner}&#39;&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">runner</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_upload_runner</span><span class="o">.</span><span class="n">__class__</span><span class="o">.</span><span class="n">__name__</span><span class="p">))</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">_upload_runner_archive</span> <span class="o">=</span> <span class="n">get_store_runner</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_config</span><span class="o">.</span><span class="n">pipeline_config</span><span class="p">[</span><span class="s1">&#39;global&#39;</span><span class="p">][</span><span class="s1">&#39;archive_uri&#39;</span><span class="p">],</span>
                                                        <span class="bp">self</span><span class="o">.</span><span class="n">_config</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="p">,</span> <span class="n">archive_mode</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">sysinfo</span><span class="p">(</span>
-            <span class="s2">&quot;get_store_runner (archive) -&gt; &#39;</span><span class="si">{runner}</span><span class="s2">&#39;&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">runner</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_upload_runner_archive</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="p">))</span>
+            <span class="s2">&quot;get_store_runner (archive) -&gt; &#39;{runner}&#39;&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">runner</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_upload_runner_archive</span><span class="o">.</span><span class="n">__class__</span><span class="o">.</span><span class="n">__name__</span><span class="p">))</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">_state_query</span> <span class="o">=</span> <span class="n">StateQuery</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_upload_runner</span><span class="o">.</span><span class="n">broker</span><span class="p">)</span>
 
@@ -975,7 +930,7 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">_trigger_notify_error</span><span class="p">()</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_trigger_complete_with_errors</span><span class="p">()</span>
         <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">exception</span><span class="p">(</span><span class="s1">&#39;error during _handle_error method: </span><span class="si">{e}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">e</span><span class="o">=</span><span class="n">format_exception</span><span class="p">(</span><span class="n">e</span><span class="p">)))</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">exception</span><span class="p">(</span><span class="s1">&#39;error during _handle_error method: {e}&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">e</span><span class="o">=</span><span class="n">format_exception</span><span class="p">(</span><span class="n">e</span><span class="p">)))</span>
 
     <span class="k">def</span> <span class="nf">_handle_success</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_result</span> <span class="o">=</span> <span class="n">HandlerResult</span><span class="o">.</span><span class="n">SUCCESS</span>
@@ -994,11 +949,11 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">_trigger_notify_success</span><span class="p">()</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_trigger_complete_success</span><span class="p">()</span>
         <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">exception</span><span class="p">(</span><span class="s1">&#39;error during _handle_success method: </span><span class="si">{e}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">e</span><span class="o">=</span><span class="n">format_exception</span><span class="p">(</span><span class="n">e</span><span class="p">)))</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">exception</span><span class="p">(</span><span class="s1">&#39;error during _handle_success method: {e}&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">e</span><span class="o">=</span><span class="n">format_exception</span><span class="p">(</span><span class="n">e</span><span class="p">)))</span>
 
     <span class="k">def</span> <span class="nf">_set_cc_versions</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_cc_versions</span> <span class="o">=</span> <span class="n">get_cc_module_versions</span><span class="p">()</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">sysinfo</span><span class="p">(</span><span class="s2">&quot;get_cc_module_versions -&gt; </span><span class="si">{versions}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">versions</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_cc_versions</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">sysinfo</span><span class="p">(</span><span class="s2">&quot;get_cc_module_versions -&gt; {versions}&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">versions</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_cc_versions</span><span class="p">))</span>
 
     <span class="k">def</span> <span class="nf">_set_checksum</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">try</span><span class="p">:</span>
@@ -1006,7 +961,7 @@
         <span class="k">except</span> <span class="p">(</span><span class="ne">IOError</span><span class="p">,</span> <span class="ne">OSError</span><span class="p">)</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">exception</span><span class="p">(</span><span class="n">e</span><span class="p">)</span>
             <span class="k">raise</span> <span class="n">InvalidInputFileError</span><span class="p">(</span><span class="n">e</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">sysinfo</span><span class="p">(</span><span class="s2">&quot;get_file_checksum -&gt; &#39;</span><span class="si">{checksum}</span><span class="s2">&#39;&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">checksum</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">file_checksum</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">sysinfo</span><span class="p">(</span><span class="s2">&quot;get_file_checksum -&gt; &#39;{checksum}&#39;&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">checksum</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">file_checksum</span><span class="p">))</span>
 
     <span class="k">def</span> <span class="nf">_set_path_functions</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="n">dest_path_function_ref</span><span class="p">,</span> <span class="n">dest_path_function_name</span> <span class="o">=</span> <span class="n">get_path_function</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">pipeline_config</span><span class="p">[</span>
@@ -1014,14 +969,14 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">_dest_path_function_ref</span> <span class="o">=</span> <span class="n">dest_path_function_ref</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_dest_path_function_name</span> <span class="o">=</span> <span class="n">dest_path_function_name</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">sysinfo</span><span class="p">(</span>
-            <span class="s2">&quot;get_path_function -&gt; &#39;</span><span class="si">{function}</span><span class="s2">&#39;&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">function</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_dest_path_function_name</span><span class="p">))</span>
+            <span class="s2">&quot;get_path_function -&gt; &#39;{function}&#39;&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">function</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_dest_path_function_name</span><span class="p">))</span>
 
         <span class="n">archive_path_function_ref</span><span class="p">,</span> <span class="n">archive_path_function_name</span> <span class="o">=</span> <span class="n">get_path_function</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">pipeline_config</span><span class="p">[</span>
             <span class="s1">&#39;pluggable&#39;</span><span class="p">][</span><span class="s1">&#39;path_function_group&#39;</span><span class="p">],</span> <span class="n">archive_mode</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_archive_path_function_ref</span> <span class="o">=</span> <span class="n">archive_path_function_ref</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_archive_path_function_name</span> <span class="o">=</span> <span class="n">archive_path_function_name</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">sysinfo</span><span class="p">(</span>
-            <span class="s2">&quot;get_path_function (archive) -&gt; &#39;</span><span class="si">{function}</span><span class="s2">&#39;&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">function</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_archive_path_function_name</span><span class="p">))</span>
+            <span class="s2">&quot;get_path_function (archive) -&gt; &#39;{function}&#39;&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">function</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_archive_path_function_name</span><span class="p">))</span>
 
     <span class="k">def</span> <span class="nf">_validate_params</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">check_params</span><span class="p">:</span>
@@ -1071,7 +1026,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">_handler_run</span> <span class="o">=</span> <span class="kc">True</span>
 
         <span class="n">base_temp_directory</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">pipeline_config</span><span class="p">[</span><span class="s1">&#39;global&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;tmp_dir&#39;</span><span class="p">,</span> <span class="n">gettempdir</span><span class="p">())</span>
-        <span class="k">with</span> <span class="n">TemporaryDirectory</span><span class="p">(</span><span class="n">prefix</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="p">,</span> <span class="nb">dir</span><span class="o">=</span><span class="n">base_temp_directory</span><span class="p">)</span> <span class="k">as</span> <span class="n">instance_working_directory</span><span class="p">:</span>
+        <span class="k">with</span> <span class="n">TemporaryDirectory</span><span class="p">(</span><span class="n">prefix</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">__class__</span><span class="o">.</span><span class="n">__name__</span><span class="p">,</span> <span class="nb">dir</span><span class="o">=</span><span class="n">base_temp_directory</span><span class="p">)</span> <span class="k">as</span> <span class="n">instance_working_directory</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_instance_working_directory</span> <span class="o">=</span> <span class="n">instance_working_directory</span>
             <span class="k">try</span><span class="p">:</span>
                 <span class="k">for</span> <span class="n">transition</span> <span class="ow">in</span> <span class="n">HandlerBase</span><span class="o">.</span><span class="n">ordered_transitions</span><span class="p">:</span>
@@ -1085,7 +1040,6 @@
 </pre></div>
 
            </div>
-           
           </div>
           <footer>
   
@@ -1098,7 +1052,7 @@
 
     </p>
   </div>
-  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
 
 </footer>
 
@@ -1116,12 +1070,10 @@
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'../../../',
-            VERSION:'0.9.0',
-            LANGUAGE:'None',
+            VERSION:'0.10.1',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
-            HAS_SOURCE:  true,
-            SOURCELINK_SUFFIX: '.txt'
+            HAS_SOURCE:  true
         };
     </script>
       <script type="text/javascript" src="../../../_static/jquery.js"></script>
@@ -1135,13 +1087,14 @@
     <script type="text/javascript" src="../../../_static/js/theme.js"></script>
   
 
+  
+  
   <script type="text/javascript">
       jQuery(function () {
-          
-          SphinxRtdTheme.Navigation.enableSticky();
-          
+          SphinxRtdTheme.StickyNav.enable();
       });
-  </script> 
+  </script>
+   
 
 </body>
 </html>
