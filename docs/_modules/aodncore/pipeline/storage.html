@@ -13,6 +13,8 @@
 
   
   
+  
+  
 
   
 
@@ -23,26 +25,19 @@
   
 
   
-  
     <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
-  
-
-  
-
-  
-        <link rel="index" title="Index"
-              href="../../../genindex.html"/>
-        <link rel="search" title="Search" href="../../../search.html"/>
-    <link rel="top" title="aodncore 0.10.1 documentation" href="../../../index.html"/>
-        <link rel="up" title="Module code" href="../../index.html"/> 
+  <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" /> 
 
   
   <script src="../../../_static/js/modernizr.min.js"></script>
 
 </head>
 
-<body class="wy-body-for-nav" role="document">
+<body class="wy-body-for-nav">
 
+   
   <div class="wy-grid-for-nav">
 
     
@@ -83,16 +78,35 @@
           
             
             
-                <p class="caption"><span class="caption-text">Quick Start:</span></p>
+              
+            
+            
+              <p class="caption"><span class="caption-text">Quick Start:</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../quickstartdoc.html">Query Storage</a></li>
 </ul>
 <p class="caption"><span class="caption-text">User documentation:</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../userdoc.html">Overview</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../userdoc.html#state-machine-handler-steps">State machine / handler steps</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../userdoc.html#customising-handler-behaviour">Customising handler behaviour</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../userdoc.html#attributes">Attributes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../userdoc.html#state-machine-handler-steps">State machine / handler steps</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../userdoc.html#initialise">initialise</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../userdoc.html#resolve">resolve</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../userdoc.html#preprocess">preprocess</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../userdoc.html#check">check</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../userdoc.html#process">process</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../userdoc.html#publish">publish</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../userdoc.html#postprocess">postprocess</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../userdoc.html#notify">notify</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../../userdoc.html#customising-handler-behaviour">Customising handler behaviour</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../userdoc.html#methods">Methods</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../../userdoc.html#attributes">Attributes</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../userdoc.html#class-parameters">Class parameters</a></li>
+</ul>
+</li>
 </ul>
 <p class="caption"><span class="caption-text">Developer documentation:</span></p>
 <ul>
@@ -100,7 +114,23 @@
 </ul>
 <p class="caption"><span class="caption-text">Module contents:</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../modules.html">aodncore</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../modules.html">aodncore</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../aodncore.html">aodncore package</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../aodncore.html#subpackages">Subpackages</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../aodncore.common.html">aodncore.common package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../aodncore.pipeline.html">aodncore.pipeline package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../aodncore.testlib.html">aodncore.testlib package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../aodncore.util.html">aodncore.util package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../aodncore.vocab.html">aodncore.vocab package</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../../aodncore.html#submodules">Submodules</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../aodncore.html#module-aodncore.version">aodncore.version module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../aodncore.html#module-aodncore">Module contents</a></li>
+</ul>
+</li>
+</ul>
+</li>
 </ul>
 
             
@@ -112,41 +142,60 @@
     <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
 
       
-      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
-        <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
-        <a href="../../../index.html">aodncore</a>
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">aodncore</a>
+        
       </nav>
 
 
       
       <div class="wy-nav-content">
+        
         <div class="rst-content">
+        
           
+
+
+
+
+
+
+
+
+
+
 
 
 
 
 
 <div role="navigation" aria-label="breadcrumbs navigation">
+
   <ul class="wy-breadcrumbs">
-    <li><a href="../../../index.html">Docs</a> &raquo;</li>
-      
+    
+      <li><a href="../../../index.html">Docs</a> &raquo;</li>
+        
           <li><a href="../../index.html">Module code</a> &raquo;</li>
-      
-    <li>aodncore.pipeline.storage</li>
+        
+      <li>aodncore.pipeline.storage</li>
+    
+    
       <li class="wy-breadcrumbs-aside">
         
-          
-        
       </li>
+    
   </ul>
+
+  
   <hr/>
 </div>
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
   <h1>Source code for aodncore.pipeline.storage</h1><div class="highlight"><pre>
-<span class="kn">import</span> <span class="nn">abc</span>
+<span></span><span class="kn">import</span> <span class="nn">abc</span>
 <span class="kn">import</span> <span class="nn">errno</span>
 <span class="kn">import</span> <span class="nn">os</span>
 
@@ -186,14 +235,14 @@
     <span class="n">url</span> <span class="o">=</span> <span class="n">urlparse</span><span class="p">(</span><span class="n">store_url</span><span class="p">)</span>
     <span class="k">if</span> <span class="n">url</span><span class="o">.</span><span class="n">scheme</span> <span class="o">==</span> <span class="s1">&#39;file&#39;</span><span class="p">:</span>
         <span class="k">if</span> <span class="n">url</span><span class="o">.</span><span class="n">netloc</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="n">InvalidStoreUrlError</span><span class="p">(</span><span class="s2">&quot;invalid URL &#39;{url}&#39;. Must be an absolute path&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">url</span><span class="o">=</span><span class="n">store_url</span><span class="p">))</span>
+            <span class="k">raise</span> <span class="n">InvalidStoreUrlError</span><span class="p">(</span><span class="s2">&quot;invalid URL &#39;</span><span class="si">{url}</span><span class="s2">&#39;. Must be an absolute path&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">url</span><span class="o">=</span><span class="n">store_url</span><span class="p">))</span>
         <span class="k">return</span> <span class="n">LocalFileStorageBroker</span><span class="p">(</span><span class="n">url</span><span class="o">.</span><span class="n">path</span><span class="p">)</span>
     <span class="k">elif</span> <span class="n">url</span><span class="o">.</span><span class="n">scheme</span> <span class="o">==</span> <span class="s1">&#39;s3&#39;</span><span class="p">:</span>
         <span class="k">return</span> <span class="n">S3StorageBroker</span><span class="p">(</span><span class="n">url</span><span class="o">.</span><span class="n">netloc</span><span class="p">,</span> <span class="n">url</span><span class="o">.</span><span class="n">path</span><span class="p">)</span>
     <span class="k">elif</span> <span class="n">url</span><span class="o">.</span><span class="n">scheme</span> <span class="o">==</span> <span class="s1">&#39;sftp&#39;</span><span class="p">:</span>
         <span class="k">return</span> <span class="n">SftpStorageBroker</span><span class="p">(</span><span class="n">url</span><span class="o">.</span><span class="n">netloc</span><span class="p">,</span> <span class="n">url</span><span class="o">.</span><span class="n">path</span><span class="p">)</span>
     <span class="k">else</span><span class="p">:</span>
-        <span class="k">raise</span> <span class="n">InvalidStoreUrlError</span><span class="p">(</span><span class="s2">&quot;invalid URL scheme &#39;{scheme}&#39;&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">scheme</span><span class="o">=</span><span class="n">url</span><span class="o">.</span><span class="n">scheme</span><span class="p">))</span></div>
+        <span class="k">raise</span> <span class="n">InvalidStoreUrlError</span><span class="p">(</span><span class="s2">&quot;invalid URL scheme &#39;</span><span class="si">{scheme}</span><span class="s2">&#39;&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">scheme</span><span class="o">=</span><span class="n">url</span><span class="o">.</span><span class="n">scheme</span><span class="p">))</span></div>
 
 
 <span class="k">class</span> <span class="nc">BaseStorageBroker</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
@@ -230,7 +279,7 @@
         <span class="n">rel_path</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">pipeline_file</span><span class="p">,</span> <span class="n">dest_path_attr</span><span class="p">)</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="n">rel_path</span><span class="p">:</span>
             <span class="k">raise</span> <span class="n">AttributeNotSetError</span><span class="p">(</span>
-                <span class="s2">&quot;attribute &#39;{attr}&#39; not set in &#39;{pf}&#39;&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">attr</span><span class="o">=</span><span class="n">dest_path_attr</span><span class="p">,</span> <span class="n">pf</span><span class="o">=</span><span class="n">pipeline_file</span><span class="p">))</span>
+                <span class="s2">&quot;attribute &#39;</span><span class="si">{attr}</span><span class="s2">&#39; not set in &#39;</span><span class="si">{pf}</span><span class="s2">&#39;&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">attr</span><span class="o">=</span><span class="n">dest_path_attr</span><span class="p">,</span> <span class="n">pf</span><span class="o">=</span><span class="n">pipeline_file</span><span class="p">))</span>
         <span class="k">return</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">prefix</span><span class="p">,</span> <span class="n">rel_path</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">set_is_overwrite</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pipeline_files</span><span class="p">,</span> <span class="n">dest_path_attr</span><span class="o">=</span><span class="s1">&#39;dest_path&#39;</span><span class="p">):</span>
@@ -257,7 +306,7 @@
             <span class="k">try</span><span class="p">:</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">_upload_file</span><span class="p">(</span><span class="n">pipeline_file</span><span class="o">=</span><span class="n">pipeline_file</span><span class="p">,</span> <span class="n">dest_path_attr</span><span class="o">=</span><span class="n">dest_path_attr</span><span class="p">)</span>
             <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
-                <span class="k">raise</span> <span class="n">StorageBrokerError</span><span class="p">(</span><span class="s2">&quot;error uploading &#39;{dest_path}&#39;: {e}&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                <span class="k">raise</span> <span class="n">StorageBrokerError</span><span class="p">(</span><span class="s2">&quot;error uploading &#39;</span><span class="si">{dest_path}</span><span class="s2">&#39;: </span><span class="si">{e}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
                     <span class="n">dest_path</span><span class="o">=</span><span class="nb">getattr</span><span class="p">(</span><span class="n">pipeline_file</span><span class="p">,</span> <span class="n">dest_path_attr</span><span class="p">),</span> <span class="n">e</span><span class="o">=</span><span class="n">format_exception</span><span class="p">(</span><span class="n">e</span><span class="p">)))</span>
 
             <span class="nb">setattr</span><span class="p">(</span><span class="n">pipeline_file</span><span class="p">,</span> <span class="n">is_stored_attr</span><span class="p">,</span> <span class="kc">True</span><span class="p">)</span>
@@ -280,7 +329,7 @@
             <span class="k">try</span><span class="p">:</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">_delete_file</span><span class="p">(</span><span class="n">pipeline_file</span><span class="o">=</span><span class="n">pipeline_file</span><span class="p">,</span> <span class="n">dest_path_attr</span><span class="o">=</span><span class="n">dest_path_attr</span><span class="p">)</span>
             <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
-                <span class="k">raise</span> <span class="n">StorageBrokerError</span><span class="p">(</span><span class="s2">&quot;error deleting &#39;{dest_path}&#39;: {e}&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                <span class="k">raise</span> <span class="n">StorageBrokerError</span><span class="p">(</span><span class="s2">&quot;error deleting &#39;</span><span class="si">{dest_path}</span><span class="s2">&#39;: </span><span class="si">{e}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
                     <span class="n">dest_path</span><span class="o">=</span><span class="nb">getattr</span><span class="p">(</span><span class="n">pipeline_file</span><span class="p">,</span> <span class="n">dest_path_attr</span><span class="p">),</span> <span class="n">e</span><span class="o">=</span><span class="n">format_exception</span><span class="p">(</span><span class="n">e</span><span class="p">)))</span>
 
             <span class="nb">setattr</span><span class="p">(</span><span class="n">pipeline_file</span><span class="p">,</span> <span class="n">is_stored_attr</span><span class="p">,</span> <span class="kc">True</span><span class="p">)</span>
@@ -302,7 +351,7 @@
         <span class="k">try</span><span class="p">:</span>
             <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_run_query</span><span class="p">(</span><span class="n">query</span><span class="p">)</span>
         <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="n">StorageBrokerError</span><span class="p">(</span><span class="s2">&quot;error querying storage: {e}&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">query</span><span class="o">=</span><span class="n">query</span><span class="p">,</span> <span class="n">e</span><span class="o">=</span><span class="n">format_exception</span><span class="p">(</span><span class="n">e</span><span class="p">)))</span>
+            <span class="k">raise</span> <span class="n">StorageBrokerError</span><span class="p">(</span><span class="s2">&quot;error querying storage: </span><span class="si">{e}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">query</span><span class="o">=</span><span class="n">query</span><span class="p">,</span> <span class="n">e</span><span class="o">=</span><span class="n">format_exception</span><span class="p">(</span><span class="n">e</span><span class="p">)))</span>
 
 
 <div class="viewcode-block" id="LocalFileStorageBroker"><a class="viewcode-back" href="../../../aodncore.pipeline.html#aodncore.pipeline.storage.LocalFileStorageBroker">[docs]</a><span class="k">class</span> <span class="nc">LocalFileStorageBroker</span><span class="p">(</span><span class="n">BaseStorageBroker</span><span class="p">):</span>
@@ -310,7 +359,7 @@
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">prefix</span><span class="p">):</span>
-        <span class="nb">super</span><span class="p">(</span><span class="n">LocalFileStorageBroker</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">__init__</span><span class="p">()</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">LocalFileStorageBroker</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">prefix</span> <span class="o">=</span> <span class="n">prefix</span>
 
     <span class="k">def</span> <span class="nf">_delete_file</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pipeline_file</span><span class="p">,</span> <span class="n">dest_path_attr</span><span class="p">):</span>
@@ -368,7 +417,7 @@
     <span class="p">}</span>
 
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">bucket</span><span class="p">,</span> <span class="n">prefix</span><span class="p">):</span>
-        <span class="nb">super</span><span class="p">(</span><span class="n">S3StorageBroker</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">__init__</span><span class="p">()</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">S3StorageBroker</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">bucket</span> <span class="o">=</span> <span class="n">bucket</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">prefix</span> <span class="o">=</span> <span class="n">prefix</span>
@@ -393,12 +442,13 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">_validate_bucket</span><span class="p">()</span>
         <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
             <span class="k">raise</span> <span class="n">InvalidStoreUrlError</span><span class="p">(</span>
-                <span class="s2">&quot;unable to access S3 bucket &#39;{0}&#39;: {1}&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">bucket</span><span class="p">,</span> <span class="n">format_exception</span><span class="p">(</span><span class="n">e</span><span class="p">)))</span>
+                <span class="s2">&quot;unable to access S3 bucket &#39;</span><span class="si">{0}</span><span class="s2">&#39;: </span><span class="si">{1}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">bucket</span><span class="p">,</span> <span class="n">format_exception</span><span class="p">(</span><span class="n">e</span><span class="p">)))</span>
 
     <span class="k">def</span> <span class="nf">_run_query</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">query</span><span class="p">):</span>
         <span class="n">full_query</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">prefix</span><span class="p">,</span> <span class="n">query</span><span class="p">)</span>
         <span class="n">raw_result</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">s3_client</span><span class="o">.</span><span class="n">list_objects_v2</span><span class="p">(</span><span class="n">Bucket</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">bucket</span><span class="p">,</span> <span class="n">Prefix</span><span class="o">=</span><span class="n">full_query</span><span class="p">)</span>
-        <span class="n">result</span> <span class="o">=</span> <span class="p">{</span><span class="n">k</span><span class="p">[</span><span class="s1">&#39;Key&#39;</span><span class="p">]:</span> <span class="p">{</span><span class="s1">&#39;last_modified&#39;</span><span class="p">:</span> <span class="n">k</span><span class="p">[</span><span class="s1">&#39;LastModified&#39;</span><span class="p">],</span> <span class="s1">&#39;size&#39;</span><span class="p">:</span> <span class="n">k</span><span class="p">[</span><span class="s1">&#39;Size&#39;</span><span class="p">]}</span> <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="n">raw_result</span><span class="p">[</span><span class="s1">&#39;Contents&#39;</span><span class="p">]}</span>
+        <span class="n">result</span> <span class="o">=</span> <span class="p">{</span><span class="n">k</span><span class="p">[</span><span class="s1">&#39;Key&#39;</span><span class="p">]:</span> <span class="p">{</span><span class="s1">&#39;last_modified&#39;</span><span class="p">:</span> <span class="n">k</span><span class="p">[</span><span class="s1">&#39;LastModified&#39;</span><span class="p">],</span> <span class="s1">&#39;size&#39;</span><span class="p">:</span> <span class="n">k</span><span class="p">[</span><span class="s1">&#39;Size&#39;</span><span class="p">]}</span>
+                  <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="n">raw_result</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;Contents&#39;</span><span class="p">,</span> <span class="p">[])}</span>
         <span class="k">return</span> <span class="n">result</span>
 
     <span class="nd">@retry_decorator</span><span class="p">(</span><span class="o">**</span><span class="n">retry_kwargs</span><span class="p">)</span>
@@ -479,7 +529,7 @@
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">server</span><span class="p">,</span> <span class="n">prefix</span><span class="p">):</span>
-        <span class="nb">super</span><span class="p">(</span><span class="n">SftpStorageBroker</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">__init__</span><span class="p">()</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">SftpStorageBroker</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">server</span> <span class="o">=</span> <span class="n">server</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">prefix</span> <span class="o">=</span> <span class="n">prefix</span>
 
@@ -520,6 +570,7 @@
 </pre></div>
 
            </div>
+           
           </div>
           <footer>
   
@@ -532,7 +583,7 @@
 
     </p>
   </div>
-  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
 
 </footer>
 
@@ -551,9 +602,11 @@
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'../../../',
             VERSION:'0.10.1',
+            LANGUAGE:'None',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
-            HAS_SOURCE:  true
+            HAS_SOURCE:  true,
+            SOURCELINK_SUFFIX: '.txt'
         };
     </script>
       <script type="text/javascript" src="../../../_static/jquery.js"></script>
@@ -567,14 +620,13 @@
     <script type="text/javascript" src="../../../_static/js/theme.js"></script>
   
 
-  
-  
   <script type="text/javascript">
       jQuery(function () {
-          SphinxRtdTheme.StickyNav.enable();
+          
+          SphinxRtdTheme.Navigation.enableSticky();
+          
       });
-  </script>
-   
+  </script> 
 
 </body>
 </html>

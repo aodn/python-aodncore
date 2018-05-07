@@ -13,6 +13,8 @@
 
   
   
+  
+  
 
   
 
@@ -23,26 +25,19 @@
   
 
   
-  
     <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
-  
-
-  
-
-  
-        <link rel="index" title="Index"
-              href="../../../genindex.html"/>
-        <link rel="search" title="Search" href="../../../search.html"/>
-    <link rel="top" title="aodncore 0.10.1 documentation" href="../../../index.html"/>
-        <link rel="up" title="Module code" href="../../index.html"/> 
+  <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" /> 
 
   
   <script src="../../../_static/js/modernizr.min.js"></script>
 
 </head>
 
-<body class="wy-body-for-nav" role="document">
+<body class="wy-body-for-nav">
 
+   
   <div class="wy-grid-for-nav">
 
     
@@ -83,16 +78,35 @@
           
             
             
-                <p class="caption"><span class="caption-text">Quick Start:</span></p>
+              
+            
+            
+              <p class="caption"><span class="caption-text">Quick Start:</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../quickstartdoc.html">Query Storage</a></li>
 </ul>
 <p class="caption"><span class="caption-text">User documentation:</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../userdoc.html">Overview</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../userdoc.html#state-machine-handler-steps">State machine / handler steps</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../userdoc.html#customising-handler-behaviour">Customising handler behaviour</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../userdoc.html#attributes">Attributes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../userdoc.html#state-machine-handler-steps">State machine / handler steps</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../userdoc.html#initialise">initialise</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../userdoc.html#resolve">resolve</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../userdoc.html#preprocess">preprocess</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../userdoc.html#check">check</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../userdoc.html#process">process</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../userdoc.html#publish">publish</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../userdoc.html#postprocess">postprocess</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../userdoc.html#notify">notify</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../../userdoc.html#customising-handler-behaviour">Customising handler behaviour</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../userdoc.html#methods">Methods</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../../userdoc.html#attributes">Attributes</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../userdoc.html#class-parameters">Class parameters</a></li>
+</ul>
+</li>
 </ul>
 <p class="caption"><span class="caption-text">Developer documentation:</span></p>
 <ul>
@@ -100,7 +114,23 @@
 </ul>
 <p class="caption"><span class="caption-text">Module contents:</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../modules.html">aodncore</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../modules.html">aodncore</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../aodncore.html">aodncore package</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../aodncore.html#subpackages">Subpackages</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../aodncore.common.html">aodncore.common package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../aodncore.pipeline.html">aodncore.pipeline package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../aodncore.testlib.html">aodncore.testlib package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../aodncore.util.html">aodncore.util package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../aodncore.vocab.html">aodncore.vocab package</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../../aodncore.html#submodules">Submodules</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../aodncore.html#module-aodncore.version">aodncore.version module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../aodncore.html#module-aodncore">Module contents</a></li>
+</ul>
+</li>
+</ul>
+</li>
 </ul>
 
             
@@ -112,41 +142,60 @@
     <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
 
       
-      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
-        <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
-        <a href="../../../index.html">aodncore</a>
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">aodncore</a>
+        
       </nav>
 
 
       
       <div class="wy-nav-content">
+        
         <div class="rst-content">
+        
           
+
+
+
+
+
+
+
+
+
+
 
 
 
 
 
 <div role="navigation" aria-label="breadcrumbs navigation">
+
   <ul class="wy-breadcrumbs">
-    <li><a href="../../../index.html">Docs</a> &raquo;</li>
-      
+    
+      <li><a href="../../../index.html">Docs</a> &raquo;</li>
+        
           <li><a href="../../index.html">Module code</a> &raquo;</li>
-      
-    <li>aodncore.pipeline.watch</li>
+        
+      <li>aodncore.pipeline.watch</li>
+    
+    
       <li class="wy-breadcrumbs-aside">
         
-          
-        
       </li>
+    
   </ul>
+
+  
   <hr/>
 </div>
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
   <h1>Source code for aodncore.pipeline.watch</h1><div class="highlight"><pre>
-<span class="sd">&quot;&quot;&quot;This module provides the code to implement the &quot;watchservice&quot; component of the pipeline.</span>
+<span></span><span class="sd">&quot;&quot;&quot;This module provides the code to implement the &quot;watchservice&quot; component of the pipeline.</span>
 
 <span class="sd">This includes setting up directory watches, handling incoming inotify events, defining the Celery tasks and</span>
 <span class="sd">routing/queuing events.</span>
@@ -214,7 +263,7 @@
 <span class="sd">    :param function_name: name of function</span>
 <span class="sd">    :return: string containing qualified task name</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">task_name</span> <span class="o">=</span> <span class="s2">&quot;{namespace}.{function_name}&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">namespace</span><span class="o">=</span><span class="n">namespace</span><span class="p">,</span> <span class="n">function_name</span><span class="o">=</span><span class="n">function_name</span><span class="p">)</span>
+    <span class="n">task_name</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="si">{namespace}</span><span class="s2">.</span><span class="si">{function_name}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">namespace</span><span class="o">=</span><span class="n">namespace</span><span class="p">,</span> <span class="n">function_name</span><span class="o">=</span><span class="n">function_name</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">task_name</span></div>
 
 
@@ -280,7 +329,7 @@
                 <span class="n">incoming_dir</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="n">input_file</span><span class="p">)</span>
                 <span class="n">error_dir</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">config</span><span class="o">.</span><span class="n">pipeline_config</span><span class="p">[</span><span class="s1">&#39;global&#39;</span><span class="p">][</span><span class="s1">&#39;error_dir&#39;</span><span class="p">],</span> <span class="n">pipeline_name</span><span class="p">)</span>
                 <span class="n">error_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">error_dir</span><span class="p">,</span>
-                                          <span class="s2">&quot;{name}.{id}&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="n">basename</span><span class="p">,</span> <span class="nb">id</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">request</span><span class="o">.</span><span class="n">id</span><span class="p">))</span>
+                                          <span class="s2">&quot;</span><span class="si">{name}</span><span class="s2">.</span><span class="si">{id}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="n">basename</span><span class="p">,</span> <span class="nb">id</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">request</span><span class="o">.</span><span class="n">id</span><span class="p">))</span>
                 <span class="n">processing_dir</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">config</span><span class="o">.</span><span class="n">pipeline_config</span><span class="p">[</span><span class="s1">&#39;global&#39;</span><span class="p">][</span><span class="s1">&#39;processing_dir&#39;</span><span class="p">],</span> <span class="n">pipeline_name</span><span class="p">,</span>
                                               <span class="bp">self</span><span class="o">.</span><span class="n">request</span><span class="o">.</span><span class="n">id</span><span class="p">)</span>
                 <span class="n">processing_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">processing_dir</span><span class="p">,</span> <span class="n">basename</span><span class="p">)</span>
@@ -347,7 +396,7 @@
             <span class="n">invalid_handlers</span> <span class="o">=</span> <span class="n">configured_handler_names</span><span class="o">.</span><span class="n">difference</span><span class="p">(</span><span class="n">available_handler_names</span><span class="p">)</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
                 <span class="s2">&quot;one or more handlers not found in discovered handlers. &quot;</span>
-                <span class="s2">&quot;{invalid_handlers} not in {discovered_handlers}&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                <span class="s2">&quot;</span><span class="si">{invalid_handlers}</span><span class="s2"> not in </span><span class="si">{discovered_handlers}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
                     <span class="n">invalid_handlers</span><span class="o">=</span><span class="nb">list</span><span class="p">(</span><span class="n">invalid_handlers</span><span class="p">),</span> <span class="n">discovered_handlers</span><span class="o">=</span><span class="nb">list</span><span class="p">(</span><span class="n">available_handler_names</span><span class="p">)))</span>
 
         <span class="k">for</span> <span class="n">pipeline_name</span><span class="p">,</span> <span class="n">items</span> <span class="ow">in</span> <span class="n">iteritems</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_config</span><span class="o">.</span><span class="n">watch_config</span><span class="p">):</span>
@@ -356,7 +405,7 @@
             <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
                 <span class="k">raise</span> <span class="n">InvalidHandlerError</span><span class="p">(</span>
                     <span class="s2">&quot;handler not found in discovered handlers. &quot;</span>
-                    <span class="s2">&quot;{name} not in {handlers}&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="n">items</span><span class="p">[</span><span class="s1">&#39;handler&#39;</span><span class="p">],</span> <span class="n">handlers</span><span class="o">=</span><span class="n">available_handler_names</span><span class="p">))</span>
+                    <span class="s2">&quot;</span><span class="si">{name}</span><span class="s2"> not in </span><span class="si">{handlers}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="n">items</span><span class="p">[</span><span class="s1">&#39;handler&#39;</span><span class="p">],</span> <span class="n">handlers</span><span class="o">=</span><span class="n">available_handler_names</span><span class="p">))</span>
 
             <span class="n">params</span> <span class="o">=</span> <span class="n">items</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;params&#39;</span><span class="p">,</span> <span class="p">{})</span>
             <span class="n">task_object</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_build_task</span><span class="p">(</span><span class="n">pipeline_name</span><span class="p">,</span> <span class="n">handler_class</span><span class="p">,</span> <span class="n">params</span><span class="p">)</span>
@@ -388,7 +437,7 @@
 
 <div class="viewcode-block" id="IncomingFileEventHandler"><a class="viewcode-back" href="../../../aodncore.pipeline.html#aodncore.pipeline.watch.IncomingFileEventHandler">[docs]</a><span class="k">class</span> <span class="nc">IncomingFileEventHandler</span><span class="p">(</span><span class="n">pyinotify</span><span class="o">.</span><span class="n">ProcessEvent</span><span class="p">):</span>
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">config</span><span class="p">):</span>
-        <span class="nb">super</span><span class="p">(</span><span class="n">IncomingFileEventHandler</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">__init__</span><span class="p">()</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">IncomingFileEventHandler</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_config</span> <span class="o">=</span> <span class="n">config</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_logger</span> <span class="o">=</span> <span class="n">get_pipeline_logger</span><span class="p">(</span><span class="n">config</span><span class="o">.</span><span class="n">pipeline_config</span><span class="p">[</span><span class="s1">&#39;watch&#39;</span><span class="p">][</span><span class="s1">&#39;logger_name&#39;</span><span class="p">])</span>
 
@@ -396,7 +445,7 @@
         <span class="c1"># event_id is distinct from task_id, and exists in order to correlate log messages before *and* after a task</span>
         <span class="c1"># is queued for a given event</span>
         <span class="n">event_id</span> <span class="o">=</span> <span class="n">uuid4</span><span class="p">()</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;inotify event: event_id=&#39;{event_id}&#39; maskname=&#39;{event.maskname}&#39;&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">event_id</span><span class="o">=</span><span class="n">event_id</span><span class="p">,</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;inotify event: event_id=&#39;</span><span class="si">{event_id}</span><span class="s2">&#39; maskname=&#39;</span><span class="si">{event.maskname}</span><span class="s2">&#39;&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">event_id</span><span class="o">=</span><span class="n">event_id</span><span class="p">,</span>
                                                                                                     <span class="n">event</span><span class="o">=</span><span class="n">event</span><span class="p">))</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">queue_task</span><span class="p">(</span><span class="n">event</span><span class="o">.</span><span class="n">path</span><span class="p">,</span> <span class="n">event</span><span class="o">.</span><span class="n">pathname</span><span class="p">,</span> <span class="n">event_id</span><span class="p">)</span></div>
 
@@ -409,7 +458,7 @@
 <span class="sd">        :return: None</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="n">should_ignore_event</span><span class="p">(</span><span class="n">pathname</span><span class="p">):</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;ignored event for &#39;{pathname}&#39;&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">pathname</span><span class="o">=</span><span class="n">pathname</span><span class="p">))</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;ignored event for &#39;</span><span class="si">{pathname}</span><span class="s2">&#39;&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">pathname</span><span class="o">=</span><span class="n">pathname</span><span class="p">))</span>
             <span class="k">return</span>
 
         <span class="n">queue</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_config</span><span class="o">.</span><span class="n">watch_directory_map</span><span class="p">[</span><span class="n">directory</span><span class="p">]</span>
@@ -423,7 +472,7 @@
         <span class="p">}</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">_logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span>
-            <span class="s2">&quot;task data: event_id=&#39;{event_id}&#39; queue=&#39;{queue}&#39; task_name=&#39;{task_name}&#39; pathname=&#39;{pathname}&#39;&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+            <span class="s2">&quot;task data: event_id=&#39;</span><span class="si">{event_id}</span><span class="s2">&#39; queue=&#39;</span><span class="si">{queue}</span><span class="s2">&#39; task_name=&#39;</span><span class="si">{task_name}</span><span class="s2">&#39; pathname=&#39;</span><span class="si">{pathname}</span><span class="s2">&#39;&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
                 <span class="o">**</span><span class="n">task_data</span><span class="p">))</span>
 
         <span class="n">result</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_config</span><span class="o">.</span><span class="n">celery_application</span><span class="o">.</span><span class="n">send_task</span><span class="p">(</span><span class="n">task_name</span><span class="p">,</span> <span class="n">args</span><span class="o">=</span><span class="p">[</span><span class="n">pathname</span><span class="p">])</span>
@@ -432,9 +481,9 @@
         <span class="c1"># pathname is deliberately duplicated here to enable cross-referencing from pipeline specific logs in order to</span>
         <span class="c1"># correlate a filename to the associated task_id</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span>
-            <span class="s2">&quot;task sent: task_id=&#39;{task_id}&#39; task_name=&#39;{task_name}&#39; event_id=&#39;{event_id}&#39; pathname=&#39;{pathname}&#39;&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+            <span class="s2">&quot;task sent: task_id=&#39;</span><span class="si">{task_id}</span><span class="s2">&#39; task_name=&#39;</span><span class="si">{task_name}</span><span class="s2">&#39; event_id=&#39;</span><span class="si">{event_id}</span><span class="s2">&#39; pathname=&#39;</span><span class="si">{pathname}</span><span class="s2">&#39;&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
                 <span class="o">**</span><span class="n">task_data</span><span class="p">))</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;full task_data: {task_data}&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">task_data</span><span class="o">=</span><span class="n">task_data</span><span class="p">))</span></div></div>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;full task_data: </span><span class="si">{task_data}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">task_data</span><span class="o">=</span><span class="n">task_data</span><span class="p">))</span></div></div>
 
 
 <span class="k">class</span> <span class="nc">AbstractFileStateManager</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
@@ -468,13 +517,13 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">_machine</span> <span class="o">=</span> <span class="n">Machine</span><span class="p">(</span><span class="n">model</span><span class="o">=</span><span class="bp">self</span><span class="p">,</span> <span class="n">states</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">states</span><span class="p">,</span> <span class="n">initial</span><span class="o">=</span><span class="s1">&#39;FILE_IN_INCOMING&#39;</span><span class="p">,</span> <span class="n">auto_transitions</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
                                 <span class="n">transitions</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">transitions</span><span class="p">,</span> <span class="n">after_state_change</span><span class="o">=</span><span class="s1">&#39;_after_state_change&#39;</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">sysinfo</span><span class="p">(</span>
-            <span class="s2">&quot;{name} initialised in state: {state}&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">__class__</span><span class="o">.</span><span class="n">__name__</span><span class="p">,</span> <span class="n">state</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">state</span><span class="p">))</span>
+            <span class="s2">&quot;</span><span class="si">{name}</span><span class="s2"> initialised in state: </span><span class="si">{state}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="p">,</span> <span class="n">state</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">state</span><span class="p">))</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">_pre_check</span><span class="p">()</span>
 
     <span class="k">def</span> <span class="nf">_after_state_change</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">sysinfo</span><span class="p">(</span>
-            <span class="s2">&quot;{name} transitioned to state: {state}&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">__class__</span><span class="o">.</span><span class="n">__name__</span><span class="p">,</span> <span class="n">state</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">state</span><span class="p">))</span>
+            <span class="s2">&quot;</span><span class="si">{name}</span><span class="s2"> transitioned to state: </span><span class="si">{state}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="p">,</span> <span class="n">state</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">state</span><span class="p">))</span>
 
     <span class="nd">@abc</span><span class="o">.</span><span class="n">abstractmethod</span>
     <span class="k">def</span> <span class="nf">_pre_check</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
@@ -553,10 +602,10 @@
 
     <span class="c1"># noinspection PyUnusedLocal</span>
 <div class="viewcode-block" id="WatchServiceManager.handle_signal"><a class="viewcode-back" href="../../../aodncore.pipeline.html#aodncore.pipeline.watch.WatchServiceManager.handle_signal">[docs]</a>    <span class="k">def</span> <span class="nf">handle_signal</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">signo</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">stackframe</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">stop</span><span class="p">(</span><span class="s2">&quot;received signal &#39;{signo}&#39;&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">signo</span><span class="o">=</span><span class="n">signo</span><span class="p">))</span></div>
+        <span class="bp">self</span><span class="o">.</span><span class="n">stop</span><span class="p">(</span><span class="s2">&quot;received signal &#39;</span><span class="si">{signo}</span><span class="s2">&#39;&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">signo</span><span class="o">=</span><span class="n">signo</span><span class="p">))</span></div>
 
 <div class="viewcode-block" id="WatchServiceManager.stop"><a class="viewcode-back" href="../../../aodncore.pipeline.html#aodncore.pipeline.watch.WatchServiceManager.stop">[docs]</a>    <span class="k">def</span> <span class="nf">stop</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">reason</span><span class="o">=</span><span class="s1">&#39;unknown&#39;</span><span class="p">):</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;stopping Notifier event loop. Reason: {reason}&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">reason</span><span class="o">=</span><span class="n">reason</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;stopping Notifier event loop. Reason: </span><span class="si">{reason}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">reason</span><span class="o">=</span><span class="n">reason</span><span class="p">))</span>
         <span class="k">try</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">notifier</span><span class="o">.</span><span class="n">stop</span><span class="p">()</span>
         <span class="k">except</span> <span class="ne">AttributeError</span><span class="p">:</span>
@@ -581,15 +630,16 @@
 
             <span class="k">for</span> <span class="n">existing_file</span> <span class="ow">in</span> <span class="n">list_regular_files</span><span class="p">(</span><span class="n">str_directory</span><span class="p">):</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">_logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span>
-                    <span class="s2">&quot;queuing existing file: existing_file=&#39;{existing_file}&#39;&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                    <span class="s2">&quot;queuing existing file: existing_file=&#39;</span><span class="si">{existing_file}</span><span class="s2">&#39;&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
                         <span class="n">existing_file</span><span class="o">=</span><span class="n">existing_file</span><span class="p">))</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">_event_handler</span><span class="o">.</span><span class="n">queue_task</span><span class="p">(</span><span class="n">directory</span><span class="p">,</span> <span class="n">existing_file</span><span class="p">)</span>
 
-            <span class="bp">self</span><span class="o">.</span><span class="n">_logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;adding watch for &#39;{directory}&#39;&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">directory</span><span class="o">=</span><span class="n">directory</span><span class="p">))</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;adding watch for &#39;</span><span class="si">{directory}</span><span class="s2">&#39;&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">directory</span><span class="o">=</span><span class="n">directory</span><span class="p">))</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_watch_manager</span><span class="o">.</span><span class="n">add_watch</span><span class="p">(</span><span class="n">directory</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">EVENT_MASK</span><span class="p">)</span></div>
 </pre></div>
 
            </div>
+           
           </div>
           <footer>
   
@@ -602,7 +652,7 @@
 
     </p>
   </div>
-  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
 
 </footer>
 
@@ -621,9 +671,11 @@
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'../../../',
             VERSION:'0.10.1',
+            LANGUAGE:'None',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
-            HAS_SOURCE:  true
+            HAS_SOURCE:  true,
+            SOURCELINK_SUFFIX: '.txt'
         };
     </script>
       <script type="text/javascript" src="../../../_static/jquery.js"></script>
@@ -637,14 +689,13 @@
     <script type="text/javascript" src="../../../_static/js/theme.js"></script>
   
 
-  
-  
   <script type="text/javascript">
       jQuery(function () {
-          SphinxRtdTheme.StickyNav.enable();
+          
+          SphinxRtdTheme.Navigation.enableSticky();
+          
       });
-  </script>
-   
+  </script> 
 
 </body>
 </html>

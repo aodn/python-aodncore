@@ -8,9 +8,17 @@ Query the existing pipeline storage for files matching a string::
 
     class MyHandler(HandlerBase):
         def preprocess(self):
-            results = self.state_query.query_storage('Department_of_Defence/DSTG/slocum_glider/Perth')
-            # test the results somehow, usually  to see if there is a "hit" for a particular file
+            # query the storage for all objects with a given prefix
+            prefix = 'Department_of_Defence/DSTG/slocum_glider/Perth'
 
-    h = MyHandler('/path/to/input/file.nc', config=CONFIG, upload_path='/original/incoming/path/file.nc')
-    h.run()
+            results = self.state_query.query_storage(prefix)
 
+            for filename, metadata in results.iteritems():
+                # test the results somehow, usually  to see if there is a "hit" for a particular file
+                print(filename)
+                print(metadata)
+
+            Department_of_Defence/DSTG/slocum_glider/PerthCanyonB20140213/PerthCanyonB20140213.kml
+            {'last_modified': datetime.datetime(2016, 4, 27, 2, 30, 8, tzinfo=tzutc()), 'size': 21574}
+            Department_of_Defence/DSTG/slocum_glider/PerthCanyonB20140213/PerthCanyonB20140213_TEMP.jpg
+            {'last_modified': datetime.datetime(2016, 4, 27, 2, 30, 8, tzinfo=tzutc()), 'size': 132122}

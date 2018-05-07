@@ -13,6 +13,8 @@
 
   
   
+  
+  
 
   
 
@@ -23,26 +25,19 @@
   
 
   
-  
     <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
-  
-
-  
-
-  
-        <link rel="index" title="Index"
-              href="../../../genindex.html"/>
-        <link rel="search" title="Search" href="../../../search.html"/>
-    <link rel="top" title="aodncore 0.10.1 documentation" href="../../../index.html"/>
-        <link rel="up" title="Module code" href="../../index.html"/> 
+  <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" /> 
 
   
   <script src="../../../_static/js/modernizr.min.js"></script>
 
 </head>
 
-<body class="wy-body-for-nav" role="document">
+<body class="wy-body-for-nav">
 
+   
   <div class="wy-grid-for-nav">
 
     
@@ -83,16 +78,35 @@
           
             
             
-                <p class="caption"><span class="caption-text">Quick Start:</span></p>
+              
+            
+            
+              <p class="caption"><span class="caption-text">Quick Start:</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../quickstartdoc.html">Query Storage</a></li>
 </ul>
 <p class="caption"><span class="caption-text">User documentation:</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../userdoc.html">Overview</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../userdoc.html#state-machine-handler-steps">State machine / handler steps</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../userdoc.html#customising-handler-behaviour">Customising handler behaviour</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../userdoc.html#attributes">Attributes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../userdoc.html#state-machine-handler-steps">State machine / handler steps</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../userdoc.html#initialise">initialise</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../userdoc.html#resolve">resolve</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../userdoc.html#preprocess">preprocess</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../userdoc.html#check">check</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../userdoc.html#process">process</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../userdoc.html#publish">publish</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../userdoc.html#postprocess">postprocess</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../userdoc.html#notify">notify</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../../userdoc.html#customising-handler-behaviour">Customising handler behaviour</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../userdoc.html#methods">Methods</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../../userdoc.html#attributes">Attributes</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../userdoc.html#class-parameters">Class parameters</a></li>
+</ul>
+</li>
 </ul>
 <p class="caption"><span class="caption-text">Developer documentation:</span></p>
 <ul>
@@ -100,7 +114,23 @@
 </ul>
 <p class="caption"><span class="caption-text">Module contents:</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../modules.html">aodncore</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../modules.html">aodncore</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../aodncore.html">aodncore package</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../aodncore.html#subpackages">Subpackages</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../aodncore.common.html">aodncore.common package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../aodncore.pipeline.html">aodncore.pipeline package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../aodncore.testlib.html">aodncore.testlib package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../aodncore.util.html">aodncore.util package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../aodncore.vocab.html">aodncore.vocab package</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../../aodncore.html#submodules">Submodules</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../aodncore.html#module-aodncore.version">aodncore.version module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../aodncore.html#module-aodncore">Module contents</a></li>
+</ul>
+</li>
+</ul>
+</li>
 </ul>
 
             
@@ -112,41 +142,60 @@
     <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
 
       
-      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
-        <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
-        <a href="../../../index.html">aodncore</a>
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">aodncore</a>
+        
       </nav>
 
 
       
       <div class="wy-nav-content">
+        
         <div class="rst-content">
+        
           
+
+
+
+
+
+
+
+
+
+
 
 
 
 
 
 <div role="navigation" aria-label="breadcrumbs navigation">
+
   <ul class="wy-breadcrumbs">
-    <li><a href="../../../index.html">Docs</a> &raquo;</li>
-      
+    
+      <li><a href="../../../index.html">Docs</a> &raquo;</li>
+        
           <li><a href="../../index.html">Module code</a> &raquo;</li>
-      
-    <li>aodncore.util.misc</li>
+        
+      <li>aodncore.util.misc</li>
+    
+    
       <li class="wy-breadcrumbs-aside">
         
-          
-        
       </li>
+    
   </ul>
+
+  
   <hr/>
 </div>
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
   <h1>Source code for aodncore.util.misc</h1><div class="highlight"><pre>
-<span class="sd">&quot;&quot;&quot;This module provides miscellaneous utility functions *not* related to filesystem or subprocess operations.</span>
+<span></span><span class="sd">&quot;&quot;&quot;This module provides miscellaneous utility functions *not* related to filesystem or subprocess operations.</span>
 
 <span class="sd">These are typically functions which query, manipulate or transform Python objects.</span>
 <span class="sd">&quot;&quot;&quot;</span>
@@ -214,7 +263,7 @@
 <span class="sd">    :param exception: :py:class:`Exception` object</span>
 <span class="sd">    :return: string</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">return</span> <span class="s2">&quot;{cls}: {message}&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">cls</span><span class="o">=</span><span class="n">exception</span><span class="o">.</span><span class="n">__class__</span><span class="o">.</span><span class="n">__name__</span><span class="p">,</span> <span class="n">message</span><span class="o">=</span><span class="n">exception</span><span class="p">)</span></div>
+    <span class="k">return</span> <span class="s2">&quot;</span><span class="si">{cls}</span><span class="s2">: </span><span class="si">{message}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">cls</span><span class="o">=</span><span class="n">exception</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="p">,</span> <span class="n">message</span><span class="o">=</span><span class="n">exception</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="is_function"><a class="viewcode-back" href="../../../aodncore.util.html#aodncore.pipeline.common.is_function">[docs]</a><span class="k">def</span> <span class="nf">is_function</span><span class="p">(</span><span class="n">o</span><span class="p">):</span>
@@ -241,7 +290,7 @@
 <span class="sd">    :param address: address to validate</span>
 <span class="sd">    :return: True if address matches the regex, otherwise False</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">pattern</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="s2">r&quot;^[A-Z0-9_.+-]+@(localhost|[A-Z0-9-]+\.[A-Z0-9-.]+)$&quot;</span><span class="p">,</span> <span class="n">re</span><span class="o">.</span><span class="n">IGNORECASE</span><span class="p">)</span>
+    <span class="n">pattern</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="sa">r</span><span class="s2">&quot;^[A-Z0-9_.+-]+@(localhost|[A-Z0-9-]+\.[A-Z0-9-.]+)$&quot;</span><span class="p">,</span> <span class="n">re</span><span class="o">.</span><span class="n">IGNORECASE</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">re</span><span class="o">.</span><span class="n">match</span><span class="p">(</span><span class="n">pattern</span><span class="p">,</span> <span class="n">address</span><span class="p">)</span></div>
 
 
@@ -260,7 +309,7 @@
         <span class="k">return</span> <span class="kc">True</span>
 
     <span class="n">attribute_names</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="nb">getattr</span><span class="p">(</span><span class="n">instance</span><span class="p">,</span> <span class="s1">&#39;__slots__&#39;</span><span class="p">,</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">instance</span><span class="p">,</span> <span class="s1">&#39;__dict__&#39;</span><span class="p">,</span> <span class="p">{})))</span>
-    <span class="n">property_names</span> <span class="o">=</span> <span class="p">{</span><span class="n">p</span> <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="nb">dir</span><span class="p">(</span><span class="n">instance</span><span class="o">.</span><span class="n">__class__</span><span class="p">)</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="nb">getattr</span><span class="p">(</span><span class="n">instance</span><span class="o">.</span><span class="n">__class__</span><span class="p">,</span> <span class="n">p</span><span class="p">),</span> <span class="nb">property</span><span class="p">)}</span>
+    <span class="n">property_names</span> <span class="o">=</span> <span class="p">{</span><span class="n">p</span> <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="nb">dir</span><span class="p">(</span><span class="n">instance</span><span class="o">.</span><span class="vm">__class__</span><span class="p">)</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="nb">getattr</span><span class="p">(</span><span class="n">instance</span><span class="o">.</span><span class="vm">__class__</span><span class="p">,</span> <span class="n">p</span><span class="p">),</span> <span class="nb">property</span><span class="p">)}</span>
     <span class="n">all_names</span> <span class="o">=</span> <span class="n">attribute_names</span><span class="o">.</span><span class="n">union</span><span class="p">(</span><span class="n">property_names</span><span class="p">)</span>
 
     <span class="n">public_attrs</span> <span class="o">=</span> <span class="p">{</span><span class="n">a</span><span class="p">:</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">instance</span><span class="p">,</span> <span class="n">a</span><span class="p">)</span> <span class="k">for</span> <span class="n">a</span> <span class="ow">in</span> <span class="n">all_names</span> <span class="k">if</span> <span class="n">includeattr</span><span class="p">(</span><span class="n">a</span><span class="p">)}</span>
@@ -371,7 +420,7 @@
 <div class="viewcode-block" id="validate_membership"><a class="viewcode-back" href="../../../aodncore.util.html#aodncore.pipeline.common.validate_membership">[docs]</a><span class="k">def</span> <span class="nf">validate_membership</span><span class="p">(</span><span class="n">c</span><span class="p">):</span>
     <span class="k">def</span> <span class="nf">validate_membership_func</span><span class="p">(</span><span class="n">o</span><span class="p">):</span>
         <span class="k">if</span> <span class="n">o</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">c</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;value &#39;{o}&#39; must be a member of &#39;{c}&#39;&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">o</span><span class="o">=</span><span class="n">o</span><span class="p">,</span> <span class="n">c</span><span class="o">=</span><span class="n">c</span><span class="p">))</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;value &#39;</span><span class="si">{o}</span><span class="s2">&#39; must be a member of &#39;</span><span class="si">{c}</span><span class="s2">&#39;&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">o</span><span class="o">=</span><span class="n">o</span><span class="p">,</span> <span class="n">c</span><span class="o">=</span><span class="n">c</span><span class="p">))</span>
 
     <span class="k">return</span> <span class="n">validate_membership_func</span></div>
 
@@ -385,7 +434,7 @@
 
     <span class="k">def</span> <span class="nf">validate_type_func</span><span class="p">(</span><span class="n">o</span><span class="p">):</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">o</span><span class="p">,</span> <span class="n">t</span><span class="p">):</span>
-            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;object &#39;{o}&#39; must be of type &#39;{t}&#39;&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">o</span><span class="o">=</span><span class="n">o</span><span class="p">,</span> <span class="n">t</span><span class="o">=</span><span class="n">t</span><span class="p">))</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;object &#39;</span><span class="si">{o}</span><span class="s2">&#39; must be of type &#39;</span><span class="si">{t}</span><span class="s2">&#39;&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">o</span><span class="o">=</span><span class="n">o</span><span class="p">,</span> <span class="n">t</span><span class="o">=</span><span class="n">t</span><span class="p">))</span>
 
     <span class="k">return</span> <span class="n">validate_type_func</span></div>
 
@@ -411,7 +460,7 @@
     <span class="k">try</span><span class="p">:</span>
         <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="n">o</span><span class="p">)</span>
     <span class="k">except</span> <span class="n">re</span><span class="o">.</span><span class="n">error</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
-        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;invalid regex &#39;{o}&#39;. {e}&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">o</span><span class="o">=</span><span class="n">o</span><span class="p">,</span> <span class="n">e</span><span class="o">=</span><span class="n">format_exception</span><span class="p">(</span><span class="n">e</span><span class="p">)))</span></div>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;invalid regex &#39;</span><span class="si">{o}</span><span class="s2">&#39;. </span><span class="si">{e}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">o</span><span class="o">=</span><span class="n">o</span><span class="p">,</span> <span class="n">e</span><span class="o">=</span><span class="n">format_exception</span><span class="p">(</span><span class="n">e</span><span class="p">)))</span></div>
 
 
 <div class="viewcode-block" id="validate_mandatory_elements"><a class="viewcode-back" href="../../../aodncore.util.html#aodncore.pipeline.common.validate_mandatory_elements">[docs]</a><span class="k">def</span> <span class="nf">validate_mandatory_elements</span><span class="p">(</span><span class="n">mandatory</span><span class="p">,</span> <span class="n">actual</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s1">&#39;item&#39;</span><span class="p">):</span>
@@ -427,7 +476,7 @@
 
     <span class="k">if</span> <span class="ow">not</span> <span class="n">mandatory</span><span class="o">.</span><span class="n">issubset</span><span class="p">(</span><span class="n">actual</span><span class="p">):</span>
         <span class="n">missing</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">mandatory</span><span class="o">.</span><span class="n">difference</span><span class="p">(</span><span class="n">actual</span><span class="p">))</span>
-        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;missing mandatory {name}(s): {missing}&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="n">name</span><span class="p">,</span> <span class="n">missing</span><span class="o">=</span><span class="n">missing</span><span class="p">))</span></div>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;missing mandatory </span><span class="si">{name}</span><span class="s2">(s): </span><span class="si">{missing}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="n">name</span><span class="p">,</span> <span class="n">missing</span><span class="o">=</span><span class="n">missing</span><span class="p">))</span></div>
 
 
 <div class="viewcode-block" id="CaptureStdIO"><a class="viewcode-back" href="../../../aodncore.util.html#aodncore.pipeline.common.CaptureStdIO">[docs]</a><span class="k">class</span> <span class="nc">CaptureStdIO</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
@@ -498,7 +547,7 @@
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">package</span><span class="o">=</span><span class="s1">&#39;aodncore.pipeline&#39;</span><span class="p">,</span> <span class="n">package_path</span><span class="o">=</span><span class="s1">&#39;templates&#39;</span><span class="p">):</span>
-        <span class="nb">super</span><span class="p">(</span><span class="n">TemplateRenderer</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">__init__</span><span class="p">()</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">TemplateRenderer</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_package</span> <span class="o">=</span> <span class="n">package</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_loader</span> <span class="o">=</span> <span class="n">jinja2</span><span class="o">.</span><span class="n">PackageLoader</span><span class="p">(</span><span class="n">package</span><span class="p">,</span> <span class="n">package_path</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_env</span> <span class="o">=</span> <span class="n">jinja2</span><span class="o">.</span><span class="n">Environment</span><span class="p">(</span><span class="n">loader</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_loader</span><span class="p">)</span>
@@ -517,6 +566,7 @@
 </pre></div>
 
            </div>
+           
           </div>
           <footer>
   
@@ -529,7 +579,7 @@
 
     </p>
   </div>
-  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
 
 </footer>
 
@@ -548,9 +598,11 @@
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'../../../',
             VERSION:'0.10.1',
+            LANGUAGE:'None',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
-            HAS_SOURCE:  true
+            HAS_SOURCE:  true,
+            SOURCELINK_SUFFIX: '.txt'
         };
     </script>
       <script type="text/javascript" src="../../../_static/jquery.js"></script>
@@ -564,14 +616,13 @@
     <script type="text/javascript" src="../../../_static/js/theme.js"></script>
   
 
-  
-  
   <script type="text/javascript">
       jQuery(function () {
-          SphinxRtdTheme.StickyNav.enable();
+          
+          SphinxRtdTheme.Navigation.enableSticky();
+          
       });
-  </script>
-   
+  </script> 
 
 </body>
 </html>
