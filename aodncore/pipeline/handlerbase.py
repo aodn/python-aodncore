@@ -15,10 +15,10 @@ from .files import PipelineFile, PipelineFileCollection
 from .log import SYSINFO, get_pipeline_logger
 from .schema import validate_check_params, validate_harvest_params, validate_notify_params, validate_resolve_params
 from .statequery import StateQuery
-from .steps import (get_cc_module_versions, get_check_runner, get_harvester_runner, get_notify_runner,
-                    get_resolve_runner, get_store_runner)
-from ..util import (format_exception, get_file_checksum, iter_public_attributes, merge_dicts, validate_bool,
-                    TemporaryDirectory)
+from .steps import (get_check_runner, get_harvester_runner, get_notify_runner, get_resolve_runner, get_store_runner)
+from ..util import (discover_entry_points, format_exception, get_file_checksum, iter_public_attributes, merge_dicts,
+                    validate_bool, TemporaryDirectory)
+from ..version import __version__ as _aodncore_version
 
 __all__ = [
     'HandlerBase'
@@ -264,7 +264,6 @@ class HandlerBase(object):
                  **kwargs):
 
         # property backing variables
-        self._cc_versions = None
         self._config = None
         self._default_addition_publish_type = PipelineFilePublishType.HARVEST_UPLOAD
         self._default_deletion_publish_type = PipelineFilePublishType.DELETE_UNHARVEST
@@ -273,6 +272,7 @@ class HandlerBase(object):
         _, self._file_extension = os.path.splitext(input_file)
         self._file_type = FileType.get_type_from_extension(self.file_extension)
         self._is_archived = False
+        self._module_versions = None
         self._result = HandlerResult.UNKNOWN
         self._start_time = datetime.now()
 
@@ -342,15 +342,6 @@ class HandlerBase(object):
         :rtype: :class:`str`, :class:`None`
         """
         return self._celery_task_name
-
-    @property
-    def cc_versions(self):
-        """Read-only property to access compliance checker module versions
-
-        :return: compliance checker version strings for core and plugin modules
-        :rtype: :class:`dict`
-        """
-        return self._cc_versions
 
     @property
     def config(self):
@@ -428,6 +419,20 @@ class HandlerBase(object):
         :rtype: :class:`str`, :class:`None`
         """
         return self._instance_working_directory
+
+    @property
+    def module_versions(self):
+        """Read-only property to access module versions
+
+        :return: module version strings for aodncore, aodndata and compliance checker modules
+        :rtype: :class:`dict`
+        """
+        if self._module_versions is None:
+            versions = {'aodncore': _aodncore_version}
+            discovered_versions = discover_entry_points('pipeline.module_versions')
+            versions.update(discovered_versions)
+            self._module_versions = versions
+        return self._module_versions
 
     @property
     def notification_results(self):
@@ -564,7 +569,6 @@ class HandlerBase(object):
         self._validate_params()
         self._set_checksum()
         self._check_extension()
-        self._set_cc_versions()
         self._set_path_functions()
         self._init_working_directory()
         self._init_upload_runners()
@@ -802,10 +806,6 @@ class HandlerBase(object):
             self._trigger_complete_success()
         except Exception as e:
             self.logger.exception('error during _handle_success method: {e}'.format(e=format_exception(e)))
-
-    def _set_cc_versions(self):
-        self._cc_versions = get_cc_module_versions()
-        self.logger.sysinfo("get_cc_module_versions -> {versions}".format(versions=self._cc_versions))
 
     def _set_checksum(self):
         try:

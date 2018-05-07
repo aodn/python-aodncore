@@ -35,7 +35,8 @@ REFERENCE_PIPELINE_CONFIG = {
     },
     "pluggable": {
         "handlers_group": "pipeline.handlers",
-        "path_function_group": "pipeline.path_functions"
+        "path_function_group": "pipeline.path_functions",
+        "module_versions_group": "pipeline.module_versions"
     },
     'talend': {'talend_log_dir': '/tmp/probs/doesnt/exist/process'},
     'templating': {

@@ -6,6 +6,10 @@ from setuptools import setup, find_packages
 from aodncore.version import __version__
 
 ENTRY_POINTS = {
+    'pipeline.module_versions': [
+        'compliance-checker = compliance_checker:__version__',
+        'cc-plugin-imos = cc_plugin_imos:__version__'
+    ]
 }
 
 EXTRAS_REQUIRE = {

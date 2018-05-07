@@ -38,11 +38,13 @@ class LazyConfigManager(object):
     Different configuration sources are represented as lazy properties so that it is still efficient to pass an instance
     of this class to several modules, even if they only require one particular type of configuration to operate.
     """
+
     def __init__(self):
         self._celery_application = None
         self._celery_routes = None
         self._discovered_dest_path_functions = None
         self._discovered_handlers = None
+        self._discovered_module_versions = None
         self._watchservice_logging_config = None
         self._worker_logging_config = None
         self._pipeline_config = None
@@ -86,6 +88,14 @@ class LazyConfigManager(object):
             discovered_handlers = discover_entry_points(self.pipeline_config['pluggable']['handlers_group'])
             self._discovered_handlers = discovered_handlers
         return self._discovered_handlers
+
+    @property
+    def discovered_module_versions(self):
+        if self._discovered_module_versions is None:
+            discovered_module_versions = discover_entry_points(
+                self.pipeline_config['pluggable']['module_versions_group'])
+            self._discovered_module_versions = discovered_module_versions
+        return self._discovered_module_versions
 
     @property
     def watchservice_logging_config(self):

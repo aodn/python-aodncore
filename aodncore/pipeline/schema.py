@@ -115,9 +115,10 @@ PIPELINE_CONFIG_SCHEMA = {
             'type': 'object',
             'properties': {
                 'handlers_group': {'type': 'string'},
-                'path_function_group': {'type': 'string'}
+                'path_function_group': {'type': 'string'},
+                'module_versions_group': {'type': 'string'}
             },
-            'required': ['handlers_group', 'path_function_group'],
+            'required': ['handlers_group', 'path_function_group', 'module_versions_group'],
             'additionalProperties': False
         },
         'talend': {
