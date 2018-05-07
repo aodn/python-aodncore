@@ -13,6 +13,8 @@
 
   
   
+  
+  
 
   
 
@@ -23,28 +25,21 @@
   
 
   
-  
     <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
-  
-
-  
-
-  
-        <link rel="index" title="Index"
-              href="genindex.html"/>
-        <link rel="search" title="Search" href="search.html"/>
-    <link rel="top" title="aodncore 0.10.1 documentation" href="index.html"/>
-        <link rel="up" title="aodncore.pipeline package" href="aodncore.pipeline.html"/>
-        <link rel="next" title="aodncore.pipeline.templates package" href="aodncore.pipeline.templates.html"/>
-        <link rel="prev" title="aodncore.pipeline package" href="aodncore.pipeline.html"/> 
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="aodncore.pipeline.templates package" href="aodncore.pipeline.templates.html" />
+    <link rel="prev" title="aodncore.pipeline package" href="aodncore.pipeline.html" /> 
 
   
   <script src="_static/js/modernizr.min.js"></script>
 
 </head>
 
-<body class="wy-body-for-nav" role="document">
+<body class="wy-body-for-nav">
 
+   
   <div class="wy-grid-for-nav">
 
     
@@ -85,16 +80,35 @@
           
             
             
-                <p class="caption"><span class="caption-text">Quick Start:</span></p>
+              
+            
+            
+              <p class="caption"><span class="caption-text">Quick Start:</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="quickstartdoc.html">Query Storage</a></li>
 </ul>
 <p class="caption"><span class="caption-text">User documentation:</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="userdoc.html">Overview</a></li>
-<li class="toctree-l1"><a class="reference internal" href="userdoc.html#state-machine-handler-steps">State machine / handler steps</a></li>
-<li class="toctree-l1"><a class="reference internal" href="userdoc.html#customising-handler-behaviour">Customising handler behaviour</a></li>
-<li class="toctree-l1"><a class="reference internal" href="userdoc.html#attributes">Attributes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="userdoc.html#state-machine-handler-steps">State machine / handler steps</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="userdoc.html#initialise">initialise</a></li>
+<li class="toctree-l2"><a class="reference internal" href="userdoc.html#resolve">resolve</a></li>
+<li class="toctree-l2"><a class="reference internal" href="userdoc.html#preprocess">preprocess</a></li>
+<li class="toctree-l2"><a class="reference internal" href="userdoc.html#check">check</a></li>
+<li class="toctree-l2"><a class="reference internal" href="userdoc.html#process">process</a></li>
+<li class="toctree-l2"><a class="reference internal" href="userdoc.html#publish">publish</a></li>
+<li class="toctree-l2"><a class="reference internal" href="userdoc.html#postprocess">postprocess</a></li>
+<li class="toctree-l2"><a class="reference internal" href="userdoc.html#notify">notify</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="userdoc.html#customising-handler-behaviour">Customising handler behaviour</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="userdoc.html#methods">Methods</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="userdoc.html#attributes">Attributes</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="userdoc.html#class-parameters">Class parameters</a></li>
+</ul>
+</li>
 </ul>
 <p class="caption"><span class="caption-text">Developer documentation:</span></p>
 <ul>
@@ -130,40 +144,61 @@
     <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
 
       
-      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
-        <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
-        <a href="index.html">aodncore</a>
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">aodncore</a>
+        
       </nav>
 
 
       
       <div class="wy-nav-content">
+        
         <div class="rst-content">
+        
           
 
- 
+
+
+
+
+
+
+
+
+
+
+
 
 
 
 <div role="navigation" aria-label="breadcrumbs navigation">
+
   <ul class="wy-breadcrumbs">
-    <li><a href="index.html">Docs</a> &raquo;</li>
-      
+    
+      <li><a href="index.html">Docs</a> &raquo;</li>
+        
           <li><a href="modules.html">aodncore</a> &raquo;</li>
-      
+        
           <li><a href="aodncore.html">aodncore package</a> &raquo;</li>
-      
+        
           <li><a href="aodncore.pipeline.html">aodncore.pipeline package</a> &raquo;</li>
-      
-    <li>aodncore.pipeline.steps package</li>
+        
+      <li>aodncore.pipeline.steps package</li>
+    
+    
       <li class="wy-breadcrumbs-aside">
         
-          
+            
             <a href="_sources/aodncore.pipeline.steps.rst.txt" rel="nofollow"> View page source</a>
           
         
       </li>
+    
   </ul>
+
+  
   <hr/>
 </div>
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
@@ -907,7 +942,7 @@ collection may then be processed in a generic way.</p>
 <p>Handles a simple manifest file which only contains a list of source files or directories, which will have all
 files recursively added to the collection</p>
 <p>File format must be as follows:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span class="o">/</span><span class="n">path</span><span class="o">/</span><span class="n">to</span><span class="o">/</span><span class="n">source</span><span class="o">/</span><span class="n">file1</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">/</span><span class="n">path</span><span class="o">/</span><span class="n">to</span><span class="o">/</span><span class="n">source</span><span class="o">/</span><span class="n">file1</span>
 <span class="o">/</span><span class="n">path</span><span class="o">/</span><span class="n">to</span><span class="o">/</span><span class="n">source</span><span class="o">/</span><span class="n">dir1</span>
 </pre></div>
 </div>
@@ -926,7 +961,7 @@ files recursively added to the collection</p>
 <code class="xref py py-class docutils literal notranslate"><span class="pre">PipelineFile</span></code> objects to add to the collection rather than allowing the collection to generate the
 objects.</p>
 <p>File format must be as follows:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span class="o">/</span><span class="n">path</span><span class="o">/</span><span class="n">to</span><span class="o">/</span><span class="n">source</span><span class="o">/</span><span class="n">file1</span><span class="p">,</span><span class="n">destination</span><span class="o">/</span><span class="n">path</span><span class="o">/</span><span class="k">for</span><span class="o">/</span><span class="n">upload1</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">/</span><span class="n">path</span><span class="o">/</span><span class="n">to</span><span class="o">/</span><span class="n">source</span><span class="o">/</span><span class="n">file1</span><span class="p">,</span><span class="n">destination</span><span class="o">/</span><span class="n">path</span><span class="o">/</span><span class="k">for</span><span class="o">/</span><span class="n">upload1</span>
 <span class="o">/</span><span class="n">path</span><span class="o">/</span><span class="n">to</span><span class="o">/</span><span class="n">source</span><span class="o">/</span><span class="n">file2</span><span class="p">,</span><span class="n">destination</span><span class="o">/</span><span class="n">path</span><span class="o">/</span><span class="k">for</span><span class="o">/</span><span class="n">upload2</span>
 </pre></div>
 </div>
@@ -952,7 +987,7 @@ See the RSYNC man page, <a class="reference external" href="https://download.sam
 <p>File format is expected to have invalid lines(header, whitespace,summary lines), so valid lines are extracted using
 regular expressions to determine the intended action. A file will <em>typically</em> look as follows. The lines should be
 classified as follows (text in square brackets not in actual files):</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span class="n">receiving</span> <span class="n">incremental</span> <span class="n">file</span> <span class="nb">list</span>                                     <span class="p">[</span><span class="n">HEADER</span> <span class="n">LINE</span><span class="p">,</span> <span class="n">IGNORED</span><span class="p">]</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">receiving</span> <span class="n">incremental</span> <span class="n">file</span> <span class="nb">list</span>                                     <span class="p">[</span><span class="n">HEADER</span> <span class="n">LINE</span><span class="p">,</span> <span class="n">IGNORED</span><span class="p">]</span>
 <span class="o">*</span><span class="n">deleting</span>   <span class="n">aoml</span><span class="o">/</span><span class="mi">1900709</span><span class="o">/</span><span class="n">profiles</span><span class="o">/</span>                                  <span class="p">[</span><span class="n">DIRECTORY</span> <span class="n">DELETION</span><span class="p">,</span> <span class="n">IGNORED</span><span class="p">]</span>
 <span class="o">.</span><span class="n">d</span><span class="o">..</span><span class="n">t</span><span class="o">......</span> <span class="n">aoml</span><span class="o">/</span><span class="mi">1900709</span><span class="o">/</span>                                           <span class="p">[</span><span class="n">DIRECTORY</span> <span class="n">ADDITION</span><span class="p">,</span> <span class="n">IGNORED</span><span class="p">]</span>
 <span class="o">&gt;</span><span class="n">f</span><span class="o">.</span><span class="n">st</span><span class="o">......</span> <span class="n">handlers</span><span class="o">/</span><span class="n">dummy</span><span class="o">/</span><span class="n">test_manifest</span><span class="o">.</span><span class="n">nc</span>                         <span class="p">[</span><span class="n">FILE</span> <span class="n">ADDITION</span><span class="p">]</span>
@@ -1006,7 +1041,7 @@ classified as follows (text in square brackets not in actual files):</p>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">aodncore.pipeline.steps.resolve.BaseManifestResolveRunner</span></code></p>
 <p>Handles a simple manifest file which only contains a list of source files</p>
 <p>File format must be as follows:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span class="o">/</span><span class="n">path</span><span class="o">/</span><span class="n">to</span><span class="o">/</span><span class="n">source</span><span class="o">/</span><span class="n">file1</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">/</span><span class="n">path</span><span class="o">/</span><span class="n">to</span><span class="o">/</span><span class="n">source</span><span class="o">/</span><span class="n">file1</span>
 <span class="o">/</span><span class="n">path</span><span class="o">/</span><span class="n">to</span><span class="o">/</span><span class="n">source</span><span class="o">/</span><span class="n">file2</span>
 </pre></div>
 </div>
@@ -1450,15 +1485,16 @@ string</p>
 
 
            </div>
+           
           </div>
           <footer>
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
-        <a href="aodncore.pipeline.templates.html" class="btn btn-neutral float-right" title="aodncore.pipeline.templates package" accesskey="n">Next <span class="fa fa-arrow-circle-right"></span></a>
+        <a href="aodncore.pipeline.templates.html" class="btn btn-neutral float-right" title="aodncore.pipeline.templates package" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
-        <a href="aodncore.pipeline.html" class="btn btn-neutral" title="aodncore.pipeline package" accesskey="p"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+        <a href="aodncore.pipeline.html" class="btn btn-neutral" title="aodncore.pipeline package" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
       
     </div>
   
@@ -1471,7 +1507,7 @@ string</p>
 
     </p>
   </div>
-  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
 
 </footer>
 
@@ -1490,9 +1526,11 @@ string</p>
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'./',
             VERSION:'0.10.1',
+            LANGUAGE:'None',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
-            HAS_SOURCE:  true
+            HAS_SOURCE:  true,
+            SOURCELINK_SUFFIX: '.txt'
         };
     </script>
       <script type="text/javascript" src="_static/jquery.js"></script>
@@ -1506,14 +1544,13 @@ string</p>
     <script type="text/javascript" src="_static/js/theme.js"></script>
   
 
-  
-  
   <script type="text/javascript">
       jQuery(function () {
-          SphinxRtdTheme.StickyNav.enable();
+          
+          SphinxRtdTheme.Navigation.enableSticky();
+          
       });
-  </script>
-   
+  </script> 
 
 </body>
 </html>

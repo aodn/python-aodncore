@@ -13,6 +13,8 @@
 
   
   
+  
+  
 
   
 
@@ -23,28 +25,21 @@
   
 
   
-  
     <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
-  
-
-  
-
-  
-        <link rel="index" title="Index"
-              href="genindex.html"/>
-        <link rel="search" title="Search" href="search.html"/>
-    <link rel="top" title="aodncore 0.10.1 documentation" href="index.html"/>
-        <link rel="up" title="aodncore package" href="aodncore.html"/>
-        <link rel="next" title="aodncore.pipeline.steps package" href="aodncore.pipeline.steps.html"/>
-        <link rel="prev" title="aodncore.common package" href="aodncore.common.html"/> 
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="aodncore.pipeline.steps package" href="aodncore.pipeline.steps.html" />
+    <link rel="prev" title="aodncore.common package" href="aodncore.common.html" /> 
 
   
   <script src="_static/js/modernizr.min.js"></script>
 
 </head>
 
-<body class="wy-body-for-nav" role="document">
+<body class="wy-body-for-nav">
 
+   
   <div class="wy-grid-for-nav">
 
     
@@ -85,16 +80,35 @@
           
             
             
-                <p class="caption"><span class="caption-text">Quick Start:</span></p>
+              
+            
+            
+              <p class="caption"><span class="caption-text">Quick Start:</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="quickstartdoc.html">Query Storage</a></li>
 </ul>
 <p class="caption"><span class="caption-text">User documentation:</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="userdoc.html">Overview</a></li>
-<li class="toctree-l1"><a class="reference internal" href="userdoc.html#state-machine-handler-steps">State machine / handler steps</a></li>
-<li class="toctree-l1"><a class="reference internal" href="userdoc.html#customising-handler-behaviour">Customising handler behaviour</a></li>
-<li class="toctree-l1"><a class="reference internal" href="userdoc.html#attributes">Attributes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="userdoc.html#state-machine-handler-steps">State machine / handler steps</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="userdoc.html#initialise">initialise</a></li>
+<li class="toctree-l2"><a class="reference internal" href="userdoc.html#resolve">resolve</a></li>
+<li class="toctree-l2"><a class="reference internal" href="userdoc.html#preprocess">preprocess</a></li>
+<li class="toctree-l2"><a class="reference internal" href="userdoc.html#check">check</a></li>
+<li class="toctree-l2"><a class="reference internal" href="userdoc.html#process">process</a></li>
+<li class="toctree-l2"><a class="reference internal" href="userdoc.html#publish">publish</a></li>
+<li class="toctree-l2"><a class="reference internal" href="userdoc.html#postprocess">postprocess</a></li>
+<li class="toctree-l2"><a class="reference internal" href="userdoc.html#notify">notify</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="userdoc.html#customising-handler-behaviour">Customising handler behaviour</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="userdoc.html#methods">Methods</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="userdoc.html#attributes">Attributes</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="userdoc.html#class-parameters">Class parameters</a></li>
+</ul>
+</li>
 </ul>
 <p class="caption"><span class="caption-text">Developer documentation:</span></p>
 <ul>
@@ -130,38 +144,59 @@
     <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
 
       
-      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
-        <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
-        <a href="index.html">aodncore</a>
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">aodncore</a>
+        
       </nav>
 
 
       
       <div class="wy-nav-content">
+        
         <div class="rst-content">
+        
           
 
- 
+
+
+
+
+
+
+
+
+
+
+
 
 
 
 <div role="navigation" aria-label="breadcrumbs navigation">
+
   <ul class="wy-breadcrumbs">
-    <li><a href="index.html">Docs</a> &raquo;</li>
-      
+    
+      <li><a href="index.html">Docs</a> &raquo;</li>
+        
           <li><a href="modules.html">aodncore</a> &raquo;</li>
-      
+        
           <li><a href="aodncore.html">aodncore package</a> &raquo;</li>
-      
-    <li>aodncore.pipeline package</li>
+        
+      <li>aodncore.pipeline package</li>
+    
+    
       <li class="wy-breadcrumbs-aside">
         
-          
+            
             <a href="_sources/aodncore.pipeline.rst.txt" rel="nofollow"> View page source</a>
           
         
       </li>
+    
   </ul>
+
+  
   <hr/>
 </div>
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
@@ -228,13 +263,13 @@ project.</p>
 <p>Each enum member may have it’s attributes accessed by name when required for comparisons and filtering, e.g.</p>
 <ul>
 <li><p class="first">lookup the extension for PNG file types in general:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span class="n">FileType</span><span class="o">.</span><span class="n">PNG</span><span class="o">.</span><span class="n">extension</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">FileType</span><span class="o">.</span><span class="n">PNG</span><span class="o">.</span><span class="n">extension</span>
 <span class="s1">&#39;.png&#39;</span>
 </pre></div>
 </div>
 </li>
 <li><p class="first">assign a type attribute to an object, and query the type-specific values directly from the object:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span class="k">class</span> <span class="nc">Object</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="k">class</span> <span class="nc">Object</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
     <span class="k">pass</span>
 
 <span class="n">o</span> <span class="o">=</span> <span class="n">Object</span><span class="p">()</span>
@@ -384,7 +419,7 @@ occur before it is considered “published”</p>
 to the <code class="xref py py-meth docutils literal notranslate"><span class="pre">__init__()</span></code> for each member (since confusingly, each <code class="xref py py-class docutils literal notranslate"><span class="pre">Enum</span></code> member is an <em>instance</em> of this
 class).</p>
 <p>Each member’s valid is therefore a tuple of <code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code> values representing the following flags:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span class="p">(</span><span class="n">is_addition_type</span><span class="p">,</span> <span class="n">is_deletion_type</span><span class="p">,</span> <span class="n">is_archive_type</span><span class="p">,</span> <span class="n">is_store_type</span><span class="p">,</span> <span class="n">is_harvest_type</span><span class="p">)</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="p">(</span><span class="n">is_addition_type</span><span class="p">,</span> <span class="n">is_deletion_type</span><span class="p">,</span> <span class="n">is_archive_type</span><span class="p">,</span> <span class="n">is_store_type</span><span class="p">,</span> <span class="n">is_harvest_type</span><span class="p">)</span>
 </pre></div>
 </div>
 <dl class="attribute">
@@ -780,7 +815,7 @@ a file to be published. The idea is to define the common functionality
 here, then create subclasses to customise for each specific incoming
 handler.</p>
 <p>Expected use:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span class="k">class</span> <span class="nc">MyFileClassifier</span><span class="p">(</span><span class="n">FileClassifier</span><span class="p">):</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="k">class</span> <span class="nc">MyFileClassifier</span><span class="p">(</span><span class="n">FileClassifier</span><span class="p">):</span>
     <span class="k">def</span> <span class="nf">dest_path</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">input_file</span><span class="p">):</span>
         <span class="n">path</span> <span class="o">=</span> <span class="o">&lt;</span><span class="n">case</span><span class="o">-</span><span class="n">specific</span> <span class="n">logic</span><span class="o">&gt;</span> 
         <span class="o">...</span>
@@ -2389,7 +2424,7 @@ routing/queuing events.</p>
 the entry point being the <code class="xref py py-mod docutils literal notranslate"><span class="pre">aodncore.pipeline.watchservice</span></code> module.</p>
 <p>This means that once <a class="reference internal" href="aodncore.html#module-aodncore" title="aodncore"><code class="xref py py-mod docutils literal notranslate"><span class="pre">aodncore</span></code></a> is installed, running the
 watchservice is simply a matter of running the following:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span class="n">python</span> <span class="o">-</span><span class="n">m</span> <span class="n">aodncore</span><span class="o">.</span><span class="n">pipeline</span><span class="o">.</span><span class="n">watchservice</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">python</span> <span class="o">-</span><span class="n">m</span> <span class="n">aodncore</span><span class="o">.</span><span class="n">pipeline</span><span class="o">.</span><span class="n">watchservice</span>
 </pre></div>
 </div>
 <p>This is typically run as an operating system service by something like supervisord, but can be run from the command-line
@@ -2580,13 +2615,13 @@ for debugging.</p>
 <p>Each enum member may have it’s attributes accessed by name when required for comparisons and filtering, e.g.</p>
 <ul>
 <li><p class="first">lookup the extension for PNG file types in general:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span class="n">FileType</span><span class="o">.</span><span class="n">PNG</span><span class="o">.</span><span class="n">extension</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">FileType</span><span class="o">.</span><span class="n">PNG</span><span class="o">.</span><span class="n">extension</span>
 <span class="s1">&#39;.png&#39;</span>
 </pre></div>
 </div>
 </li>
 <li><p class="first">assign a type attribute to an object, and query the type-specific values directly from the object:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span class="k">class</span> <span class="nc">Object</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="k">class</span> <span class="nc">Object</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
     <span class="k">pass</span>
 
 <span class="n">o</span> <span class="o">=</span> <span class="n">Object</span><span class="p">()</span>
@@ -4020,7 +4055,7 @@ occur before it is considered “published”</p>
 to the <code class="xref py py-meth docutils literal notranslate"><span class="pre">__init__()</span></code> for each member (since confusingly, each <code class="xref py py-class docutils literal notranslate"><span class="pre">Enum</span></code> member is an <em>instance</em> of this
 class).</p>
 <p>Each member’s valid is therefore a tuple of <code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code> values representing the following flags:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span class="p">(</span><span class="n">is_addition_type</span><span class="p">,</span> <span class="n">is_deletion_type</span><span class="p">,</span> <span class="n">is_archive_type</span><span class="p">,</span> <span class="n">is_store_type</span><span class="p">,</span> <span class="n">is_harvest_type</span><span class="p">)</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="p">(</span><span class="n">is_addition_type</span><span class="p">,</span> <span class="n">is_deletion_type</span><span class="p">,</span> <span class="n">is_archive_type</span><span class="p">,</span> <span class="n">is_store_type</span><span class="p">,</span> <span class="n">is_harvest_type</span><span class="p">)</span>
 </pre></div>
 </div>
 <dl class="attribute">
@@ -4090,15 +4125,16 @@ class).</p>
 
 
            </div>
+           
           </div>
           <footer>
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
-        <a href="aodncore.pipeline.steps.html" class="btn btn-neutral float-right" title="aodncore.pipeline.steps package" accesskey="n">Next <span class="fa fa-arrow-circle-right"></span></a>
+        <a href="aodncore.pipeline.steps.html" class="btn btn-neutral float-right" title="aodncore.pipeline.steps package" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
-        <a href="aodncore.common.html" class="btn btn-neutral" title="aodncore.common package" accesskey="p"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+        <a href="aodncore.common.html" class="btn btn-neutral" title="aodncore.common package" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
       
     </div>
   
@@ -4111,7 +4147,7 @@ class).</p>
 
     </p>
   </div>
-  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
 
 </footer>
 
@@ -4130,9 +4166,11 @@ class).</p>
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'./',
             VERSION:'0.10.1',
+            LANGUAGE:'None',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
-            HAS_SOURCE:  true
+            HAS_SOURCE:  true,
+            SOURCELINK_SUFFIX: '.txt'
         };
     </script>
       <script type="text/javascript" src="_static/jquery.js"></script>
@@ -4146,14 +4184,13 @@ class).</p>
     <script type="text/javascript" src="_static/js/theme.js"></script>
   
 
-  
-  
   <script type="text/javascript">
       jQuery(function () {
-          SphinxRtdTheme.StickyNav.enable();
+          
+          SphinxRtdTheme.Navigation.enableSticky();
+          
       });
-  </script>
-   
+  </script> 
 
 </body>
 </html>

@@ -13,6 +13,8 @@
 
   
   
+  
+  
 
   
 
@@ -23,26 +25,19 @@
   
 
   
-  
     <link rel="stylesheet" href="../../../../_static/css/theme.css" type="text/css" />
-  
-
-  
-
-  
-        <link rel="index" title="Index"
-              href="../../../../genindex.html"/>
-        <link rel="search" title="Search" href="../../../../search.html"/>
-    <link rel="top" title="aodncore 0.10.1 documentation" href="../../../../index.html"/>
-        <link rel="up" title="Module code" href="../../../index.html"/> 
+  <link rel="stylesheet" href="../../../../_static/pygments.css" type="text/css" />
+    <link rel="index" title="Index" href="../../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../../search.html" /> 
 
   
   <script src="../../../../_static/js/modernizr.min.js"></script>
 
 </head>
 
-<body class="wy-body-for-nav" role="document">
+<body class="wy-body-for-nav">
 
+   
   <div class="wy-grid-for-nav">
 
     
@@ -83,16 +78,35 @@
           
             
             
-                <p class="caption"><span class="caption-text">Quick Start:</span></p>
+              
+            
+            
+              <p class="caption"><span class="caption-text">Quick Start:</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../../quickstartdoc.html">Query Storage</a></li>
 </ul>
 <p class="caption"><span class="caption-text">User documentation:</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../../userdoc.html">Overview</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../userdoc.html#state-machine-handler-steps">State machine / handler steps</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../userdoc.html#customising-handler-behaviour">Customising handler behaviour</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../userdoc.html#attributes">Attributes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../userdoc.html#state-machine-handler-steps">State machine / handler steps</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../../userdoc.html#initialise">initialise</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../userdoc.html#resolve">resolve</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../userdoc.html#preprocess">preprocess</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../userdoc.html#check">check</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../userdoc.html#process">process</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../userdoc.html#publish">publish</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../userdoc.html#postprocess">postprocess</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../userdoc.html#notify">notify</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../userdoc.html#customising-handler-behaviour">Customising handler behaviour</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../../userdoc.html#methods">Methods</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../userdoc.html#attributes">Attributes</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../../userdoc.html#class-parameters">Class parameters</a></li>
+</ul>
+</li>
 </ul>
 <p class="caption"><span class="caption-text">Developer documentation:</span></p>
 <ul>
@@ -100,7 +114,23 @@
 </ul>
 <p class="caption"><span class="caption-text">Module contents:</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../../modules.html">aodncore</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../modules.html">aodncore</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../../aodncore.html">aodncore package</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../../aodncore.html#subpackages">Subpackages</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../../aodncore.common.html">aodncore.common package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../aodncore.pipeline.html">aodncore.pipeline package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../aodncore.testlib.html">aodncore.testlib package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../aodncore.util.html">aodncore.util package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../aodncore.vocab.html">aodncore.vocab package</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../aodncore.html#submodules">Submodules</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../aodncore.html#module-aodncore.version">aodncore.version module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../aodncore.html#module-aodncore">Module contents</a></li>
+</ul>
+</li>
+</ul>
+</li>
 </ul>
 
             
@@ -112,41 +142,60 @@
     <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
 
       
-      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
-        <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
-        <a href="../../../../index.html">aodncore</a>
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../../index.html">aodncore</a>
+        
       </nav>
 
 
       
       <div class="wy-nav-content">
+        
         <div class="rst-content">
+        
           
+
+
+
+
+
+
+
+
+
+
 
 
 
 
 
 <div role="navigation" aria-label="breadcrumbs navigation">
+
   <ul class="wy-breadcrumbs">
-    <li><a href="../../../../index.html">Docs</a> &raquo;</li>
-      
+    
+      <li><a href="../../../../index.html">Docs</a> &raquo;</li>
+        
           <li><a href="../../../index.html">Module code</a> &raquo;</li>
-      
-    <li>aodncore.pipeline.steps.harvest</li>
+        
+      <li>aodncore.pipeline.steps.harvest</li>
+    
+    
       <li class="wy-breadcrumbs-aside">
         
-          
-        
       </li>
+    
   </ul>
+
+  
   <hr/>
 </div>
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
   <h1>Source code for aodncore.pipeline.steps.harvest</h1><div class="highlight"><pre>
-<span class="sd">&quot;&quot;&quot;This module provides the step runner classes for the &quot;harvest&quot; step, which is a sub-step of the :ref:`publish` step.</span>
+<span></span><span class="sd">&quot;&quot;&quot;This module provides the step runner classes for the &quot;harvest&quot; step, which is a sub-step of the :ref:`publish` step.</span>
 
 <span class="sd">Harvesting is performed by a :py:class:`BaseHarvesterRunner` class.</span>
 
@@ -197,11 +246,11 @@
     <span class="k">if</span> <span class="n">harvester_name</span> <span class="o">==</span> <span class="s1">&#39;talend&#39;</span><span class="p">:</span>
         <span class="k">return</span> <span class="n">TalendHarvesterRunner</span><span class="p">(</span><span class="n">store_runner</span><span class="p">,</span> <span class="n">harvest_params</span><span class="p">,</span> <span class="n">tmp_base_dir</span><span class="p">,</span> <span class="n">config</span><span class="p">,</span> <span class="n">logger</span><span class="p">)</span>
     <span class="k">else</span><span class="p">:</span>
-        <span class="k">raise</span> <span class="n">InvalidHarvesterError</span><span class="p">(</span><span class="s2">&quot;invalid harvester &#39;{name}&#39;&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="n">harvester_name</span><span class="p">))</span></div>
+        <span class="k">raise</span> <span class="n">InvalidHarvesterError</span><span class="p">(</span><span class="s2">&quot;invalid harvester &#39;</span><span class="si">{name}</span><span class="s2">&#39;&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="n">harvester_name</span><span class="p">))</span></div>
 
 
 <div class="viewcode-block" id="HarvesterMap"><a class="viewcode-back" href="../../../../aodncore.pipeline.steps.html#aodncore.pipeline.steps.harvest.HarvesterMap">[docs]</a><span class="k">class</span> <span class="nc">HarvesterMap</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
-    <span class="n">__slots__</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;_map&#39;</span><span class="p">]</span>
+    <span class="vm">__slots__</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;_map&#39;</span><span class="p">]</span>
 
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_map</span> <span class="o">=</span> <span class="n">OrderedDict</span><span class="p">()</span>
@@ -278,7 +327,7 @@
 
 
 <div class="viewcode-block" id="TriggerEvent"><a class="viewcode-back" href="../../../../aodncore.pipeline.steps.html#aodncore.pipeline.steps.harvest.TriggerEvent">[docs]</a><span class="k">class</span> <span class="nc">TriggerEvent</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
-    <span class="n">__slots__</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;_matched_files&#39;</span><span class="p">,</span> <span class="s1">&#39;_extra_params&#39;</span><span class="p">]</span>
+    <span class="vm">__slots__</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;_matched_files&#39;</span><span class="p">,</span> <span class="s1">&#39;_extra_params&#39;</span><span class="p">]</span>
 
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">matched_files</span><span class="p">,</span> <span class="n">extra_params</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="n">validate_pipelinefilecollection</span><span class="p">(</span><span class="n">matched_files</span><span class="p">)</span>
@@ -297,7 +346,7 @@
 
 <div class="viewcode-block" id="create_input_file_list"><a class="viewcode-back" href="../../../../aodncore.pipeline.steps.html#aodncore.pipeline.steps.harvest.create_input_file_list">[docs]</a><span class="k">def</span> <span class="nf">create_input_file_list</span><span class="p">(</span><span class="n">talend_base_dir</span><span class="p">,</span> <span class="n">matched_file_list</span><span class="p">):</span>
     <span class="k">with</span> <span class="n">NamedTemporaryFile</span><span class="p">(</span><span class="n">mode</span><span class="o">=</span><span class="s1">&#39;w&#39;</span><span class="p">,</span> <span class="n">prefix</span><span class="o">=</span><span class="s1">&#39;file_list&#39;</span><span class="p">,</span> <span class="n">suffix</span><span class="o">=</span><span class="s1">&#39;.txt&#39;</span><span class="p">,</span> <span class="nb">dir</span><span class="o">=</span><span class="n">talend_base_dir</span><span class="p">,</span> <span class="n">delete</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
-        <span class="n">f</span><span class="o">.</span><span class="n">writelines</span><span class="p">(</span><span class="s2">&quot;{line}{sep}&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">line</span><span class="o">=</span><span class="n">l</span><span class="p">,</span> <span class="n">sep</span><span class="o">=</span><span class="n">os</span><span class="o">.</span><span class="n">linesep</span><span class="p">)</span> <span class="k">for</span> <span class="n">l</span> <span class="ow">in</span> <span class="n">matched_file_list</span><span class="p">)</span>
+        <span class="n">f</span><span class="o">.</span><span class="n">writelines</span><span class="p">(</span><span class="s2">&quot;</span><span class="si">{line}{sep}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">line</span><span class="o">=</span><span class="n">l</span><span class="p">,</span> <span class="n">sep</span><span class="o">=</span><span class="n">os</span><span class="o">.</span><span class="n">linesep</span><span class="p">)</span> <span class="k">for</span> <span class="n">l</span> <span class="ow">in</span> <span class="n">matched_file_list</span><span class="p">)</span>
 
     <span class="k">return</span> <span class="n">f</span><span class="o">.</span><span class="n">name</span></div>
 
@@ -328,7 +377,7 @@
     <span class="k">if</span> <span class="ow">not</span> <span class="n">harvester_map</span><span class="o">.</span><span class="n">is_collection_superset</span><span class="p">(</span><span class="n">pipeline_files</span><span class="p">):</span>
         <span class="n">unmapped_files</span> <span class="o">=</span> <span class="p">[</span><span class="n">m</span><span class="o">.</span><span class="n">src_path</span> <span class="k">for</span> <span class="n">m</span> <span class="ow">in</span> <span class="n">pipeline_files</span><span class="o">.</span><span class="n">difference</span><span class="p">(</span><span class="n">harvester_map</span><span class="o">.</span><span class="n">all_pipeline_files</span><span class="p">)]</span>
         <span class="k">raise</span> <span class="n">UnmappedFilesError</span><span class="p">(</span>
-            <span class="s2">&quot;no matching harvester(s) found for: {unmapped_files}&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">unmapped_files</span><span class="o">=</span><span class="n">unmapped_files</span><span class="p">))</span></div>
+            <span class="s2">&quot;no matching harvester(s) found for: </span><span class="si">{unmapped_files}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">unmapped_files</span><span class="o">=</span><span class="n">unmapped_files</span><span class="p">))</span></div>
 
 
 <span class="k">class</span> <span class="nc">BaseHarvesterRunner</span><span class="p">(</span><span class="n">BaseStepRunner</span><span class="p">):</span>
@@ -347,7 +396,7 @@
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">storage_broker</span><span class="p">,</span> <span class="n">harvest_params</span><span class="p">,</span> <span class="n">tmp_base_dir</span><span class="p">,</span> <span class="n">config</span><span class="p">,</span> <span class="n">logger</span><span class="p">,</span> <span class="n">deletion</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
-        <span class="nb">super</span><span class="p">(</span><span class="n">TalendHarvesterRunner</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">__init__</span><span class="p">(</span><span class="n">config</span><span class="p">,</span> <span class="n">logger</span><span class="p">)</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">TalendHarvesterRunner</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">config</span><span class="p">,</span> <span class="n">logger</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">harvest_params</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">harvest_params</span> <span class="o">=</span> <span class="p">{}</span>
 
@@ -369,7 +418,7 @@
         <span class="n">deletions</span> <span class="o">=</span> <span class="n">pipeline_files</span><span class="o">.</span><span class="n">filter_by_bool_attribute</span><span class="p">(</span><span class="s1">&#39;pending_harvest_deletion&#39;</span><span class="p">)</span>
         <span class="n">additions</span> <span class="o">=</span> <span class="n">pipeline_files</span><span class="o">.</span><span class="n">filter_by_bool_attribute</span><span class="p">(</span><span class="s1">&#39;pending_harvest_addition&#39;</span><span class="p">)</span>
 
-        <span class="bp">self</span><span class="o">.</span><span class="n">_logger</span><span class="o">.</span><span class="n">sysinfo</span><span class="p">(</span><span class="s2">&quot;harvesting slice size: {slice_size}&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">slice_size</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">slice_size</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_logger</span><span class="o">.</span><span class="n">sysinfo</span><span class="p">(</span><span class="s2">&quot;harvesting slice size: </span><span class="si">{slice_size}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">slice_size</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">slice_size</span><span class="p">))</span>
         <span class="n">deletion_slices</span> <span class="o">=</span> <span class="n">deletions</span><span class="o">.</span><span class="n">get_slices</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">slice_size</span><span class="p">)</span>
         <span class="n">addition_slices</span> <span class="o">=</span> <span class="n">additions</span><span class="o">.</span><span class="n">get_slices</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">slice_size</span><span class="p">)</span>
 
@@ -400,7 +449,7 @@
                             <span class="k">if</span> <span class="n">matched_files_for_pattern</span><span class="p">:</span>
                                 <span class="k">for</span> <span class="n">mf</span> <span class="ow">in</span> <span class="n">matched_files_for_pattern</span><span class="p">:</span>
                                     <span class="bp">self</span><span class="o">.</span><span class="n">_logger</span><span class="o">.</span><span class="n">sysinfo</span><span class="p">(</span>
-                                        <span class="s2">&quot;harvester &#39;{harvester}&#39; matched file: {mf.src_path}&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                                        <span class="s2">&quot;harvester &#39;</span><span class="si">{harvester}</span><span class="s2">&#39; matched file: </span><span class="si">{mf.src_path}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
                                             <span class="n">harvester</span><span class="o">=</span><span class="n">harvester</span><span class="p">,</span> <span class="n">mf</span><span class="o">=</span><span class="n">mf</span><span class="p">))</span>
 
                                 <span class="n">matched_files</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">matched_files_for_pattern</span><span class="p">,</span> <span class="n">overwrite</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
@@ -430,7 +479,7 @@
         <span class="n">talend_exec</span> <span class="o">=</span> <span class="n">converted_exec</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">base</span><span class="o">=</span><span class="n">talend_base_dir</span><span class="p">,</span> <span class="n">file_list</span><span class="o">=</span><span class="n">input_file_list</span><span class="p">,</span>
                                             <span class="n">log_dir</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_config</span><span class="o">.</span><span class="n">pipeline_config</span><span class="p">[</span><span class="s1">&#39;talend&#39;</span><span class="p">][</span><span class="s1">&#39;talend_log_dir&#39;</span><span class="p">])</span>
 
-        <span class="bp">self</span><span class="o">.</span><span class="n">_logger</span><span class="o">.</span><span class="n">sysinfo</span><span class="p">(</span><span class="s2">&quot;executing {talend_exec}&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">talend_exec</span><span class="o">=</span><span class="n">talend_exec</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_logger</span><span class="o">.</span><span class="n">sysinfo</span><span class="p">(</span><span class="s2">&quot;executing </span><span class="si">{talend_exec}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">talend_exec</span><span class="o">=</span><span class="n">talend_exec</span><span class="p">))</span>
 
         <span class="n">p</span> <span class="o">=</span> <span class="n">SystemProcess</span><span class="p">(</span><span class="n">talend_exec</span><span class="p">,</span> <span class="n">shell</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 
@@ -458,13 +507,13 @@
         <span class="n">validate_harvestermap</span><span class="p">(</span><span class="n">harvester_map</span><span class="p">)</span>
 
         <span class="k">for</span> <span class="n">harvester</span><span class="p">,</span> <span class="n">events</span> <span class="ow">in</span> <span class="n">harvester_map</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;running deletions for harvester &#39;{harvester}&#39;&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">harvester</span><span class="o">=</span><span class="n">harvester</span><span class="p">))</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;running deletions for harvester &#39;</span><span class="si">{harvester}</span><span class="s2">&#39;&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">harvester</span><span class="o">=</span><span class="n">harvester</span><span class="p">))</span>
 
             <span class="k">for</span> <span class="n">event</span> <span class="ow">in</span> <span class="n">events</span><span class="p">:</span>
                 <span class="k">with</span> <span class="n">TemporaryDirectory</span><span class="p">(</span><span class="n">prefix</span><span class="o">=</span><span class="s1">&#39;talend_base&#39;</span><span class="p">,</span> <span class="nb">dir</span><span class="o">=</span><span class="n">tmp_base_dir</span><span class="p">)</span> <span class="k">as</span> <span class="n">talend_base_dir</span><span class="p">:</span>
                     <span class="n">harvester_command</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_config</span><span class="o">.</span><span class="n">trigger_config</span><span class="p">[</span><span class="n">harvester</span><span class="p">][</span><span class="s1">&#39;exec&#39;</span><span class="p">]</span>
                     <span class="k">if</span> <span class="n">event</span><span class="o">.</span><span class="n">extra_params</span><span class="p">:</span>
-                        <span class="n">harvester_command</span> <span class="o">=</span> <span class="s2">&quot;{harvester_command} {extra_params}&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                        <span class="n">harvester_command</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="si">{harvester_command}</span><span class="s2"> </span><span class="si">{extra_params}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
                             <span class="n">harvester_command</span><span class="o">=</span><span class="n">harvester_command</span><span class="p">,</span> <span class="n">extra_params</span><span class="o">=</span><span class="n">event</span><span class="o">.</span><span class="n">extra_params</span><span class="p">)</span>
 
                     <span class="bp">self</span><span class="o">.</span><span class="n">execute_talend</span><span class="p">(</span><span class="n">harvester_command</span><span class="p">,</span> <span class="n">event</span><span class="o">.</span><span class="n">matched_files</span><span class="p">,</span> <span class="n">talend_base_dir</span><span class="p">)</span>
@@ -483,13 +532,13 @@
         <span class="n">validate_harvestermap</span><span class="p">(</span><span class="n">harvester_map</span><span class="p">)</span>
 
         <span class="k">for</span> <span class="n">harvester</span><span class="p">,</span> <span class="n">events</span> <span class="ow">in</span> <span class="n">harvester_map</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;running undo deletions for harvester &#39;{harvester}&#39;&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">harvester</span><span class="o">=</span><span class="n">harvester</span><span class="p">))</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;running undo deletions for harvester &#39;</span><span class="si">{harvester}</span><span class="s2">&#39;&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">harvester</span><span class="o">=</span><span class="n">harvester</span><span class="p">))</span>
 
             <span class="k">for</span> <span class="n">event</span> <span class="ow">in</span> <span class="n">events</span><span class="p">:</span>
                 <span class="k">with</span> <span class="n">TemporaryDirectory</span><span class="p">(</span><span class="n">prefix</span><span class="o">=</span><span class="s1">&#39;talend_base&#39;</span><span class="p">,</span> <span class="nb">dir</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">tmp_base_dir</span><span class="p">)</span> <span class="k">as</span> <span class="n">talend_base_dir</span><span class="p">:</span>
                     <span class="n">harvester_command</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_config</span><span class="o">.</span><span class="n">trigger_config</span><span class="p">[</span><span class="n">harvester</span><span class="p">][</span><span class="s1">&#39;exec&#39;</span><span class="p">]</span>
                     <span class="k">if</span> <span class="n">event</span><span class="o">.</span><span class="n">extra_params</span><span class="p">:</span>
-                        <span class="n">harvester_command</span> <span class="o">=</span> <span class="s2">&quot;{harvester_command} {extra_params}&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                        <span class="n">harvester_command</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="si">{harvester_command}</span><span class="s2"> </span><span class="si">{extra_params}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
                             <span class="n">harvester_command</span><span class="o">=</span><span class="n">harvester_command</span><span class="p">,</span> <span class="n">extra_params</span><span class="o">=</span><span class="n">event</span><span class="o">.</span><span class="n">extra_params</span><span class="p">)</span>
 
                     <span class="bp">self</span><span class="o">.</span><span class="n">execute_talend</span><span class="p">(</span><span class="n">harvester_command</span><span class="p">,</span> <span class="n">event</span><span class="o">.</span><span class="n">matched_files</span><span class="p">,</span> <span class="n">talend_base_dir</span><span class="p">,</span>
@@ -511,7 +560,7 @@
         <span class="n">validate_harvestermap</span><span class="p">(</span><span class="n">harvester_map</span><span class="p">)</span>
 
         <span class="k">for</span> <span class="n">harvester</span><span class="p">,</span> <span class="n">events</span> <span class="ow">in</span> <span class="n">harvester_map</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;running additions for harvester &#39;{harvester}&#39;&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">harvester</span><span class="o">=</span><span class="n">harvester</span><span class="p">))</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;running additions for harvester &#39;</span><span class="si">{harvester}</span><span class="s2">&#39;&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">harvester</span><span class="o">=</span><span class="n">harvester</span><span class="p">))</span>
 
             <span class="k">for</span> <span class="n">event</span> <span class="ow">in</span> <span class="n">events</span><span class="p">:</span>
                 <span class="k">with</span> <span class="n">TemporaryDirectory</span><span class="p">(</span><span class="n">prefix</span><span class="o">=</span><span class="s1">&#39;talend_base&#39;</span><span class="p">,</span> <span class="nb">dir</span><span class="o">=</span><span class="n">tmp_base_dir</span><span class="p">)</span> <span class="k">as</span> <span class="n">talend_base_dir</span><span class="p">:</span>
@@ -520,7 +569,7 @@
 
                     <span class="n">harvester_command</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_config</span><span class="o">.</span><span class="n">trigger_config</span><span class="p">[</span><span class="n">harvester</span><span class="p">][</span><span class="s1">&#39;exec&#39;</span><span class="p">]</span>
                     <span class="k">if</span> <span class="n">event</span><span class="o">.</span><span class="n">extra_params</span><span class="p">:</span>
-                        <span class="n">harvester_command</span> <span class="o">=</span> <span class="s2">&quot;{harvester_command} {extra_params}&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                        <span class="n">harvester_command</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="si">{harvester_command}</span><span class="s2"> </span><span class="si">{extra_params}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
                             <span class="n">harvester_command</span><span class="o">=</span><span class="n">harvester_command</span><span class="p">,</span> <span class="n">extra_params</span><span class="o">=</span><span class="n">event</span><span class="o">.</span><span class="n">extra_params</span><span class="p">)</span>
 
                     <span class="k">try</span><span class="p">:</span>
@@ -551,6 +600,7 @@
 </pre></div>
 
            </div>
+           
           </div>
           <footer>
   
@@ -563,7 +613,7 @@
 
     </p>
   </div>
-  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
 
 </footer>
 
@@ -582,9 +632,11 @@
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'../../../../',
             VERSION:'0.10.1',
+            LANGUAGE:'None',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
-            HAS_SOURCE:  true
+            HAS_SOURCE:  true,
+            SOURCELINK_SUFFIX: '.txt'
         };
     </script>
       <script type="text/javascript" src="../../../../_static/jquery.js"></script>
@@ -598,14 +650,13 @@
     <script type="text/javascript" src="../../../../_static/js/theme.js"></script>
   
 
-  
-  
   <script type="text/javascript">
       jQuery(function () {
-          SphinxRtdTheme.StickyNav.enable();
+          
+          SphinxRtdTheme.Navigation.enableSticky();
+          
       });
-  </script>
-   
+  </script> 
 
 </body>
 </html>
