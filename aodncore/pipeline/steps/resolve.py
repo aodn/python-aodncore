@@ -194,9 +194,6 @@ class RsyncManifestResolveRunner(BaseManifestResolveRunner):
     @classmethod
     def classify_line(cls, line):
 
-        if line == cls.HEADER_LINE:
-            return RsyncManifestLine(None, RsyncLineType.HEADER)
-
         match = cls.RECORD_PATTERN.match(line)
         try:
             matchdict = match.groupdict()
@@ -212,6 +209,8 @@ class RsyncManifestResolveRunner(BaseManifestResolveRunner):
         elif cls.DELETE_PATTERN.match(operation):
             delete_type = RsyncLineType.DIRECTORY_DELETE if path.endswith('/') else RsyncLineType.FILE_DELETE
             return RsyncManifestLine(path, delete_type)
+        elif line == cls.HEADER_LINE:
+            return RsyncManifestLine(None, RsyncLineType.HEADER)
         else:
             return RsyncManifestLine(None, RsyncLineType.INVALID)  # pragma: no cover
 
@@ -221,7 +220,7 @@ class RsyncManifestResolveRunner(BaseManifestResolveRunner):
                 line = line_newline.rstrip(os.linesep)
                 record = self.classify_line(line)
 
-                if record.type in (RsyncLineType.HEADER, RsyncLineType.INVALID):
+                if record.type not in {RsyncLineType.FILE_ADD, RsyncLineType.FILE_DELETE}:
                     continue
 
                 abs_path = self.get_abs_path(record.path)
