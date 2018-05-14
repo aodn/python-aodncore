@@ -109,7 +109,7 @@ class BaseManifestResolveRunner(BaseResolveRunner):
         if resolve_params is None:
             resolve_params = {}
 
-        relative_path_root = resolve_params.pop('relative_path_root', self._config.pipeline_config['global']['wip_dir'])
+        relative_path_root = resolve_params.get('relative_path_root', self._config.pipeline_config['global']['wip_dir'])
         self.relative_path_root = relative_path_root
 
     def get_abs_path(self, path):
