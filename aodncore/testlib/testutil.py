@@ -1,15 +1,18 @@
+import json
 import os
 import tempfile
 import uuid
 import zipfile
+from collections import OrderedDict
 
 from netCDF4 import Dataset
 from six import iteritems
 from six.moves.urllib.parse import urlunsplit
 
-from ..pipeline.configlib import LazyConfigManager
+from ..pipeline.configlib import LazyConfigManager, load_json_file
 from ..pipeline.storage import BaseStorageBroker
 from ..testlib.dummyhandler import DummyHandler
+from ..util import WriteOnceOrderedDict
 
 try:
     from unittest import mock
@@ -184,39 +187,44 @@ def make_zip(temp_dir, file_list):
     return zip_file
 
 
-def patch_test_config(config, rel_path, temp_dir):
-    """Update config object with dynamic runtime values (e.g. temp directories)
+def load_runtime_patched_pipeline_config_file(config_file, rel_path, temp_dir):
+    """Load and update pipeline config file with dynamic runtime values (e.g. temp directories)
 
-    :param config: config dictionary to update
+    :param config_file: Pipeline config file to load, patch and return
     :param rel_path:
     :param temp_dir: temporary directory used to update values
     :return: ConfigParser object patched with runtime test values
     """
+
+    # load the pipeline config file with OrderedDict so that the keys can be patched
+    pipeline_config = load_json_file(config_file, object_pairs_hook=OrderedDict)
+
     temp_upload_dir = tempfile.mkdtemp(prefix='temp_upload_uri', dir=temp_dir)
 
-    config.pipeline_config['global']['error_dir'] = tempfile.mkdtemp(prefix='temp_error_dir', dir=temp_dir)
-    config.pipeline_config['global']['processing_dir'] = tempfile.mkdtemp(prefix='temp_processing_dir', dir=temp_dir)
-    config.pipeline_config['global']['tmp_dir'] = temp_dir
-    config.pipeline_config['global']['upload_uri'] = urlunsplit(('file', None, temp_upload_dir, None, None))
-    config.pipeline_config['global']['wip_dir'] = rel_path
-    config.pipeline_config['logging']['log_root'] = tempfile.mkdtemp(prefix='temp_log_root', dir=temp_dir)
-    config.pipeline_config['mail']['smtp_server'] = str(uuid.uuid4())
+    pipeline_config['global']['error_dir'] = tempfile.mkdtemp(prefix='temp_error_dir', dir=temp_dir)
+    pipeline_config['global']['processing_dir'] = tempfile.mkdtemp(prefix='temp_processing_dir', dir=temp_dir)
+    pipeline_config['global']['tmp_dir'] = temp_dir
+    pipeline_config['global']['upload_uri'] = urlunsplit(('file', None, temp_upload_dir, None, None))
+    pipeline_config['global']['wip_dir'] = rel_path
+    pipeline_config['logging']['log_root'] = tempfile.mkdtemp(prefix='temp_log_root', dir=temp_dir)
+    pipeline_config['mail']['smtp_server'] = str(uuid.uuid4())
 
-    config._discovered_dest_path_functions = {'dest_path_testing': dest_path_testing}
-    config._discovered_handlers = {'DummyHandler': DummyHandler}
-
-    return config
+    # reload the JSON object with non-updatable keys
+    return json.loads(json.dumps(pipeline_config), object_pairs_hook=WriteOnceOrderedDict)
 
 
 def get_test_config(temp_dir):
     test_pipeline_config_file = os.path.join(TESTLIB_CONF_DIR, 'pipeline.conf')
     test_trigger_config_file = os.path.join(TESTLIB_CONF_DIR, 'trigger.conf')
     test_watch_config_file = os.path.join(TESTLIB_CONF_DIR, 'watches.conf')
-    os.environ['PIPELINE_CONFIG_FILE'] = test_pipeline_config_file
-    os.environ['PIPELINE_TRIGGER_CONFIG_FILE'] = test_trigger_config_file
-    os.environ['PIPELINE_WATCH_CONFIG_FILE'] = test_watch_config_file
 
     config = LazyConfigManager()
-    patch_test_config(config, GLOBAL_TEST_BASE, temp_dir)
+    config._discovered_dest_path_functions = {'dest_path_testing': dest_path_testing}
+    config._discovered_handlers = {'DummyHandler': DummyHandler}
+
+    config._pipeline_config = load_runtime_patched_pipeline_config_file(test_pipeline_config_file, GLOBAL_TEST_BASE,
+                                                                        temp_dir)
+    config._trigger_config = load_json_file(test_trigger_config_file)
+    config._watch_config = load_json_file(test_watch_config_file)
 
     return config
