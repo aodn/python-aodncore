@@ -26,8 +26,7 @@ __all__ = [
     'ComplianceCheckerCheckRunner',
     'FormatCheckRunner',
     'NetcdfFormatCheckRunner',
-    'NonEmptyCheckRunner',
-    'get_cc_module_versions'
+    'NonEmptyCheckRunner'
 ]
 
 
@@ -225,13 +224,3 @@ class NonEmptyCheckRunner(BaseCheckRunner):
             compliant = os.path.getsize(pipeline_file.src_path) > 0
             compliance_log = [] if compliant else ('empty file',)
             pipeline_file.check_result = CheckResult(compliant, compliance_log)
-
-
-def get_cc_module_versions():  # pragma: no cover
-    """Get versions of compliance checker and compliance checker plugin version
-
-    :return: a tuple containing the version strings
-    """
-    from cc_plugin_imos import __version__ as cc_plugin_version
-    from compliance_checker import __version__ as cc_core_version
-    return {'core': cc_core_version, 'plugin': cc_plugin_version}
