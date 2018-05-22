@@ -5,7 +5,6 @@ manually creating a new :py:class:`LazyConfigManager` instance.
 
 import json
 import os
-from collections import OrderedDict
 
 from celery import Celery
 from six import iteritems
@@ -14,10 +13,11 @@ from .exceptions import InvalidConfigError
 from .log import WorkerLoggingConfigBuilder, get_watchservice_logging_config
 from .schema import validate_logging_config, validate_pipeline_config
 from .watch import get_task_name, CeleryConfig, CeleryContext
-from ..util import discover_entry_points, format_exception, validate_type
+from ..util import discover_entry_points, format_exception, validate_type, WriteOnceOrderedDict
 
 __all__ = [
     'LazyConfigManager',
+    'load_json_file',
     'load_pipeline_config',
     'load_trigger_config',
     'load_watch_config',
@@ -195,17 +195,18 @@ def load_trigger_config(default_config_file=DEFAULT_TRIGGER_CONFIG):
     return config
 
 
-def load_json_file(default_config_file, envvar=None):
+def load_json_file(default_config_file, envvar=None, object_pairs_hook=WriteOnceOrderedDict):
     """Load a JSON file into a :py:class:`dict`
 
     :param default_config_file:
-    :param envvar:
-    :return:
+    :param envvar: environment variable containing path to load
+    :param object_pairs_hook: class used for json.load 'object_pairs_hook' parameter
+    :return: object containing loaded JSON config
     """
     config_file = os.environ.get(envvar, default_config_file)
     try:
         with open(config_file) as f:
-            config = json.load(f, object_pairs_hook=OrderedDict)
+            config = json.load(f, object_pairs_hook=object_pairs_hook)
     except (IOError, OSError) as e:
         raise InvalidConfigError(format_exception(e))
 

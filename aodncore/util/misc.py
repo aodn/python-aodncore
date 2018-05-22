@@ -40,7 +40,8 @@ __all__ = [
     'validate_type',
     'CaptureStdIO',
     'LoggingContext',
-    'TemplateRenderer'
+    'TemplateRenderer',
+    'WriteOnceOrderedDict'
 ]
 
 
@@ -343,6 +344,26 @@ class LoggingContext(object):
             self.logger.removeHandler(self.handler)
         if self.handler and self.close:
             self.handler.close()
+
+
+class WriteOnceOrderedDict(OrderedDict):
+    """Sub-class of OrderedDict which prevents overwriting/deleting of keys once set
+    """
+
+    def __readonly__(self, *args, **kwargs):
+        raise RuntimeError('updates or deletions not permitted on WriteOnceOrderedDict')
+
+    def __setitem__(self, key, value):
+        if key in self:
+            raise RuntimeError("key '{}' has already been set".format(key))
+        super(WriteOnceOrderedDict, self).__setitem__(key, value)
+
+    __delitem__ = __readonly__
+    clear = __readonly__
+    pop = __readonly__
+    popitem = __readonly__
+    setdefault = __readonly__
+    update = __readonly__
 
 
 class TemplateRenderer(object):

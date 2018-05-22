@@ -8,7 +8,8 @@ import six
 from aodncore.testlib import BaseTestCase
 from aodncore.util import (format_exception, is_function, is_nonstring_iterable, matches_regexes,
                            merge_dicts, slice_sequence, str_to_list, validate_callable, validate_mandatory_elements,
-                           validate_membership, validate_nonstring_iterable, validate_type, CaptureStdIO)
+                           validate_membership, validate_nonstring_iterable, validate_type, CaptureStdIO,
+                           WriteOnceOrderedDict)
 
 StringIO = six.StringIO
 
@@ -46,6 +47,37 @@ class TestCaptureStdIO(BaseTestCase):
 class TestLoggingContext(BaseTestCase):
     # TODO: tests
     pass
+
+
+class TestWriteOnceOrderedDict(BaseTestCase):
+    def setUp(self):
+        self.write_once_ordered_dict = WriteOnceOrderedDict({'key': 'value'})
+
+    def test_new_key(self):
+        try:
+            self.write_once_ordered_dict['key2'] = 'value'
+        except Exception as e:
+            raise AssertionError("unexpected exception raised. {e}".format(e=format_exception(e)))
+
+    def test_no_overwrite(self):
+        with self.assertRaises(RuntimeError):
+            self.write_once_ordered_dict['key'] = 'value2'
+
+        with self.assertRaises(RuntimeError):
+            self.write_once_ordered_dict.update({'key': 'value2'})
+
+    def test_no_delete(self):
+        with self.assertRaises(RuntimeError):
+            self.write_once_ordered_dict.pop('key')
+
+        with self.assertRaises(RuntimeError):
+            self.write_once_ordered_dict.popitem(('key', 'value'))
+
+        with self.assertRaises(RuntimeError):
+            del self.write_once_ordered_dict['key']
+
+        with self.assertRaises(RuntimeError):
+            self.write_once_ordered_dict.clear()
 
 
 class TestUtilMisc(BaseTestCase):

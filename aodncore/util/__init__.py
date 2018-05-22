@@ -2,11 +2,11 @@ from .external import retry_decorator, IndexedSet, classproperty
 from .fileops import (TemporaryDirectory, extract_zip, get_file_checksum, is_dir_writable, is_netcdffile, is_zipfile,
                       list_regular_files, mkdir_p, rm_f, rm_r, rm_rf, safe_copy_file, safe_move_file,
                       validate_dir_writable, validate_file_writable)
-from .misc import (CaptureStdIO, LoggingContext, TemplateRenderer, discover_entry_points, format_exception, is_function,
-                   is_nonstring_iterable, is_valid_email_address, iter_public_attributes, matches_regexes, merge_dicts,
-                   slice_sequence, str_to_list, validate_bool, validate_callable, validate_dict, validate_int,
-                   validate_mapping, validate_mandatory_elements, validate_membership, validate_nonstring_iterable,
-                   validate_regex, validate_string, validate_type)
+from .misc import (CaptureStdIO, LoggingContext, TemplateRenderer, WriteOnceOrderedDict, discover_entry_points,
+                   format_exception, is_function, is_nonstring_iterable, is_valid_email_address, iter_public_attributes,
+                   matches_regexes, merge_dicts, slice_sequence, str_to_list, validate_bool, validate_callable,
+                   validate_dict, validate_int, validate_mapping, validate_mandatory_elements, validate_membership,
+                   validate_nonstring_iterable, validate_regex, validate_string, validate_type)
 from .process import SystemProcess
 
 __all__ = [
@@ -16,6 +16,7 @@ __all__ = [
     'SystemProcess',
     'TemplateRenderer',
     'TemporaryDirectory',
+    'WriteOnceOrderedDict',
     'classproperty',
     'extract_zip',
     'discover_entry_points',
