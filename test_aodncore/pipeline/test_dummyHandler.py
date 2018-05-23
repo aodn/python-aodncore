@@ -110,9 +110,29 @@ class TestDummyHandler(HandlerTestCase):
         self.assertTrue(handler.file_collection[0].is_archived)
 
     def test_archive_input_file(self):
-        handler = self.run_handler(self.temp_nc_file, archive_path_function=dest_path_testing, archive_input_file=True)
-        self.assertTrue(handler.is_archived)
-        self.assertTrue(handler.file_collection[0].is_archived)
+        handler = self.run_handler(GOOD_ZIP, archive_path_function=dest_path_testing, archive_input_file=True)
+        self.assertTrue(handler.input_file_object.is_archived)
+
+    def test_archive_input_file_custom_path(self):
+        expected_path = 'custom/relative/path'
+
+        handler = self.handler_class(GOOD_ZIP, archive_path_function=dest_path_testing, archive_input_file=True)
+        handler.input_file_archive_path = expected_path
+        handler.run()
+
+        self.assertTrue(handler.input_file_object.is_archived)
+        self.assertEqual(handler.input_file_object.archive_path, expected_path)
+
+    def test_input_file_archive_path(self):
+        handler = self.handler_class(self.temp_nc_file)
+        with self.assertRaises(ValueError):
+            handler.input_file_archive_path = '/absolute/path/MYFACILITY/path/to/file.txt'
+
+        try:
+            handler.input_file_archive_path = 'relative/path/MYFACILITY/path/to/file.txt'
+        except Exception as e:
+            raise AssertionError(
+                "unexpected exception raised. {cls} {msg}".format(cls=e.__class__.__name__, msg=e))
 
     def test_invalid_check_suite(self):
         self.run_handler_with_exception(InvalidCheckSuiteError, NOT_NETCDF_NC_FILE,
