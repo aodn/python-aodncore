@@ -15,9 +15,22 @@ from ..util import (IndexedSet, format_exception, get_file_checksum, iter_public
 __all__ = [
     'PipelineFileCollection',
     'PipelineFile',
+    'ensure_pipelinefilecollection',
     'validate_pipelinefilecollection',
+    'validate_pipelinefile_or_pipelinefilecollection',
     'validate_pipelinefile_or_string'
 ]
+
+
+def ensure_pipelinefilecollection(o):
+    """Function to accept either a single PipelineFile OR and PipelineFileCollection and ensure that a
+    PipelineFileCollection object is returned in either case
+
+    :param o: PipelineFile or PipelineFileCollection object
+    :return: PipelineFileCollection object
+    """
+    validate_pipelinefile_or_pipelinefilecollection(o)
+    return o if isinstance(o, PipelineFileCollection) else PipelineFileCollection(o)
 
 
 class PipelineFile(object):
@@ -815,4 +828,5 @@ class PipelineFileCollection(MutableSet):
 
 
 validate_pipelinefilecollection = validate_type(PipelineFileCollection)
+validate_pipelinefile_or_pipelinefilecollection = validate_type((PipelineFile, PipelineFileCollection))
 validate_pipelinefile_or_string = validate_type((PipelineFile, six.string_types))
