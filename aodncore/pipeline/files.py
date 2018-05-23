@@ -10,7 +10,7 @@ from .common import (FileType, PipelineFilePublishType, PipelineFileCheckType, v
 from .exceptions import DuplicateUniqueAttributeError, DuplicatePipelineFileError, MissingFileError
 from ..util import (IndexedSet, format_exception, get_file_checksum, iter_public_attributes, matches_regexes,
                     slice_sequence, validate_bool, validate_callable, validate_dict, validate_mapping,
-                    validate_nonstring_iterable, validate_regex, validate_string, validate_type)
+                    validate_nonstring_iterable, validate_regex, validate_relative_path, validate_string, validate_type)
 
 __all__ = [
     'PipelineFileCollection',
@@ -135,8 +135,7 @@ class PipelineFile(object):
 
     @archive_path.setter
     def archive_path(self, archive_path):
-        if os.path.isabs(archive_path):
-            raise ValueError('archive_path must be a relative path')
+        validate_relative_path(archive_path)
         self._archive_path = archive_path
         self._post_property_update({'archive_path': archive_path})
 
@@ -177,8 +176,7 @@ class PipelineFile(object):
 
     @dest_path.setter
     def dest_path(self, dest_path):
-        if os.path.isabs(dest_path):
-            raise ValueError('dest_path must be a relative path')
+        validate_relative_path(dest_path)
         self._dest_path = dest_path
         self._post_property_update({'dest_path': dest_path})
 
