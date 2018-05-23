@@ -6,7 +6,8 @@ from .misc import (CaptureStdIO, LoggingContext, TemplateRenderer, WriteOnceOrde
                    format_exception, is_function, is_nonstring_iterable, is_valid_email_address, iter_public_attributes,
                    matches_regexes, merge_dicts, slice_sequence, str_to_list, validate_bool, validate_callable,
                    validate_dict, validate_int, validate_mapping, validate_mandatory_elements, validate_membership,
-                   validate_nonstring_iterable, validate_regex, validate_relative_path, validate_string, validate_type)
+                   validate_nonstring_iterable, validate_regex, validate_relative_path, validate_relative_path_attr,
+                   validate_string, validate_type)
 from .process import SystemProcess
 
 __all__ = [
@@ -53,6 +54,7 @@ __all__ = [
     'validate_nonstring_iterable',
     'validate_regex',
     'validate_relative_path',
+    'validate_relative_path_attr',
     'validate_string',
     'validate_type',
 ]

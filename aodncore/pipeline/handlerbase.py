@@ -17,7 +17,7 @@ from .schema import validate_check_params, validate_harvest_params, validate_not
 from .statequery import StateQuery
 from .steps import (get_check_runner, get_harvester_runner, get_notify_runner, get_resolve_runner, get_store_runner)
 from ..util import (discover_entry_points, format_exception, get_file_checksum, iter_public_attributes, merge_dicts,
-                    validate_relative_path, TemporaryDirectory)
+                    validate_relative_path_attr, TemporaryDirectory)
 from ..version import __version__ as _aodncore_version
 
 __all__ = [
@@ -435,7 +435,7 @@ class HandlerBase(object):
 
     @input_file_archive_path.setter
     def input_file_archive_path(self, path):
-        validate_relative_path(path)
+        validate_relative_path_attr(path, 'input_file_archive_path')
         self._input_file_archive_path = path
 
     @property
