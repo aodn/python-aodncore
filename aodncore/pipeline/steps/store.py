@@ -6,7 +6,7 @@ similar to the other handler steps.
 """
 
 from .basestep import BaseStepRunner
-from ..files import validate_pipelinefilecollection
+from ..files import ensure_pipelinefilecollection
 from ..storage import get_storage_broker
 
 __all__ = [
@@ -61,9 +61,8 @@ class StoreRunner(BaseStepRunner):
         :param pipeline_files: collection to
         :return: None
         """
-        validate_pipelinefilecollection(pipeline_files)
-
-        self.broker.set_is_overwrite(pipeline_files=pipeline_files, dest_path_attr=self.dest_path_attr)
+        collection = ensure_pipelinefilecollection(pipeline_files)
+        self.broker.set_is_overwrite(pipeline_files=collection, dest_path_attr=self.dest_path_attr)
 
     def run(self, pipeline_files):
         """Execute the pending storage operation(s) for each file in the given collection
@@ -71,18 +70,18 @@ class StoreRunner(BaseStepRunner):
         :param pipeline_files: PipelineFileCollection instance
         :return: None
         """
-        validate_pipelinefilecollection(pipeline_files)
+        collection = ensure_pipelinefilecollection(pipeline_files)
 
-        additions = pipeline_files.filter_by_bool_attribute(self.pending_addition_attr)
+        additions = collection.filter_by_bool_attribute(self.pending_addition_attr)
         if additions:
             self.broker.upload(pipeline_files=additions, is_stored_attr=self.is_stored_attr,
                                dest_path_attr=self.dest_path_attr)
 
-        deletions = pipeline_files.filter_by_bool_attribute('pending_store_deletion')
+        deletions = collection.filter_by_bool_attribute('pending_store_deletion')
         if deletions:
             self.broker.delete(pipeline_files=deletions, is_stored_attr='is_stored', dest_path_attr=self.dest_path_attr)
 
-        undo_deletions = pipeline_files.filter_by_bool_attribute('pending_undo')
+        undo_deletions = collection.filter_by_bool_attribute('pending_undo')
         if undo_deletions:
             self.broker.delete(pipeline_files=undo_deletions, is_stored_attr='is_upload_undone',
                                dest_path_attr=self.dest_path_attr)

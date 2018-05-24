@@ -8,8 +8,8 @@ import six
 from aodncore.testlib import BaseTestCase
 from aodncore.util import (format_exception, is_function, is_nonstring_iterable, matches_regexes,
                            merge_dicts, slice_sequence, str_to_list, validate_callable, validate_mandatory_elements,
-                           validate_membership, validate_nonstring_iterable, validate_type, CaptureStdIO,
-                           WriteOnceOrderedDict)
+                           validate_membership, validate_nonstring_iterable, validate_relative_path,
+                           validate_relative_path_attr, validate_type, CaptureStdIO, WriteOnceOrderedDict)
 
 StringIO = six.StringIO
 
@@ -162,6 +162,24 @@ class TestUtilMisc(BaseTestCase):
 
         with self.assertRaises(TypeError):
             validate_nonstring_iterable('s')
+
+    def test_validate_relative_path(self):
+        with self.assertRaises(ValueError):
+            validate_relative_path('/absolute/path')
+
+        try:
+            validate_relative_path('relative/path')
+        except Exception as e:
+            raise AssertionError("unexpected exception raised. {e}".format(e=format_exception(e)))
+
+    def test_validate_relative_path_attr(self):
+        with self.assertRaisesRegexp(ValueError, r'.*dest_path.*'):
+            validate_relative_path_attr('/absolute/path', 'dest_path')
+
+        try:
+            validate_relative_path_attr('relative/path', 'dest_path')
+        except Exception as e:
+            raise AssertionError("unexpected exception raised. {e}".format(e=format_exception(e)))
 
     def test_format_exception(self):
         try:

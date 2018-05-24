@@ -17,7 +17,7 @@ from .schema import validate_check_params, validate_harvest_params, validate_not
 from .statequery import StateQuery
 from .steps import (get_check_runner, get_harvester_runner, get_notify_runner, get_resolve_runner, get_store_runner)
 from ..util import (discover_entry_points, format_exception, get_file_checksum, iter_public_attributes, merge_dicts,
-                    validate_bool, TemporaryDirectory)
+                    validate_relative_path_attr, TemporaryDirectory)
 from ..version import __version__ as _aodncore_version
 
 __all__ = [
@@ -300,6 +300,8 @@ class HandlerBase(object):
         self._error_details = None
         self._file_collection = None
         self._handler_run = False
+        self._input_file_archive_path = None
+        self._input_file_object = None
         self._instance_working_directory = None
         self._notification_results = None
         self._should_notify = None
@@ -313,7 +315,7 @@ class HandlerBase(object):
 
     def __iter__(self):
         ignored_attributes = {'celery_task', 'config', 'default_addition_publish_type', 'default_deletion_publish_type',
-                              'logger', 'state', 'trigger'}
+                              'input_file_object', 'logger', 'state', 'trigger'}
         ignored_attributes.update("is_{state}".format(state=s) for s in self.all_states)
 
         return iter_public_attributes(self, ignored_attributes)
@@ -421,6 +423,35 @@ class HandlerBase(object):
         return self._instance_working_directory
 
     @property
+    def input_file_archive_path(self):
+        """Property used to determine the archive path for the original input file
+
+        :return: string containing the archive path
+        :rtype: :class:`str`
+        """
+        if not self._input_file_archive_path:
+            self.input_file_archive_path = os.path.join(self._pipeline_name, os.path.basename(self.input_file))
+        return self._input_file_archive_path
+
+    @input_file_archive_path.setter
+    def input_file_archive_path(self, path):
+        validate_relative_path_attr(path, 'input_file_archive_path')
+        self._input_file_archive_path = path
+
+    @property
+    def input_file_object(self):
+        """Read-only property to access the original input file represented as a PipelineFile object
+
+        :return: input file object
+        :rtype: :py:class:`PipelineFile`
+        """
+        if not self._input_file_object:
+            input_file_object = PipelineFile(self.input_file, file_update_callback=self._file_update_callback)
+            input_file_object.publish_type = PipelineFilePublishType.ARCHIVE_ONLY
+            self._input_file_object = input_file_object
+        return self._input_file_object
+
+    @property
     def module_versions(self):
         """Read-only property to access module versions
 
@@ -511,20 +542,6 @@ class HandlerBase(object):
         self._default_deletion_publish_type = publish_type
 
     @property
-    def is_archived(self):
-        """Boolean property indicating whether the :py:attr:`input_file` has been archived
-
-        :return: whether the :py:attr:`input_file` has been archived or not
-        :rtype: :class:`bool`
-        """
-        return self._is_archived
-
-    @is_archived.setter
-    def is_archived(self, is_archived):
-        validate_bool(is_archived)
-        self._is_archived = is_archived
-
-    @property
     def collection_dir(self):
         """Temporary subdirectory where the *initial* input file collection will be unpacked
 
@@ -596,19 +613,15 @@ class HandlerBase(object):
         if files_to_check:
             check_runner.run(files_to_check)
 
-    def _archive(self, store_runner):
+    def _archive(self):
         files_to_archive = self.file_collection.filter_by_bool_attribute('pending_archive')
 
-        if self.archive_input_file:
-            input_file_obj = PipelineFile(self.input_file, archive_path=os.path.join(self._pipeline_name,
-                                                                                     os.path.basename(self.input_file)))
-            input_file_obj.publish_type = PipelineFilePublishType.ARCHIVE_ONLY
-            infile_collection = PipelineFileCollection(input_file_obj)
-            store_runner.run(infile_collection)
-            self.is_archived = input_file_obj.is_archived
-
         if files_to_archive:
-            store_runner.run(files_to_archive)
+            self._upload_runner_archive.run(files_to_archive)
+
+        if self.archive_input_file:
+            self.input_file_object.archive_path = self.input_file_archive_path
+            self._upload_runner_archive.run(self.input_file_object)
 
     def _harvest(self):
         harvest_runner = get_harvester_runner(self.harvest_type, self._upload_runner.broker, self.harvest_params,
@@ -628,7 +641,7 @@ class HandlerBase(object):
     def _publish(self):
         self.file_collection.set_archive_paths(self._archive_path_function_ref)
         self.file_collection.validate_attribute_uniqueness('archive_path')
-        self._archive(self._upload_runner_archive)
+        self._archive()
 
         self.file_collection.set_dest_paths(self._dest_path_function_ref)
         self.file_collection.validate_attribute_uniqueness('dest_path')

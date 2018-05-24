@@ -5,8 +5,8 @@ from collections import MutableSet, OrderedDict
 from six import assertCountEqual
 from six.moves import range
 
-from aodncore.pipeline import (CheckResult, PipelineFileCollection, PipelineFile, PipelineFileCheckType,
-                               PipelineFilePublishType)
+from aodncore.pipeline.common import (CheckResult, PipelineFileCheckType,PipelineFilePublishType)
+from aodncore.pipeline.files import PipelineFileCollection, PipelineFile, ensure_pipelinefilecollection
 from aodncore.pipeline.exceptions import DuplicateUniqueAttributeError, DuplicatePipelineFileError, MissingFileError
 from aodncore.pipeline.steps import get_child_check_runner
 from aodncore.testlib import BaseTestCase, get_nonexistent_path, mock
@@ -14,6 +14,18 @@ from test_aodncore import TESTDATA_DIR
 
 BAD_NC = os.path.join(TESTDATA_DIR, 'bad.nc')
 GOOD_NC = os.path.join(TESTDATA_DIR, 'good.nc')
+
+
+class TestPipelineFiles(BaseTestCase):
+    def test_ensure_pipelinefilecollection(self):
+        collection_from_collection = ensure_pipelinefilecollection(PipelineFileCollection())
+        self.assertIsInstance(collection_from_collection, PipelineFileCollection)
+
+        collection_from_file = ensure_pipelinefilecollection(PipelineFile(GOOD_NC))
+        self.assertIsInstance(collection_from_file, PipelineFileCollection)
+
+        with self.assertRaises(TypeError):
+            _ = ensure_pipelinefilecollection('invalid_type')
 
 
 # noinspection PyAttributeOutsideInit

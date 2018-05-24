@@ -10,14 +10,28 @@ from .common import (FileType, PipelineFilePublishType, PipelineFileCheckType, v
 from .exceptions import DuplicateUniqueAttributeError, DuplicatePipelineFileError, MissingFileError
 from ..util import (IndexedSet, format_exception, get_file_checksum, iter_public_attributes, matches_regexes,
                     slice_sequence, validate_bool, validate_callable, validate_dict, validate_mapping,
-                    validate_nonstring_iterable, validate_regex, validate_string, validate_type)
+                    validate_nonstring_iterable, validate_regex, validate_relative_path_attr, validate_string,
+                    validate_type)
 
 __all__ = [
     'PipelineFileCollection',
     'PipelineFile',
+    'ensure_pipelinefilecollection',
     'validate_pipelinefilecollection',
+    'validate_pipelinefile_or_pipelinefilecollection',
     'validate_pipelinefile_or_string'
 ]
+
+
+def ensure_pipelinefilecollection(o):
+    """Function to accept either a single PipelineFile OR and PipelineFileCollection and ensure that a
+    PipelineFileCollection object is returned in either case
+
+    :param o: PipelineFile or PipelineFileCollection object
+    :return: PipelineFileCollection object
+    """
+    validate_pipelinefile_or_pipelinefilecollection(o)
+    return o if isinstance(o, PipelineFileCollection) else PipelineFileCollection(o)
 
 
 class PipelineFile(object):
@@ -135,8 +149,7 @@ class PipelineFile(object):
 
     @archive_path.setter
     def archive_path(self, archive_path):
-        if os.path.isabs(archive_path):
-            raise ValueError('archive_path must be a relative path')
+        validate_relative_path_attr(archive_path, 'archive_path')
         self._archive_path = archive_path
         self._post_property_update({'archive_path': archive_path})
 
@@ -177,8 +190,7 @@ class PipelineFile(object):
 
     @dest_path.setter
     def dest_path(self, dest_path):
-        if os.path.isabs(dest_path):
-            raise ValueError('dest_path must be a relative path')
+        validate_relative_path_attr(dest_path, 'dest_path')
         self._dest_path = dest_path
         self._post_property_update({'dest_path': dest_path})
 
@@ -817,4 +829,5 @@ class PipelineFileCollection(MutableSet):
 
 
 validate_pipelinefilecollection = validate_type(PipelineFileCollection)
+validate_pipelinefile_or_pipelinefilecollection = validate_type((PipelineFile, PipelineFileCollection))
 validate_pipelinefile_or_string = validate_type((PipelineFile, six.string_types))

@@ -4,6 +4,7 @@ These are typically functions which query, manipulate or transform Python object
 """
 
 import logging
+import os
 import re
 import sys
 import types
@@ -36,6 +37,8 @@ __all__ = [
     'validate_membership',
     'validate_nonstring_iterable',
     'validate_regex',
+    'validate_relative_path',
+    'validate_relative_path_attr',
     'validate_string',
     'validate_type',
     'CaptureStdIO',
@@ -265,6 +268,24 @@ def validate_regex(o):
         re.compile(o)
     except re.error as e:
         raise ValueError("invalid regex '{o}'. {e}".format(o=o, e=format_exception(e)))
+
+
+def validate_relative_path(o):
+    if os.path.isabs(o):
+        raise ValueError("path '{o}' must be a relative path".format(o=o))
+
+
+def validate_relative_path_attr(path, path_attr):
+    """Validate a path, raising an exception containing the name of the attribute which failed
+
+    :param path: string containing the path to test
+    :param path_attr: attribute name to include in the exceptions message if validation fails
+    :return: None
+    """
+    try:
+        validate_relative_path(path)
+    except ValueError as e:
+        raise ValueError("error validating '{attr}': {e}".format(attr=path_attr, e=e))
 
 
 def validate_mandatory_elements(mandatory, actual, name='item'):
