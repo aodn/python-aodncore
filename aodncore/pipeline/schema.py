@@ -6,6 +6,7 @@ import jsonschema
 
 __all__ = [
     'validate_check_params',
+    'validate_custom_params',
     'validate_harvest_params',
     'validate_logging_config',
     'validate_pipeline_config',
@@ -22,6 +23,10 @@ CHECK_PARAMS_SCHEMA = {
         'verbosity': {'type': 'integer'}
     },
     'additionalProperties': False
+}
+
+CUSTOM_PARAMS_SCHEMA = {
+    'type': 'object'
 }
 
 HARVEST_PARAMS_SCHEMA = {
@@ -171,6 +176,10 @@ RESOLVE_PARAMS_SCHEMA = {
 
 def validate_check_params(check_params):
     jsonschema.validate(check_params, CHECK_PARAMS_SCHEMA)
+
+
+def validate_custom_params(check_params):
+    jsonschema.validate(check_params, CUSTOM_PARAMS_SCHEMA)
 
 
 def validate_harvest_params(harvest_params):

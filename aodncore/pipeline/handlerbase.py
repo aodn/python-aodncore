@@ -13,7 +13,8 @@ from .exceptions import (PipelineProcessingError, HandlerAlreadyRunError, Invali
                          InvalidFileFormatError, MissingConfigParameterError)
 from .files import PipelineFile, PipelineFileCollection
 from .log import SYSINFO, get_pipeline_logger
-from .schema import validate_check_params, validate_harvest_params, validate_notify_params, validate_resolve_params
+from .schema import (validate_check_params, validate_custom_params, validate_harvest_params, validate_notify_params,
+                     validate_resolve_params)
 from .statequery import StateQuery
 from .steps import (get_check_runner, get_harvester_runner, get_notify_runner, get_resolve_runner, get_store_runner)
 from ..util import (discover_entry_points, format_exception, get_file_checksum, iter_public_attributes, merge_dicts,
@@ -81,6 +82,11 @@ class HandlerBase(object):
             the handler being tested.
     :type config: :py:class:`aodncore.pipeline.config.LazyConfigManager`
 
+    :param custom_params: A dict containing parameters which are ignored by the base class, but allow passing arbitrary
+        custom values to subclasses. The structure of the dict is defined by the :const:`CUSTOM_PARAMS_SCHEMA` object in
+        the :py:mod:`aodncore.pipeline.schema` module.
+    :type custom_params: :py:class:`dict`
+
     :param dest_path_function: The function used to determine the :py:attr:`PipelineFile.dest_path` attribute, relative
         to the UPLOAD_URI configuration item. If absent, the handler will attempt to use the :py:meth:`dest_path` method
         in the handler itself. If a function is not found by either mechanism, the handler will exit with an error
@@ -142,11 +148,6 @@ class HandlerBase(object):
         prepended to relative paths in manifest files). The structure of the dict is defined by the
         :py:const:`RESOLVE_PARAMS_SCHEMA` object in the :py:mod:`aodncore.pipeline.schema` module.
     :type resolve_params: :py:class:`dict`
-
-    :param kwargs: Any additional keyword arguments passed to the handler are ignored by the :py:class:`HandlerBase`
-        base class. This is to leave open the ability for handler specific params to be passed from the watch
-        configuration to control some arbitrary handler behaviour, without interfering with the core state machine
-        operation.
 
     """
 
@@ -253,6 +254,7 @@ class HandlerBase(object):
                  celery_task=None,
                  check_params=None,
                  config=None,
+                 custom_params=None,
                  dest_path_function=None,
                  exclude_regexes=None,
                  harvest_params=None,
@@ -260,8 +262,8 @@ class HandlerBase(object):
                  include_regexes=None,
                  notify_params=None,
                  upload_path=None,
-                 resolve_params=None,
-                 **kwargs):
+                 resolve_params=None
+                 ):
 
         # property backing variables
         self._config = None
@@ -283,6 +285,7 @@ class HandlerBase(object):
         self.archive_path_function = archive_path_function
         self.celery_task = celery_task
         self.check_params = check_params
+        self.custom_params = custom_params
         self.config = config
         self.dest_path_function = dest_path_function
         self.exclude_regexes = exclude_regexes
@@ -846,6 +849,8 @@ class HandlerBase(object):
     def _validate_params(self):
         if self.check_params:
             validate_check_params(self.check_params)
+        if self.custom_params:
+            validate_custom_params(self.custom_params)
         if self.harvest_params:
             validate_harvest_params(self.harvest_params)
         if self.notify_params:
