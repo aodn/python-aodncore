@@ -17,8 +17,8 @@ from .schema import (validate_check_params, validate_custom_params, validate_har
                      validate_resolve_params)
 from .statequery import StateQuery
 from .steps import (get_check_runner, get_harvester_runner, get_notify_runner, get_resolve_runner, get_store_runner)
-from ..util import (discover_entry_points, format_exception, get_file_checksum, iter_public_attributes, merge_dicts,
-                    validate_relative_path_attr, TemporaryDirectory)
+from ..util import (discover_entry_points, ensure_writeonceordereddict, format_exception, get_file_checksum,
+                    iter_public_attributes, merge_dicts, validate_relative_path_attr, TemporaryDirectory)
 from ..version import __version__ as _aodncore_version
 
 __all__ = [
@@ -586,7 +586,7 @@ class HandlerBase(object):
         self._file_collection = PipelineFileCollection()
 
         self._init_logging()
-        self._validate_params()
+        self._validate_and_freeze_params()
         self._set_checksum()
         self._check_extension()
         self._set_path_functions()
@@ -846,17 +846,22 @@ class HandlerBase(object):
         self.logger.sysinfo(
             "get_path_function (archive) -> '{function}'".format(function=self._archive_path_function_name))
 
-    def _validate_params(self):
-        if self.check_params:
+    def _validate_and_freeze_params(self):
+        if self.check_params is not None:
             validate_check_params(self.check_params)
-        if self.custom_params:
+            self.check_params = ensure_writeonceordereddict(self.check_params)
+        if self.custom_params is not None:
             validate_custom_params(self.custom_params)
-        if self.harvest_params:
+            self.custom_params = ensure_writeonceordereddict(self.custom_params)
+        if self.harvest_params is not None:
             validate_harvest_params(self.harvest_params)
-        if self.notify_params:
+            self.harvest_params = ensure_writeonceordereddict(self.harvest_params)
+        if self.notify_params is not None:
             validate_notify_params(self.notify_params)
-        if self.resolve_params:
+            self.notify_params = ensure_writeonceordereddict(self.notify_params)
+        if self.resolve_params is not None:
             validate_resolve_params(self.resolve_params)
+            self.resolve_params = ensure_writeonceordereddict(self.resolve_params)
 
     #
     # process methods - to be overridden by child class as required

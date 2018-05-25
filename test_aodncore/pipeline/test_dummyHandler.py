@@ -10,6 +10,7 @@ from aodncore.pipeline.exceptions import (ComplianceCheckFailedError, HandlerAlr
 from aodncore.pipeline.statequery import StateQuery
 from aodncore.pipeline.steps import NotifyList
 from aodncore.testlib import DummyHandler, HandlerTestCase, dest_path_testing, get_nonexistent_path, mock
+from aodncore.util import WriteOnceOrderedDict
 from test_aodncore import TESTDATA_DIR
 
 BAD_NC = os.path.join(TESTDATA_DIR, 'bad.nc')
@@ -53,6 +54,20 @@ class TestDummyHandler(HandlerTestCase):
         self.assertIn('good.nc', eligible_filenames)
         self.assertNotIn('bad.nc', eligible_filenames)
 
+    def test_params_freeze(self):
+        handler = self.run_handler(GOOD_NC,
+                                   check_params={},
+                                   custom_params={},
+                                   harvest_params={},
+                                   notify_params={},
+                                   resolve_params={})
+
+        self.assertIsInstance(handler.check_params, WriteOnceOrderedDict)
+        self.assertIsInstance(handler.custom_params, WriteOnceOrderedDict)
+        self.assertIsInstance(handler.harvest_params, WriteOnceOrderedDict)
+        self.assertIsInstance(handler.notify_params, WriteOnceOrderedDict)
+        self.assertIsInstance(handler.resolve_params, WriteOnceOrderedDict)
+
     def test_custom_params(self):
         custom_params = {
             'my_bool_param': False,
@@ -63,8 +78,8 @@ class TestDummyHandler(HandlerTestCase):
 
         }
 
-        handler = self.run_handler(BAD_ZIP, custom_params=custom_params)
-        self.assertIs(handler.custom_params, custom_params)
+        handler = self.run_handler(GOOD_NC, custom_params=custom_params)
+        self.assertDictEqual(handler.custom_params, custom_params)
 
     def test_invalid_handler_params(self):
         with self.assertRaises(TypeError):

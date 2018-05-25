@@ -6,10 +6,11 @@ from collections import OrderedDict
 import six
 
 from aodncore.testlib import BaseTestCase
-from aodncore.util import (format_exception, is_function, is_nonstring_iterable, matches_regexes,
-                           merge_dicts, slice_sequence, str_to_list, validate_callable, validate_mandatory_elements,
-                           validate_membership, validate_nonstring_iterable, validate_relative_path,
-                           validate_relative_path_attr, validate_type, CaptureStdIO, WriteOnceOrderedDict)
+from aodncore.util import (ensure_writeonceordereddict, format_exception, is_function, is_nonstring_iterable,
+                           matches_regexes, merge_dicts, slice_sequence, str_to_list, validate_callable,
+                           validate_mandatory_elements, validate_membership, validate_nonstring_iterable,
+                           validate_relative_path, validate_relative_path_attr, validate_type, CaptureStdIO,
+                           WriteOnceOrderedDict)
 
 StringIO = six.StringIO
 
@@ -81,6 +82,35 @@ class TestWriteOnceOrderedDict(BaseTestCase):
 
 
 class TestUtilMisc(BaseTestCase):
+    def test_ensure_writeonceordereddict(self):
+        test_wood = WriteOnceOrderedDict({'key': 'value'})
+        ensured_wood = ensure_writeonceordereddict(test_wood)
+        self.assertIsInstance(ensured_wood, WriteOnceOrderedDict)
+        self.assertIs(ensured_wood, test_wood)
+
+        test_dict = {'key': 'value'}
+        ensured_dict = ensure_writeonceordereddict(test_dict)
+        self.assertIsInstance(ensured_dict, WriteOnceOrderedDict)
+        self.assertDictEqual(ensured_dict, test_dict)
+
+        test_invalid = 'str'
+        ensured_invalid = ensure_writeonceordereddict(test_invalid)
+        self.assertIsInstance(ensured_invalid, WriteOnceOrderedDict)
+        self.assertEqual(len(ensured_invalid), 0)
+
+        test_none = None
+        ensured_none = ensure_writeonceordereddict(test_none)
+        self.assertIsInstance(ensured_none, WriteOnceOrderedDict)
+        self.assertEqual(len(ensured_none), 0)
+
+        test_none_fail = None
+        with self.assertRaises(TypeError):
+            _ = ensure_writeonceordereddict(test_none_fail, empty_on_fail=False)
+
+        test_string_fail = 'str'
+        with self.assertRaises(ValueError):
+            _ = ensure_writeonceordereddict(test_string_fail, empty_on_fail=False)
+
     def test_is_function(self):
         class DummyClass(object):
             def dummy_method(self):

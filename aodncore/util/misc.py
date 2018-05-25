@@ -19,6 +19,7 @@ StringIO = six.StringIO
 
 __all__ = [
     'discover_entry_points',
+    'ensure_writeonceordereddict',
     'format_exception',
     'is_nonstring_iterable',
     'is_function',
@@ -62,6 +63,27 @@ def discover_entry_points(entry_point_group, working_set=pkg_resources.working_s
         entry_point_object = entry_point.load()
         entry_points[entry_point.name] = entry_point_object
     return entry_points
+
+
+def ensure_writeonceordereddict(o, empty_on_fail=True):
+    """Function to accept and object and return the WriteOnceOrderedDict representation of the object. An object which
+    can *not* be handled by the WriteOnceOrderedDict __init__ method will either result in an empty, or if
+    'empty_on_fail' is set to False, will result in an exception.
+
+    :param o: input object
+    :param empty_on_fail: boolean flag to determine whether an invalid object will result in a new empty
+        WriteOnceOrderedDict being returned or the exception re-raised.
+    :return: :py:class:`WriteOnceOrderedDict` instance
+    """
+    if isinstance(o, WriteOnceOrderedDict):
+        return o
+
+    try:
+        return WriteOnceOrderedDict(o)
+    except (TypeError, ValueError):
+        if empty_on_fail:
+            return WriteOnceOrderedDict()
+        raise
 
 
 def format_exception(exception):
