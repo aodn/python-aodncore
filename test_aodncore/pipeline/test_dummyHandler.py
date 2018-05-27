@@ -10,6 +10,7 @@ from aodncore.pipeline.exceptions import (ComplianceCheckFailedError, HandlerAlr
 from aodncore.pipeline.statequery import StateQuery
 from aodncore.pipeline.steps import NotifyList
 from aodncore.testlib import DummyHandler, HandlerTestCase, dest_path_testing, get_nonexistent_path, mock
+from aodncore.util import WriteOnceOrderedDict
 from test_aodncore import TESTDATA_DIR
 
 BAD_NC = os.path.join(TESTDATA_DIR, 'bad.nc')
@@ -53,6 +54,37 @@ class TestDummyHandler(HandlerTestCase):
         self.assertIn('good.nc', eligible_filenames)
         self.assertNotIn('bad.nc', eligible_filenames)
 
+    def test_params_freeze(self):
+        handler = self.run_handler(GOOD_NC,
+                                   check_params={},
+                                   custom_params={},
+                                   harvest_params={},
+                                   notify_params={},
+                                   resolve_params={})
+
+        self.assertIsInstance(handler.check_params, WriteOnceOrderedDict)
+        self.assertIsInstance(handler.custom_params, WriteOnceOrderedDict)
+        self.assertIsInstance(handler.harvest_params, WriteOnceOrderedDict)
+        self.assertIsInstance(handler.notify_params, WriteOnceOrderedDict)
+        self.assertIsInstance(handler.resolve_params, WriteOnceOrderedDict)
+
+    def test_custom_params(self):
+        custom_params = {
+            'my_bool_param': False,
+            'my_dict_param': {'key': 'value'},
+            'my_int_param': 1,
+            'my_list_param': [1],
+            'my_string_param': 'str'
+
+        }
+
+        handler = self.run_handler(GOOD_NC, custom_params=custom_params)
+        self.assertDictEqual(handler.custom_params, custom_params)
+
+    def test_invalid_handler_params(self):
+        with self.assertRaises(TypeError):
+            _ = self.handler_class(GOOD_NC, invalid_unknown_keyword_argument=1)
+
     def test_invalid_include_regex(self):
         self.run_handler_with_exception(ValueError, GOOD_NC, include_regexes=['['])
 
@@ -62,6 +94,9 @@ class TestDummyHandler(HandlerTestCase):
     def test_invalid_check_params(self):
         self.run_handler_with_exception(ValidationError, GOOD_NC, check_params={'invalid_param': 'value'})
         self.run_handler_with_exception(ValidationError, GOOD_NC, check_params={'checks': 'invalid_type'})
+
+    def test_invalid_custom_params(self):
+        self.run_handler_with_exception(ValidationError, GOOD_NC, custom_params='invalid_type')
 
     def test_invalid_harvest_params(self):
         self.run_handler_with_exception(ValidationError, GOOD_NC, harvest_params={'slice_size': 'twenty'})
