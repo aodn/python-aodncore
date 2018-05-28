@@ -8,8 +8,9 @@ import six
 from .common import (FileType, PipelineFilePublishType, PipelineFileCheckType, validate_addition_publishtype,
                      validate_checkresult, validate_checktype, validate_deletion_publishtype, validate_publishtype)
 from .exceptions import DuplicateUniqueAttributeError, DuplicatePipelineFileError, MissingFileError
+from .schema import validate_check_params
 from ..util import (IndexedSet, format_exception, get_file_checksum, iter_public_attributes, matches_regexes,
-                    slice_sequence, validate_bool, validate_callable, validate_dict, validate_mapping,
+                    slice_sequence, validate_bool, validate_callable, validate_mapping,
                     validate_nonstring_iterable, validate_regex, validate_relative_path_attr, validate_string,
                     validate_type)
 
@@ -462,6 +463,10 @@ class PipelineFileCollection(MutableSet):
     def __repr__(self):  # pragma: no cover
         return "PipelineFileCollection({repr})".format(repr=repr(list(self.__s)))
 
+    def _set_attribute(self, attribute, value):
+        for f in self.__s:
+            setattr(f, attribute, value)
+
     def add(self, pipeline_file, deletion=False, overwrite=False):
         """Add a file to the collection
 
@@ -518,7 +523,7 @@ class PipelineFileCollection(MutableSet):
         return result
 
     def difference(self, sequence):
-        return self.__s.difference(sequence)
+        return PipelineFileCollection(self.__s.difference(sequence))
 
     def issubset(self, sequence):
         return self.__s.issubset(sequence)
@@ -575,6 +580,18 @@ class PipelineFileCollection(MutableSet):
             attribute matching the given value
         """
         collection = PipelineFileCollection(f for f in self.__s if getattr(f, attribute) is value)
+        return collection
+
+    def filter_by_attribute_id_not(self, attribute, value):
+        """Return a new :py:class:`PipelineFileCollection` containing only elements where the id of the given attribute
+        is *not* the given id (i.e. refers to the same object)
+
+        :param attribute: attribute by which to filter :py:class:`PipelineFile` instances
+        :param value: attribute id to filter on
+        :return: :py:class:`PipelineFileCollection` containing only :py:class:`PipelineFile` instances with the given
+            attribute not matching the given value
+        """
+        collection = PipelineFileCollection(f for f in self.__s if getattr(f, attribute) is not value)
         return collection
 
     def filter_by_attribute_value(self, attribute, value):
@@ -714,19 +731,6 @@ class PipelineFileCollection(MutableSet):
             columns = []
         return columns, data
 
-    def set_check_types(self, check_params):
-        if check_params is None:
-            check_params = {}
-        validate_dict(check_params)
-        checks = check_params.get('checks', ())
-        for f in self.__s:
-            if f.is_deletion:
-                f.check_type = PipelineFileCheckType.NO_ACTION
-            elif checks and f.file_type is FileType.NETCDF:
-                f.check_type = PipelineFileCheckType.NC_COMPLIANCE_CHECK
-            else:
-                f.check_type = PipelineFileCheckType.FORMAT_CHECK
-
     def set_archive_paths(self, archive_path_function):
         """Set archive_path attributes for each file in the collection
 
@@ -740,6 +744,15 @@ class PipelineFileCollection(MutableSet):
                 candidate_path = archive_path_function(f.src_path)
                 self.validate_unique_attribute_value('archive_path', candidate_path)
                 f.archive_path = candidate_path
+
+    def set_check_types(self, check_type):
+        """Set check_type attributes for each file in the collection
+
+        :param check_type: :py:class:`PipefileFileCheckType` enum member
+        :return: None
+        """
+        validate_checktype(check_type)
+        self._set_attribute('check_type', check_type)
 
     def set_dest_paths(self, dest_path_function):
         """Set dest_path attributes for each file in the collection
@@ -763,9 +776,26 @@ class PipelineFileCollection(MutableSet):
         :return: None
         """
         validate_bool(value)
+        self._set_attribute(attribute, value)
 
-        for f in self.__s:
-            setattr(f, attribute, value)
+    def set_publish_types(self, publish_type):
+        """Set publish_type attributes for each file in the collection
+
+        :param publish_type: :py:class:`PipefileFilePublishType` enum member
+        :return: None
+        """
+        validate_publishtype(publish_type)
+        self._set_attribute('publish_type', publish_type)
+
+    def set_string_attribute(self, attribute, value):
+        """Set a string attribute for each file in the collection
+
+        :param attribute: attribute to set
+        :param value: value to set the attribute
+        :return: None
+        """
+        validate_string(value)
+        self._set_attribute(attribute, value)
 
     def set_file_update_callback(self, file_update_callback):
         """Set a callback function in each :py:class:`PipelineFile` in this collection
@@ -776,7 +806,32 @@ class PipelineFileCollection(MutableSet):
         for f in self.__s:
             f.file_update_callback = file_update_callback
 
-    def set_default_publish_types(self, include_regexes, exclude_regexes, addition_type, deletion_type):
+    def set_check_types_from_params(self, check_params):
+        """Set check_type attribute for each file in the collection to the default value, based on the file type and
+        presence of compliance checker checks in the check parameters
+
+        :param check_params: :py:class:`dict`
+        :return:
+        """
+        if check_params is None:
+            check_params = {}
+        else:
+            validate_check_params(check_params)
+
+        checks = check_params.get('checks', ())
+
+        all_deletions = PipelineFileCollection(f for f in self.__s if f.is_deletion)
+        all_additions = PipelineFileCollection(self.__s.difference(all_deletions))
+        netcdf_additions = PipelineFileCollection(f for f in all_additions if f.file_type is FileType.NETCDF)
+        non_netcdf_additions = all_additions.difference(netcdf_additions)
+
+        netcdf_check_type = PipelineFileCheckType.NC_COMPLIANCE_CHECK if checks else PipelineFileCheckType.FORMAT_CHECK
+
+        all_deletions.set_check_types(PipelineFileCheckType.NO_ACTION)
+        netcdf_additions.set_check_types(netcdf_check_type)
+        non_netcdf_additions.set_check_types(PipelineFileCheckType.FORMAT_CHECK)
+
+    def set_publish_types_from_regexes(self, include_regexes, exclude_regexes, addition_type, deletion_type):
         """Set publish_type attribute for each file in the collection depending on whether it is considered "included"
         according to the regex parameters
 

@@ -600,19 +600,18 @@ class HandlerBase(object):
         resolved_files = resolve_runner.run()
 
         resolved_files.set_file_update_callback(self._file_update_callback)
-        resolved_files.set_default_publish_types(self.include_regexes, self.exclude_regexes,
-                                                 self.default_addition_publish_type,
-                                                 self.default_deletion_publish_type)
+        resolved_files.set_publish_types_from_regexes(self.include_regexes, self.exclude_regexes,
+                                                      self.default_addition_publish_type,
+                                                      self.default_deletion_publish_type)
 
         self.file_collection.update(resolved_files)
 
     def _check(self):
         check_runner = get_check_runner(self.config, self.logger, self.check_params)
         self.logger.sysinfo("get_check_runner -> '{runner}'".format(runner=check_runner.__class__.__name__))
-        self.file_collection.set_check_types(self.check_params)
-        files_to_check = PipelineFileCollection(
-            f for f in self.file_collection if f.check_type is not PipelineFileCheckType.NO_ACTION)
+        self.file_collection.set_check_types_from_params(self.check_params)
 
+        files_to_check = self.file_collection.filter_by_attribute_id_not('check_type', PipelineFileCheckType.NO_ACTION)
         if files_to_check:
             check_runner.run(files_to_check)
 

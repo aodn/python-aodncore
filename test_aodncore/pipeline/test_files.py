@@ -5,9 +5,9 @@ from collections import MutableSet, OrderedDict
 from six import assertCountEqual
 from six.moves import range
 
-from aodncore.pipeline.common import (CheckResult, PipelineFileCheckType,PipelineFilePublishType)
-from aodncore.pipeline.files import PipelineFileCollection, PipelineFile, ensure_pipelinefilecollection
+from aodncore.pipeline.common import (CheckResult, PipelineFileCheckType, PipelineFilePublishType)
 from aodncore.pipeline.exceptions import DuplicateUniqueAttributeError, DuplicatePipelineFileError, MissingFileError
+from aodncore.pipeline.files import PipelineFileCollection, PipelineFile, ensure_pipelinefilecollection
 from aodncore.pipeline.steps import get_child_check_runner
 from aodncore.testlib import BaseTestCase, get_nonexistent_path, mock
 from test_aodncore import TESTDATA_DIR
@@ -135,6 +135,19 @@ class TestPipelineFile(BaseTestCase):
         self.pipelinefile.is_harvested = True
         self.assertTrue(self.pipelinefile.is_harvested)
 
+    def test_property_is_overwrite(self):
+        self.assertFalse(self.pipelinefile.is_overwrite)
+        self.pipelinefile.is_overwrite = True
+        self.assertTrue(self.pipelinefile.is_overwrite)
+
+    def test_property_mime_type(self):
+        expected_default_value = 'application/octet-stream'
+        expected_value = 'application/xml'
+
+        self.assertEqual(self.pipelinefile.mime_type, expected_default_value)
+        self.pipelinefile.mime_type = expected_value
+        self.assertEqual(self.pipelinefile.mime_type, expected_value)
+
     def test_property_published_upload_only(self):
         self.pipelinefile.publish_type = PipelineFilePublishType.UPLOAD_ONLY
         self.assertEqual('No', self.pipelinefile.published)
@@ -160,6 +173,14 @@ class TestPipelineFile(BaseTestCase):
         self.assertEqual('Yes', self.pipelinefile.published)
         self.pipelinefile.is_upload_undone = True
         self.assertEqual('No', self.pipelinefile.published)
+
+    def test_property_should_undo(self):
+        self.assertFalse(self.pipelinefile.should_undo)
+        self.pipelinefile.should_undo = True
+        self.assertTrue(self.pipelinefile.should_undo)
+
+        with self.assertRaises(ValueError):
+            self.pipelinefile_deletion.should_undo = True
 
     def test_file_callback(self):
         class TestCallbackContainer(object):
@@ -305,7 +326,7 @@ class TestPipelineFileCollection(BaseTestCase):
         self.collection.add(p1)
 
         with self.assertRaises(DuplicateUniqueAttributeError):
-            self.collection.validate_unique_attribute_value('dest_path','FIXED_DEST_PATH')
+            self.collection.validate_unique_attribute_value('dest_path', 'FIXED_DEST_PATH')
 
         try:
             self.collection.validate_unique_attribute_value('dest_path', 'A_DIFFERENT_DEST_PATH')
@@ -516,6 +537,22 @@ class TestPipelineFileCollection(BaseTestCase):
                                                                      PipelineFilePublishType.DELETE_UNHARVEST)
         assertCountEqual(self, self.collection, filtered_collection)
 
+    def test_filter_by_attribute_id_not(self):
+        f1 = get_nonexistent_path()
+        f2 = get_nonexistent_path()
+        f3 = get_nonexistent_path()
+        fileobj1 = PipelineFile(f1, is_deletion=True)
+        fileobj1.publish_type = PipelineFilePublishType.DELETE_ONLY
+        fileobj2 = PipelineFile(f2, is_deletion=True)
+        fileobj2.publish_type = PipelineFilePublishType.DELETE_UNHARVEST
+        fileobj3 = PipelineFile(f3, is_deletion=True)
+        fileobj3.publish_type = PipelineFilePublishType.NO_ACTION
+        self.collection.update((fileobj1, fileobj2, fileobj3))
+
+        filtered_collection = self.collection.filter_by_attribute_id_not('publish_type',
+                                                                         PipelineFilePublishType.NO_ACTION)
+        assertCountEqual(self, filtered_collection, PipelineFileCollection((fileobj1, fileobj2)))
+
     def test_filter_by_attribute_value(self):
         f1 = get_nonexistent_path()
         fileobj1 = PipelineFile(f1, is_deletion=True)
@@ -554,6 +591,23 @@ class TestPipelineFileCollection(BaseTestCase):
 
         filtered_collection = self.collection.filter_by_bool_attribute('is_stored')
         self.assertSetEqual(filtered_collection, PipelineFileCollection())
+
+    @mock.patch("aodncore.pipeline.files.get_file_checksum")
+    @mock.patch("os.path.isfile")
+    def test_filter_by_bool_attribute_not(self, mock_isfile, mock_get_file_checksum):
+        mock_isfile.return_value = True
+        mock_get_file_checksum.return_value = ''
+
+        f1 = get_nonexistent_path()
+        f2 = get_nonexistent_path()
+        f3 = get_nonexistent_path()
+        fileobj1 = PipelineFile(f1)
+        fileobj2 = PipelineFile(f2, is_deletion=True)
+        fileobj3 = PipelineFile(f3)
+        self.collection.update((fileobj1, fileobj2, fileobj3))
+
+        filtered_collection = self.collection.filter_by_bool_attribute_not('is_deletion')
+        self.assertSetEqual(filtered_collection, PipelineFileCollection((fileobj1, fileobj3)))
 
     @mock.patch("aodncore.pipeline.files.get_file_checksum")
     @mock.patch("os.path.isfile")
@@ -688,3 +742,85 @@ class TestPipelineFileCollection(BaseTestCase):
         table_headers, table_data = self.collection.get_table_data()
         self.assertListEqual([], table_headers)
         self.assertListEqual([], table_data)
+
+    @mock.patch("aodncore.pipeline.files.get_file_checksum")
+    @mock.patch("os.path.isfile")
+    def test_set_bool_attribute(self, mock_isfile, mock_get_file_checksum):
+        mock_isfile.return_value = True
+        mock_get_file_checksum.return_value = ''
+
+        f1 = get_nonexistent_path()
+        f2 = get_nonexistent_path()
+        f3 = get_nonexistent_path()
+        fileobj1 = PipelineFile(f1)
+        fileobj2 = PipelineFile(f2, is_deletion=True)
+        fileobj3 = PipelineFile(f3)
+        self.collection.update((fileobj1, fileobj2, fileobj3))
+
+        with self.assertRaises(TypeError):
+            self.collection.set_bool_attribute('is_harvested', 'not_a_bool')
+        with self.assertRaises(TypeError):
+            self.collection.set_bool_attribute('is_harvested', 1)
+        with self.assertRaises(TypeError):
+            self.collection.set_bool_attribute('is_harvested', [])
+
+        try:
+            self.collection.set_bool_attribute('is_harvested', True)
+        except Exception as e:
+            raise AssertionError(
+                "unexpected exception raised. {cls} {msg}".format(cls=e.__class__.__name__, msg=e))
+
+    def test_set_check_types(self):
+        f1 = get_nonexistent_path()
+        f2 = get_nonexistent_path()
+        fileobj1 = PipelineFile(f1, is_deletion=True)
+        fileobj2 = PipelineFile(f2, is_deletion=True)
+        self.collection.update((fileobj1, fileobj2))
+
+        self.assertTrue(all(f.check_type is PipelineFileCheckType.NO_ACTION for f in self.collection))
+        self.collection.set_check_types(PipelineFileCheckType.NONEMPTY_CHECK)
+        self.assertTrue(all(f.check_type is PipelineFileCheckType.NONEMPTY_CHECK for f in self.collection))
+
+        with self.assertRaises(ValueError):
+            self.collection.set_check_types('invalid_type')
+
+    def test_set_publish_types(self):
+        f1 = get_nonexistent_path()
+        f2 = get_nonexistent_path()
+        fileobj1 = PipelineFile(f1, is_deletion=True)
+        fileobj2 = PipelineFile(f2, is_deletion=True)
+        self.collection.update((fileobj1, fileobj2))
+
+        self.assertTrue(all(f.publish_type is PipelineFilePublishType.NO_ACTION for f in self.collection))
+        self.collection.set_publish_types(PipelineFilePublishType.DELETE_UNHARVEST)
+        self.assertTrue(all(f.publish_type is PipelineFilePublishType.DELETE_UNHARVEST for f in self.collection))
+
+        with self.assertRaises(ValueError):
+            self.collection.set_publish_types('invalid_type')
+
+    @mock.patch("aodncore.pipeline.files.get_file_checksum")
+    @mock.patch("os.path.isfile")
+    def test_set_string_attribute(self, mock_isfile, mock_get_file_checksum):
+        mock_isfile.return_value = True
+        mock_get_file_checksum.return_value = ''
+
+        f1 = get_nonexistent_path()
+        f2 = get_nonexistent_path()
+        f3 = get_nonexistent_path()
+        fileobj1 = PipelineFile(f1)
+        fileobj2 = PipelineFile(f2, is_deletion=True)
+        fileobj3 = PipelineFile(f3)
+        self.collection.update((fileobj1, fileobj2, fileobj3))
+
+        with self.assertRaises(TypeError):
+            self.collection.set_string_attribute('dest_path', True)
+        with self.assertRaises(TypeError):
+            self.collection.set_string_attribute('archive_path', 1)
+        with self.assertRaises(TypeError):
+            self.collection.set_string_attribute('dest_path', [])
+
+        try:
+            self.collection.set_string_attribute('dest_path', 'valid/string')
+        except Exception as e:
+            raise AssertionError(
+                "unexpected exception raised. {cls} {msg}".format(cls=e.__class__.__name__, msg=e))
