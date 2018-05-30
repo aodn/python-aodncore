@@ -20,12 +20,13 @@ import logging.config
 import os
 import stat
 from uuid import uuid4
+from warnings import warn
 
 from six import PY2
 from transitions import Machine
 
 from .log import get_pipeline_logger
-from ..util import mkdir_p, rm_f, rm_r, validate_dir_writable, validate_file_writable
+from ..util import format_exception, mkdir_p, rm_f, rm_r, validate_dir_writable, validate_file_writable
 
 # OS X test compatibility, due to absence of pyinotify (which is specific to the Linux kernel)
 try:
@@ -163,8 +164,6 @@ class CeleryContext(object):
 
             def run(self, incoming_file):
                 try:
-                    self.input_file = incoming_file
-
                     self._configure_logger()
 
                     location_map = self._generate_location_map(incoming_file)
@@ -172,8 +171,15 @@ class CeleryContext(object):
 
                     self.file_state_manager.move_to_processing()
 
-                    self.handler = handler_class(location_map['processing']['path'], config=config, celery_task=self,
-                                                 upload_path=location_map['incoming']['relative_path'], **kwargs)
+                    try:
+                        self.handler = handler_class(location_map['processing']['path'], celery_task=self,
+                                                     config=config,
+                                                     upload_path=location_map['incoming']['relative_path'],
+                                                     **kwargs)
+                    except Exception as e:
+                        self.file_state_manager.move_to_error()
+                        self.logger.error("failed to instantiate handler class: {e}".format(e=format_exception(e)))
+
                     self.handler.run()
 
                     if self.handler.error:
@@ -197,10 +203,9 @@ class CeleryContext(object):
 
         if not configured_handler_names.issubset(available_handler_names):
             invalid_handlers = configured_handler_names.difference(available_handler_names)
-            raise ValueError(
-                "one or more handlers not found in discovered handlers. "
-                "{invalid_handlers} not in {discovered_handlers}".format(
-                    invalid_handlers=list(invalid_handlers), discovered_handlers=list(available_handler_names)))
+            warn("one or more handlers not found in discovered handlers. "
+                 "{invalid} not in {discovered}".format(invalid=list(invalid_handlers),
+                                                        discovered=list(available_handler_names)))
 
         for pipeline_name, items in iteritems(self._config.watch_config):
             try:
@@ -211,8 +216,15 @@ class CeleryContext(object):
                     "{name} not in {handlers}".format(name=items['handler'], handlers=available_handler_names))
 
             params = items.get('params', {})
-            task_object = self._build_task(pipeline_name, handler_class, params)
-            self._application.register_task(task_object)
+
+            try:
+                _ = handler_class('', config=self._config, **params)
+            except TypeError as e:
+                warn("invalid parameters for handler '{name}': {e}".format(name=items['handler'],
+                                                                           e=format_exception(e)))
+            else:
+                task_object = self._build_task(pipeline_name, handler_class, params)
+                self._application.register_task(task_object)
 
 
 def should_ignore_event(pathname):
