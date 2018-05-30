@@ -1,7 +1,7 @@
-pip
+pip==9.0.3
 boto3==1.4.4
 cc-plugin-imos>=1.3.0
-celery==4.0.2
+celery==4.1.1
 compliance-checker==4.0.1
 enum34==1.1.6
 Jinja2==2.9.6
