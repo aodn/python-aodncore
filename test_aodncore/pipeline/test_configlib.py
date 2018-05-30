@@ -113,9 +113,11 @@ REFERENCE_WATCH_CONFIG = {
                     "cf"
                 ]
             },
-            "notify_list": [
-                "4.XXXX"
-            ]
+            "notify_params": {
+                "error_notify_list": [
+                    "4.XXXX"
+                ]
+            }
         }
     }
 }
