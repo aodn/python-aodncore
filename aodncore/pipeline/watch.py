@@ -405,8 +405,8 @@ class WatchServiceManager(object):
 
     def __init__(self, config, event_handler, watch_manager, notifier):
         # noinspection PyProtectedMember
-        assert watch_manager is notifier._watch_manager, ("notifier must be instantiated with the same watch_manager "
-                                                          "instance as __init__ param")
+        if watch_manager is not notifier._watch_manager:
+            raise ValueError("notifier must be instantiated with the same watch_manager instance as __init__ param")
 
         self._watch_manager = watch_manager
         self.notifier = notifier
