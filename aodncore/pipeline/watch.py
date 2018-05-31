@@ -225,8 +225,10 @@ class CeleryContext(object):
             try:
                 _ = handler_class('', config=self._config, **params)
             except TypeError as e:
-                warnings.warn("invalid parameters for handler '{name}': {e}".format(name=items['handler'],
-                                                                                    e=format_exception(e)))
+                warnings.warn(
+                    "invalid parameters for pipeline '{pipeline}', handler '{name}': {e}".format(pipeline=pipeline_name,
+                                                                                                 name=items['handler'],
+                                                                                                 e=format_exception(e)))
             else:
                 task_object = self._build_task(pipeline_name, handler_class, params)
                 self._application.register_task(task_object)
