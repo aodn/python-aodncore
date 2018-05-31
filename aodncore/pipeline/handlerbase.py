@@ -271,8 +271,8 @@ class HandlerBase(object):
         self._default_deletion_publish_type = PipelineFilePublishType.DELETE_UNHARVEST
         self._error = None
         self._file_checksum = None
-        _, self._file_extension = os.path.splitext(input_file)
-        self._file_type = FileType.get_type_from_extension(self.file_extension)
+        self._file_extension = None
+        self._file_type = None
         self._is_archived = False
         self._module_versions = None
         self._result = HandlerResult.UNKNOWN
@@ -587,7 +587,7 @@ class HandlerBase(object):
 
         self._init_logging()
         self._validate_and_freeze_params()
-        self._set_checksum()
+        self._set_input_file_attributes()
         self._check_extension()
         self._set_path_functions()
         self._init_working_directory()
@@ -822,13 +822,18 @@ class HandlerBase(object):
         except Exception as e:
             self.logger.exception('error during _handle_success method: {e}'.format(e=format_exception(e)))
 
-    def _set_checksum(self):
+    def _set_input_file_attributes(self):
         try:
             self._file_checksum = get_file_checksum(self.input_file)
         except (IOError, OSError) as e:
             self.logger.exception(e)
             raise InvalidInputFileError(e)
         self.logger.sysinfo("get_file_checksum -> '{checksum}'".format(checksum=self.file_checksum))
+
+        _, self._file_extension = os.path.splitext(self.input_file)
+        self.logger.sysinfo("file_extension -> '{extension}'".format(extension=self._file_extension))
+        self._file_type = FileType.get_type_from_extension(self.file_extension)
+        self.logger.sysinfo("file_type -> '{type}'".format(type=self._file_type))
 
     def _set_path_functions(self):
         dest_path_function_ref, dest_path_function_name = get_path_function(self, self.config.pipeline_config[
