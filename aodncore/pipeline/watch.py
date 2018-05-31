@@ -19,8 +19,8 @@ import abc
 import logging.config
 import os
 import stat
+import warnings
 from uuid import uuid4
-from warnings import warn
 
 from six import PY2
 from transitions import Machine
@@ -49,6 +49,11 @@ from six import iteritems
 
 from .exceptions import InvalidHandlerError
 from ..util import list_regular_files, safe_move_file
+
+# Filter noisy and useless numpy warnings
+# Reference: https://github.com/numpy/numpy/pull/432
+warnings.filterwarnings("ignore", message="numpy.dtype size changed")
+warnings.filterwarnings("ignore", message="numpy.ufunc size changed")
 
 __all__ = [
     'get_task_name',
@@ -203,9 +208,9 @@ class CeleryContext(object):
 
         if not configured_handler_names.issubset(available_handler_names):
             invalid_handlers = configured_handler_names.difference(available_handler_names)
-            warn("one or more handlers not found in discovered handlers. "
-                 "{invalid} not in {discovered}".format(invalid=list(invalid_handlers),
-                                                        discovered=list(available_handler_names)))
+            warnings.warn("one or more handlers not found in discovered handlers. "
+                          "{invalid} not in {discovered}".format(invalid=list(invalid_handlers),
+                                                                 discovered=list(available_handler_names)))
 
         for pipeline_name, items in iteritems(self._config.watch_config):
             try:
@@ -220,8 +225,8 @@ class CeleryContext(object):
             try:
                 _ = handler_class('', config=self._config, **params)
             except TypeError as e:
-                warn("invalid parameters for handler '{name}': {e}".format(name=items['handler'],
-                                                                           e=format_exception(e)))
+                warnings.warn("invalid parameters for handler '{name}': {e}".format(name=items['handler'],
+                                                                                    e=format_exception(e)))
             else:
                 task_object = self._build_task(pipeline_name, handler_class, params)
                 self._application.register_task(task_object)
