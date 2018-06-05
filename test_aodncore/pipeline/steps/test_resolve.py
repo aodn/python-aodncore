@@ -2,15 +2,17 @@ import os
 from uuid import uuid4
 
 from aodncore.pipeline.exceptions import DuplicatePipelineFileError
-from aodncore.pipeline.steps.resolve import (get_resolve_runner, DirManifestResolveRunner, MapManifestResolveRunner,
-                                             RsyncManifestResolveRunner, SimpleManifestResolveRunner,
-                                             SingleFileResolveRunner, ZipFileResolveRunner)
+from aodncore.pipeline.steps.resolve import (get_resolve_runner, DirManifestResolveRunner, GzipFileResolveRunner,
+                                             MapManifestResolveRunner, RsyncManifestResolveRunner,
+                                             SimpleManifestResolveRunner, SingleFileResolveRunner, ZipFileResolveRunner)
 from aodncore.testlib import BaseTestCase
 from test_aodncore import TESTDATA_DIR
 
 BAD_NC = os.path.join(TESTDATA_DIR, 'bad.nc')
+BAD_GZ = os.path.join(TESTDATA_DIR, 'bad.nc.gz')
 BAD_ZIP = os.path.join(TESTDATA_DIR, 'bad.zip')
 GOOD_NC = os.path.join(TESTDATA_DIR, 'good.nc')
+GOOD_GZ = os.path.join(TESTDATA_DIR, 'good.nc.gz')
 GOOD_ZIP = os.path.join(TESTDATA_DIR, 'good.zip')
 RECURSIVE_ZIP = os.path.join(TESTDATA_DIR, 'recursive.zip')
 INVALID_FILE = os.path.join(TESTDATA_DIR, 'invalid.png')
@@ -53,6 +55,9 @@ class TestPipelineStepsResolve(BaseTestCase):
         unknown_file_extension = get_resolve_runner(str(uuid4()), self.temp_dir, TESTDATA_DIR, MOCK_CONFIG,
                                                     self.test_logger)
         self.assertIsInstance(unknown_file_extension, SingleFileResolveRunner)
+
+        gzip_resolve_runner = get_resolve_runner(GOOD_GZ, self.temp_dir, TESTDATA_DIR, MOCK_CONFIG, None)
+        self.assertIsInstance(gzip_resolve_runner, GzipFileResolveRunner)
 
         zip_resolve_runner = get_resolve_runner(GOOD_ZIP, self.temp_dir, TESTDATA_DIR, MOCK_CONFIG, None)
         self.assertIsInstance(zip_resolve_runner, ZipFileResolveRunner)
@@ -124,9 +129,23 @@ class TestSingleFileResolveRunner(BaseTestCase):
         good_nc = os.path.join(self.temp_dir, os.path.basename(GOOD_NC))
 
         self.assertEqual(len(collection), 1)
-
         self.assertTrue(os.path.exists(good_nc))
         self.assertEqual(collection[0].src_path, good_nc)
+
+
+class TestGzipFileResolveRunner(BaseTestCase):
+    def test_gzip_file_resolve_runner(self):
+        collection_dir = os.path.join(self.temp_dir, 'collection')
+        os.mkdir(collection_dir)
+
+        gzip_file_resolve_runner = GzipFileResolveRunner(GOOD_GZ, collection_dir, MOCK_CONFIG, self.test_logger)
+        collection = gzip_file_resolve_runner.run()
+
+        good_nc = os.path.join(collection_dir, os.path.basename(GOOD_NC))
+
+        self.assertEqual(len(collection), 1)
+        self.assertEqual(collection[0].src_path, good_nc)
+        self.assertTrue(os.path.exists(good_nc))
 
 
 class TestZipFileResolveRunner(BaseTestCase):

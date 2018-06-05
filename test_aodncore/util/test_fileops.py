@@ -1,4 +1,5 @@
 import filecmp
+import gzip
 import os
 import socket
 import uuid
@@ -8,8 +9,9 @@ from tempfile import mkdtemp, mkstemp
 import six
 
 from aodncore.testlib import BaseTestCase, get_nonexistent_path
-from aodncore.util import (extract_zip, is_netcdffile, is_zipfile, list_regular_files, mkdir_p,
-                           rm_f, rm_r, rm_rf, safe_copy_file, safe_move_file, get_file_checksum, TemporaryDirectory)
+from aodncore.util import (extract_gzip, extract_zip, is_gzipfile, is_netcdffile, is_zipfile, list_regular_files,
+                           mkdir_p, rm_f, rm_r, rm_rf, safe_copy_file, safe_move_file, get_file_checksum,
+                           TemporaryDirectory)
 from aodncore.util.misc import format_exception
 
 StringIO = six.StringIO
@@ -19,6 +21,23 @@ GOOD_NC = os.path.join(TEST_ROOT, 'good.nc')
 
 
 class TestUtilFileOps(BaseTestCase):
+    def test_extract_gzip(self):
+        temp_file_content = str(uuid.uuid4())
+
+        temp_gz_dir = mkdtemp(prefix=self.__class__.__name__, dir=self.temp_dir)
+        _, temp_gz_file = mkstemp(suffix='.gz', prefix=self.__class__.__name__, dir=self.temp_dir)
+
+        with gzip.GzipFile(temp_gz_file, 'wb') as gz:
+            gz.write(temp_file_content)
+
+        extract_gzip(temp_gz_file, temp_gz_dir)
+        expected_filename = os.path.basename(temp_gz_file).rstrip('.gz')
+
+        self.assertIn(expected_filename, os.listdir(temp_gz_dir))
+        with open(os.path.join(temp_gz_dir, expected_filename), 'rb') as f:
+            temp_file_content2 = f.read()
+        self.assertEqual(temp_file_content, temp_file_content2)
+
     def test_extract_zip(self):
         temp_file_name = str(uuid.uuid4())
         temp_file_content = str(uuid.uuid4())
@@ -43,6 +62,20 @@ class TestUtilFileOps(BaseTestCase):
 
         self.assertTrue(is_netcdffile(self.temp_nc_file))
         self.assertFalse(is_netcdffile(temp_other_file))
+
+    def test_isgzipfile(self):
+        temp_file_content = str(uuid.uuid4())
+
+        _, temp_gz_file = mkstemp(suffix='.zip', prefix=self.__class__.__name__, dir=self.temp_dir)
+        _, temp_other_file = mkstemp(suffix='.txt', prefix=self.__class__.__name__, dir=self.temp_dir)
+        with gzip.open(temp_gz_file, 'w') as gz:
+            gz.write(temp_file_content)
+
+        with open(temp_other_file, 'w') as f:
+            f.write('foobar')
+
+        self.assertTrue(is_gzipfile(temp_gz_file))
+        self.assertFalse(is_gzipfile(temp_other_file))
 
     def test_iszipfile(self):
         temp_file_name = str(uuid.uuid4())
