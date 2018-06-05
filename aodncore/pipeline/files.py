@@ -412,8 +412,8 @@ class PipelineFile(object):
 
         if self.file_update_callback:
             log_output = properties if include_values else properties.keys()
-            self.file_update_callback(name=self.name,
-                                      message="updated: {properties}".format(properties=log_output))
+            self.file_update_callback(name=self.name, is_deletion=self.is_deletion,
+                                      message="{properties}".format(properties=log_output))
 
 
 class PipelineFileCollection(MutableSet):

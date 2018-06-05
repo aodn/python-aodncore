@@ -706,8 +706,10 @@ class HandlerBase(object):
         if self.celery_task is not None:
             self.celery_task.update_state(state=self.state)
 
-    def _file_update_callback(self, name, message=None):
-        self.logger.info("file: '{name}' {message}".format(name=name, message=message))
+    def _file_update_callback(self, **kwargs):
+        raw_name = kwargs.get('name')
+        name = "{name} (deletion)".format(name=raw_name) if kwargs.get('is_deletion') else raw_name
+        self.logger.info("updated file '{name}': {message}".format(name=name, message=kwargs.get('message', '')))
 
     #
     # "internal" helper methods
