@@ -137,8 +137,26 @@ class TestDummyHandler(HandlerTestCase):
     def test_allowed_extensions(self):
         handler = self.run_handler_with_exception(InvalidFileFormatError, self.temp_nc_file,
                                                   dest_path_function=dest_path_testing,
-                                                  allowed_extensions=('.pdf', '.zip'))
+                                                  allowed_extensions=['.pdf', '.zip'])
         self.assertRegexpMatches(handler._error_details, "input file extension '.nc' not in allowed_extensions list:.*")
+
+        self.run_handler(self.temp_nc_file, dest_path_function=dest_path_testing, allowed_extensions=['.nc'])
+
+    def test_allowed_regexes(self):
+        handler = self.run_handler_with_exception(InvalidInputFileError, self.temp_nc_file,
+                                                  dest_path_function=dest_path_testing,
+                                                  allowed_regexes=['.*\.zip'])
+        self.assertRegexpMatches(handler._error_details,
+                                 "input file '.*' does not match any patterns in the allowed_regexes list:.*")
+
+        self.run_handler(self.temp_nc_file, dest_path_function=dest_path_testing, allowed_regexes=['.*\.nc'])
+
+    def test_allowed_extensions_and_allowed_regexes(self):
+        self.run_handler_with_exception(InvalidInputFileError, GOOD_NC, dest_path_function=dest_path_testing,
+                                        allowed_extensions=['.nc'], allowed_regexes=['bad\.nc'])
+
+        self.run_handler(GOOD_NC, dest_path_function=dest_path_testing, allowed_extensions=['.nc'],
+                         allowed_regexes=['good\.nc'])
 
     def test_archive_collection(self):
         handler = self.run_handler(self.temp_nc_file, archive_path_function=dest_path_testing, archive_input_file=True)

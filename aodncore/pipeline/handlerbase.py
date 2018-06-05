@@ -18,7 +18,8 @@ from .schema import (validate_check_params, validate_custom_params, validate_har
 from .statequery import StateQuery
 from .steps import (get_check_runner, get_harvester_runner, get_notify_runner, get_resolve_runner, get_store_runner)
 from ..util import (discover_entry_points, ensure_writeonceordereddict, format_exception, get_file_checksum,
-                    iter_public_attributes, merge_dicts, validate_relative_path_attr, TemporaryDirectory)
+                    iter_public_attributes, matches_regexes, merge_dicts, validate_relative_path_attr,
+                    TemporaryDirectory)
 from ..version import __version__ as _aodncore_version
 
 __all__ = [
@@ -41,9 +42,15 @@ class HandlerBase(object):
 
     :type input_file: str
 
-    :param allowed_extensions: List of allowed extensions for :py:attr:`input_file`. Non-matching input files with cause
+    :param allowed_extensions: List of allowed extensions for :py:attr:`input_file`. Non-matching input files will cause
         the handler to exit with an error during the initialise step.
     :type allowed_extensions: list
+
+    :param allowed_regexes: List of allowed regular expressions for :py:attr:`input_file`. Non-matching input files will
+    cause the handler to exit with an error during the initialise step.
+
+    .. note:: :py:attr:`allowed_regexes` are checked *after* :py:attr:`allowed_extensions`
+    :type allowed_regexes: list
 
     :param archive_input_file: Flags whether the original input file should be uploaded to the archive, the location of
         which is configured by the environment configuration. The file will be archived at
@@ -249,6 +256,7 @@ class HandlerBase(object):
 
     def __init__(self, input_file,
                  allowed_extensions=None,
+                 allowed_regexes=None,
                  archive_input_file=False,
                  archive_path_function=None,
                  celery_task=None,
@@ -270,6 +278,7 @@ class HandlerBase(object):
         self._default_addition_publish_type = PipelineFilePublishType.HARVEST_UPLOAD
         self._default_deletion_publish_type = PipelineFilePublishType.DELETE_UNHARVEST
         self._error = None
+        self._file_basename = None
         self._file_checksum = None
         self._file_extension = None
         self._file_type = None
@@ -281,6 +290,7 @@ class HandlerBase(object):
         # public attributes
         self.input_file = input_file
         self.allowed_extensions = allowed_extensions
+        self.allowed_regexes = allowed_regexes
         self.archive_input_file = archive_input_file
         self.archive_path_function = archive_path_function
         self.celery_task = celery_task
@@ -379,6 +389,15 @@ class HandlerBase(object):
         :rtype: :class:`str`, :class:`None`
         """
         return self._error_details
+
+    @property
+    def file_basename(self):
+        """Read-only property to access the :py:attr:`input_file` basename
+
+        :return: :attr:`input_file` basename
+        :rtype: :class:`str`
+        """
+        return self._file_basename
 
     @property
     def file_collection(self):
@@ -588,7 +607,7 @@ class HandlerBase(object):
         self._init_logging()
         self._validate_and_freeze_params()
         self._set_input_file_attributes()
-        self._check_extension()
+        self._check_input_file_name()
         self._set_path_functions()
         self._init_working_directory()
         self._init_upload_runners()
@@ -713,11 +732,16 @@ class HandlerBase(object):
     # "internal" helper methods
     #
 
-    def _check_extension(self):
+    def _check_input_file_name(self):
         if self.allowed_extensions and self.file_extension not in self.allowed_extensions:
             raise InvalidFileFormatError(
                 "input file extension '{extension}' not in allowed_extensions list: {allowed}".format(
                     extension=self.file_extension, allowed=self.allowed_extensions))
+
+        if self.allowed_regexes and not matches_regexes(self.file_basename, include_regexes=self.allowed_regexes):
+            raise InvalidInputFileError(
+                "input file '{basename}' does not match any patterns in the allowed_regexes list: {allowed}".format(
+                    basename=self.file_basename, allowed=self.allowed_regexes))
 
     def _init_logging(self):
         try:
@@ -830,6 +854,8 @@ class HandlerBase(object):
             raise InvalidInputFileError(e)
         self.logger.sysinfo("get_file_checksum -> '{checksum}'".format(checksum=self.file_checksum))
 
+        self._file_basename = os.path.basename(self.input_file)
+        self.logger.sysinfo("file_basename -> '{basename}'".format(basename=self._file_basename))
         _, self._file_extension = os.path.splitext(self.input_file)
         self.logger.sysinfo("file_extension -> '{extension}'".format(extension=self._file_extension))
         self._file_type = FileType.get_type_from_extension(self.file_extension)
