@@ -26,11 +26,12 @@ from enum import Enum
 from .basestep import BaseStepRunner
 from ..common import FileType
 from ..files import PipelineFile, PipelineFileCollection
-from ...util import extract_zip, list_regular_files, is_zipfile, safe_copy_file
+from ...util import extract_gzip, extract_zip, list_regular_files, is_gzipfile, is_zipfile, safe_copy_file
 
 __all__ = [
     'get_resolve_runner',
     'DirManifestResolveRunner',
+    'GzipFileResolveRunner',
     'MapManifestResolveRunner',
     'RsyncManifestResolveRunner',
     'SimpleManifestResolveRunner',
@@ -61,6 +62,8 @@ def get_resolve_runner(input_file, output_dir, config, logger, resolve_params=No
         return RsyncManifestResolveRunner(input_file, output_dir, config, logger, resolve_params)
     elif file_extension == FileType.DIR_MANIFEST.extension:
         return DirManifestResolveRunner(input_file, output_dir, config, logger, resolve_params)
+    elif file_extension == FileType.GZIP.extension:
+        return GzipFileResolveRunner(input_file, output_dir, config, logger)
     else:
         return SingleFileResolveRunner(input_file, output_dir, config, logger)
 
@@ -86,6 +89,18 @@ class SingleFileResolveRunner(BaseResolveRunner):
         safe_copy_file(self.input_file, temp_location)
 
         self._collection.add(temp_location)
+        return self._collection
+
+
+class GzipFileResolveRunner(BaseResolveRunner):
+    def run(self):
+        if not is_gzipfile(self.input_file):
+            raise ValueError("input_file must be a valid GZ file")
+
+        extract_gzip(self.input_file, self.output_dir)
+
+        for f in list_regular_files(self.output_dir):
+            self._collection.add(f)
         return self._collection
 
 

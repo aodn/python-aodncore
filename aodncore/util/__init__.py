@@ -1,7 +1,7 @@
 from .external import retry_decorator, IndexedSet, classproperty
-from .fileops import (TemporaryDirectory, extract_zip, get_file_checksum, is_dir_writable, is_netcdffile, is_zipfile,
-                      list_regular_files, mkdir_p, rm_f, rm_r, rm_rf, safe_copy_file, safe_move_file,
-                      validate_dir_writable, validate_file_writable)
+from .fileops import (TemporaryDirectory, extract_gzip, extract_zip, get_file_checksum, is_dir_writable, is_gzipfile,
+                      is_netcdffile, is_zipfile, list_regular_files, mkdir_p, rm_f, rm_r, rm_rf, safe_copy_file,
+                      safe_move_file, validate_dir_writable, validate_file_writable)
 from .misc import (CaptureStdIO, LoggingContext, TemplateRenderer, WriteOnceOrderedDict, discover_entry_points,
                    ensure_writeonceordereddict, format_exception, is_function, is_nonstring_iterable,
                    is_valid_email_address, iter_public_attributes, matches_regexes, merge_dicts, slice_sequence,
@@ -19,12 +19,14 @@ __all__ = [
     'TemporaryDirectory',
     'WriteOnceOrderedDict',
     'classproperty',
+    'extract_gzip',
     'extract_zip',
     'discover_entry_points',
     'ensure_writeonceordereddict',
     'format_exception',
     'get_file_checksum',
     'is_dir_writable',
+    'is_gzipfile',
     'is_netcdffile',
     'is_zipfile',
     'is_function',

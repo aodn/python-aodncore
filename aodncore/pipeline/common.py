@@ -117,11 +117,12 @@ class FileType(Enum):
 
     UNKNOWN = ()
 
-    ZIP = ('.zip', 'application/zip')
     CSV = ('.csv', 'text/csv')
+    GZIP = ('.gz', 'application/gzip')
+    JPEG = ('.jpg', 'image/jpeg')
     PDF = ('.pdf', 'application/pdf')
     PNG = ('.png', 'image/png')
-    JPEG = ('.jpg', 'image/jpeg')
+    ZIP = ('.zip', 'application/zip')
 
     NETCDF = ('.nc', 'application/octet-stream')
     DIR_MANIFEST = ('.dir_manifest', 'text/plain')

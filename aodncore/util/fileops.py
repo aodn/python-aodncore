@@ -2,6 +2,7 @@
 """
 
 import errno
+import gzip
 import hashlib
 import locale
 import os
@@ -25,10 +26,12 @@ locale.setlocale(locale.LC_ALL, 'C')
 
 __all__ = [
     'TemporaryDirectory',
+    'extract_gzip',
     'extract_zip',
     'get_file_checksum',
     'is_dir_writable',
     'is_file_writable',
+    'is_gzipfile',
     'is_netcdffile',
     'is_zipfile',
     'list_regular_files',
@@ -80,6 +83,22 @@ try:
     TemporaryDirectory = tempfile.TemporaryDirectory
 except AttributeError:
     TemporaryDirectory = _TemporaryDirectory
+
+
+def extract_gzip(gzip_path, dest_dir, dest_name=None):
+    """Extract a GZ (GZIP) file's contents into a directory
+
+    :param gzip_path: path to the source GZ file
+    :param dest_dir: destination directory into which the GZ is extracted
+    :param dest_name: basename for the extracted file (defaults to the original name minus the '.gz' extension)
+    :return: None
+    """
+    if dest_name is None:
+        dest_name = os.path.basename(gzip_path).rstrip('.gz')
+
+    dest_path = os.path.join(dest_dir, dest_name)
+    with open(dest_path, 'wb') as f, gzip.open(gzip_path) as g:
+            shutil.copyfileobj(g, f)
 
 
 def extract_zip(zip_path, dest_dir):
@@ -152,6 +171,20 @@ def is_netcdffile(filepath):
     finally:
         if fh:
             fh.close()
+
+
+def is_gzipfile(filepath):
+    """Check whether a file path refers to a valid ZIP file
+
+    :param filepath: path to the file being checked
+    :return: True if filepath is a valid ZIP file, otherwise False
+    """
+    try:
+        with gzip.open(filepath) as g:
+            _ = g.read(1)
+        return True
+    except IOError:
+        return False
 
 
 def is_zipfile(filepath):
