@@ -3,6 +3,8 @@
 
 import os
 import unittest
+
+from datetime import datetime
 from tempfile import mkstemp
 
 from aodncore.pipeline import FileClassifier
@@ -41,11 +43,18 @@ class TestFileClassifier(BaseTestCase):
         self.assertRaises(InvalidFileFormatError, FileClassifier._get_nc_att, self.testfile, 'attribute')
 
     def test_get_nc_att(self):
-        make_test_file(self.testfile, {'site_code': 'TEST1', 'title': 'Test file'})
+        make_test_file(self.testfile, {'site_code': 'TEST1',
+                                       'title': 'Test file',
+                                       'time_start': '2017-09-01T01:02:03Z'})
         self.assertEqual(FileClassifier._get_nc_att(self.testfile, 'site_code'), 'TEST1')
         self.assertEqual(FileClassifier._get_nc_att(self.testfile, 'missing', ''), '')
         self.assertEqual(FileClassifier._get_nc_att(self.testfile, ['site_code', 'title']),
-                         ['TEST1', 'Test file'])
+                         ['TEST1', 'Test file']
+                         )
+        self.assertEqual(FileClassifier._get_nc_att(self.testfile, 'time_start', time_format=True),
+                         datetime(2017, 9, 1, 1, 2, 3)
+                         )
+
         self.assertRaises(InvalidFileContentError, FileClassifier._get_nc_att, self.testfile, 'missing')
 
     def test_get_site_code(self):

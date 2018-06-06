@@ -24,6 +24,8 @@ Expected use::
 import os
 import re
 
+from datetime import datetime
+
 from netCDF4 import Dataset
 
 from .exceptions import InvalidFileFormatError, InvalidFileNameError, InvalidFileContentError
@@ -70,11 +72,14 @@ class FileClassifier(object):
             raise InvalidFileFormatError("Could not open NetCDF file '{path}'.".format(path=file_path))
 
     @classmethod
-    def _get_nc_att(cls, file_path, att_name, default=None):
-        """Return the value of a global attribute from a NetCDF file. If a
-        list of attribute names is given, a list of values is
-        returned.  Unless a default value other than None is given, a
-        missing attribute raises an exception.
+    def _get_nc_att(cls, file_path, att_name, default=None, time_format=None):
+        """Return the value of a global attribute from a NetCDF file. If a list of attribute
+        names is given, a list of values is returned. Unless a default value other than None
+        is given, a missing attribute raises an exception.
+
+        If time_format is not None, the value of the attribute is converted into a datetime
+        object using the given format. If this fails an error is raised. If time_format=True,
+        use the format required by the IMOS conventions.
 
         """
         dataset = cls._open_nc_file(file_path)
@@ -85,12 +90,29 @@ class FileClassifier(object):
             att_list = [att_name]
         values = []
 
+        if time_format is True:
+            time_format = '%Y-%m-%dT%H:%M:%SZ'
+
         for att in att_list:
-            val = getattr(dataset, att, default)
-            if val is None:
-                raise InvalidFileContentError(
-                    "File '{path}' has no attribute '{att}'".format(path=file_path, att=att)
-                )
+            if not hasattr(dataset, att):
+                if default is None:
+                    raise InvalidFileContentError(
+                        "File '{path}' has no attribute '{att}'".format(path=file_path, att=att)
+                    )
+                else:
+                    values.append(default)
+                    continue
+
+            val = getattr(dataset, att)
+            if time_format:
+                try:
+                    val = datetime.strptime(val, time_format)
+                except ValueError:
+                    raise InvalidFileContentError(
+                        "Could not parse attribute {att}='{val}' as a datetime"
+                        " (file '{file_path}')".format(att=att, val=val, file_path=file_path)
+                    )
+
             values.append(val)
         dataset.close()
 
