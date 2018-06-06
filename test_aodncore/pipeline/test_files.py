@@ -325,6 +325,27 @@ class TestPipelineFileCollection(BaseTestCase):
         with self.assertRaises(AttributeValidationError):
             self.collection.set_archive_paths(archive_path_static)
 
+    def test_validate_attribute_value_matches_regexes(self):
+        allowed_regexes = ['^VALID/PREFIX.*$']
+        p1 = PipelineFile(GOOD_NC)
+        p1.dest_path = 'VALID/PREFIX/TO/TEST'
+        self.collection.add(p1)
+
+        try:
+            self.collection.validate_attribute_value_matches_regexes('dest_path', allowed_regexes)
+        except Exception as e:
+            raise AssertionError(
+                "unexpected exception raised. {cls} {msg}".format(cls=e.__class__.__name__, msg=e))
+
+    def test_validate_attribute_value_matches_regexes_failure(self):
+        allowed_regexes = ['^VALID/PREFIX.*$']
+        p1 = PipelineFile(GOOD_NC)
+        p1.dest_path = 'INVALID/PREFIX/TO/TEST'
+        self.collection.add(p1)
+
+        with self.assertRaises(AttributeValidationError):
+            self.collection.validate_attribute_value_matches_regexes('dest_path', allowed_regexes)
+
     def test_validate_unique_attribute_value_dest_path(self):
         p1 = PipelineFile(GOOD_NC)
         p1.publish_type = PipelineFilePublishType.UPLOAD_ONLY

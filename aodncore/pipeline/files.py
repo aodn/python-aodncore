@@ -871,6 +871,20 @@ class PipelineFileCollection(MutableSet):
                                                                                             value=value,
                                                                                             duplicates=duplicates))
 
+    def validate_attribute_value_matches_regexes(self, attribute, include_regexes):
+        """Check that the given :py:class:`PipelineFile` attribute matches at least one of the given regexes
+
+        :param attribute: the attribute to compare
+        :param include_regexes: list of regexes of which the attribute must match at least one
+        :return: None
+        """
+        unmatched = [f for f in self.__s if
+                     not matches_regexes(getattr(f, attribute), include_regexes=include_regexes)]
+        if unmatched:
+            raise AttributeValidationError(
+                "invalid attribute values found for files: {unmatched}. Must match one of: {regexes}".format(
+                    unmatched=unmatched, regexes=include_regexes))
+
     def validate_attribute_uniqueness(self, attribute):
         """Check that the given :py:class:`PipelineFile` attribute is unique amongst all :py:class:`PipelineFile`
         instances currently in the collection, and raise an exception if any duplicates are found

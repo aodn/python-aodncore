@@ -42,12 +42,22 @@ class HandlerBase(object):
 
     :type input_file: str
 
+    :param allowed_archive_path_regexes: List of allowed regular expressions of which
+        :py:attr:`PipelineFile.archive_path` must match at least one. If any non-matching values are found, the handler
+        will exit with an error during the publish step *before* publishing anything.
+    :type allowed_archive_path_regexes: list
+
+    :param allowed_dest_path_regexes: List of allowed regular expressions of which :py:attr:`PipelineFile.dest_path`
+        must match at least one. If any non-matching values are found, the handler will exit with an error during the
+        publish step *before* publishing anything.
+    :type allowed_dest_path_regexes: list
+
     :param allowed_extensions: List of allowed extensions for :py:attr:`input_file`. Non-matching input files will cause
         the handler to exit with an error during the initialise step.
     :type allowed_extensions: list
 
     :param allowed_regexes: List of allowed regular expressions for :py:attr:`input_file`. Non-matching input files will
-    cause the handler to exit with an error during the initialise step.
+        cause the handler to exit with an error during the initialise step.
 
     .. note:: :py:attr:`allowed_regexes` are checked *after* :py:attr:`allowed_extensions`
     :type allowed_regexes: list
@@ -255,6 +265,8 @@ class HandlerBase(object):
     all_transitions.extend(other_transitions)
 
     def __init__(self, input_file,
+                 allowed_archive_path_regexes=None,
+                 allowed_dest_path_regexes=None,
                  allowed_extensions=None,
                  allowed_regexes=None,
                  archive_input_file=False,
@@ -289,6 +301,8 @@ class HandlerBase(object):
 
         # public attributes
         self.input_file = input_file
+        self.allowed_archive_path_regexes = allowed_archive_path_regexes
+        self.allowed_dest_path_regexes = allowed_dest_path_regexes
         self.allowed_extensions = allowed_extensions
         self.allowed_regexes = allowed_regexes
         self.archive_input_file = archive_input_file
@@ -659,7 +673,7 @@ class HandlerBase(object):
         if files_to_store:
             self._upload_runner.run(files_to_store)
 
-    def _publish(self):
+    def _pre_publish(self):
         unset = self.file_collection.filter_by_attribute_id('publish_type',
                                                             PipelineFilePublishType.UNSET).get_attribute_list('src_path')
         if unset:
@@ -667,13 +681,22 @@ class HandlerBase(object):
 
         self.file_collection.set_archive_paths(self._archive_path_function_ref)
         self.file_collection.validate_attribute_uniqueness('archive_path')
-        self._archive()
+
+        if self.allowed_archive_path_regexes:
+            self.file_collection.validate_attribute_value_matches_regexes('archive_path',
+                                                                          self.allowed_archive_path_regexes)
 
         self.file_collection.set_dest_paths(self._dest_path_function_ref)
         self.file_collection.validate_attribute_uniqueness('dest_path')
 
+        if self.allowed_dest_path_regexes:
+            self.file_collection.validate_attribute_value_matches_regexes('dest_path', self.allowed_dest_path_regexes)
+
         self._upload_runner.set_is_overwrite(self.file_collection)
 
+    def _publish(self):
+        self._pre_publish()
+        self._archive()
         self._harvest()
         self._store_unharvested()
 
