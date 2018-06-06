@@ -717,6 +717,14 @@ class PipelineFileCollection(MutableSet):
         collection = PipelineFileCollection(f for f in self.__s if any_attributes_true(f))
         return collection
 
+    def get_attribute_list(self, attribute):
+        """Return a :py:class:`list` containing the given attribute from each PipelineFile in the collection
+
+        :param attribute: the attribute name to retrieve from the objects
+        :return: :py:class:`list` containing the value of the given attribute for each file in the collection
+        """
+        return [getattr(f, attribute) for f in self.__s]
+
     def get_table_data(self):
         """Return :py:class:`PipelineFile` members in a simple tabular data format suitable for rendering into formatted
         tables

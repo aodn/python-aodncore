@@ -102,7 +102,7 @@ class CheckRunnerAdapter(BaseCheckRunner):
                                                                                 log=os.linesep.join(
                                                                                     f.check_result.log)))
         if failed_files:
-            failed_list = [f.name for f in failed_files]
+            failed_list = failed_files.get_attribute_list('name')
             raise ComplianceCheckFailedError(
                 "the following files failed the check step: {failed}".format(failed=failed_list))
 

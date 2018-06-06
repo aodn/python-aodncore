@@ -486,7 +486,7 @@ class TestPipelineFileCollection(BaseTestCase):
             pf = PipelineFile(name, is_deletion=True)
             self.collection.add(pf)
 
-        collection_names = [f.name for f in self.collection]
+        collection_names = self.collection.get_attribute_list('name')
 
         self.assertListEqual(names, collection_names)
         collection_names.reverse()
@@ -494,7 +494,7 @@ class TestPipelineFileCollection(BaseTestCase):
             self.assertListEqual(names, collection_names)
 
         names_slice = names[250:750]
-        collection_slice = [f.name for f in self.collection[250:750]]
+        collection_slice = self.collection.get_attribute_list('name')[250:750]
         self.assertListEqual(names_slice, collection_slice)
 
     def test_issubset(self):
@@ -730,6 +730,16 @@ class TestPipelineFileCollection(BaseTestCase):
 
         slices_of_four = self.collection.get_slices(4)
         self.assertListEqual(slices_of_four, [PipelineFileCollection([fileobj1, fileobj2, fileobj3])])
+
+    def test_get_attribute_list(self):
+        f1 = get_nonexistent_path()
+        f2 = get_nonexistent_path()
+        fileobj1 = PipelineFile(f1, is_deletion=True)
+        fileobj2 = PipelineFile(f2, is_deletion=True)
+        self.collection.update((fileobj1, fileobj2))
+
+        attribute_list = self.collection.get_attribute_list('src_path')
+        self.assertListEqual(attribute_list, [f1, f2])
 
     def test_get_table_data(self):
         f1 = get_nonexistent_path()
