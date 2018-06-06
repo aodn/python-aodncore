@@ -6,7 +6,7 @@ from six import assertCountEqual
 from six.moves import range
 
 from aodncore.pipeline.common import (CheckResult, PipelineFileCheckType, PipelineFilePublishType)
-from aodncore.pipeline.exceptions import DuplicateUniqueAttributeError, DuplicatePipelineFileError, MissingFileError
+from aodncore.pipeline.exceptions import AttributeValidationError, DuplicatePipelineFileError, MissingFileError
 from aodncore.pipeline.files import PipelineFileCollection, PipelineFile, ensure_pipelinefilecollection
 from aodncore.pipeline.steps import get_child_check_runner
 from aodncore.testlib import BaseTestCase, get_nonexistent_path, mock
@@ -283,7 +283,7 @@ class TestPipelineFileCollection(BaseTestCase):
         p2.publish_type = PipelineFilePublishType.UPLOAD_ONLY
         p2.dest_path = 'FIXED_DEST_PATH'
 
-        with self.assertRaises(DuplicateUniqueAttributeError):
+        with self.assertRaises(AttributeValidationError):
             self.collection.add(p2)
 
     def test_add_duplicate_archive_path(self):
@@ -296,7 +296,7 @@ class TestPipelineFileCollection(BaseTestCase):
         p2.publish_type = PipelineFilePublishType.ARCHIVE_ONLY
         p2.archive_path = 'FIXED_ARCHIVE_PATH'
 
-        with self.assertRaises(DuplicateUniqueAttributeError):
+        with self.assertRaises(AttributeValidationError):
             self.collection.add(p2)
 
     def test_set_dest_paths_duplicate(self):
@@ -309,7 +309,7 @@ class TestPipelineFileCollection(BaseTestCase):
         p2.publish_type = PipelineFilePublishType.UPLOAD_ONLY
         self.collection.update((p1, p2))
 
-        with self.assertRaises(DuplicateUniqueAttributeError):
+        with self.assertRaises(AttributeValidationError):
             self.collection.set_dest_paths(dest_path_static)
 
     def test_set_archive_paths_duplicate(self):
@@ -322,7 +322,7 @@ class TestPipelineFileCollection(BaseTestCase):
         p2.publish_type = PipelineFilePublishType.ARCHIVE_ONLY
         self.collection.update((p1, p2))
 
-        with self.assertRaises(DuplicateUniqueAttributeError):
+        with self.assertRaises(AttributeValidationError):
             self.collection.set_archive_paths(archive_path_static)
 
     def test_validate_unique_attribute_value_dest_path(self):
@@ -331,7 +331,7 @@ class TestPipelineFileCollection(BaseTestCase):
         p1.dest_path = 'FIXED_DEST_PATH'
         self.collection.add(p1)
 
-        with self.assertRaises(DuplicateUniqueAttributeError):
+        with self.assertRaises(AttributeValidationError):
             self.collection.validate_unique_attribute_value('dest_path', 'FIXED_DEST_PATH')
 
         try:
@@ -346,7 +346,7 @@ class TestPipelineFileCollection(BaseTestCase):
         p1.archive_path = 'FIXED_ARCHIVE_PATH'
         self.collection.add(p1)
 
-        with self.assertRaises(DuplicateUniqueAttributeError):
+        with self.assertRaises(AttributeValidationError):
             self.collection.validate_unique_attribute_value('archive_path', 'FIXED_ARCHIVE_PATH')
 
         try:
@@ -369,7 +369,7 @@ class TestPipelineFileCollection(BaseTestCase):
         # edge case where the path is updated in a way that the collection cannot be aware of it
         p2.dest_path = 'FIXED_DEST_PATH'
 
-        with self.assertRaises(DuplicateUniqueAttributeError):
+        with self.assertRaises(AttributeValidationError):
             self.collection.validate_attribute_uniqueness('dest_path')
 
     def test_validate_attribute_uniqueness_archive_path(self):
@@ -386,7 +386,7 @@ class TestPipelineFileCollection(BaseTestCase):
         # edge case where the path is updated in a way that the collection cannot be aware of it
         p2.archive_path = 'FIXED_ARCHIVE_PATH'
 
-        with self.assertRaises(DuplicateUniqueAttributeError):
+        with self.assertRaises(AttributeValidationError):
             self.collection.validate_attribute_uniqueness('archive_path')
 
     def test_invalid_types(self):

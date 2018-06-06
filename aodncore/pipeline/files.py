@@ -7,7 +7,7 @@ import six
 
 from .common import (FileType, PipelineFilePublishType, PipelineFileCheckType, validate_addition_publishtype,
                      validate_checkresult, validate_checktype, validate_deletion_publishtype, validate_publishtype)
-from .exceptions import DuplicateUniqueAttributeError, DuplicatePipelineFileError, MissingFileError
+from .exceptions import AttributeValidationError, DuplicatePipelineFileError, MissingFileError
 from .schema import validate_check_params
 from ..util import (IndexedSet, format_exception, get_file_checksum, iter_public_attributes, matches_regexes,
                     slice_sequence, validate_bool, validate_callable, validate_mapping,
@@ -866,7 +866,7 @@ class PipelineFileCollection(MutableSet):
         """
         duplicates = [f for f in self.__s if getattr(f, attribute) == value]
         if duplicates:
-            raise DuplicateUniqueAttributeError(
+            raise AttributeValidationError(
                 "{attribute} value '{value}' already set for file(s) '{duplicates}'".format(attribute=attribute,
                                                                                             value=value,
                                                                                             duplicates=duplicates))
@@ -887,7 +887,7 @@ class PipelineFileCollection(MutableSet):
             duplicates = []
             for value in duplicate_values:
                 duplicates.extend(f for f in self.__s if getattr(f, attribute) == value)
-            raise DuplicateUniqueAttributeError(
+            raise AttributeValidationError(
                 "duplicate paths found for files '{duplicates}'".format(duplicates=duplicates))
 
 
