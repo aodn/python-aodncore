@@ -92,6 +92,12 @@ class TestPipelineFile(BaseTestCase):
         with self.assertRaises(ValueError):
             self.pipelinefile_deletion.publish_type = PipelineFilePublishType.HARVEST_ARCHIVE_UPLOAD
 
+        with self.assertRaises(ValueError):
+            self.pipelinefile.publish_type = PipelineFilePublishType.UNSET
+
+        with self.assertRaises(ValueError):
+            self.pipelinefile_deletion.publish_type = PipelineFilePublishType.UNSET
+
     def test_property_should_archive(self):
         self.pipelinefile.publish_type = PipelineFilePublishType.ARCHIVE_ONLY
         self.assertTrue(self.pipelinefile.should_archive)
@@ -791,7 +797,7 @@ class TestPipelineFileCollection(BaseTestCase):
         fileobj2 = PipelineFile(f2, is_deletion=True)
         self.collection.update((fileobj1, fileobj2))
 
-        self.assertTrue(all(f.publish_type is PipelineFilePublishType.NO_ACTION for f in self.collection))
+        self.assertTrue(all(f.publish_type is PipelineFilePublishType.UNSET for f in self.collection))
         self.collection.set_publish_types(PipelineFilePublishType.DELETE_UNHARVEST)
         self.assertTrue(all(f.publish_type is PipelineFilePublishType.DELETE_UNHARVEST for f in self.collection))
 

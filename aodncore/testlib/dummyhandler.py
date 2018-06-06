@@ -1,4 +1,4 @@
-from aodncore.pipeline import HandlerBase, PipelineFilePublishType, PipelineFileCheckType
+from aodncore.pipeline import HandlerBase, PipelineFilePublishType
 
 
 class DummyHandler(HandlerBase):
@@ -48,24 +48,12 @@ class DummyHandler(HandlerBase):
         """
         self.logger.info("Running preprocess from child class")
 
-        for f in self.file_collection:
-            # You can toggle compliance checking on or off with the "should_compliance_check" property of the file. This
-            # is an example of something that *must* be done in the preprocess step
-            if f.src_path == 'not a real file.txt':
-                f.check_type = PipelineFileCheckType.NO_ACTION
-
     def process(self):
         """Here you can run code that needs to run *after* the compliance checker step but *before* the publishing step.
 
         :return: None
         """
         self.logger.info("Running process from child class")
-        for f in self.file_collection:
-            # This is an example of how you might manipulate what happens to a file by changing the "publish type" to a
-            # different value in the "PipelineFilePublishType" enum. This could be done in the preprocess step or
-            # process.
-            if f.src_path.endswith('bad.nc'):
-                f.publish_type = PipelineFilePublishType.UPLOAD_ONLY
 
     def postprocess(self):
         """Here you can run code that needs to run *after* the publishing step but *before* the notify step

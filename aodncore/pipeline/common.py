@@ -168,6 +168,9 @@ class PipelineFilePublishType(Enum):
     """
     __slots__ = ('_is_addition_type', '_is_deletion_type', '_is_archive_type', '_is_store_type', '_is_harvest_type')
 
+    # initial type, used as a sentinel value to denote files which haven't been assigned a type
+    UNSET = (None, None, None, None, None)
+
     # valid for both addition and deletion types
     NO_ACTION = (True, True, False, False, False)
 

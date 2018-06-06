@@ -10,7 +10,7 @@ from .common import FileType, HandlerResult, PipelineFilePublishType, PipelineFi
 from .configlib import validate_lazyconfigmanager
 from .destpath import get_path_function
 from .exceptions import (PipelineProcessingError, HandlerAlreadyRunError, InvalidConfigError, InvalidInputFileError,
-                         InvalidFileFormatError, MissingConfigParameterError)
+                         InvalidFileFormatError, MissingConfigParameterError, UnmatchedFilesError)
 from .files import PipelineFile, PipelineFileCollection
 from .log import SYSINFO, get_pipeline_logger
 from .schema import (validate_check_params, validate_custom_params, validate_harvest_params, validate_notify_params,
@@ -641,6 +641,11 @@ class HandlerBase(object):
             self._upload_runner.run(files_to_store)
 
     def _publish(self):
+        unset = self.file_collection.filter_by_attribute_id('publish_type',
+                                                            PipelineFilePublishType.UNSET).get_attribute_list('src_path')
+        if unset:
+            raise UnmatchedFilesError("files with UNSET publish_type found: '{unset}'".format(unset=unset))
+
         self.file_collection.set_archive_paths(self._archive_path_function_ref)
         self.file_collection.validate_attribute_uniqueness('archive_path')
         self._archive()

@@ -28,7 +28,8 @@ __all__ = [
     'MissingFileError',
     'NotificationFailedError',
     'StorageBrokerError',
-    'UnmappedFilesError'
+    'UnmappedFilesError',
+    'UnmatchedFilesError'
 ]
 
 
@@ -140,4 +141,8 @@ class StorageBrokerError(PipelineSystemError):
 
 
 class UnmappedFilesError(PipelineSystemError):
+    pass
+
+
+class UnmatchedFilesError(PipelineSystemError):
     pass

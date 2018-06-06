@@ -83,7 +83,7 @@ class PipelineFile(object):
         # processing flags - these express the *intended actions* for the file
         self._check_type = PipelineFileCheckType.NO_ACTION
         self._is_deletion = is_deletion
-        self._publish_type = PipelineFilePublishType.NO_ACTION
+        self._publish_type = PipelineFilePublishType.UNSET
         self._should_archive = False
         self._should_harvest = False
         self._should_store = False

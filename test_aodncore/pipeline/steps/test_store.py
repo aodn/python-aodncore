@@ -93,12 +93,12 @@ class TestBaseStoreRunner(BaseTestCase):
         runner.run(collection)
         self.assertTrue(collection[0].is_stored)
 
-    def test_set_is_overwrite_with_no_action_file(self):
+    def test_set_is_overwrite_with_unset_file(self):
         collection = get_upload_collection()
 
         temp_file = PipelineFile(self.temp_nc_file)
         self.assertIsNone(temp_file.dest_path)
-        self.assertIs(temp_file.publish_type, PipelineFilePublishType.NO_ACTION)
+        self.assertIs(temp_file.publish_type, PipelineFilePublishType.UNSET)
         collection.add(temp_file)
 
         runner = StoreRunner(NullStorageBroker("/"), None, None)
