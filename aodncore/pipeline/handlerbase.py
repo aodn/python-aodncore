@@ -683,14 +683,15 @@ class HandlerBase(object):
         self.file_collection.validate_attribute_uniqueness('archive_path')
 
         if self.allowed_archive_path_regexes:
-            self.file_collection.validate_attribute_value_matches_regexes('archive_path',
-                                                                          self.allowed_archive_path_regexes)
+            files_to_archive = self.file_collection.filter_by_bool_attribute('pending_archive')
+            files_to_archive.validate_attribute_value_matches_regexes('archive_path', self.allowed_archive_path_regexes)
 
         self.file_collection.set_dest_paths(self._dest_path_function_ref)
         self.file_collection.validate_attribute_uniqueness('dest_path')
 
         if self.allowed_dest_path_regexes:
-            self.file_collection.validate_attribute_value_matches_regexes('dest_path', self.allowed_dest_path_regexes)
+            files_to_store = self.file_collection.filter_by_bool_attributes_or('pending_store', 'pending_harvest')
+            files_to_store.validate_attribute_value_matches_regexes('dest_path', self.allowed_dest_path_regexes)
 
         self._upload_runner.set_is_overwrite(self.file_collection)
 
