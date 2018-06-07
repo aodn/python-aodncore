@@ -12,6 +12,7 @@ from test_aodncore import TESTDATA_DIR
 BAD_NC = os.path.join(TESTDATA_DIR, 'bad.nc')
 EMPTY_NC = os.path.join(TESTDATA_DIR, 'empty.nc')
 GOOD_NC = os.path.join(TESTDATA_DIR, 'good.nc')
+WARNING_NC = os.path.join(TESTDATA_DIR, 'test_manifest.nc')
 
 
 class TestPipelineStepsCheck(BaseTestCase):
@@ -94,6 +95,18 @@ class TestComplianceCheckerRunner(BaseTestCase):
     def test_no_check_suite(self):
         with self.assertRaises(InvalidCheckSuiteError):
             self.cc_runner = ComplianceCheckerCheckRunner(None, self.test_logger)
+
+    def test_skip_checks(self):
+        collection = PipelineFileCollection([WARNING_NC])
+        self.cc_runner.run(collection)
+        self.assertFalse(collection[0].check_result.compliant)  # WARNING_NC file fails with just one warning
+
+        self.cc_runner = ComplianceCheckerCheckRunner(None,
+                                                      self.test_logger,
+                                                      {'checks': ['cf'], 'skip_checks': ['check_convention_globals']}
+                                                      )
+        self.cc_runner.run(collection)
+        self.assertTrue(collection[0].check_result.compliant)  # now should pass
 
 
 class TestFormatCheckRunner(BaseTestCase):

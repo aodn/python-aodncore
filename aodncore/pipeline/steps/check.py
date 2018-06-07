@@ -116,6 +116,7 @@ class ComplianceCheckerCheckRunner(BaseCheckRunner):
         self.checks = check_params.get('checks', None)
         self.verbosity = check_params.get('verbosity', 0)
         self.criteria = check_params.get('criteria', 'normal')
+        self.skip_checks = check_params.get('skip_checks', None)
         self.output_format = check_params.get('output_format', 'text')
 
         if not self.checks:
@@ -132,6 +133,9 @@ class ComplianceCheckerCheckRunner(BaseCheckRunner):
                 'invalid compliance check suites: {invalid_suites}'.format(invalid_suites=invalid_suites))
 
     def run(self, pipeline_files):
+        if self.skip_checks:
+            self._logger.info("compliance checks will skip {skip_checks}".format(skip_checks=self.skip_checks))
+
         for pipeline_file in pipeline_files:
             self._logger.info(
                 "checking compliance of '{filepath}' against {checks}".format(filepath=pipeline_file.src_path,
@@ -166,7 +170,7 @@ class ComplianceCheckerCheckRunner(BaseCheckRunner):
         try:
             with CaptureStdIO() as (stdout_log, stderr_log):
                 compliant, errors = ComplianceChecker.run_checker(file_path, [check],
-                                                                  self.verbosity, self.criteria,
+                                                                  self.verbosity, self.criteria, self.skip_checks,
                                                                   output_format=self.output_format)
         except Exception as e:  # pragma: no cover
             errors = True

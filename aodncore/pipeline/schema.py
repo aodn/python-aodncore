@@ -19,6 +19,7 @@ CHECK_PARAMS_SCHEMA = {
     'properties': {
         'checks': {'type': 'array'},
         'criteria': {'type': 'string'},
+        'skip_checks': {'type': 'array', 'items': {'type': 'string'}},
         'output_format': {'type': 'string'},
         'verbosity': {'type': 'integer'}
     },
