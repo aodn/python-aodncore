@@ -6,7 +6,8 @@ from jsonschema import ValidationError
 
 from aodncore.pipeline import PipelineFilePublishType, HandlerResult
 from aodncore.pipeline.exceptions import (ComplianceCheckFailedError, HandlerAlreadyRunError, InvalidCheckSuiteError,
-                                          InvalidInputFileError, InvalidFileFormatError, InvalidRecipientError)
+                                          InvalidInputFileError, InvalidFileFormatError, InvalidRecipientError,
+                                          UnmatchedFilesError)
 from aodncore.pipeline.statequery import StateQuery
 from aodncore.pipeline.steps import NotifyList
 from aodncore.testlib import DummyHandler, HandlerTestCase, dest_path_testing, get_nonexistent_path, mock
@@ -43,16 +44,18 @@ class TestDummyHandler(HandlerTestCase):
         self.assertIs(handler._dest_path_function_ref, dest_path_testing)
 
     def test_include(self):
-        handler = self.run_handler(BAD_ZIP, include_regexes=['good\.nc'])
-        eligible_filenames = [f.name for f in handler.file_collection if f.should_harvest]
-        self.assertIn('good.nc', eligible_filenames)
-        self.assertNotIn('bad.nc', eligible_filenames)
+        handler = self.run_handler_with_exception(UnmatchedFilesError, BAD_ZIP, include_regexes=['good\.nc'])
+        eligible_filenames = handler.file_collection.filter_by_attribute_id_not('publish_type',
+                                                                                PipelineFilePublishType.UNSET).get_attribute_list('name')
+        self.assertListEqual(['good.nc'], eligible_filenames)
 
     def test_exclude(self):
-        handler = self.run_handler(BAD_ZIP, include_regexes=['.*\.nc'], exclude_regexes=['bad\.nc'])
-        eligible_filenames = [f.name for f in handler.file_collection if f.should_harvest]
-        self.assertIn('good.nc', eligible_filenames)
-        self.assertNotIn('bad.nc', eligible_filenames)
+        handler = self.run_handler_with_exception(UnmatchedFilesError, BAD_ZIP, include_regexes=['.*\.nc'],
+                                                  exclude_regexes=['bad\.nc'])
+        eligible_filenames = handler.file_collection.filter_by_attribute_id_not('publish_type',
+                                                                                PipelineFilePublishType.UNSET).get_attribute_list('name')
+
+        self.assertListEqual(['good.nc'], eligible_filenames)
 
     def test_params_freeze(self):
         handler = self.run_handler(GOOD_NC,

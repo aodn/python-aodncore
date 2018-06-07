@@ -92,6 +92,12 @@ class TestPipelineFile(BaseTestCase):
         with self.assertRaises(ValueError):
             self.pipelinefile_deletion.publish_type = PipelineFilePublishType.HARVEST_ARCHIVE_UPLOAD
 
+        with self.assertRaises(ValueError):
+            self.pipelinefile.publish_type = PipelineFilePublishType.UNSET
+
+        with self.assertRaises(ValueError):
+            self.pipelinefile_deletion.publish_type = PipelineFilePublishType.UNSET
+
     def test_property_should_archive(self):
         self.pipelinefile.publish_type = PipelineFilePublishType.ARCHIVE_ONLY
         self.assertTrue(self.pipelinefile.should_archive)
@@ -480,7 +486,7 @@ class TestPipelineFileCollection(BaseTestCase):
             pf = PipelineFile(name, is_deletion=True)
             self.collection.add(pf)
 
-        collection_names = [f.name for f in self.collection]
+        collection_names = self.collection.get_attribute_list('name')
 
         self.assertListEqual(names, collection_names)
         collection_names.reverse()
@@ -488,7 +494,7 @@ class TestPipelineFileCollection(BaseTestCase):
             self.assertListEqual(names, collection_names)
 
         names_slice = names[250:750]
-        collection_slice = [f.name for f in self.collection[250:750]]
+        collection_slice = self.collection.get_attribute_list('name')[250:750]
         self.assertListEqual(names_slice, collection_slice)
 
     def test_issubset(self):
@@ -725,6 +731,16 @@ class TestPipelineFileCollection(BaseTestCase):
         slices_of_four = self.collection.get_slices(4)
         self.assertListEqual(slices_of_four, [PipelineFileCollection([fileobj1, fileobj2, fileobj3])])
 
+    def test_get_attribute_list(self):
+        f1 = get_nonexistent_path()
+        f2 = get_nonexistent_path()
+        fileobj1 = PipelineFile(f1, is_deletion=True)
+        fileobj2 = PipelineFile(f2, is_deletion=True)
+        self.collection.update((fileobj1, fileobj2))
+
+        attribute_list = self.collection.get_attribute_list('src_path')
+        self.assertListEqual(attribute_list, [f1, f2])
+
     def test_get_table_data(self):
         f1 = get_nonexistent_path()
         f2 = get_nonexistent_path()
@@ -791,7 +807,7 @@ class TestPipelineFileCollection(BaseTestCase):
         fileobj2 = PipelineFile(f2, is_deletion=True)
         self.collection.update((fileobj1, fileobj2))
 
-        self.assertTrue(all(f.publish_type is PipelineFilePublishType.NO_ACTION for f in self.collection))
+        self.assertTrue(all(f.publish_type is PipelineFilePublishType.UNSET for f in self.collection))
         self.collection.set_publish_types(PipelineFilePublishType.DELETE_UNHARVEST)
         self.assertTrue(all(f.publish_type is PipelineFilePublishType.DELETE_UNHARVEST for f in self.collection))
 
