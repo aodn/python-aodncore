@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>aodncore.pipeline.schema &mdash; aodncore 0.10.1 documentation</title>
+  <title>aodncore.pipeline.schema &mdash; aodncore 0.11.4 documentation</title>
   
 
   
@@ -57,7 +57,7 @@
             
             
               <div class="version">
-                0.10.1
+                0.11.4
               </div>
             
           
@@ -81,9 +81,12 @@
               
             
             
-              <p class="caption"><span class="caption-text">Quick Start:</span></p>
+              <p class="caption"><span class="caption-text">Quick Start Guide:</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../quickstartdoc.html">Query Storage</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../quickstartdoc.html">Writing a <code class="docutils literal notranslate"><span class="pre">dest_path()</span></code> function</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../quickstartdoc.html#overriding-default-file-actions">Overriding default file actions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../quickstartdoc.html#creating-products-during-the-handler-lifetime">Creating products during the handler lifetime</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../quickstartdoc.html#query-storage">Query Storage</a></li>
 </ul>
 <p class="caption"><span class="caption-text">User documentation:</span></p>
 <ul>
@@ -203,6 +206,7 @@
 
 <span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span>
     <span class="s1">&#39;validate_check_params&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;validate_custom_params&#39;</span><span class="p">,</span>
     <span class="s1">&#39;validate_harvest_params&#39;</span><span class="p">,</span>
     <span class="s1">&#39;validate_logging_config&#39;</span><span class="p">,</span>
     <span class="s1">&#39;validate_pipeline_config&#39;</span><span class="p">,</span>
@@ -215,10 +219,15 @@
     <span class="s1">&#39;properties&#39;</span><span class="p">:</span> <span class="p">{</span>
         <span class="s1">&#39;checks&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;type&#39;</span><span class="p">:</span> <span class="s1">&#39;array&#39;</span><span class="p">},</span>
         <span class="s1">&#39;criteria&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;type&#39;</span><span class="p">:</span> <span class="s1">&#39;string&#39;</span><span class="p">},</span>
+        <span class="s1">&#39;skip_checks&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;type&#39;</span><span class="p">:</span> <span class="s1">&#39;array&#39;</span><span class="p">,</span> <span class="s1">&#39;items&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;type&#39;</span><span class="p">:</span> <span class="s1">&#39;string&#39;</span><span class="p">}},</span>
         <span class="s1">&#39;output_format&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;type&#39;</span><span class="p">:</span> <span class="s1">&#39;string&#39;</span><span class="p">},</span>
         <span class="s1">&#39;verbosity&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;type&#39;</span><span class="p">:</span> <span class="s1">&#39;integer&#39;</span><span class="p">}</span>
     <span class="p">},</span>
     <span class="s1">&#39;additionalProperties&#39;</span><span class="p">:</span> <span class="kc">False</span>
+<span class="p">}</span>
+
+<span class="n">CUSTOM_PARAMS_SCHEMA</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s1">&#39;type&#39;</span><span class="p">:</span> <span class="s1">&#39;object&#39;</span>
 <span class="p">}</span>
 
 <span class="n">HARVEST_PARAMS_SCHEMA</span> <span class="o">=</span> <span class="p">{</span>
@@ -312,9 +321,10 @@
             <span class="s1">&#39;type&#39;</span><span class="p">:</span> <span class="s1">&#39;object&#39;</span><span class="p">,</span>
             <span class="s1">&#39;properties&#39;</span><span class="p">:</span> <span class="p">{</span>
                 <span class="s1">&#39;handlers_group&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;type&#39;</span><span class="p">:</span> <span class="s1">&#39;string&#39;</span><span class="p">},</span>
-                <span class="s1">&#39;path_function_group&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;type&#39;</span><span class="p">:</span> <span class="s1">&#39;string&#39;</span><span class="p">}</span>
+                <span class="s1">&#39;path_function_group&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;type&#39;</span><span class="p">:</span> <span class="s1">&#39;string&#39;</span><span class="p">},</span>
+                <span class="s1">&#39;module_versions_group&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;type&#39;</span><span class="p">:</span> <span class="s1">&#39;string&#39;</span><span class="p">}</span>
             <span class="p">},</span>
-            <span class="s1">&#39;required&#39;</span><span class="p">:</span> <span class="p">[</span><span class="s1">&#39;handlers_group&#39;</span><span class="p">,</span> <span class="s1">&#39;path_function_group&#39;</span><span class="p">],</span>
+            <span class="s1">&#39;required&#39;</span><span class="p">:</span> <span class="p">[</span><span class="s1">&#39;handlers_group&#39;</span><span class="p">,</span> <span class="s1">&#39;path_function_group&#39;</span><span class="p">,</span> <span class="s1">&#39;module_versions_group&#39;</span><span class="p">],</span>
             <span class="s1">&#39;additionalProperties&#39;</span><span class="p">:</span> <span class="kc">False</span>
         <span class="p">},</span>
         <span class="s1">&#39;talend&#39;</span><span class="p">:</span> <span class="p">{</span>
@@ -369,6 +379,10 @@
     <span class="n">jsonschema</span><span class="o">.</span><span class="n">validate</span><span class="p">(</span><span class="n">check_params</span><span class="p">,</span> <span class="n">CHECK_PARAMS_SCHEMA</span><span class="p">)</span></div>
 
 
+<div class="viewcode-block" id="validate_custom_params"><a class="viewcode-back" href="../../../aodncore.pipeline.html#aodncore.pipeline.schema.validate_custom_params">[docs]</a><span class="k">def</span> <span class="nf">validate_custom_params</span><span class="p">(</span><span class="n">check_params</span><span class="p">):</span>
+    <span class="n">jsonschema</span><span class="o">.</span><span class="n">validate</span><span class="p">(</span><span class="n">check_params</span><span class="p">,</span> <span class="n">CUSTOM_PARAMS_SCHEMA</span><span class="p">)</span></div>
+
+
 <div class="viewcode-block" id="validate_harvest_params"><a class="viewcode-back" href="../../../aodncore.pipeline.html#aodncore.pipeline.schema.validate_harvest_params">[docs]</a><span class="k">def</span> <span class="nf">validate_harvest_params</span><span class="p">(</span><span class="n">harvest_params</span><span class="p">):</span>
     <span class="n">jsonschema</span><span class="o">.</span><span class="n">validate</span><span class="p">(</span><span class="n">harvest_params</span><span class="p">,</span> <span class="n">HARVEST_PARAMS_SCHEMA</span><span class="p">)</span></div>
 
@@ -421,7 +435,7 @@
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'../../../',
-            VERSION:'0.10.1',
+            VERSION:'0.11.4',
             LANGUAGE:'None',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',

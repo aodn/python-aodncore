@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>aodncore.testlib.testutil &mdash; aodncore 0.10.1 documentation</title>
+  <title>aodncore.testlib.testutil &mdash; aodncore 0.11.4 documentation</title>
   
 
   
@@ -57,7 +57,7 @@
             
             
               <div class="version">
-                0.10.1
+                0.11.4
               </div>
             
           
@@ -81,9 +81,12 @@
               
             
             
-              <p class="caption"><span class="caption-text">Quick Start:</span></p>
+              <p class="caption"><span class="caption-text">Quick Start Guide:</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../quickstartdoc.html">Query Storage</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../quickstartdoc.html">Writing a <code class="docutils literal notranslate"><span class="pre">dest_path()</span></code> function</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../quickstartdoc.html#overriding-default-file-actions">Overriding default file actions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../quickstartdoc.html#creating-products-during-the-handler-lifetime">Creating products during the handler lifetime</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../quickstartdoc.html#query-storage">Query Storage</a></li>
 </ul>
 <p class="caption"><span class="caption-text">User documentation:</span></p>
 <ul>
@@ -195,18 +198,21 @@
            <div itemprop="articleBody">
             
   <h1>Source code for aodncore.testlib.testutil</h1><div class="highlight"><pre>
-<span></span><span class="kn">import</span> <span class="nn">os</span>
+<span></span><span class="kn">import</span> <span class="nn">json</span>
+<span class="kn">import</span> <span class="nn">os</span>
 <span class="kn">import</span> <span class="nn">tempfile</span>
 <span class="kn">import</span> <span class="nn">uuid</span>
 <span class="kn">import</span> <span class="nn">zipfile</span>
+<span class="kn">from</span> <span class="nn">collections</span> <span class="k">import</span> <span class="n">OrderedDict</span>
 
 <span class="kn">from</span> <span class="nn">netCDF4</span> <span class="k">import</span> <span class="n">Dataset</span>
 <span class="kn">from</span> <span class="nn">six</span> <span class="k">import</span> <span class="n">iteritems</span>
 <span class="kn">from</span> <span class="nn">six.moves.urllib.parse</span> <span class="k">import</span> <span class="n">urlunsplit</span>
 
-<span class="kn">from</span> <span class="nn">..pipeline.configlib</span> <span class="k">import</span> <span class="n">LazyConfigManager</span>
+<span class="kn">from</span> <span class="nn">..pipeline.configlib</span> <span class="k">import</span> <span class="n">LazyConfigManager</span><span class="p">,</span> <span class="n">load_json_file</span>
 <span class="kn">from</span> <span class="nn">..pipeline.storage</span> <span class="k">import</span> <span class="n">BaseStorageBroker</span>
 <span class="kn">from</span> <span class="nn">..testlib.dummyhandler</span> <span class="k">import</span> <span class="n">DummyHandler</span>
+<span class="kn">from</span> <span class="nn">..util</span> <span class="k">import</span> <span class="n">WriteOnceOrderedDict</span>
 
 <span class="k">try</span><span class="p">:</span>
     <span class="kn">from</span> <span class="nn">unittest</span> <span class="k">import</span> <span class="n">mock</span>
@@ -381,40 +387,45 @@
     <span class="k">return</span> <span class="n">zip_file</span></div>
 
 
-<div class="viewcode-block" id="patch_test_config"><a class="viewcode-back" href="../../../aodncore.testlib.html#aodncore.testlib.testutil.patch_test_config">[docs]</a><span class="k">def</span> <span class="nf">patch_test_config</span><span class="p">(</span><span class="n">config</span><span class="p">,</span> <span class="n">rel_path</span><span class="p">,</span> <span class="n">temp_dir</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Update config object with dynamic runtime values (e.g. temp directories)</span>
+<span class="k">def</span> <span class="nf">load_runtime_patched_pipeline_config_file</span><span class="p">(</span><span class="n">config_file</span><span class="p">,</span> <span class="n">rel_path</span><span class="p">,</span> <span class="n">temp_dir</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Load and update pipeline config file with dynamic runtime values (e.g. temp directories)</span>
 
-<span class="sd">    :param config: config dictionary to update</span>
+<span class="sd">    :param config_file: Pipeline config file to load, patch and return</span>
 <span class="sd">    :param rel_path:</span>
 <span class="sd">    :param temp_dir: temporary directory used to update values</span>
 <span class="sd">    :return: ConfigParser object patched with runtime test values</span>
 <span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="c1"># load the pipeline config file with OrderedDict so that the keys can be patched</span>
+    <span class="n">pipeline_config</span> <span class="o">=</span> <span class="n">load_json_file</span><span class="p">(</span><span class="n">config_file</span><span class="p">,</span> <span class="n">object_pairs_hook</span><span class="o">=</span><span class="n">OrderedDict</span><span class="p">)</span>
+
     <span class="n">temp_upload_dir</span> <span class="o">=</span> <span class="n">tempfile</span><span class="o">.</span><span class="n">mkdtemp</span><span class="p">(</span><span class="n">prefix</span><span class="o">=</span><span class="s1">&#39;temp_upload_uri&#39;</span><span class="p">,</span> <span class="nb">dir</span><span class="o">=</span><span class="n">temp_dir</span><span class="p">)</span>
 
-    <span class="n">config</span><span class="o">.</span><span class="n">pipeline_config</span><span class="p">[</span><span class="s1">&#39;global&#39;</span><span class="p">][</span><span class="s1">&#39;error_dir&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">tempfile</span><span class="o">.</span><span class="n">mkdtemp</span><span class="p">(</span><span class="n">prefix</span><span class="o">=</span><span class="s1">&#39;temp_error_dir&#39;</span><span class="p">,</span> <span class="nb">dir</span><span class="o">=</span><span class="n">temp_dir</span><span class="p">)</span>
-    <span class="n">config</span><span class="o">.</span><span class="n">pipeline_config</span><span class="p">[</span><span class="s1">&#39;global&#39;</span><span class="p">][</span><span class="s1">&#39;processing_dir&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">tempfile</span><span class="o">.</span><span class="n">mkdtemp</span><span class="p">(</span><span class="n">prefix</span><span class="o">=</span><span class="s1">&#39;temp_processing_dir&#39;</span><span class="p">,</span> <span class="nb">dir</span><span class="o">=</span><span class="n">temp_dir</span><span class="p">)</span>
-    <span class="n">config</span><span class="o">.</span><span class="n">pipeline_config</span><span class="p">[</span><span class="s1">&#39;global&#39;</span><span class="p">][</span><span class="s1">&#39;tmp_dir&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">temp_dir</span>
-    <span class="n">config</span><span class="o">.</span><span class="n">pipeline_config</span><span class="p">[</span><span class="s1">&#39;global&#39;</span><span class="p">][</span><span class="s1">&#39;upload_uri&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">urlunsplit</span><span class="p">((</span><span class="s1">&#39;file&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="n">temp_upload_dir</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">))</span>
-    <span class="n">config</span><span class="o">.</span><span class="n">pipeline_config</span><span class="p">[</span><span class="s1">&#39;global&#39;</span><span class="p">][</span><span class="s1">&#39;wip_dir&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">rel_path</span>
-    <span class="n">config</span><span class="o">.</span><span class="n">pipeline_config</span><span class="p">[</span><span class="s1">&#39;logging&#39;</span><span class="p">][</span><span class="s1">&#39;log_root&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">tempfile</span><span class="o">.</span><span class="n">mkdtemp</span><span class="p">(</span><span class="n">prefix</span><span class="o">=</span><span class="s1">&#39;temp_log_root&#39;</span><span class="p">,</span> <span class="nb">dir</span><span class="o">=</span><span class="n">temp_dir</span><span class="p">)</span>
-    <span class="n">config</span><span class="o">.</span><span class="n">pipeline_config</span><span class="p">[</span><span class="s1">&#39;mail&#39;</span><span class="p">][</span><span class="s1">&#39;smtp_server&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">uuid</span><span class="o">.</span><span class="n">uuid4</span><span class="p">())</span>
+    <span class="n">pipeline_config</span><span class="p">[</span><span class="s1">&#39;global&#39;</span><span class="p">][</span><span class="s1">&#39;error_dir&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">tempfile</span><span class="o">.</span><span class="n">mkdtemp</span><span class="p">(</span><span class="n">prefix</span><span class="o">=</span><span class="s1">&#39;temp_error_dir&#39;</span><span class="p">,</span> <span class="nb">dir</span><span class="o">=</span><span class="n">temp_dir</span><span class="p">)</span>
+    <span class="n">pipeline_config</span><span class="p">[</span><span class="s1">&#39;global&#39;</span><span class="p">][</span><span class="s1">&#39;processing_dir&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">tempfile</span><span class="o">.</span><span class="n">mkdtemp</span><span class="p">(</span><span class="n">prefix</span><span class="o">=</span><span class="s1">&#39;temp_processing_dir&#39;</span><span class="p">,</span> <span class="nb">dir</span><span class="o">=</span><span class="n">temp_dir</span><span class="p">)</span>
+    <span class="n">pipeline_config</span><span class="p">[</span><span class="s1">&#39;global&#39;</span><span class="p">][</span><span class="s1">&#39;tmp_dir&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">temp_dir</span>
+    <span class="n">pipeline_config</span><span class="p">[</span><span class="s1">&#39;global&#39;</span><span class="p">][</span><span class="s1">&#39;upload_uri&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">urlunsplit</span><span class="p">((</span><span class="s1">&#39;file&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="n">temp_upload_dir</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">))</span>
+    <span class="n">pipeline_config</span><span class="p">[</span><span class="s1">&#39;global&#39;</span><span class="p">][</span><span class="s1">&#39;wip_dir&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">rel_path</span>
+    <span class="n">pipeline_config</span><span class="p">[</span><span class="s1">&#39;logging&#39;</span><span class="p">][</span><span class="s1">&#39;log_root&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">tempfile</span><span class="o">.</span><span class="n">mkdtemp</span><span class="p">(</span><span class="n">prefix</span><span class="o">=</span><span class="s1">&#39;temp_log_root&#39;</span><span class="p">,</span> <span class="nb">dir</span><span class="o">=</span><span class="n">temp_dir</span><span class="p">)</span>
+    <span class="n">pipeline_config</span><span class="p">[</span><span class="s1">&#39;mail&#39;</span><span class="p">][</span><span class="s1">&#39;smtp_server&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">uuid</span><span class="o">.</span><span class="n">uuid4</span><span class="p">())</span>
 
-    <span class="n">config</span><span class="o">.</span><span class="n">_discovered_dest_path_functions</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;dest_path_testing&#39;</span><span class="p">:</span> <span class="n">dest_path_testing</span><span class="p">}</span>
-    <span class="n">config</span><span class="o">.</span><span class="n">_discovered_handlers</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;DummyHandler&#39;</span><span class="p">:</span> <span class="n">DummyHandler</span><span class="p">}</span>
-
-    <span class="k">return</span> <span class="n">config</span></div>
+    <span class="c1"># reload the JSON object with non-updatable keys</span>
+    <span class="k">return</span> <span class="n">json</span><span class="o">.</span><span class="n">loads</span><span class="p">(</span><span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">pipeline_config</span><span class="p">),</span> <span class="n">object_pairs_hook</span><span class="o">=</span><span class="n">WriteOnceOrderedDict</span><span class="p">)</span>
 
 
 <div class="viewcode-block" id="get_test_config"><a class="viewcode-back" href="../../../aodncore.testlib.html#aodncore.testlib.testutil.get_test_config">[docs]</a><span class="k">def</span> <span class="nf">get_test_config</span><span class="p">(</span><span class="n">temp_dir</span><span class="p">):</span>
     <span class="n">test_pipeline_config_file</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">TESTLIB_CONF_DIR</span><span class="p">,</span> <span class="s1">&#39;pipeline.conf&#39;</span><span class="p">)</span>
     <span class="n">test_trigger_config_file</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">TESTLIB_CONF_DIR</span><span class="p">,</span> <span class="s1">&#39;trigger.conf&#39;</span><span class="p">)</span>
     <span class="n">test_watch_config_file</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">TESTLIB_CONF_DIR</span><span class="p">,</span> <span class="s1">&#39;watches.conf&#39;</span><span class="p">)</span>
-    <span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="p">[</span><span class="s1">&#39;PIPELINE_CONFIG_FILE&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">test_pipeline_config_file</span>
-    <span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="p">[</span><span class="s1">&#39;PIPELINE_TRIGGER_CONFIG_FILE&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">test_trigger_config_file</span>
-    <span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="p">[</span><span class="s1">&#39;PIPELINE_WATCH_CONFIG_FILE&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">test_watch_config_file</span>
 
     <span class="n">config</span> <span class="o">=</span> <span class="n">LazyConfigManager</span><span class="p">()</span>
-    <span class="n">patch_test_config</span><span class="p">(</span><span class="n">config</span><span class="p">,</span> <span class="n">GLOBAL_TEST_BASE</span><span class="p">,</span> <span class="n">temp_dir</span><span class="p">)</span>
+    <span class="n">config</span><span class="o">.</span><span class="n">_discovered_dest_path_functions</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;dest_path_testing&#39;</span><span class="p">:</span> <span class="n">dest_path_testing</span><span class="p">}</span>
+    <span class="n">config</span><span class="o">.</span><span class="n">_discovered_handlers</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;DummyHandler&#39;</span><span class="p">:</span> <span class="n">DummyHandler</span><span class="p">}</span>
+
+    <span class="n">config</span><span class="o">.</span><span class="n">_pipeline_config</span> <span class="o">=</span> <span class="n">load_runtime_patched_pipeline_config_file</span><span class="p">(</span><span class="n">test_pipeline_config_file</span><span class="p">,</span> <span class="n">GLOBAL_TEST_BASE</span><span class="p">,</span>
+                                                                        <span class="n">temp_dir</span><span class="p">)</span>
+    <span class="n">config</span><span class="o">.</span><span class="n">_trigger_config</span> <span class="o">=</span> <span class="n">load_json_file</span><span class="p">(</span><span class="n">test_trigger_config_file</span><span class="p">)</span>
+    <span class="n">config</span><span class="o">.</span><span class="n">_watch_config</span> <span class="o">=</span> <span class="n">load_json_file</span><span class="p">(</span><span class="n">test_watch_config_file</span><span class="p">)</span>
 
     <span class="k">return</span> <span class="n">config</span></div>
 </pre></div>
@@ -451,7 +462,7 @@
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'../../../',
-            VERSION:'0.10.1',
+            VERSION:'0.11.4',
             LANGUAGE:'None',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',

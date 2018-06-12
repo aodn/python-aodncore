@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>aodncore.testlib package &mdash; aodncore 0.10.1 documentation</title>
+  <title>aodncore.testlib package &mdash; aodncore 0.11.4 documentation</title>
   
 
   
@@ -59,7 +59,7 @@
             
             
               <div class="version">
-                0.10.1
+                0.11.4
               </div>
             
           
@@ -83,9 +83,12 @@
               
             
             
-              <p class="caption"><span class="caption-text">Quick Start:</span></p>
+              <p class="caption"><span class="caption-text">Quick Start Guide:</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="quickstartdoc.html">Query Storage</a></li>
+<li class="toctree-l1"><a class="reference internal" href="quickstartdoc.html">Writing a <code class="docutils literal notranslate"><span class="pre">dest_path()</span></code> function</a></li>
+<li class="toctree-l1"><a class="reference internal" href="quickstartdoc.html#overriding-default-file-actions">Overriding default file actions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="quickstartdoc.html#creating-products-during-the-handler-lifetime">Creating products during the handler lifetime</a></li>
+<li class="toctree-l1"><a class="reference internal" href="quickstartdoc.html#query-storage">Query Storage</a></li>
 </ul>
 <p class="caption"><span class="caption-text">User documentation:</span></p>
 <ul>
@@ -595,28 +598,6 @@ Return the full path to the zip file.</p>
 <code class="descclassname">aodncore.testlib.testutil.</code><code class="descname">get_test_config</code><span class="sig-paren">(</span><em>temp_dir</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/aodncore/testlib/testutil.html#get_test_config"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#aodncore.testlib.testutil.get_test_config" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
-<dl class="function">
-<dt id="aodncore.testlib.testutil.patch_test_config">
-<code class="descclassname">aodncore.testlib.testutil.</code><code class="descname">patch_test_config</code><span class="sig-paren">(</span><em>config</em>, <em>rel_path</em>, <em>temp_dir</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/aodncore/testlib/testutil.html#patch_test_config"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#aodncore.testlib.testutil.patch_test_config" title="Permalink to this definition">¶</a></dt>
-<dd><p>Update config object with dynamic runtime values (e.g. temp directories)</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>config</strong> – config dictionary to update</li>
-<li><strong>rel_path</strong> – </li>
-<li><strong>temp_dir</strong> – temporary directory used to update values</li>
-</ul>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">ConfigParser object patched with runtime test values</p>
-</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
 </div>
 <div class="section" id="module-aodncore.testlib">
 <span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-aodncore.testlib" title="Permalink to this headline">¶</a></h2>
@@ -1038,7 +1019,7 @@ Return the full path to the zip file.</p>
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'./',
-            VERSION:'0.10.1',
+            VERSION:'0.11.4',
             LANGUAGE:'None',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',

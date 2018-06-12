@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>aodncore.pipeline package &mdash; aodncore 0.10.1 documentation</title>
+  <title>aodncore.pipeline package &mdash; aodncore 0.11.4 documentation</title>
   
 
   
@@ -59,7 +59,7 @@
             
             
               <div class="version">
-                0.10.1
+                0.11.4
               </div>
             
           
@@ -83,9 +83,12 @@
               
             
             
-              <p class="caption"><span class="caption-text">Quick Start:</span></p>
+              <p class="caption"><span class="caption-text">Quick Start Guide:</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="quickstartdoc.html">Query Storage</a></li>
+<li class="toctree-l1"><a class="reference internal" href="quickstartdoc.html">Writing a <code class="docutils literal notranslate"><span class="pre">dest_path()</span></code> function</a></li>
+<li class="toctree-l1"><a class="reference internal" href="quickstartdoc.html#overriding-default-file-actions">Overriding default file actions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="quickstartdoc.html#creating-products-during-the-handler-lifetime">Creating products during the handler lifetime</a></li>
+<li class="toctree-l1"><a class="reference internal" href="quickstartdoc.html#query-storage">Query Storage</a></li>
 </ul>
 <p class="caption"><span class="caption-text">User documentation:</span></p>
 <ul>
@@ -293,6 +296,11 @@ project.</p>
 <dd></dd></dl>
 
 <dl class="attribute">
+<dt id="aodncore.pipeline.common.FileType.GZIP">
+<code class="descname">GZIP</code><em class="property"> = ('.gz', 'application/gzip')</em><a class="headerlink" href="#aodncore.pipeline.common.FileType.GZIP" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
 <dt id="aodncore.pipeline.common.FileType.JPEG">
 <code class="descname">JPEG</code><em class="property"> = ('.jpg', 'image/jpeg')</em><a class="headerlink" href="#aodncore.pipeline.common.FileType.JPEG" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
@@ -468,6 +476,11 @@ class).</p>
 <dd></dd></dl>
 
 <dl class="attribute">
+<dt id="aodncore.pipeline.common.PipelineFilePublishType.UNSET">
+<code class="descname">UNSET</code><em class="property"> = (None, None, None, None, None)</em><a class="headerlink" href="#aodncore.pipeline.common.PipelineFilePublishType.UNSET" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
 <dt id="aodncore.pipeline.common.PipelineFilePublishType.UPLOAD_ONLY">
 <code class="descname">UPLOAD_ONLY</code><em class="property"> = (True, False, False, True, False)</em><a class="headerlink" href="#aodncore.pipeline.common.PipelineFilePublishType.UPLOAD_ONLY" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
@@ -543,6 +556,11 @@ of this class to several modules, even if they only require one particular type 
 <dd></dd></dl>
 
 <dl class="attribute">
+<dt id="aodncore.pipeline.configlib.LazyConfigManager.discovered_module_versions">
+<code class="descname">discovered_module_versions</code><a class="headerlink" href="#aodncore.pipeline.configlib.LazyConfigManager.discovered_module_versions" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
 <dt id="aodncore.pipeline.configlib.LazyConfigManager.pipeline_config">
 <code class="descname">pipeline_config</code><a class="headerlink" href="#aodncore.pipeline.configlib.LazyConfigManager.pipeline_config" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
@@ -577,6 +595,28 @@ of this class to several modules, even if they only require one particular type 
 <code class="descname">worker_logging_config</code><a class="headerlink" href="#aodncore.pipeline.configlib.LazyConfigManager.worker_logging_config" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
+</dd></dl>
+
+<dl class="function">
+<dt id="aodncore.pipeline.configlib.load_json_file">
+<code class="descclassname">aodncore.pipeline.configlib.</code><code class="descname">load_json_file</code><span class="sig-paren">(</span><em>default_config_file</em>, <em>envvar=None</em>, <em>object_pairs_hook=&lt;class 'aodncore.util.misc.WriteOnceOrderedDict'&gt;</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/aodncore/pipeline/configlib.html#load_json_file"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#aodncore.pipeline.configlib.load_json_file" title="Permalink to this definition">¶</a></dt>
+<dd><p>Load a JSON file into a <code class="xref py py-class docutils literal notranslate"><span class="pre">dict</span></code></p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>default_config_file</strong> – </li>
+<li><strong>envvar</strong> – environment variable containing path to load</li>
+<li><strong>object_pairs_hook</strong> – class used for json.load ‘object_pairs_hook’ parameter</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">object containing loaded JSON config</p>
+</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="function">
@@ -807,6 +847,12 @@ return to an end user</p>
 <dd><p>Bases: <a class="reference internal" href="#aodncore.pipeline.exceptions.PipelineSystemError" title="aodncore.pipeline.exceptions.PipelineSystemError"><code class="xref py py-class docutils literal notranslate"><span class="pre">aodncore.pipeline.exceptions.PipelineSystemError</span></code></a></p>
 </dd></dl>
 
+<dl class="exception">
+<dt id="aodncore.pipeline.exceptions.UnmatchedFilesError">
+<em class="property">exception </em><code class="descclassname">aodncore.pipeline.exceptions.</code><code class="descname">UnmatchedFilesError</code><a class="reference internal" href="_modules/aodncore/pipeline/exceptions.html#UnmatchedFilesError"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#aodncore.pipeline.exceptions.UnmatchedFilesError" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#aodncore.pipeline.exceptions.PipelineSystemError" title="aodncore.pipeline.exceptions.PipelineSystemError"><code class="xref py py-class docutils literal notranslate"><span class="pre">aodncore.pipeline.exceptions.PipelineSystemError</span></code></a></p>
+</dd></dl>
+
 </div>
 <div class="section" id="module-aodncore.pipeline.fileclassifier">
 <span id="aodncore-pipeline-fileclassifier-module"></span><h2>aodncore.pipeline.fileclassifier module<a class="headerlink" href="#module-aodncore.pipeline.fileclassifier" title="Permalink to this headline">¶</a></h2>
@@ -938,6 +984,29 @@ path, or an <code class="xref py py-class docutils literal notranslate"><span cl
 </tr>
 <tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"><a class="reference internal" href="#aodncore.pipeline.files.PipelineFileCollection" title="aodncore.pipeline.files.PipelineFileCollection"><code class="xref py py-class docutils literal notranslate"><span class="pre">PipelineFileCollection</span></code></a> containing only <a class="reference internal" href="#aodncore.pipeline.files.PipelineFile" title="aodncore.pipeline.files.PipelineFile"><code class="xref py py-class docutils literal notranslate"><span class="pre">PipelineFile</span></code></a> instances with the given
 attribute matching the given value</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="aodncore.pipeline.files.PipelineFileCollection.filter_by_attribute_id_not">
+<code class="descname">filter_by_attribute_id_not</code><span class="sig-paren">(</span><em>attribute</em>, <em>value</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/aodncore/pipeline/files.html#PipelineFileCollection.filter_by_attribute_id_not"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#aodncore.pipeline.files.PipelineFileCollection.filter_by_attribute_id_not" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return a new <a class="reference internal" href="#aodncore.pipeline.files.PipelineFileCollection" title="aodncore.pipeline.files.PipelineFileCollection"><code class="xref py py-class docutils literal notranslate"><span class="pre">PipelineFileCollection</span></code></a> containing only elements where the id of the given attribute
+is <em>not</em> the given id (i.e. refers to the same object)</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>attribute</strong> – attribute by which to filter <a class="reference internal" href="#aodncore.pipeline.files.PipelineFile" title="aodncore.pipeline.files.PipelineFile"><code class="xref py py-class docutils literal notranslate"><span class="pre">PipelineFile</span></code></a> instances</li>
+<li><strong>value</strong> – attribute id to filter on</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"><a class="reference internal" href="#aodncore.pipeline.files.PipelineFileCollection" title="aodncore.pipeline.files.PipelineFileCollection"><code class="xref py py-class docutils literal notranslate"><span class="pre">PipelineFileCollection</span></code></a> containing only <a class="reference internal" href="#aodncore.pipeline.files.PipelineFile" title="aodncore.pipeline.files.PipelineFile"><code class="xref py py-class docutils literal notranslate"><span class="pre">PipelineFile</span></code></a> instances with the given
+attribute not matching the given value</p>
 </td>
 </tr>
 </tbody>
@@ -1104,6 +1173,22 @@ for any of the given attributes</td>
 </dd></dl>
 
 <dl class="method">
+<dt id="aodncore.pipeline.files.PipelineFileCollection.get_attribute_list">
+<code class="descname">get_attribute_list</code><span class="sig-paren">(</span><em>attribute</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/aodncore/pipeline/files.html#PipelineFileCollection.get_attribute_list"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#aodncore.pipeline.files.PipelineFileCollection.get_attribute_list" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return a <code class="xref py py-class docutils literal notranslate"><span class="pre">list</span></code> containing the given attribute from each PipelineFile in the collection</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>attribute</strong> – the attribute name to retrieve from the objects</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><code class="xref py py-class docutils literal notranslate"><span class="pre">list</span></code> containing the value of the given attribute for each file in the collection</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
 <dt id="aodncore.pipeline.files.PipelineFileCollection.get_pipelinefile_from_src_path">
 <code class="descname">get_pipelinefile_from_src_path</code><span class="sig-paren">(</span><em>src_path</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/aodncore/pipeline/files.html#PipelineFileCollection.get_pipelinefile_from_src_path"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#aodncore.pipeline.files.PipelineFileCollection.get_pipelinefile_from_src_path" title="Permalink to this definition">¶</a></dt>
 <dd><p>Get PipelineFile for a given src_path</p>
@@ -1201,28 +1286,32 @@ the data</td>
 
 <dl class="method">
 <dt id="aodncore.pipeline.files.PipelineFileCollection.set_check_types">
-<code class="descname">set_check_types</code><span class="sig-paren">(</span><em>check_params</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/aodncore/pipeline/files.html#PipelineFileCollection.set_check_types"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#aodncore.pipeline.files.PipelineFileCollection.set_check_types" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="method">
-<dt id="aodncore.pipeline.files.PipelineFileCollection.set_default_publish_types">
-<code class="descname">set_default_publish_types</code><span class="sig-paren">(</span><em>include_regexes</em>, <em>exclude_regexes</em>, <em>addition_type</em>, <em>deletion_type</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/aodncore/pipeline/files.html#PipelineFileCollection.set_default_publish_types"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#aodncore.pipeline.files.PipelineFileCollection.set_default_publish_types" title="Permalink to this definition">¶</a></dt>
-<dd><p>Set publish_type attribute for each file in the collection depending on whether it is considered “included”
-according to the regex parameters</p>
+<code class="descname">set_check_types</code><span class="sig-paren">(</span><em>check_type</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/aodncore/pipeline/files.html#PipelineFileCollection.set_check_types"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#aodncore.pipeline.files.PipelineFileCollection.set_check_types" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set check_type attributes for each file in the collection</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>include_regexes</strong> – regex(es) for which a file must match one or more to be included</li>
-<li><strong>exclude_regexes</strong> – regex(es) which will exclude an already included file</li>
-<li><strong>addition_type</strong> – <code class="xref py py-class docutils literal notranslate"><span class="pre">PipefileFilePublishType</span></code> enum member set for included addition files</li>
-<li><strong>deletion_type</strong> – <code class="xref py py-class docutils literal notranslate"><span class="pre">PipefileFilePublishType</span></code> enum member set for included deletion files</li>
-</ul>
-</td>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>check_type</strong> – <code class="xref py py-class docutils literal notranslate"><span class="pre">PipefileFileCheckType</span></code> enum member</td>
 </tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">None</p>
-</td>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">None</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="aodncore.pipeline.files.PipelineFileCollection.set_check_types_from_params">
+<code class="descname">set_check_types_from_params</code><span class="sig-paren">(</span><em>check_params</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/aodncore/pipeline/files.html#PipelineFileCollection.set_check_types_from_params"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#aodncore.pipeline.files.PipelineFileCollection.set_check_types_from_params" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set check_type attribute for each file in the collection to the default value, based on the file type and
+presence of compliance checker checks in the check parameters</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>check_params</strong> – <code class="xref py py-class docutils literal notranslate"><span class="pre">dict</span></code></td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"></td>
 </tr>
 </tbody>
 </table>
@@ -1255,6 +1344,67 @@ according to the regex parameters</p>
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>file_update_callback</strong> – callback (function)</td>
 </tr>
 <tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">None</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="aodncore.pipeline.files.PipelineFileCollection.set_publish_types">
+<code class="descname">set_publish_types</code><span class="sig-paren">(</span><em>publish_type</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/aodncore/pipeline/files.html#PipelineFileCollection.set_publish_types"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#aodncore.pipeline.files.PipelineFileCollection.set_publish_types" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set publish_type attributes for each file in the collection</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>publish_type</strong> – <code class="xref py py-class docutils literal notranslate"><span class="pre">PipefileFilePublishType</span></code> enum member</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">None</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="aodncore.pipeline.files.PipelineFileCollection.set_publish_types_from_regexes">
+<code class="descname">set_publish_types_from_regexes</code><span class="sig-paren">(</span><em>include_regexes</em>, <em>exclude_regexes</em>, <em>addition_type</em>, <em>deletion_type</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/aodncore/pipeline/files.html#PipelineFileCollection.set_publish_types_from_regexes"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#aodncore.pipeline.files.PipelineFileCollection.set_publish_types_from_regexes" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set publish_type attribute for each file in the collection depending on whether it is considered “included”
+according to the regex parameters</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>include_regexes</strong> – regex(es) for which a file must match one or more to be included</li>
+<li><strong>exclude_regexes</strong> – regex(es) which will exclude an already included file</li>
+<li><strong>addition_type</strong> – <code class="xref py py-class docutils literal notranslate"><span class="pre">PipefileFilePublishType</span></code> enum member set for included addition files</li>
+<li><strong>deletion_type</strong> – <code class="xref py py-class docutils literal notranslate"><span class="pre">PipefileFilePublishType</span></code> enum member set for included deletion files</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">None</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="aodncore.pipeline.files.PipelineFileCollection.set_string_attribute">
+<code class="descname">set_string_attribute</code><span class="sig-paren">(</span><em>attribute</em>, <em>value</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/aodncore/pipeline/files.html#PipelineFileCollection.set_string_attribute"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#aodncore.pipeline.files.PipelineFileCollection.set_string_attribute" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set a string attribute for each file in the collection</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>attribute</strong> – attribute to set</li>
+<li><strong>value</strong> – value to set the attribute</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">None</p>
+</td>
 </tr>
 </tbody>
 </table>
@@ -1567,8 +1717,30 @@ on the file, and the actions that <em>were</em> performed on the file</p>
 </dd></dl>
 
 <dl class="function">
+<dt id="aodncore.pipeline.files.ensure_pipelinefilecollection">
+<code class="descclassname">aodncore.pipeline.files.</code><code class="descname">ensure_pipelinefilecollection</code><span class="sig-paren">(</span><em>o</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/aodncore/pipeline/files.html#ensure_pipelinefilecollection"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#aodncore.pipeline.files.ensure_pipelinefilecollection" title="Permalink to this definition">¶</a></dt>
+<dd><p>Function to accept either a single PipelineFile OR and PipelineFileCollection and ensure that a
+PipelineFileCollection object is returned in either case</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>o</strong> – PipelineFile or PipelineFileCollection object</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">PipelineFileCollection object</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
 <dt id="aodncore.pipeline.files.validate_pipelinefilecollection">
 <code class="descclassname">aodncore.pipeline.files.</code><code class="descname">validate_pipelinefilecollection</code><span class="sig-paren">(</span><em>o</em><span class="sig-paren">)</span><a class="headerlink" href="#aodncore.pipeline.files.validate_pipelinefilecollection" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="aodncore.pipeline.files.validate_pipelinefile_or_pipelinefilecollection">
+<code class="descclassname">aodncore.pipeline.files.</code><code class="descname">validate_pipelinefile_or_pipelinefilecollection</code><span class="sig-paren">(</span><em>o</em><span class="sig-paren">)</span><a class="headerlink" href="#aodncore.pipeline.files.validate_pipelinefile_or_pipelinefilecollection" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="function">
@@ -1581,7 +1753,7 @@ on the file, and the actions that <em>were</em> performed on the file</p>
 <span id="aodncore-pipeline-handlerbase-module"></span><h2>aodncore.pipeline.handlerbase module<a class="headerlink" href="#module-aodncore.pipeline.handlerbase" title="Permalink to this headline">¶</a></h2>
 <dl class="class">
 <dt id="aodncore.pipeline.handlerbase.HandlerBase">
-<em class="property">class </em><code class="descclassname">aodncore.pipeline.handlerbase.</code><code class="descname">HandlerBase</code><span class="sig-paren">(</span><em>input_file</em>, <em>allowed_extensions=None</em>, <em>archive_input_file=False</em>, <em>archive_path_function=None</em>, <em>celery_task=None</em>, <em>check_params=None</em>, <em>config=None</em>, <em>dest_path_function=None</em>, <em>exclude_regexes=None</em>, <em>harvest_params=None</em>, <em>harvest_type='talend'</em>, <em>include_regexes=None</em>, <em>notify_params=None</em>, <em>upload_path=None</em>, <em>resolve_params=None</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/aodncore/pipeline/handlerbase.html#HandlerBase"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#aodncore.pipeline.handlerbase.HandlerBase" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descclassname">aodncore.pipeline.handlerbase.</code><code class="descname">HandlerBase</code><span class="sig-paren">(</span><em>input_file</em>, <em>allowed_extensions=None</em>, <em>allowed_regexes=None</em>, <em>archive_input_file=False</em>, <em>archive_path_function=None</em>, <em>celery_task=None</em>, <em>check_params=None</em>, <em>config=None</em>, <em>custom_params=None</em>, <em>dest_path_function=None</em>, <em>exclude_regexes=None</em>, <em>harvest_params=None</em>, <em>harvest_type='talend'</em>, <em>include_regexes=None</em>, <em>notify_params=None</em>, <em>upload_path=None</em>, <em>resolve_params=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/aodncore/pipeline/handlerbase.html#HandlerBase"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#aodncore.pipeline.handlerbase.HandlerBase" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <p>Base class for pipeline handler sub-classes.</p>
 <p>Implements common handler methods and defines state machine states and transitions.</p>
@@ -1597,8 +1769,24 @@ during the initialise step.</p>
 <p class="last"><code class="xref py py-attr docutils literal notranslate"><span class="pre">input_file</span></code> is the only positional argument. Other arguments may be provided in any order.</p>
 </div>
 </li>
-<li><strong>allowed_extensions</strong> (<em>list</em>) – List of allowed extensions for <code class="xref py py-attr docutils literal notranslate"><span class="pre">input_file</span></code>. Non-matching input files with cause
+<li><strong>allowed_extensions</strong> (<em>list</em>) – List of allowed extensions for <code class="xref py py-attr docutils literal notranslate"><span class="pre">input_file</span></code>. Non-matching input files will cause
 the handler to exit with an error during the initialise step.</li>
+<li><strong>allowed_regexes</strong> – List of allowed regular expressions for <code class="xref py py-attr docutils literal notranslate"><span class="pre">input_file</span></code>. Non-matching input files will</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<p>cause the handler to exit with an error during the initialise step.</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last"><code class="xref py py-attr docutils literal notranslate"><span class="pre">allowed_regexes</span></code> are checked <em>after</em> <code class="xref py py-attr docutils literal notranslate"><span class="pre">allowed_extensions</span></code></p>
+</div>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
 <li><strong>archive_input_file</strong> (<em>bool</em>) – Flags whether the original input file should be uploaded to the archive, the location of
 which is configured by the environment configuration. The file will be archived at
 ARCHIVE_URI/PIPELINE_NAME/BASENAME.</li>
@@ -1630,6 +1818,9 @@ available as <code class="xref py py-attr docutils literal notranslate"><span cl
 the handler being tested.</p>
 </div>
 </li>
+<li><strong>custom_params</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">dict</span></code>) – A dict containing parameters which are ignored by the base class, but allow passing arbitrary
+custom values to subclasses. The structure of the dict is defined by the <code class="xref py py-const docutils literal notranslate"><span class="pre">CUSTOM_PARAMS_SCHEMA</span></code> object in
+the <a class="reference internal" href="#module-aodncore.pipeline.schema" title="aodncore.pipeline.schema"><code class="xref py py-mod docutils literal notranslate"><span class="pre">aodncore.pipeline.schema</span></code></a> module.</li>
 <li><strong>dest_path_function</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">callable</span></code>) – <p>The function used to determine the <code class="xref py py-attr docutils literal notranslate"><span class="pre">PipelineFile.dest_path</span></code> attribute, relative
 to the UPLOAD_URI configuration item. If absent, the handler will attempt to use the <code class="xref py py-meth docutils literal notranslate"><span class="pre">dest_path()</span></code> method
 in the handler itself. If a function is not found by either mechanism, the handler will exit with an error
@@ -1686,10 +1877,6 @@ represents where the file was moved to for processing.</p>
 <li><strong>resolve_params</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">dict</span></code>) – A dict containing parameters passed directly to the resolve step (e.g. the root path
 prepended to relative paths in manifest files). The structure of the dict is defined by the
 <code class="xref py py-const docutils literal notranslate"><span class="pre">RESOLVE_PARAMS_SCHEMA</span></code> object in the <a class="reference internal" href="#module-aodncore.pipeline.schema" title="aodncore.pipeline.schema"><code class="xref py py-mod docutils literal notranslate"><span class="pre">aodncore.pipeline.schema</span></code></a> module.</li>
-<li><strong>kwargs</strong> – Any additional keyword arguments passed to the handler are ignored by the <a class="reference internal" href="#aodncore.pipeline.handlerbase.HandlerBase" title="aodncore.pipeline.handlerbase.HandlerBase"><code class="xref py py-class docutils literal notranslate"><span class="pre">HandlerBase</span></code></a>
-base class. This is to leave open the ability for handler specific params to be passed from the watch
-configuration to control some arbitrary handler behaviour, without interfering with the core state machine
-operation.</li>
 </ul>
 </td>
 </tr>
@@ -1704,22 +1891,6 @@ operation.</li>
 <dt id="aodncore.pipeline.handlerbase.HandlerBase.all_transitions">
 <code class="descname">all_transitions</code><em class="property"> = [{'dest': 'HANDLER_INITIALISED', 'source': 'HANDLER_INITIAL', 'trigger': '_trigger_initialise', 'before': '_initialise'}, {'dest': 'HANDLER_RESOLVED', 'source': 'HANDLER_INITIALISED', 'trigger': '_trigger_resolve', 'before': '_resolve'}, {'dest': 'HANDLER_PREPROCESSED', 'source': 'HANDLER_RESOLVED', 'trigger': '_trigger_preprocess', 'before': 'preprocess'}, {'dest': 'HANDLER_CHECKED', 'source': 'HANDLER_PREPROCESSED', 'trigger': '_trigger_check', 'before': '_check'}, {'dest': 'HANDLER_PROCESSED', 'source': 'HANDLER_CHECKED', 'trigger': '_trigger_process', 'before': 'process'}, {'dest': 'HANDLER_PUBLISHED', 'source': 'HANDLER_PROCESSED', 'trigger': '_trigger_publish', 'before': '_publish'}, {'dest': 'HANDLER_POSTPROCESSED', 'source': 'HANDLER_PUBLISHED', 'trigger': '_trigger_postprocess', 'before': 'postprocess'}, {'dest': 'HANDLER_NOTIFIED_SUCCESS', 'source': 'HANDLER_POSTPROCESSED', 'trigger': '_trigger_notify_success', 'before': '_notify_success'}, {'dest': 'HANDLER_NOTIFIED_ERROR', 'source': ['HANDLER_INITIAL', 'HANDLER_INITIALISED', 'HANDLER_RESOLVED', 'HANDLER_PREPROCESSED', 'HANDLER_CHECKED', 'HANDLER_PROCESSED', 'HANDLER_PUBLISHED', 'HANDLER_POSTPROCESSED'], 'trigger': '_trigger_notify_error', 'before': '_notify_error'}, {'dest': 'HANDLER_COMPLETED_SUCCESS', 'source': 'HANDLER_NOTIFIED_SUCCESS', 'trigger': '_trigger_complete_success', 'before': '_complete_success'}, {'dest': 'HANDLER_COMPLETED_ERROR', 'source': 'HANDLER_NOTIFIED_ERROR', 'trigger': '_trigger_complete_with_errors', 'before': '_complete_with_errors'}]</em><a class="headerlink" href="#aodncore.pipeline.handlerbase.HandlerBase.all_transitions" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
-
-<dl class="attribute">
-<dt id="aodncore.pipeline.handlerbase.HandlerBase.cc_versions">
-<code class="descname">cc_versions</code><a class="headerlink" href="#aodncore.pipeline.handlerbase.HandlerBase.cc_versions" title="Permalink to this definition">¶</a></dt>
-<dd><p>Read-only property to access compliance checker module versions</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">compliance checker version strings for core and plugin modules</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body"><code class="xref py py-class docutils literal notranslate"><span class="pre">dict</span></code></td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
 
 <dl class="attribute">
 <dt id="aodncore.pipeline.handlerbase.HandlerBase.celery_task_id">
@@ -1858,6 +2029,22 @@ should be created in <code class="xref py py-attr docutils literal notranslate">
 </dd></dl>
 
 <dl class="attribute">
+<dt id="aodncore.pipeline.handlerbase.HandlerBase.file_basename">
+<code class="descname">file_basename</code><a class="headerlink" href="#aodncore.pipeline.handlerbase.HandlerBase.file_basename" title="Permalink to this definition">¶</a></dt>
+<dd><p>Read-only property to access the <code class="xref py py-attr docutils literal notranslate"><span class="pre">input_file</span></code> basename</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body"><code class="xref py py-attr docutils literal notranslate"><span class="pre">input_file</span></code> basename</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="attribute">
 <dt id="aodncore.pipeline.handlerbase.HandlerBase.file_checksum">
 <code class="descname">file_checksum</code><a class="headerlink" href="#aodncore.pipeline.handlerbase.HandlerBase.file_checksum" title="Permalink to this definition">¶</a></dt>
 <dd><p>Read-only property to access the <code class="xref py py-attr docutils literal notranslate"><span class="pre">input_file</span></code> checksum</p>
@@ -1922,6 +2109,38 @@ should be created in <code class="xref py py-attr docutils literal notranslate">
 </dd></dl>
 
 <dl class="attribute">
+<dt id="aodncore.pipeline.handlerbase.HandlerBase.input_file_archive_path">
+<code class="descname">input_file_archive_path</code><a class="headerlink" href="#aodncore.pipeline.handlerbase.HandlerBase.input_file_archive_path" title="Permalink to this definition">¶</a></dt>
+<dd><p>Property used to determine the archive path for the original input file</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">string containing the archive path</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="aodncore.pipeline.handlerbase.HandlerBase.input_file_object">
+<code class="descname">input_file_object</code><a class="headerlink" href="#aodncore.pipeline.handlerbase.HandlerBase.input_file_object" title="Permalink to this definition">¶</a></dt>
+<dd><p>Read-only property to access the original input file represented as a PipelineFile object</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">input file object</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body"><code class="xref py py-class docutils literal notranslate"><span class="pre">PipelineFile</span></code></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="attribute">
 <dt id="aodncore.pipeline.handlerbase.HandlerBase.instance_working_directory">
 <code class="descname">instance_working_directory</code><a class="headerlink" href="#aodncore.pipeline.handlerbase.HandlerBase.instance_working_directory" title="Permalink to this definition">¶</a></dt>
 <dd><p>Read-only property to retrieve the instance working directory</p>
@@ -1938,16 +2157,16 @@ should be created in <code class="xref py py-attr docutils literal notranslate">
 </dd></dl>
 
 <dl class="attribute">
-<dt id="aodncore.pipeline.handlerbase.HandlerBase.is_archived">
-<code class="descname">is_archived</code><a class="headerlink" href="#aodncore.pipeline.handlerbase.HandlerBase.is_archived" title="Permalink to this definition">¶</a></dt>
-<dd><p>Boolean property indicating whether the <code class="xref py py-attr docutils literal notranslate"><span class="pre">input_file</span></code> has been archived</p>
+<dt id="aodncore.pipeline.handlerbase.HandlerBase.module_versions">
+<code class="descname">module_versions</code><a class="headerlink" href="#aodncore.pipeline.handlerbase.HandlerBase.module_versions" title="Permalink to this definition">¶</a></dt>
+<dd><p>Read-only property to access module versions</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">whether the <code class="xref py py-attr docutils literal notranslate"><span class="pre">input_file</span></code> has been archived or not</td>
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">module version strings for aodncore, aodndata and compliance checker modules</td>
 </tr>
-<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body"><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></td>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body"><code class="xref py py-class docutils literal notranslate"><span class="pre">dict</span></code></td>
 </tr>
 </tbody>
 </table>
@@ -2230,6 +2449,11 @@ pipeline, and also the helper functions necessary to validate an object against 
 <dd></dd></dl>
 
 <dl class="function">
+<dt id="aodncore.pipeline.schema.validate_custom_params">
+<code class="descclassname">aodncore.pipeline.schema.</code><code class="descname">validate_custom_params</code><span class="sig-paren">(</span><em>check_params</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/aodncore/pipeline/schema.html#validate_custom_params"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#aodncore.pipeline.schema.validate_custom_params" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
 <dt id="aodncore.pipeline.schema.validate_harvest_params">
 <code class="descclassname">aodncore.pipeline.schema.</code><code class="descname">validate_harvest_params</code><span class="sig-paren">(</span><em>harvest_params</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/aodncore/pipeline/schema.html#validate_harvest_params"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#aodncore.pipeline.schema.validate_harvest_params" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
@@ -2509,11 +2733,18 @@ for debugging.</p>
 <dl class="class">
 <dt id="aodncore.pipeline.watch.IncomingFileEventHandler">
 <em class="property">class </em><code class="descclassname">aodncore.pipeline.watch.</code><code class="descname">IncomingFileEventHandler</code><span class="sig-paren">(</span><em>config</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/aodncore/pipeline/watch.html#IncomingFileEventHandler"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#aodncore.pipeline.watch.IncomingFileEventHandler" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">aodncore.pipeline.watch.ProcessEvent</span></code></p>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">pyinotify.ProcessEvent</span></code></p>
 <dl class="method">
 <dt id="aodncore.pipeline.watch.IncomingFileEventHandler.process_default">
 <code class="descname">process_default</code><span class="sig-paren">(</span><em>event</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/aodncore/pipeline/watch.html#IncomingFileEventHandler.process_default"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#aodncore.pipeline.watch.IncomingFileEventHandler.process_default" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>Default processing event method. By default does nothing. Subclass
+ProcessEvent and redefine this method in order to modify its behavior.</p>
+<dl class="docutils">
+<dt>&#64;param event: Event to be processed. Can be of any type of events but</dt>
+<dd>IN_Q_OVERFLOW events (see method process_IN_Q_OVERFLOW).</dd>
+</dl>
+<p>&#64;type event: Event instance</p>
+</dd></dl>
 
 <dl class="method">
 <dt id="aodncore.pipeline.watch.IncomingFileEventHandler.queue_task">
@@ -2552,7 +2783,7 @@ for debugging.</p>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <dl class="attribute">
 <dt id="aodncore.pipeline.watch.WatchServiceManager.EVENT_MASK">
-<code class="descname">EVENT_MASK</code><em class="property"> = 0</em><a class="headerlink" href="#aodncore.pipeline.watch.WatchServiceManager.EVENT_MASK" title="Permalink to this definition">¶</a></dt>
+<code class="descname">EVENT_MASK</code><em class="property"> = 136</em><a class="headerlink" href="#aodncore.pipeline.watch.WatchServiceManager.EVENT_MASK" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="method">
@@ -2645,6 +2876,11 @@ for debugging.</p>
 <dd></dd></dl>
 
 <dl class="attribute">
+<dt id="aodncore.pipeline.FileType.GZIP">
+<code class="descname">GZIP</code><em class="property"> = ('.gz', 'application/gzip')</em><a class="headerlink" href="#aodncore.pipeline.FileType.GZIP" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
 <dt id="aodncore.pipeline.FileType.JPEG">
 <code class="descname">JPEG</code><em class="property"> = ('.jpg', 'image/jpeg')</em><a class="headerlink" href="#aodncore.pipeline.FileType.JPEG" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
@@ -2693,7 +2929,7 @@ for debugging.</p>
 
 <dl class="class">
 <dt id="aodncore.pipeline.HandlerBase">
-<em class="property">class </em><code class="descclassname">aodncore.pipeline.</code><code class="descname">HandlerBase</code><span class="sig-paren">(</span><em>input_file</em>, <em>allowed_extensions=None</em>, <em>archive_input_file=False</em>, <em>archive_path_function=None</em>, <em>celery_task=None</em>, <em>check_params=None</em>, <em>config=None</em>, <em>dest_path_function=None</em>, <em>exclude_regexes=None</em>, <em>harvest_params=None</em>, <em>harvest_type='talend'</em>, <em>include_regexes=None</em>, <em>notify_params=None</em>, <em>upload_path=None</em>, <em>resolve_params=None</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/aodncore/pipeline/handlerbase.html#HandlerBase"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#aodncore.pipeline.HandlerBase" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descclassname">aodncore.pipeline.</code><code class="descname">HandlerBase</code><span class="sig-paren">(</span><em>input_file</em>, <em>allowed_extensions=None</em>, <em>allowed_regexes=None</em>, <em>archive_input_file=False</em>, <em>archive_path_function=None</em>, <em>celery_task=None</em>, <em>check_params=None</em>, <em>config=None</em>, <em>custom_params=None</em>, <em>dest_path_function=None</em>, <em>exclude_regexes=None</em>, <em>harvest_params=None</em>, <em>harvest_type='talend'</em>, <em>include_regexes=None</em>, <em>notify_params=None</em>, <em>upload_path=None</em>, <em>resolve_params=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/aodncore/pipeline/handlerbase.html#HandlerBase"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#aodncore.pipeline.HandlerBase" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <p>Base class for pipeline handler sub-classes.</p>
 <p>Implements common handler methods and defines state machine states and transitions.</p>
@@ -2709,8 +2945,24 @@ during the initialise step.</p>
 <p class="last"><code class="xref py py-attr docutils literal notranslate"><span class="pre">input_file</span></code> is the only positional argument. Other arguments may be provided in any order.</p>
 </div>
 </li>
-<li><strong>allowed_extensions</strong> (<em>list</em>) – List of allowed extensions for <code class="xref py py-attr docutils literal notranslate"><span class="pre">input_file</span></code>. Non-matching input files with cause
+<li><strong>allowed_extensions</strong> (<em>list</em>) – List of allowed extensions for <code class="xref py py-attr docutils literal notranslate"><span class="pre">input_file</span></code>. Non-matching input files will cause
 the handler to exit with an error during the initialise step.</li>
+<li><strong>allowed_regexes</strong> – List of allowed regular expressions for <code class="xref py py-attr docutils literal notranslate"><span class="pre">input_file</span></code>. Non-matching input files will</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<p>cause the handler to exit with an error during the initialise step.</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last"><code class="xref py py-attr docutils literal notranslate"><span class="pre">allowed_regexes</span></code> are checked <em>after</em> <code class="xref py py-attr docutils literal notranslate"><span class="pre">allowed_extensions</span></code></p>
+</div>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
 <li><strong>archive_input_file</strong> (<em>bool</em>) – Flags whether the original input file should be uploaded to the archive, the location of
 which is configured by the environment configuration. The file will be archived at
 ARCHIVE_URI/PIPELINE_NAME/BASENAME.</li>
@@ -2742,6 +2994,9 @@ available as <code class="xref py py-attr docutils literal notranslate"><span cl
 the handler being tested.</p>
 </div>
 </li>
+<li><strong>custom_params</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">dict</span></code>) – A dict containing parameters which are ignored by the base class, but allow passing arbitrary
+custom values to subclasses. The structure of the dict is defined by the <code class="xref py py-const docutils literal notranslate"><span class="pre">CUSTOM_PARAMS_SCHEMA</span></code> object in
+the <a class="reference internal" href="#module-aodncore.pipeline.schema" title="aodncore.pipeline.schema"><code class="xref py py-mod docutils literal notranslate"><span class="pre">aodncore.pipeline.schema</span></code></a> module.</li>
 <li><strong>dest_path_function</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">callable</span></code>) – <p>The function used to determine the <a class="reference internal" href="#aodncore.pipeline.PipelineFile.dest_path" title="aodncore.pipeline.PipelineFile.dest_path"><code class="xref py py-attr docutils literal notranslate"><span class="pre">PipelineFile.dest_path</span></code></a> attribute, relative
 to the UPLOAD_URI configuration item. If absent, the handler will attempt to use the <code class="xref py py-meth docutils literal notranslate"><span class="pre">dest_path()</span></code> method
 in the handler itself. If a function is not found by either mechanism, the handler will exit with an error
@@ -2798,10 +3053,6 @@ represents where the file was moved to for processing.</p>
 <li><strong>resolve_params</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">dict</span></code>) – A dict containing parameters passed directly to the resolve step (e.g. the root path
 prepended to relative paths in manifest files). The structure of the dict is defined by the
 <code class="xref py py-const docutils literal notranslate"><span class="pre">RESOLVE_PARAMS_SCHEMA</span></code> object in the <a class="reference internal" href="#module-aodncore.pipeline.schema" title="aodncore.pipeline.schema"><code class="xref py py-mod docutils literal notranslate"><span class="pre">aodncore.pipeline.schema</span></code></a> module.</li>
-<li><strong>kwargs</strong> – Any additional keyword arguments passed to the handler are ignored by the <a class="reference internal" href="#aodncore.pipeline.HandlerBase" title="aodncore.pipeline.HandlerBase"><code class="xref py py-class docutils literal notranslate"><span class="pre">HandlerBase</span></code></a>
-base class. This is to leave open the ability for handler specific params to be passed from the watch
-configuration to control some arbitrary handler behaviour, without interfering with the core state machine
-operation.</li>
 </ul>
 </td>
 </tr>
@@ -2816,22 +3067,6 @@ operation.</li>
 <dt id="aodncore.pipeline.HandlerBase.all_transitions">
 <code class="descname">all_transitions</code><em class="property"> = [{'dest': 'HANDLER_INITIALISED', 'source': 'HANDLER_INITIAL', 'trigger': '_trigger_initialise', 'before': '_initialise'}, {'dest': 'HANDLER_RESOLVED', 'source': 'HANDLER_INITIALISED', 'trigger': '_trigger_resolve', 'before': '_resolve'}, {'dest': 'HANDLER_PREPROCESSED', 'source': 'HANDLER_RESOLVED', 'trigger': '_trigger_preprocess', 'before': 'preprocess'}, {'dest': 'HANDLER_CHECKED', 'source': 'HANDLER_PREPROCESSED', 'trigger': '_trigger_check', 'before': '_check'}, {'dest': 'HANDLER_PROCESSED', 'source': 'HANDLER_CHECKED', 'trigger': '_trigger_process', 'before': 'process'}, {'dest': 'HANDLER_PUBLISHED', 'source': 'HANDLER_PROCESSED', 'trigger': '_trigger_publish', 'before': '_publish'}, {'dest': 'HANDLER_POSTPROCESSED', 'source': 'HANDLER_PUBLISHED', 'trigger': '_trigger_postprocess', 'before': 'postprocess'}, {'dest': 'HANDLER_NOTIFIED_SUCCESS', 'source': 'HANDLER_POSTPROCESSED', 'trigger': '_trigger_notify_success', 'before': '_notify_success'}, {'dest': 'HANDLER_NOTIFIED_ERROR', 'source': ['HANDLER_INITIAL', 'HANDLER_INITIALISED', 'HANDLER_RESOLVED', 'HANDLER_PREPROCESSED', 'HANDLER_CHECKED', 'HANDLER_PROCESSED', 'HANDLER_PUBLISHED', 'HANDLER_POSTPROCESSED'], 'trigger': '_trigger_notify_error', 'before': '_notify_error'}, {'dest': 'HANDLER_COMPLETED_SUCCESS', 'source': 'HANDLER_NOTIFIED_SUCCESS', 'trigger': '_trigger_complete_success', 'before': '_complete_success'}, {'dest': 'HANDLER_COMPLETED_ERROR', 'source': 'HANDLER_NOTIFIED_ERROR', 'trigger': '_trigger_complete_with_errors', 'before': '_complete_with_errors'}]</em><a class="headerlink" href="#aodncore.pipeline.HandlerBase.all_transitions" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
-
-<dl class="attribute">
-<dt id="aodncore.pipeline.HandlerBase.cc_versions">
-<code class="descname">cc_versions</code><a class="headerlink" href="#aodncore.pipeline.HandlerBase.cc_versions" title="Permalink to this definition">¶</a></dt>
-<dd><p>Read-only property to access compliance checker module versions</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">compliance checker version strings for core and plugin modules</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body"><code class="xref py py-class docutils literal notranslate"><span class="pre">dict</span></code></td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
 
 <dl class="attribute">
 <dt id="aodncore.pipeline.HandlerBase.celery_task_id">
@@ -2970,6 +3205,22 @@ should be created in <code class="xref py py-attr docutils literal notranslate">
 </dd></dl>
 
 <dl class="attribute">
+<dt id="aodncore.pipeline.HandlerBase.file_basename">
+<code class="descname">file_basename</code><a class="headerlink" href="#aodncore.pipeline.HandlerBase.file_basename" title="Permalink to this definition">¶</a></dt>
+<dd><p>Read-only property to access the <code class="xref py py-attr docutils literal notranslate"><span class="pre">input_file</span></code> basename</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body"><code class="xref py py-attr docutils literal notranslate"><span class="pre">input_file</span></code> basename</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="attribute">
 <dt id="aodncore.pipeline.HandlerBase.file_checksum">
 <code class="descname">file_checksum</code><a class="headerlink" href="#aodncore.pipeline.HandlerBase.file_checksum" title="Permalink to this definition">¶</a></dt>
 <dd><p>Read-only property to access the <code class="xref py py-attr docutils literal notranslate"><span class="pre">input_file</span></code> checksum</p>
@@ -3034,6 +3285,38 @@ should be created in <code class="xref py py-attr docutils literal notranslate">
 </dd></dl>
 
 <dl class="attribute">
+<dt id="aodncore.pipeline.HandlerBase.input_file_archive_path">
+<code class="descname">input_file_archive_path</code><a class="headerlink" href="#aodncore.pipeline.HandlerBase.input_file_archive_path" title="Permalink to this definition">¶</a></dt>
+<dd><p>Property used to determine the archive path for the original input file</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">string containing the archive path</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="aodncore.pipeline.HandlerBase.input_file_object">
+<code class="descname">input_file_object</code><a class="headerlink" href="#aodncore.pipeline.HandlerBase.input_file_object" title="Permalink to this definition">¶</a></dt>
+<dd><p>Read-only property to access the original input file represented as a PipelineFile object</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">input file object</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference internal" href="#aodncore.pipeline.PipelineFile" title="aodncore.pipeline.PipelineFile"><code class="xref py py-class docutils literal notranslate"><span class="pre">PipelineFile</span></code></a></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="attribute">
 <dt id="aodncore.pipeline.HandlerBase.instance_working_directory">
 <code class="descname">instance_working_directory</code><a class="headerlink" href="#aodncore.pipeline.HandlerBase.instance_working_directory" title="Permalink to this definition">¶</a></dt>
 <dd><p>Read-only property to retrieve the instance working directory</p>
@@ -3050,16 +3333,16 @@ should be created in <code class="xref py py-attr docutils literal notranslate">
 </dd></dl>
 
 <dl class="attribute">
-<dt id="aodncore.pipeline.HandlerBase.is_archived">
-<code class="descname">is_archived</code><a class="headerlink" href="#aodncore.pipeline.HandlerBase.is_archived" title="Permalink to this definition">¶</a></dt>
-<dd><p>Boolean property indicating whether the <code class="xref py py-attr docutils literal notranslate"><span class="pre">input_file</span></code> has been archived</p>
+<dt id="aodncore.pipeline.HandlerBase.module_versions">
+<code class="descname">module_versions</code><a class="headerlink" href="#aodncore.pipeline.HandlerBase.module_versions" title="Permalink to this definition">¶</a></dt>
+<dd><p>Read-only property to access module versions</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">whether the <code class="xref py py-attr docutils literal notranslate"><span class="pre">input_file</span></code> has been archived or not</td>
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">module version strings for aodncore, aodndata and compliance checker modules</td>
 </tr>
-<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body"><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></td>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body"><code class="xref py py-class docutils literal notranslate"><span class="pre">dict</span></code></td>
 </tr>
 </tbody>
 </table>
@@ -3643,6 +3926,29 @@ attribute matching the given value</p>
 </dd></dl>
 
 <dl class="method">
+<dt id="aodncore.pipeline.PipelineFileCollection.filter_by_attribute_id_not">
+<code class="descname">filter_by_attribute_id_not</code><span class="sig-paren">(</span><em>attribute</em>, <em>value</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/aodncore/pipeline/files.html#PipelineFileCollection.filter_by_attribute_id_not"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#aodncore.pipeline.PipelineFileCollection.filter_by_attribute_id_not" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return a new <a class="reference internal" href="#aodncore.pipeline.PipelineFileCollection" title="aodncore.pipeline.PipelineFileCollection"><code class="xref py py-class docutils literal notranslate"><span class="pre">PipelineFileCollection</span></code></a> containing only elements where the id of the given attribute
+is <em>not</em> the given id (i.e. refers to the same object)</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>attribute</strong> – attribute by which to filter <a class="reference internal" href="#aodncore.pipeline.PipelineFile" title="aodncore.pipeline.PipelineFile"><code class="xref py py-class docutils literal notranslate"><span class="pre">PipelineFile</span></code></a> instances</li>
+<li><strong>value</strong> – attribute id to filter on</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"><a class="reference internal" href="#aodncore.pipeline.PipelineFileCollection" title="aodncore.pipeline.PipelineFileCollection"><code class="xref py py-class docutils literal notranslate"><span class="pre">PipelineFileCollection</span></code></a> containing only <a class="reference internal" href="#aodncore.pipeline.PipelineFile" title="aodncore.pipeline.PipelineFile"><code class="xref py py-class docutils literal notranslate"><span class="pre">PipelineFile</span></code></a> instances with the given
+attribute not matching the given value</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
 <dt id="aodncore.pipeline.PipelineFileCollection.filter_by_attribute_regex">
 <code class="descname">filter_by_attribute_regex</code><span class="sig-paren">(</span><em>attribute</em>, <em>pattern</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/aodncore/pipeline/files.html#PipelineFileCollection.filter_by_attribute_regex"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#aodncore.pipeline.PipelineFileCollection.filter_by_attribute_regex" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return a new <a class="reference internal" href="#aodncore.pipeline.PipelineFileCollection" title="aodncore.pipeline.PipelineFileCollection"><code class="xref py py-class docutils literal notranslate"><span class="pre">PipelineFileCollection</span></code></a> containing only elements where the value of the named
@@ -3802,6 +4108,22 @@ for any of the given attributes</td>
 </dd></dl>
 
 <dl class="method">
+<dt id="aodncore.pipeline.PipelineFileCollection.get_attribute_list">
+<code class="descname">get_attribute_list</code><span class="sig-paren">(</span><em>attribute</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/aodncore/pipeline/files.html#PipelineFileCollection.get_attribute_list"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#aodncore.pipeline.PipelineFileCollection.get_attribute_list" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return a <code class="xref py py-class docutils literal notranslate"><span class="pre">list</span></code> containing the given attribute from each PipelineFile in the collection</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>attribute</strong> – the attribute name to retrieve from the objects</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><code class="xref py py-class docutils literal notranslate"><span class="pre">list</span></code> containing the value of the given attribute for each file in the collection</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
 <dt id="aodncore.pipeline.PipelineFileCollection.get_pipelinefile_from_src_path">
 <code class="descname">get_pipelinefile_from_src_path</code><span class="sig-paren">(</span><em>src_path</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/aodncore/pipeline/files.html#PipelineFileCollection.get_pipelinefile_from_src_path"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#aodncore.pipeline.PipelineFileCollection.get_pipelinefile_from_src_path" title="Permalink to this definition">¶</a></dt>
 <dd><p>Get PipelineFile for a given src_path</p>
@@ -3899,28 +4221,32 @@ the data</td>
 
 <dl class="method">
 <dt id="aodncore.pipeline.PipelineFileCollection.set_check_types">
-<code class="descname">set_check_types</code><span class="sig-paren">(</span><em>check_params</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/aodncore/pipeline/files.html#PipelineFileCollection.set_check_types"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#aodncore.pipeline.PipelineFileCollection.set_check_types" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="method">
-<dt id="aodncore.pipeline.PipelineFileCollection.set_default_publish_types">
-<code class="descname">set_default_publish_types</code><span class="sig-paren">(</span><em>include_regexes</em>, <em>exclude_regexes</em>, <em>addition_type</em>, <em>deletion_type</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/aodncore/pipeline/files.html#PipelineFileCollection.set_default_publish_types"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#aodncore.pipeline.PipelineFileCollection.set_default_publish_types" title="Permalink to this definition">¶</a></dt>
-<dd><p>Set publish_type attribute for each file in the collection depending on whether it is considered “included”
-according to the regex parameters</p>
+<code class="descname">set_check_types</code><span class="sig-paren">(</span><em>check_type</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/aodncore/pipeline/files.html#PipelineFileCollection.set_check_types"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#aodncore.pipeline.PipelineFileCollection.set_check_types" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set check_type attributes for each file in the collection</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>include_regexes</strong> – regex(es) for which a file must match one or more to be included</li>
-<li><strong>exclude_regexes</strong> – regex(es) which will exclude an already included file</li>
-<li><strong>addition_type</strong> – <code class="xref py py-class docutils literal notranslate"><span class="pre">PipefileFilePublishType</span></code> enum member set for included addition files</li>
-<li><strong>deletion_type</strong> – <code class="xref py py-class docutils literal notranslate"><span class="pre">PipefileFilePublishType</span></code> enum member set for included deletion files</li>
-</ul>
-</td>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>check_type</strong> – <code class="xref py py-class docutils literal notranslate"><span class="pre">PipefileFileCheckType</span></code> enum member</td>
 </tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">None</p>
-</td>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">None</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="aodncore.pipeline.PipelineFileCollection.set_check_types_from_params">
+<code class="descname">set_check_types_from_params</code><span class="sig-paren">(</span><em>check_params</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/aodncore/pipeline/files.html#PipelineFileCollection.set_check_types_from_params"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#aodncore.pipeline.PipelineFileCollection.set_check_types_from_params" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set check_type attribute for each file in the collection to the default value, based on the file type and
+presence of compliance checker checks in the check parameters</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>check_params</strong> – <code class="xref py py-class docutils literal notranslate"><span class="pre">dict</span></code></td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"></td>
 </tr>
 </tbody>
 </table>
@@ -3953,6 +4279,67 @@ according to the regex parameters</p>
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>file_update_callback</strong> – callback (function)</td>
 </tr>
 <tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">None</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="aodncore.pipeline.PipelineFileCollection.set_publish_types">
+<code class="descname">set_publish_types</code><span class="sig-paren">(</span><em>publish_type</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/aodncore/pipeline/files.html#PipelineFileCollection.set_publish_types"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#aodncore.pipeline.PipelineFileCollection.set_publish_types" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set publish_type attributes for each file in the collection</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>publish_type</strong> – <code class="xref py py-class docutils literal notranslate"><span class="pre">PipefileFilePublishType</span></code> enum member</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">None</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="aodncore.pipeline.PipelineFileCollection.set_publish_types_from_regexes">
+<code class="descname">set_publish_types_from_regexes</code><span class="sig-paren">(</span><em>include_regexes</em>, <em>exclude_regexes</em>, <em>addition_type</em>, <em>deletion_type</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/aodncore/pipeline/files.html#PipelineFileCollection.set_publish_types_from_regexes"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#aodncore.pipeline.PipelineFileCollection.set_publish_types_from_regexes" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set publish_type attribute for each file in the collection depending on whether it is considered “included”
+according to the regex parameters</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>include_regexes</strong> – regex(es) for which a file must match one or more to be included</li>
+<li><strong>exclude_regexes</strong> – regex(es) which will exclude an already included file</li>
+<li><strong>addition_type</strong> – <code class="xref py py-class docutils literal notranslate"><span class="pre">PipefileFilePublishType</span></code> enum member set for included addition files</li>
+<li><strong>deletion_type</strong> – <code class="xref py py-class docutils literal notranslate"><span class="pre">PipefileFilePublishType</span></code> enum member set for included deletion files</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">None</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="aodncore.pipeline.PipelineFileCollection.set_string_attribute">
+<code class="descname">set_string_attribute</code><span class="sig-paren">(</span><em>attribute</em>, <em>value</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/aodncore/pipeline/files.html#PipelineFileCollection.set_string_attribute"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#aodncore.pipeline.PipelineFileCollection.set_string_attribute" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set a string attribute for each file in the collection</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>attribute</strong> – attribute to set</li>
+<li><strong>value</strong> – value to set the attribute</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">None</p>
+</td>
 </tr>
 </tbody>
 </table>
@@ -4104,6 +4491,11 @@ class).</p>
 <dd></dd></dl>
 
 <dl class="attribute">
+<dt id="aodncore.pipeline.PipelineFilePublishType.UNSET">
+<code class="descname">UNSET</code><em class="property"> = (None, None, None, None, None)</em><a class="headerlink" href="#aodncore.pipeline.PipelineFilePublishType.UNSET" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
 <dt id="aodncore.pipeline.PipelineFilePublishType.UPLOAD_ONLY">
 <code class="descname">UPLOAD_ONLY</code><em class="property"> = (True, False, False, True, False)</em><a class="headerlink" href="#aodncore.pipeline.PipelineFilePublishType.UPLOAD_ONLY" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
@@ -4165,7 +4557,7 @@ class).</p>
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'./',
-            VERSION:'0.10.1',
+            VERSION:'0.11.4',
             LANGUAGE:'None',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',

@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>aodncore.util.misc &mdash; aodncore 0.10.1 documentation</title>
+  <title>aodncore.util.misc &mdash; aodncore 0.11.4 documentation</title>
   
 
   
@@ -57,7 +57,7 @@
             
             
               <div class="version">
-                0.10.1
+                0.11.4
               </div>
             
           
@@ -81,9 +81,12 @@
               
             
             
-              <p class="caption"><span class="caption-text">Quick Start:</span></p>
+              <p class="caption"><span class="caption-text">Quick Start Guide:</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../quickstartdoc.html">Query Storage</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../quickstartdoc.html">Writing a <code class="docutils literal notranslate"><span class="pre">dest_path()</span></code> function</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../quickstartdoc.html#overriding-default-file-actions">Overriding default file actions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../quickstartdoc.html#creating-products-during-the-handler-lifetime">Creating products during the handler lifetime</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../quickstartdoc.html#query-storage">Query Storage</a></li>
 </ul>
 <p class="caption"><span class="caption-text">User documentation:</span></p>
 <ul>
@@ -201,6 +204,7 @@
 <span class="sd">&quot;&quot;&quot;</span>
 
 <span class="kn">import</span> <span class="nn">logging</span>
+<span class="kn">import</span> <span class="nn">os</span>
 <span class="kn">import</span> <span class="nn">re</span>
 <span class="kn">import</span> <span class="nn">sys</span>
 <span class="kn">import</span> <span class="nn">types</span>
@@ -215,6 +219,7 @@
 
 <span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span>
     <span class="s1">&#39;discover_entry_points&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;ensure_writeonceordereddict&#39;</span><span class="p">,</span>
     <span class="s1">&#39;format_exception&#39;</span><span class="p">,</span>
     <span class="s1">&#39;is_nonstring_iterable&#39;</span><span class="p">,</span>
     <span class="s1">&#39;is_function&#39;</span><span class="p">,</span>
@@ -233,11 +238,14 @@
     <span class="s1">&#39;validate_membership&#39;</span><span class="p">,</span>
     <span class="s1">&#39;validate_nonstring_iterable&#39;</span><span class="p">,</span>
     <span class="s1">&#39;validate_regex&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;validate_relative_path&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;validate_relative_path_attr&#39;</span><span class="p">,</span>
     <span class="s1">&#39;validate_string&#39;</span><span class="p">,</span>
     <span class="s1">&#39;validate_type&#39;</span><span class="p">,</span>
     <span class="s1">&#39;CaptureStdIO&#39;</span><span class="p">,</span>
     <span class="s1">&#39;LoggingContext&#39;</span><span class="p">,</span>
-    <span class="s1">&#39;TemplateRenderer&#39;</span>
+    <span class="s1">&#39;TemplateRenderer&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;WriteOnceOrderedDict&#39;</span>
 <span class="p">]</span>
 
 
@@ -255,6 +263,27 @@
         <span class="n">entry_point_object</span> <span class="o">=</span> <span class="n">entry_point</span><span class="o">.</span><span class="n">load</span><span class="p">()</span>
         <span class="n">entry_points</span><span class="p">[</span><span class="n">entry_point</span><span class="o">.</span><span class="n">name</span><span class="p">]</span> <span class="o">=</span> <span class="n">entry_point_object</span>
     <span class="k">return</span> <span class="n">entry_points</span></div>
+
+
+<div class="viewcode-block" id="ensure_writeonceordereddict"><a class="viewcode-back" href="../../../aodncore.util.html#aodncore.pipeline.common.ensure_writeonceordereddict">[docs]</a><span class="k">def</span> <span class="nf">ensure_writeonceordereddict</span><span class="p">(</span><span class="n">o</span><span class="p">,</span> <span class="n">empty_on_fail</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Function to accept and object and return the WriteOnceOrderedDict representation of the object. An object which</span>
+<span class="sd">    can *not* be handled by the WriteOnceOrderedDict __init__ method will either result in an empty, or if</span>
+<span class="sd">    &#39;empty_on_fail&#39; is set to False, will result in an exception.</span>
+
+<span class="sd">    :param o: input object</span>
+<span class="sd">    :param empty_on_fail: boolean flag to determine whether an invalid object will result in a new empty</span>
+<span class="sd">        WriteOnceOrderedDict being returned or the exception re-raised.</span>
+<span class="sd">    :return: :py:class:`WriteOnceOrderedDict` instance</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">o</span><span class="p">,</span> <span class="n">WriteOnceOrderedDict</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">o</span>
+
+    <span class="k">try</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">WriteOnceOrderedDict</span><span class="p">(</span><span class="n">o</span><span class="p">)</span>
+    <span class="k">except</span> <span class="p">(</span><span class="ne">TypeError</span><span class="p">,</span> <span class="ne">ValueError</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">empty_on_fail</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">WriteOnceOrderedDict</span><span class="p">()</span>
+        <span class="k">raise</span></div>
 
 
 <div class="viewcode-block" id="format_exception"><a class="viewcode-back" href="../../../aodncore.util.html#aodncore.pipeline.common.format_exception">[docs]</a><span class="k">def</span> <span class="nf">format_exception</span><span class="p">(</span><span class="n">exception</span><span class="p">):</span>
@@ -463,6 +492,24 @@
         <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;invalid regex &#39;</span><span class="si">{o}</span><span class="s2">&#39;. </span><span class="si">{e}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">o</span><span class="o">=</span><span class="n">o</span><span class="p">,</span> <span class="n">e</span><span class="o">=</span><span class="n">format_exception</span><span class="p">(</span><span class="n">e</span><span class="p">)))</span></div>
 
 
+<div class="viewcode-block" id="validate_relative_path"><a class="viewcode-back" href="../../../aodncore.util.html#aodncore.pipeline.common.validate_relative_path">[docs]</a><span class="k">def</span> <span class="nf">validate_relative_path</span><span class="p">(</span><span class="n">o</span><span class="p">):</span>
+    <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isabs</span><span class="p">(</span><span class="n">o</span><span class="p">):</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;path &#39;</span><span class="si">{o}</span><span class="s2">&#39; must be a relative path&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">o</span><span class="o">=</span><span class="n">o</span><span class="p">))</span></div>
+
+
+<div class="viewcode-block" id="validate_relative_path_attr"><a class="viewcode-back" href="../../../aodncore.util.html#aodncore.pipeline.common.validate_relative_path_attr">[docs]</a><span class="k">def</span> <span class="nf">validate_relative_path_attr</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="n">path_attr</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Validate a path, raising an exception containing the name of the attribute which failed</span>
+
+<span class="sd">    :param path: string containing the path to test</span>
+<span class="sd">    :param path_attr: attribute name to include in the exceptions message if validation fails</span>
+<span class="sd">    :return: None</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">validate_relative_path</span><span class="p">(</span><span class="n">path</span><span class="p">)</span>
+    <span class="k">except</span> <span class="ne">ValueError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;error validating &#39;</span><span class="si">{attr}</span><span class="s2">&#39;: </span><span class="si">{e}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">attr</span><span class="o">=</span><span class="n">path_attr</span><span class="p">,</span> <span class="n">e</span><span class="o">=</span><span class="n">e</span><span class="p">))</span></div>
+
+
 <div class="viewcode-block" id="validate_mandatory_elements"><a class="viewcode-back" href="../../../aodncore.util.html#aodncore.pipeline.common.validate_mandatory_elements">[docs]</a><span class="k">def</span> <span class="nf">validate_mandatory_elements</span><span class="p">(</span><span class="n">mandatory</span><span class="p">,</span> <span class="n">actual</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s1">&#39;item&#39;</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Ensure that a collection contains all the elements in a &#39;mandatory&#39; collection of elements</span>
 
@@ -542,6 +589,26 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">handler</span><span class="o">.</span><span class="n">close</span><span class="p">()</span></div>
 
 
+<div class="viewcode-block" id="WriteOnceOrderedDict"><a class="viewcode-back" href="../../../aodncore.util.html#aodncore.pipeline.common.WriteOnceOrderedDict">[docs]</a><span class="k">class</span> <span class="nc">WriteOnceOrderedDict</span><span class="p">(</span><span class="n">OrderedDict</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Sub-class of OrderedDict which prevents overwriting/deleting of keys once set</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="nf">__readonly__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s1">&#39;updates or deletions not permitted on WriteOnceOrderedDict&#39;</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">__setitem__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">key</span> <span class="ow">in</span> <span class="bp">self</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s2">&quot;key &#39;</span><span class="si">{}</span><span class="s2">&#39; has already been set&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">key</span><span class="p">))</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">WriteOnceOrderedDict</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__setitem__</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span>
+
+    <span class="fm">__delitem__</span> <span class="o">=</span> <span class="n">__readonly__</span>
+    <span class="n">clear</span> <span class="o">=</span> <span class="n">__readonly__</span>
+    <span class="n">pop</span> <span class="o">=</span> <span class="n">__readonly__</span>
+    <span class="n">popitem</span> <span class="o">=</span> <span class="n">__readonly__</span>
+    <span class="n">setdefault</span> <span class="o">=</span> <span class="n">__readonly__</span>
+    <span class="n">update</span> <span class="o">=</span> <span class="n">__readonly__</span></div>
+
+
 <div class="viewcode-block" id="TemplateRenderer"><a class="viewcode-back" href="../../../aodncore.util.html#aodncore.pipeline.common.TemplateRenderer">[docs]</a><span class="k">class</span> <span class="nc">TemplateRenderer</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Simple template renderer</span>
 <span class="sd">    &quot;&quot;&quot;</span>
@@ -597,7 +664,7 @@
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'../../../',
-            VERSION:'0.10.1',
+            VERSION:'0.11.4',
             LANGUAGE:'None',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',

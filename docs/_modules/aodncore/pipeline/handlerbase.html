@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>aodncore.pipeline.handlerbase &mdash; aodncore 0.10.1 documentation</title>
+  <title>aodncore.pipeline.handlerbase &mdash; aodncore 0.11.4 documentation</title>
   
 
   
@@ -57,7 +57,7 @@
             
             
               <div class="version">
-                0.10.1
+                0.11.4
               </div>
             
           
@@ -81,9 +81,12 @@
               
             
             
-              <p class="caption"><span class="caption-text">Quick Start:</span></p>
+              <p class="caption"><span class="caption-text">Quick Start Guide:</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../quickstartdoc.html">Query Storage</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../quickstartdoc.html">Writing a <code class="docutils literal notranslate"><span class="pre">dest_path()</span></code> function</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../quickstartdoc.html#overriding-default-file-actions">Overriding default file actions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../quickstartdoc.html#creating-products-during-the-handler-lifetime">Creating products during the handler lifetime</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../quickstartdoc.html#query-storage">Query Storage</a></li>
 </ul>
 <p class="caption"><span class="caption-text">User documentation:</span></p>
 <ul>
@@ -207,15 +210,17 @@
 <span class="kn">from</span> <span class="nn">.configlib</span> <span class="k">import</span> <span class="n">validate_lazyconfigmanager</span>
 <span class="kn">from</span> <span class="nn">.destpath</span> <span class="k">import</span> <span class="n">get_path_function</span>
 <span class="kn">from</span> <span class="nn">.exceptions</span> <span class="k">import</span> <span class="p">(</span><span class="n">PipelineProcessingError</span><span class="p">,</span> <span class="n">HandlerAlreadyRunError</span><span class="p">,</span> <span class="n">InvalidConfigError</span><span class="p">,</span> <span class="n">InvalidInputFileError</span><span class="p">,</span>
-                         <span class="n">InvalidFileFormatError</span><span class="p">,</span> <span class="n">MissingConfigParameterError</span><span class="p">)</span>
+                         <span class="n">InvalidFileFormatError</span><span class="p">,</span> <span class="n">MissingConfigParameterError</span><span class="p">,</span> <span class="n">UnmatchedFilesError</span><span class="p">)</span>
 <span class="kn">from</span> <span class="nn">.files</span> <span class="k">import</span> <span class="n">PipelineFile</span><span class="p">,</span> <span class="n">PipelineFileCollection</span>
 <span class="kn">from</span> <span class="nn">.log</span> <span class="k">import</span> <span class="n">SYSINFO</span><span class="p">,</span> <span class="n">get_pipeline_logger</span>
-<span class="kn">from</span> <span class="nn">.schema</span> <span class="k">import</span> <span class="n">validate_check_params</span><span class="p">,</span> <span class="n">validate_harvest_params</span><span class="p">,</span> <span class="n">validate_notify_params</span><span class="p">,</span> <span class="n">validate_resolve_params</span>
+<span class="kn">from</span> <span class="nn">.schema</span> <span class="k">import</span> <span class="p">(</span><span class="n">validate_check_params</span><span class="p">,</span> <span class="n">validate_custom_params</span><span class="p">,</span> <span class="n">validate_harvest_params</span><span class="p">,</span> <span class="n">validate_notify_params</span><span class="p">,</span>
+                     <span class="n">validate_resolve_params</span><span class="p">)</span>
 <span class="kn">from</span> <span class="nn">.statequery</span> <span class="k">import</span> <span class="n">StateQuery</span>
-<span class="kn">from</span> <span class="nn">.steps</span> <span class="k">import</span> <span class="p">(</span><span class="n">get_cc_module_versions</span><span class="p">,</span> <span class="n">get_check_runner</span><span class="p">,</span> <span class="n">get_harvester_runner</span><span class="p">,</span> <span class="n">get_notify_runner</span><span class="p">,</span>
-                    <span class="n">get_resolve_runner</span><span class="p">,</span> <span class="n">get_store_runner</span><span class="p">)</span>
-<span class="kn">from</span> <span class="nn">..util</span> <span class="k">import</span> <span class="p">(</span><span class="n">format_exception</span><span class="p">,</span> <span class="n">get_file_checksum</span><span class="p">,</span> <span class="n">iter_public_attributes</span><span class="p">,</span> <span class="n">merge_dicts</span><span class="p">,</span> <span class="n">validate_bool</span><span class="p">,</span>
+<span class="kn">from</span> <span class="nn">.steps</span> <span class="k">import</span> <span class="p">(</span><span class="n">get_check_runner</span><span class="p">,</span> <span class="n">get_harvester_runner</span><span class="p">,</span> <span class="n">get_notify_runner</span><span class="p">,</span> <span class="n">get_resolve_runner</span><span class="p">,</span> <span class="n">get_store_runner</span><span class="p">)</span>
+<span class="kn">from</span> <span class="nn">..util</span> <span class="k">import</span> <span class="p">(</span><span class="n">discover_entry_points</span><span class="p">,</span> <span class="n">ensure_writeonceordereddict</span><span class="p">,</span> <span class="n">format_exception</span><span class="p">,</span> <span class="n">get_file_checksum</span><span class="p">,</span>
+                    <span class="n">iter_public_attributes</span><span class="p">,</span> <span class="n">matches_regexes</span><span class="p">,</span> <span class="n">merge_dicts</span><span class="p">,</span> <span class="n">validate_relative_path_attr</span><span class="p">,</span>
                     <span class="n">TemporaryDirectory</span><span class="p">)</span>
+<span class="kn">from</span> <span class="nn">..version</span> <span class="k">import</span> <span class="n">__version__</span> <span class="k">as</span> <span class="n">_aodncore_version</span>
 
 <span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span>
     <span class="s1">&#39;HandlerBase&#39;</span>
@@ -237,9 +242,15 @@
 
 <span class="sd">    :type input_file: str</span>
 
-<span class="sd">    :param allowed_extensions: List of allowed extensions for :py:attr:`input_file`. Non-matching input files with cause</span>
+<span class="sd">    :param allowed_extensions: List of allowed extensions for :py:attr:`input_file`. Non-matching input files will cause</span>
 <span class="sd">        the handler to exit with an error during the initialise step.</span>
 <span class="sd">    :type allowed_extensions: list</span>
+
+<span class="sd">    :param allowed_regexes: List of allowed regular expressions for :py:attr:`input_file`. Non-matching input files will</span>
+<span class="sd">    cause the handler to exit with an error during the initialise step.</span>
+
+<span class="sd">    .. note:: :py:attr:`allowed_regexes` are checked *after* :py:attr:`allowed_extensions`</span>
+<span class="sd">    :type allowed_regexes: list</span>
 
 <span class="sd">    :param archive_input_file: Flags whether the original input file should be uploaded to the archive, the location of</span>
 <span class="sd">        which is configured by the environment configuration. The file will be archived at</span>
@@ -277,6 +288,11 @@
 <span class="sd">            :py:meth:`HandlerTestCase.run_handler_with_exception` helper methods automatically assign the test config to</span>
 <span class="sd">            the handler being tested.</span>
 <span class="sd">    :type config: :py:class:`aodncore.pipeline.config.LazyConfigManager`</span>
+
+<span class="sd">    :param custom_params: A dict containing parameters which are ignored by the base class, but allow passing arbitrary</span>
+<span class="sd">        custom values to subclasses. The structure of the dict is defined by the :const:`CUSTOM_PARAMS_SCHEMA` object in</span>
+<span class="sd">        the :py:mod:`aodncore.pipeline.schema` module.</span>
+<span class="sd">    :type custom_params: :py:class:`dict`</span>
 
 <span class="sd">    :param dest_path_function: The function used to determine the :py:attr:`PipelineFile.dest_path` attribute, relative</span>
 <span class="sd">        to the UPLOAD_URI configuration item. If absent, the handler will attempt to use the :py:meth:`dest_path` method</span>
@@ -339,11 +355,6 @@
 <span class="sd">        prepended to relative paths in manifest files). The structure of the dict is defined by the</span>
 <span class="sd">        :py:const:`RESOLVE_PARAMS_SCHEMA` object in the :py:mod:`aodncore.pipeline.schema` module.</span>
 <span class="sd">    :type resolve_params: :py:class:`dict`</span>
-
-<span class="sd">    :param kwargs: Any additional keyword arguments passed to the handler are ignored by the :py:class:`HandlerBase`</span>
-<span class="sd">        base class. This is to leave open the ability for handler specific params to be passed from the watch</span>
-<span class="sd">        configuration to control some arbitrary handler behaviour, without interfering with the core state machine</span>
-<span class="sd">        operation.</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
 
@@ -445,11 +456,13 @@
 
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">input_file</span><span class="p">,</span>
                  <span class="n">allowed_extensions</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                 <span class="n">allowed_regexes</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
                  <span class="n">archive_input_file</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
                  <span class="n">archive_path_function</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
                  <span class="n">celery_task</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
                  <span class="n">check_params</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
                  <span class="n">config</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                 <span class="n">custom_params</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
                  <span class="n">dest_path_function</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
                  <span class="n">exclude_regexes</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
                  <span class="n">harvest_params</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
@@ -457,29 +470,32 @@
                  <span class="n">include_regexes</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
                  <span class="n">notify_params</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
                  <span class="n">upload_path</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-                 <span class="n">resolve_params</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-                 <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+                 <span class="n">resolve_params</span><span class="o">=</span><span class="kc">None</span>
+                 <span class="p">):</span>
 
         <span class="c1"># property backing variables</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_cc_versions</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_config</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_default_addition_publish_type</span> <span class="o">=</span> <span class="n">PipelineFilePublishType</span><span class="o">.</span><span class="n">HARVEST_UPLOAD</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_default_deletion_publish_type</span> <span class="o">=</span> <span class="n">PipelineFilePublishType</span><span class="o">.</span><span class="n">DELETE_UNHARVEST</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_error</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_file_basename</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_file_checksum</span> <span class="o">=</span> <span class="kc">None</span>
-        <span class="n">_</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_file_extension</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">splitext</span><span class="p">(</span><span class="n">input_file</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_file_type</span> <span class="o">=</span> <span class="n">FileType</span><span class="o">.</span><span class="n">get_type_from_extension</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">file_extension</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_file_extension</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_file_type</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_is_archived</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_module_versions</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_result</span> <span class="o">=</span> <span class="n">HandlerResult</span><span class="o">.</span><span class="n">UNKNOWN</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_start_time</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">()</span>
 
         <span class="c1"># public attributes</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">input_file</span> <span class="o">=</span> <span class="n">input_file</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">allowed_extensions</span> <span class="o">=</span> <span class="n">allowed_extensions</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">allowed_regexes</span> <span class="o">=</span> <span class="n">allowed_regexes</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">archive_input_file</span> <span class="o">=</span> <span class="n">archive_input_file</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">archive_path_function</span> <span class="o">=</span> <span class="n">archive_path_function</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">celery_task</span> <span class="o">=</span> <span class="n">celery_task</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">check_params</span> <span class="o">=</span> <span class="n">check_params</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">custom_params</span> <span class="o">=</span> <span class="n">custom_params</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">config</span> <span class="o">=</span> <span class="n">config</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">dest_path_function</span> <span class="o">=</span> <span class="n">dest_path_function</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">exclude_regexes</span> <span class="o">=</span> <span class="n">exclude_regexes</span>
@@ -497,6 +513,8 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">_error_details</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_file_collection</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_handler_run</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_input_file_archive_path</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_input_file_object</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_instance_working_directory</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_notification_results</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_should_notify</span> <span class="o">=</span> <span class="kc">None</span>
@@ -510,7 +528,7 @@
 
     <span class="k">def</span> <span class="nf">__iter__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="n">ignored_attributes</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;celery_task&#39;</span><span class="p">,</span> <span class="s1">&#39;config&#39;</span><span class="p">,</span> <span class="s1">&#39;default_addition_publish_type&#39;</span><span class="p">,</span> <span class="s1">&#39;default_deletion_publish_type&#39;</span><span class="p">,</span>
-                              <span class="s1">&#39;logger&#39;</span><span class="p">,</span> <span class="s1">&#39;state&#39;</span><span class="p">,</span> <span class="s1">&#39;trigger&#39;</span><span class="p">}</span>
+                              <span class="s1">&#39;input_file_object&#39;</span><span class="p">,</span> <span class="s1">&#39;logger&#39;</span><span class="p">,</span> <span class="s1">&#39;state&#39;</span><span class="p">,</span> <span class="s1">&#39;trigger&#39;</span><span class="p">}</span>
         <span class="n">ignored_attributes</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="s2">&quot;is_</span><span class="si">{state}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">state</span><span class="o">=</span><span class="n">s</span><span class="p">)</span> <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">all_states</span><span class="p">)</span>
 
         <span class="k">return</span> <span class="n">iter_public_attributes</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ignored_attributes</span><span class="p">)</span>
@@ -539,15 +557,6 @@
 <span class="sd">        :rtype: :class:`str`, :class:`None`</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_celery_task_name</span>
-
-    <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">cc_versions</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Read-only property to access compliance checker module versions</span>
-
-<span class="sd">        :return: compliance checker version strings for core and plugin modules</span>
-<span class="sd">        :rtype: :class:`dict`</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_cc_versions</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">config</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
@@ -580,6 +589,15 @@
 <span class="sd">        :rtype: :class:`str`, :class:`None`</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_error_details</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">file_basename</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Read-only property to access the :py:attr:`input_file` basename</span>
+
+<span class="sd">        :return: :attr:`input_file` basename</span>
+<span class="sd">        :rtype: :class:`str`</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_file_basename</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">file_collection</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
@@ -625,6 +643,49 @@
 <span class="sd">        :rtype: :class:`str`, :class:`None`</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_instance_working_directory</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">input_file_archive_path</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Property used to determine the archive path for the original input file</span>
+
+<span class="sd">        :return: string containing the archive path</span>
+<span class="sd">        :rtype: :class:`str`</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_input_file_archive_path</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">input_file_archive_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_pipeline_name</span><span class="p">,</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">basename</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">input_file</span><span class="p">))</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_input_file_archive_path</span>
+
+    <span class="nd">@input_file_archive_path</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span> <span class="nf">input_file_archive_path</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">path</span><span class="p">):</span>
+        <span class="n">validate_relative_path_attr</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="s1">&#39;input_file_archive_path&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_input_file_archive_path</span> <span class="o">=</span> <span class="n">path</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">input_file_object</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Read-only property to access the original input file represented as a PipelineFile object</span>
+
+<span class="sd">        :return: input file object</span>
+<span class="sd">        :rtype: :py:class:`PipelineFile`</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_input_file_object</span><span class="p">:</span>
+            <span class="n">input_file_object</span> <span class="o">=</span> <span class="n">PipelineFile</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">input_file</span><span class="p">,</span> <span class="n">file_update_callback</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_file_update_callback</span><span class="p">)</span>
+            <span class="n">input_file_object</span><span class="o">.</span><span class="n">publish_type</span> <span class="o">=</span> <span class="n">PipelineFilePublishType</span><span class="o">.</span><span class="n">ARCHIVE_ONLY</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_input_file_object</span> <span class="o">=</span> <span class="n">input_file_object</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_input_file_object</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">module_versions</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Read-only property to access module versions</span>
+
+<span class="sd">        :return: module version strings for aodncore, aodndata and compliance checker modules</span>
+<span class="sd">        :rtype: :class:`dict`</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_module_versions</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">versions</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;aodncore&#39;</span><span class="p">:</span> <span class="n">_aodncore_version</span><span class="p">}</span>
+            <span class="n">discovered_versions</span> <span class="o">=</span> <span class="n">discover_entry_points</span><span class="p">(</span><span class="s1">&#39;pipeline.module_versions&#39;</span><span class="p">)</span>
+            <span class="n">versions</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">discovered_versions</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_module_versions</span> <span class="o">=</span> <span class="n">versions</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_module_versions</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">notification_results</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
@@ -703,20 +764,6 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">_default_deletion_publish_type</span> <span class="o">=</span> <span class="n">publish_type</span>
 
     <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">is_archived</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Boolean property indicating whether the :py:attr:`input_file` has been archived</span>
-
-<span class="sd">        :return: whether the :py:attr:`input_file` has been archived or not</span>
-<span class="sd">        :rtype: :class:`bool`</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_is_archived</span>
-
-    <span class="nd">@is_archived</span><span class="o">.</span><span class="n">setter</span>
-    <span class="k">def</span> <span class="nf">is_archived</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">is_archived</span><span class="p">):</span>
-        <span class="n">validate_bool</span><span class="p">(</span><span class="n">is_archived</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_is_archived</span> <span class="o">=</span> <span class="n">is_archived</span>
-
-    <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">collection_dir</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Temporary subdirectory where the *initial* input file collection will be unpacked</span>
 
@@ -758,10 +805,9 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">_file_collection</span> <span class="o">=</span> <span class="n">PipelineFileCollection</span><span class="p">()</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">_init_logging</span><span class="p">()</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_validate_params</span><span class="p">()</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_set_checksum</span><span class="p">()</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_check_extension</span><span class="p">()</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_set_cc_versions</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_validate_and_freeze_params</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_set_input_file_attributes</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_check_input_file_name</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_set_path_functions</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_init_working_directory</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_init_upload_runners</span><span class="p">()</span>
@@ -773,35 +819,30 @@
         <span class="n">resolved_files</span> <span class="o">=</span> <span class="n">resolve_runner</span><span class="o">.</span><span class="n">run</span><span class="p">()</span>
 
         <span class="n">resolved_files</span><span class="o">.</span><span class="n">set_file_update_callback</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_file_update_callback</span><span class="p">)</span>
-        <span class="n">resolved_files</span><span class="o">.</span><span class="n">set_default_publish_types</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">include_regexes</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">exclude_regexes</span><span class="p">,</span>
-                                                 <span class="bp">self</span><span class="o">.</span><span class="n">default_addition_publish_type</span><span class="p">,</span>
-                                                 <span class="bp">self</span><span class="o">.</span><span class="n">default_deletion_publish_type</span><span class="p">)</span>
+        <span class="n">resolved_files</span><span class="o">.</span><span class="n">set_publish_types_from_regexes</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">include_regexes</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">exclude_regexes</span><span class="p">,</span>
+                                                      <span class="bp">self</span><span class="o">.</span><span class="n">default_addition_publish_type</span><span class="p">,</span>
+                                                      <span class="bp">self</span><span class="o">.</span><span class="n">default_deletion_publish_type</span><span class="p">)</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">file_collection</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">resolved_files</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">_check</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="n">check_runner</span> <span class="o">=</span> <span class="n">get_check_runner</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">check_params</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">sysinfo</span><span class="p">(</span><span class="s2">&quot;get_check_runner -&gt; &#39;</span><span class="si">{runner}</span><span class="s2">&#39;&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">runner</span><span class="o">=</span><span class="n">check_runner</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="p">))</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">file_collection</span><span class="o">.</span><span class="n">set_check_types</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">check_params</span><span class="p">)</span>
-        <span class="n">files_to_check</span> <span class="o">=</span> <span class="n">PipelineFileCollection</span><span class="p">(</span>
-            <span class="n">f</span> <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">file_collection</span> <span class="k">if</span> <span class="n">f</span><span class="o">.</span><span class="n">check_type</span> <span class="ow">is</span> <span class="ow">not</span> <span class="n">PipelineFileCheckType</span><span class="o">.</span><span class="n">NO_ACTION</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">file_collection</span><span class="o">.</span><span class="n">set_check_types_from_params</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">check_params</span><span class="p">)</span>
 
+        <span class="n">files_to_check</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">file_collection</span><span class="o">.</span><span class="n">filter_by_attribute_id_not</span><span class="p">(</span><span class="s1">&#39;check_type&#39;</span><span class="p">,</span> <span class="n">PipelineFileCheckType</span><span class="o">.</span><span class="n">NO_ACTION</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">files_to_check</span><span class="p">:</span>
             <span class="n">check_runner</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">files_to_check</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">_archive</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">store_runner</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">_archive</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="n">files_to_archive</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">file_collection</span><span class="o">.</span><span class="n">filter_by_bool_attribute</span><span class="p">(</span><span class="s1">&#39;pending_archive&#39;</span><span class="p">)</span>
 
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">archive_input_file</span><span class="p">:</span>
-            <span class="n">input_file_obj</span> <span class="o">=</span> <span class="n">PipelineFile</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">input_file</span><span class="p">,</span> <span class="n">archive_path</span><span class="o">=</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_pipeline_name</span><span class="p">,</span>
-                                                                                     <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">basename</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">input_file</span><span class="p">)))</span>
-            <span class="n">input_file_obj</span><span class="o">.</span><span class="n">publish_type</span> <span class="o">=</span> <span class="n">PipelineFilePublishType</span><span class="o">.</span><span class="n">ARCHIVE_ONLY</span>
-            <span class="n">infile_collection</span> <span class="o">=</span> <span class="n">PipelineFileCollection</span><span class="p">(</span><span class="n">input_file_obj</span><span class="p">)</span>
-            <span class="n">store_runner</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">infile_collection</span><span class="p">)</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">is_archived</span> <span class="o">=</span> <span class="n">input_file_obj</span><span class="o">.</span><span class="n">is_archived</span>
-
         <span class="k">if</span> <span class="n">files_to_archive</span><span class="p">:</span>
-            <span class="n">store_runner</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">files_to_archive</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_upload_runner_archive</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">files_to_archive</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">archive_input_file</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">input_file_object</span><span class="o">.</span><span class="n">archive_path</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">input_file_archive_path</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_upload_runner_archive</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">input_file_object</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">_harvest</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="n">harvest_runner</span> <span class="o">=</span> <span class="n">get_harvester_runner</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">harvest_type</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_upload_runner</span><span class="o">.</span><span class="n">broker</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">harvest_params</span><span class="p">,</span>
@@ -819,9 +860,14 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">_upload_runner</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">files_to_store</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">_publish</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">unset</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">file_collection</span><span class="o">.</span><span class="n">filter_by_attribute_id</span><span class="p">(</span><span class="s1">&#39;publish_type&#39;</span><span class="p">,</span>
+                                                            <span class="n">PipelineFilePublishType</span><span class="o">.</span><span class="n">UNSET</span><span class="p">)</span><span class="o">.</span><span class="n">get_attribute_list</span><span class="p">(</span><span class="s1">&#39;src_path&#39;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">unset</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">UnmatchedFilesError</span><span class="p">(</span><span class="s2">&quot;files with UNSET publish_type found: &#39;</span><span class="si">{unset}</span><span class="s2">&#39;&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">unset</span><span class="o">=</span><span class="n">unset</span><span class="p">))</span>
+
         <span class="bp">self</span><span class="o">.</span><span class="n">file_collection</span><span class="o">.</span><span class="n">set_archive_paths</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_archive_path_function_ref</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">file_collection</span><span class="o">.</span><span class="n">validate_attribute_uniqueness</span><span class="p">(</span><span class="s1">&#39;archive_path&#39;</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_archive</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_upload_runner_archive</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_archive</span><span class="p">()</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">file_collection</span><span class="o">.</span><span class="n">set_dest_paths</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_dest_path_function_ref</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">file_collection</span><span class="o">.</span><span class="n">validate_attribute_uniqueness</span><span class="p">(</span><span class="s1">&#39;dest_path&#39;</span><span class="p">)</span>
@@ -884,18 +930,25 @@
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">celery_task</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">celery_task</span><span class="o">.</span><span class="n">update_state</span><span class="p">(</span><span class="n">state</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">state</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">_file_update_callback</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">message</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;file: &#39;</span><span class="si">{name}</span><span class="s2">&#39; </span><span class="si">{message}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="n">name</span><span class="p">,</span> <span class="n">message</span><span class="o">=</span><span class="n">message</span><span class="p">))</span>
+    <span class="k">def</span> <span class="nf">_file_update_callback</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="n">raw_name</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;name&#39;</span><span class="p">)</span>
+        <span class="n">name</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="si">{name}</span><span class="s2"> (deletion)&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="n">raw_name</span><span class="p">)</span> <span class="k">if</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;is_deletion&#39;</span><span class="p">)</span> <span class="k">else</span> <span class="n">raw_name</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;updated file &#39;</span><span class="si">{name}</span><span class="s2">&#39;: </span><span class="si">{message}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="n">name</span><span class="p">,</span> <span class="n">message</span><span class="o">=</span><span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;message&#39;</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">)))</span>
 
     <span class="c1">#</span>
     <span class="c1"># &quot;internal&quot; helper methods</span>
     <span class="c1">#</span>
 
-    <span class="k">def</span> <span class="nf">_check_extension</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">_check_input_file_name</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">allowed_extensions</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">file_extension</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">allowed_extensions</span><span class="p">:</span>
             <span class="k">raise</span> <span class="n">InvalidFileFormatError</span><span class="p">(</span>
                 <span class="s2">&quot;input file extension &#39;</span><span class="si">{extension}</span><span class="s2">&#39; not in allowed_extensions list: </span><span class="si">{allowed}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
                     <span class="n">extension</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">file_extension</span><span class="p">,</span> <span class="n">allowed</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">allowed_extensions</span><span class="p">))</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">allowed_regexes</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">matches_regexes</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">file_basename</span><span class="p">,</span> <span class="n">include_regexes</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">allowed_regexes</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="n">InvalidInputFileError</span><span class="p">(</span>
+                <span class="s2">&quot;input file &#39;</span><span class="si">{basename}</span><span class="s2">&#39; does not match any patterns in the allowed_regexes list: </span><span class="si">{allowed}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                    <span class="n">basename</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">file_basename</span><span class="p">,</span> <span class="n">allowed</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">allowed_regexes</span><span class="p">))</span>
 
     <span class="k">def</span> <span class="nf">_init_logging</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">try</span><span class="p">:</span>
@@ -1000,17 +1053,20 @@
         <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">exception</span><span class="p">(</span><span class="s1">&#39;error during _handle_success method: </span><span class="si">{e}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">e</span><span class="o">=</span><span class="n">format_exception</span><span class="p">(</span><span class="n">e</span><span class="p">)))</span>
 
-    <span class="k">def</span> <span class="nf">_set_cc_versions</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_cc_versions</span> <span class="o">=</span> <span class="n">get_cc_module_versions</span><span class="p">()</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">sysinfo</span><span class="p">(</span><span class="s2">&quot;get_cc_module_versions -&gt; </span><span class="si">{versions}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">versions</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_cc_versions</span><span class="p">))</span>
-
-    <span class="k">def</span> <span class="nf">_set_checksum</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">_set_input_file_attributes</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">try</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_file_checksum</span> <span class="o">=</span> <span class="n">get_file_checksum</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">input_file</span><span class="p">)</span>
         <span class="k">except</span> <span class="p">(</span><span class="ne">IOError</span><span class="p">,</span> <span class="ne">OSError</span><span class="p">)</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">exception</span><span class="p">(</span><span class="n">e</span><span class="p">)</span>
             <span class="k">raise</span> <span class="n">InvalidInputFileError</span><span class="p">(</span><span class="n">e</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">sysinfo</span><span class="p">(</span><span class="s2">&quot;get_file_checksum -&gt; &#39;</span><span class="si">{checksum}</span><span class="s2">&#39;&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">checksum</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">file_checksum</span><span class="p">))</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_file_basename</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">basename</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">input_file</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">sysinfo</span><span class="p">(</span><span class="s2">&quot;file_basename -&gt; &#39;</span><span class="si">{basename}</span><span class="s2">&#39;&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">basename</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_file_basename</span><span class="p">))</span>
+        <span class="n">_</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_file_extension</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">splitext</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">input_file</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">sysinfo</span><span class="p">(</span><span class="s2">&quot;file_extension -&gt; &#39;</span><span class="si">{extension}</span><span class="s2">&#39;&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">extension</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_file_extension</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_file_type</span> <span class="o">=</span> <span class="n">FileType</span><span class="o">.</span><span class="n">get_type_from_extension</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">file_extension</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">sysinfo</span><span class="p">(</span><span class="s2">&quot;file_type -&gt; &#39;</span><span class="si">{type}</span><span class="s2">&#39;&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="nb">type</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_file_type</span><span class="p">))</span>
 
     <span class="k">def</span> <span class="nf">_set_path_functions</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="n">dest_path_function_ref</span><span class="p">,</span> <span class="n">dest_path_function_name</span> <span class="o">=</span> <span class="n">get_path_function</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">pipeline_config</span><span class="p">[</span>
@@ -1027,15 +1083,22 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">sysinfo</span><span class="p">(</span>
             <span class="s2">&quot;get_path_function (archive) -&gt; &#39;</span><span class="si">{function}</span><span class="s2">&#39;&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">function</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_archive_path_function_name</span><span class="p">))</span>
 
-    <span class="k">def</span> <span class="nf">_validate_params</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">check_params</span><span class="p">:</span>
+    <span class="k">def</span> <span class="nf">_validate_and_freeze_params</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">check_params</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">validate_check_params</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">check_params</span><span class="p">)</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">harvest_params</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">check_params</span> <span class="o">=</span> <span class="n">ensure_writeonceordereddict</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">check_params</span><span class="p">)</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">custom_params</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">validate_custom_params</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">custom_params</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">custom_params</span> <span class="o">=</span> <span class="n">ensure_writeonceordereddict</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">custom_params</span><span class="p">)</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">harvest_params</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">validate_harvest_params</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">harvest_params</span><span class="p">)</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">notify_params</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">harvest_params</span> <span class="o">=</span> <span class="n">ensure_writeonceordereddict</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">harvest_params</span><span class="p">)</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">notify_params</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">validate_notify_params</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">notify_params</span><span class="p">)</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">resolve_params</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">notify_params</span> <span class="o">=</span> <span class="n">ensure_writeonceordereddict</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">notify_params</span><span class="p">)</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">resolve_params</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">validate_resolve_params</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">resolve_params</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">resolve_params</span> <span class="o">=</span> <span class="n">ensure_writeonceordereddict</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">resolve_params</span><span class="p">)</span>
 
     <span class="c1">#</span>
     <span class="c1"># process methods - to be overridden by child class as required</span>
@@ -1120,7 +1183,7 @@
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'../../../',
-            VERSION:'0.10.1',
+            VERSION:'0.11.4',
             LANGUAGE:'None',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',

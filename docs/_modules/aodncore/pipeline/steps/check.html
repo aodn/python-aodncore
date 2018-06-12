@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>aodncore.pipeline.steps.check &mdash; aodncore 0.10.1 documentation</title>
+  <title>aodncore.pipeline.steps.check &mdash; aodncore 0.11.4 documentation</title>
   
 
   
@@ -57,7 +57,7 @@
             
             
               <div class="version">
-                0.10.1
+                0.11.4
               </div>
             
           
@@ -81,9 +81,12 @@
               
             
             
-              <p class="caption"><span class="caption-text">Quick Start:</span></p>
+              <p class="caption"><span class="caption-text">Quick Start Guide:</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../../quickstartdoc.html">Query Storage</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../quickstartdoc.html">Writing a <code class="docutils literal notranslate"><span class="pre">dest_path()</span></code> function</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../quickstartdoc.html#overriding-default-file-actions">Overriding default file actions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../quickstartdoc.html#creating-products-during-the-handler-lifetime">Creating products during the handler lifetime</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../quickstartdoc.html#query-storage">Query Storage</a></li>
 </ul>
 <p class="caption"><span class="caption-text">User documentation:</span></p>
 <ul>
@@ -223,8 +226,7 @@
     <span class="s1">&#39;ComplianceCheckerCheckRunner&#39;</span><span class="p">,</span>
     <span class="s1">&#39;FormatCheckRunner&#39;</span><span class="p">,</span>
     <span class="s1">&#39;NetcdfFormatCheckRunner&#39;</span><span class="p">,</span>
-    <span class="s1">&#39;NonEmptyCheckRunner&#39;</span><span class="p">,</span>
-    <span class="s1">&#39;get_cc_module_versions&#39;</span>
+    <span class="s1">&#39;NonEmptyCheckRunner&#39;</span>
 <span class="p">]</span>
 
 
@@ -300,7 +302,7 @@
                                                                                 <span class="n">log</span><span class="o">=</span><span class="n">os</span><span class="o">.</span><span class="n">linesep</span><span class="o">.</span><span class="n">join</span><span class="p">(</span>
                                                                                     <span class="n">f</span><span class="o">.</span><span class="n">check_result</span><span class="o">.</span><span class="n">log</span><span class="p">)))</span>
         <span class="k">if</span> <span class="n">failed_files</span><span class="p">:</span>
-            <span class="n">failed_list</span> <span class="o">=</span> <span class="p">[</span><span class="n">f</span><span class="o">.</span><span class="n">name</span> <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="n">failed_files</span><span class="p">]</span>
+            <span class="n">failed_list</span> <span class="o">=</span> <span class="n">failed_files</span><span class="o">.</span><span class="n">get_attribute_list</span><span class="p">(</span><span class="s1">&#39;name&#39;</span><span class="p">)</span>
             <span class="k">raise</span> <span class="n">ComplianceCheckFailedError</span><span class="p">(</span>
                 <span class="s2">&quot;the following files failed the check step: </span><span class="si">{failed}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">failed</span><span class="o">=</span><span class="n">failed_list</span><span class="p">))</span></div></div>
 
@@ -314,6 +316,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">checks</span> <span class="o">=</span> <span class="n">check_params</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;checks&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">verbosity</span> <span class="o">=</span> <span class="n">check_params</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;verbosity&#39;</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">criteria</span> <span class="o">=</span> <span class="n">check_params</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;criteria&#39;</span><span class="p">,</span> <span class="s1">&#39;normal&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">skip_checks</span> <span class="o">=</span> <span class="n">check_params</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;skip_checks&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">output_format</span> <span class="o">=</span> <span class="n">check_params</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;output_format&#39;</span><span class="p">,</span> <span class="s1">&#39;text&#39;</span><span class="p">)</span>
 
         <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">checks</span><span class="p">:</span>
@@ -330,6 +333,9 @@
                 <span class="s1">&#39;invalid compliance check suites: </span><span class="si">{invalid_suites}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">invalid_suites</span><span class="o">=</span><span class="n">invalid_suites</span><span class="p">))</span>
 
 <div class="viewcode-block" id="ComplianceCheckerCheckRunner.run"><a class="viewcode-back" href="../../../../aodncore.pipeline.steps.html#aodncore.pipeline.steps.check.ComplianceCheckerCheckRunner.run">[docs]</a>    <span class="k">def</span> <span class="nf">run</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pipeline_files</span><span class="p">):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">skip_checks</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;compliance checks will skip </span><span class="si">{skip_checks}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">skip_checks</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">skip_checks</span><span class="p">))</span>
+
         <span class="k">for</span> <span class="n">pipeline_file</span> <span class="ow">in</span> <span class="n">pipeline_files</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span>
                 <span class="s2">&quot;checking compliance of &#39;</span><span class="si">{filepath}</span><span class="s2">&#39; against </span><span class="si">{checks}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">filepath</span><span class="o">=</span><span class="n">pipeline_file</span><span class="o">.</span><span class="n">src_path</span><span class="p">,</span>
@@ -364,7 +370,7 @@
         <span class="k">try</span><span class="p">:</span>
             <span class="k">with</span> <span class="n">CaptureStdIO</span><span class="p">()</span> <span class="k">as</span> <span class="p">(</span><span class="n">stdout_log</span><span class="p">,</span> <span class="n">stderr_log</span><span class="p">):</span>
                 <span class="n">compliant</span><span class="p">,</span> <span class="n">errors</span> <span class="o">=</span> <span class="n">ComplianceChecker</span><span class="o">.</span><span class="n">run_checker</span><span class="p">(</span><span class="n">file_path</span><span class="p">,</span> <span class="p">[</span><span class="n">check</span><span class="p">],</span>
-                                                                  <span class="bp">self</span><span class="o">.</span><span class="n">verbosity</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">criteria</span><span class="p">,</span>
+                                                                  <span class="bp">self</span><span class="o">.</span><span class="n">verbosity</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">criteria</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">skip_checks</span><span class="p">,</span>
                                                                   <span class="n">output_format</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">output_format</span><span class="p">)</span>
         <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>  <span class="c1"># pragma: no cover</span>
             <span class="n">errors</span> <span class="o">=</span> <span class="kc">True</span>
@@ -422,16 +428,6 @@
             <span class="n">compliant</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">getsize</span><span class="p">(</span><span class="n">pipeline_file</span><span class="o">.</span><span class="n">src_path</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span>
             <span class="n">compliance_log</span> <span class="o">=</span> <span class="p">[]</span> <span class="k">if</span> <span class="n">compliant</span> <span class="k">else</span> <span class="p">(</span><span class="s1">&#39;empty file&#39;</span><span class="p">,)</span>
             <span class="n">pipeline_file</span><span class="o">.</span><span class="n">check_result</span> <span class="o">=</span> <span class="n">CheckResult</span><span class="p">(</span><span class="n">compliant</span><span class="p">,</span> <span class="n">compliance_log</span><span class="p">)</span></div></div>
-
-
-<div class="viewcode-block" id="get_cc_module_versions"><a class="viewcode-back" href="../../../../aodncore.pipeline.steps.html#aodncore.pipeline.steps.check.get_cc_module_versions">[docs]</a><span class="k">def</span> <span class="nf">get_cc_module_versions</span><span class="p">():</span>  <span class="c1"># pragma: no cover</span>
-    <span class="sd">&quot;&quot;&quot;Get versions of compliance checker and compliance checker plugin version</span>
-
-<span class="sd">    :return: a tuple containing the version strings</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-    <span class="kn">from</span> <span class="nn">cc_plugin_imos</span> <span class="k">import</span> <span class="n">__version__</span> <span class="k">as</span> <span class="n">cc_plugin_version</span>
-    <span class="kn">from</span> <span class="nn">compliance_checker</span> <span class="k">import</span> <span class="n">__version__</span> <span class="k">as</span> <span class="n">cc_core_version</span>
-    <span class="k">return</span> <span class="p">{</span><span class="s1">&#39;core&#39;</span><span class="p">:</span> <span class="n">cc_core_version</span><span class="p">,</span> <span class="s1">&#39;plugin&#39;</span><span class="p">:</span> <span class="n">cc_plugin_version</span><span class="p">}</span></div>
 </pre></div>
 
            </div>
@@ -466,7 +462,7 @@
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'../../../../',
-            VERSION:'0.10.1',
+            VERSION:'0.11.4',
             LANGUAGE:'None',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',

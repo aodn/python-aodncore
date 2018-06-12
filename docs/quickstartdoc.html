@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Query Storage &mdash; aodncore 0.10.1 documentation</title>
+  <title>Writing a dest_path() function &mdash; aodncore 0.11.4 documentation</title>
   
 
   
@@ -59,7 +59,7 @@
             
             
               <div class="version">
-                0.10.1
+                0.11.4
               </div>
             
           
@@ -83,9 +83,12 @@
               
             
             
-              <p class="caption"><span class="caption-text">Quick Start:</span></p>
+              <p class="caption"><span class="caption-text">Quick Start Guide:</span></p>
 <ul class="current">
-<li class="toctree-l1 current"><a class="current reference internal" href="#">Query Storage</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Writing a <code class="docutils literal notranslate"><span class="pre">dest_path()</span></code> function</a></li>
+<li class="toctree-l1"><a class="reference internal" href="#overriding-default-file-actions">Overriding default file actions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="#creating-products-during-the-handler-lifetime">Creating products during the handler lifetime</a></li>
+<li class="toctree-l1"><a class="reference internal" href="#query-storage">Query Storage</a></li>
 </ul>
 <p class="caption"><span class="caption-text">User documentation:</span></p>
 <ul>
@@ -179,7 +182,7 @@
     
       <li><a href="index.html">Docs</a> &raquo;</li>
         
-      <li>Query Storage</li>
+      <li>Writing a <code class="docutils literal notranslate"><span class="pre">dest_path()</span></code> function</li>
     
     
       <li class="wy-breadcrumbs-aside">
@@ -198,7 +201,121 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <div class="section" id="query-storage">
+  <div class="section" id="writing-a-dest-path-function">
+<h1>Writing a <code class="xref py py-meth docutils literal notranslate"><span class="pre">dest_path()</span></code> function<a class="headerlink" href="#writing-a-dest-path-function" title="Permalink to this headline">¶</a></h1>
+<p>The ‘dest_path’ (destination path) function is responsible for generating the path ‘key’ at
+which a file will be published. This key is used by both the harvesting process and the upload
+process, and is one of the most important elements of a handler.</p>
+<ul>
+<li><p class="first">Writing a <code class="xref py py-meth docutils literal notranslate"><span class="pre">dest_path()</span></code> function with an unmodified filename:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">os</span>
+
+<span class="k">class</span> <span class="nc">MyHandler</span><span class="p">(</span><span class="n">HandlerBase</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">dest_path</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">file_path</span><span class="p">):</span>
+        <span class="n">basename</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">basename</span><span class="p">(</span><span class="n">file_path</span><span class="p">)</span>
+        <span class="n">dest_filename</span> <span class="o">=</span> <span class="s2">&quot;IMOS_filename_01_XX_</span><span class="si">{basename}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">basename</span><span class="o">=</span><span class="n">basename</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="s1">&#39;IMOS/MYFACILITY&#39;</span><span class="p">,</span> <span class="n">dest_filename</span><span class="p">)</span>
+</pre></div>
+</div>
+</li>
+<li><p class="first">Writing a <code class="xref py py-meth docutils literal notranslate"><span class="pre">dest_path()</span></code> function based on contents of a NetCDF file:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">from</span> <span class="nn">netCDF4</span> <span class="k">import</span> <span class="n">Dataset</span>
+<span class="kn">from</span> <span class="nn">aodncore.pipeline</span> <span class="k">import</span> <span class="n">HandlerBase</span>
+
+<span class="k">class</span> <span class="nc">MyHandler</span><span class="p">(</span><span class="n">HandlerBase</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">dest_path</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">file_path</span><span class="p">):</span>
+        <span class="k">with</span> <span class="n">Dataset</span><span class="p">(</span><span class="n">file_path</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s1">&#39;r&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">d</span><span class="p">:</span>
+            <span class="n">site_code</span> <span class="o">=</span> <span class="n">d</span><span class="o">.</span><span class="n">site_code</span>
+
+        <span class="n">dest_filename</span> <span class="o">=</span> <span class="s2">&quot;IMOS_filename_00_</span><span class="si">{site_code}</span><span class="s2">.nc&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">site_code</span><span class="o">=</span><span class="n">site_code</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="s1">&#39;IMOS/MYFACILITY&#39;</span><span class="p">,</span> <span class="n">dest_filename</span><span class="p">)</span>
+</pre></div>
+</div>
+</li>
+<li><p class="first">Writing a <code class="xref py py-meth docutils literal notranslate"><span class="pre">dest_path()</span></code> function which is <em>external</em> to the handler class:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">os</span>
+
+<span class="k">def</span> <span class="nf">dest_path_external</span><span class="p">(</span><span class="n">file_path</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="s2">&quot;IMOS/DUMMY/</span><span class="si">{basename}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">basename</span><span class="o">=</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">basename</span><span class="p">(</span><span class="n">file_path</span><span class="p">))</span>
+
+
+<span class="k">class</span> <span class="nc">MyHandler</span><span class="p">(</span><span class="n">HandlerBase</span><span class="p">):</span>
+    <span class="k">pass</span>
+
+<span class="n">handler</span> <span class="o">=</span> <span class="n">MyHandler</span><span class="p">(</span><span class="s1">&#39;/path/to/input/file&#39;</span><span class="p">,</span> <span class="n">dest_path_function</span><span class="o">=</span><span class="n">dest_path_external</span><span class="p">)</span>
+</pre></div>
+</div>
+</li>
+</ul>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">Decoupling the <code class="xref py py-meth docutils literal notranslate"><span class="pre">dest_path()</span></code> function from the handler means the same handler class
+can be used for multiple pipelines and act as a generic handler where calculating the destination
+path is the only point of difference between them, to save duplicating code.</p>
+</div>
+</div>
+<div class="section" id="overriding-default-file-actions">
+<h1>Overriding default file actions<a class="headerlink" href="#overriding-default-file-actions" title="Permalink to this headline">¶</a></h1>
+<ul>
+<li><p class="first">Set all ‘.txt’ files to UPLOAD_ONLY publish type in the <code class="xref py py-meth docutils literal notranslate"><span class="pre">preprocess()</span></code> step:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">aodncore.pipeline</span> <span class="k">import</span> <span class="n">HandlerBase</span><span class="p">,</span> <span class="n">PipelineFilePublishType</span>
+
+<span class="k">class</span> <span class="nc">MyHandler</span><span class="p">(</span><span class="n">HandlerBase</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">preprocess</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="c1"># use of filter_* and set_* methods reduces excessive nesting of &#39;if&#39; and &#39;for&#39;</span>
+        <span class="c1"># statements</span>
+        <span class="n">txt_files</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">file_collection</span><span class="o">.</span><span class="n">filter_by_attribute_value</span><span class="p">(</span><span class="s1">&#39;extension&#39;</span><span class="p">,</span> <span class="s1">&#39;.txt&#39;</span><span class="p">)</span>
+        <span class="n">txt_files</span><span class="o">.</span><span class="n">set_publish_type</span><span class="p">(</span><span class="n">PipelineFilePublishType</span><span class="o">.</span><span class="n">UPLOAD_ONLY</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">preprocess</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="c1"># functionally equivalent to the above example, but with unnecessary indentation</span>
+        <span class="c1"># and explicit looping</span>
+        <span class="k">for</span> <span class="n">pf</span> <span class="ow">in</span> <span class="n">txt_files</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">pf</span><span class="o">.</span><span class="n">extension</span> <span class="o">==</span> <span class="s1">&#39;.txt&#39;</span><span class="p">:</span>
+                <span class="n">pf</span><span class="o">.</span><span class="n">publish_type</span> <span class="o">=</span> <span class="n">PipelineFilePublishType</span><span class="o">.</span><span class="n">UPLOAD_ONLY</span>
+</pre></div>
+</div>
+</li>
+<li><p class="first">Do not perform any checks on PDF (.pdf) files:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">aodncore.pipeline</span> <span class="k">import</span> <span class="n">FileType</span><span class="p">,</span> <span class="n">HandlerBase</span><span class="p">,</span> <span class="n">PipelineFilePublishType</span>
+
+<span class="k">class</span> <span class="nc">MyHandler</span><span class="p">(</span><span class="n">HandlerBase</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">preprocess</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="c1"># &#39;known&#39; file types may be filtered by their type rather than by their extension</span>
+        <span class="c1"># string attribute</span>
+        <span class="n">pdf_files</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">file_collection</span><span class="o">.</span><span class="n">filter_by_attribute_id</span><span class="p">(</span><span class="s1">&#39;file_type&#39;</span><span class="p">,</span> <span class="n">FileType</span><span class="o">.</span><span class="n">PDF</span><span class="p">)</span>
+        <span class="n">pdf_files</span><span class="o">.</span><span class="n">set_check_types</span><span class="p">(</span><span class="n">PipelineFileCheckType</span><span class="o">.</span><span class="n">NO_ACTION</span><span class="p">)</span>
+</pre></div>
+</div>
+</li>
+</ul>
+</div>
+<div class="section" id="creating-products-during-the-handler-lifetime">
+<h1>Creating products during the handler lifetime<a class="headerlink" href="#creating-products-during-the-handler-lifetime" title="Permalink to this headline">¶</a></h1>
+<ul>
+<li><p class="first">Create a simple product during the <code class="xref py py-meth docutils literal notranslate"><span class="pre">preprocess()</span></code> step and add to the file collection:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">from</span> <span class="nn">aodncore.pipeline</span> <span class="k">import</span> <span class="n">HandlerBase</span><span class="p">,</span> <span class="n">PipelineFile</span><span class="p">,</span> <span class="n">PipelineFilePublishType</span>
+
+<span class="k">class</span> <span class="nc">MyHandler</span><span class="p">(</span><span class="n">HandlerBase</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">preprocess</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="c1"># create the product</span>
+        <span class="n">product_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">products_dir</span><span class="p">,</span> <span class="s1">&#39;product.txt&#39;</span><span class="p">)</span>
+        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">product_path</span><span class="p">,</span> <span class="s1">&#39;w&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+            <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s1">&#39;some file contents&#39;</span> <span class="o">+</span> <span class="n">os</span><span class="o">.</span><span class="n">linesep</span><span class="p">)</span>
+
+        <span class="c1"># create a PipelineFile to represent the product file, set it&#39;s &#39;publish type&#39;</span>
+        <span class="c1"># attribute and add it to the handler&#39;s file collection</span>
+        <span class="n">product</span> <span class="o">=</span> <span class="n">PipelineFile</span><span class="p">(</span><span class="n">product_path</span><span class="p">)</span>
+        <span class="n">product</span><span class="o">.</span><span class="n">publish_type</span> <span class="o">=</span> <span class="n">PipelineFilePublishType</span><span class="o">.</span><span class="n">UPLOAD_ONLY</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">collection</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">product</span><span class="p">)</span>
+</pre></div>
+</div>
+</li>
+</ul>
+</div>
+<div class="section" id="query-storage">
 <h1>Query Storage<a class="headerlink" href="#query-storage" title="Permalink to this headline">¶</a></h1>
 <p>Query the existing pipeline storage for files matching a string:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">aodncore.pipeline</span> <span class="k">import</span> <span class="n">HandlerBase</span>
@@ -206,20 +323,26 @@
 
 <span class="k">class</span> <span class="nc">MyHandler</span><span class="p">(</span><span class="n">HandlerBase</span><span class="p">):</span>
     <span class="k">def</span> <span class="nf">preprocess</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="c1"># query the storage for all objects with a given prefix</span>
         <span class="n">prefix</span> <span class="o">=</span> <span class="s1">&#39;Department_of_Defence/DSTG/slocum_glider/Perth&#39;</span>
+        <span class="n">file_to_check</span> <span class="o">=</span> <span class="s1">&#39;Department_of_Defence/DSTG/slocum_glider/PerthCanyonB20140213/PerthCanyonB20140213.kml&#39;</span>
 
+        <span class="c1"># query the storage for all objects with a given prefix</span>
         <span class="n">results</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">state_query</span><span class="o">.</span><span class="n">query_storage</span><span class="p">(</span><span class="n">prefix</span><span class="p">)</span>
 
+        <span class="c1"># test for a given dest_path to conditional run some code (e.g. replace/delete a</span>
+        <span class="c1"># previous version which had a different dest_path)</span>
+        <span class="k">if</span> <span class="n">file_to_check</span> <span class="ow">in</span> <span class="n">results</span><span class="p">:</span>
+            <span class="k">pass</span>
+
+        <span class="c1"># iterate over the results</span>
         <span class="k">for</span> <span class="n">filename</span><span class="p">,</span> <span class="n">metadata</span> <span class="ow">in</span> <span class="n">results</span><span class="o">.</span><span class="n">iteritems</span><span class="p">():</span>
-            <span class="c1"># test the results somehow, usually  to see if there is a &quot;hit&quot; for a particular file</span>
             <span class="nb">print</span><span class="p">(</span><span class="n">filename</span><span class="p">)</span>
             <span class="nb">print</span><span class="p">(</span><span class="n">metadata</span><span class="p">)</span>
 
-        <span class="n">Department_of_Defence</span><span class="o">/</span><span class="n">DSTG</span><span class="o">/</span><span class="n">slocum_glider</span><span class="o">/</span><span class="n">PerthCanyonB20140213</span><span class="o">/</span><span class="n">PerthCanyonB20140213</span><span class="o">.</span><span class="n">kml</span>
-        <span class="p">{</span><span class="s1">&#39;last_modified&#39;</span><span class="p">:</span> <span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span><span class="p">(</span><span class="mi">2016</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">27</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">30</span><span class="p">,</span> <span class="mi">8</span><span class="p">,</span> <span class="n">tzinfo</span><span class="o">=</span><span class="n">tzutc</span><span class="p">()),</span> <span class="s1">&#39;size&#39;</span><span class="p">:</span> <span class="mi">21574</span><span class="p">}</span>
-        <span class="n">Department_of_Defence</span><span class="o">/</span><span class="n">DSTG</span><span class="o">/</span><span class="n">slocum_glider</span><span class="o">/</span><span class="n">PerthCanyonB20140213</span><span class="o">/</span><span class="n">PerthCanyonB20140213_TEMP</span><span class="o">.</span><span class="n">jpg</span>
-        <span class="p">{</span><span class="s1">&#39;last_modified&#39;</span><span class="p">:</span> <span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span><span class="p">(</span><span class="mi">2016</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">27</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">30</span><span class="p">,</span> <span class="mi">8</span><span class="p">,</span> <span class="n">tzinfo</span><span class="o">=</span><span class="n">tzutc</span><span class="p">()),</span> <span class="s1">&#39;size&#39;</span><span class="p">:</span> <span class="mi">132122</span><span class="p">}</span>
+<span class="n">Department_of_Defence</span><span class="o">/</span><span class="n">DSTG</span><span class="o">/</span><span class="n">slocum_glider</span><span class="o">/</span><span class="n">PerthCanyonB20140213</span><span class="o">/</span><span class="n">PerthCanyonB20140213</span><span class="o">.</span><span class="n">kml</span>
+<span class="p">{</span><span class="s1">&#39;last_modified&#39;</span><span class="p">:</span> <span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span><span class="p">(</span><span class="mi">2016</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">27</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">30</span><span class="p">,</span> <span class="mi">8</span><span class="p">,</span> <span class="n">tzinfo</span><span class="o">=</span><span class="n">tzutc</span><span class="p">()),</span> <span class="s1">&#39;size&#39;</span><span class="p">:</span> <span class="mi">21574</span><span class="p">}</span>
+<span class="n">Department_of_Defence</span><span class="o">/</span><span class="n">DSTG</span><span class="o">/</span><span class="n">slocum_glider</span><span class="o">/</span><span class="n">PerthCanyonB20140213</span><span class="o">/</span><span class="n">PerthCanyonB20140213_TEMP</span><span class="o">.</span><span class="n">jpg</span>
+<span class="p">{</span><span class="s1">&#39;last_modified&#39;</span><span class="p">:</span> <span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span><span class="p">(</span><span class="mi">2016</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">27</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">30</span><span class="p">,</span> <span class="mi">8</span><span class="p">,</span> <span class="n">tzinfo</span><span class="o">=</span><span class="n">tzutc</span><span class="p">()),</span> <span class="s1">&#39;size&#39;</span><span class="p">:</span> <span class="mi">132122</span><span class="p">}</span>
 </pre></div>
 </div>
 </div>
@@ -266,7 +389,7 @@
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'./',
-            VERSION:'0.10.1',
+            VERSION:'0.11.4',
             LANGUAGE:'None',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',

@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>aodncore.util package &mdash; aodncore 0.10.1 documentation</title>
+  <title>aodncore.util package &mdash; aodncore 0.11.4 documentation</title>
   
 
   
@@ -59,7 +59,7 @@
             
             
               <div class="version">
-                0.10.1
+                0.11.4
               </div>
             
           
@@ -83,9 +83,12 @@
               
             
             
-              <p class="caption"><span class="caption-text">Quick Start:</span></p>
+              <p class="caption"><span class="caption-text">Quick Start Guide:</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="quickstartdoc.html">Query Storage</a></li>
+<li class="toctree-l1"><a class="reference internal" href="quickstartdoc.html">Writing a <code class="docutils literal notranslate"><span class="pre">dest_path()</span></code> function</a></li>
+<li class="toctree-l1"><a class="reference internal" href="quickstartdoc.html#overriding-default-file-actions">Overriding default file actions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="quickstartdoc.html#creating-products-during-the-handler-lifetime">Creating products during the handler lifetime</a></li>
+<li class="toctree-l1"><a class="reference internal" href="quickstartdoc.html#query-storage">Query Storage</a></li>
 </ul>
 <p class="caption"><span class="caption-text">User documentation:</span></p>
 <ul>
@@ -222,6 +225,28 @@
 </dd></dl>
 
 <dl class="function">
+<dt id="aodncore.util.fileops.extract_gzip">
+<code class="descclassname">aodncore.util.fileops.</code><code class="descname">extract_gzip</code><span class="sig-paren">(</span><em>gzip_path</em>, <em>dest_dir</em>, <em>dest_name=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/aodncore/util/fileops.html#extract_gzip"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#aodncore.util.fileops.extract_gzip" title="Permalink to this definition">¶</a></dt>
+<dd><p>Extract a GZ (GZIP) file’s contents into a directory</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>gzip_path</strong> – path to the source GZ file</li>
+<li><strong>dest_dir</strong> – destination directory into which the GZ is extracted</li>
+<li><strong>dest_name</strong> – basename for the extracted file (defaults to the original name minus the ‘.gz’ extension)</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">None</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
 <dt id="aodncore.util.fileops.extract_zip">
 <code class="descclassname">aodncore.util.fileops.</code><code class="descname">extract_zip</code><span class="sig-paren">(</span><em>zip_path</em>, <em>dest_dir</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/aodncore/util/fileops.html#extract_zip"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#aodncore.util.fileops.extract_zip" title="Permalink to this definition">¶</a></dt>
 <dd><p>Extract a ZIP file’s contents into a directory</p>
@@ -297,6 +322,22 @@
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>path</strong> – file path to check</td>
 </tr>
 <tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">None</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="aodncore.util.fileops.is_gzipfile">
+<code class="descclassname">aodncore.util.fileops.</code><code class="descname">is_gzipfile</code><span class="sig-paren">(</span><em>filepath</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/aodncore/util/fileops.html#is_gzipfile"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#aodncore.util.fileops.is_gzipfile" title="Permalink to this definition">¶</a></dt>
+<dd><p>Check whether a file path refers to a valid ZIP file</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>filepath</strong> – path to the file being checked</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">True if filepath is a valid ZIP file, otherwise False</td>
 </tr>
 </tbody>
 </table>
@@ -502,6 +543,30 @@ the intended destination, before performing a rename (which is atomic)</p>
 </tr>
 <tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"><code class="xref py py-class docutils literal notranslate"><span class="pre">dict</span></code> containing each discovered entry point, with keys being the entry point name and values
 being a reference to the object referenced by the entry point</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="aodncore.util.misc.ensure_writeonceordereddict">
+<code class="descclassname">aodncore.util.misc.</code><code class="descname">ensure_writeonceordereddict</code><span class="sig-paren">(</span><em>o</em>, <em>empty_on_fail=True</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/aodncore/util/misc.html#ensure_writeonceordereddict"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#aodncore.util.misc.ensure_writeonceordereddict" title="Permalink to this definition">¶</a></dt>
+<dd><p>Function to accept and object and return the WriteOnceOrderedDict representation of the object. An object which
+can <em>not</em> be handled by the WriteOnceOrderedDict __init__ method will either result in an empty, or if
+‘empty_on_fail’ is set to False, will result in an exception.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>o</strong> – input object</li>
+<li><strong>empty_on_fail</strong> – boolean flag to determine whether an invalid object will result in a new empty
+WriteOnceOrderedDict being returned or the exception re-raised.</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"><a class="reference internal" href="#aodncore.util.misc.WriteOnceOrderedDict" title="aodncore.util.misc.WriteOnceOrderedDict"><code class="xref py py-class docutils literal notranslate"><span class="pre">WriteOnceOrderedDict</span></code></a> instance</p>
 </td>
 </tr>
 </tbody>
@@ -744,6 +809,32 @@ slicing behaviour, but the outer sequence will always be a <code class="xref py 
 <dd></dd></dl>
 
 <dl class="function">
+<dt id="aodncore.util.misc.validate_relative_path">
+<code class="descclassname">aodncore.util.misc.</code><code class="descname">validate_relative_path</code><span class="sig-paren">(</span><em>o</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/aodncore/util/misc.html#validate_relative_path"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#aodncore.util.misc.validate_relative_path" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="aodncore.util.misc.validate_relative_path_attr">
+<code class="descclassname">aodncore.util.misc.</code><code class="descname">validate_relative_path_attr</code><span class="sig-paren">(</span><em>path</em>, <em>path_attr</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/aodncore/util/misc.html#validate_relative_path_attr"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#aodncore.util.misc.validate_relative_path_attr" title="Permalink to this definition">¶</a></dt>
+<dd><p>Validate a path, raising an exception containing the name of the attribute which failed</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>path</strong> – string containing the path to test</li>
+<li><strong>path_attr</strong> – attribute name to include in the exceptions message if validation fails</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">None</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
 <dt id="aodncore.util.misc.validate_string">
 <code class="descclassname">aodncore.util.misc.</code><code class="descname">validate_string</code><span class="sig-paren">(</span><em>o</em><span class="sig-paren">)</span><a class="headerlink" href="#aodncore.util.misc.validate_string" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
@@ -804,6 +895,38 @@ Optionally merge stdout and stderr streams into stdout.</p>
 </tbody>
 </table>
 </dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="aodncore.util.misc.WriteOnceOrderedDict">
+<em class="property">class </em><code class="descclassname">aodncore.util.misc.</code><code class="descname">WriteOnceOrderedDict</code><span class="sig-paren">(</span><em>**kwds</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/aodncore/util/misc.html#WriteOnceOrderedDict"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#aodncore.util.misc.WriteOnceOrderedDict" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">collections.OrderedDict</span></code></p>
+<p>Sub-class of OrderedDict which prevents overwriting/deleting of keys once set</p>
+<dl class="method">
+<dt id="aodncore.util.misc.WriteOnceOrderedDict.clear">
+<code class="descname">clear</code><span class="sig-paren">(</span><em>*args</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#aodncore.util.misc.WriteOnceOrderedDict.clear" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="aodncore.util.misc.WriteOnceOrderedDict.pop">
+<code class="descname">pop</code><span class="sig-paren">(</span><em>*args</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#aodncore.util.misc.WriteOnceOrderedDict.pop" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="aodncore.util.misc.WriteOnceOrderedDict.popitem">
+<code class="descname">popitem</code><span class="sig-paren">(</span><em>*args</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#aodncore.util.misc.WriteOnceOrderedDict.popitem" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="aodncore.util.misc.WriteOnceOrderedDict.setdefault">
+<code class="descname">setdefault</code><span class="sig-paren">(</span><em>*args</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#aodncore.util.misc.WriteOnceOrderedDict.setdefault" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="aodncore.util.misc.WriteOnceOrderedDict.update">
+<code class="descname">update</code><span class="sig-paren">(</span><em>*args</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#aodncore.util.misc.WriteOnceOrderedDict.update" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
 
 </dd></dl>
 
@@ -1084,12 +1207,66 @@ list, but rather <em>D</em>. So, no <code class="docutils literal notranslate"><
 </dd></dl>
 
 <dl class="class">
+<dt id="aodncore.util.WriteOnceOrderedDict">
+<em class="property">class </em><code class="descclassname">aodncore.util.</code><code class="descname">WriteOnceOrderedDict</code><span class="sig-paren">(</span><em>**kwds</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/aodncore/util/misc.html#WriteOnceOrderedDict"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#aodncore.util.WriteOnceOrderedDict" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">collections.OrderedDict</span></code></p>
+<p>Sub-class of OrderedDict which prevents overwriting/deleting of keys once set</p>
+<dl class="method">
+<dt id="aodncore.util.WriteOnceOrderedDict.clear">
+<code class="descname">clear</code><span class="sig-paren">(</span><em>*args</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#aodncore.util.WriteOnceOrderedDict.clear" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="aodncore.util.WriteOnceOrderedDict.pop">
+<code class="descname">pop</code><span class="sig-paren">(</span><em>*args</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#aodncore.util.WriteOnceOrderedDict.pop" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="aodncore.util.WriteOnceOrderedDict.popitem">
+<code class="descname">popitem</code><span class="sig-paren">(</span><em>*args</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#aodncore.util.WriteOnceOrderedDict.popitem" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="aodncore.util.WriteOnceOrderedDict.setdefault">
+<code class="descname">setdefault</code><span class="sig-paren">(</span><em>*args</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#aodncore.util.WriteOnceOrderedDict.setdefault" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="aodncore.util.WriteOnceOrderedDict.update">
+<code class="descname">update</code><span class="sig-paren">(</span><em>*args</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#aodncore.util.WriteOnceOrderedDict.update" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="class">
 <dt id="aodncore.util.classproperty">
 <em class="property">class </em><code class="descclassname">aodncore.util.</code><code class="descname">classproperty</code><span class="sig-paren">(</span><em>fn</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/aodncore/util/external/boltons.html#classproperty"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#aodncore.util.classproperty" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <p>Much like a <code class="xref py py-class docutils literal notranslate"><span class="pre">property</span></code>, but the wrapped get function is a
 class method.  For simplicity, only read-only properties are
 implemented.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="aodncore.util.extract_gzip">
+<code class="descclassname">aodncore.util.</code><code class="descname">extract_gzip</code><span class="sig-paren">(</span><em>gzip_path</em>, <em>dest_dir</em>, <em>dest_name=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/aodncore/util/fileops.html#extract_gzip"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#aodncore.util.extract_gzip" title="Permalink to this definition">¶</a></dt>
+<dd><p>Extract a GZ (GZIP) file’s contents into a directory</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>gzip_path</strong> – path to the source GZ file</li>
+<li><strong>dest_dir</strong> – destination directory into which the GZ is extracted</li>
+<li><strong>dest_name</strong> – basename for the extracted file (defaults to the original name minus the ‘.gz’ extension)</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">None</p>
+</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="function">
@@ -1130,6 +1307,30 @@ implemented.</p>
 </tr>
 <tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"><code class="xref py py-class docutils literal notranslate"><span class="pre">dict</span></code> containing each discovered entry point, with keys being the entry point name and values
 being a reference to the object referenced by the entry point</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="aodncore.util.ensure_writeonceordereddict">
+<code class="descclassname">aodncore.util.</code><code class="descname">ensure_writeonceordereddict</code><span class="sig-paren">(</span><em>o</em>, <em>empty_on_fail=True</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/aodncore/util/misc.html#ensure_writeonceordereddict"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#aodncore.util.ensure_writeonceordereddict" title="Permalink to this definition">¶</a></dt>
+<dd><p>Function to accept and object and return the WriteOnceOrderedDict representation of the object. An object which
+can <em>not</em> be handled by the WriteOnceOrderedDict __init__ method will either result in an empty, or if
+‘empty_on_fail’ is set to False, will result in an exception.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>o</strong> – input object</li>
+<li><strong>empty_on_fail</strong> – boolean flag to determine whether an invalid object will result in a new empty
+WriteOnceOrderedDict being returned or the exception re-raised.</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"><a class="reference internal" href="#aodncore.util.WriteOnceOrderedDict" title="aodncore.util.WriteOnceOrderedDict"><code class="xref py py-class docutils literal notranslate"><span class="pre">WriteOnceOrderedDict</span></code></a> instance</p>
 </td>
 </tr>
 </tbody>
@@ -1185,6 +1386,22 @@ being a reference to the object referenced by the entry point</p>
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>path</strong> – directory path to check</td>
 </tr>
 <tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">None</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="aodncore.util.is_gzipfile">
+<code class="descclassname">aodncore.util.</code><code class="descname">is_gzipfile</code><span class="sig-paren">(</span><em>filepath</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/aodncore/util/fileops.html#is_gzipfile"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#aodncore.util.is_gzipfile" title="Permalink to this definition">¶</a></dt>
+<dd><p>Check whether a file path refers to a valid ZIP file</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>filepath</strong> – path to the file being checked</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">True if filepath is a valid ZIP file, otherwise False</td>
 </tr>
 </tbody>
 </table>
@@ -1616,6 +1833,32 @@ slicing behaviour, but the outer sequence will always be a <code class="xref py 
 <dd></dd></dl>
 
 <dl class="function">
+<dt id="aodncore.util.validate_relative_path">
+<code class="descclassname">aodncore.util.</code><code class="descname">validate_relative_path</code><span class="sig-paren">(</span><em>o</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/aodncore/util/misc.html#validate_relative_path"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#aodncore.util.validate_relative_path" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="aodncore.util.validate_relative_path_attr">
+<code class="descclassname">aodncore.util.</code><code class="descname">validate_relative_path_attr</code><span class="sig-paren">(</span><em>path</em>, <em>path_attr</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/aodncore/util/misc.html#validate_relative_path_attr"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#aodncore.util.validate_relative_path_attr" title="Permalink to this definition">¶</a></dt>
+<dd><p>Validate a path, raising an exception containing the name of the attribute which failed</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>path</strong> – string containing the path to test</li>
+<li><strong>path_attr</strong> – attribute name to include in the exceptions message if validation fails</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">None</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
 <dt id="aodncore.util.validate_string">
 <code class="descclassname">aodncore.util.</code><code class="descname">validate_string</code><span class="sig-paren">(</span><em>o</em><span class="sig-paren">)</span><a class="headerlink" href="#aodncore.util.validate_string" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
@@ -1681,7 +1924,7 @@ slicing behaviour, but the outer sequence will always be a <code class="xref py 
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'./',
-            VERSION:'0.10.1',
+            VERSION:'0.11.4',
             LANGUAGE:'None',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',

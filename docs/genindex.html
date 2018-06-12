@@ -9,7 +9,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Index &mdash; aodncore 0.10.1 documentation</title>
+  <title>Index &mdash; aodncore 0.11.4 documentation</title>
   
 
   
@@ -58,7 +58,7 @@
             
             
               <div class="version">
-                0.10.1
+                0.11.4
               </div>
             
           
@@ -82,9 +82,12 @@
               
             
             
-              <p class="caption"><span class="caption-text">Quick Start:</span></p>
+              <p class="caption"><span class="caption-text">Quick Start Guide:</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="quickstartdoc.html">Query Storage</a></li>
+<li class="toctree-l1"><a class="reference internal" href="quickstartdoc.html">Writing a <code class="docutils literal notranslate"><span class="pre">dest_path()</span></code> function</a></li>
+<li class="toctree-l1"><a class="reference internal" href="quickstartdoc.html#overriding-default-file-actions">Overriding default file actions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="quickstartdoc.html#creating-products-during-the-handler-lifetime">Creating products during the handler lifetime</a></li>
+<li class="toctree-l1"><a class="reference internal" href="quickstartdoc.html#query-storage">Query Storage</a></li>
 </ul>
 <p class="caption"><span class="caption-text">User documentation:</span></p>
 <ul>
@@ -457,12 +460,6 @@
         <li><a href="aodncore.util.html#aodncore.util.misc.CaptureStdIO">(class in aodncore.util.misc)</a>
 </li>
       </ul></li>
-      <li><a href="aodncore.pipeline.html#aodncore.pipeline.HandlerBase.cc_versions">cc_versions (aodncore.pipeline.HandlerBase attribute)</a>
-
-      <ul>
-        <li><a href="aodncore.pipeline.html#aodncore.pipeline.handlerbase.HandlerBase.cc_versions">(aodncore.pipeline.handlerbase.HandlerBase attribute)</a>
-</li>
-      </ul></li>
       <li><a href="aodncore.pipeline.html#aodncore.pipeline.watch.CeleryConfig.CELERY_ACCEPT_CONTENT">CELERY_ACCEPT_CONTENT (aodncore.pipeline.watch.CeleryConfig attribute)</a>
 </li>
       <li><a href="aodncore.pipeline.html#aodncore.pipeline.configlib.LazyConfigManager.celery_application">celery_application (aodncore.pipeline.configlib.LazyConfigManager attribute)</a>
@@ -509,14 +506,14 @@
         <li><a href="aodncore.pipeline.html#aodncore.pipeline.PipelineFile.check_result">(aodncore.pipeline.PipelineFile attribute)</a>
 </li>
       </ul></li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="aodncore.pipeline.html#aodncore.pipeline.files.PipelineFile.check_type">check_type (aodncore.pipeline.files.PipelineFile attribute)</a>
 
       <ul>
         <li><a href="aodncore.pipeline.html#aodncore.pipeline.PipelineFile.check_type">(aodncore.pipeline.PipelineFile attribute)</a>
 </li>
       </ul></li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="aodncore.pipeline.html#aodncore.pipeline.CheckResult">CheckResult (class in aodncore.pipeline)</a>
 
       <ul>
@@ -530,7 +527,13 @@
       <li><a href="aodncore.util.html#aodncore.util.classproperty">classproperty (class in aodncore.util)</a>
 </li>
       <li><a href="aodncore.util.html#aodncore.util.IndexedSet.clear">clear() (aodncore.util.IndexedSet method)</a>
+
+      <ul>
+        <li><a href="aodncore.util.html#aodncore.util.WriteOnceOrderedDict.clear">(aodncore.util.WriteOnceOrderedDict method)</a>
 </li>
+        <li><a href="aodncore.util.html#aodncore.util.misc.WriteOnceOrderedDict.clear">(aodncore.util.misc.WriteOnceOrderedDict method)</a>
+</li>
+      </ul></li>
       <li><a href="aodncore.pipeline.html#aodncore.pipeline.HandlerBase.collection_dir">collection_dir (aodncore.pipeline.HandlerBase attribute)</a>
 
       <ul>
@@ -675,6 +678,8 @@
 </li>
       <li><a href="aodncore.pipeline.html#aodncore.pipeline.configlib.LazyConfigManager.discovered_handlers">discovered_handlers (aodncore.pipeline.configlib.LazyConfigManager attribute)</a>
 </li>
+      <li><a href="aodncore.pipeline.html#aodncore.pipeline.configlib.LazyConfigManager.discovered_module_versions">discovered_module_versions (aodncore.pipeline.configlib.LazyConfigManager attribute)</a>
+</li>
       <li><a href="aodncore.testlib.html#aodncore.testlib.DummyHandler">DummyHandler (class in aodncore.testlib)</a>
 
       <ul>
@@ -699,6 +704,14 @@
       </ul></li>
       <li><a href="aodncore.pipeline.steps.html#aodncore.pipeline.steps.notify.EmailNotifyRunner">EmailNotifyRunner (class in aodncore.pipeline.steps.notify)</a>
 </li>
+      <li><a href="aodncore.pipeline.html#aodncore.pipeline.files.ensure_pipelinefilecollection">ensure_pipelinefilecollection() (in module aodncore.pipeline.files)</a>
+</li>
+      <li><a href="aodncore.util.html#aodncore.util.ensure_writeonceordereddict">ensure_writeonceordereddict() (in module aodncore.util)</a>
+
+      <ul>
+        <li><a href="aodncore.util.html#aodncore.util.misc.ensure_writeonceordereddict">(in module aodncore.util.misc)</a>
+</li>
+      </ul></li>
       <li><a href="aodncore.pipeline.html#aodncore.pipeline.common.HandlerResult.ERROR">ERROR (aodncore.pipeline.common.HandlerResult attribute)</a>
 </li>
       <li><a href="aodncore.pipeline.html#aodncore.pipeline.HandlerBase.error">error (aodncore.pipeline.HandlerBase attribute)</a>
@@ -743,6 +756,12 @@
       </ul></li>
       <li><a href="aodncore.pipeline.steps.html#aodncore.pipeline.steps.harvest.TriggerEvent.extra_params">extra_params (aodncore.pipeline.steps.harvest.TriggerEvent attribute)</a>
 </li>
+      <li><a href="aodncore.util.html#aodncore.util.extract_gzip">extract_gzip() (in module aodncore.util)</a>
+
+      <ul>
+        <li><a href="aodncore.util.html#aodncore.util.fileops.extract_gzip">(in module aodncore.util.fileops)</a>
+</li>
+      </ul></li>
       <li><a href="aodncore.util.html#aodncore.util.extract_zip">extract_zip() (in module aodncore.util)</a>
 
       <ul>
@@ -757,6 +776,12 @@
   <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="aodncore.pipeline.steps.html#aodncore.pipeline.steps.resolve.RsyncManifestResolveRunner.FILE_ADD_PATTERN">FILE_ADD_PATTERN (aodncore.pipeline.steps.resolve.RsyncManifestResolveRunner attribute)</a>
 </li>
+      <li><a href="aodncore.pipeline.html#aodncore.pipeline.HandlerBase.file_basename">file_basename (aodncore.pipeline.HandlerBase attribute)</a>
+
+      <ul>
+        <li><a href="aodncore.pipeline.html#aodncore.pipeline.handlerbase.HandlerBase.file_basename">(aodncore.pipeline.handlerbase.HandlerBase attribute)</a>
+</li>
+      </ul></li>
       <li><a href="aodncore.pipeline.html#aodncore.pipeline.files.PipelineFile.file_checksum">file_checksum (aodncore.pipeline.files.PipelineFile attribute)</a>
 
       <ul>
@@ -813,6 +838,12 @@
         <li><a href="aodncore.pipeline.html#aodncore.pipeline.PipelineFileCollection.filter_by_attribute_id">(aodncore.pipeline.PipelineFileCollection method)</a>
 </li>
       </ul></li>
+      <li><a href="aodncore.pipeline.html#aodncore.pipeline.files.PipelineFileCollection.filter_by_attribute_id_not">filter_by_attribute_id_not() (aodncore.pipeline.files.PipelineFileCollection method)</a>
+
+      <ul>
+        <li><a href="aodncore.pipeline.html#aodncore.pipeline.PipelineFileCollection.filter_by_attribute_id_not">(aodncore.pipeline.PipelineFileCollection method)</a>
+</li>
+      </ul></li>
       <li><a href="aodncore.pipeline.html#aodncore.pipeline.files.PipelineFileCollection.filter_by_attribute_regex">filter_by_attribute_regex() (aodncore.pipeline.files.PipelineFileCollection method)</a>
 
       <ul>
@@ -825,14 +856,14 @@
         <li><a href="aodncore.pipeline.html#aodncore.pipeline.PipelineFileCollection.filter_by_attribute_value">(aodncore.pipeline.PipelineFileCollection method)</a>
 </li>
       </ul></li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="aodncore.pipeline.html#aodncore.pipeline.files.PipelineFileCollection.filter_by_bool_attribute">filter_by_bool_attribute() (aodncore.pipeline.files.PipelineFileCollection method)</a>
 
       <ul>
         <li><a href="aodncore.pipeline.html#aodncore.pipeline.PipelineFileCollection.filter_by_bool_attribute">(aodncore.pipeline.PipelineFileCollection method)</a>
 </li>
       </ul></li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="aodncore.pipeline.html#aodncore.pipeline.files.PipelineFileCollection.filter_by_bool_attribute_not">filter_by_bool_attribute_not() (aodncore.pipeline.files.PipelineFileCollection method)</a>
 
       <ul>
@@ -915,10 +946,10 @@
 <h2 id="G">G</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="aodncore.pipeline.steps.html#aodncore.pipeline.steps.get_cc_module_versions">get_cc_module_versions() (in module aodncore.pipeline.steps)</a>
+      <li><a href="aodncore.pipeline.html#aodncore.pipeline.files.PipelineFileCollection.get_attribute_list">get_attribute_list() (aodncore.pipeline.files.PipelineFileCollection method)</a>
 
       <ul>
-        <li><a href="aodncore.pipeline.steps.html#aodncore.pipeline.steps.check.get_cc_module_versions">(in module aodncore.pipeline.steps.check)</a>
+        <li><a href="aodncore.pipeline.html#aodncore.pipeline.PipelineFileCollection.get_attribute_list">(aodncore.pipeline.PipelineFileCollection method)</a>
 </li>
       </ul></li>
       <li><a href="aodncore.pipeline.steps.html#aodncore.pipeline.steps.get_check_runner">get_check_runner() (in module aodncore.pipeline.steps)</a>
@@ -961,12 +992,12 @@
         <li><a href="aodncore.pipeline.steps.html#aodncore.pipeline.steps.notify.get_notify_runner">(in module aodncore.pipeline.steps.notify)</a>
 </li>
       </ul></li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="aodncore.pipeline.html#aodncore.pipeline.destpath.get_path_function">get_path_function() (in module aodncore.pipeline.destpath)</a>
 </li>
       <li><a href="aodncore.pipeline.html#aodncore.pipeline.log.get_pipeline_logger">get_pipeline_logger() (in module aodncore.pipeline.log)</a>
 </li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="aodncore.pipeline.html#aodncore.pipeline.files.PipelineFileCollection.get_pipelinefile_from_src_path">get_pipelinefile_from_src_path() (aodncore.pipeline.files.PipelineFileCollection method)</a>
 
       <ul>
@@ -1008,6 +1039,14 @@
 </li>
       </ul></li>
       <li><a href="aodncore.pipeline.html#aodncore.pipeline.log.get_watchservice_logging_config">get_watchservice_logging_config() (in module aodncore.pipeline.log)</a>
+</li>
+      <li><a href="aodncore.pipeline.html#aodncore.pipeline.common.FileType.GZIP">GZIP (aodncore.pipeline.common.FileType attribute)</a>
+
+      <ul>
+        <li><a href="aodncore.pipeline.html#aodncore.pipeline.FileType.GZIP">(aodncore.pipeline.FileType attribute)</a>
+</li>
+      </ul></li>
+      <li><a href="aodncore.pipeline.steps.html#aodncore.pipeline.steps.resolve.GzipFileResolveRunner">GzipFileResolveRunner (class in aodncore.pipeline.steps.resolve)</a>
 </li>
   </ul></td>
 </tr></table>
@@ -1079,6 +1118,18 @@
 </li>
       <li><a href="aodncore.util.html#aodncore.util.IndexedSet">IndexedSet (class in aodncore.util)</a>
 </li>
+      <li><a href="aodncore.pipeline.html#aodncore.pipeline.HandlerBase.input_file_archive_path">input_file_archive_path (aodncore.pipeline.HandlerBase attribute)</a>
+
+      <ul>
+        <li><a href="aodncore.pipeline.html#aodncore.pipeline.handlerbase.HandlerBase.input_file_archive_path">(aodncore.pipeline.handlerbase.HandlerBase attribute)</a>
+</li>
+      </ul></li>
+      <li><a href="aodncore.pipeline.html#aodncore.pipeline.HandlerBase.input_file_object">input_file_object (aodncore.pipeline.HandlerBase attribute)</a>
+
+      <ul>
+        <li><a href="aodncore.pipeline.html#aodncore.pipeline.handlerbase.HandlerBase.input_file_object">(aodncore.pipeline.handlerbase.HandlerBase attribute)</a>
+</li>
+      </ul></li>
       <li><a href="aodncore.pipeline.html#aodncore.pipeline.HandlerBase.instance_working_directory">instance_working_directory (aodncore.pipeline.HandlerBase attribute)</a>
 
       <ul>
@@ -1124,11 +1175,7 @@
       <li><a href="aodncore.pipeline.html#aodncore.pipeline.files.PipelineFile.is_archived">is_archived (aodncore.pipeline.files.PipelineFile attribute)</a>
 
       <ul>
-        <li><a href="aodncore.pipeline.html#aodncore.pipeline.HandlerBase.is_archived">(aodncore.pipeline.HandlerBase attribute)</a>
-</li>
         <li><a href="aodncore.pipeline.html#aodncore.pipeline.PipelineFile.is_archived">(aodncore.pipeline.PipelineFile attribute)</a>
-</li>
-        <li><a href="aodncore.pipeline.html#aodncore.pipeline.handlerbase.HandlerBase.is_archived">(aodncore.pipeline.handlerbase.HandlerBase attribute)</a>
 </li>
       </ul></li>
       <li><a href="aodncore.pipeline.html#aodncore.pipeline.files.PipelineFile.is_checked">is_checked (aodncore.pipeline.files.PipelineFile attribute)</a>
@@ -1167,6 +1214,12 @@
       </ul></li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="aodncore.util.html#aodncore.util.is_gzipfile">is_gzipfile() (in module aodncore.util)</a>
+
+      <ul>
+        <li><a href="aodncore.util.html#aodncore.util.fileops.is_gzipfile">(in module aodncore.util.fileops)</a>
+</li>
+      </ul></li>
       <li><a href="aodncore.pipeline.html#aodncore.pipeline.files.PipelineFile.is_harvest_undone">is_harvest_undone (aodncore.pipeline.files.PipelineFile attribute)</a>
 
       <ul>
@@ -1293,14 +1346,16 @@
         <li><a href="aodncore.util.html#aodncore.util.fileops.list_regular_files">(in module aodncore.util.fileops)</a>
 </li>
       </ul></li>
+      <li><a href="aodncore.pipeline.html#aodncore.pipeline.configlib.load_json_file">load_json_file() (in module aodncore.pipeline.configlib)</a>
+</li>
       <li><a href="aodncore.pipeline.html#aodncore.pipeline.configlib.load_pipeline_config">load_pipeline_config() (in module aodncore.pipeline.configlib)</a>
 </li>
       <li><a href="aodncore.pipeline.html#aodncore.pipeline.configlib.load_trigger_config">load_trigger_config() (in module aodncore.pipeline.configlib)</a>
 </li>
-      <li><a href="aodncore.pipeline.html#aodncore.pipeline.configlib.load_watch_config">load_watch_config() (in module aodncore.pipeline.configlib)</a>
-</li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="aodncore.pipeline.html#aodncore.pipeline.configlib.load_watch_config">load_watch_config() (in module aodncore.pipeline.configlib)</a>
+</li>
       <li><a href="aodncore.pipeline.html#aodncore.pipeline.storage.LocalFileStorageBroker">LocalFileStorageBroker (class in aodncore.pipeline.storage)</a>
 </li>
       <li><a href="aodncore.pipeline.html#aodncore.pipeline.CheckResult.log">log (aodncore.pipeline.CheckResult attribute)</a>
@@ -1349,14 +1404,14 @@
 </li>
       <li><a href="aodncore.pipeline.steps.html#aodncore.pipeline.steps.harvest.TriggerEvent.matched_files">matched_files (aodncore.pipeline.steps.harvest.TriggerEvent attribute)</a>
 </li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="aodncore.util.html#aodncore.util.matches_regexes">matches_regexes() (in module aodncore.util)</a>
 
       <ul>
         <li><a href="aodncore.util.html#aodncore.util.misc.matches_regexes">(in module aodncore.util.misc)</a>
 </li>
       </ul></li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="aodncore.pipeline.steps.html#aodncore.pipeline.steps.harvest.HarvesterMap.merge">merge() (aodncore.pipeline.steps.harvest.HarvesterMap method)</a>
 </li>
       <li><a href="aodncore.util.html#aodncore.util.merge_dicts">merge_dicts() (in module aodncore.util)</a>
@@ -1379,6 +1434,12 @@
 
       <ul>
         <li><a href="aodncore.util.html#aodncore.util.fileops.mkdir_p">(in module aodncore.util.fileops)</a>
+</li>
+      </ul></li>
+      <li><a href="aodncore.pipeline.html#aodncore.pipeline.HandlerBase.module_versions">module_versions (aodncore.pipeline.HandlerBase attribute)</a>
+
+      <ul>
+        <li><a href="aodncore.pipeline.html#aodncore.pipeline.handlerbase.HandlerBase.module_versions">(aodncore.pipeline.handlerbase.HandlerBase attribute)</a>
 </li>
       </ul></li>
   </ul></td>
@@ -1517,8 +1578,6 @@
 <h2 id="P">P</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="aodncore.testlib.html#aodncore.testlib.testutil.patch_test_config">patch_test_config() (in module aodncore.testlib.testutil)</a>
-</li>
       <li><a href="aodncore.pipeline.steps.html#aodncore.pipeline.steps.resolve.MapManifestResolveRunner.PATH_SPLIT_CHAR">PATH_SPLIT_CHAR (aodncore.pipeline.steps.resolve.MapManifestResolveRunner attribute)</a>
 </li>
       <li><a href="aodncore.pipeline.html#aodncore.pipeline.common.FileType.PDF">PDF (aodncore.pipeline.common.FileType attribute)</a>
@@ -1609,14 +1668,14 @@
         <li><a href="aodncore.pipeline.html#aodncore.pipeline.files.PipelineFileCollection">(class in aodncore.pipeline.files)</a>
 </li>
       </ul></li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="aodncore.pipeline.html#aodncore.pipeline.PipelineFilePublishType">PipelineFilePublishType (class in aodncore.pipeline)</a>
 
       <ul>
         <li><a href="aodncore.pipeline.html#aodncore.pipeline.common.PipelineFilePublishType">(class in aodncore.pipeline.common)</a>
 </li>
       </ul></li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="aodncore.pipeline.html#aodncore.pipeline.exceptions.PipelineProcessingError">PipelineProcessingError</a>
 </li>
       <li><a href="aodncore.pipeline.html#aodncore.pipeline.exceptions.PipelineSystemError">PipelineSystemError</a>
@@ -1640,7 +1699,19 @@
 </li>
       </ul></li>
       <li><a href="aodncore.util.html#aodncore.util.IndexedSet.pop">pop() (aodncore.util.IndexedSet method)</a>
+
+      <ul>
+        <li><a href="aodncore.util.html#aodncore.util.WriteOnceOrderedDict.pop">(aodncore.util.WriteOnceOrderedDict method)</a>
 </li>
+        <li><a href="aodncore.util.html#aodncore.util.misc.WriteOnceOrderedDict.pop">(aodncore.util.misc.WriteOnceOrderedDict method)</a>
+</li>
+      </ul></li>
+      <li><a href="aodncore.util.html#aodncore.util.misc.WriteOnceOrderedDict.popitem">popitem() (aodncore.util.misc.WriteOnceOrderedDict method)</a>
+
+      <ul>
+        <li><a href="aodncore.util.html#aodncore.util.WriteOnceOrderedDict.popitem">(aodncore.util.WriteOnceOrderedDict method)</a>
+</li>
+      </ul></li>
       <li><a href="aodncore.pipeline.html#aodncore.pipeline.HandlerBase.postprocess">postprocess() (aodncore.pipeline.HandlerBase method)</a>
 
       <ul>
@@ -1800,6 +1871,8 @@
 </li>
         <li><a href="aodncore.pipeline.steps.html#aodncore.pipeline.steps.resolve.DirManifestResolveRunner.run">(aodncore.pipeline.steps.resolve.DirManifestResolveRunner method)</a>
 </li>
+        <li><a href="aodncore.pipeline.steps.html#aodncore.pipeline.steps.resolve.GzipFileResolveRunner.run">(aodncore.pipeline.steps.resolve.GzipFileResolveRunner method)</a>
+</li>
         <li><a href="aodncore.pipeline.steps.html#aodncore.pipeline.steps.resolve.MapManifestResolveRunner.run">(aodncore.pipeline.steps.resolve.MapManifestResolveRunner method)</a>
 </li>
         <li><a href="aodncore.pipeline.steps.html#aodncore.pipeline.steps.resolve.RsyncManifestResolveRunner.run">(aodncore.pipeline.steps.resolve.RsyncManifestResolveRunner method)</a>
@@ -1871,10 +1944,10 @@
         <li><a href="aodncore.pipeline.html#aodncore.pipeline.PipelineFileCollection.set_check_types">(aodncore.pipeline.PipelineFileCollection method)</a>
 </li>
       </ul></li>
-      <li><a href="aodncore.pipeline.html#aodncore.pipeline.files.PipelineFileCollection.set_default_publish_types">set_default_publish_types() (aodncore.pipeline.files.PipelineFileCollection method)</a>
+      <li><a href="aodncore.pipeline.html#aodncore.pipeline.files.PipelineFileCollection.set_check_types_from_params">set_check_types_from_params() (aodncore.pipeline.files.PipelineFileCollection method)</a>
 
       <ul>
-        <li><a href="aodncore.pipeline.html#aodncore.pipeline.PipelineFileCollection.set_default_publish_types">(aodncore.pipeline.PipelineFileCollection method)</a>
+        <li><a href="aodncore.pipeline.html#aodncore.pipeline.PipelineFileCollection.set_check_types_from_params">(aodncore.pipeline.PipelineFileCollection method)</a>
 </li>
       </ul></li>
       <li><a href="aodncore.pipeline.html#aodncore.pipeline.files.PipelineFileCollection.set_dest_paths">set_dest_paths() (aodncore.pipeline.files.PipelineFileCollection method)</a>
@@ -1905,6 +1978,30 @@
       </ul></li>
       <li><a href="aodncore.pipeline.steps.html#aodncore.pipeline.steps.harvest.HarvesterMap.set_pipelinefile_bool_attribute">set_pipelinefile_bool_attribute() (aodncore.pipeline.steps.harvest.HarvesterMap method)</a>
 </li>
+      <li><a href="aodncore.pipeline.html#aodncore.pipeline.files.PipelineFileCollection.set_publish_types">set_publish_types() (aodncore.pipeline.files.PipelineFileCollection method)</a>
+
+      <ul>
+        <li><a href="aodncore.pipeline.html#aodncore.pipeline.PipelineFileCollection.set_publish_types">(aodncore.pipeline.PipelineFileCollection method)</a>
+</li>
+      </ul></li>
+      <li><a href="aodncore.pipeline.html#aodncore.pipeline.files.PipelineFileCollection.set_publish_types_from_regexes">set_publish_types_from_regexes() (aodncore.pipeline.files.PipelineFileCollection method)</a>
+
+      <ul>
+        <li><a href="aodncore.pipeline.html#aodncore.pipeline.PipelineFileCollection.set_publish_types_from_regexes">(aodncore.pipeline.PipelineFileCollection method)</a>
+</li>
+      </ul></li>
+      <li><a href="aodncore.pipeline.html#aodncore.pipeline.files.PipelineFileCollection.set_string_attribute">set_string_attribute() (aodncore.pipeline.files.PipelineFileCollection method)</a>
+
+      <ul>
+        <li><a href="aodncore.pipeline.html#aodncore.pipeline.PipelineFileCollection.set_string_attribute">(aodncore.pipeline.PipelineFileCollection method)</a>
+</li>
+      </ul></li>
+      <li><a href="aodncore.util.html#aodncore.util.misc.WriteOnceOrderedDict.setdefault">setdefault() (aodncore.util.misc.WriteOnceOrderedDict method)</a>
+
+      <ul>
+        <li><a href="aodncore.util.html#aodncore.util.WriteOnceOrderedDict.setdefault">(aodncore.util.WriteOnceOrderedDict method)</a>
+</li>
+      </ul></li>
       <li><a href="aodncore.testlib.html#aodncore.testlib.basetest.BaseTestCase.setUp">setUp() (aodncore.testlib.basetest.BaseTestCase method)</a>
 
       <ul>
@@ -1927,6 +2024,8 @@
 </li>
       <li><a href="aodncore.pipeline.html#aodncore.pipeline.storage.sftp_path_exists">sftp_path_exists() (in module aodncore.pipeline.storage)</a>
 </li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="aodncore.pipeline.html#aodncore.pipeline.storage.SftpStorageBroker">SftpStorageBroker (class in aodncore.pipeline.storage)</a>
 </li>
       <li><a href="aodncore.pipeline.html#aodncore.pipeline.files.PipelineFile.should_archive">should_archive (aodncore.pipeline.files.PipelineFile attribute)</a>
@@ -1941,8 +2040,6 @@
         <li><a href="aodncore.pipeline.html#aodncore.pipeline.PipelineFile.should_harvest">(aodncore.pipeline.PipelineFile attribute)</a>
 </li>
       </ul></li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="aodncore.pipeline.html#aodncore.pipeline.HandlerBase.should_notify">should_notify (aodncore.pipeline.HandlerBase attribute)</a>
 
       <ul>
@@ -2133,10 +2230,18 @@
         <li><a href="aodncore.pipeline.html#aodncore.pipeline.common.HandlerResult.UNKNOWN">(aodncore.pipeline.common.HandlerResult attribute)</a>
 </li>
       </ul></li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="aodncore.pipeline.html#aodncore.pipeline.exceptions.UnmappedFilesError">UnmappedFilesError</a>
 </li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="aodncore.pipeline.html#aodncore.pipeline.exceptions.UnmatchedFilesError">UnmatchedFilesError</a>
+</li>
+      <li><a href="aodncore.pipeline.html#aodncore.pipeline.common.PipelineFilePublishType.UNSET">UNSET (aodncore.pipeline.common.PipelineFilePublishType attribute)</a>
+
+      <ul>
+        <li><a href="aodncore.pipeline.html#aodncore.pipeline.PipelineFilePublishType.UNSET">(aodncore.pipeline.PipelineFilePublishType attribute)</a>
+</li>
+      </ul></li>
       <li><a href="aodncore.pipeline.html#aodncore.pipeline.files.PipelineFileCollection.update">update() (aodncore.pipeline.files.PipelineFileCollection method)</a>
 
       <ul>
@@ -2147,6 +2252,10 @@
         <li><a href="aodncore.pipeline.steps.html#aodncore.pipeline.steps.notify.NotifyList.update">(aodncore.pipeline.steps.notify.NotifyList method)</a>
 </li>
         <li><a href="aodncore.util.html#aodncore.util.IndexedSet.update">(aodncore.util.IndexedSet method)</a>
+</li>
+        <li><a href="aodncore.util.html#aodncore.util.WriteOnceOrderedDict.update">(aodncore.util.WriteOnceOrderedDict method)</a>
+</li>
+        <li><a href="aodncore.util.html#aodncore.util.misc.WriteOnceOrderedDict.update">(aodncore.util.misc.WriteOnceOrderedDict method)</a>
 </li>
       </ul></li>
       <li><a href="aodncore.pipeline.steps.html#aodncore.pipeline.steps.notify.NotifyList.update_from_error_dict">update_from_error_dict() (aodncore.pipeline.steps.notify.NotifyList method)</a>
@@ -2205,6 +2314,8 @@
         <li><a href="aodncore.util.html#aodncore.util.SystemProcess.validate_command">(aodncore.util.SystemProcess method)</a>
 </li>
       </ul></li>
+      <li><a href="aodncore.pipeline.html#aodncore.pipeline.schema.validate_custom_params">validate_custom_params() (in module aodncore.pipeline.schema)</a>
+</li>
       <li><a href="aodncore.pipeline.html#aodncore.pipeline.common.validate_deletion_publishtype">validate_deletion_publishtype() (in module aodncore.pipeline.common)</a>
 </li>
       <li><a href="aodncore.util.html#aodncore.util.validate_dict">validate_dict() (in module aodncore.util)</a>
@@ -2241,14 +2352,14 @@
 </li>
       <li><a href="aodncore.pipeline.html#aodncore.pipeline.schema.validate_logging_config">validate_logging_config() (in module aodncore.pipeline.schema)</a>
 </li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="aodncore.util.html#aodncore.util.validate_mandatory_elements">validate_mandatory_elements() (in module aodncore.util)</a>
 
       <ul>
         <li><a href="aodncore.util.html#aodncore.util.misc.validate_mandatory_elements">(in module aodncore.util.misc)</a>
 </li>
       </ul></li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="aodncore.util.html#aodncore.util.validate_mapping">validate_mapping() (in module aodncore.util)</a>
 
       <ul>
@@ -2271,6 +2382,8 @@
 </li>
       <li><a href="aodncore.pipeline.html#aodncore.pipeline.schema.validate_pipeline_config">validate_pipeline_config() (in module aodncore.pipeline.schema)</a>
 </li>
+      <li><a href="aodncore.pipeline.html#aodncore.pipeline.files.validate_pipelinefile_or_pipelinefilecollection">validate_pipelinefile_or_pipelinefilecollection() (in module aodncore.pipeline.files)</a>
+</li>
       <li><a href="aodncore.pipeline.html#aodncore.pipeline.validate_pipelinefile_or_string">validate_pipelinefile_or_string() (in module aodncore.pipeline)</a>
 
       <ul>
@@ -2291,6 +2404,18 @@
 
       <ul>
         <li><a href="aodncore.util.html#aodncore.util.misc.validate_regex">(in module aodncore.util.misc)</a>
+</li>
+      </ul></li>
+      <li><a href="aodncore.util.html#aodncore.util.validate_relative_path">validate_relative_path() (in module aodncore.util)</a>
+
+      <ul>
+        <li><a href="aodncore.util.html#aodncore.util.misc.validate_relative_path">(in module aodncore.util.misc)</a>
+</li>
+      </ul></li>
+      <li><a href="aodncore.util.html#aodncore.util.validate_relative_path_attr">validate_relative_path_attr() (in module aodncore.util)</a>
+
+      <ul>
+        <li><a href="aodncore.util.html#aodncore.util.misc.validate_relative_path_attr">(in module aodncore.util.misc)</a>
 </li>
       </ul></li>
       <li><a href="aodncore.pipeline.html#aodncore.pipeline.schema.validate_resolve_params">validate_resolve_params() (in module aodncore.pipeline.schema)</a>
@@ -2329,16 +2454,22 @@
 </li>
       <li><a href="aodncore.pipeline.html#aodncore.pipeline.configlib.LazyConfigManager.watchservice_logging_config">watchservice_logging_config (aodncore.pipeline.configlib.LazyConfigManager attribute)</a>
 </li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="aodncore.pipeline.html#aodncore.pipeline.watch.WatchServiceContext">WatchServiceContext (class in aodncore.pipeline.watch)</a>
 </li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="aodncore.pipeline.html#aodncore.pipeline.watch.WatchServiceManager">WatchServiceManager (class in aodncore.pipeline.watch)</a>
 </li>
       <li><a href="aodncore.pipeline.html#aodncore.pipeline.configlib.LazyConfigManager.worker_logging_config">worker_logging_config (aodncore.pipeline.configlib.LazyConfigManager attribute)</a>
 </li>
       <li><a href="aodncore.pipeline.html#aodncore.pipeline.log.WorkerLoggingConfigBuilder">WorkerLoggingConfigBuilder (class in aodncore.pipeline.log)</a>
 </li>
+      <li><a href="aodncore.util.html#aodncore.util.WriteOnceOrderedDict">WriteOnceOrderedDict (class in aodncore.util)</a>
+
+      <ul>
+        <li><a href="aodncore.util.html#aodncore.util.misc.WriteOnceOrderedDict">(class in aodncore.util.misc)</a>
+</li>
+      </ul></li>
   </ul></td>
 </tr></table>
 
@@ -2392,7 +2523,7 @@
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'./',
-            VERSION:'0.10.1',
+            VERSION:'0.11.4',
             LANGUAGE:'None',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
