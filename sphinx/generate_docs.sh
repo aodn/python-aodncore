@@ -12,7 +12,6 @@ function generate_apidoc() {
 function generate_html() {
     make html
     touch _build/html/.nojekyll
-    rsync --verbose --recursive --delete _build/html/ ../docs
 }
 
 generate_apidoc

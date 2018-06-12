@@ -110,4 +110,5 @@ ENV/
 /sphinx/*.rst
 !/sphinx/developerdoc.rst
 !/sphinx/modules.rst
+!/sphinx/quickstartdoc.rst
 !/sphinx/userdoc.rst
