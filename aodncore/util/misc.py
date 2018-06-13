@@ -21,6 +21,7 @@ __all__ = [
     'discover_entry_points',
     'ensure_writeonceordereddict',
     'format_exception',
+    'get_pattern_subgroups_from_string',
     'is_nonstring_iterable',
     'is_function',
     'is_valid_email_address',
@@ -93,6 +94,22 @@ def format_exception(exception):
     :return: string
     """
     return "{cls}: {message}".format(cls=exception.__class__.__name__, message=exception)
+
+
+def get_pattern_subgroups_from_string(string, pattern):
+    """Function to retrieve parts of a string given a compiled pattern (re.compile(str))
+    :return: dictionary of fields matching a given pattern
+    """
+    retype = type(re.compile(''))
+    if not isinstance(pattern, retype):
+        try:
+            pattern = re.compile(pattern)
+        except Exception as err:
+            raise TypeError("error compiling pattern '{pattern}': {e}".
+                            format(pattern=pattern, e=format_exception(err)))
+
+    m = pattern.match(string)
+    return {} if m is None else m.groupdict()
 
 
 def is_function(o):

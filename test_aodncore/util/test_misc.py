@@ -1,4 +1,5 @@
 import os
+import re
 import sys
 import uuid
 from collections import OrderedDict
@@ -6,11 +7,11 @@ from collections import OrderedDict
 import six
 
 from aodncore.testlib import BaseTestCase
-from aodncore.util import (ensure_writeonceordereddict, format_exception, is_function, is_nonstring_iterable,
-                           matches_regexes, merge_dicts, slice_sequence, str_to_list, validate_callable,
-                           validate_mandatory_elements, validate_membership, validate_nonstring_iterable,
-                           validate_relative_path, validate_relative_path_attr, validate_type, CaptureStdIO,
-                           WriteOnceOrderedDict)
+from aodncore.util import (ensure_writeonceordereddict, format_exception, get_pattern_subgroups_from_string, is_function,
+                           is_nonstring_iterable, matches_regexes, merge_dicts, slice_sequence,
+                           str_to_list, validate_callable, validate_mandatory_elements, validate_membership,
+                           validate_nonstring_iterable, validate_relative_path, validate_relative_path_attr,
+                           validate_type, CaptureStdIO, WriteOnceOrderedDict)
 
 StringIO = six.StringIO
 
@@ -210,6 +211,34 @@ class TestUtilMisc(BaseTestCase):
             validate_relative_path_attr('relative/path', 'dest_path')
         except Exception as e:
             raise AssertionError("unexpected exception raised. {e}".format(e=format_exception(e)))
+
+    def test_get_pattern_subgroups_from_string(self):
+        good_pattern = re.compile(r"""
+                                      ^.*FILE_SUFFIX_
+                                       (?P<product_code>[A-Z]{3,4})_C-
+                                       (?P<creation_date>[0-9]{8}T[0-9]{6}Z)\.
+                                       (?P<extension>nc|txt|csv)$
+                                       """, re.VERBOSE)
+        good_file = 'FILE_SUFFIX_ABC_C-20180101T000000Z.txt'
+        bad_file = 'BAD_ABC_C-20180101T000000Z.txt'
+
+        # test on filename only
+        fields = get_pattern_subgroups_from_string(good_file, good_pattern)
+        self.assertEqual(fields['product_code'], 'ABC')
+
+        # test on filepath
+        fields = get_pattern_subgroups_from_string(os.path.join('/not/a/real/path', good_file),
+                                                   good_pattern)
+        self.assertEqual(fields['product_code'], 'ABC')
+
+        with self.assertRaises(TypeError):
+            get_pattern_subgroups_from_string(bad_file, 12)
+
+        fields = get_pattern_subgroups_from_string(bad_file, '')
+        self.assertDictEqual(fields, {})
+
+        with self.assertRaises(TypeError):
+            get_pattern_subgroups_from_string(bad_file, """^FILE_SUFFIX_(?P<product_code[A-Z]{3,4})""")
 
     def test_format_exception(self):
         try:
