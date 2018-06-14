@@ -642,7 +642,9 @@ class HandlerBase(object):
     def _check(self):
         check_runner = get_check_runner(self.config, self.logger, self.check_params)
         self.logger.sysinfo("get_check_runner -> '{runner}'".format(runner=check_runner.__class__.__name__))
-        self.file_collection.set_check_types_from_params(self.check_params)
+
+        self.file_collection.filter_by_attribute_id('check_type', PipelineFileCheckType.UNSET).set_default_check_types(
+            self.check_params)
 
         files_to_check = self.file_collection.filter_by_attribute_id_not('check_type', PipelineFileCheckType.NO_ACTION)
         if files_to_check:
