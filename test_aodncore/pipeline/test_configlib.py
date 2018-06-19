@@ -16,6 +16,7 @@ REFERENCE_PIPELINE_CONFIG = {
         'admin_recipients': ['unittest:dummy'],
         'archive_uri': 'file:///tmp/probably/doesnt/exist/archive',
         'error_dir': '/tmp/probably/doesnt/exist/error',
+        'opendap_root': 'http://opendap.example.com',
         'processing_dir': '/tmp/probably/doesnt/exist/processing',
         'upload_uri': 'file:///tmp/probably/doesnt/exist/upload',
         'wip_dir': '/tmp/probably/doesnt/exist/wip'

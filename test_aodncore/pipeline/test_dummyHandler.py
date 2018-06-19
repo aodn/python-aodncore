@@ -366,6 +366,10 @@ class TestDummyHandler(HandlerTestCase):
         handler = self.run_handler(self.temp_nc_file)
         self.assertIsInstance(handler.state_query, StateQuery)
 
+    def test_opendap_root(self):
+        handler = self.run_handler(self.temp_nc_file)
+        self.assertEqual(handler.opendap_root, 'http://opendap.example.com')
+
 
 if __name__ == '__main__':
     unittest.main()
