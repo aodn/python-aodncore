@@ -8,7 +8,7 @@ Welcome to aodncore's documentation!
 
 .. toctree::
    :maxdepth: 20
-   :caption: Quick Start:
+   :caption: Quick Start Guide:
 
    quickstartdoc
 
