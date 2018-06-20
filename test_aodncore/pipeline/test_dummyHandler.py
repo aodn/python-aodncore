@@ -5,9 +5,9 @@ import unittest
 from jsonschema import ValidationError
 
 from aodncore.pipeline import PipelineFilePublishType, HandlerResult
-from aodncore.pipeline.exceptions import (ComplianceCheckFailedError, HandlerAlreadyRunError, InvalidCheckSuiteError,
-                                          InvalidInputFileError, InvalidFileFormatError, InvalidRecipientError,
-                                          UnmatchedFilesError)
+from aodncore.pipeline.exceptions import (AttributeValidationError, ComplianceCheckFailedError, HandlerAlreadyRunError,
+                                          InvalidCheckSuiteError, InvalidInputFileError, InvalidFileFormatError,
+                                          InvalidRecipientError, UnmatchedFilesError)
 from aodncore.pipeline.statequery import StateQuery
 from aodncore.pipeline.steps import NotifyList
 from aodncore.testlib import DummyHandler, HandlerTestCase, dest_path_testing, get_nonexistent_path, mock
@@ -153,6 +153,13 @@ class TestDummyHandler(HandlerTestCase):
                                  "input file '.*' does not match any patterns in the allowed_regexes list:.*")
 
         self.run_handler(self.temp_nc_file, dest_path_function=dest_path_testing, allowed_regexes=['.*\.nc'])
+
+    def test_allowed_dest_path_regexes(self):
+        self.run_handler_with_exception(AttributeValidationError, self.temp_nc_file,
+                                        dest_path_function=dest_path_testing,
+                                        allowed_dest_path_regexes=['DEFINITELY/NOT/A/MATCH'])
+
+        self.run_handler(self.temp_nc_file, dest_path_function=dest_path_testing, allowed_dest_path_regexes=['DUMMY.*'])
 
     def test_allowed_extensions_and_allowed_regexes(self):
         self.run_handler_with_exception(InvalidInputFileError, GOOD_NC, dest_path_function=dest_path_testing,

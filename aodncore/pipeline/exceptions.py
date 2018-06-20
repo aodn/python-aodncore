@@ -7,8 +7,8 @@ __all__ = [
     'PipelineProcessingError',
     'PipelineSystemError',
     'ComplianceCheckFailedError',
-    'DuplicateUniqueAttributeError',
     'AttributeNotSetError',
+    'AttributeValidationError',
     'DuplicatePipelineFileError',
     'HandlerAlreadyRunError',
     'InvalidCheckSuiteError',
@@ -54,10 +54,6 @@ class ComplianceCheckFailedError(PipelineProcessingError):
     pass
 
 
-class DuplicateUniqueAttributeError(PipelineProcessingError):
-    pass
-
-
 class InvalidFileNameError(PipelineProcessingError):
     pass
 
@@ -73,6 +69,10 @@ class InvalidFileFormatError(PipelineProcessingError):
 # System errors
 
 class AttributeNotSetError(PipelineSystemError):
+    pass
+
+
+class AttributeValidationError(PipelineSystemError):
     pass
 
 
