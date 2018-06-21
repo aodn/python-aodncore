@@ -482,9 +482,7 @@ class HandlerBase(object):
         :rtype: :py:class:`PipelineFile`
         """
         if not self._input_file_object:
-            input_file_object = PipelineFile(self.input_file, file_update_callback=self._file_update_callback)
-            input_file_object.publish_type = PipelineFilePublishType.ARCHIVE_ONLY
-            self._input_file_object = input_file_object
+            self._input_file_object = PipelineFile(self.input_file, file_update_callback=self._file_update_callback)
         return self._input_file_object
 
     @property
@@ -655,6 +653,7 @@ class HandlerBase(object):
             self._upload_runner_archive.run(files_to_archive)
 
         if self.archive_input_file:
+            self.input_file_object.publish_type = PipelineFilePublishType.ARCHIVE_ONLY
             self.input_file_object.archive_path = self.input_file_archive_path
             self._upload_runner_archive.run(self.input_file_object)
 
