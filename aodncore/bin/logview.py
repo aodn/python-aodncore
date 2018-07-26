@@ -35,8 +35,8 @@ class LogViewer(object):
     """
 
     def __init__(self, logfile):
-        assert logfile, 'No log file specified!'
-        assert os.path.isfile(logfile), '{logfile}: no such file!'.format(logfile=logfile)
+        if not os.path.isfile(logfile):
+            raise ValueError('{logfile}: no such file!'.format(logfile=logfile))
         self.logfile = logfile
 
     def log_entries(self):
@@ -62,8 +62,7 @@ class LogViewer(object):
         Filter the tuples returned by log_entries according to the filters specified.
 
         :param str task_id: only include log for given task uuid
-        :param bool errors: only include error log lines
-        :param bool warnings: only include warning & error lines
+        :param list levels: only include include messages with the given logging levels
         :param str pattern: only include log messages matching pattern (regular expression)
         :return: tuple (raw, data) as for log_entries
 
@@ -86,8 +85,7 @@ class LogViewer(object):
         Print a filtered & re-formatted view of the log to stdout
 
         :param str task_id: only include log for given task uuid
-        :param bool errors: only include error log lines
-        :param bool warnings: only include warning & error lines
+        :param list levels: only include include messages with the given logging levels
         :param str pattern: only include log messages matching pattern (regular expression)
         :param str fmt: output format (fmt.format() applied to dict of LOG_FIELDS extracted from log)
 
