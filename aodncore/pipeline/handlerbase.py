@@ -653,7 +653,8 @@ class HandlerBase(object):
             self._upload_runner_archive.run(files_to_archive)
 
         if self.archive_input_file:
-            self.input_file_object.publish_type = PipelineFilePublishType.ARCHIVE_ONLY
+            if self.input_file_object.publish_type is PipelineFilePublishType.UNSET:
+                self.input_file_object.publish_type = PipelineFilePublishType.ARCHIVE_ONLY
             self.input_file_object.archive_path = self.input_file_archive_path
             self._upload_runner_archive.run(self.input_file_object)
 
