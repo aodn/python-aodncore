@@ -85,6 +85,7 @@ PIPELINE_CONFIG_SCHEMA = {
                 },
                 'archive_uri': {'type': 'string'},
                 'error_dir': {'type': 'string'},
+                'opendap_root': {'type': 'string'},
                 'processing_dir': {'type': 'string'},
                 'tmp_dir': {'type': 'string'},
                 'upload_uri': {'type': 'string'},
