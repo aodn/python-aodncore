@@ -286,18 +286,29 @@ class HandlerBase(object):
                  ):
 
         # property backing variables
+        self._archive_store_runner_object = None
         self._config = None
         self._default_addition_publish_type = PipelineFilePublishType.HARVEST_UPLOAD
         self._default_deletion_publish_type = PipelineFilePublishType.DELETE_UNHARVEST
         self._error = None
+        self._error_details = None
         self._file_basename = None
         self._file_checksum = None
+        self._file_collection = None
         self._file_extension = None
         self._file_type = None
+        self._input_file_archive_path = None
+        self._input_file_object = None
+        self._instance_working_directory = None
+        self._notification_results = None
         self._is_archived = False
+        self._logger = None
         self._module_versions = None
         self._result = HandlerResult.UNKNOWN
+        self._should_notify = None
         self._start_time = datetime.now()
+        self._state_query = None
+        self._upload_store_runner_object = None
 
         # public attributes
         self.input_file = input_file
@@ -320,21 +331,12 @@ class HandlerBase(object):
         self.upload_path = upload_path
         self.resolve_params = resolve_params
 
+        # private attributes
         self._archive_path_function_ref = None
         self._archive_path_function_name = None
         self._dest_path_function_ref = None
         self._dest_path_function_name = None
-        self._error_details = None
-        self._file_collection = None
         self._handler_run = False
-        self._input_file_archive_path = None
-        self._input_file_object = None
-        self._instance_working_directory = None
-        self._notification_results = None
-        self._should_notify = None
-        self._state_query = None
-        self._upload_runner = None
-        self._upload_runner_archive = None
 
         self._machine = Machine(model=self, states=HandlerBase.all_states, initial='HANDLER_INITIAL',
                                 auto_transitions=False, transitions=HandlerBase.all_transitions,
@@ -342,7 +344,7 @@ class HandlerBase(object):
 
     def __iter__(self):
         ignored_attributes = {'celery_task', 'config', 'default_addition_publish_type', 'default_deletion_publish_type',
-                              'input_file_object', 'logger', 'state', 'trigger'}
+                              'input_file_object', 'logger', 'state', 'state_query', 'trigger'}
         ignored_attributes.update("is_{state}".format(state=s) for s in self.all_states)
 
         return iter_public_attributes(self, ignored_attributes)
@@ -351,7 +353,7 @@ class HandlerBase(object):
         return "{cls}({attrs})".format(cls=self.__class__.__name__, attrs=dict(self))
 
     #
-    # properties
+    # public properties
     #
 
     @property
@@ -374,7 +376,7 @@ class HandlerBase(object):
 
     @property
     def config(self):
-        """Read-only property to access the :attr:`config` attribute
+        """Property to access the :attr:`config` attribute
 
         :return: configuration object
         :rtype: :class:`aodncore.pipeline.config.LazyConfigManager`
@@ -482,10 +484,18 @@ class HandlerBase(object):
         :rtype: :py:class:`PipelineFile`
         """
         if not self._input_file_object:
-            input_file_object = PipelineFile(self.input_file, file_update_callback=self._file_update_callback)
-            input_file_object.publish_type = PipelineFilePublishType.ARCHIVE_ONLY
-            self._input_file_object = input_file_object
+            self._input_file_object = PipelineFile(self.input_file, file_update_callback=self._file_update_callback)
         return self._input_file_object
+
+    @property
+    def logger(self):
+        """Read-only property to access the instance Logger
+
+        :return: :py:class:`Logger`
+        """
+        if self._logger is None:
+            self._init_logger()
+        return self._logger
 
     @property
     def module_versions(self):
@@ -545,6 +555,8 @@ class HandlerBase(object):
         :return: StateQuery instance
         :rtype: :py:class:`StateQuery`
         """
+        if self._state_query is None:
+            self._state_query = StateQuery(self._upload_store_runner.broker)
         return self._state_query
 
     @property
@@ -612,19 +624,51 @@ class HandlerBase(object):
             return os.path.join(self._instance_working_directory, 'temp')
 
     #
+    # private properties
+    #
+
+    @property
+    def _archive_store_runner(self):
+        """Private read-only property for accessing the instance's 'archive' store runner (for internal use only)
+
+        :return: :py:class:`StoreRunner`
+        """
+        if self._archive_store_runner_object is None:
+            self._archive_store_runner_object = get_store_runner(self._config.pipeline_config['global']['archive_uri'],
+                                                                 self._config, self.logger, archive_mode=True)
+            self.logger.sysinfo("get_store_runner (archive)-> {runner}(broker='{broker}')".format(
+                runner=self._archive_store_runner_object.__class__.__name__,
+                broker=self._archive_store_runner_object.broker.__class__.__name__))
+        return self._archive_store_runner_object
+
+    @property
+    def _upload_store_runner(self):
+        """Private read-only property for accessing the instance 'upload' store runner (for internal use only)
+
+        :return: :py:class:`StoreRunner`
+        """
+        if self._upload_store_runner_object is None:
+            self._upload_store_runner_object = get_store_runner(self._config.pipeline_config['global']['upload_uri'],
+                                                                self._config, self.logger)
+            self.logger.sysinfo("get_store_runner (upload)-> {runner}(broker='{broker}')".format(
+                runner=self._upload_store_runner_object.__class__.__name__,
+                broker=self._upload_store_runner_object.broker.__class__.__name__))
+        return self._upload_store_runner_object
+
+    #
     # 'before' methods for ordered state machine transitions
     #
 
     def _initialise(self):
+        self.logger.info("running handler -> '{str}'".format(str=self))
+
         self._file_collection = PipelineFileCollection()
 
-        self._init_logging()
         self._validate_and_freeze_params()
         self._set_input_file_attributes()
         self._check_input_file_name()
         self._set_path_functions()
         self._init_working_directory()
-        self._init_upload_runners()
 
     def _resolve(self):
         resolve_runner = get_resolve_runner(self.input_file, self.collection_dir, self.config, self.logger,
@@ -652,14 +696,16 @@ class HandlerBase(object):
         files_to_archive = self.file_collection.filter_by_bool_attribute('pending_archive')
 
         if files_to_archive:
-            self._upload_runner_archive.run(files_to_archive)
+            self._archive_store_runner.run(files_to_archive)
 
         if self.archive_input_file:
+            if self.input_file_object.publish_type is PipelineFilePublishType.UNSET:
+                self.input_file_object.publish_type = PipelineFilePublishType.ARCHIVE_ONLY
             self.input_file_object.archive_path = self.input_file_archive_path
-            self._upload_runner_archive.run(self.input_file_object)
+            self._archive_store_runner.run(self.input_file_object)
 
     def _harvest(self):
-        harvest_runner = get_harvester_runner(self.harvest_type, self._upload_runner.broker, self.harvest_params,
+        harvest_runner = get_harvester_runner(self.harvest_type, self._upload_store_runner.broker, self.harvest_params,
                                               self.temp_dir, self.config, self.logger)
         self.logger.sysinfo("get_harvester_runner -> '{runner}'".format(runner=harvest_runner.__class__.__name__))
         files_to_harvest = self.file_collection.filter_by_bool_attribute('pending_harvest')
@@ -671,11 +717,12 @@ class HandlerBase(object):
         files_to_store = self.file_collection.filter_by_bool_attribute('pending_store')
 
         if files_to_store:
-            self._upload_runner.run(files_to_store)
+            self._upload_store_runner.run(files_to_store)
 
     def _pre_publish(self):
         unset = self.file_collection.filter_by_attribute_id('publish_type',
-                                                            PipelineFilePublishType.UNSET).get_attribute_list('src_path')
+                                                            PipelineFilePublishType.UNSET).get_attribute_list(
+            'src_path')
         if unset:
             raise UnmatchedFilesError("files with UNSET publish_type found: '{unset}'".format(unset=unset))
 
@@ -693,7 +740,7 @@ class HandlerBase(object):
             files_to_store = self.file_collection.filter_by_bool_attributes_or('pending_store', 'pending_harvest')
             files_to_store.validate_attribute_value_matches_regexes('dest_path', self.allowed_dest_path_regexes)
 
-        self._upload_runner.set_is_overwrite(self.file_collection)
+        self._upload_store_runner.set_is_overwrite(self.file_collection)
 
     def _publish(self):
         self._pre_publish()
@@ -774,12 +821,12 @@ class HandlerBase(object):
                 "input file '{basename}' does not match any patterns in the allowed_regexes list: {allowed}".format(
                     basename=self.file_basename, allowed=self.allowed_regexes))
 
-    def _init_logging(self):
+    def _init_logger(self):
         try:
             celery_task_id = self.celery_task.request.id
             celery_task_name = self.celery_task.name
             pipeline_name = self.celery_task.pipeline_name
-            self.logger = self.celery_task.logger
+            self._logger = self.celery_task.logger
         except AttributeError as e:
             # the absence of a celery task indicates we're in a unittest or IDE, so fall-back to basic logging config
             celery_task_id = None
@@ -801,25 +848,11 @@ class HandlerBase(object):
 
             logger.warning('no logger parameter or celery task found, falling back to root logger')
             logger.debug('_init_logging exception: {e}'.format(e=e))
-            self.logger = logger
+            self._logger = logger
 
         self._celery_task_id = celery_task_id
         self._celery_task_name = celery_task_name
         self._pipeline_name = pipeline_name
-
-        self.logger.info("running handler -> '{str}'".format(str=self))
-
-    def _init_upload_runners(self):
-        self._upload_runner = get_store_runner(self._config.pipeline_config['global']['upload_uri'], self._config,
-                                               self.logger)
-        self.logger.sysinfo("get_store_runner -> '{runner}'".format(runner=self._upload_runner.__class__.__name__))
-
-        self._upload_runner_archive = get_store_runner(self._config.pipeline_config['global']['archive_uri'],
-                                                       self._config, self.logger, archive_mode=True)
-        self.logger.sysinfo(
-            "get_store_runner (archive) -> '{runner}'".format(runner=self._upload_runner_archive.__class__.__name__))
-
-        self._state_query = StateQuery(self._upload_runner.broker)
 
     def _init_working_directory(self):
         for subdirectory in ('collection', 'products', 'temp'):

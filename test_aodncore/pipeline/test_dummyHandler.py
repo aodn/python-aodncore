@@ -186,6 +186,13 @@ class TestDummyHandler(HandlerTestCase):
         self.assertTrue(handler.input_file_object.is_archived)
         self.assertEqual(handler.input_file_object.archive_path, expected_path)
 
+    def test_archive_input_file_manual_publish_type(self):
+        handler = self.handler_class(GOOD_ZIP, archive_path_function=dest_path_testing, archive_input_file=True)
+        handler.input_file_object.publish_type = PipelineFilePublishType.HARVEST_ARCHIVE
+        handler.run()
+
+        self.assertIs(handler.input_file_object.publish_type, PipelineFilePublishType.HARVEST_ARCHIVE)
+
     def test_input_file_archive_path(self):
         handler = self.handler_class(self.temp_nc_file)
         with self.assertRaises(ValueError):
