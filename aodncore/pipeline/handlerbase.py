@@ -334,8 +334,8 @@ class HandlerBase(object):
         self._notification_results = None
         self._should_notify = None
         self._state_query = None
-        self._upload_runner_object = None
-        self._upload_runner_archive_object = None
+        self._upload_store_runner_object = None
+        self._archive_store_runner_object = None
 
         self._machine = Machine(model=self, states=HandlerBase.all_states, initial='HANDLER_INITIAL',
                                 auto_transitions=False, transitions=HandlerBase.all_transitions,
@@ -555,7 +555,7 @@ class HandlerBase(object):
         :rtype: :py:class:`StateQuery`
         """
         if self._state_query is None:
-            self._state_query = StateQuery(self._upload_runner.broker)
+            self._state_query = StateQuery(self._upload_store_runner.broker)
         return self._state_query
 
     @property
@@ -627,31 +627,32 @@ class HandlerBase(object):
     #
 
     @property
-    def _upload_runner(self):
-        """Private read-only property for accessing the instance 'upload' upload runner (for internal use only)
+    def _archive_store_runner(self):
+        """Private read-only property for accessing the instance's 'archive' store runner (for internal use only)
 
         :return: :py:class:`StoreRunner`
         """
-        if self._upload_runner_object is None:
-            self._upload_runner_object = get_store_runner(self._config.pipeline_config['global']['upload_uri'],
-                                                          self._config, self.logger)
-            self.logger.sysinfo("get_store_runner (upload)-> {runner}(broker='{broker}')".format(
-                runner=self._upload_runner_object.__class__.__name__, broker=self._upload_runner_object.broker.__class__.__name__))
-        return self._upload_runner_object
+        if self._archive_store_runner_object is None:
+            self._archive_store_runner_object = get_store_runner(self._config.pipeline_config['global']['archive_uri'],
+                                                                 self._config, self.logger, archive_mode=True)
+            self.logger.sysinfo("get_store_runner (archive)-> {runner}(broker='{broker}')".format(
+                runner=self._archive_store_runner_object.__class__.__name__,
+                broker=self._archive_store_runner_object.broker.__class__.__name__))
+        return self._archive_store_runner_object
 
     @property
-    def _upload_runner_archive(self):
-        """Private read-only property for accessing the instance's 'archive' upload runner (for internal use only)
+    def _upload_store_runner(self):
+        """Private read-only property for accessing the instance 'upload' store runner (for internal use only)
 
         :return: :py:class:`StoreRunner`
         """
-        if self._upload_runner_archive_object is None:
-            self._upload_runner_archive_object = get_store_runner(self._config.pipeline_config['global']['archive_uri'],
-                                                                  self._config, self.logger, archive_mode=True)
-            self.logger.sysinfo("get_store_runner (archive)-> {runner}(broker='{broker}')".format(
-                runner=self._upload_runner_archive_object.__class__.__name__,
-                broker=self._upload_runner_archive_object.broker.__class__.__name__))
-        return self._upload_runner_archive_object
+        if self._upload_store_runner_object is None:
+            self._upload_store_runner_object = get_store_runner(self._config.pipeline_config['global']['upload_uri'],
+                                                                self._config, self.logger)
+            self.logger.sysinfo("get_store_runner (upload)-> {runner}(broker='{broker}')".format(
+                runner=self._upload_store_runner_object.__class__.__name__,
+                broker=self._upload_store_runner_object.broker.__class__.__name__))
+        return self._upload_store_runner_object
 
     #
     # 'before' methods for ordered state machine transitions
@@ -694,16 +695,16 @@ class HandlerBase(object):
         files_to_archive = self.file_collection.filter_by_bool_attribute('pending_archive')
 
         if files_to_archive:
-            self._upload_runner_archive.run(files_to_archive)
+            self._archive_store_runner.run(files_to_archive)
 
         if self.archive_input_file:
             if self.input_file_object.publish_type is PipelineFilePublishType.UNSET:
                 self.input_file_object.publish_type = PipelineFilePublishType.ARCHIVE_ONLY
             self.input_file_object.archive_path = self.input_file_archive_path
-            self._upload_runner_archive.run(self.input_file_object)
+            self._archive_store_runner.run(self.input_file_object)
 
     def _harvest(self):
-        harvest_runner = get_harvester_runner(self.harvest_type, self._upload_runner.broker, self.harvest_params,
+        harvest_runner = get_harvester_runner(self.harvest_type, self._upload_store_runner.broker, self.harvest_params,
                                               self.temp_dir, self.config, self.logger)
         self.logger.sysinfo("get_harvester_runner -> '{runner}'".format(runner=harvest_runner.__class__.__name__))
         files_to_harvest = self.file_collection.filter_by_bool_attribute('pending_harvest')
@@ -715,11 +716,12 @@ class HandlerBase(object):
         files_to_store = self.file_collection.filter_by_bool_attribute('pending_store')
 
         if files_to_store:
-            self._upload_runner.run(files_to_store)
+            self._upload_store_runner.run(files_to_store)
 
     def _pre_publish(self):
         unset = self.file_collection.filter_by_attribute_id('publish_type',
-                                                            PipelineFilePublishType.UNSET).get_attribute_list('src_path')
+                                                            PipelineFilePublishType.UNSET).get_attribute_list(
+            'src_path')
         if unset:
             raise UnmatchedFilesError("files with UNSET publish_type found: '{unset}'".format(unset=unset))
 
@@ -737,7 +739,7 @@ class HandlerBase(object):
             files_to_store = self.file_collection.filter_by_bool_attributes_or('pending_store', 'pending_harvest')
             files_to_store.validate_attribute_value_matches_regexes('dest_path', self.allowed_dest_path_regexes)
 
-        self._upload_runner.set_is_overwrite(self.file_collection)
+        self._upload_store_runner.set_is_overwrite(self.file_collection)
 
     def _publish(self):
         self._pre_publish()
