@@ -286,18 +286,29 @@ class HandlerBase(object):
                  ):
 
         # property backing variables
+        self._archive_store_runner_object = None
         self._config = None
         self._default_addition_publish_type = PipelineFilePublishType.HARVEST_UPLOAD
         self._default_deletion_publish_type = PipelineFilePublishType.DELETE_UNHARVEST
         self._error = None
+        self._error_details = None
         self._file_basename = None
         self._file_checksum = None
+        self._file_collection = None
         self._file_extension = None
         self._file_type = None
+        self._input_file_archive_path = None
+        self._input_file_object = None
+        self._instance_working_directory = None
+        self._notification_results = None
         self._is_archived = False
+        self._logger = None
         self._module_versions = None
         self._result = HandlerResult.UNKNOWN
+        self._should_notify = None
         self._start_time = datetime.now()
+        self._state_query = None
+        self._upload_store_runner_object = None
 
         # public attributes
         self.input_file = input_file
@@ -320,22 +331,12 @@ class HandlerBase(object):
         self.upload_path = upload_path
         self.resolve_params = resolve_params
 
+        # private attributes
         self._archive_path_function_ref = None
         self._archive_path_function_name = None
         self._dest_path_function_ref = None
         self._dest_path_function_name = None
-        self._error_details = None
-        self._file_collection = None
         self._handler_run = False
-        self._input_file_archive_path = None
-        self._input_file_object = None
-        self._instance_working_directory = None
-        self._logger = None
-        self._notification_results = None
-        self._should_notify = None
-        self._state_query = None
-        self._upload_store_runner_object = None
-        self._archive_store_runner_object = None
 
         self._machine = Machine(model=self, states=HandlerBase.all_states, initial='HANDLER_INITIAL',
                                 auto_transitions=False, transitions=HandlerBase.all_transitions,
