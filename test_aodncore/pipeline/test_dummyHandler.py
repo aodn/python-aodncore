@@ -4,7 +4,7 @@ import unittest
 
 from jsonschema import ValidationError
 
-from aodncore.pipeline import PipelineFilePublishType, HandlerResult
+from aodncore.pipeline import PipelineFileCheckType, PipelineFilePublishType, HandlerResult
 from aodncore.pipeline.exceptions import (AttributeValidationError, ComplianceCheckFailedError, HandlerAlreadyRunError,
                                           InvalidCheckSuiteError, InvalidInputFileError, InvalidFileFormatError,
                                           InvalidRecipientError, UnmatchedFilesError)
@@ -212,6 +212,11 @@ class TestDummyHandler(HandlerTestCase):
     def test_not_netcdf_nc(self):
         self.run_handler_with_exception(ComplianceCheckFailedError, NOT_NETCDF_NC_FILE,
                                         check_params={'checks': ['cf']}, dest_path_function=dest_path_testing)
+
+    def test_manual_check_type_not_overwritten_by_default(self):
+        handler = self.run_handler(BAD_ZIP)
+        self.assertIs(handler.file_collection[0].check_type, PipelineFileCheckType.FORMAT_CHECK)
+        self.assertIs(handler.file_collection[1].check_type, PipelineFileCheckType.NO_ACTION)
 
     @mock.patch('aodncore.pipeline.steps.notify.smtplib.SMTP')
     def test_notify_error(self, mock_smtp):

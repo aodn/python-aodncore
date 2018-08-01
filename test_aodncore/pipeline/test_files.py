@@ -72,7 +72,16 @@ class TestPipelineFile(BaseTestCase):
     def test_property_check_type(self):
         test_value = PipelineFileCheckType.FORMAT_CHECK
         self.pipelinefile.check_type = test_value
-        self.assertEqual(self.pipelinefile.check_type, test_value)
+        self.assertIs(self.pipelinefile.check_type, test_value)
+
+        with self.assertRaises(ValueError):
+            self.pipelinefile.check_type = 'invalid'
+
+        with self.assertRaises(ValueError):
+            self.pipelinefile.check_type = PipelineFileCheckType.UNSET
+
+        with self.assertRaises(ValueError):
+            self.pipelinefile_deletion.check_type = PipelineFileCheckType.NONEMPTY_CHECK
 
     def test_property_dest_path(self):
         test_value = str(uuid.uuid4())
@@ -84,7 +93,7 @@ class TestPipelineFile(BaseTestCase):
     def test_property_publish_type(self):
         test_value = PipelineFilePublishType.HARVEST_ARCHIVE_UPLOAD
         self.pipelinefile.publish_type = test_value
-        self.assertEqual(self.pipelinefile.publish_type, test_value)
+        self.assertIs(self.pipelinefile.publish_type, test_value)
 
         with self.assertRaises(ValueError):
             self.pipelinefile.publish_type = 'invalid'
@@ -807,19 +816,37 @@ class TestPipelineFileCollection(BaseTestCase):
             raise AssertionError(
                 "unexpected exception raised. {cls} {msg}".format(cls=e.__class__.__name__, msg=e))
 
-    def test_set_check_types(self):
+    @mock.patch("aodncore.pipeline.files.get_file_checksum")
+    @mock.patch("os.path.isfile")
+    def test_set_check_types(self, mock_isfile, mock_get_file_checksum):
         f1 = get_nonexistent_path()
         f2 = get_nonexistent_path()
-        fileobj1 = PipelineFile(f1, is_deletion=True)
-        fileobj2 = PipelineFile(f2, is_deletion=True)
+        fileobj1 = PipelineFile(f1)
+        fileobj2 = PipelineFile(f2)
         self.collection.update((fileobj1, fileobj2))
 
-        self.assertTrue(all(f.check_type is PipelineFileCheckType.NO_ACTION for f in self.collection))
+        self.assertTrue(all(f.check_type is PipelineFileCheckType.UNSET for f in self.collection))
         self.collection.set_check_types(PipelineFileCheckType.NONEMPTY_CHECK)
         self.assertTrue(all(f.check_type is PipelineFileCheckType.NONEMPTY_CHECK for f in self.collection))
 
         with self.assertRaises(ValueError):
             self.collection.set_check_types('invalid_type')
+
+    @mock.patch("aodncore.pipeline.files.get_file_checksum")
+    @mock.patch("os.path.isfile")
+    def test_set_default_check_types(self, mock_isfile, mock_get_file_checksum):
+        f1 = get_nonexistent_path()
+        f2 = get_nonexistent_path()
+        f3 = GOOD_NC
+        fileobj1 = PipelineFile(f1, is_deletion=True)
+        fileobj2 = PipelineFile(f2)
+        fileobj3 = PipelineFile(f3)
+        self.collection.update((fileobj1, fileobj2, fileobj3))
+        self.collection.set_default_check_types(check_params={'checks': ['cf']})
+
+        self.assertIs(fileobj1.check_type, PipelineFileCheckType.UNSET)
+        self.assertIs(fileobj2.check_type, PipelineFileCheckType.FORMAT_CHECK)
+        self.assertIs(fileobj3.check_type, PipelineFileCheckType.NC_COMPLIANCE_CHECK)
 
     def test_set_publish_types(self):
         f1 = get_nonexistent_path()

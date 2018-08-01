@@ -20,7 +20,8 @@ __all__ = [
     'validate_checkresult',
     'validate_checktype',
     'validate_publishtype',
-    'validate_recipienttype'
+    'validate_recipienttype',
+    'validate_settable_checktype'
 ]
 
 
@@ -148,10 +149,16 @@ class FileType(Enum):
 class PipelineFileCheckType(Enum):
     """Each :py:class:`PipelineFile` may individually specify which checks are performed against it
     """
-    NO_ACTION = 0
-    NONEMPTY_CHECK = 1
-    FORMAT_CHECK = 2
-    NC_COMPLIANCE_CHECK = 3
+    UNSET = 0
+    NO_ACTION = 1
+    NONEMPTY_CHECK = 2
+    FORMAT_CHECK = 3
+    NC_COMPLIANCE_CHECK = 4
+
+    # noinspection PyMethodParameters,PyTypeChecker
+    @classproperty
+    def all_settable_types(cls):
+        return {t for t in cls if t != cls.UNSET}
 
 
 class PipelineFilePublishType(Enum):
@@ -232,3 +239,4 @@ validate_checktype = validate_membership(PipelineFileCheckType)
 validate_deletion_publishtype = validate_membership(PipelineFilePublishType.all_deletion_types)
 validate_recipienttype = validate_membership(NotificationRecipientType)
 validate_publishtype = validate_membership(PipelineFilePublishType)
+validate_settable_checktype = validate_membership(PipelineFileCheckType.all_settable_types)

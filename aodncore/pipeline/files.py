@@ -6,7 +6,8 @@ from collections import Counter, MutableSet, OrderedDict
 import six
 
 from .common import (FileType, PipelineFilePublishType, PipelineFileCheckType, validate_addition_publishtype,
-                     validate_checkresult, validate_checktype, validate_deletion_publishtype, validate_publishtype)
+                     validate_checkresult, validate_deletion_publishtype, validate_publishtype,
+                     validate_settable_checktype)
 from .exceptions import AttributeValidationError, DuplicatePipelineFileError, MissingFileError
 from .schema import validate_check_params
 from ..util import (IndexedSet, format_exception, get_file_checksum, iter_public_attributes, matches_regexes,
@@ -81,7 +82,7 @@ class PipelineFile(object):
             self.file_update_callback = file_update_callback
 
         # processing flags - these express the *intended actions* for the file
-        self._check_type = PipelineFileCheckType.NO_ACTION
+        self._check_type = PipelineFileCheckType.UNSET
         self._is_deletion = is_deletion
         self._publish_type = PipelineFilePublishType.UNSET
         self._should_archive = False
@@ -180,7 +181,9 @@ class PipelineFile(object):
 
     @check_type.setter
     def check_type(self, check_type):
-        validate_checktype(check_type)
+        if self.is_deletion:
+            raise ValueError('deletions cannot be assigned a check_type')
+        validate_settable_checktype(check_type)
 
         self._check_type = check_type
         self._post_property_update({'check_type': check_type.name})
@@ -759,8 +762,9 @@ class PipelineFileCollection(MutableSet):
         :param check_type: :py:class:`PipefileFileCheckType` enum member
         :return: None
         """
-        validate_checktype(check_type)
-        self._set_attribute('check_type', check_type)
+        validate_settable_checktype(check_type)
+        additions = PipelineFileCollection(f for f in self.__s if not f.is_deletion)
+        additions._set_attribute('check_type', check_type)
 
     def set_dest_paths(self, dest_path_function):
         """Set dest_path attributes for each file in the collection
@@ -814,12 +818,12 @@ class PipelineFileCollection(MutableSet):
         for f in self.__s:
             f.file_update_callback = file_update_callback
 
-    def set_check_types_from_params(self, check_params):
+    def set_default_check_types(self, check_params=None):
         """Set check_type attribute for each file in the collection to the default value, based on the file type and
         presence of compliance checker checks in the check parameters
 
-        :param check_params: :py:class:`dict`
-        :return:
+        :param check_params: :py:class:`dict` or None
+        :return: None
         """
         if check_params is None:
             check_params = {}
