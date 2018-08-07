@@ -832,14 +832,12 @@ class PipelineFileCollection(MutableSet):
 
         checks = check_params.get('checks', ())
 
-        all_deletions = PipelineFileCollection(f for f in self.__s if f.is_deletion)
-        all_additions = PipelineFileCollection(self.__s.difference(all_deletions))
+        all_additions = PipelineFileCollection(f for f in self.__s if not f.is_deletion)
         netcdf_additions = PipelineFileCollection(f for f in all_additions if f.file_type is FileType.NETCDF)
         non_netcdf_additions = all_additions.difference(netcdf_additions)
 
         netcdf_check_type = PipelineFileCheckType.NC_COMPLIANCE_CHECK if checks else PipelineFileCheckType.FORMAT_CHECK
 
-        all_deletions.set_check_types(PipelineFileCheckType.NO_ACTION)
         netcdf_additions.set_check_types(netcdf_check_type)
         non_netcdf_additions.set_check_types(PipelineFileCheckType.FORMAT_CHECK)
 

@@ -160,6 +160,11 @@ class PipelineFileCheckType(Enum):
     def all_settable_types(cls):
         return {t for t in cls if t != cls.UNSET}
 
+    # noinspection PyMethodParameters,PyTypeChecker
+    @classproperty
+    def all_checkable_types(cls):
+        return {t for t in cls if t not in (cls.UNSET, cls.NO_ACTION)}
+
 
 class PipelineFilePublishType(Enum):
     """Each :py:class:`PipelineFile` may individually specify which combination of archive/upload/harvest actions must
@@ -234,6 +239,7 @@ class PipelineFilePublishType(Enum):
 
 
 validate_addition_publishtype = validate_membership(PipelineFilePublishType.all_addition_types)
+validate_checkable_checktype = validate_membership(PipelineFileCheckType.all_checkable_types)
 validate_checkresult = validate_type(CheckResult)
 validate_checktype = validate_membership(PipelineFileCheckType)
 validate_deletion_publishtype = validate_membership(PipelineFilePublishType.all_deletion_types)

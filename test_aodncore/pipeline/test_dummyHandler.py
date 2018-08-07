@@ -1,10 +1,11 @@
 import os
 import sys
 import unittest
+from functools import partial
 
 from jsonschema import ValidationError
 
-from aodncore.pipeline import PipelineFileCheckType, PipelineFilePublishType, HandlerResult
+from aodncore.pipeline import PipelineFile, PipelineFileCheckType, PipelineFilePublishType, HandlerResult
 from aodncore.pipeline.exceptions import (AttributeValidationError, ComplianceCheckFailedError, HandlerAlreadyRunError,
                                           InvalidCheckSuiteError, InvalidInputFileError, InvalidFileFormatError,
                                           InvalidRecipientError, UnmatchedFilesError)
@@ -217,6 +218,20 @@ class TestDummyHandler(HandlerTestCase):
         handler = self.run_handler(BAD_ZIP)
         self.assertIs(handler.file_collection[0].check_type, PipelineFileCheckType.FORMAT_CHECK)
         self.assertIs(handler.file_collection[1].check_type, PipelineFileCheckType.NO_ACTION)
+
+    def test_deletion_pipeline_files_not_checked(self):
+        deletion = PipelineFile(self.temp_nc_file, is_deletion=True)
+
+        def _preprocess(self_):
+            self_.file_collection.add(deletion)
+
+        handler = self.handler_class(GOOD_ZIP)
+        handler.preprocess = partial(_preprocess, self_=handler)
+        handler.run()
+
+        self.assertIsNone(handler.error)
+        self.assertFalse(deletion.is_checked)
+        self.assertIs(deletion.check_type, PipelineFileCheckType.UNSET)
 
     @mock.patch('aodncore.pipeline.steps.notify.smtplib.SMTP')
     def test_notify_error(self, mock_smtp):
