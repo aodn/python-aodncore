@@ -687,8 +687,9 @@ class HandlerBase(object):
         check_runner = get_check_runner(self.config, self.logger, self.check_params)
         self.logger.sysinfo("get_check_runner -> '{runner}'".format(runner=check_runner.__class__.__name__))
 
-        self.file_collection.filter_by_attribute_id('check_type', PipelineFileCheckType.UNSET).set_default_check_types(
-            self.check_params)
+        self.file_collection \
+            .filter_by_attribute_id('check_type', PipelineFileCheckType.UNSET) \
+            .set_default_check_types(self.check_params)
 
         files_to_check = self.file_collection.filter_by_attribute_id_not('check_type', PipelineFileCheckType.NO_ACTION)
         if files_to_check:
@@ -722,9 +723,11 @@ class HandlerBase(object):
             self._upload_store_runner.run(files_to_store)
 
     def _pre_publish(self):
-        unset = self.file_collection.filter_by_attribute_id('publish_type',
-                                                            PipelineFilePublishType.UNSET).get_attribute_list(
-            'src_path')
+        unset = self.file_collection \
+                    .filter_by_bool_attribute_not('is_deletion') \
+                    .filter_by_attribute_id('publish_type', PipelineFilePublishType.UNSET) \
+                    .get_attribute_list('src_path')
+
         if unset:
             raise UnmatchedFilesError("files with UNSET publish_type found: '{unset}'".format(unset=unset))
 

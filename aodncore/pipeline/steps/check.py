@@ -86,7 +86,7 @@ class CheckRunnerAdapter(BaseCheckRunner):
 
     def run(self, pipeline_files):
         check_types = {t.check_type for t in pipeline_files if
-                       t.check_type is not PipelineFileCheckType.NO_ACTION}
+                       t.check_type in PipelineFileCheckType.all_checkable_types}
 
         for check_type in check_types:
             check_list = pipeline_files.filter_by_attribute_id('check_type', check_type)
