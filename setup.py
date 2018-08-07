@@ -1,6 +1,3 @@
-import os
-
-from pip.req import parse_requirements
 from setuptools import setup, find_packages
 
 from aodncore.version import __version__
@@ -18,6 +15,21 @@ EXTRAS_REQUIRE = {
     ':python_version < "3.5"': ['scandir == 1.6'],
 }
 
+INSTALL_REQUIRES = [
+    'boto3==1.4.4',
+    'cc-plugin-imos>=1.3.0',
+    'celery==4.1.1',
+    'compliance-checker==4.0.1',
+    'enum34==1.1.6',
+    'Jinja2==2.9.6',
+    'jsonschema==2.6.0',
+    'numpy>=1.13.0',
+    'paramiko==2.4.1',
+    'six==1.10.0',
+    'tabulate==0.8.2',
+    'transitions==0.5.3',
+]
+
 PACKAGE_DATA = {
     'aodncore': [
         'pipeline/templates/*.j2',
@@ -28,9 +40,6 @@ PACKAGE_DATA = {
 PACKAGE_EXCLUDES = ['test_aodncore.*', 'test_aodncore']
 PACKAGE_NAME = 'aodncore'
 PACKAGE_SCRIPTS = ['aodncore/bin/drawmachine.py', 'aodncore/pipeline/watchservice.py']
-
-requirements_txt = os.path.join(os.path.dirname(__file__), 'requirements.txt')
-requires = [str(r.req) for r in parse_requirements(requirements_txt, session=False)]
 
 setup(
     name=PACKAGE_NAME,
@@ -44,7 +53,7 @@ setup(
     author_email='developers@emii.org.au',
     description='AODN pipeline library',
     zip_safe=False,
-    install_requires=requires,
+    install_requires=INSTALL_REQUIRES,
     extras_require=EXTRAS_REQUIRE,
     test_suite='test_aodncore',
     entry_points=ENTRY_POINTS
