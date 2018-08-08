@@ -1,5 +1,9 @@
 [run]
 branch = True
+source = aodncore
+omit =
+    test_aodncore/*
+    aodncore/util/external/*
 
 [report]
 exclude_lines =
