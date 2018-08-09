@@ -1,0 +1,1050 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>aodncore.testlib package &mdash; aodncore 0.16.0 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  
+    <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="aodncore.util package" href="aodncore.util.html" />
+    <link rel="prev" title="aodncore.pipeline.templates package" href="aodncore.pipeline.templates.html" /> 
+
+  
+  <script src="_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="index.html" class="icon icon-home"> aodncore
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                0.16.0
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Quick Start Guide:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="quickstartdoc.html">Writing a <code class="docutils literal notranslate"><span class="pre">dest_path()</span></code> function</a></li>
+<li class="toctree-l1"><a class="reference internal" href="quickstartdoc.html#overriding-default-file-actions">Overriding default file actions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="quickstartdoc.html#creating-products-during-the-handler-lifetime">Creating products during the handler lifetime</a></li>
+<li class="toctree-l1"><a class="reference internal" href="quickstartdoc.html#query-storage">Query Storage</a></li>
+</ul>
+<p class="caption"><span class="caption-text">User documentation:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="userdoc.html">Overview</a></li>
+<li class="toctree-l1"><a class="reference internal" href="userdoc.html#state-machine-handler-steps">State machine / handler steps</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="userdoc.html#initialise">initialise</a></li>
+<li class="toctree-l2"><a class="reference internal" href="userdoc.html#resolve">resolve</a></li>
+<li class="toctree-l2"><a class="reference internal" href="userdoc.html#preprocess">preprocess</a></li>
+<li class="toctree-l2"><a class="reference internal" href="userdoc.html#check">check</a></li>
+<li class="toctree-l2"><a class="reference internal" href="userdoc.html#process">process</a></li>
+<li class="toctree-l2"><a class="reference internal" href="userdoc.html#publish">publish</a></li>
+<li class="toctree-l2"><a class="reference internal" href="userdoc.html#postprocess">postprocess</a></li>
+<li class="toctree-l2"><a class="reference internal" href="userdoc.html#notify">notify</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="userdoc.html#customising-handler-behaviour">Customising handler behaviour</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="userdoc.html#methods">Methods</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="userdoc.html#attributes">Attributes</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="userdoc.html#class-parameters">Class parameters</a></li>
+</ul>
+</li>
+</ul>
+<p class="caption"><span class="caption-text">Developer documentation:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="developerdoc.html">Overview</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Module contents:</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="modules.html">aodncore</a><ul class="current">
+<li class="toctree-l2 current"><a class="reference internal" href="aodncore.html">aodncore package</a><ul class="current">
+<li class="toctree-l3 current"><a class="reference internal" href="aodncore.html#subpackages">Subpackages</a><ul class="current">
+<li class="toctree-l4"><a class="reference internal" href="aodncore.common.html">aodncore.common package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="aodncore.pipeline.html">aodncore.pipeline package</a></li>
+<li class="toctree-l4 current"><a class="current reference internal" href="#">aodncore.testlib package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="aodncore.util.html">aodncore.util package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="aodncore.vocab.html">aodncore.vocab package</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="aodncore.html#submodules">Submodules</a></li>
+<li class="toctree-l3"><a class="reference internal" href="aodncore.html#module-aodncore.version">aodncore.version module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="aodncore.html#module-aodncore">Module contents</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">aodncore</a>
+        
+      </nav>
+
+
+      
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="modules.html">aodncore</a> &raquo;</li>
+        
+          <li><a href="aodncore.html">aodncore package</a> &raquo;</li>
+        
+      <li>aodncore.testlib package</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="_sources/aodncore.testlib.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="aodncore-testlib-package">
+<h1>aodncore.testlib package<a class="headerlink" href="#aodncore-testlib-package" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="subpackages">
+<h2>Subpackages<a class="headerlink" href="#subpackages" title="Permalink to this headline">¶</a></h2>
+<div class="toctree-wrapper compound">
+</div>
+</div>
+<div class="section" id="submodules">
+<h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="module-aodncore.testlib.basetest">
+<span id="aodncore-testlib-basetest-module"></span><h2>aodncore.testlib.basetest module<a class="headerlink" href="#module-aodncore.testlib.basetest" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="aodncore.testlib.basetest.BaseTestCase">
+<em class="property">class </em><code class="descclassname">aodncore.testlib.basetest.</code><code class="descname">BaseTestCase</code><span class="sig-paren">(</span><em>methodName='runTest'</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/aodncore/testlib/basetest.html#BaseTestCase"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#aodncore.testlib.basetest.BaseTestCase" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">unittest.case.TestCase</span></code></p>
+<dl class="attribute">
+<dt id="aodncore.testlib.basetest.BaseTestCase.config">
+<code class="descname">config</code><a class="headerlink" href="#aodncore.testlib.basetest.BaseTestCase.config" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="aodncore.testlib.basetest.BaseTestCase.setUp">
+<code class="descname">setUp</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/aodncore/testlib/basetest.html#BaseTestCase.setUp"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#aodncore.testlib.basetest.BaseTestCase.setUp" title="Permalink to this definition">¶</a></dt>
+<dd><p>Hook method for setting up the test fixture before exercising it.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="aodncore.testlib.basetest.BaseTestCase.tearDown">
+<code class="descname">tearDown</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/aodncore/testlib/basetest.html#BaseTestCase.tearDown"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#aodncore.testlib.basetest.BaseTestCase.tearDown" title="Permalink to this definition">¶</a></dt>
+<dd><p>Hook method for deconstructing the test fixture after testing it.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="aodncore.testlib.basetest.BaseTestCase.temp_dir">
+<code class="descname">temp_dir</code><a class="headerlink" href="#aodncore.testlib.basetest.BaseTestCase.temp_dir" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="aodncore.testlib.basetest.BaseTestCase.temp_nc_file">
+<code class="descname">temp_nc_file</code><a class="headerlink" href="#aodncore.testlib.basetest.BaseTestCase.temp_nc_file" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-aodncore.testlib.dummyhandler">
+<span id="aodncore-testlib-dummyhandler-module"></span><h2>aodncore.testlib.dummyhandler module<a class="headerlink" href="#module-aodncore.testlib.dummyhandler" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="aodncore.testlib.dummyhandler.DummyHandler">
+<em class="property">class </em><code class="descclassname">aodncore.testlib.dummyhandler.</code><code class="descname">DummyHandler</code><span class="sig-paren">(</span><em>*args</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/aodncore/testlib/dummyhandler.html#DummyHandler"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#aodncore.testlib.dummyhandler.DummyHandler" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="aodncore.pipeline.html#aodncore.pipeline.handlerbase.HandlerBase" title="aodncore.pipeline.handlerbase.HandlerBase"><code class="xref py py-class docutils literal notranslate"><span class="pre">aodncore.pipeline.handlerbase.HandlerBase</span></code></a></p>
+<p>This is an example handler, used for testing and also to demonstrate some of the kinds of things that each step
+might perform.</p>
+<p>Bear in mind that this inherits everything from the HandlerBase, but only some of the things are suitable to be
+overridden in this child class.</p>
+<p>Inherited instance members that will nearly always be relevant:</p>
+<ul class="simple">
+<li><dl class="first docutils">
+<dt>self.file_collection - the main collection of files, which is a PipelineFileCollection object whose elements</dt>
+<dd>are all PipelineFile instances (see handlerlib.files to see what these are)</dd>
+</dl>
+</li>
+<li>self.logger - log things!</li>
+</ul>
+<p>Inherited
+Things that you would typically implement here:</p>
+<ul class="simple">
+<li>dest_path static method to</li>
+<li>preprocess</li>
+<li>process</li>
+<li>postprocess methods</li>
+</ul>
+<dl class="staticmethod">
+<dt id="aodncore.testlib.dummyhandler.DummyHandler.dest_path">
+<em class="property">static </em><code class="descname">dest_path</code><span class="sig-paren">(</span><em>filename</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/aodncore/testlib/dummyhandler.html#DummyHandler.dest_path"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#aodncore.testlib.dummyhandler.DummyHandler.dest_path" title="Permalink to this definition">¶</a></dt>
+<dd><p>This method is optional, but if it is defined, it will be used to determine the destination path for a given
+input path. This could be based purely on the filename, or you could import the netcdf library and open the file
+and work it out based on the contents, or of course any other way you want to determine it
+:param filename: individual input file
+:return: destination path for the input file</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="aodncore.testlib.dummyhandler.DummyHandler.postprocess">
+<code class="descname">postprocess</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/aodncore/testlib/dummyhandler.html#DummyHandler.postprocess"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#aodncore.testlib.dummyhandler.DummyHandler.postprocess" title="Permalink to this definition">¶</a></dt>
+<dd><p>Here you can run code that needs to run <em>after</em> the publishing step but <em>before</em> the notify step</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">None</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="aodncore.testlib.dummyhandler.DummyHandler.preprocess">
+<code class="descname">preprocess</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/aodncore/testlib/dummyhandler.html#DummyHandler.preprocess"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#aodncore.testlib.dummyhandler.DummyHandler.preprocess" title="Permalink to this definition">¶</a></dt>
+<dd><p>Here you can run code that needs to run before the compliance checker step. This might be where you specify
+which files in the “eligible_files” list are “UPLOAD_ONLY”, or not published at all</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">None</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="aodncore.testlib.dummyhandler.DummyHandler.process">
+<code class="descname">process</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/aodncore/testlib/dummyhandler.html#DummyHandler.process"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#aodncore.testlib.dummyhandler.DummyHandler.process" title="Permalink to this definition">¶</a></dt>
+<dd><p>Here you can run code that needs to run <em>after</em> the compliance checker step but <em>before</em> the publishing step.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">None</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-aodncore.testlib.handlertest">
+<span id="aodncore-testlib-handlertest-module"></span><h2>aodncore.testlib.handlertest module<a class="headerlink" href="#module-aodncore.testlib.handlertest" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="aodncore.testlib.handlertest.HandlerTestCase">
+<em class="property">class </em><code class="descclassname">aodncore.testlib.handlertest.</code><code class="descname">HandlerTestCase</code><span class="sig-paren">(</span><em>methodName='runTest'</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/aodncore/testlib/handlertest.html#HandlerTestCase"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#aodncore.testlib.handlertest.HandlerTestCase" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#aodncore.testlib.basetest.BaseTestCase" title="aodncore.testlib.basetest.BaseTestCase"><code class="xref py py-class docutils literal notranslate"><span class="pre">aodncore.testlib.basetest.BaseTestCase</span></code></a></p>
+<dl class="method">
+<dt id="aodncore.testlib.handlertest.HandlerTestCase.run_handler">
+<code class="descname">run_handler</code><span class="sig-paren">(</span><em>*args</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/aodncore/testlib/handlertest.html#HandlerTestCase.run_handler"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#aodncore.testlib.handlertest.HandlerTestCase.run_handler" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="docutils">
+<dt>Instantiate and run the handler class defined in self.handler_class.</dt>
+<dd>Raise an AssertionError if the handler completes with any error</dd>
+</dl>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>args</strong> – args passed directly to handler instance</li>
+<li><strong>kwargs</strong> – kwargs passed directly to handler instance</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">the handler instance</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="aodncore.testlib.handlertest.HandlerTestCase.run_handler_with_exception">
+<code class="descname">run_handler_with_exception</code><span class="sig-paren">(</span><em>expected_error</em>, <em>*args</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/aodncore/testlib/handlertest.html#HandlerTestCase.run_handler_with_exception"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#aodncore.testlib.handlertest.HandlerTestCase.run_handler_with_exception" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="docutils">
+<dt>Instantiate and run the handler class defined in self.handler_class</dt>
+<dd>Raise an AssertionError if the handler completes <em>without</em> the error attribute being the expected Exception
+class</dd>
+</dl>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>expected_error</strong> – expected Exception class</li>
+<li><strong>args</strong> – args passed directly to handler instance</li>
+<li><strong>kwargs</strong> – kwargs passed directly to handler instance</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">the handler instance</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="aodncore.testlib.handlertest.HandlerTestCase.setUp">
+<code class="descname">setUp</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/aodncore/testlib/handlertest.html#HandlerTestCase.setUp"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#aodncore.testlib.handlertest.HandlerTestCase.setUp" title="Permalink to this definition">¶</a></dt>
+<dd><p>Hook method for setting up the test fixture before exercising it.</p>
+</dd></dl>
+
+<dl class="classmethod">
+<dt id="aodncore.testlib.handlertest.HandlerTestCase.setUpClass">
+<em class="property">classmethod </em><code class="descname">setUpClass</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/aodncore/testlib/handlertest.html#HandlerTestCase.setUpClass"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#aodncore.testlib.handlertest.HandlerTestCase.setUpClass" title="Permalink to this definition">¶</a></dt>
+<dd><p>Hook method for setting up class fixture before running tests in the class.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="aodncore.testlib.handlertest.HandlerTestCase.test_base">
+<code class="descname">test_base</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/aodncore/testlib/handlertest.html#HandlerTestCase.test_base"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#aodncore.testlib.handlertest.HandlerTestCase.test_base" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-aodncore.testlib.testutil">
+<span id="aodncore-testlib-testutil-module"></span><h2>aodncore.testlib.testutil module<a class="headerlink" href="#module-aodncore.testlib.testutil" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="aodncore.testlib.testutil.NullStorageBroker">
+<em class="property">class </em><code class="descclassname">aodncore.testlib.testutil.</code><code class="descname">NullStorageBroker</code><span class="sig-paren">(</span><em>prefix</em>, <em>fail=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/aodncore/testlib/testutil.html#NullStorageBroker"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#aodncore.testlib.testutil.NullStorageBroker" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">aodncore.pipeline.storage.BaseStorageBroker</span></code></p>
+<dl class="method">
+<dt id="aodncore.testlib.testutil.NullStorageBroker.assert_delete_call_count">
+<code class="descname">assert_delete_call_count</code><span class="sig-paren">(</span><em>count</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/aodncore/testlib/testutil.html#NullStorageBroker.assert_delete_call_count"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#aodncore.testlib.testutil.NullStorageBroker.assert_delete_call_count" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="aodncore.testlib.testutil.NullStorageBroker.assert_delete_called">
+<code class="descname">assert_delete_called</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/aodncore/testlib/testutil.html#NullStorageBroker.assert_delete_called"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#aodncore.testlib.testutil.NullStorageBroker.assert_delete_called" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="aodncore.testlib.testutil.NullStorageBroker.assert_delete_not_called">
+<code class="descname">assert_delete_not_called</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/aodncore/testlib/testutil.html#NullStorageBroker.assert_delete_not_called"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#aodncore.testlib.testutil.NullStorageBroker.assert_delete_not_called" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="aodncore.testlib.testutil.NullStorageBroker.assert_query_call_count">
+<code class="descname">assert_query_call_count</code><span class="sig-paren">(</span><em>count</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/aodncore/testlib/testutil.html#NullStorageBroker.assert_query_call_count"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#aodncore.testlib.testutil.NullStorageBroker.assert_query_call_count" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="aodncore.testlib.testutil.NullStorageBroker.assert_query_called">
+<code class="descname">assert_query_called</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/aodncore/testlib/testutil.html#NullStorageBroker.assert_query_called"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#aodncore.testlib.testutil.NullStorageBroker.assert_query_called" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="aodncore.testlib.testutil.NullStorageBroker.assert_query_not_called">
+<code class="descname">assert_query_not_called</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/aodncore/testlib/testutil.html#NullStorageBroker.assert_query_not_called"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#aodncore.testlib.testutil.NullStorageBroker.assert_query_not_called" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="aodncore.testlib.testutil.NullStorageBroker.assert_upload_call_count">
+<code class="descname">assert_upload_call_count</code><span class="sig-paren">(</span><em>count</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/aodncore/testlib/testutil.html#NullStorageBroker.assert_upload_call_count"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#aodncore.testlib.testutil.NullStorageBroker.assert_upload_call_count" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="aodncore.testlib.testutil.NullStorageBroker.assert_upload_called">
+<code class="descname">assert_upload_called</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/aodncore/testlib/testutil.html#NullStorageBroker.assert_upload_called"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#aodncore.testlib.testutil.NullStorageBroker.assert_upload_called" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="aodncore.testlib.testutil.NullStorageBroker.assert_upload_not_called">
+<code class="descname">assert_upload_not_called</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/aodncore/testlib/testutil.html#NullStorageBroker.assert_upload_not_called"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#aodncore.testlib.testutil.NullStorageBroker.assert_upload_not_called" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="aodncore.testlib.testutil.NullStorageBroker.delete">
+<code class="descname">delete</code><span class="sig-paren">(</span><em>pipeline_files</em>, <em>is_stored_attr='is_stored'</em>, <em>dest_path_attr='dest_path'</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/aodncore/testlib/testutil.html#NullStorageBroker.delete"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#aodncore.testlib.testutil.NullStorageBroker.delete" title="Permalink to this definition">¶</a></dt>
+<dd><p>Delete the given PipelineFileCollection from the storage backend</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>pipeline_files</strong> – collection to delete</li>
+<li><strong>is_stored_attr</strong> – PipelineFile attribute which will be set to True if delete is successful</li>
+<li><strong>dest_path_attr</strong> – PipelineFile attribute containing the destination path</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">None</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="aodncore.testlib.testutil.NullStorageBroker.query">
+<code class="descname">query</code><span class="sig-paren">(</span><em>query</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/aodncore/testlib/testutil.html#NullStorageBroker.query"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#aodncore.testlib.testutil.NullStorageBroker.query" title="Permalink to this definition">¶</a></dt>
+<dd><p>Query the storage for existing files</p>
+<p>A trailing slash will result in a directory listing type of query, recursively listing all files underneath
+the given directory.</p>
+<p>Omitting the trailing slash will cause a prefix style query, where the results will be any path that matches the
+query <em>including</em> partial file names.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>query</strong> – S3 prefix style string</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">a dict with keys being the matching objects, and values being a metadata dict for the object</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="aodncore.testlib.testutil.NullStorageBroker.upload">
+<code class="descname">upload</code><span class="sig-paren">(</span><em>pipeline_files</em>, <em>is_stored_attr='is_stored'</em>, <em>dest_path_attr='dest_path'</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/aodncore/testlib/testutil.html#NullStorageBroker.upload"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#aodncore.testlib.testutil.NullStorageBroker.upload" title="Permalink to this definition">¶</a></dt>
+<dd><p>Upload the given PipelineFileCollection to the storage backend</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>pipeline_files</strong> – collection to upload</li>
+<li><strong>is_stored_attr</strong> – PipelineFile attribute which will be set to True if upload is successful</li>
+<li><strong>dest_path_attr</strong> – PipelineFile attribute containing the destination path</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">None</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="function">
+<dt id="aodncore.testlib.testutil.dest_path_testing">
+<code class="descclassname">aodncore.testlib.testutil.</code><code class="descname">dest_path_testing</code><span class="sig-paren">(</span><em>filename</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/aodncore/testlib/testutil.html#dest_path_testing"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#aodncore.testlib.testutil.dest_path_testing" title="Permalink to this definition">¶</a></dt>
+<dd><p>Example/test function for destination path resolution</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>filename</strong> – </td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">relative path prepended with DUMMY</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="aodncore.testlib.testutil.get_nonexistent_path">
+<code class="descclassname">aodncore.testlib.testutil.</code><code class="descname">get_nonexistent_path</code><span class="sig-paren">(</span><em>relative=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/aodncore/testlib/testutil.html#get_nonexistent_path"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#aodncore.testlib.testutil.get_nonexistent_path" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return a path that is guaranteed not to exist</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">string containing guaranteed non-existent path</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="aodncore.testlib.testutil.make_test_file">
+<code class="descclassname">aodncore.testlib.testutil.</code><code class="descname">make_test_file</code><span class="sig-paren">(</span><em>filename</em>, <em>attributes=None</em>, <em>**variables</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/aodncore/testlib/testutil.html#make_test_file"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#aodncore.testlib.testutil.make_test_file" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create a netcdf file with the given global and variable
+attributes. Variables are created as dimensionless doubles.</p>
+<p>For example this:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">make_test_file</span><span class="p">(</span><span class="n">testfile</span><span class="p">,</span>
+               <span class="p">{</span><span class="s1">&#39;title&#39;</span><span class="p">:</span> <span class="s1">&#39;test file&#39;</span><span class="p">,</span> <span class="s1">&#39;site_code&#39;</span><span class="p">:</span> <span class="s1">&#39;NRSMAI&#39;</span><span class="p">},</span>
+               <span class="n">TEMP</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;standard_name&#39;</span><span class="p">:</span> <span class="s1">&#39;sea_water_temperature&#39;</span><span class="p">},</span>
+               <span class="n">PSAL</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;standard_name&#39;</span><span class="p">:</span> <span class="s1">&#39;sea_water_salinity&#39;</span><span class="p">}</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+<p>will create (in cdl):</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">netcdf</span> <span class="n">testfile</span> <span class="p">{</span>
+<span class="n">variables</span><span class="p">:</span>
+    <span class="n">double</span> <span class="n">PSAL</span> <span class="p">;</span>
+            <span class="n">PSAL</span><span class="p">:</span><span class="n">standard_name</span> <span class="o">=</span> <span class="s2">&quot;sea_water_salinity&quot;</span> <span class="p">;</span>
+    <span class="n">double</span> <span class="n">TEMP</span> <span class="p">;</span>
+            <span class="n">TEMP</span><span class="p">:</span><span class="n">standard_name</span> <span class="o">=</span> <span class="s2">&quot;sea_water_temperature&quot;</span> <span class="p">;</span>
+
+<span class="o">//</span> <span class="k">global</span> <span class="n">attributes</span><span class="p">:</span>
+            <span class="p">:</span><span class="n">site_code</span> <span class="o">=</span> <span class="s2">&quot;NRSMAI&quot;</span> <span class="p">;</span>
+            <span class="p">:</span><span class="n">title</span> <span class="o">=</span> <span class="s2">&quot;test file&quot;</span> <span class="p">;</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="function">
+<dt id="aodncore.testlib.testutil.make_zip">
+<code class="descclassname">aodncore.testlib.testutil.</code><code class="descname">make_zip</code><span class="sig-paren">(</span><em>temp_dir</em>, <em>file_list</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/aodncore/testlib/testutil.html#make_zip"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#aodncore.testlib.testutil.make_zip" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create a zip file in tmp_dir containing the files listed in file_list.
+Return the full path to the zip file.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="aodncore.testlib.testutil.get_test_config">
+<code class="descclassname">aodncore.testlib.testutil.</code><code class="descname">get_test_config</code><span class="sig-paren">(</span><em>temp_dir</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/aodncore/testlib/testutil.html#get_test_config"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#aodncore.testlib.testutil.get_test_config" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</div>
+<div class="section" id="module-aodncore.testlib">
+<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-aodncore.testlib" title="Permalink to this headline">¶</a></h2>
+<p>This package contains test “helper” code, which may also be used by other packages (e.g. aodndata).</p>
+<dl class="class">
+<dt id="aodncore.testlib.BaseTestCase">
+<em class="property">class </em><code class="descclassname">aodncore.testlib.</code><code class="descname">BaseTestCase</code><span class="sig-paren">(</span><em>methodName='runTest'</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/aodncore/testlib/basetest.html#BaseTestCase"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#aodncore.testlib.BaseTestCase" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">unittest.case.TestCase</span></code></p>
+<dl class="attribute">
+<dt id="aodncore.testlib.BaseTestCase.config">
+<code class="descname">config</code><a class="headerlink" href="#aodncore.testlib.BaseTestCase.config" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="aodncore.testlib.BaseTestCase.setUp">
+<code class="descname">setUp</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/aodncore/testlib/basetest.html#BaseTestCase.setUp"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#aodncore.testlib.BaseTestCase.setUp" title="Permalink to this definition">¶</a></dt>
+<dd><p>Hook method for setting up the test fixture before exercising it.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="aodncore.testlib.BaseTestCase.tearDown">
+<code class="descname">tearDown</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/aodncore/testlib/basetest.html#BaseTestCase.tearDown"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#aodncore.testlib.BaseTestCase.tearDown" title="Permalink to this definition">¶</a></dt>
+<dd><p>Hook method for deconstructing the test fixture after testing it.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="aodncore.testlib.BaseTestCase.temp_dir">
+<code class="descname">temp_dir</code><a class="headerlink" href="#aodncore.testlib.BaseTestCase.temp_dir" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="aodncore.testlib.BaseTestCase.temp_nc_file">
+<code class="descname">temp_nc_file</code><a class="headerlink" href="#aodncore.testlib.BaseTestCase.temp_nc_file" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="aodncore.testlib.DummyHandler">
+<em class="property">class </em><code class="descclassname">aodncore.testlib.</code><code class="descname">DummyHandler</code><span class="sig-paren">(</span><em>*args</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/aodncore/testlib/dummyhandler.html#DummyHandler"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#aodncore.testlib.DummyHandler" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="aodncore.pipeline.html#aodncore.pipeline.handlerbase.HandlerBase" title="aodncore.pipeline.handlerbase.HandlerBase"><code class="xref py py-class docutils literal notranslate"><span class="pre">aodncore.pipeline.handlerbase.HandlerBase</span></code></a></p>
+<p>This is an example handler, used for testing and also to demonstrate some of the kinds of things that each step
+might perform.</p>
+<p>Bear in mind that this inherits everything from the HandlerBase, but only some of the things are suitable to be
+overridden in this child class.</p>
+<p>Inherited instance members that will nearly always be relevant:</p>
+<ul class="simple">
+<li><dl class="first docutils">
+<dt>self.file_collection - the main collection of files, which is a PipelineFileCollection object whose elements</dt>
+<dd>are all PipelineFile instances (see handlerlib.files to see what these are)</dd>
+</dl>
+</li>
+<li>self.logger - log things!</li>
+</ul>
+<p>Inherited
+Things that you would typically implement here:</p>
+<ul class="simple">
+<li>dest_path static method to</li>
+<li>preprocess</li>
+<li>process</li>
+<li>postprocess methods</li>
+</ul>
+<dl class="staticmethod">
+<dt id="aodncore.testlib.DummyHandler.dest_path">
+<em class="property">static </em><code class="descname">dest_path</code><span class="sig-paren">(</span><em>filename</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/aodncore/testlib/dummyhandler.html#DummyHandler.dest_path"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#aodncore.testlib.DummyHandler.dest_path" title="Permalink to this definition">¶</a></dt>
+<dd><p>This method is optional, but if it is defined, it will be used to determine the destination path for a given
+input path. This could be based purely on the filename, or you could import the netcdf library and open the file
+and work it out based on the contents, or of course any other way you want to determine it
+:param filename: individual input file
+:return: destination path for the input file</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="aodncore.testlib.DummyHandler.postprocess">
+<code class="descname">postprocess</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/aodncore/testlib/dummyhandler.html#DummyHandler.postprocess"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#aodncore.testlib.DummyHandler.postprocess" title="Permalink to this definition">¶</a></dt>
+<dd><p>Here you can run code that needs to run <em>after</em> the publishing step but <em>before</em> the notify step</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">None</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="aodncore.testlib.DummyHandler.preprocess">
+<code class="descname">preprocess</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/aodncore/testlib/dummyhandler.html#DummyHandler.preprocess"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#aodncore.testlib.DummyHandler.preprocess" title="Permalink to this definition">¶</a></dt>
+<dd><p>Here you can run code that needs to run before the compliance checker step. This might be where you specify
+which files in the “eligible_files” list are “UPLOAD_ONLY”, or not published at all</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">None</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="aodncore.testlib.DummyHandler.process">
+<code class="descname">process</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/aodncore/testlib/dummyhandler.html#DummyHandler.process"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#aodncore.testlib.DummyHandler.process" title="Permalink to this definition">¶</a></dt>
+<dd><p>Here you can run code that needs to run <em>after</em> the compliance checker step but <em>before</em> the publishing step.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">None</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="aodncore.testlib.HandlerTestCase">
+<em class="property">class </em><code class="descclassname">aodncore.testlib.</code><code class="descname">HandlerTestCase</code><span class="sig-paren">(</span><em>methodName='runTest'</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/aodncore/testlib/handlertest.html#HandlerTestCase"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#aodncore.testlib.HandlerTestCase" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#aodncore.testlib.basetest.BaseTestCase" title="aodncore.testlib.basetest.BaseTestCase"><code class="xref py py-class docutils literal notranslate"><span class="pre">aodncore.testlib.basetest.BaseTestCase</span></code></a></p>
+<dl class="method">
+<dt id="aodncore.testlib.HandlerTestCase.run_handler">
+<code class="descname">run_handler</code><span class="sig-paren">(</span><em>*args</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/aodncore/testlib/handlertest.html#HandlerTestCase.run_handler"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#aodncore.testlib.HandlerTestCase.run_handler" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="docutils">
+<dt>Instantiate and run the handler class defined in self.handler_class.</dt>
+<dd>Raise an AssertionError if the handler completes with any error</dd>
+</dl>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>args</strong> – args passed directly to handler instance</li>
+<li><strong>kwargs</strong> – kwargs passed directly to handler instance</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">the handler instance</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="aodncore.testlib.HandlerTestCase.run_handler_with_exception">
+<code class="descname">run_handler_with_exception</code><span class="sig-paren">(</span><em>expected_error</em>, <em>*args</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/aodncore/testlib/handlertest.html#HandlerTestCase.run_handler_with_exception"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#aodncore.testlib.HandlerTestCase.run_handler_with_exception" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="docutils">
+<dt>Instantiate and run the handler class defined in self.handler_class</dt>
+<dd>Raise an AssertionError if the handler completes <em>without</em> the error attribute being the expected Exception
+class</dd>
+</dl>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>expected_error</strong> – expected Exception class</li>
+<li><strong>args</strong> – args passed directly to handler instance</li>
+<li><strong>kwargs</strong> – kwargs passed directly to handler instance</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">the handler instance</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="aodncore.testlib.HandlerTestCase.setUp">
+<code class="descname">setUp</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/aodncore/testlib/handlertest.html#HandlerTestCase.setUp"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#aodncore.testlib.HandlerTestCase.setUp" title="Permalink to this definition">¶</a></dt>
+<dd><p>Hook method for setting up the test fixture before exercising it.</p>
+</dd></dl>
+
+<dl class="classmethod">
+<dt id="aodncore.testlib.HandlerTestCase.setUpClass">
+<em class="property">classmethod </em><code class="descname">setUpClass</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/aodncore/testlib/handlertest.html#HandlerTestCase.setUpClass"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#aodncore.testlib.HandlerTestCase.setUpClass" title="Permalink to this definition">¶</a></dt>
+<dd><p>Hook method for setting up class fixture before running tests in the class.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="aodncore.testlib.HandlerTestCase.test_base">
+<code class="descname">test_base</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/aodncore/testlib/handlertest.html#HandlerTestCase.test_base"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#aodncore.testlib.HandlerTestCase.test_base" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="aodncore.testlib.NullStorageBroker">
+<em class="property">class </em><code class="descclassname">aodncore.testlib.</code><code class="descname">NullStorageBroker</code><span class="sig-paren">(</span><em>prefix</em>, <em>fail=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/aodncore/testlib/testutil.html#NullStorageBroker"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#aodncore.testlib.NullStorageBroker" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">aodncore.pipeline.storage.BaseStorageBroker</span></code></p>
+<dl class="method">
+<dt id="aodncore.testlib.NullStorageBroker.assert_delete_call_count">
+<code class="descname">assert_delete_call_count</code><span class="sig-paren">(</span><em>count</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/aodncore/testlib/testutil.html#NullStorageBroker.assert_delete_call_count"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#aodncore.testlib.NullStorageBroker.assert_delete_call_count" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="aodncore.testlib.NullStorageBroker.assert_delete_called">
+<code class="descname">assert_delete_called</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/aodncore/testlib/testutil.html#NullStorageBroker.assert_delete_called"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#aodncore.testlib.NullStorageBroker.assert_delete_called" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="aodncore.testlib.NullStorageBroker.assert_delete_not_called">
+<code class="descname">assert_delete_not_called</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/aodncore/testlib/testutil.html#NullStorageBroker.assert_delete_not_called"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#aodncore.testlib.NullStorageBroker.assert_delete_not_called" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="aodncore.testlib.NullStorageBroker.assert_query_call_count">
+<code class="descname">assert_query_call_count</code><span class="sig-paren">(</span><em>count</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/aodncore/testlib/testutil.html#NullStorageBroker.assert_query_call_count"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#aodncore.testlib.NullStorageBroker.assert_query_call_count" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="aodncore.testlib.NullStorageBroker.assert_query_called">
+<code class="descname">assert_query_called</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/aodncore/testlib/testutil.html#NullStorageBroker.assert_query_called"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#aodncore.testlib.NullStorageBroker.assert_query_called" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="aodncore.testlib.NullStorageBroker.assert_query_not_called">
+<code class="descname">assert_query_not_called</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/aodncore/testlib/testutil.html#NullStorageBroker.assert_query_not_called"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#aodncore.testlib.NullStorageBroker.assert_query_not_called" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="aodncore.testlib.NullStorageBroker.assert_upload_call_count">
+<code class="descname">assert_upload_call_count</code><span class="sig-paren">(</span><em>count</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/aodncore/testlib/testutil.html#NullStorageBroker.assert_upload_call_count"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#aodncore.testlib.NullStorageBroker.assert_upload_call_count" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="aodncore.testlib.NullStorageBroker.assert_upload_called">
+<code class="descname">assert_upload_called</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/aodncore/testlib/testutil.html#NullStorageBroker.assert_upload_called"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#aodncore.testlib.NullStorageBroker.assert_upload_called" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="aodncore.testlib.NullStorageBroker.assert_upload_not_called">
+<code class="descname">assert_upload_not_called</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/aodncore/testlib/testutil.html#NullStorageBroker.assert_upload_not_called"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#aodncore.testlib.NullStorageBroker.assert_upload_not_called" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="aodncore.testlib.NullStorageBroker.delete">
+<code class="descname">delete</code><span class="sig-paren">(</span><em>pipeline_files</em>, <em>is_stored_attr='is_stored'</em>, <em>dest_path_attr='dest_path'</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/aodncore/testlib/testutil.html#NullStorageBroker.delete"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#aodncore.testlib.NullStorageBroker.delete" title="Permalink to this definition">¶</a></dt>
+<dd><p>Delete the given PipelineFileCollection from the storage backend</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>pipeline_files</strong> – collection to delete</li>
+<li><strong>is_stored_attr</strong> – PipelineFile attribute which will be set to True if delete is successful</li>
+<li><strong>dest_path_attr</strong> – PipelineFile attribute containing the destination path</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">None</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="aodncore.testlib.NullStorageBroker.query">
+<code class="descname">query</code><span class="sig-paren">(</span><em>query</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/aodncore/testlib/testutil.html#NullStorageBroker.query"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#aodncore.testlib.NullStorageBroker.query" title="Permalink to this definition">¶</a></dt>
+<dd><p>Query the storage for existing files</p>
+<p>A trailing slash will result in a directory listing type of query, recursively listing all files underneath
+the given directory.</p>
+<p>Omitting the trailing slash will cause a prefix style query, where the results will be any path that matches the
+query <em>including</em> partial file names.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>query</strong> – S3 prefix style string</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">a dict with keys being the matching objects, and values being a metadata dict for the object</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="aodncore.testlib.NullStorageBroker.upload">
+<code class="descname">upload</code><span class="sig-paren">(</span><em>pipeline_files</em>, <em>is_stored_attr='is_stored'</em>, <em>dest_path_attr='dest_path'</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/aodncore/testlib/testutil.html#NullStorageBroker.upload"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#aodncore.testlib.NullStorageBroker.upload" title="Permalink to this definition">¶</a></dt>
+<dd><p>Upload the given PipelineFileCollection to the storage backend</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>pipeline_files</strong> – collection to upload</li>
+<li><strong>is_stored_attr</strong> – PipelineFile attribute which will be set to True if upload is successful</li>
+<li><strong>dest_path_attr</strong> – PipelineFile attribute containing the destination path</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">None</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="function">
+<dt id="aodncore.testlib.dest_path_testing">
+<code class="descclassname">aodncore.testlib.</code><code class="descname">dest_path_testing</code><span class="sig-paren">(</span><em>filename</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/aodncore/testlib/testutil.html#dest_path_testing"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#aodncore.testlib.dest_path_testing" title="Permalink to this definition">¶</a></dt>
+<dd><p>Example/test function for destination path resolution</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>filename</strong> – </td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">relative path prepended with DUMMY</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="aodncore.testlib.get_nonexistent_path">
+<code class="descclassname">aodncore.testlib.</code><code class="descname">get_nonexistent_path</code><span class="sig-paren">(</span><em>relative=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/aodncore/testlib/testutil.html#get_nonexistent_path"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#aodncore.testlib.get_nonexistent_path" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return a path that is guaranteed not to exist</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">string containing guaranteed non-existent path</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="aodncore.testlib.get_test_config">
+<code class="descclassname">aodncore.testlib.</code><code class="descname">get_test_config</code><span class="sig-paren">(</span><em>temp_dir</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/aodncore/testlib/testutil.html#get_test_config"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#aodncore.testlib.get_test_config" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="aodncore.testlib.make_test_file">
+<code class="descclassname">aodncore.testlib.</code><code class="descname">make_test_file</code><span class="sig-paren">(</span><em>filename</em>, <em>attributes=None</em>, <em>**variables</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/aodncore/testlib/testutil.html#make_test_file"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#aodncore.testlib.make_test_file" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create a netcdf file with the given global and variable
+attributes. Variables are created as dimensionless doubles.</p>
+<p>For example this:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">make_test_file</span><span class="p">(</span><span class="n">testfile</span><span class="p">,</span>
+               <span class="p">{</span><span class="s1">&#39;title&#39;</span><span class="p">:</span> <span class="s1">&#39;test file&#39;</span><span class="p">,</span> <span class="s1">&#39;site_code&#39;</span><span class="p">:</span> <span class="s1">&#39;NRSMAI&#39;</span><span class="p">},</span>
+               <span class="n">TEMP</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;standard_name&#39;</span><span class="p">:</span> <span class="s1">&#39;sea_water_temperature&#39;</span><span class="p">},</span>
+               <span class="n">PSAL</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;standard_name&#39;</span><span class="p">:</span> <span class="s1">&#39;sea_water_salinity&#39;</span><span class="p">}</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+<p>will create (in cdl):</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">netcdf</span> <span class="n">testfile</span> <span class="p">{</span>
+<span class="n">variables</span><span class="p">:</span>
+    <span class="n">double</span> <span class="n">PSAL</span> <span class="p">;</span>
+            <span class="n">PSAL</span><span class="p">:</span><span class="n">standard_name</span> <span class="o">=</span> <span class="s2">&quot;sea_water_salinity&quot;</span> <span class="p">;</span>
+    <span class="n">double</span> <span class="n">TEMP</span> <span class="p">;</span>
+            <span class="n">TEMP</span><span class="p">:</span><span class="n">standard_name</span> <span class="o">=</span> <span class="s2">&quot;sea_water_temperature&quot;</span> <span class="p">;</span>
+
+<span class="o">//</span> <span class="k">global</span> <span class="n">attributes</span><span class="p">:</span>
+            <span class="p">:</span><span class="n">site_code</span> <span class="o">=</span> <span class="s2">&quot;NRSMAI&quot;</span> <span class="p">;</span>
+            <span class="p">:</span><span class="n">title</span> <span class="o">=</span> <span class="s2">&quot;test file&quot;</span> <span class="p">;</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="function">
+<dt id="aodncore.testlib.make_zip">
+<code class="descclassname">aodncore.testlib.</code><code class="descname">make_zip</code><span class="sig-paren">(</span><em>temp_dir</em>, <em>file_list</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/aodncore/testlib/testutil.html#make_zip"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#aodncore.testlib.make_zip" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create a zip file in tmp_dir containing the files listed in file_list.
+Return the full path to the zip file.</p>
+</dd></dl>
+
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="aodncore.util.html" class="btn btn-neutral float-right" title="aodncore.util package" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="aodncore.pipeline.templates.html" class="btn btn-neutral" title="aodncore.pipeline.templates package" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2018, AODN.
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'./',
+            VERSION:'0.16.0',
+            LANGUAGE:'None',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true,
+            SOURCELINK_SUFFIX: '.txt'
+        };
+    </script>
+      <script type="text/javascript" src="_static/jquery.js"></script>
+      <script type="text/javascript" src="_static/underscore.js"></script>
+      <script type="text/javascript" src="_static/doctools.js"></script>
+
+  
+
+  
+  
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+  
+
+  <script type="text/javascript">
+      jQuery(function () {
+          
+          SphinxRtdTheme.Navigation.enableSticky();
+          
+      });
+  </script> 
+
+</body>
+</html>

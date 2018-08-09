@@ -1,0 +1,1995 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>aodncore.util package &mdash; aodncore 0.16.0 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  
+    <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="aodncore.vocab package" href="aodncore.vocab.html" />
+    <link rel="prev" title="aodncore.testlib package" href="aodncore.testlib.html" /> 
+
+  
+  <script src="_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="index.html" class="icon icon-home"> aodncore
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                0.16.0
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Quick Start Guide:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="quickstartdoc.html">Writing a <code class="docutils literal notranslate"><span class="pre">dest_path()</span></code> function</a></li>
+<li class="toctree-l1"><a class="reference internal" href="quickstartdoc.html#overriding-default-file-actions">Overriding default file actions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="quickstartdoc.html#creating-products-during-the-handler-lifetime">Creating products during the handler lifetime</a></li>
+<li class="toctree-l1"><a class="reference internal" href="quickstartdoc.html#query-storage">Query Storage</a></li>
+</ul>
+<p class="caption"><span class="caption-text">User documentation:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="userdoc.html">Overview</a></li>
+<li class="toctree-l1"><a class="reference internal" href="userdoc.html#state-machine-handler-steps">State machine / handler steps</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="userdoc.html#initialise">initialise</a></li>
+<li class="toctree-l2"><a class="reference internal" href="userdoc.html#resolve">resolve</a></li>
+<li class="toctree-l2"><a class="reference internal" href="userdoc.html#preprocess">preprocess</a></li>
+<li class="toctree-l2"><a class="reference internal" href="userdoc.html#check">check</a></li>
+<li class="toctree-l2"><a class="reference internal" href="userdoc.html#process">process</a></li>
+<li class="toctree-l2"><a class="reference internal" href="userdoc.html#publish">publish</a></li>
+<li class="toctree-l2"><a class="reference internal" href="userdoc.html#postprocess">postprocess</a></li>
+<li class="toctree-l2"><a class="reference internal" href="userdoc.html#notify">notify</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="userdoc.html#customising-handler-behaviour">Customising handler behaviour</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="userdoc.html#methods">Methods</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="userdoc.html#attributes">Attributes</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="userdoc.html#class-parameters">Class parameters</a></li>
+</ul>
+</li>
+</ul>
+<p class="caption"><span class="caption-text">Developer documentation:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="developerdoc.html">Overview</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Module contents:</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="modules.html">aodncore</a><ul class="current">
+<li class="toctree-l2 current"><a class="reference internal" href="aodncore.html">aodncore package</a><ul class="current">
+<li class="toctree-l3 current"><a class="reference internal" href="aodncore.html#subpackages">Subpackages</a><ul class="current">
+<li class="toctree-l4"><a class="reference internal" href="aodncore.common.html">aodncore.common package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="aodncore.pipeline.html">aodncore.pipeline package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="aodncore.testlib.html">aodncore.testlib package</a></li>
+<li class="toctree-l4 current"><a class="current reference internal" href="#">aodncore.util package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="aodncore.vocab.html">aodncore.vocab package</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="aodncore.html#submodules">Submodules</a></li>
+<li class="toctree-l3"><a class="reference internal" href="aodncore.html#module-aodncore.version">aodncore.version module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="aodncore.html#module-aodncore">Module contents</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">aodncore</a>
+        
+      </nav>
+
+
+      
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="modules.html">aodncore</a> &raquo;</li>
+        
+          <li><a href="aodncore.html">aodncore package</a> &raquo;</li>
+        
+      <li>aodncore.util package</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="_sources/aodncore.util.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="aodncore-util-package">
+<h1>aodncore.util package<a class="headerlink" href="#aodncore-util-package" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="subpackages">
+<h2>Subpackages<a class="headerlink" href="#subpackages" title="Permalink to this headline">¶</a></h2>
+<div class="toctree-wrapper compound">
+</div>
+</div>
+<div class="section" id="submodules">
+<h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="module-aodncore.util.fileops">
+<span id="aodncore-util-fileops-module"></span><h2>aodncore.util.fileops module<a class="headerlink" href="#module-aodncore.util.fileops" title="Permalink to this headline">¶</a></h2>
+<p>This module provides utility functions relating to various filesystem operations</p>
+<dl class="attribute">
+<dt id="aodncore.util.fileops.TemporaryDirectory">
+<code class="descclassname">aodncore.util.fileops.</code><code class="descname">TemporaryDirectory</code><a class="headerlink" href="#aodncore.util.fileops.TemporaryDirectory" title="Permalink to this definition">¶</a></dt>
+<dd><p>alias of <code class="xref py py-class docutils literal notranslate"><span class="pre">aodncore.util.fileops._TemporaryDirectory</span></code></p>
+</dd></dl>
+
+<dl class="function">
+<dt id="aodncore.util.fileops.extract_gzip">
+<code class="descclassname">aodncore.util.fileops.</code><code class="descname">extract_gzip</code><span class="sig-paren">(</span><em>gzip_path</em>, <em>dest_dir</em>, <em>dest_name=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/aodncore/util/fileops.html#extract_gzip"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#aodncore.util.fileops.extract_gzip" title="Permalink to this definition">¶</a></dt>
+<dd><p>Extract a GZ (GZIP) file’s contents into a directory</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>gzip_path</strong> – path to the source GZ file</li>
+<li><strong>dest_dir</strong> – destination directory into which the GZ is extracted</li>
+<li><strong>dest_name</strong> – basename for the extracted file (defaults to the original name minus the ‘.gz’ extension)</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">None</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="aodncore.util.fileops.extract_zip">
+<code class="descclassname">aodncore.util.fileops.</code><code class="descname">extract_zip</code><span class="sig-paren">(</span><em>zip_path</em>, <em>dest_dir</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/aodncore/util/fileops.html#extract_zip"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#aodncore.util.fileops.extract_zip" title="Permalink to this definition">¶</a></dt>
+<dd><p>Extract a ZIP file’s contents into a directory</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>zip_path</strong> – path to the source ZIP file</li>
+<li><strong>dest_dir</strong> – destination directory into which the ZIP is extracted</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">None</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="aodncore.util.fileops.get_file_checksum">
+<code class="descclassname">aodncore.util.fileops.</code><code class="descname">get_file_checksum</code><span class="sig-paren">(</span><em>filepath</em>, <em>block_size=65536</em>, <em>algorithm='sha256'</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/aodncore/util/fileops.html#get_file_checksum"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#aodncore.util.fileops.get_file_checksum" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the hash (checksum) of a file</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>filepath</strong> – path to the input file</li>
+<li><strong>block_size</strong> – number of bytes to hash each iteration</li>
+<li><strong>algorithm</strong> – hash algorithm (from <code class="xref py py-mod docutils literal notranslate"><span class="pre">hashlib</span></code> module)</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">hash of the input file</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="aodncore.util.fileops.is_dir_writable">
+<code class="descclassname">aodncore.util.fileops.</code><code class="descname">is_dir_writable</code><span class="sig-paren">(</span><em>path</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/aodncore/util/fileops.html#is_dir_writable"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#aodncore.util.fileops.is_dir_writable" title="Permalink to this definition">¶</a></dt>
+<dd><p>Check whether a directory is writable</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>path</strong> – directory path to check</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">None</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="aodncore.util.fileops.is_file_writable">
+<code class="descclassname">aodncore.util.fileops.</code><code class="descname">is_file_writable</code><span class="sig-paren">(</span><em>path</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/aodncore/util/fileops.html#is_file_writable"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#aodncore.util.fileops.is_file_writable" title="Permalink to this definition">¶</a></dt>
+<dd><p>Check whether a file is writable</p>
+<blockquote>
+<div><div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">Not as reliable as the <a class="reference internal" href="#aodncore.util.fileops.is_dir_writable" title="aodncore.util.fileops.is_dir_writable"><code class="xref py py-func docutils literal notranslate"><span class="pre">is_dir_writable()</span></code></a> function since that actually writes a file</p>
+</div>
+</div></blockquote>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>path</strong> – file path to check</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">None</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="aodncore.util.fileops.is_gzipfile">
+<code class="descclassname">aodncore.util.fileops.</code><code class="descname">is_gzipfile</code><span class="sig-paren">(</span><em>filepath</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/aodncore/util/fileops.html#is_gzipfile"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#aodncore.util.fileops.is_gzipfile" title="Permalink to this definition">¶</a></dt>
+<dd><p>Check whether a file path refers to a valid ZIP file</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>filepath</strong> – path to the file being checked</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">True if filepath is a valid ZIP file, otherwise False</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="aodncore.util.fileops.is_netcdffile">
+<code class="descclassname">aodncore.util.fileops.</code><code class="descname">is_netcdffile</code><span class="sig-paren">(</span><em>filepath</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/aodncore/util/fileops.html#is_netcdffile"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#aodncore.util.fileops.is_netcdffile" title="Permalink to this definition">¶</a></dt>
+<dd><p>Check whether a file path refers to a valid NetCDF file</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>filepath</strong> – path to the file being checked</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">True if filepath is a valid NetCDF file, otherwise False</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="aodncore.util.fileops.is_zipfile">
+<code class="descclassname">aodncore.util.fileops.</code><code class="descname">is_zipfile</code><span class="sig-paren">(</span><em>filepath</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/aodncore/util/fileops.html#is_zipfile"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#aodncore.util.fileops.is_zipfile" title="Permalink to this definition">¶</a></dt>
+<dd><p>Check whether a file path refers to a valid ZIP file</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>filepath</strong> – path to the file being checked</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">True if filepath is a valid ZIP file, otherwise False</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="aodncore.util.fileops.list_regular_files">
+<code class="descclassname">aodncore.util.fileops.</code><code class="descname">list_regular_files</code><span class="sig-paren">(</span><em>path</em>, <em>recursive=False</em>, <em>sort_key=&lt;class 'functools.K'&gt;</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/aodncore/util/fileops.html#list_regular_files"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#aodncore.util.fileops.list_regular_files" title="Permalink to this definition">¶</a></dt>
+<dd><p>List all regular files in a given directory, returning the absolute path</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>sort_key</strong> – callable used to sort directory listings</li>
+<li><strong>path</strong> – input directory to list</li>
+<li><strong>recursive</strong> – <code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code> flag to enable recursive listing</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">iterator returning only regular files</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="aodncore.util.fileops.mkdir_p">
+<code class="descclassname">aodncore.util.fileops.</code><code class="descname">mkdir_p</code><span class="sig-paren">(</span><em>path</em>, <em>mode=493</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/aodncore/util/fileops.html#mkdir_p"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#aodncore.util.fileops.mkdir_p" title="Permalink to this definition">¶</a></dt>
+<dd><p>Recursively create a directory, including parent directories (analogous to shell command ‘mkdir -p’)</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>mode</strong> – </li>
+<li><strong>path</strong> – path to new directory</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">None</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="aodncore.util.fileops.rm_f">
+<code class="descclassname">aodncore.util.fileops.</code><code class="descname">rm_f</code><span class="sig-paren">(</span><em>path</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/aodncore/util/fileops.html#rm_f"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#aodncore.util.fileops.rm_f" title="Permalink to this definition">¶</a></dt>
+<dd><p>Remove a file, ignoring “file not found” errors (analogous to shell command ‘rm -f’)</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>path</strong> – path to file being deleted</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">None</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="aodncore.util.fileops.rm_r">
+<code class="descclassname">aodncore.util.fileops.</code><code class="descname">rm_r</code><span class="sig-paren">(</span><em>path</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/aodncore/util/fileops.html#rm_r"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#aodncore.util.fileops.rm_r" title="Permalink to this definition">¶</a></dt>
+<dd><p>Remove a file or directory recursively (analogous to shell command ‘rm -r’)</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>path</strong> – path to file being deleted</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">None</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="aodncore.util.fileops.rm_rf">
+<code class="descclassname">aodncore.util.fileops.</code><code class="descname">rm_rf</code><span class="sig-paren">(</span><em>path</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/aodncore/util/fileops.html#rm_rf"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#aodncore.util.fileops.rm_rf" title="Permalink to this definition">¶</a></dt>
+<dd><p>Remove a file or directory, ignoring “file not found” errors (analogous to shell command ‘rm -f’)</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>path</strong> – path to file being deleted</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">None</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="aodncore.util.fileops.safe_copy_file">
+<code class="descclassname">aodncore.util.fileops.</code><code class="descname">safe_copy_file</code><span class="sig-paren">(</span><em>source</em>, <em>destination</em>, <em>overwrite=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/aodncore/util/fileops.html#safe_copy_file"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#aodncore.util.fileops.safe_copy_file" title="Permalink to this definition">¶</a></dt>
+<dd><p>Copy a file atomically by copying first to a temporary file in the same directory (and therefore filesystem) as
+the intended destination, before performing a rename (which is atomic)</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>source</strong> – source file path</li>
+<li><strong>destination</strong> – destination file path (will not be overwritten unless ‘overwrite’ set to True)</li>
+<li><strong>overwrite</strong> – set to True to allow existing destination file to be overwritten</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">None</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="aodncore.util.fileops.safe_move_file">
+<code class="descclassname">aodncore.util.fileops.</code><code class="descname">safe_move_file</code><span class="sig-paren">(</span><em>src</em>, <em>dst</em>, <em>overwrite=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/aodncore/util/fileops.html#safe_move_file"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#aodncore.util.fileops.safe_move_file" title="Permalink to this definition">¶</a></dt>
+<dd><p>Move a file atomically by performing a copy and delete</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>src</strong> – source file path</li>
+<li><strong>dst</strong> – destination file path</li>
+<li><strong>overwrite</strong> – set to True to allow existing destination file to be overwritten</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">None</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="aodncore.util.fileops.validate_dir_writable">
+<code class="descclassname">aodncore.util.fileops.</code><code class="descname">validate_dir_writable</code><span class="sig-paren">(</span><em>path</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/aodncore/util/fileops.html#validate_dir_writable"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#aodncore.util.fileops.validate_dir_writable" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="aodncore.util.fileops.validate_file_writable">
+<code class="descclassname">aodncore.util.fileops.</code><code class="descname">validate_file_writable</code><span class="sig-paren">(</span><em>path</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/aodncore/util/fileops.html#validate_file_writable"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#aodncore.util.fileops.validate_file_writable" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</div>
+<div class="section" id="module-aodncore.util.misc">
+<span id="aodncore-util-misc-module"></span><h2>aodncore.util.misc module<a class="headerlink" href="#module-aodncore.util.misc" title="Permalink to this headline">¶</a></h2>
+<p>This module provides miscellaneous utility functions <em>not</em> related to filesystem or subprocess operations.</p>
+<p>These are typically functions which query, manipulate or transform Python objects.</p>
+<dl class="function">
+<dt id="aodncore.util.misc.discover_entry_points">
+<code class="descclassname">aodncore.util.misc.</code><code class="descname">discover_entry_points</code><span class="sig-paren">(</span><em>entry_point_group</em>, <em>working_set=&lt;pkg_resources.WorkingSet object&gt;</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/aodncore/util/misc.html#discover_entry_points"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#aodncore.util.misc.discover_entry_points" title="Permalink to this definition">¶</a></dt>
+<dd><p>Discover entry points registered under the given entry point group name in the given
+<code class="xref py py-class docutils literal notranslate"><span class="pre">pkg_resources.WorkingSet</span></code> instance</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>entry_point_group</strong> – entry point group name used to find entry points in working set</li>
+<li><strong>working_set</strong> – <code class="xref py py-class docutils literal notranslate"><span class="pre">pkg_resources.WorkingSet</span></code> instance</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"><code class="xref py py-class docutils literal notranslate"><span class="pre">dict</span></code> containing each discovered entry point, with keys being the entry point name and values
+being a reference to the object referenced by the entry point</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="aodncore.util.misc.ensure_writeonceordereddict">
+<code class="descclassname">aodncore.util.misc.</code><code class="descname">ensure_writeonceordereddict</code><span class="sig-paren">(</span><em>o</em>, <em>empty_on_fail=True</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/aodncore/util/misc.html#ensure_writeonceordereddict"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#aodncore.util.misc.ensure_writeonceordereddict" title="Permalink to this definition">¶</a></dt>
+<dd><p>Function to accept and object and return the WriteOnceOrderedDict representation of the object. An object which
+can <em>not</em> be handled by the WriteOnceOrderedDict __init__ method will either result in an empty, or if
+‘empty_on_fail’ is set to False, will result in an exception.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>o</strong> – input object</li>
+<li><strong>empty_on_fail</strong> – boolean flag to determine whether an invalid object will result in a new empty
+WriteOnceOrderedDict being returned or the exception re-raised.</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"><a class="reference internal" href="#aodncore.util.misc.WriteOnceOrderedDict" title="aodncore.util.misc.WriteOnceOrderedDict"><code class="xref py py-class docutils literal notranslate"><span class="pre">WriteOnceOrderedDict</span></code></a> instance</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="aodncore.util.misc.format_exception">
+<code class="descclassname">aodncore.util.misc.</code><code class="descname">format_exception</code><span class="sig-paren">(</span><em>exception</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/aodncore/util/misc.html#format_exception"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#aodncore.util.misc.format_exception" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return a pretty string representation of an Exception object containing the Exception name and message</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>exception</strong> – <code class="xref py py-class docutils literal notranslate"><span class="pre">Exception</span></code> object</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">string</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="aodncore.util.misc.get_pattern_subgroups_from_string">
+<code class="descclassname">aodncore.util.misc.</code><code class="descname">get_pattern_subgroups_from_string</code><span class="sig-paren">(</span><em>string</em>, <em>pattern</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/aodncore/util/misc.html#get_pattern_subgroups_from_string"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#aodncore.util.misc.get_pattern_subgroups_from_string" title="Permalink to this definition">¶</a></dt>
+<dd><p>Function to retrieve parts of a string given a compiled pattern (re.compile(pattern))
+the pattern needs to match the beginning of the string
+(see <a class="reference external" href="https://docs.python.org/2/library/re.html#re.RegexObject.match">https://docs.python.org/2/library/re.html#re.RegexObject.match</a>)</p>
+<ul class="simple">
+<li>No need to start the pattern with “^”; and</li>
+<li>To match anywhere in the string, start the pattern with “.*”.</li>
+</ul>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">dictionary of fields matching a given pattern</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="aodncore.util.misc.is_nonstring_iterable">
+<code class="descclassname">aodncore.util.misc.</code><code class="descname">is_nonstring_iterable</code><span class="sig-paren">(</span><em>sequence</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/aodncore/util/misc.html#is_nonstring_iterable"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#aodncore.util.misc.is_nonstring_iterable" title="Permalink to this definition">¶</a></dt>
+<dd><p>Check whether an object is a non-string <code class="xref py py-class docutils literal notranslate"><span class="pre">Iterable</span></code></p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>sequence</strong> – object to check</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">True if object is a non-string sub class of <code class="xref py py-class docutils literal notranslate"><span class="pre">Iterable</span></code></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="aodncore.util.misc.is_function">
+<code class="descclassname">aodncore.util.misc.</code><code class="descname">is_function</code><span class="sig-paren">(</span><em>o</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/aodncore/util/misc.html#is_function"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#aodncore.util.misc.is_function" title="Permalink to this definition">¶</a></dt>
+<dd><p>Check whether a given object is a function</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>o</strong> – object to check</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">True if object is a function, otherwise False</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="aodncore.util.misc.is_valid_email_address">
+<code class="descclassname">aodncore.util.misc.</code><code class="descname">is_valid_email_address</code><span class="sig-paren">(</span><em>address</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/aodncore/util/misc.html#is_valid_email_address"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#aodncore.util.misc.is_valid_email_address" title="Permalink to this definition">¶</a></dt>
+<dd><p>Simple email address validation</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>address</strong> – address to validate</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">True if address matches the regex, otherwise False</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="aodncore.util.misc.iter_public_attributes">
+<code class="descclassname">aodncore.util.misc.</code><code class="descname">iter_public_attributes</code><span class="sig-paren">(</span><em>instance</em>, <em>ignored_attributes=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/aodncore/util/misc.html#iter_public_attributes"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#aodncore.util.misc.iter_public_attributes" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get an iterator over an instance’s public attributes, <em>including</em> properties</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>instance</strong> – object instance</li>
+<li><strong>ignored_attributes</strong> – set of attribute names to exclude</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">iterator over the instances public attributes</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="aodncore.util.misc.matches_regexes">
+<code class="descclassname">aodncore.util.misc.</code><code class="descname">matches_regexes</code><span class="sig-paren">(</span><em>input_string</em>, <em>include_regexes=None</em>, <em>exclude_regexes=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/aodncore/util/misc.html#matches_regexes"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#aodncore.util.misc.matches_regexes" title="Permalink to this definition">¶</a></dt>
+<dd><p>Function to filter a string (e.g. file path) according to regular expression inclusions minus exclusions</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>input_string</strong> – string for comparison to the regular expressions</li>
+<li><strong>include_regexes</strong> – list of inclusions</li>
+<li><strong>exclude_regexes</strong> – list of exclusions to <em>subtract</em> from the list produced by inclusions</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">True if the of the string matches one of the ‘include_regexes’ but <em>not</em> one of the ‘exclude_regexes’</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="aodncore.util.misc.merge_dicts">
+<code class="descclassname">aodncore.util.misc.</code><code class="descname">merge_dicts</code><span class="sig-paren">(</span><em>*args</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/aodncore/util/misc.html#merge_dicts"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#aodncore.util.misc.merge_dicts" title="Permalink to this definition">¶</a></dt>
+<dd><p>Recursive <code class="xref py py-class docutils literal notranslate"><span class="pre">dict</span></code> merge</p>
+<p>Dict-like objects are merged sequentially from left to right into a new <code class="xref py py-class docutils literal notranslate"><span class="pre">dict</span></code></p>
+<p>Based on: <a class="reference external" href="https://gist.github.com/angstwad/bf22d1822c38a92ec0a9">https://gist.github.com/angstwad/bf22d1822c38a92ec0a9</a></p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">None</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="aodncore.util.misc.slice_sequence">
+<code class="descclassname">aodncore.util.misc.</code><code class="descname">slice_sequence</code><span class="sig-paren">(</span><em>sequence</em>, <em>slice_size</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/aodncore/util/misc.html#slice_sequence"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#aodncore.util.misc.slice_sequence" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return a <code class="xref py py-class docutils literal notranslate"><span class="pre">list</span></code> containing the input <code class="xref py py-class docutils literal notranslate"><span class="pre">Sequence</span></code> sliced into <code class="xref py py-class docutils literal notranslate"><span class="pre">Sequence</span></code> instances
+with a length equal to or less than <code class="xref py py-attr docutils literal notranslate"><span class="pre">slice_size</span></code></p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">The type of the elements should be the same type as the original sequence based on the usual Python
+slicing behaviour, but the outer sequence will always be a <code class="xref py py-class docutils literal notranslate"><span class="pre">list</span></code> type.</p>
+</div>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>sequence</strong> – input sequence</li>
+<li><strong>slice_size</strong> – size of each sub-Sequence</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"><code class="xref py py-class docutils literal notranslate"><span class="pre">list</span></code> of <code class="xref py py-class docutils literal notranslate"><span class="pre">Sequence</span></code> instances</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="aodncore.util.misc.str_to_list">
+<code class="descclassname">aodncore.util.misc.</code><code class="descname">str_to_list</code><span class="sig-paren">(</span><em>string_</em>, <em>delimiter='</em>, <em>'</em>, <em>strip_method='strip'</em>, <em>include_empty=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/aodncore/util/misc.html#str_to_list"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#aodncore.util.misc.str_to_list" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return a comma-separated string as native list, with whitespace stripped and empty strings excluded</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>string</strong> – input string</li>
+<li><strong>delimiter</strong> – character(s) used to split the string</li>
+<li><strong>strip_method</strong> – which strip method to use for each element (invalid method names</li>
+<li><strong>include_empty</strong> – boolean to control whether empty strings are included in returned list</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">list representation of the given config option</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="aodncore.util.misc.validate_bool">
+<code class="descclassname">aodncore.util.misc.</code><code class="descname">validate_bool</code><span class="sig-paren">(</span><em>o</em><span class="sig-paren">)</span><a class="headerlink" href="#aodncore.util.misc.validate_bool" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="aodncore.util.misc.validate_callable">
+<code class="descclassname">aodncore.util.misc.</code><code class="descname">validate_callable</code><span class="sig-paren">(</span><em>o</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/aodncore/util/misc.html#validate_callable"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#aodncore.util.misc.validate_callable" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="aodncore.util.misc.validate_dict">
+<code class="descclassname">aodncore.util.misc.</code><code class="descname">validate_dict</code><span class="sig-paren">(</span><em>o</em><span class="sig-paren">)</span><a class="headerlink" href="#aodncore.util.misc.validate_dict" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="aodncore.util.misc.validate_int">
+<code class="descclassname">aodncore.util.misc.</code><code class="descname">validate_int</code><span class="sig-paren">(</span><em>o</em><span class="sig-paren">)</span><a class="headerlink" href="#aodncore.util.misc.validate_int" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="aodncore.util.misc.validate_mapping">
+<code class="descclassname">aodncore.util.misc.</code><code class="descname">validate_mapping</code><span class="sig-paren">(</span><em>o</em><span class="sig-paren">)</span><a class="headerlink" href="#aodncore.util.misc.validate_mapping" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="aodncore.util.misc.validate_mandatory_elements">
+<code class="descclassname">aodncore.util.misc.</code><code class="descname">validate_mandatory_elements</code><span class="sig-paren">(</span><em>mandatory</em>, <em>actual</em>, <em>name='item'</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/aodncore/util/misc.html#validate_mandatory_elements"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#aodncore.util.misc.validate_mandatory_elements" title="Permalink to this definition">¶</a></dt>
+<dd><p>Ensure that a collection contains all the elements in a ‘mandatory’ collection of elements</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>mandatory</strong> – collection of mandatory elements</li>
+<li><strong>actual</strong> – collection to compare against mandatory collection</li>
+<li><strong>name</strong> – name of object being validated for exception message (e.g. ‘item’ or ‘section’)</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">None</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="aodncore.util.misc.validate_membership">
+<code class="descclassname">aodncore.util.misc.</code><code class="descname">validate_membership</code><span class="sig-paren">(</span><em>c</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/aodncore/util/misc.html#validate_membership"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#aodncore.util.misc.validate_membership" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="aodncore.util.misc.validate_nonstring_iterable">
+<code class="descclassname">aodncore.util.misc.</code><code class="descname">validate_nonstring_iterable</code><span class="sig-paren">(</span><em>o</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/aodncore/util/misc.html#validate_nonstring_iterable"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#aodncore.util.misc.validate_nonstring_iterable" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="aodncore.util.misc.validate_regex">
+<code class="descclassname">aodncore.util.misc.</code><code class="descname">validate_regex</code><span class="sig-paren">(</span><em>o</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/aodncore/util/misc.html#validate_regex"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#aodncore.util.misc.validate_regex" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="aodncore.util.misc.validate_relative_path">
+<code class="descclassname">aodncore.util.misc.</code><code class="descname">validate_relative_path</code><span class="sig-paren">(</span><em>o</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/aodncore/util/misc.html#validate_relative_path"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#aodncore.util.misc.validate_relative_path" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="aodncore.util.misc.validate_relative_path_attr">
+<code class="descclassname">aodncore.util.misc.</code><code class="descname">validate_relative_path_attr</code><span class="sig-paren">(</span><em>path</em>, <em>path_attr</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/aodncore/util/misc.html#validate_relative_path_attr"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#aodncore.util.misc.validate_relative_path_attr" title="Permalink to this definition">¶</a></dt>
+<dd><p>Validate a path, raising an exception containing the name of the attribute which failed</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>path</strong> – string containing the path to test</li>
+<li><strong>path_attr</strong> – attribute name to include in the exceptions message if validation fails</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">None</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="aodncore.util.misc.validate_string">
+<code class="descclassname">aodncore.util.misc.</code><code class="descname">validate_string</code><span class="sig-paren">(</span><em>o</em><span class="sig-paren">)</span><a class="headerlink" href="#aodncore.util.misc.validate_string" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="aodncore.util.misc.validate_type">
+<code class="descclassname">aodncore.util.misc.</code><code class="descname">validate_type</code><span class="sig-paren">(</span><em>t</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/aodncore/util/misc.html#validate_type"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#aodncore.util.misc.validate_type" title="Permalink to this definition">¶</a></dt>
+<dd><p>Closure to generate type validation functions</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>t</strong> – type</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">function reference to a function which validates a given input is an instance of type <cite>t</cite></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="class">
+<dt id="aodncore.util.misc.CaptureStdIO">
+<em class="property">class </em><code class="descclassname">aodncore.util.misc.</code><code class="descname">CaptureStdIO</code><span class="sig-paren">(</span><em>merge_streams=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/aodncore/util/misc.html#CaptureStdIO"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#aodncore.util.misc.CaptureStdIO" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Context manager to capture stdout and stderr emitted from the block into a list. 
+Optionally merge stdout and stderr streams into stdout.</p>
+</dd></dl>
+
+<dl class="class">
+<dt id="aodncore.util.misc.LoggingContext">
+<em class="property">class </em><code class="descclassname">aodncore.util.misc.</code><code class="descname">LoggingContext</code><span class="sig-paren">(</span><em>logger</em>, <em>level=None</em>, <em>format_=None</em>, <em>handler=None</em>, <em>close=True</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/aodncore/util/misc.html#LoggingContext"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#aodncore.util.misc.LoggingContext" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Context manager to allow temporary changes to logging configuration within the context of the block</p>
+</dd></dl>
+
+<dl class="class">
+<dt id="aodncore.util.misc.TemplateRenderer">
+<em class="property">class </em><code class="descclassname">aodncore.util.misc.</code><code class="descname">TemplateRenderer</code><span class="sig-paren">(</span><em>package='aodncore.pipeline'</em>, <em>package_path='templates'</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/aodncore/util/misc.html#TemplateRenderer"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#aodncore.util.misc.TemplateRenderer" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Simple template renderer</p>
+<dl class="method">
+<dt id="aodncore.util.misc.TemplateRenderer.render">
+<code class="descname">render</code><span class="sig-paren">(</span><em>name</em>, <em>values</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/aodncore/util/misc.html#TemplateRenderer.render"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#aodncore.util.misc.TemplateRenderer.render" title="Permalink to this definition">¶</a></dt>
+<dd><p>Render a template with the given values and return as a <code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>name</strong> – name of the template to find in the <code class="xref py py-class docutils literal notranslate"><span class="pre">jinja2.Environment</span></code></li>
+<li><strong>values</strong> – <code class="xref py py-class docutils literal notranslate"><span class="pre">dict</span></code> containing values to render into the template</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code> containing the rendered template</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="aodncore.util.misc.WriteOnceOrderedDict">
+<em class="property">class </em><code class="descclassname">aodncore.util.misc.</code><code class="descname">WriteOnceOrderedDict</code><span class="sig-paren">(</span><em>**kwds</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/aodncore/util/misc.html#WriteOnceOrderedDict"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#aodncore.util.misc.WriteOnceOrderedDict" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">collections.OrderedDict</span></code></p>
+<p>Sub-class of OrderedDict which prevents overwriting/deleting of keys once set</p>
+<dl class="method">
+<dt id="aodncore.util.misc.WriteOnceOrderedDict.clear">
+<code class="descname">clear</code><span class="sig-paren">(</span><em>*args</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#aodncore.util.misc.WriteOnceOrderedDict.clear" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="aodncore.util.misc.WriteOnceOrderedDict.pop">
+<code class="descname">pop</code><span class="sig-paren">(</span><em>*args</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#aodncore.util.misc.WriteOnceOrderedDict.pop" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="aodncore.util.misc.WriteOnceOrderedDict.popitem">
+<code class="descname">popitem</code><span class="sig-paren">(</span><em>*args</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#aodncore.util.misc.WriteOnceOrderedDict.popitem" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="aodncore.util.misc.WriteOnceOrderedDict.setdefault">
+<code class="descname">setdefault</code><span class="sig-paren">(</span><em>*args</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#aodncore.util.misc.WriteOnceOrderedDict.setdefault" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="aodncore.util.misc.WriteOnceOrderedDict.update">
+<code class="descname">update</code><span class="sig-paren">(</span><em>*args</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#aodncore.util.misc.WriteOnceOrderedDict.update" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-aodncore.util.process">
+<span id="aodncore-util-process-module"></span><h2>aodncore.util.process module<a class="headerlink" href="#module-aodncore.util.process" title="Permalink to this headline">¶</a></h2>
+<p>This module provides general purpose code for interacting with operating system subprocesses</p>
+<dl class="class">
+<dt id="aodncore.util.process.SystemProcess">
+<em class="property">class </em><code class="descclassname">aodncore.util.process.</code><code class="descname">SystemProcess</code><span class="sig-paren">(</span><em>command</em>, <em>stdin=-1</em>, <em>stdout=-1</em>, <em>stdin_text=None</em>, <em>env=None</em>, <em>shell=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/aodncore/util/process.html#SystemProcess"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#aodncore.util.process.SystemProcess" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Class to encapsulate a system command, including execution, output handling and returncode handling</p>
+<dl class="method">
+<dt id="aodncore.util.process.SystemProcess.execute">
+<code class="descname">execute</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/aodncore/util/process.html#SystemProcess.execute"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#aodncore.util.process.SystemProcess.execute" title="Permalink to this definition">¶</a></dt>
+<dd><p>Execute the system command</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">None</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="aodncore.util.process.SystemProcess.validate_command">
+<code class="descname">validate_command</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/aodncore/util/process.html#SystemProcess.validate_command"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#aodncore.util.process.SystemProcess.validate_command" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-aodncore.util">
+<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-aodncore.util" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="aodncore.util.CaptureStdIO">
+<em class="property">class </em><code class="descclassname">aodncore.util.</code><code class="descname">CaptureStdIO</code><span class="sig-paren">(</span><em>merge_streams=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/aodncore/util/misc.html#CaptureStdIO"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#aodncore.util.CaptureStdIO" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Context manager to capture stdout and stderr emitted from the block into a list. 
+Optionally merge stdout and stderr streams into stdout.</p>
+</dd></dl>
+
+<dl class="class">
+<dt id="aodncore.util.IndexedSet">
+<em class="property">class </em><code class="descclassname">aodncore.util.</code><code class="descname">IndexedSet</code><span class="sig-paren">(</span><em>other=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/aodncore/util/external/boltons.html#IndexedSet"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#aodncore.util.IndexedSet" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">_abcoll.MutableSet</span></code></p>
+<p><code class="docutils literal notranslate"><span class="pre">IndexedSet</span></code> is a <code class="xref py py-class docutils literal notranslate"><span class="pre">collections.MutableSet</span></code> that maintains
+insertion order and uniqueness of inserted elements. It’s a hybrid
+type, mostly like an OrderedSet, but also <code class="xref py py-class docutils literal notranslate"><span class="pre">list</span></code>-like, in
+that it supports indexing and slicing.</p>
+<dl class="docutils">
+<dt>Args:</dt>
+<dd>other (iterable): An optional iterable used to initialize the set.</dd>
+</dl>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">x</span> <span class="o">=</span> <span class="n">IndexedSet</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="mi">4</span><span class="p">))</span> <span class="o">+</span> <span class="nb">list</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="mi">8</span><span class="p">)))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">x</span>
+<span class="go">IndexedSet([0, 1, 2, 3, 4, 5, 6, 7])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">x</span> <span class="o">-</span> <span class="nb">set</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="mi">2</span><span class="p">))</span>
+<span class="go">IndexedSet([2, 3, 4, 5, 6, 7])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">x</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+<span class="go">7</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">fcr</span> <span class="o">=</span> <span class="n">IndexedSet</span><span class="p">(</span><span class="s1">&#39;freecreditreport.com&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="s1">&#39;&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">fcr</span><span class="p">[:</span><span class="n">fcr</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="s1">&#39;.&#39;</span><span class="p">)])</span>
+<span class="go">&#39;frecditpo&#39;</span>
+</pre></div>
+</div>
+<p>Standard set operators and interoperation with <code class="xref py py-class docutils literal notranslate"><span class="pre">set</span></code> are
+all supported:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">fcr</span> <span class="o">&amp;</span> <span class="nb">set</span><span class="p">(</span><span class="s1">&#39;cash4gold.com&#39;</span><span class="p">)</span>
+<span class="go">IndexedSet([&#39;c&#39;, &#39;d&#39;, &#39;o&#39;, &#39;.&#39;, &#39;m&#39;])</span>
+</pre></div>
+</div>
+<p>As you can see, the <code class="docutils literal notranslate"><span class="pre">IndexedSet</span></code> is almost like a <code class="docutils literal notranslate"><span class="pre">UniqueList</span></code>,
+retaining only one copy of a given value, in the order it was
+first added. For the curious, the reason why IndexedSet does not
+support setting items based on index (i.e, <code class="docutils literal notranslate"><span class="pre">__setitem__()</span></code>),
+consider the following dilemma:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">my_indexed_set</span> <span class="o">=</span> <span class="p">[</span><span class="n">A</span><span class="p">,</span> <span class="n">B</span><span class="p">,</span> <span class="n">C</span><span class="p">,</span> <span class="n">D</span><span class="p">]</span>
+<span class="n">my_indexed_set</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">=</span> <span class="n">A</span>
+</pre></div>
+</div>
+<p>At this point, a set requires only one <em>A</em>, but a <code class="xref py py-class docutils literal notranslate"><span class="pre">list</span></code> would
+overwrite <em>C</em>. Overwriting <em>C</em> would change the length of the list,
+meaning that <code class="docutils literal notranslate"><span class="pre">my_indexed_set[2]</span></code> would not be <em>A</em>, as expected with a
+list, but rather <em>D</em>. So, no <code class="docutils literal notranslate"><span class="pre">__setitem__()</span></code>.</p>
+<p>Otherwise, the API strives to be as complete a union of the
+<code class="xref py py-class docutils literal notranslate"><span class="pre">list</span></code> and <code class="xref py py-class docutils literal notranslate"><span class="pre">set</span></code> APIs as possible.</p>
+<dl class="method">
+<dt id="aodncore.util.IndexedSet.add">
+<code class="descname">add</code><span class="sig-paren">(</span><em>item</em><span class="sig-paren">)</span> &#x2192; add item to the set<a class="reference internal" href="_modules/aodncore/util/external/boltons.html#IndexedSet.add"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#aodncore.util.IndexedSet.add" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="aodncore.util.IndexedSet.clear">
+<code class="descname">clear</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; empty the set<a class="reference internal" href="_modules/aodncore/util/external/boltons.html#IndexedSet.clear"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#aodncore.util.IndexedSet.clear" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="aodncore.util.IndexedSet.count">
+<code class="descname">count</code><span class="sig-paren">(</span><em>val) -&gt; count number of instances of value (0 or 1</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/aodncore/util/external/boltons.html#IndexedSet.count"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#aodncore.util.IndexedSet.count" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="aodncore.util.IndexedSet.difference">
+<code class="descname">difference</code><span class="sig-paren">(</span><em>*others</em><span class="sig-paren">)</span> &#x2192; get a new set with elements not in others<a class="reference internal" href="_modules/aodncore/util/external/boltons.html#IndexedSet.difference"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#aodncore.util.IndexedSet.difference" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="aodncore.util.IndexedSet.difference_update">
+<code class="descname">difference_update</code><span class="sig-paren">(</span><em>*others) -&gt; discard self.intersection(*others</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/aodncore/util/external/boltons.html#IndexedSet.difference_update"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#aodncore.util.IndexedSet.difference_update" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="aodncore.util.IndexedSet.discard">
+<code class="descname">discard</code><span class="sig-paren">(</span><em>item) -&gt; discard item from the set (does not raise</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/aodncore/util/external/boltons.html#IndexedSet.discard"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#aodncore.util.IndexedSet.discard" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="classmethod">
+<dt id="aodncore.util.IndexedSet.from_iterable">
+<em class="property">classmethod </em><code class="descname">from_iterable</code><span class="sig-paren">(</span><em>it</em><span class="sig-paren">)</span> &#x2192; create a set from an iterable<a class="reference internal" href="_modules/aodncore/util/external/boltons.html#IndexedSet.from_iterable"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#aodncore.util.IndexedSet.from_iterable" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="aodncore.util.IndexedSet.index">
+<code class="descname">index</code><span class="sig-paren">(</span><em>val</em><span class="sig-paren">)</span> &#x2192; get the index of a value, raises if not present<a class="reference internal" href="_modules/aodncore/util/external/boltons.html#IndexedSet.index"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#aodncore.util.IndexedSet.index" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="aodncore.util.IndexedSet.intersection">
+<code class="descname">intersection</code><span class="sig-paren">(</span><em>*others</em><span class="sig-paren">)</span> &#x2192; get a set with overlap of this and others<a class="reference internal" href="_modules/aodncore/util/external/boltons.html#IndexedSet.intersection"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#aodncore.util.IndexedSet.intersection" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="aodncore.util.IndexedSet.intersection_update">
+<code class="descname">intersection_update</code><span class="sig-paren">(</span><em>*others) -&gt; discard self.difference(*others</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/aodncore/util/external/boltons.html#IndexedSet.intersection_update"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#aodncore.util.IndexedSet.intersection_update" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="aodncore.util.IndexedSet.isdisjoint">
+<code class="descname">isdisjoint</code><span class="sig-paren">(</span><em>other</em><span class="sig-paren">)</span> &#x2192; return True if no overlap with other<a class="reference internal" href="_modules/aodncore/util/external/boltons.html#IndexedSet.isdisjoint"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#aodncore.util.IndexedSet.isdisjoint" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="aodncore.util.IndexedSet.issubset">
+<code class="descname">issubset</code><span class="sig-paren">(</span><em>other</em><span class="sig-paren">)</span> &#x2192; return True if other contains this set<a class="reference internal" href="_modules/aodncore/util/external/boltons.html#IndexedSet.issubset"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#aodncore.util.IndexedSet.issubset" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="aodncore.util.IndexedSet.issuperset">
+<code class="descname">issuperset</code><span class="sig-paren">(</span><em>other</em><span class="sig-paren">)</span> &#x2192; return True if set contains other<a class="reference internal" href="_modules/aodncore/util/external/boltons.html#IndexedSet.issuperset"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#aodncore.util.IndexedSet.issuperset" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="aodncore.util.IndexedSet.iter_difference">
+<code class="descname">iter_difference</code><span class="sig-paren">(</span><em>*others</em><span class="sig-paren">)</span> &#x2192; iterate over elements not in others<a class="reference internal" href="_modules/aodncore/util/external/boltons.html#IndexedSet.iter_difference"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#aodncore.util.IndexedSet.iter_difference" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="aodncore.util.IndexedSet.iter_intersection">
+<code class="descname">iter_intersection</code><span class="sig-paren">(</span><em>*others</em><span class="sig-paren">)</span> &#x2192; iterate over elements also in others<a class="reference internal" href="_modules/aodncore/util/external/boltons.html#IndexedSet.iter_intersection"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#aodncore.util.IndexedSet.iter_intersection" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="aodncore.util.IndexedSet.iter_slice">
+<code class="descname">iter_slice</code><span class="sig-paren">(</span><em>start</em>, <em>stop</em>, <em>step=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/aodncore/util/external/boltons.html#IndexedSet.iter_slice"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#aodncore.util.IndexedSet.iter_slice" title="Permalink to this definition">¶</a></dt>
+<dd><p>iterate over a slice of the set</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="aodncore.util.IndexedSet.pop">
+<code class="descname">pop</code><span class="sig-paren">(</span><em>index) -&gt; remove the item at a given index (-1 by default</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/aodncore/util/external/boltons.html#IndexedSet.pop"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#aodncore.util.IndexedSet.pop" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="aodncore.util.IndexedSet.remove">
+<code class="descname">remove</code><span class="sig-paren">(</span><em>item</em><span class="sig-paren">)</span> &#x2192; remove item from the set, raises if not present<a class="reference internal" href="_modules/aodncore/util/external/boltons.html#IndexedSet.remove"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#aodncore.util.IndexedSet.remove" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="aodncore.util.IndexedSet.reverse">
+<code class="descname">reverse</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; reverse the contents of the set in-place<a class="reference internal" href="_modules/aodncore/util/external/boltons.html#IndexedSet.reverse"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#aodncore.util.IndexedSet.reverse" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="aodncore.util.IndexedSet.sort">
+<code class="descname">sort</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; sort the contents of the set in-place<a class="reference internal" href="_modules/aodncore/util/external/boltons.html#IndexedSet.sort"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#aodncore.util.IndexedSet.sort" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="aodncore.util.IndexedSet.symmetric_difference">
+<code class="descname">symmetric_difference</code><span class="sig-paren">(</span><em>*others</em><span class="sig-paren">)</span> &#x2192; XOR set of this and others<a class="reference internal" href="_modules/aodncore/util/external/boltons.html#IndexedSet.symmetric_difference"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#aodncore.util.IndexedSet.symmetric_difference" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="aodncore.util.IndexedSet.symmetric_difference_update">
+<code class="descname">symmetric_difference_update</code><span class="sig-paren">(</span><em>other</em><span class="sig-paren">)</span> &#x2192; in-place XOR with other<a class="reference internal" href="_modules/aodncore/util/external/boltons.html#IndexedSet.symmetric_difference_update"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#aodncore.util.IndexedSet.symmetric_difference_update" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="aodncore.util.IndexedSet.union">
+<code class="descname">union</code><span class="sig-paren">(</span><em>*others</em><span class="sig-paren">)</span> &#x2192; return a new set containing this set and others<a class="reference internal" href="_modules/aodncore/util/external/boltons.html#IndexedSet.union"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#aodncore.util.IndexedSet.union" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="aodncore.util.IndexedSet.update">
+<code class="descname">update</code><span class="sig-paren">(</span><em>*others</em><span class="sig-paren">)</span> &#x2192; add values from one or more iterables<a class="reference internal" href="_modules/aodncore/util/external/boltons.html#IndexedSet.update"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#aodncore.util.IndexedSet.update" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="aodncore.util.LoggingContext">
+<em class="property">class </em><code class="descclassname">aodncore.util.</code><code class="descname">LoggingContext</code><span class="sig-paren">(</span><em>logger</em>, <em>level=None</em>, <em>format_=None</em>, <em>handler=None</em>, <em>close=True</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/aodncore/util/misc.html#LoggingContext"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#aodncore.util.LoggingContext" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Context manager to allow temporary changes to logging configuration within the context of the block</p>
+</dd></dl>
+
+<dl class="class">
+<dt id="aodncore.util.SystemProcess">
+<em class="property">class </em><code class="descclassname">aodncore.util.</code><code class="descname">SystemProcess</code><span class="sig-paren">(</span><em>command</em>, <em>stdin=-1</em>, <em>stdout=-1</em>, <em>stdin_text=None</em>, <em>env=None</em>, <em>shell=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/aodncore/util/process.html#SystemProcess"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#aodncore.util.SystemProcess" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Class to encapsulate a system command, including execution, output handling and returncode handling</p>
+<dl class="method">
+<dt id="aodncore.util.SystemProcess.execute">
+<code class="descname">execute</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/aodncore/util/process.html#SystemProcess.execute"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#aodncore.util.SystemProcess.execute" title="Permalink to this definition">¶</a></dt>
+<dd><p>Execute the system command</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">None</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="aodncore.util.SystemProcess.validate_command">
+<code class="descname">validate_command</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/aodncore/util/process.html#SystemProcess.validate_command"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#aodncore.util.SystemProcess.validate_command" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="aodncore.util.TemplateRenderer">
+<em class="property">class </em><code class="descclassname">aodncore.util.</code><code class="descname">TemplateRenderer</code><span class="sig-paren">(</span><em>package='aodncore.pipeline'</em>, <em>package_path='templates'</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/aodncore/util/misc.html#TemplateRenderer"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#aodncore.util.TemplateRenderer" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Simple template renderer</p>
+<dl class="method">
+<dt id="aodncore.util.TemplateRenderer.render">
+<code class="descname">render</code><span class="sig-paren">(</span><em>name</em>, <em>values</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/aodncore/util/misc.html#TemplateRenderer.render"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#aodncore.util.TemplateRenderer.render" title="Permalink to this definition">¶</a></dt>
+<dd><p>Render a template with the given values and return as a <code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>name</strong> – name of the template to find in the <code class="xref py py-class docutils literal notranslate"><span class="pre">jinja2.Environment</span></code></li>
+<li><strong>values</strong> – <code class="xref py py-class docutils literal notranslate"><span class="pre">dict</span></code> containing values to render into the template</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code> containing the rendered template</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="attribute">
+<dt id="aodncore.util.TemporaryDirectory">
+<code class="descclassname">aodncore.util.</code><code class="descname">TemporaryDirectory</code><a class="headerlink" href="#aodncore.util.TemporaryDirectory" title="Permalink to this definition">¶</a></dt>
+<dd><p>alias of <code class="xref py py-class docutils literal notranslate"><span class="pre">aodncore.util.fileops._TemporaryDirectory</span></code></p>
+</dd></dl>
+
+<dl class="class">
+<dt id="aodncore.util.WriteOnceOrderedDict">
+<em class="property">class </em><code class="descclassname">aodncore.util.</code><code class="descname">WriteOnceOrderedDict</code><span class="sig-paren">(</span><em>**kwds</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/aodncore/util/misc.html#WriteOnceOrderedDict"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#aodncore.util.WriteOnceOrderedDict" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">collections.OrderedDict</span></code></p>
+<p>Sub-class of OrderedDict which prevents overwriting/deleting of keys once set</p>
+<dl class="method">
+<dt id="aodncore.util.WriteOnceOrderedDict.clear">
+<code class="descname">clear</code><span class="sig-paren">(</span><em>*args</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#aodncore.util.WriteOnceOrderedDict.clear" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="aodncore.util.WriteOnceOrderedDict.pop">
+<code class="descname">pop</code><span class="sig-paren">(</span><em>*args</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#aodncore.util.WriteOnceOrderedDict.pop" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="aodncore.util.WriteOnceOrderedDict.popitem">
+<code class="descname">popitem</code><span class="sig-paren">(</span><em>*args</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#aodncore.util.WriteOnceOrderedDict.popitem" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="aodncore.util.WriteOnceOrderedDict.setdefault">
+<code class="descname">setdefault</code><span class="sig-paren">(</span><em>*args</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#aodncore.util.WriteOnceOrderedDict.setdefault" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="aodncore.util.WriteOnceOrderedDict.update">
+<code class="descname">update</code><span class="sig-paren">(</span><em>*args</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#aodncore.util.WriteOnceOrderedDict.update" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="aodncore.util.classproperty">
+<em class="property">class </em><code class="descclassname">aodncore.util.</code><code class="descname">classproperty</code><span class="sig-paren">(</span><em>fn</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/aodncore/util/external/boltons.html#classproperty"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#aodncore.util.classproperty" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Much like a <code class="xref py py-class docutils literal notranslate"><span class="pre">property</span></code>, but the wrapped get function is a
+class method.  For simplicity, only read-only properties are
+implemented.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="aodncore.util.extract_gzip">
+<code class="descclassname">aodncore.util.</code><code class="descname">extract_gzip</code><span class="sig-paren">(</span><em>gzip_path</em>, <em>dest_dir</em>, <em>dest_name=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/aodncore/util/fileops.html#extract_gzip"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#aodncore.util.extract_gzip" title="Permalink to this definition">¶</a></dt>
+<dd><p>Extract a GZ (GZIP) file’s contents into a directory</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>gzip_path</strong> – path to the source GZ file</li>
+<li><strong>dest_dir</strong> – destination directory into which the GZ is extracted</li>
+<li><strong>dest_name</strong> – basename for the extracted file (defaults to the original name minus the ‘.gz’ extension)</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">None</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="aodncore.util.extract_zip">
+<code class="descclassname">aodncore.util.</code><code class="descname">extract_zip</code><span class="sig-paren">(</span><em>zip_path</em>, <em>dest_dir</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/aodncore/util/fileops.html#extract_zip"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#aodncore.util.extract_zip" title="Permalink to this definition">¶</a></dt>
+<dd><p>Extract a ZIP file’s contents into a directory</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>zip_path</strong> – path to the source ZIP file</li>
+<li><strong>dest_dir</strong> – destination directory into which the ZIP is extracted</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">None</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="aodncore.util.discover_entry_points">
+<code class="descclassname">aodncore.util.</code><code class="descname">discover_entry_points</code><span class="sig-paren">(</span><em>entry_point_group</em>, <em>working_set=&lt;pkg_resources.WorkingSet object&gt;</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/aodncore/util/misc.html#discover_entry_points"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#aodncore.util.discover_entry_points" title="Permalink to this definition">¶</a></dt>
+<dd><p>Discover entry points registered under the given entry point group name in the given
+<code class="xref py py-class docutils literal notranslate"><span class="pre">pkg_resources.WorkingSet</span></code> instance</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>entry_point_group</strong> – entry point group name used to find entry points in working set</li>
+<li><strong>working_set</strong> – <code class="xref py py-class docutils literal notranslate"><span class="pre">pkg_resources.WorkingSet</span></code> instance</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"><code class="xref py py-class docutils literal notranslate"><span class="pre">dict</span></code> containing each discovered entry point, with keys being the entry point name and values
+being a reference to the object referenced by the entry point</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="aodncore.util.ensure_writeonceordereddict">
+<code class="descclassname">aodncore.util.</code><code class="descname">ensure_writeonceordereddict</code><span class="sig-paren">(</span><em>o</em>, <em>empty_on_fail=True</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/aodncore/util/misc.html#ensure_writeonceordereddict"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#aodncore.util.ensure_writeonceordereddict" title="Permalink to this definition">¶</a></dt>
+<dd><p>Function to accept and object and return the WriteOnceOrderedDict representation of the object. An object which
+can <em>not</em> be handled by the WriteOnceOrderedDict __init__ method will either result in an empty, or if
+‘empty_on_fail’ is set to False, will result in an exception.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>o</strong> – input object</li>
+<li><strong>empty_on_fail</strong> – boolean flag to determine whether an invalid object will result in a new empty
+WriteOnceOrderedDict being returned or the exception re-raised.</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"><a class="reference internal" href="#aodncore.util.WriteOnceOrderedDict" title="aodncore.util.WriteOnceOrderedDict"><code class="xref py py-class docutils literal notranslate"><span class="pre">WriteOnceOrderedDict</span></code></a> instance</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="aodncore.util.get_pattern_subgroups_from_string">
+<code class="descclassname">aodncore.util.</code><code class="descname">get_pattern_subgroups_from_string</code><span class="sig-paren">(</span><em>string</em>, <em>pattern</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/aodncore/util/misc.html#get_pattern_subgroups_from_string"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#aodncore.util.get_pattern_subgroups_from_string" title="Permalink to this definition">¶</a></dt>
+<dd><p>Function to retrieve parts of a string given a compiled pattern (re.compile(pattern))
+the pattern needs to match the beginning of the string
+(see <a class="reference external" href="https://docs.python.org/2/library/re.html#re.RegexObject.match">https://docs.python.org/2/library/re.html#re.RegexObject.match</a>)</p>
+<ul class="simple">
+<li>No need to start the pattern with “^”; and</li>
+<li>To match anywhere in the string, start the pattern with “.*”.</li>
+</ul>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">dictionary of fields matching a given pattern</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="aodncore.util.format_exception">
+<code class="descclassname">aodncore.util.</code><code class="descname">format_exception</code><span class="sig-paren">(</span><em>exception</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/aodncore/util/misc.html#format_exception"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#aodncore.util.format_exception" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return a pretty string representation of an Exception object containing the Exception name and message</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>exception</strong> – <code class="xref py py-class docutils literal notranslate"><span class="pre">Exception</span></code> object</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">string</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="aodncore.util.get_file_checksum">
+<code class="descclassname">aodncore.util.</code><code class="descname">get_file_checksum</code><span class="sig-paren">(</span><em>filepath</em>, <em>block_size=65536</em>, <em>algorithm='sha256'</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/aodncore/util/fileops.html#get_file_checksum"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#aodncore.util.get_file_checksum" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the hash (checksum) of a file</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>filepath</strong> – path to the input file</li>
+<li><strong>block_size</strong> – number of bytes to hash each iteration</li>
+<li><strong>algorithm</strong> – hash algorithm (from <code class="xref py py-mod docutils literal notranslate"><span class="pre">hashlib</span></code> module)</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">hash of the input file</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="aodncore.util.is_dir_writable">
+<code class="descclassname">aodncore.util.</code><code class="descname">is_dir_writable</code><span class="sig-paren">(</span><em>path</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/aodncore/util/fileops.html#is_dir_writable"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#aodncore.util.is_dir_writable" title="Permalink to this definition">¶</a></dt>
+<dd><p>Check whether a directory is writable</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>path</strong> – directory path to check</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">None</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="aodncore.util.is_gzipfile">
+<code class="descclassname">aodncore.util.</code><code class="descname">is_gzipfile</code><span class="sig-paren">(</span><em>filepath</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/aodncore/util/fileops.html#is_gzipfile"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#aodncore.util.is_gzipfile" title="Permalink to this definition">¶</a></dt>
+<dd><p>Check whether a file path refers to a valid ZIP file</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>filepath</strong> – path to the file being checked</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">True if filepath is a valid ZIP file, otherwise False</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="aodncore.util.is_netcdffile">
+<code class="descclassname">aodncore.util.</code><code class="descname">is_netcdffile</code><span class="sig-paren">(</span><em>filepath</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/aodncore/util/fileops.html#is_netcdffile"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#aodncore.util.is_netcdffile" title="Permalink to this definition">¶</a></dt>
+<dd><p>Check whether a file path refers to a valid NetCDF file</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>filepath</strong> – path to the file being checked</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">True if filepath is a valid NetCDF file, otherwise False</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="aodncore.util.is_zipfile">
+<code class="descclassname">aodncore.util.</code><code class="descname">is_zipfile</code><span class="sig-paren">(</span><em>filepath</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/aodncore/util/fileops.html#is_zipfile"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#aodncore.util.is_zipfile" title="Permalink to this definition">¶</a></dt>
+<dd><p>Check whether a file path refers to a valid ZIP file</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>filepath</strong> – path to the file being checked</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">True if filepath is a valid ZIP file, otherwise False</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="aodncore.util.is_function">
+<code class="descclassname">aodncore.util.</code><code class="descname">is_function</code><span class="sig-paren">(</span><em>o</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/aodncore/util/misc.html#is_function"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#aodncore.util.is_function" title="Permalink to this definition">¶</a></dt>
+<dd><p>Check whether a given object is a function</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>o</strong> – object to check</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">True if object is a function, otherwise False</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="aodncore.util.is_nonstring_iterable">
+<code class="descclassname">aodncore.util.</code><code class="descname">is_nonstring_iterable</code><span class="sig-paren">(</span><em>sequence</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/aodncore/util/misc.html#is_nonstring_iterable"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#aodncore.util.is_nonstring_iterable" title="Permalink to this definition">¶</a></dt>
+<dd><p>Check whether an object is a non-string <code class="xref py py-class docutils literal notranslate"><span class="pre">Iterable</span></code></p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>sequence</strong> – object to check</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">True if object is a non-string sub class of <code class="xref py py-class docutils literal notranslate"><span class="pre">Iterable</span></code></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="aodncore.util.is_valid_email_address">
+<code class="descclassname">aodncore.util.</code><code class="descname">is_valid_email_address</code><span class="sig-paren">(</span><em>address</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/aodncore/util/misc.html#is_valid_email_address"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#aodncore.util.is_valid_email_address" title="Permalink to this definition">¶</a></dt>
+<dd><p>Simple email address validation</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>address</strong> – address to validate</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">True if address matches the regex, otherwise False</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="aodncore.util.iter_public_attributes">
+<code class="descclassname">aodncore.util.</code><code class="descname">iter_public_attributes</code><span class="sig-paren">(</span><em>instance</em>, <em>ignored_attributes=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/aodncore/util/misc.html#iter_public_attributes"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#aodncore.util.iter_public_attributes" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get an iterator over an instance’s public attributes, <em>including</em> properties</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>instance</strong> – object instance</li>
+<li><strong>ignored_attributes</strong> – set of attribute names to exclude</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">iterator over the instances public attributes</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="aodncore.util.matches_regexes">
+<code class="descclassname">aodncore.util.</code><code class="descname">matches_regexes</code><span class="sig-paren">(</span><em>input_string</em>, <em>include_regexes=None</em>, <em>exclude_regexes=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/aodncore/util/misc.html#matches_regexes"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#aodncore.util.matches_regexes" title="Permalink to this definition">¶</a></dt>
+<dd><p>Function to filter a string (e.g. file path) according to regular expression inclusions minus exclusions</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>input_string</strong> – string for comparison to the regular expressions</li>
+<li><strong>include_regexes</strong> – list of inclusions</li>
+<li><strong>exclude_regexes</strong> – list of exclusions to <em>subtract</em> from the list produced by inclusions</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">True if the of the string matches one of the ‘include_regexes’ but <em>not</em> one of the ‘exclude_regexes’</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="aodncore.util.merge_dicts">
+<code class="descclassname">aodncore.util.</code><code class="descname">merge_dicts</code><span class="sig-paren">(</span><em>*args</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/aodncore/util/misc.html#merge_dicts"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#aodncore.util.merge_dicts" title="Permalink to this definition">¶</a></dt>
+<dd><p>Recursive <code class="xref py py-class docutils literal notranslate"><span class="pre">dict</span></code> merge</p>
+<p>Dict-like objects are merged sequentially from left to right into a new <code class="xref py py-class docutils literal notranslate"><span class="pre">dict</span></code></p>
+<p>Based on: <a class="reference external" href="https://gist.github.com/angstwad/bf22d1822c38a92ec0a9">https://gist.github.com/angstwad/bf22d1822c38a92ec0a9</a></p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">None</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="aodncore.util.list_regular_files">
+<code class="descclassname">aodncore.util.</code><code class="descname">list_regular_files</code><span class="sig-paren">(</span><em>path</em>, <em>recursive=False</em>, <em>sort_key=&lt;class 'functools.K'&gt;</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/aodncore/util/fileops.html#list_regular_files"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#aodncore.util.list_regular_files" title="Permalink to this definition">¶</a></dt>
+<dd><p>List all regular files in a given directory, returning the absolute path</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>sort_key</strong> – callable used to sort directory listings</li>
+<li><strong>path</strong> – input directory to list</li>
+<li><strong>recursive</strong> – <code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code> flag to enable recursive listing</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">iterator returning only regular files</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="aodncore.util.mkdir_p">
+<code class="descclassname">aodncore.util.</code><code class="descname">mkdir_p</code><span class="sig-paren">(</span><em>path</em>, <em>mode=493</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/aodncore/util/fileops.html#mkdir_p"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#aodncore.util.mkdir_p" title="Permalink to this definition">¶</a></dt>
+<dd><p>Recursively create a directory, including parent directories (analogous to shell command ‘mkdir -p’)</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>mode</strong> – </li>
+<li><strong>path</strong> – path to new directory</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">None</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="aodncore.util.retry_decorator">
+<code class="descclassname">aodncore.util.</code><code class="descname">retry_decorator</code><span class="sig-paren">(</span><em>exceptions=&lt;type 'exceptions.Exception'&gt;</em>, <em>tries=-1</em>, <em>delay=0</em>, <em>max_delay=None</em>, <em>backoff=1</em>, <em>jitter=0</em>, <em>logger=&lt;logging.Logger object&gt;</em><span class="sig-paren">)</span><a class="headerlink" href="#aodncore.util.retry_decorator" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns a retry decorator.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>exceptions</strong> – an exception or a tuple of exceptions to catch. default: Exception.</li>
+<li><strong>tries</strong> – the maximum number of attempts. default: -1 (infinite).</li>
+<li><strong>delay</strong> – initial delay between attempts. default: 0.</li>
+<li><strong>max_delay</strong> – the maximum value of delay. default: None (no limit).</li>
+<li><strong>backoff</strong> – multiplier applied to delay between attempts. default: 1 (no backoff).</li>
+<li><strong>jitter</strong> – extra seconds added to delay between attempts. default: 0.
+fixed if a number, random if a range tuple (min, max)</li>
+<li><strong>logger</strong> – logger.warning(fmt, error, delay) will be called on failed attempts.
+default: retry.logging_logger. if None, logging is disabled.</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">a retry decorator.</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="aodncore.util.rm_f">
+<code class="descclassname">aodncore.util.</code><code class="descname">rm_f</code><span class="sig-paren">(</span><em>path</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/aodncore/util/fileops.html#rm_f"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#aodncore.util.rm_f" title="Permalink to this definition">¶</a></dt>
+<dd><p>Remove a file, ignoring “file not found” errors (analogous to shell command ‘rm -f’)</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>path</strong> – path to file being deleted</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">None</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="aodncore.util.rm_r">
+<code class="descclassname">aodncore.util.</code><code class="descname">rm_r</code><span class="sig-paren">(</span><em>path</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/aodncore/util/fileops.html#rm_r"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#aodncore.util.rm_r" title="Permalink to this definition">¶</a></dt>
+<dd><p>Remove a file or directory recursively (analogous to shell command ‘rm -r’)</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>path</strong> – path to file being deleted</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">None</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="aodncore.util.rm_rf">
+<code class="descclassname">aodncore.util.</code><code class="descname">rm_rf</code><span class="sig-paren">(</span><em>path</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/aodncore/util/fileops.html#rm_rf"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#aodncore.util.rm_rf" title="Permalink to this definition">¶</a></dt>
+<dd><p>Remove a file or directory, ignoring “file not found” errors (analogous to shell command ‘rm -f’)</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>path</strong> – path to file being deleted</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">None</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="aodncore.util.safe_copy_file">
+<code class="descclassname">aodncore.util.</code><code class="descname">safe_copy_file</code><span class="sig-paren">(</span><em>source</em>, <em>destination</em>, <em>overwrite=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/aodncore/util/fileops.html#safe_copy_file"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#aodncore.util.safe_copy_file" title="Permalink to this definition">¶</a></dt>
+<dd><p>Copy a file atomically by copying first to a temporary file in the same directory (and therefore filesystem) as
+the intended destination, before performing a rename (which is atomic)</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>source</strong> – source file path</li>
+<li><strong>destination</strong> – destination file path (will not be overwritten unless ‘overwrite’ set to True)</li>
+<li><strong>overwrite</strong> – set to True to allow existing destination file to be overwritten</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">None</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="aodncore.util.safe_move_file">
+<code class="descclassname">aodncore.util.</code><code class="descname">safe_move_file</code><span class="sig-paren">(</span><em>src</em>, <em>dst</em>, <em>overwrite=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/aodncore/util/fileops.html#safe_move_file"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#aodncore.util.safe_move_file" title="Permalink to this definition">¶</a></dt>
+<dd><p>Move a file atomically by performing a copy and delete</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>src</strong> – source file path</li>
+<li><strong>dst</strong> – destination file path</li>
+<li><strong>overwrite</strong> – set to True to allow existing destination file to be overwritten</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">None</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="aodncore.util.slice_sequence">
+<code class="descclassname">aodncore.util.</code><code class="descname">slice_sequence</code><span class="sig-paren">(</span><em>sequence</em>, <em>slice_size</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/aodncore/util/misc.html#slice_sequence"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#aodncore.util.slice_sequence" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return a <code class="xref py py-class docutils literal notranslate"><span class="pre">list</span></code> containing the input <code class="xref py py-class docutils literal notranslate"><span class="pre">Sequence</span></code> sliced into <code class="xref py py-class docutils literal notranslate"><span class="pre">Sequence</span></code> instances
+with a length equal to or less than <code class="xref py py-attr docutils literal notranslate"><span class="pre">slice_size</span></code></p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">The type of the elements should be the same type as the original sequence based on the usual Python
+slicing behaviour, but the outer sequence will always be a <code class="xref py py-class docutils literal notranslate"><span class="pre">list</span></code> type.</p>
+</div>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>sequence</strong> – input sequence</li>
+<li><strong>slice_size</strong> – size of each sub-Sequence</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"><code class="xref py py-class docutils literal notranslate"><span class="pre">list</span></code> of <code class="xref py py-class docutils literal notranslate"><span class="pre">Sequence</span></code> instances</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="aodncore.util.str_to_list">
+<code class="descclassname">aodncore.util.</code><code class="descname">str_to_list</code><span class="sig-paren">(</span><em>string_</em>, <em>delimiter='</em>, <em>'</em>, <em>strip_method='strip'</em>, <em>include_empty=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/aodncore/util/misc.html#str_to_list"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#aodncore.util.str_to_list" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return a comma-separated string as native list, with whitespace stripped and empty strings excluded</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>string</strong> – input string</li>
+<li><strong>delimiter</strong> – character(s) used to split the string</li>
+<li><strong>strip_method</strong> – which strip method to use for each element (invalid method names</li>
+<li><strong>include_empty</strong> – boolean to control whether empty strings are included in returned list</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">list representation of the given config option</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="aodncore.util.validate_bool">
+<code class="descclassname">aodncore.util.</code><code class="descname">validate_bool</code><span class="sig-paren">(</span><em>o</em><span class="sig-paren">)</span><a class="headerlink" href="#aodncore.util.validate_bool" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="aodncore.util.validate_callable">
+<code class="descclassname">aodncore.util.</code><code class="descname">validate_callable</code><span class="sig-paren">(</span><em>o</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/aodncore/util/misc.html#validate_callable"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#aodncore.util.validate_callable" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="aodncore.util.validate_dict">
+<code class="descclassname">aodncore.util.</code><code class="descname">validate_dict</code><span class="sig-paren">(</span><em>o</em><span class="sig-paren">)</span><a class="headerlink" href="#aodncore.util.validate_dict" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="aodncore.util.validate_dir_writable">
+<code class="descclassname">aodncore.util.</code><code class="descname">validate_dir_writable</code><span class="sig-paren">(</span><em>path</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/aodncore/util/fileops.html#validate_dir_writable"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#aodncore.util.validate_dir_writable" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="aodncore.util.validate_file_writable">
+<code class="descclassname">aodncore.util.</code><code class="descname">validate_file_writable</code><span class="sig-paren">(</span><em>path</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/aodncore/util/fileops.html#validate_file_writable"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#aodncore.util.validate_file_writable" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="aodncore.util.validate_int">
+<code class="descclassname">aodncore.util.</code><code class="descname">validate_int</code><span class="sig-paren">(</span><em>o</em><span class="sig-paren">)</span><a class="headerlink" href="#aodncore.util.validate_int" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="aodncore.util.validate_mapping">
+<code class="descclassname">aodncore.util.</code><code class="descname">validate_mapping</code><span class="sig-paren">(</span><em>o</em><span class="sig-paren">)</span><a class="headerlink" href="#aodncore.util.validate_mapping" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="aodncore.util.validate_mandatory_elements">
+<code class="descclassname">aodncore.util.</code><code class="descname">validate_mandatory_elements</code><span class="sig-paren">(</span><em>mandatory</em>, <em>actual</em>, <em>name='item'</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/aodncore/util/misc.html#validate_mandatory_elements"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#aodncore.util.validate_mandatory_elements" title="Permalink to this definition">¶</a></dt>
+<dd><p>Ensure that a collection contains all the elements in a ‘mandatory’ collection of elements</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>mandatory</strong> – collection of mandatory elements</li>
+<li><strong>actual</strong> – collection to compare against mandatory collection</li>
+<li><strong>name</strong> – name of object being validated for exception message (e.g. ‘item’ or ‘section’)</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">None</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="aodncore.util.validate_membership">
+<code class="descclassname">aodncore.util.</code><code class="descname">validate_membership</code><span class="sig-paren">(</span><em>c</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/aodncore/util/misc.html#validate_membership"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#aodncore.util.validate_membership" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="aodncore.util.validate_nonstring_iterable">
+<code class="descclassname">aodncore.util.</code><code class="descname">validate_nonstring_iterable</code><span class="sig-paren">(</span><em>o</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/aodncore/util/misc.html#validate_nonstring_iterable"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#aodncore.util.validate_nonstring_iterable" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="aodncore.util.validate_regex">
+<code class="descclassname">aodncore.util.</code><code class="descname">validate_regex</code><span class="sig-paren">(</span><em>o</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/aodncore/util/misc.html#validate_regex"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#aodncore.util.validate_regex" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="aodncore.util.validate_relative_path">
+<code class="descclassname">aodncore.util.</code><code class="descname">validate_relative_path</code><span class="sig-paren">(</span><em>o</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/aodncore/util/misc.html#validate_relative_path"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#aodncore.util.validate_relative_path" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="aodncore.util.validate_relative_path_attr">
+<code class="descclassname">aodncore.util.</code><code class="descname">validate_relative_path_attr</code><span class="sig-paren">(</span><em>path</em>, <em>path_attr</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/aodncore/util/misc.html#validate_relative_path_attr"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#aodncore.util.validate_relative_path_attr" title="Permalink to this definition">¶</a></dt>
+<dd><p>Validate a path, raising an exception containing the name of the attribute which failed</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>path</strong> – string containing the path to test</li>
+<li><strong>path_attr</strong> – attribute name to include in the exceptions message if validation fails</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">None</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="aodncore.util.validate_string">
+<code class="descclassname">aodncore.util.</code><code class="descname">validate_string</code><span class="sig-paren">(</span><em>o</em><span class="sig-paren">)</span><a class="headerlink" href="#aodncore.util.validate_string" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="aodncore.util.validate_type">
+<code class="descclassname">aodncore.util.</code><code class="descname">validate_type</code><span class="sig-paren">(</span><em>t</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/aodncore/util/misc.html#validate_type"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#aodncore.util.validate_type" title="Permalink to this definition">¶</a></dt>
+<dd><p>Closure to generate type validation functions</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>t</strong> – type</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">function reference to a function which validates a given input is an instance of type <cite>t</cite></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="aodncore.vocab.html" class="btn btn-neutral float-right" title="aodncore.vocab package" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="aodncore.testlib.html" class="btn btn-neutral" title="aodncore.testlib package" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2018, AODN.
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'./',
+            VERSION:'0.16.0',
+            LANGUAGE:'None',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true,
+            SOURCELINK_SUFFIX: '.txt'
+        };
+    </script>
+      <script type="text/javascript" src="_static/jquery.js"></script>
+      <script type="text/javascript" src="_static/underscore.js"></script>
+      <script type="text/javascript" src="_static/doctools.js"></script>
+
+  
+
+  
+  
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+  
+
+  <script type="text/javascript">
+      jQuery(function () {
+          
+          SphinxRtdTheme.Navigation.enableSticky();
+          
+      });
+  </script> 
+
+</body>
+</html>

@@ -1,0 +1,350 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>aodncore.pipeline.steps.store &mdash; aodncore 0.16.0 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  
+    <link rel="stylesheet" href="../../../../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../../../_static/pygments.css" type="text/css" />
+    <link rel="index" title="Index" href="../../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../../search.html" /> 
+
+  
+  <script src="../../../../_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="../../../../index.html" class="icon icon-home"> aodncore
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                0.16.0
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Quick Start Guide:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../quickstartdoc.html">Writing a <code class="docutils literal notranslate"><span class="pre">dest_path()</span></code> function</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../quickstartdoc.html#overriding-default-file-actions">Overriding default file actions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../quickstartdoc.html#creating-products-during-the-handler-lifetime">Creating products during the handler lifetime</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../quickstartdoc.html#query-storage">Query Storage</a></li>
+</ul>
+<p class="caption"><span class="caption-text">User documentation:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../userdoc.html">Overview</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../userdoc.html#state-machine-handler-steps">State machine / handler steps</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../../userdoc.html#initialise">initialise</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../userdoc.html#resolve">resolve</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../userdoc.html#preprocess">preprocess</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../userdoc.html#check">check</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../userdoc.html#process">process</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../userdoc.html#publish">publish</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../userdoc.html#postprocess">postprocess</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../userdoc.html#notify">notify</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../userdoc.html#customising-handler-behaviour">Customising handler behaviour</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../../userdoc.html#methods">Methods</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../userdoc.html#attributes">Attributes</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../../userdoc.html#class-parameters">Class parameters</a></li>
+</ul>
+</li>
+</ul>
+<p class="caption"><span class="caption-text">Developer documentation:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../developerdoc.html">Overview</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Module contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../modules.html">aodncore</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../../aodncore.html">aodncore package</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../../aodncore.html#subpackages">Subpackages</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../../aodncore.common.html">aodncore.common package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../aodncore.pipeline.html">aodncore.pipeline package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../aodncore.testlib.html">aodncore.testlib package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../aodncore.util.html">aodncore.util package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../aodncore.vocab.html">aodncore.vocab package</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../aodncore.html#submodules">Submodules</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../aodncore.html#module-aodncore.version">aodncore.version module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../aodncore.html#module-aodncore">Module contents</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../../index.html">aodncore</a>
+        
+      </nav>
+
+
+      
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../../../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="../../../index.html">Module code</a> &raquo;</li>
+        
+      <li>aodncore.pipeline.steps.store</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <h1>Source code for aodncore.pipeline.steps.store</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;This module provides the step runner class for the &quot;store&quot; step, which is a sub-step of the :ref:`publish` step.</span>
+
+<span class="sd">The step runner delegates the low level storage operations to an internal :py:class:`BaseStorageBroker` instance, and so</span>
+<span class="sd">it&#39;s primary purpose is to abstract the storage operations from the :py:class:`HandlerBase` by providing an interface</span>
+<span class="sd">similar to the other handler steps.</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="kn">from</span> <span class="nn">.basestep</span> <span class="k">import</span> <span class="n">BaseStepRunner</span>
+<span class="kn">from</span> <span class="nn">..files</span> <span class="k">import</span> <span class="n">ensure_pipelinefilecollection</span>
+<span class="kn">from</span> <span class="nn">..storage</span> <span class="k">import</span> <span class="n">get_storage_broker</span>
+
+<span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="s1">&#39;get_store_runner&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;StoreRunner&#39;</span>
+
+<span class="p">]</span>
+
+
+<div class="viewcode-block" id="get_store_runner"><a class="viewcode-back" href="../../../../aodncore.pipeline.steps.html#aodncore.pipeline.steps.store.get_store_runner">[docs]</a><span class="k">def</span> <span class="nf">get_store_runner</span><span class="p">(</span><span class="n">store_base_url</span><span class="p">,</span> <span class="n">config</span><span class="p">,</span> <span class="n">logger</span><span class="p">,</span> <span class="n">archive_mode</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Factory function to return store runner class, with it&#39;s storage broker based on URL scheme</span>
+
+<span class="sd">    :param store_base_url: URL base for storage location</span>
+<span class="sd">    :param config: LazyConfigManager instance</span>
+<span class="sd">    :param logger: Logger instance</span>
+<span class="sd">    :param archive_mode: flag to indicate archive</span>
+<span class="sd">    :return: StoreRunner instance</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">broker</span> <span class="o">=</span> <span class="n">get_storage_broker</span><span class="p">(</span><span class="n">store_base_url</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">StoreRunner</span><span class="p">(</span><span class="n">broker</span><span class="p">,</span> <span class="n">config</span><span class="p">,</span> <span class="n">logger</span><span class="p">,</span> <span class="n">archive_mode</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="StoreRunner"><a class="viewcode-back" href="../../../../aodncore.pipeline.steps.html#aodncore.pipeline.steps.store.StoreRunner">[docs]</a><span class="k">class</span> <span class="nc">StoreRunner</span><span class="p">(</span><span class="n">BaseStepRunner</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">broker</span><span class="p">,</span> <span class="n">config</span><span class="p">,</span> <span class="n">logger</span><span class="p">,</span> <span class="n">archive_mode</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">StoreRunner</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">config</span><span class="p">,</span> <span class="n">logger</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">broker</span> <span class="o">=</span> <span class="n">broker</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">archive_mode</span> <span class="o">=</span> <span class="n">archive_mode</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">is_stored_attr</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;PipelineFile attribute to flag completion of upload operation</span>
+
+<span class="sd">        :return: bool</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="s1">&#39;is_archived&#39;</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">archive_mode</span> <span class="k">else</span> <span class="s1">&#39;is_stored&#39;</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">pending_addition_attr</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="s1">&#39;pending_archive&#39;</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">archive_mode</span> <span class="k">else</span> <span class="s1">&#39;pending_store_addition&#39;</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">dest_path_attr</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;PipelineFile attribute containing the destination path</span>
+
+<span class="sd">        :return: bool</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="s1">&#39;archive_path&#39;</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">archive_mode</span> <span class="k">else</span> <span class="s1">&#39;dest_path&#39;</span>
+
+<div class="viewcode-block" id="StoreRunner.set_is_overwrite"><a class="viewcode-back" href="../../../../aodncore.pipeline.steps.html#aodncore.pipeline.steps.store.StoreRunner.set_is_overwrite">[docs]</a>    <span class="k">def</span> <span class="nf">set_is_overwrite</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pipeline_files</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Set the &quot;is_overwrite&quot; attribute for each file in the given collection</span>
+
+<span class="sd">        :param pipeline_files: collection to</span>
+<span class="sd">        :return: None</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">collection</span> <span class="o">=</span> <span class="n">ensure_pipelinefilecollection</span><span class="p">(</span><span class="n">pipeline_files</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">broker</span><span class="o">.</span><span class="n">set_is_overwrite</span><span class="p">(</span><span class="n">pipeline_files</span><span class="o">=</span><span class="n">collection</span><span class="p">,</span> <span class="n">dest_path_attr</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">dest_path_attr</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="StoreRunner.run"><a class="viewcode-back" href="../../../../aodncore.pipeline.steps.html#aodncore.pipeline.steps.store.StoreRunner.run">[docs]</a>    <span class="k">def</span> <span class="nf">run</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pipeline_files</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Execute the pending storage operation(s) for each file in the given collection</span>
+
+<span class="sd">        :param pipeline_files: PipelineFileCollection instance</span>
+<span class="sd">        :return: None</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">collection</span> <span class="o">=</span> <span class="n">ensure_pipelinefilecollection</span><span class="p">(</span><span class="n">pipeline_files</span><span class="p">)</span>
+
+        <span class="n">additions</span> <span class="o">=</span> <span class="n">collection</span><span class="o">.</span><span class="n">filter_by_bool_attribute</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">pending_addition_attr</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">additions</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">broker</span><span class="o">.</span><span class="n">upload</span><span class="p">(</span><span class="n">pipeline_files</span><span class="o">=</span><span class="n">additions</span><span class="p">,</span> <span class="n">is_stored_attr</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">is_stored_attr</span><span class="p">,</span>
+                               <span class="n">dest_path_attr</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">dest_path_attr</span><span class="p">)</span>
+
+        <span class="n">deletions</span> <span class="o">=</span> <span class="n">collection</span><span class="o">.</span><span class="n">filter_by_bool_attribute</span><span class="p">(</span><span class="s1">&#39;pending_store_deletion&#39;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">deletions</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">broker</span><span class="o">.</span><span class="n">delete</span><span class="p">(</span><span class="n">pipeline_files</span><span class="o">=</span><span class="n">deletions</span><span class="p">,</span> <span class="n">is_stored_attr</span><span class="o">=</span><span class="s1">&#39;is_stored&#39;</span><span class="p">,</span> <span class="n">dest_path_attr</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">dest_path_attr</span><span class="p">)</span>
+
+        <span class="n">undo_deletions</span> <span class="o">=</span> <span class="n">collection</span><span class="o">.</span><span class="n">filter_by_bool_attribute</span><span class="p">(</span><span class="s1">&#39;pending_undo&#39;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">undo_deletions</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">broker</span><span class="o">.</span><span class="n">delete</span><span class="p">(</span><span class="n">pipeline_files</span><span class="o">=</span><span class="n">undo_deletions</span><span class="p">,</span> <span class="n">is_stored_attr</span><span class="o">=</span><span class="s1">&#39;is_upload_undone&#39;</span><span class="p">,</span>
+                               <span class="n">dest_path_attr</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">dest_path_attr</span><span class="p">)</span></div></div>
+</pre></div>
+
+           </div>
+           
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2018, AODN.
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'../../../../',
+            VERSION:'0.16.0',
+            LANGUAGE:'None',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true,
+            SOURCELINK_SUFFIX: '.txt'
+        };
+    </script>
+      <script type="text/javascript" src="../../../../_static/jquery.js"></script>
+      <script type="text/javascript" src="../../../../_static/underscore.js"></script>
+      <script type="text/javascript" src="../../../../_static/doctools.js"></script>
+
+  
+
+  
+  
+    <script type="text/javascript" src="../../../../_static/js/theme.js"></script>
+  
+
+  <script type="text/javascript">
+      jQuery(function () {
+          
+          SphinxRtdTheme.Navigation.enableSticky();
+          
+      });
+  </script> 
+
+</body>
+</html>

@@ -1,0 +1,53 @@
+aodncore.testlib package
+========================
+
+Subpackages
+-----------
+
+.. toctree::
+
+    aodncore.testlib.conf
+
+Submodules
+----------
+
+aodncore.testlib.basetest module
+--------------------------------
+
+.. automodule:: aodncore.testlib.basetest
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+aodncore.testlib.dummyhandler module
+------------------------------------
+
+.. automodule:: aodncore.testlib.dummyhandler
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+aodncore.testlib.handlertest module
+-----------------------------------
+
+.. automodule:: aodncore.testlib.handlertest
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+aodncore.testlib.testutil module
+--------------------------------
+
+.. automodule:: aodncore.testlib.testutil
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+
+Module contents
+---------------
+
+.. automodule:: aodncore.testlib
+    :members:
+    :undoc-members:
+    :show-inheritance:
