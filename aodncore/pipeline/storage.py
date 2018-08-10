@@ -188,7 +188,8 @@ class LocalFileStorageBroker(BaseStorageBroker):
                     fullpath = os.path.join(root, name)
                     if fullpath.startswith(full_query) and not os.path.islink(fullpath):
                         stats = os.stat(fullpath)
-                        yield os.path.abspath(fullpath), {'last_modified': datetime.fromtimestamp(stats.st_mtime),
+                        key = os.path.relpath(fullpath, self.prefix)
+                        yield key, {'last_modified': datetime.fromtimestamp(stats.st_mtime),
                                                           'size': stats.st_size}
 
         result = dict(_find_prefix(full_query))

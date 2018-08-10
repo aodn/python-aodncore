@@ -1,9 +1,9 @@
+import datetime
 import errno
 import os
 import tempfile
 from uuid import uuid4
 
-import datetime
 from botocore.exceptions import ClientError
 from dateutil.tz import tzutc
 
@@ -301,7 +301,11 @@ class TestLocalFileStorageBroker(BaseTestCase):
             file_storage_broker = LocalFileStorageBroker(d)
             result = file_storage_broker.query('subdir/')
 
-        self.assertItemsEqual(result.keys(), [temp_file1, temp_file2, temp_file3])
+        self.assertItemsEqual(result.keys(), [
+            os.path.relpath(temp_file1, d),
+            os.path.relpath(temp_file2, d),
+            os.path.relpath(temp_file3, d)
+        ])
         self.assertTrue(all(isinstance(v['last_modified'], datetime.datetime) for k, v in result.items()))
         self.assertTrue(all(isinstance(v['size'], int) for k, v in result.items()))
 
@@ -317,7 +321,10 @@ class TestLocalFileStorageBroker(BaseTestCase):
             file_storage_broker = LocalFileStorageBroker(d)
             result = file_storage_broker.query('subdir/qwerty')
 
-        self.assertItemsEqual(result.keys(), [temp_file1, temp_file2])
+        self.assertItemsEqual(result.keys(), [
+            os.path.relpath(temp_file1, d),
+            os.path.relpath(temp_file2, d)
+        ])
         self.assertTrue(all(isinstance(v['last_modified'], datetime.datetime) for k, v in result.items()))
         self.assertTrue(all(isinstance(v['size'], int) for k, v in result.items()))
 
