@@ -26,7 +26,7 @@ __all__ = [
 
 
 def ensure_pipelinefilecollection(o):
-    """Function to accept either a single PipelineFile OR and PipelineFileCollection and ensure that a
+    """Function to accept either a single PipelineFile OR a PipelineFileCollection and ensure that a
     PipelineFileCollection object is returned in either case
 
     :param o: PipelineFile or PipelineFileCollection object

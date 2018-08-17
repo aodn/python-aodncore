@@ -14,7 +14,7 @@ except ImportError:
     from scandir import walk
 
 from .exceptions import AttributeNotSetError, InvalidStoreUrlError, StorageBrokerError
-from .files import validate_pipelinefilecollection
+from .files import ensure_pipelinefilecollection
 from ..util import format_exception, mkdir_p, retry_decorator, rm_f, safe_copy_file
 
 __all__ = [
@@ -86,26 +86,26 @@ class BaseStorageBroker(object):
         return os.path.join(self.prefix, rel_path)
 
     def set_is_overwrite(self, pipeline_files, dest_path_attr='dest_path'):
-        validate_pipelinefilecollection(pipeline_files)
+        overwrite_collection = ensure_pipelinefilecollection(pipeline_files)
 
-        should_upload = pipeline_files.filter_by_bool_attributes_and_not('should_store', 'is_deletion')
+        should_upload = overwrite_collection.filter_by_bool_attributes_and_not('should_store', 'is_deletion')
         for pipeline_file in should_upload:
             abs_path = self._get_absolute_dest_path(pipeline_file=pipeline_file, dest_path_attr=dest_path_attr)
             pipeline_file.is_overwrite = self._get_is_overwrite(pipeline_file, abs_path)
 
     def upload(self, pipeline_files, is_stored_attr='is_stored', dest_path_attr='dest_path'):
-        """Upload the given PipelineFileCollection to the storage backend
+        """Upload the given PipelineFileCollection or PipelineFile to the storage backend
 
         :param pipeline_files: collection to upload
         :param is_stored_attr: PipelineFile attribute which will be set to True if upload is successful
         :param dest_path_attr: PipelineFile attribute containing the destination path
         :return: None
         """
-        validate_pipelinefilecollection(pipeline_files)
+        upload_collection = ensure_pipelinefilecollection(pipeline_files)
 
         self._pre_run_hook()
 
-        for pipeline_file in pipeline_files:
+        for pipeline_file in upload_collection:
             try:
                 self._upload_file(pipeline_file=pipeline_file, dest_path_attr=dest_path_attr)
             except Exception as e:
@@ -117,18 +117,18 @@ class BaseStorageBroker(object):
         self._post_run_hook()
 
     def delete(self, pipeline_files, is_stored_attr='is_stored', dest_path_attr='dest_path'):
-        """Delete the given PipelineFileCollection from the storage backend
+        """Delete the given PipelineFileCollection or PipelineFile from the storage backend
 
         :param pipeline_files: collection to delete
         :param is_stored_attr: PipelineFile attribute which will be set to True if delete is successful
         :param dest_path_attr: PipelineFile attribute containing the destination path
         :return: None
         """
-        validate_pipelinefilecollection(pipeline_files)
+        delete_collection = ensure_pipelinefilecollection(pipeline_files)
 
         self._pre_run_hook()
 
-        for pipeline_file in pipeline_files:
+        for pipeline_file in delete_collection:
             try:
                 self._delete_file(pipeline_file=pipeline_file, dest_path_attr=dest_path_attr)
             except Exception as e:
