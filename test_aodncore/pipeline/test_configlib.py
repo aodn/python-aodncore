@@ -15,7 +15,7 @@ REFERENCE_PIPELINE_CONFIG = {
     'global': {
         'admin_recipients': ['unittest:dummy'],
         'archive_uri': 'file:///tmp/probably/doesnt/exist/archive',
-        'error_dir': '/tmp/probably/doesnt/exist/error',
+        'error_uri': 'file:///tmp/probably/doesnt/exist/error',
         'opendap_root': 'http://opendap.example.com',
         'processing_dir': '/tmp/probably/doesnt/exist/processing',
         'upload_uri': 'file:///tmp/probably/doesnt/exist/upload',
@@ -123,10 +123,6 @@ REFERENCE_WATCH_CONFIG = {
     }
 }
 
-REFERENCE_WATCH_DIRECTORY_MAP = {
-    '/tmp/probably/doesnt/exist/incoming/ANMN/QLD/XXXX': 'ANMN_QLD_XXXX'
-}
-
 
 class TestLazyConfigManager(BaseTestCase):
     def setUp(self):
@@ -143,7 +139,8 @@ class TestLazyConfigManager(BaseTestCase):
 
     def test_watch_directory_map(self):
         self.assertIsNone(self.config._watch_directory_map)
-        self.assertDictEqual(REFERENCE_WATCH_DIRECTORY_MAP, self.config.watch_directory_map)
+        expected_map = {os.path.join(self.config.pipeline_config['watch']['incoming_dir'], 'ANMN/QLD/XXXX'): 'ANMN_QLD_XXXX'}
+        self.assertDictEqual(expected_map, self.config.watch_directory_map)
 
     def test_purge_lazy_properties(self):
         _ = self.config.celery_application

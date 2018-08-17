@@ -15,7 +15,6 @@ This is typically run as an operating system service by something like superviso
 for debugging.
 """
 
-import abc
 import logging.config
 import os
 import stat
@@ -25,7 +24,9 @@ from uuid import uuid4
 from six import PY2
 from transitions import Machine
 
+from .files import PipelineFile
 from .log import get_pipeline_logger
+from .storage import get_storage_broker
 from ..util import format_exception, mkdir_p, rm_f, rm_r, validate_dir_writable, validate_file_writable
 
 # OS X test compatibility, due to absence of pyinotify (which is specific to the Linux kernel)
@@ -133,32 +134,6 @@ class CeleryContext(object):
                 self.logger = None
                 self.pipeline_name = pipeline_name
 
-            def _generate_location_map(self, input_file):
-                basename = os.path.basename(input_file)
-                incoming_dir = os.path.dirname(input_file)
-                error_dir = os.path.join(config.pipeline_config['global']['error_dir'], pipeline_name)
-                error_path = os.path.join(error_dir,
-                                          "{name}.{id}".format(name=basename, id=self.request.id))
-                processing_dir = os.path.join(config.pipeline_config['global']['processing_dir'], pipeline_name,
-                                              self.request.id)
-                processing_path = os.path.join(processing_dir, basename)
-
-                return {
-                    'incoming': {
-                        'dir': incoming_dir,
-                        'path': input_file,
-                        'relative_path': os.path.relpath(input_file, config.pipeline_config['watch']['incoming_dir'])
-                    },
-                    'error': {
-                        'dir': error_dir,
-                        'path': error_path
-                    },
-                    'processing': {
-                        'dir': processing_dir,
-                        'path': processing_path
-                    }
-                }
-
             def _configure_logger(self):
                 logging.config.dictConfig(config.worker_logging_config)
                 logging_extra = {
@@ -171,15 +146,17 @@ class CeleryContext(object):
                 try:
                     self._configure_logger()
 
-                    location_map = self._generate_location_map(incoming_file)
-                    self.file_state_manager = IncomingFileStateManager(location_map, self.logger)
+                    self.file_state_manager = IncomingFileStateManager(input_file=incoming_file,
+                                                                       pipeline_name=pipeline_name,
+                                                                       config=config,
+                                                                       logger=self.logger,
+                                                                       celery_request=self.request)
 
                     self.file_state_manager.move_to_processing()
 
                     try:
-                        self.handler = handler_class(location_map['processing']['path'], celery_task=self,
-                                                     config=config,
-                                                     upload_path=location_map['incoming']['relative_path'],
+                        self.handler = handler_class(self.file_state_manager.processing_path, celery_task=self,
+                                                     config=config, upload_path=self.file_state_manager.relative_path,
                                                      **kwargs)
                     except Exception as e:
                         self.file_state_manager.move_to_error()
@@ -308,8 +285,9 @@ class IncomingFileEventHandler(pyinotify.ProcessEvent):
         self._logger.debug("full task_data: {task_data}".format(task_data=task_data))
 
 
-class AbstractFileStateManager(object):
-    __metaclass__ = abc.ABCMeta
+class IncomingFileStateManager(object):
+    processing_mode = stat.S_IRUSR | stat.S_IRGRP | stat.S_IROTH
+    error_mode = stat.S_IRUSR | stat.S_IWUSR | stat.S_IRGRP | stat.S_IWGRP | stat.S_IROTH
 
     states = ['FILE_IN_INCOMING', 'FILE_IN_PROCESSING', 'FILE_IN_ERROR', 'FILE_SUCCESS']
     transitions = [
@@ -333,62 +311,91 @@ class AbstractFileStateManager(object):
         }
     ]
 
-    def __init__(self, location_map, logger):
-        self.location_map = location_map
+    def __init__(self, input_file, pipeline_name, config, logger, celery_request, error_broker=None):
+        self.input_file = input_file
+        self.pipeline_name = pipeline_name
+        self.config = config
         self.logger = logger
+        self.celery_request = celery_request
+
         self._machine = Machine(model=self, states=self.states, initial='FILE_IN_INCOMING', auto_transitions=False,
                                 transitions=self.transitions, after_state_change='_after_state_change')
         self.logger.sysinfo(
             "{name} initialised in state: {state}".format(name=self.__class__.__name__, state=self.state))
 
+        self._error_broker = error_broker
+
         self._pre_check()
+
+    @property
+    def error_broker(self):
+        if self._error_broker is None:
+            self._error_broker = get_storage_broker(self.error_uri)
+        return self._error_broker
+
+    @property
+    def basename(self):
+        return os.path.basename(self.input_file)
+
+    @property
+    def incoming_dir(self):
+        return os.path.dirname(self.input_file)
+
+    @property
+    def processing_dir(self):
+        return os.path.join(self.config.pipeline_config['global']['processing_dir'], self.pipeline_name,
+                            self.celery_request.id)
+
+    @property
+    def processing_path(self):
+        return os.path.join(self.processing_dir, self.basename)
+
+    @property
+    def relative_path(self):
+        return os.path.relpath(self.input_file, self.config.pipeline_config['watch']['incoming_dir'])
+
+    @property
+    def error_name(self):
+        return "{name}.{id}".format(name=self.basename, id=self.celery_request.id)
+
+    @property
+    def error_uri(self):
+        return os.path.join(self.config.pipeline_config['global']['error_uri'], self.pipeline_name)
 
     def _after_state_change(self):
         self.logger.sysinfo(
             "{name} transitioned to state: {state}".format(name=self.__class__.__name__, state=self.state))
 
-    @abc.abstractmethod
     def _pre_check(self):
-        pass
+        try:
+            validate_file_writable(self.input_file)
 
-    @abc.abstractmethod
-    def _move_to_processing(self):
-        pass
+            mkdir_p(self.processing_dir)
+            validate_dir_writable(self.processing_dir)
 
-    @abc.abstractmethod
-    def _move_to_error(self):
-        pass
-
-    @abc.abstractmethod
-    def _cleanup_success(self):
-        pass
-
-
-class IncomingFileStateManager(AbstractFileStateManager):
-    processing_mode = stat.S_IRUSR | stat.S_IRGRP | stat.S_IROTH
-    error_mode = stat.S_IRUSR | stat.S_IWUSR | stat.S_IRGRP | stat.S_IWGRP | stat.S_IROTH
-
-    def _pre_check(self):
-        validate_file_writable(self.location_map['incoming']['path'])
-
-        mkdir_p(self.location_map['processing']['dir'])
-        validate_dir_writable(self.location_map['processing']['dir'])
-
-        mkdir_p(self.location_map['error']['dir'])
-        validate_dir_writable(self.location_map['error']['dir'])
+            # TODO: better validation of broker usability?
+            _ = self.error_broker.query('')
+        except Exception:  # pragma: no cover
+            self.logger.exception('exception occurred initialising IncomingFileStateManager')
+            raise
 
     def _move_to_processing(self):
-        safe_move_file(self.location_map['incoming']['path'], self.location_map['processing']['path'])
-        os.chmod(self.location_map['processing']['path'], self.processing_mode)
+        self.logger.info("{name}.move_to_processing -> '{path}'".format(name=self.__class__.__name__,
+                                                                        path=self.processing_path))
+        safe_move_file(self.input_file, self.processing_path)
+        os.chmod(self.processing_path, self.processing_mode)
 
     def _move_to_error(self):
-        safe_move_file(self.location_map['processing']['path'], self.location_map['error']['path'])
-        os.chmod(self.location_map['error']['path'], self.error_mode)
-        rm_r(self.location_map['processing']['dir'])
+        full_error_path = os.path.join(self.error_broker.prefix, self.error_name)
+        self.logger.info("{name}.move_to_error -> '{path}'".format(name=self.__class__.__name__,
+                                                                   path=full_error_path))
+        error_file = PipelineFile(self.processing_path, dest_path=self.error_name)
+        self.error_broker.upload(error_file)
+        rm_f(self.processing_path)
 
     def _cleanup_success(self):
-        rm_f(self.location_map['processing']['path'])
-        rm_r(self.location_map['processing']['dir'])
+        rm_f(self.processing_path)
+        rm_r(self.processing_dir)
 
 
 class WatchServiceContext(object):
