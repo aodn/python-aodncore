@@ -1,10 +1,10 @@
 import abc
 import errno
 import os
+from datetime import datetime
 
 import boto3
 from botocore.exceptions import ClientError
-from datetime import datetime
 from paramiko import SSHClient, AutoAddPolicy
 from six.moves.urllib.parse import urlparse
 
@@ -189,8 +189,7 @@ class LocalFileStorageBroker(BaseStorageBroker):
                     if fullpath.startswith(full_query) and not os.path.islink(fullpath):
                         stats = os.stat(fullpath)
                         key = os.path.relpath(fullpath, self.prefix)
-                        yield key, {'last_modified': datetime.fromtimestamp(stats.st_mtime),
-                                                          'size': stats.st_size}
+                        yield key, {'last_modified': datetime.fromtimestamp(stats.st_mtime), 'size': stats.st_size}
 
         result = dict(_find_prefix(full_query))
         return result
