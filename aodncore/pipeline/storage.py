@@ -15,7 +15,7 @@ except ImportError:
 
 from .exceptions import AttributeNotSetError, InvalidStoreUrlError, StorageBrokerError
 from .files import ensure_pipelinefilecollection
-from ..util import format_exception, mkdir_p, retry_decorator, rm_f, safe_copy_file
+from ..util import format_exception, mkdir_p, retry_decorator, rm_f, safe_copy_file, validate_type
 
 __all__ = [
     'get_storage_broker',
@@ -24,7 +24,8 @@ __all__ = [
     'SftpStorageBroker',
     'sftp_makedirs',
     'sftp_mkdir_p',
-    'sftp_path_exists'
+    'sftp_path_exists',
+    'validate_storage_broker'
 ]
 
 
@@ -370,3 +371,6 @@ class SftpStorageBroker(BaseStorageBroker):
 
         with open(pipeline_file.src_path, 'rb') as f:
             self.sftp_client.putfo(f, abs_path, confirm=True)
+
+
+validate_storage_broker = validate_type(BaseStorageBroker)

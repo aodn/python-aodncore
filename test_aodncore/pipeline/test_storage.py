@@ -188,6 +188,12 @@ class TestPipelineStorage(BaseTestCase):
         with self.assertRaises(EnvironmentError):
             sftp_mkdir_p(sftpclient, path)
 
+    def test_validate_storage_broker(self):
+        with self.assertRaises(TypeError):
+            validate_storage_broker(1)
+        broker = LocalFileStorageBroker(get_nonexistent_path())
+        validate_storage_broker(broker)
+
 
 class TestBaseStorageBroker(BaseTestCase):
     def test_delete_fail(self):
