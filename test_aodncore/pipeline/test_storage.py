@@ -10,9 +10,10 @@ from dateutil.tz import tzutc
 from aodncore.pipeline import PipelineFile, PipelineFileCollection, PipelineFilePublishType
 from aodncore.pipeline.exceptions import InvalidStoreUrlError, StorageBrokerError
 from aodncore.pipeline.storage import (get_storage_broker, sftp_path_exists, sftp_makedirs, sftp_mkdir_p,
-                                       LocalFileStorageBroker, S3StorageBroker, SftpStorageBroker)
+                                       validate_storage_broker, LocalFileStorageBroker, S3StorageBroker,
+                                       SftpStorageBroker)
 from aodncore.testlib import BaseTestCase, NullStorageBroker, get_nonexistent_path, mock
-from aodncore.util import TemporaryDirectory, format_exception
+from aodncore.util import TemporaryDirectory
 from test_aodncore import TESTDATA_DIR
 
 GOOD_NC = os.path.join(TESTDATA_DIR, 'good.nc')
@@ -229,11 +230,9 @@ class TestBaseStorageBroker(BaseTestCase):
         collection.add(temp_file)
 
         broker = NullStorageBroker("/")
-        try:
+
+        with self.assertNoException():
             broker.set_is_overwrite(collection)
-        except Exception as e:
-            raise AssertionError(
-                "unexpected exception raised. {cls} {msg}".format(cls=e.__class__.__name__, msg=e))
 
 
 class TestLocalFileStorageBroker(BaseTestCase):
@@ -371,10 +370,8 @@ class TestLocalFileStorageBroker(BaseTestCase):
 
             file_storage_broker = LocalFileStorageBroker(d)
 
-            try:
+            with self.assertNoException():
                 result = file_storage_broker.query('subdir/qwerty')
-            except Exception as e:
-                raise AssertionError("unexpected exception raised. {e}".format(e=format_exception(e)))
 
         self.assertDictEqual(result, {})
 
@@ -655,10 +652,8 @@ class TestS3StorageBroker(BaseTestCase):
         mock_boto3.client().list_objects_v2.return_value = {}
 
         s3_storage_broker = S3StorageBroker('imos-data', '')
-        try:
+        with self.assertNoException():
             result = s3_storage_broker.query('Department_of_Defence/DSTG/slocum_glider/Perth')
-        except Exception as e:
-            raise AssertionError("unexpected exception raised. {e}".format(e=format_exception(e)))
 
         self.assertDictEqual(result, {})
 

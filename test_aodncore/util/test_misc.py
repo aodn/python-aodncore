@@ -56,10 +56,8 @@ class TestWriteOnceOrderedDict(BaseTestCase):
         self.write_once_ordered_dict = WriteOnceOrderedDict({'key': 'value'})
 
     def test_new_key(self):
-        try:
+        with self.assertNoException():
             self.write_once_ordered_dict['key2'] = 'value'
-        except Exception as e:
-            raise AssertionError("unexpected exception raised. {e}".format(e=format_exception(e)))
 
     def test_no_overwrite(self):
         with self.assertRaises(RuntimeError):
@@ -136,10 +134,8 @@ class TestUtilMisc(BaseTestCase):
 
     def test_validate_membership(self):
         validate_in_collection = validate_membership([1, 2, 3])
-        try:
+        with self.assertNoException():
             validate_in_collection(1)
-        except Exception as e:
-            raise AssertionError("unexpected exception raised. {e}".format(e=format_exception(e)))
         with self.assertRaises(ValueError):
             validate_in_collection(4)
 
@@ -147,10 +143,8 @@ class TestUtilMisc(BaseTestCase):
         f = validate_type(int)
         self.assertTrue(is_function(f))
 
-        try:
+        with self.assertNoException():
             f(1)
-        except Exception as e:
-            raise AssertionError("unexpected exception raised. {e}".format(e=format_exception(e)))
 
         with self.assertRaises(TypeError):
             f('s')
@@ -162,11 +156,9 @@ class TestUtilMisc(BaseTestCase):
         class DummyClass(object):
             pass
 
-        try:
+        with self.assertNoException():
             validate_callable(dummy_function)
             validate_callable(DummyClass)
-        except Exception as e:
-            raise AssertionError("unexpected exception raised. {e}".format(e=format_exception(e)))
 
         with self.assertRaises(TypeError):
             validate_callable(1)
@@ -181,12 +173,10 @@ class TestUtilMisc(BaseTestCase):
             validate_callable([1])
 
     def test_validate_nonstring_iterable(self):
-        try:
+        with self.assertNoException():
             validate_nonstring_iterable([1])
             validate_nonstring_iterable({1})
             validate_nonstring_iterable((1,))
-        except Exception as e:
-            raise AssertionError("unexpected exception raised. {e}".format(e=format_exception(e)))
 
         with self.assertRaises(TypeError):
             validate_nonstring_iterable({1: 1})
@@ -198,19 +188,15 @@ class TestUtilMisc(BaseTestCase):
         with self.assertRaises(ValueError):
             validate_relative_path('/absolute/path')
 
-        try:
+        with self.assertNoException():
             validate_relative_path('relative/path')
-        except Exception as e:
-            raise AssertionError("unexpected exception raised. {e}".format(e=format_exception(e)))
 
     def test_validate_relative_path_attr(self):
         with self.assertRaisesRegexp(ValueError, r'.*dest_path.*'):
             validate_relative_path_attr('/absolute/path', 'dest_path')
 
-        try:
+        with self.assertNoException():
             validate_relative_path_attr('relative/path', 'dest_path')
-        except Exception as e:
-            raise AssertionError("unexpected exception raised. {e}".format(e=format_exception(e)))
 
     def test_get_pattern_subgroups_from_string(self):
         good_pattern = re.compile(r"""
@@ -411,7 +397,5 @@ class TestUtilMisc(BaseTestCase):
         with self.assertRaises(ValueError):
             validate_mandatory_elements(superset, subset)
 
-        try:
+        with self.assertNoException():
             validate_mandatory_elements(subset, superset)
-        except Exception as e:
-            raise AssertionError("unexpected exception: {e}".format(e=format_exception(e)))

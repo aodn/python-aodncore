@@ -102,8 +102,5 @@ class TestBaseStoreRunner(BaseTestCase):
         collection.add(temp_file)
 
         runner = StoreRunner(NullStorageBroker("/"), None, None)
-        try:
+        with self.assertNoException():
             runner.set_is_overwrite(collection)
-        except Exception as e:
-            raise AssertionError(
-                "unexpected exception raised. {cls} {msg}".format(cls=e.__class__.__name__, msg=e))

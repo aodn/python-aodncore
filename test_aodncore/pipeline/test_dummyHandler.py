@@ -199,11 +199,8 @@ class TestDummyHandler(HandlerTestCase):
         with self.assertRaises(ValueError):
             handler.input_file_archive_path = '/absolute/path/MYFACILITY/path/to/file.txt'
 
-        try:
+        with self.assertNoException():
             handler.input_file_archive_path = 'relative/path/MYFACILITY/path/to/file.txt'
-        except Exception as e:
-            raise AssertionError(
-                "unexpected exception raised. {cls} {msg}".format(cls=e.__class__.__name__, msg=e))
 
     def test_invalid_check_suite(self):
         self.run_handler_with_exception(InvalidCheckSuiteError, NOT_NETCDF_NC_FILE,

@@ -167,11 +167,8 @@ class TestUtilFileOps(BaseTestCase):
         self.assertTrue(os.path.isdir(temp_dir))
 
         # should not raise if directory already exists
-        try:
+        with self.assertNoException():
             mkdir_p(temp_dir)
-        except Exception as e:
-            raise AssertionError(
-                "unexpected exception raised. {cls} {msg}".format(cls=e.__class__.__name__, msg=e))
 
         # test failure due to insufficient permissions
         os.chmod(temp_dir, 0o400)
@@ -183,10 +180,8 @@ class TestUtilFileOps(BaseTestCase):
         _, temp_file = mkstemp(suffix='.tmp', prefix=self.__class__.__name__, dir=self.temp_dir)
         temp_dir = mkdtemp(prefix=self.__class__.__name__, dir=self.temp_dir)
 
-        try:
+        with self.assertNoException():
             rm_f(get_nonexistent_path())
-        except Exception as e:
-            raise AssertionError("unexpected exception raised. {e}".format(e=format_exception(e)))
 
         rm_f(temp_file)
         self.assertFalse(os.path.exists(temp_file))
@@ -201,34 +196,24 @@ class TestUtilFileOps(BaseTestCase):
         with self.assertRaisesRegexp(OSError, '[Errno 2].*'):
             rm_r(get_nonexistent_path())
 
-        try:
+        with self.assertNoException():
             rm_r(temp_file)
-        except Exception as e:
-            raise AssertionError("unexpected exception raised. {e}".format(e=format_exception(e)))
 
-        try:
+        with self.assertNoException():
             rm_r(temp_dir)
-        except Exception as e:
-            raise AssertionError("unexpected exception raised. {e}".format(e=format_exception(e)))
 
     def test_rm_rf(self):
         _, temp_file = mkstemp(suffix='.tmp', prefix=self.__class__.__name__, dir=self.temp_dir)
         temp_dir = mkdtemp(prefix=self.__class__.__name__, dir=self.temp_dir)
 
-        try:
+        with self.assertNoException():
             rm_rf(get_nonexistent_path())
-        except Exception as e:
-            raise AssertionError("unexpected exception raised. {e}".format(e=format_exception(e)))
 
-        try:
+        with self.assertNoException():
             rm_rf(temp_file)
-        except Exception as e:
-            raise AssertionError("unexpected exception raised. {e}".format(e=format_exception(e)))
 
-        try:
+        with self.assertNoException():
             rm_rf(temp_dir)
-        except Exception as e:
-            raise AssertionError("unexpected exception raised. {e}".format(e=format_exception(e)))
 
     def test_safe_copy_file(self):
         nonexistent_file = get_nonexistent_path()
