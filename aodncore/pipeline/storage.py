@@ -15,7 +15,8 @@ except ImportError:
 
 from .exceptions import AttributeNotSetError, InvalidStoreUrlError, StorageBrokerError
 from .files import ensure_pipelinefilecollection
-from ..util import format_exception, mkdir_p, retry_decorator, rm_f, safe_copy_file, validate_type
+from ..util import (format_exception, mkdir_p, retry_decorator, rm_f, safe_copy_file, validate_type,
+                    validate_relative_path)
 
 __all__ = [
     'get_storage_broker',
@@ -54,6 +55,9 @@ class BaseStorageBroker(object):
 
     def __init__(self):
         self.prefix = None
+
+    def __repr__(self):
+        return "{name}(prefix='{prefix}')".format(name=self.__class__.__name__, prefix=self.prefix)
 
     @abc.abstractmethod  # pragma: no cover
     def _delete_file(self, pipeline_file, dest_path_attr):
@@ -140,7 +144,7 @@ class BaseStorageBroker(object):
 
         self._post_run_hook()
 
-    def query(self, query):
+    def query(self, query=''):
         """Query the storage for existing files
 
         A trailing slash will result in a directory listing type of query, recursively listing all files underneath
@@ -149,7 +153,7 @@ class BaseStorageBroker(object):
         Omitting the trailing slash will cause a prefix style query, where the results will be any path that matches the
         query *including* partial file names.
 
-        :param query: S3 prefix style string
+        :param query: S3 prefix style string (if omitted, will search with a blank prefix)
         :return: a dict with keys being the matching objects, and values being a metadata dict for the object
         """
         try:
@@ -180,6 +184,8 @@ class LocalFileStorageBroker(BaseStorageBroker):
         return
 
     def _run_query(self, query):
+        validate_relative_path(query)
+
         full_query = os.path.join(self.prefix, query)
 
         def _find_prefix(path):
