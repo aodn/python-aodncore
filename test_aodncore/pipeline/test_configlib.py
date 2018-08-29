@@ -119,7 +119,12 @@ REFERENCE_WATCH_CONFIG = {
                     "4.XXXX"
                 ]
             }
-        }
+        },
+        "success_exit_policies": [
+            "DELETE_SAME_NAME_FROM_ERROR_STORE"
+        ],
+        "error_exit_policies": [
+        ]
     }
 }
 

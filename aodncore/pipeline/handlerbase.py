@@ -113,6 +113,11 @@ class HandlerBase(object):
             *pipeline.handlers* entry point group.
     :type dest_path_function: :py:class:`str`, :py:class:`callable`
 
+    :param error_cleanup_regexes: A list of regular expressions which, when a cleanup policy of
+        DELETE_CUSTOM_REGEXES_FROM_ERROR_STORE is set, controls which files are deleted from the error store upon
+        successful execution of the handler instance
+    :type error_cleanup_regexes: :py:class:`list`
+
     :param exclude_regexes: See :py:attr:`include_regexes`.
     :type exclude_regexes: :py:class:`list`
 
@@ -276,6 +281,7 @@ class HandlerBase(object):
                  config=None,
                  custom_params=None,
                  dest_path_function=None,
+                 error_cleanup_regexes=None,
                  exclude_regexes=None,
                  harvest_params=None,
                  harvest_type='talend',
@@ -323,6 +329,7 @@ class HandlerBase(object):
         self.custom_params = custom_params
         self.config = config
         self.dest_path_function = dest_path_function
+        self.error_cleanup_regexes = error_cleanup_regexes
         self.exclude_regexes = exclude_regexes
         self.harvest_params = harvest_params
         self.harvest_type = harvest_type

@@ -17,17 +17,20 @@ for debugging.
 
 import logging.config
 import os
+import re
 import stat
 import warnings
 from uuid import uuid4
 
+from enum import Enum
 from six import PY2
 from transitions import Machine
 
 from .files import PipelineFile
 from .log import get_pipeline_logger
 from .storage import get_storage_broker
-from ..util import format_exception, mkdir_p, rm_f, rm_r, validate_dir_writable, validate_file_writable
+from ..util import (format_exception, mkdir_p, rm_f, rm_r, validate_dir_writable,
+                    validate_file_writable, validate_membership)
 
 # OS X test compatibility, due to absence of pyinotify (which is specific to the Linux kernel)
 try:
@@ -61,6 +64,7 @@ __all__ = [
     'CeleryConfig',
     'CeleryContext',
     'IncomingFileEventHandler',
+    'IncomingFileStateManager',
     'WatchServiceContext',
     'WatchServiceManager'
 ]
@@ -91,6 +95,69 @@ class CeleryConfig(object):
         self.CELERY_ROUTES = routes or {}
 
 
+def delete_same_name_from_error_store_callback(handler, file_state_manager):
+    """Delete files from the error store if they match the pattern "INPUT_FILE.UUID"
+
+    :param handler: Handler instance
+    :param file_state_manager: IncomingFileStateManager instance
+    :return: None
+    """
+    escaped_basename = re.escape(handler.file_basename)
+    cleanup_patterns = [re.compile(r"^{basename}\.[0-9a-f\-]{{36}}$".format(basename=escaped_basename))]
+    deleted_files = file_state_manager.error_broker.delete_patterns(cleanup_patterns)
+    return "delete_same_name_from_error_store_callback deleted -> {}".format(deleted_files.get_attribute_list('name'))
+
+
+def delete_custom_regexes_from_error_store_callback(handler, file_state_manager):
+    """Delete files from the error store if they match one of patterns in the error_cleanup_regexes attribute of the
+    handler
+
+    :param handler: Handler instance
+    :param file_state_manager: IncomingFileStateManager instance
+    :return: None
+    """
+    patterns = handler.error_cleanup_regexes if handler.error_cleanup_regexes else []
+    cleanup_patterns = [re.compile(p) for p in patterns]
+    deleted_files = file_state_manager.error_broker.delete_patterns(cleanup_patterns)
+    return "delete_custom_regexes_from_error_store_callback deleted -> {}".format(
+        deleted_files.get_attribute_list('name'))
+
+
+class ExitPolicy(Enum):
+    """Policies defining callback actions performed on completion of a handler
+
+    Callbacks are called with two parameters: the BaseHandler instance and the IncomingFileStateManager instance from
+    the given task. These two objects encapsulate the entire state of a task execution, which allows a callback to
+    perform essentially any action relating to the handling of a file, e.g. accessing the storage brokers, the handler
+    file collection, the handler status etc.
+
+    While they are given access to the entire task, it is not intended that exit callbacks interfere with the incoming
+    file itself or any functionality which is the responsibility of the handler instance itself, e.g. harvesting,
+    managing upload/archive storage.
+
+    NO_ACTION: do nothing (default policy)
+    DELETE_SAME_NAME_FROM_ERROR_STORE: remove all files with exactly the same name as the input file (accounting for a
+        trailing UUID)
+    DELETE_CUSTOM_REGEXES_FROM_ERROR_STORE: remove all files matching one of a list of regexes defined by the handler
+        instance
+    """
+    NO_ACTION = {'callback': lambda handler, file_state_manager: None}
+    DELETE_SAME_NAME_FROM_ERROR_STORE = {'callback': delete_same_name_from_error_store_callback}
+    DELETE_CUSTOM_REGEXES_FROM_ERROR_STORE = {'callback': delete_custom_regexes_from_error_store_callback}
+
+    @classmethod
+    def from_name(cls, name):
+        return getattr(ExitPolicy, name, cls.NO_ACTION)
+
+    @classmethod
+    def from_names(cls, names):
+        return tuple(cls.from_name(n) for n in names)
+
+    @property
+    def callback(self):
+        return self.value['callback']
+
+
 class CeleryContext(object):
     def __init__(self, application, config, celeryconfig):
         self._application = application
@@ -109,7 +176,7 @@ class CeleryContext(object):
             self._configure_application()
         return self._application
 
-    def _build_task(self, pipeline_name, handler_class, kwargs):
+    def _build_task(self, pipeline_name, handler_class, success_exit_policies, error_exit_policies, kwargs):
         """Closure method to return a Celery Task instance which has been prepared for a specific pipeline.
             The this allows the task to accept a single input_file parameter, while dynamically instantiating the
             handler class passed in via the 'handler_class' parameter, with the per-pipeline 'kwargs' pre-applied to the
@@ -146,11 +213,22 @@ class CeleryContext(object):
                 try:
                     self._configure_logger()
 
+                    self.logger.sysinfo(
+                        "{name}.success_exit_policies -> {policies}".format(name=self.__class__.__name__,
+                                                                            policies=[p.name for p in
+                                                                                      success_exit_policies]))
+                    self.logger.sysinfo(
+                        "{name}.error_exit_policies -> {policies}".format(name=self.__class__.__name__,
+                                                                          policies=[p.name for p in
+                                                                                    error_exit_policies]))
+
                     self.file_state_manager = IncomingFileStateManager(input_file=incoming_file,
                                                                        pipeline_name=pipeline_name,
                                                                        config=config,
                                                                        logger=self.logger,
-                                                                       celery_request=self.request)
+                                                                       celery_request=self.request,
+                                                                       error_exit_policies=error_exit_policies,
+                                                                       success_exit_policies=success_exit_policies)
 
                     self.file_state_manager.move_to_processing()
 
@@ -164,9 +242,13 @@ class CeleryContext(object):
 
                     self.handler.run()
 
+                    self.file_state_manager.handler = self.handler
+
                     if self.handler.error:
+                        self.file_state_manager.run_error_exit_policies()
                         self.file_state_manager.move_to_error()
                     else:
+                        self.file_state_manager.run_success_exit_policies()
                         self.file_state_manager.move_to_success()
                 except Exception:
                     self.logger.exception('unhandled exception in PipelineTask')
@@ -198,6 +280,8 @@ class CeleryContext(object):
                     "{name} not in {handlers}".format(name=items['handler'], handlers=available_handler_names))
 
             params = items.get('params', {})
+            success_exit_policies = ExitPolicy.from_names(items.get('success_exit_policies', []))
+            error_exit_policies = ExitPolicy.from_names(items.get('error_exit_policies', []))
 
             try:
                 _ = handler_class('', config=self._config, **params)
@@ -207,7 +291,8 @@ class CeleryContext(object):
                                                                                                  name=items['handler'],
                                                                                                  e=format_exception(e)))
             else:
-                task_object = self._build_task(pipeline_name, handler_class, params)
+                task_object = self._build_task(pipeline_name, handler_class, success_exit_policies, error_exit_policies,
+                                               params)
                 self._application.register_task(task_object)
 
 
@@ -289,7 +374,15 @@ class IncomingFileStateManager(object):
     processing_mode = stat.S_IRUSR | stat.S_IRGRP | stat.S_IROTH
     error_mode = stat.S_IRUSR | stat.S_IWUSR | stat.S_IRGRP | stat.S_IWGRP | stat.S_IROTH
 
-    states = ['FILE_IN_INCOMING', 'FILE_IN_PROCESSING', 'FILE_IN_ERROR', 'FILE_SUCCESS']
+    states = [
+        'FILE_IN_INCOMING',
+        'FILE_IN_PROCESSING',
+        'ERROR_EXIT_POLICIES_RUN',
+        'FILE_IN_ERROR',
+        'SUCCESS_EXIT_POLICIES_RUN',
+        'FILE_SUCCESS'
+    ]
+
     transitions = [
         {
             'trigger': 'move_to_processing',
@@ -298,39 +391,59 @@ class IncomingFileStateManager(object):
             'before': '_move_to_processing'
         },
         {
-            'trigger': 'move_to_error',
+            'trigger': 'run_error_exit_policies',
             'source': 'FILE_IN_PROCESSING',
+            'dest': 'ERROR_EXIT_POLICIES_RUN',
+            'before': '_run_error_callbacks'
+        },
+        {
+            'trigger': 'move_to_error',
+            'source': ['FILE_IN_PROCESSING', 'ERROR_EXIT_POLICIES_RUN'],
             'dest': 'FILE_IN_ERROR',
             'before': '_move_to_error'
         },
         {
-            'trigger': 'move_to_success',
+            'trigger': 'run_success_exit_policies',
             'source': 'FILE_IN_PROCESSING',
+            'dest': 'SUCCESS_EXIT_POLICIES_RUN',
+            'before': '_run_success_callbacks'
+        },
+        {
+            'trigger': 'move_to_success',
+            'source': ['FILE_IN_PROCESSING', 'SUCCESS_EXIT_POLICIES_RUN'],
             'dest': 'FILE_SUCCESS',
-            'after': '_cleanup_success'
+            'after': '_remove_processing_file'
         }
     ]
 
-    def __init__(self, input_file, pipeline_name, config, logger, celery_request, error_broker=None):
+    def __init__(self, input_file, pipeline_name, config, logger, celery_request, error_exit_policies=None,
+                 success_exit_policies=None, error_broker=None):
         self.input_file = input_file
         self.pipeline_name = pipeline_name
         self.config = config
         self.logger = logger
         self.celery_request = celery_request
+        self.error_exit_policies = error_exit_policies or []
+        self.success_exit_policies = success_exit_policies or []
+        self._error_broker = error_broker
 
         self._machine = Machine(model=self, states=self.states, initial='FILE_IN_INCOMING', auto_transitions=False,
                                 transitions=self.transitions, after_state_change='_after_state_change')
-        self.logger.sysinfo(
-            "{name} initialised in state: {state}".format(name=self.__class__.__name__, state=self.state))
-
-        self._error_broker = error_broker
-
+        self._log_state()
         self._pre_check()
+
+        self.handler = None
+
+    def _log_state(self):
+        self.logger.sysinfo(
+            "{name}.state -> '{state}'".format(name=self.__class__.__name__, state=self.state))
 
     @property
     def error_broker(self):
         if self._error_broker is None:
             self._error_broker = get_storage_broker(self.error_uri)
+            self.logger.info("{name}.error_broker -> {broker}".format(name=self.__class__.__name__,
+                                                                      broker=self._error_broker))
         return self._error_broker
 
     @property
@@ -363,8 +476,7 @@ class IncomingFileStateManager(object):
         return os.path.join(self.config.pipeline_config['global']['error_uri'], self.pipeline_name)
 
     def _after_state_change(self):
-        self.logger.sysinfo(
-            "{name} transitioned to state: {state}".format(name=self.__class__.__name__, state=self.state))
+        self._log_state()
 
     def _pre_check(self):
         try:
@@ -374,7 +486,7 @@ class IncomingFileStateManager(object):
             validate_dir_writable(self.processing_dir)
 
             # TODO: better validation of broker usability?
-            _ = self.error_broker.query('')
+            _ = self.error_broker.query()
         except Exception:  # pragma: no cover
             self.logger.exception('exception occurred initialising IncomingFileStateManager')
             raise
@@ -387,13 +499,31 @@ class IncomingFileStateManager(object):
 
     def _move_to_error(self):
         full_error_path = os.path.join(self.error_broker.prefix, self.error_name)
-        self.logger.info("{name}.move_to_error -> '{path}'".format(name=self.__class__.__name__,
-                                                                   path=full_error_path))
+        self.logger.info("{name}.move_to_error -> '{path}'".format(name=self.__class__.__name__, path=full_error_path))
         error_file = PipelineFile(self.processing_path, dest_path=self.error_name)
         self.error_broker.upload(error_file)
         rm_f(self.processing_path)
 
-    def _cleanup_success(self):
+    def _run_error_callbacks(self):
+        try:
+            callbacks = [p.callback for p in self.error_exit_policies]
+            callback_outputs = [c(self.handler, self) for c in callbacks]
+            self.logger.sysinfo("error callback outputs:\n{}".format('\n'.join(callback_outputs)))
+        except Exception as e:
+            self.logger.exception(
+                "error running error exit policies: '{policies}'. {e}".format(policies=self.error_exit_policies, e=e))
+
+    def _run_success_callbacks(self):
+        try:
+            callbacks = [p.callback for p in self.success_exit_policies]
+            callback_outputs = [c(self.handler, self) for c in callbacks]
+            self.logger.sysinfo("success callback outputs:\n{}".format('\n'.join(callback_outputs)))
+        except Exception as e:
+            self.logger.exception(
+                "error running success exit policies: '{policies}'. {e}".format(policies=self.success_exit_policies,
+                                                                                e=e))
+
+    def _remove_processing_file(self):
         rm_f(self.processing_path)
         rm_r(self.processing_dir)
 
@@ -465,3 +595,6 @@ class WatchServiceManager(object):
 
             self._logger.info("adding watch for '{directory}'".format(directory=directory))
             self._watch_manager.add_watch(directory, self.EVENT_MASK)
+
+
+validate_exitpolicy = validate_membership(ExitPolicy)

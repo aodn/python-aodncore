@@ -14,9 +14,9 @@ except ImportError:
     from scandir import walk
 
 from .exceptions import AttributeNotSetError, InvalidStoreUrlError, StorageBrokerError
-from .files import ensure_pipelinefilecollection
-from ..util import (format_exception, mkdir_p, retry_decorator, rm_f, safe_copy_file, validate_type,
-                    validate_relative_path)
+from .files import ensure_pipelinefilecollection, PipelineFile, PipelineFileCollection
+from ..util import (format_exception, matches_regexes, mkdir_p, retry_decorator, rm_f, safe_copy_file,
+                    validate_nonstring_iterable, validate_relative_path, validate_type)
 
 __all__ = [
     'get_storage_broker',
@@ -143,6 +143,23 @@ class BaseStorageBroker(object):
             setattr(pipeline_file, is_stored_attr, True)
 
         self._post_run_hook()
+
+    def delete_patterns(self, patterns):
+        """Delete files storage if they match one of the given patterns
+
+        :param patterns: list of patterns to delete
+        :return: list of files which matched the patterns and were deleted
+        """
+        validate_nonstring_iterable(patterns)
+
+        all_files = self.query()
+        files_to_delete = PipelineFileCollection(
+            PipelineFile(l, dest_path=os.path.join(self.prefix, l), is_deletion=True)
+            for l in all_files
+            if matches_regexes(l, patterns)
+        )
+        self.delete(files_to_delete)
+        return files_to_delete
 
     def query(self, query=''):
         """Query the storage for existing files
