@@ -9,6 +9,7 @@ import re
 import sys
 import types
 from collections import Iterable, OrderedDict, Mapping
+from typing import Pattern
 
 import jinja2
 import pkg_resources
@@ -309,6 +310,8 @@ def validate_nonstring_iterable(o):
 
 
 def validate_regex(o):
+    if isinstance(o, Pattern):
+        return
     try:
         re.compile(o)
     except re.error as e:
