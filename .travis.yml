@@ -6,6 +6,7 @@ addons:
   apt:
     packages:
     - libudunits2-0
+    - libudunits2-dev
 
 env:
   global:
