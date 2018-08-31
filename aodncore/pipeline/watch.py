@@ -105,7 +105,8 @@ def delete_same_name_from_error_store_callback(handler, file_state_manager):
     escaped_basename = re.escape(handler.file_basename)
     cleanup_patterns = [re.compile(r"^{basename}\.[0-9a-f\-]{{36}}$".format(basename=escaped_basename))]
     deleted_files = file_state_manager.error_broker.delete_patterns(cleanup_patterns)
-    return "delete_same_name_from_error_store_callback deleted -> {}".format(deleted_files.get_attribute_list('name'))
+    log = "delete_same_name_from_error_store_callback deleted -> {}".format(deleted_files.get_attribute_list('name'))
+    return log
 
 
 def delete_custom_regexes_from_error_store_callback(handler, file_state_manager):
@@ -119,8 +120,9 @@ def delete_custom_regexes_from_error_store_callback(handler, file_state_manager)
     patterns = handler.error_cleanup_regexes if handler.error_cleanup_regexes else []
     cleanup_patterns = [re.compile(p) for p in patterns]
     deleted_files = file_state_manager.error_broker.delete_patterns(cleanup_patterns)
-    return "delete_custom_regexes_from_error_store_callback deleted -> {}".format(
+    log = "delete_custom_regexes_from_error_store_callback deleted -> {}".format(
         deleted_files.get_attribute_list('name'))
+    return log
 
 
 class ExitPolicy(Enum):
@@ -222,10 +224,8 @@ def build_task(config, pipeline_name, handler_class, success_exit_policies, erro
                 file_state_manager.handler = handler
 
                 if handler.error:
-                    file_state_manager.run_error_exit_policies()
                     file_state_manager.move_to_error()
                 else:
-                    file_state_manager.run_success_exit_policies()
                     file_state_manager.move_to_success()
             except Exception:
                 self.logger.exception('unhandled exception in PipelineTask')
@@ -373,9 +373,7 @@ class IncomingFileStateManager(object):
     states = [
         'FILE_IN_INCOMING',
         'FILE_IN_PROCESSING',
-        'ERROR_EXIT_POLICIES_RUN',
         'FILE_IN_ERROR',
-        'SUCCESS_EXIT_POLICIES_RUN',
         'FILE_SUCCESS'
     ]
 
@@ -384,30 +382,19 @@ class IncomingFileStateManager(object):
             'trigger': 'move_to_processing',
             'source': 'FILE_IN_INCOMING',
             'dest': 'FILE_IN_PROCESSING',
-            'before': '_move_to_processing'
-        },
-        {
-            'trigger': 'run_error_exit_policies',
-            'source': 'FILE_IN_PROCESSING',
-            'dest': 'ERROR_EXIT_POLICIES_RUN',
-            'before': '_run_error_callbacks'
+            'before': ['_pre_processing_checks', '_move_to_processing']
         },
         {
             'trigger': 'move_to_error',
-            'source': ['FILE_IN_PROCESSING', 'ERROR_EXIT_POLICIES_RUN'],
-            'dest': 'FILE_IN_ERROR',
-            'before': '_move_to_error'
-        },
-        {
-            'trigger': 'run_success_exit_policies',
             'source': 'FILE_IN_PROCESSING',
-            'dest': 'SUCCESS_EXIT_POLICIES_RUN',
-            'before': '_run_success_callbacks'
+            'dest': 'FILE_IN_ERROR',
+            'before': ['_run_error_callbacks', '_move_to_error']
         },
         {
             'trigger': 'move_to_success',
-            'source': ['FILE_IN_PROCESSING', 'SUCCESS_EXIT_POLICIES_RUN'],
+            'source': 'FILE_IN_PROCESSING',
             'dest': 'FILE_SUCCESS',
+            'before': '_run_success_callbacks',
             'after': '_remove_processing_file'
         }
     ]
@@ -426,7 +413,6 @@ class IncomingFileStateManager(object):
         self._machine = Machine(model=self, states=self.states, initial='FILE_IN_INCOMING', auto_transitions=False,
                                 transitions=self.transitions, after_state_change='_after_state_change')
         self._log_state()
-        self._pre_check()
 
         self.handler = None
 
@@ -474,7 +460,7 @@ class IncomingFileStateManager(object):
     def _after_state_change(self):
         self._log_state()
 
-    def _pre_check(self):
+    def _pre_processing_checks(self):
         try:
             validate_file_writable(self.input_file)
 
@@ -503,21 +489,22 @@ class IncomingFileStateManager(object):
     def _run_error_callbacks(self):
         try:
             callbacks = [p.callback for p in self.error_exit_policies]
-            callback_outputs = [c(self.handler, self) for c in callbacks]
-            self.logger.sysinfo("error callback outputs:\n{}".format('\n'.join(callback_outputs)))
+            for callback in callbacks:
+                callback_log = callback(self.handler, self)
+                self.logger.sysinfo(callback_log)
         except Exception as e:
             self.logger.exception(
-                "error running error exit policies: '{policies}'. {e}".format(policies=self.error_exit_policies, e=e))
+                "error running error callbacks: '{policies}'. {e}".format(policies=self.error_exit_policies, e=e))
 
     def _run_success_callbacks(self):
         try:
             callbacks = [p.callback for p in self.success_exit_policies]
-            callback_outputs = [c(self.handler, self) for c in callbacks]
-            self.logger.sysinfo("success callback outputs:\n{}".format('\n'.join(callback_outputs)))
+            for callback in callbacks:
+                callback_log = callback(self.handler, self)
+                self.logger.sysinfo(callback_log)
         except Exception as e:
             self.logger.exception(
-                "error running success exit policies: '{policies}'. {e}".format(policies=self.success_exit_policies,
-                                                                                e=e))
+                "error running success callbacks: '{policies}'. {e}".format(policies=self.success_exit_policies, e=e))
 
     def _remove_processing_file(self):
         rm_f(self.processing_path)

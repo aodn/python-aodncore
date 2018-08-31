@@ -4,9 +4,8 @@ import os
 from aodncore.pipeline import PipelineFile, PipelineFileCollection
 from aodncore.pipeline.log import get_pipeline_logger
 from aodncore.pipeline.watch import (delete_same_name_from_error_store_callback,
-                                     delete_custom_regexes_from_error_store_callback,
-                                     get_task_name, no_action_callback, CeleryConfig, ExitPolicy,
-                                     IncomingFileStateManager)
+                                     delete_custom_regexes_from_error_store_callback, get_task_name, CeleryConfig,
+                                     ExitPolicy, IncomingFileStateManager)
 from aodncore.testlib import mock, BaseTestCase
 from aodncore.util import safe_copy_file
 from test_aodncore import TESTDATA_DIR
@@ -49,12 +48,6 @@ class TestPipelineWatch(BaseTestCase):
         expected_name = 'tasks.UNITTEST'
         actual_name = get_task_name('tasks', 'UNITTEST')
         self.assertEqual(actual_name, expected_name)
-
-    def test_no_action_callback(self):
-        with mock.patch.object(self.state_manager, '_error_broker') as mock_error_broker:
-            no_action_callback(self.state_manager.handler, self.state_manager)
-
-        mock_error_broker.delete.assert_not_called()
 
     def test_delete_same_name_from_error_store_callback(self):
         actual_error_files_before_cleanup = self.state_manager.error_broker.query().keys()
@@ -184,7 +177,7 @@ class TestIncomingFileStateManager(BaseTestCase):
         self.assertItemsEqual(expected_error_files_before_cleanup, actual_error_files_before_cleanup)
 
         self.state_manager.success_exit_policies.append(ExitPolicy.DELETE_CUSTOM_REGEXES_FROM_ERROR_STORE)
-        self.state_manager.run_success_exit_policies()
+        self.state_manager.move_to_success()
 
         actual_error_files_after_cleanup = self.state_manager.error_broker.query().keys()
         expected_error_files_after_cleanup = ['good.nc', 'invalid.png']
