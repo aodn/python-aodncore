@@ -158,6 +158,82 @@ class ExitPolicy(Enum):
         return self.value['callback']
 
 
+def build_task(config, pipeline_name, handler_class, success_exit_policies, error_exit_policies, kwargs):
+    """Closure function to return a Celery Task instance which has been prepared for a specific pipeline.
+        The this allows the task to accept a single input_file parameter, while dynamically instantiating the
+        handler class passed in via the 'handler_class' parameter, with the per-pipeline 'kwargs' pre-applied to the
+        class through the use of partial.
+
+    :param config: :py:class:`LazyConfigManager` instance
+    :param pipeline_name: explicit task name for handling by celery Workers
+    :param handler_class: :py:class:`HandlerBase` instance which the task will instantiate
+    :param success_exit_policies: list of :py:class:`ExitPolicy` members
+    :param error_exit_policies: list of :py:class:`ExitPolicy` members
+    :param kwargs: dictionary containing the keyword arguments for use by the handler class
+    :return: reference to a Celery task function which runs the given handler with the given keywords
+    """
+    task_name = get_task_name(config.pipeline_config['watch']['task_namespace'], pipeline_name)
+
+    class PipelineTask(Task):
+        ignore_result = True
+        name = task_name
+
+        def __init__(self):
+            self.logger = None
+            self.pipeline_name = pipeline_name
+
+        def run(self, incoming_file):
+            try:
+                logging.config.dictConfig(config.worker_logging_config)
+                logging_extra = {
+                    'celery_task_id': self.request.id,
+                    'celery_task_name': task_name
+                }
+                self.logger = get_pipeline_logger(task_name, extra=logging_extra, logger_function=get_task_logger)
+
+                self.logger.sysinfo(
+                    "{name}.success_exit_policies -> {policies}".format(name=self.__class__.__name__,
+                                                                        policies=[p.name for p in
+                                                                                  success_exit_policies]))
+                self.logger.sysinfo(
+                    "{name}.error_exit_policies -> {policies}".format(name=self.__class__.__name__,
+                                                                      policies=[p.name for p in
+                                                                                error_exit_policies]))
+
+                file_state_manager = IncomingFileStateManager(input_file=incoming_file,
+                                                              pipeline_name=pipeline_name,
+                                                              config=config,
+                                                              logger=self.logger,
+                                                              celery_request=self.request,
+                                                              error_exit_policies=error_exit_policies,
+                                                              success_exit_policies=success_exit_policies)
+
+                file_state_manager.move_to_processing()
+
+                try:
+                    handler = handler_class(file_state_manager.processing_path, celery_task=self, config=config,
+                                            upload_path=file_state_manager.relative_path, **kwargs)
+                except Exception as e:
+                    file_state_manager.move_to_error()
+                    self.logger.error("failed to instantiate handler class: {e}".format(e=format_exception(e)))
+
+                handler.run()
+
+                file_state_manager.handler = handler
+
+                if handler.error:
+                    file_state_manager.run_error_exit_policies()
+                    file_state_manager.move_to_error()
+                else:
+                    file_state_manager.run_success_exit_policies()
+                    file_state_manager.move_to_success()
+            except Exception:
+                self.logger.exception('unhandled exception in PipelineTask')
+                raise
+
+    return PipelineTask()
+
+
 class CeleryContext(object):
     def __init__(self, application, config, celeryconfig):
         self._application = application
@@ -175,86 +251,6 @@ class CeleryContext(object):
         if not self._application_configured:
             self._configure_application()
         return self._application
-
-    def _build_task(self, pipeline_name, handler_class, success_exit_policies, error_exit_policies, kwargs):
-        """Closure method to return a Celery Task instance which has been prepared for a specific pipeline.
-            The this allows the task to accept a single input_file parameter, while dynamically instantiating the
-            handler class passed in via the 'handler_class' parameter, with the per-pipeline 'kwargs' pre-applied to the
-            class through the use of partial.
-
-        :param pipeline_name: explicit task name for handling by celery Workers
-        :param handler_class: :py:class:`HandlerBase` instance which the task will instantiate
-        :param kwargs: dictionary containing the keyword arguments for use by the handler class
-        :return: reference to a Celery task function which runs the given handler with the given keywords
-        """
-        task_name = get_task_name(self._config.pipeline_config['watch']['task_namespace'], pipeline_name)
-        config = self._config
-
-        class PipelineTask(Task):
-            ignore_result = True
-            name = task_name
-
-            def __init__(self):
-                self.file_state_manager = None
-                self.handler = None
-                self.input_file = None
-                self.logger = None
-                self.pipeline_name = pipeline_name
-
-            def _configure_logger(self):
-                logging.config.dictConfig(config.worker_logging_config)
-                logging_extra = {
-                    'celery_task_id': self.request.id,
-                    'celery_task_name': task_name
-                }
-                self.logger = get_pipeline_logger(task_name, extra=logging_extra, logger_function=get_task_logger)
-
-            def run(self, incoming_file):
-                try:
-                    self._configure_logger()
-
-                    self.logger.sysinfo(
-                        "{name}.success_exit_policies -> {policies}".format(name=self.__class__.__name__,
-                                                                            policies=[p.name for p in
-                                                                                      success_exit_policies]))
-                    self.logger.sysinfo(
-                        "{name}.error_exit_policies -> {policies}".format(name=self.__class__.__name__,
-                                                                          policies=[p.name for p in
-                                                                                    error_exit_policies]))
-
-                    self.file_state_manager = IncomingFileStateManager(input_file=incoming_file,
-                                                                       pipeline_name=pipeline_name,
-                                                                       config=config,
-                                                                       logger=self.logger,
-                                                                       celery_request=self.request,
-                                                                       error_exit_policies=error_exit_policies,
-                                                                       success_exit_policies=success_exit_policies)
-
-                    self.file_state_manager.move_to_processing()
-
-                    try:
-                        self.handler = handler_class(self.file_state_manager.processing_path, celery_task=self,
-                                                     config=config, upload_path=self.file_state_manager.relative_path,
-                                                     **kwargs)
-                    except Exception as e:
-                        self.file_state_manager.move_to_error()
-                        self.logger.error("failed to instantiate handler class: {e}".format(e=format_exception(e)))
-
-                    self.handler.run()
-
-                    self.file_state_manager.handler = self.handler
-
-                    if self.handler.error:
-                        self.file_state_manager.run_error_exit_policies()
-                        self.file_state_manager.move_to_error()
-                    else:
-                        self.file_state_manager.run_success_exit_policies()
-                        self.file_state_manager.move_to_success()
-                except Exception:
-                    self.logger.exception('unhandled exception in PipelineTask')
-                    raise
-
-        return PipelineTask()
 
     def _configure_application(self):
         self._application.config_from_object(self._celeryconfig)
@@ -291,8 +287,8 @@ class CeleryContext(object):
                                                                                                  name=items['handler'],
                                                                                                  e=format_exception(e)))
             else:
-                task_object = self._build_task(pipeline_name, handler_class, success_exit_policies, error_exit_policies,
-                                               params)
+                task_object = build_task(self._config, pipeline_name, handler_class, success_exit_policies,
+                                         error_exit_policies, params)
                 self._application.register_task(task_object)
 
 
