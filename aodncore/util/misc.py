@@ -20,6 +20,7 @@ StringIO = six.StringIO
 
 __all__ = [
     'discover_entry_points',
+    'ensure_pattern',
     'ensure_writeonceordereddict',
     'format_exception',
     'get_pattern_subgroups_from_string',
@@ -40,6 +41,7 @@ __all__ = [
     'validate_membership',
     'validate_nonstring_iterable',
     'validate_regex',
+    'validate_regexes',
     'validate_relative_path',
     'validate_relative_path_attr',
     'validate_string',
@@ -65,6 +67,19 @@ def discover_entry_points(entry_point_group, working_set=pkg_resources.working_s
         entry_point_object = entry_point.load()
         entry_points[entry_point.name] = entry_point_object
     return entry_points
+
+
+def ensure_pattern(o):
+    """Ensure that the returned value is a compiled regular expression (Pattern) from a given input, or raise if the
+    object is not a valid regular expression
+
+    :param o: input object
+    :return: :py:class:`Pattern` instance
+    """
+    validate_regex(o)
+    if isinstance(o, Pattern):
+        return o
+    return re.compile(o)
 
 
 def ensure_writeonceordereddict(o, empty_on_fail=True):
@@ -97,7 +112,7 @@ def format_exception(exception):
     return "{cls}: {message}".format(cls=exception.__class__.__name__, message=exception)
 
 
-def get_pattern_subgroups_from_string(string, pattern):
+def get_pattern_subgroups_from_string(string, compiled_pattern):
     """Function to retrieve parts of a string given a compiled pattern (re.compile(pattern))
     the pattern needs to match the beginning of the string
     (see https://docs.python.org/2/library/re.html#re.RegexObject.match)
@@ -107,15 +122,8 @@ def get_pattern_subgroups_from_string(string, pattern):
 
     :return: dictionary of fields matching a given pattern
     """
-    retype = type(re.compile(''))
-    if not isinstance(pattern, retype):
-        try:
-            pattern = re.compile(pattern)
-        except Exception as err:
-            raise TypeError("error compiling pattern '{pattern}': {e}".
-                            format(pattern=pattern, e=format_exception(err)))
-
-    m = pattern.match(string)
+    compiled_pattern = ensure_pattern(compiled_pattern)
+    m = compiled_pattern.match(string)
     return {} if m is None else m.groupdict()
 
 
@@ -316,6 +324,14 @@ def validate_regex(o):
         re.compile(o)
     except re.error as e:
         raise ValueError("invalid regex '{o}'. {e}".format(o=o, e=format_exception(e)))
+    except TypeError as e:
+        raise TypeError("invalid regex '{o}'. {e}".format(o=o, e=format_exception(e)))
+
+
+def validate_regexes(o):
+    validate_nonstring_iterable(o)
+    for pattern in o:
+        validate_regex(pattern)
 
 
 def validate_relative_path(o):

@@ -10,8 +10,8 @@ from aodncore.testlib import BaseTestCase
 from aodncore.util import (ensure_writeonceordereddict, format_exception, get_pattern_subgroups_from_string, is_function,
                            is_nonstring_iterable, matches_regexes, merge_dicts, slice_sequence,
                            str_to_list, validate_callable, validate_mandatory_elements, validate_membership,
-                           validate_nonstring_iterable, validate_relative_path, validate_relative_path_attr,
-                           validate_type, CaptureStdIO, WriteOnceOrderedDict)
+                           validate_nonstring_iterable, validate_regex, validate_regexes,validate_relative_path,
+                           validate_relative_path_attr, validate_type, CaptureStdIO, WriteOnceOrderedDict)
 
 StringIO = six.StringIO
 
@@ -184,6 +184,43 @@ class TestUtilMisc(BaseTestCase):
         with self.assertRaises(TypeError):
             validate_nonstring_iterable('s')
 
+    def test_validate_regex(self):
+        pattern = r'.*'
+        invalid_pattern = r'^(?P<incomplete[A-Z]{3,4})'
+        compiled_pattern = re.compile(pattern)
+
+        with self.assertNoException():
+            validate_regex(pattern)
+
+        with self.assertNoException():
+            validate_regex(compiled_pattern)
+
+        with self.assertRaises(ValueError):
+            validate_regex(invalid_pattern)
+
+        with self.assertRaises(TypeError):
+            validate_regex(1)
+
+        with self.assertRaises(TypeError):
+            validate_regex([pattern])  # valid pattern, but in a list
+
+    def test_validate_regexes(self):
+        pattern = r'.*'
+        invalid_pattern = r'^(?P<incomplete[A-Z]{3,4})'
+        compiled_pattern = re.compile(pattern)
+
+        with self.assertNoException():
+            validate_regexes([pattern, compiled_pattern])
+
+        with self.assertRaises(ValueError):
+            validate_regexes([pattern, invalid_pattern])
+
+        with self.assertRaises(TypeError):
+            validate_regexes([1, {}])
+
+        with self.assertRaises(TypeError):
+            validate_regexes(pattern)  # valid pattern, but not in a list
+
     def test_validate_relative_path(self):
         with self.assertRaises(ValueError):
             validate_relative_path('/absolute/path')
@@ -223,8 +260,8 @@ class TestUtilMisc(BaseTestCase):
         fields = get_pattern_subgroups_from_string(bad_file, '')
         self.assertDictEqual(fields, {})
 
-        with self.assertRaises(TypeError):
-            get_pattern_subgroups_from_string(bad_file, """^FILE_SUFFIX_(?P<product_code[A-Z]{3,4})""")
+        with self.assertRaises(ValueError):
+            get_pattern_subgroups_from_string(bad_file, r'^FILE_SUFFIX_(?P<product_code[A-Z]{3,4})')
 
     def test_format_exception(self):
         try:
@@ -389,6 +426,9 @@ class TestUtilMisc(BaseTestCase):
 
         list2_spaces_include_empty = str_to_list(input_string2, delimiter=' ', include_empty=True)
         self.assertListEqual(list2_spaces_include_empty, ['', 'str1', 'str2', 'str3', '', 'str4'])
+
+        already_a_list = ['already', 'a', 'list']
+        self.assertIs(already_a_list, str_to_list(already_a_list))
 
     def test_validate_mandatory_elements(self):
         superset = {'a', 'b', 'c'}
