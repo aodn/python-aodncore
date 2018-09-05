@@ -256,11 +256,8 @@ class TestPipelineFileCollection(BaseTestCase):
         p2 = PipelineFile(BAD_NC)
         self.collection.add(p1)
 
-        try:
+        with self.assertNoException():
             self.collection.update([p2])
-        except Exception as e:
-            raise AssertionError(
-                "unexpected exception raised. {cls} {msg}".format(cls=e.__class__.__name__, msg=e))
 
         self.assertSetEqual({p1, p2}, self.collection)
 
@@ -274,11 +271,8 @@ class TestPipelineFileCollection(BaseTestCase):
 
         self.assertIs(self.collection[0], p1)
 
-        try:
+        with self.assertNoException():
             self.collection.add(p2, overwrite=True)
-        except Exception as e:
-            raise AssertionError(
-                "unexpected exception raised. {cls} {msg}".format(cls=e.__class__.__name__, msg=e))
 
         self.assertSetEqual({p2}, self.collection)
 
@@ -340,11 +334,8 @@ class TestPipelineFileCollection(BaseTestCase):
         p1.dest_path = 'VALID/PREFIX/TO/TEST'
         self.collection.add(p1)
 
-        try:
+        with self.assertNoException():
             self.collection.validate_attribute_value_matches_regexes('dest_path', allowed_regexes)
-        except Exception as e:
-            raise AssertionError(
-                "unexpected exception raised. {cls} {msg}".format(cls=e.__class__.__name__, msg=e))
 
     def test_validate_attribute_value_matches_regexes_failure(self):
         allowed_regexes = ['^VALID/PREFIX.*$']
@@ -364,11 +355,8 @@ class TestPipelineFileCollection(BaseTestCase):
         with self.assertRaises(AttributeValidationError):
             self.collection.validate_unique_attribute_value('dest_path', 'FIXED_DEST_PATH')
 
-        try:
+        with self.assertNoException():
             self.collection.validate_unique_attribute_value('dest_path', 'A_DIFFERENT_DEST_PATH')
-        except Exception as e:
-            raise AssertionError(
-                "unexpected exception raised. {cls} {msg}".format(cls=e.__class__.__name__, msg=e))
 
     def test_validate_unique_attribute_value_archive_path(self):
         p1 = PipelineFile(GOOD_NC)
@@ -379,11 +367,8 @@ class TestPipelineFileCollection(BaseTestCase):
         with self.assertRaises(AttributeValidationError):
             self.collection.validate_unique_attribute_value('archive_path', 'FIXED_ARCHIVE_PATH')
 
-        try:
+        with self.assertNoException():
             self.collection.validate_unique_attribute_value('archive_path', 'A_DIFFERENT_ARCHIVE_PATH')
-        except Exception as e:
-            raise AssertionError(
-                "unexpected exception raised. {cls} {msg}".format(cls=e.__class__.__name__, msg=e))
 
     def test_validate_attribute_uniqueness_dest_path(self):
         p1 = PipelineFile(GOOD_NC)
@@ -810,11 +795,8 @@ class TestPipelineFileCollection(BaseTestCase):
         with self.assertRaises(TypeError):
             self.collection.set_bool_attribute('is_harvested', [])
 
-        try:
+        with self.assertNoException():
             self.collection.set_bool_attribute('is_harvested', True)
-        except Exception as e:
-            raise AssertionError(
-                "unexpected exception raised. {cls} {msg}".format(cls=e.__class__.__name__, msg=e))
 
     @mock.patch("aodncore.pipeline.files.get_file_checksum")
     @mock.patch("os.path.isfile")
@@ -883,8 +865,5 @@ class TestPipelineFileCollection(BaseTestCase):
         with self.assertRaises(TypeError):
             self.collection.set_string_attribute('dest_path', [])
 
-        try:
+        with self.assertNoException():
             self.collection.set_string_attribute('dest_path', 'valid/string')
-        except Exception as e:
-            raise AssertionError(
-                "unexpected exception raised. {cls} {msg}".format(cls=e.__class__.__name__, msg=e))

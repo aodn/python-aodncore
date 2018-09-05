@@ -201,13 +201,14 @@ def load_runtime_patched_pipeline_config_file(config_file, rel_path, temp_dir):
 
     temp_upload_dir = tempfile.mkdtemp(prefix='temp_upload_uri', dir=temp_dir)
 
-    pipeline_config['global']['error_dir'] = tempfile.mkdtemp(prefix='temp_error_dir', dir=temp_dir)
+    pipeline_config['global']['error_uri'] = "file://{}".format(tempfile.mkdtemp(prefix='temp_error_dir', dir=temp_dir))
     pipeline_config['global']['processing_dir'] = tempfile.mkdtemp(prefix='temp_processing_dir', dir=temp_dir)
     pipeline_config['global']['tmp_dir'] = temp_dir
     pipeline_config['global']['upload_uri'] = urlunsplit(('file', None, temp_upload_dir, None, None))
     pipeline_config['global']['wip_dir'] = rel_path
     pipeline_config['logging']['log_root'] = tempfile.mkdtemp(prefix='temp_log_root', dir=temp_dir)
     pipeline_config['mail']['smtp_server'] = str(uuid.uuid4())
+    pipeline_config['watch']['incoming_dir'] = tempfile.mkdtemp(prefix='temp_incoming_dir', dir=temp_dir)
 
     # reload the JSON object with non-updatable keys
     return json.loads(json.dumps(pipeline_config), object_pairs_hook=WriteOnceOrderedDict)

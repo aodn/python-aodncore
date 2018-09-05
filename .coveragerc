@@ -10,5 +10,7 @@ exclude_lines =
     pragma: no cover
     @abc.abstractmethod
     def __repr__
+    raise NotImplementedError
+    except ImportError
 
 ignore_errors = True

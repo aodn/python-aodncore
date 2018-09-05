@@ -1,10 +1,10 @@
 import abc
 import errno
 import os
+from datetime import datetime
 
 import boto3
 from botocore.exceptions import ClientError
-from datetime import datetime
 from paramiko import SSHClient, AutoAddPolicy
 from six.moves.urllib.parse import urlparse
 
@@ -14,8 +14,9 @@ except ImportError:
     from scandir import walk
 
 from .exceptions import AttributeNotSetError, InvalidStoreUrlError, StorageBrokerError
-from .files import validate_pipelinefilecollection
-from ..util import format_exception, mkdir_p, retry_decorator, rm_f, safe_copy_file
+from .files import ensure_pipelinefilecollection, PipelineFile, PipelineFileCollection
+from ..util import (ensure_regex_list, format_exception, matches_regexes, mkdir_p, retry_decorator, rm_f,
+                    safe_copy_file, validate_relative_path, validate_type)
 
 __all__ = [
     'get_storage_broker',
@@ -24,7 +25,8 @@ __all__ = [
     'SftpStorageBroker',
     'sftp_makedirs',
     'sftp_mkdir_p',
-    'sftp_path_exists'
+    'sftp_path_exists',
+    'validate_storage_broker'
 ]
 
 
@@ -53,6 +55,9 @@ class BaseStorageBroker(object):
 
     def __init__(self):
         self.prefix = None
+
+    def __repr__(self):
+        return "{name}(prefix='{prefix}')".format(name=self.__class__.__name__, prefix=self.prefix)
 
     @abc.abstractmethod  # pragma: no cover
     def _delete_file(self, pipeline_file, dest_path_attr):
@@ -86,26 +91,26 @@ class BaseStorageBroker(object):
         return os.path.join(self.prefix, rel_path)
 
     def set_is_overwrite(self, pipeline_files, dest_path_attr='dest_path'):
-        validate_pipelinefilecollection(pipeline_files)
+        overwrite_collection = ensure_pipelinefilecollection(pipeline_files)
 
-        should_upload = pipeline_files.filter_by_bool_attributes_and_not('should_store', 'is_deletion')
+        should_upload = overwrite_collection.filter_by_bool_attributes_and_not('should_store', 'is_deletion')
         for pipeline_file in should_upload:
             abs_path = self._get_absolute_dest_path(pipeline_file=pipeline_file, dest_path_attr=dest_path_attr)
             pipeline_file.is_overwrite = self._get_is_overwrite(pipeline_file, abs_path)
 
     def upload(self, pipeline_files, is_stored_attr='is_stored', dest_path_attr='dest_path'):
-        """Upload the given PipelineFileCollection to the storage backend
+        """Upload the given PipelineFileCollection or PipelineFile to the storage backend
 
         :param pipeline_files: collection to upload
         :param is_stored_attr: PipelineFile attribute which will be set to True if upload is successful
         :param dest_path_attr: PipelineFile attribute containing the destination path
         :return: None
         """
-        validate_pipelinefilecollection(pipeline_files)
+        upload_collection = ensure_pipelinefilecollection(pipeline_files)
 
         self._pre_run_hook()
 
-        for pipeline_file in pipeline_files:
+        for pipeline_file in upload_collection:
             try:
                 self._upload_file(pipeline_file=pipeline_file, dest_path_attr=dest_path_attr)
             except Exception as e:
@@ -117,18 +122,18 @@ class BaseStorageBroker(object):
         self._post_run_hook()
 
     def delete(self, pipeline_files, is_stored_attr='is_stored', dest_path_attr='dest_path'):
-        """Delete the given PipelineFileCollection from the storage backend
+        """Delete the given PipelineFileCollection or PipelineFile from the storage backend
 
         :param pipeline_files: collection to delete
         :param is_stored_attr: PipelineFile attribute which will be set to True if delete is successful
         :param dest_path_attr: PipelineFile attribute containing the destination path
         :return: None
         """
-        validate_pipelinefilecollection(pipeline_files)
+        delete_collection = ensure_pipelinefilecollection(pipeline_files)
 
         self._pre_run_hook()
 
-        for pipeline_file in pipeline_files:
+        for pipeline_file in delete_collection:
             try:
                 self._delete_file(pipeline_file=pipeline_file, dest_path_attr=dest_path_attr)
             except Exception as e:
@@ -139,7 +144,24 @@ class BaseStorageBroker(object):
 
         self._post_run_hook()
 
-    def query(self, query):
+    def delete_regexes(self, regexes):
+        """Delete files storage if they match one of the given regular expressions
+
+        :param regexes: list of regular expressions to delete
+        :return: PipelineFileCollection of files which matched the patterns and were deleted
+        """
+        delete_regexes = ensure_regex_list(regexes)
+
+        all_files = self.query()
+        files_to_delete = PipelineFileCollection(
+            PipelineFile(l, dest_path=os.path.join(self.prefix, l), is_deletion=True)
+            for l in all_files
+            if matches_regexes(l, delete_regexes)
+        )
+        self.delete(files_to_delete)
+        return files_to_delete
+
+    def query(self, query=''):
         """Query the storage for existing files
 
         A trailing slash will result in a directory listing type of query, recursively listing all files underneath
@@ -148,7 +170,7 @@ class BaseStorageBroker(object):
         Omitting the trailing slash will cause a prefix style query, where the results will be any path that matches the
         query *including* partial file names.
 
-        :param query: S3 prefix style string
+        :param query: S3 prefix style string (if omitted, will search with a blank prefix)
         :return: a dict with keys being the matching objects, and values being a metadata dict for the object
         """
         try:
@@ -179,6 +201,8 @@ class LocalFileStorageBroker(BaseStorageBroker):
         return
 
     def _run_query(self, query):
+        validate_relative_path(query)
+
         full_query = os.path.join(self.prefix, query)
 
         def _find_prefix(path):
@@ -189,8 +213,7 @@ class LocalFileStorageBroker(BaseStorageBroker):
                     if fullpath.startswith(full_query) and not os.path.islink(fullpath):
                         stats = os.stat(fullpath)
                         key = os.path.relpath(fullpath, self.prefix)
-                        yield key, {'last_modified': datetime.fromtimestamp(stats.st_mtime),
-                                                          'size': stats.st_size}
+                        yield key, {'last_modified': datetime.fromtimestamp(stats.st_mtime), 'size': stats.st_size}
 
         result = dict(_find_prefix(full_query))
         return result
@@ -371,3 +394,6 @@ class SftpStorageBroker(BaseStorageBroker):
 
         with open(pipeline_file.src_path, 'rb') as f:
             self.sftp_client.putfo(f, abs_path, confirm=True)
+
+
+validate_storage_broker = validate_type(BaseStorageBroker)

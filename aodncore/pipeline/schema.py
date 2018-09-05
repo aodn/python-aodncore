@@ -84,14 +84,14 @@ PIPELINE_CONFIG_SCHEMA = {
                     'items': {'type': 'string'}
                 },
                 'archive_uri': {'type': 'string'},
-                'error_dir': {'type': 'string'},
+                'error_uri': {'type': 'string'},
                 'opendap_root': {'type': 'string'},
                 'processing_dir': {'type': 'string'},
                 'tmp_dir': {'type': 'string'},
                 'upload_uri': {'type': 'string'},
                 'wip_dir': {'type': 'string'}
             },
-            'required': ['admin_recipients', 'archive_uri', 'error_dir', 'processing_dir', 'upload_uri', 'wip_dir'],
+            'required': ['admin_recipients', 'archive_uri', 'error_uri', 'processing_dir', 'upload_uri', 'wip_dir'],
             'additionalProperties': False
         },
         'logging': {

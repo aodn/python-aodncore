@@ -12,7 +12,8 @@ ENTRY_POINTS = {
 EXTRAS_REQUIRE = {
     ':platform_system == "Linux"': ['pyinotify == 0.9.6'],
     ':python_version < "3.3"': ['mock == 2.0.0'],
-    ':python_version < "3.5"': ['scandir == 1.6'],
+    ':python_version < "3.4"': ['enum34==1.1.6'],
+    ':python_version < "3.5"': ['scandir == 1.6', 'typing==3.6.4'],
 }
 
 INSTALL_REQUIRES = [
@@ -20,14 +21,13 @@ INSTALL_REQUIRES = [
     'cc-plugin-imos>=1.3.0',
     'celery==4.1.1',
     'compliance-checker==4.0.1',
-    'enum34==1.1.6',
     'Jinja2==2.9.6',
     'jsonschema==2.6.0',
     'numpy>=1.13.0',
     'paramiko==2.4.1',
     'six==1.10.0',
     'tabulate==0.8.2',
-    'transitions==0.5.3',
+    'transitions==0.5.3'
 ]
 
 PACKAGE_DATA = {

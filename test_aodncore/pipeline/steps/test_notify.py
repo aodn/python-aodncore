@@ -170,9 +170,8 @@ class TestLogFailuresNotifyRunner(BaseTestCase):
     def test_invalid_recipient(self):
         recipient1 = NotificationRecipient.from_string('invalid:recipient1')
         self.notify_list.add(recipient1)
-        try:
+
+        with self.assertNoException():
             self.fail_runner.run(self.notify_list)
-        except Exception as e:
-            raise AssertionError(
-                "unexpected exception raised. {cls} {msg}".format(cls=e.__class__.__name__, msg=e))
+
         self.fail_runner._logger.warning.assert_called_with("recipients unable to be notified: ['invalid:recipient1']")

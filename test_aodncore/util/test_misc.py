@@ -5,17 +5,23 @@ import uuid
 from collections import OrderedDict
 
 import six
+from typing import Pattern
 
 from aodncore.testlib import BaseTestCase
-from aodncore.util import (ensure_writeonceordereddict, format_exception, get_pattern_subgroups_from_string, is_function,
-                           is_nonstring_iterable, matches_regexes, merge_dicts, slice_sequence,
-                           str_to_list, validate_callable, validate_mandatory_elements, validate_membership,
-                           validate_nonstring_iterable, validate_relative_path, validate_relative_path_attr,
-                           validate_type, CaptureStdIO, WriteOnceOrderedDict)
+from aodncore.util import (ensure_regex, ensure_regex_list, ensure_writeonceordereddict, format_exception,
+                           get_pattern_subgroups_from_string, is_function, is_nonstring_iterable, matches_regexes,
+                           merge_dicts, slice_sequence, str_to_list, validate_callable, validate_mandatory_elements,
+                           validate_membership, validate_nonstring_iterable, validate_regex, validate_regexes,
+                           validate_relative_path, validate_relative_path_attr, validate_type, CaptureStdIO,
+                           WriteOnceOrderedDict)
 
 StringIO = six.StringIO
 
 TEST_ROOT = os.path.join(os.path.dirname(__file__))
+
+VALID_PATTERN = r'.*'
+INVALID_PATTERN = r'^(?P<incomplete[A-Z]{3,4})'
+COMPILED_PATTERN = re.compile(VALID_PATTERN)
 
 
 def get_nonexistent_path():
@@ -56,10 +62,8 @@ class TestWriteOnceOrderedDict(BaseTestCase):
         self.write_once_ordered_dict = WriteOnceOrderedDict({'key': 'value'})
 
     def test_new_key(self):
-        try:
+        with self.assertNoException():
             self.write_once_ordered_dict['key2'] = 'value'
-        except Exception as e:
-            raise AssertionError("unexpected exception raised. {e}".format(e=format_exception(e)))
 
     def test_no_overwrite(self):
         with self.assertRaises(RuntimeError):
@@ -83,6 +87,44 @@ class TestWriteOnceOrderedDict(BaseTestCase):
 
 
 class TestUtilMisc(BaseTestCase):
+    def test_ensure_pattern(self):
+        ensured_pattern = ensure_regex(VALID_PATTERN)
+        self.assertIsInstance(ensured_pattern, Pattern)
+
+        ensured_compiled_pattern = ensure_regex(COMPILED_PATTERN)
+        self.assertIs(ensured_compiled_pattern, COMPILED_PATTERN)
+
+        with self.assertRaises(ValueError):
+            _ = ensure_regex(INVALID_PATTERN)
+
+        with self.assertRaises(TypeError):
+            _ = ensure_regex(1)
+
+    def test_ensure_pattern_list(self):
+        ensured_pattern_list = ensure_regex_list([VALID_PATTERN])
+        self.assertIsInstance(ensured_pattern_list, list)
+        self.assertTrue(all(isinstance(p, Pattern) for p in ensured_pattern_list))
+
+        with self.assertNoException():
+            _ = ensure_regex_list([VALID_PATTERN, COMPILED_PATTERN])
+
+        with self.assertRaises(ValueError):
+            _ = ensure_regex_list([INVALID_PATTERN])
+
+        with self.assertRaises(TypeError):  # not a Sequence
+            _ = ensure_regex_list(1)
+
+        list_from_none = ensure_regex_list(None)
+        self.assertListEqual(list_from_none, [])
+
+        list_from_pattern = ensure_regex_list(VALID_PATTERN)
+        self.assertIsInstance(list_from_pattern, list)
+        self.assertTrue(all(isinstance(p, Pattern) for p in list_from_pattern))
+
+        list_from_compiled = ensure_regex_list(COMPILED_PATTERN)
+        self.assertIsInstance(list_from_compiled, list)
+        self.assertTrue(all(isinstance(p, Pattern) for p in list_from_compiled))
+
     def test_ensure_writeonceordereddict(self):
         test_wood = WriteOnceOrderedDict({'key': 'value'})
         ensured_wood = ensure_writeonceordereddict(test_wood)
@@ -136,10 +178,8 @@ class TestUtilMisc(BaseTestCase):
 
     def test_validate_membership(self):
         validate_in_collection = validate_membership([1, 2, 3])
-        try:
+        with self.assertNoException():
             validate_in_collection(1)
-        except Exception as e:
-            raise AssertionError("unexpected exception raised. {e}".format(e=format_exception(e)))
         with self.assertRaises(ValueError):
             validate_in_collection(4)
 
@@ -147,10 +187,8 @@ class TestUtilMisc(BaseTestCase):
         f = validate_type(int)
         self.assertTrue(is_function(f))
 
-        try:
+        with self.assertNoException():
             f(1)
-        except Exception as e:
-            raise AssertionError("unexpected exception raised. {e}".format(e=format_exception(e)))
 
         with self.assertRaises(TypeError):
             f('s')
@@ -162,11 +200,9 @@ class TestUtilMisc(BaseTestCase):
         class DummyClass(object):
             pass
 
-        try:
+        with self.assertNoException():
             validate_callable(dummy_function)
             validate_callable(DummyClass)
-        except Exception as e:
-            raise AssertionError("unexpected exception raised. {e}".format(e=format_exception(e)))
 
         with self.assertRaises(TypeError):
             validate_callable(1)
@@ -181,12 +217,10 @@ class TestUtilMisc(BaseTestCase):
             validate_callable([1])
 
     def test_validate_nonstring_iterable(self):
-        try:
+        with self.assertNoException():
             validate_nonstring_iterable([1])
             validate_nonstring_iterable({1})
             validate_nonstring_iterable((1,))
-        except Exception as e:
-            raise AssertionError("unexpected exception raised. {e}".format(e=format_exception(e)))
 
         with self.assertRaises(TypeError):
             validate_nonstring_iterable({1: 1})
@@ -194,23 +228,48 @@ class TestUtilMisc(BaseTestCase):
         with self.assertRaises(TypeError):
             validate_nonstring_iterable('s')
 
+    def test_validate_regex(self):
+        with self.assertNoException():
+            validate_regex(VALID_PATTERN)
+
+        with self.assertNoException():
+            validate_regex(COMPILED_PATTERN)
+
+        with self.assertRaises(ValueError):
+            validate_regex(INVALID_PATTERN)
+
+        with self.assertRaises(TypeError):
+            validate_regex(1)
+
+        with self.assertRaises(TypeError):
+            validate_regex([VALID_PATTERN])  # valid pattern, but in a list
+
+    def test_validate_regexes(self):
+        with self.assertNoException():
+            validate_regexes([VALID_PATTERN, COMPILED_PATTERN])
+
+        with self.assertRaises(ValueError):
+            validate_regexes([VALID_PATTERN, INVALID_PATTERN])
+
+        with self.assertRaises(TypeError):
+            validate_regexes([1, {}])
+
+        with self.assertRaises(TypeError):
+            validate_regexes(VALID_PATTERN)  # valid pattern, but not in a list
+
     def test_validate_relative_path(self):
         with self.assertRaises(ValueError):
             validate_relative_path('/absolute/path')
 
-        try:
+        with self.assertNoException():
             validate_relative_path('relative/path')
-        except Exception as e:
-            raise AssertionError("unexpected exception raised. {e}".format(e=format_exception(e)))
 
     def test_validate_relative_path_attr(self):
         with self.assertRaisesRegexp(ValueError, r'.*dest_path.*'):
             validate_relative_path_attr('/absolute/path', 'dest_path')
 
-        try:
+        with self.assertNoException():
             validate_relative_path_attr('relative/path', 'dest_path')
-        except Exception as e:
-            raise AssertionError("unexpected exception raised. {e}".format(e=format_exception(e)))
 
     def test_get_pattern_subgroups_from_string(self):
         good_pattern = re.compile(r"""
@@ -237,8 +296,8 @@ class TestUtilMisc(BaseTestCase):
         fields = get_pattern_subgroups_from_string(bad_file, '')
         self.assertDictEqual(fields, {})
 
-        with self.assertRaises(TypeError):
-            get_pattern_subgroups_from_string(bad_file, """^FILE_SUFFIX_(?P<product_code[A-Z]{3,4})""")
+        with self.assertRaises(ValueError):
+            get_pattern_subgroups_from_string(bad_file, r'^FILE_SUFFIX_(?P<product_code[A-Z]{3,4})')
 
     def test_format_exception(self):
         try:
@@ -404,6 +463,9 @@ class TestUtilMisc(BaseTestCase):
         list2_spaces_include_empty = str_to_list(input_string2, delimiter=' ', include_empty=True)
         self.assertListEqual(list2_spaces_include_empty, ['', 'str1', 'str2', 'str3', '', 'str4'])
 
+        already_a_list = ['already', 'a', 'list']
+        self.assertIs(already_a_list, str_to_list(already_a_list))
+
     def test_validate_mandatory_elements(self):
         superset = {'a', 'b', 'c'}
         subset = {'a', 'b'}
@@ -411,7 +473,5 @@ class TestUtilMisc(BaseTestCase):
         with self.assertRaises(ValueError):
             validate_mandatory_elements(superset, subset)
 
-        try:
+        with self.assertNoException():
             validate_mandatory_elements(subset, superset)
-        except Exception as e:
-            raise AssertionError("unexpected exception: {e}".format(e=format_exception(e)))

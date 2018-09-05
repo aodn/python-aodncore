@@ -14,14 +14,18 @@ import jinja2
 import pkg_resources
 import six
 from six.moves import range
+from typing import Pattern
 
 StringIO = six.StringIO
 
 __all__ = [
     'discover_entry_points',
+    'ensure_regex',
+    'ensure_regex_list',
     'ensure_writeonceordereddict',
     'format_exception',
     'get_pattern_subgroups_from_string',
+    'get_regex_subgroups_from_string',
     'is_nonstring_iterable',
     'is_function',
     'is_valid_email_address',
@@ -39,6 +43,7 @@ __all__ = [
     'validate_membership',
     'validate_nonstring_iterable',
     'validate_regex',
+    'validate_regexes',
     'validate_relative_path',
     'validate_relative_path_attr',
     'validate_string',
@@ -64,6 +69,39 @@ def discover_entry_points(entry_point_group, working_set=pkg_resources.working_s
         entry_point_object = entry_point.load()
         entry_points[entry_point.name] = entry_point_object
     return entry_points
+
+
+def ensure_regex(o):
+    """Ensure that the returned value is a compiled regular expression (Pattern) from a given input, or raise if the
+    object is not a valid regular expression
+
+    :param o: input object, a single regex (string or pre-compiled)
+    :return: :py:class:`Pattern` instance
+    """
+    validate_regex(o)
+    if isinstance(o, Pattern):
+        return o
+    return re.compile(o)
+
+
+def ensure_regex_list(o):
+    """Ensure that the returned value is a list of compiled regular expressions (Pattern) from a given input, or raise
+    if the object is not a list of valid regular expression
+
+    :param o: input object, either a single regex or a sequence of regexes (string or pre-compiled)
+    :return: :py:class:`list` of :py:class:`Pattern` instances
+    """
+    if o is None:
+        return []
+
+    # if parameter is a single valid pattern, return it wrapped in a list
+    try:
+        return [ensure_regex(o)]
+    except TypeError:
+        pass
+
+    validate_nonstring_iterable(o)
+    return [ensure_regex(p) for p in o]
 
 
 def ensure_writeonceordereddict(o, empty_on_fail=True):
@@ -96,7 +134,7 @@ def format_exception(exception):
     return "{cls}: {message}".format(cls=exception.__class__.__name__, message=exception)
 
 
-def get_pattern_subgroups_from_string(string, pattern):
+def get_regex_subgroups_from_string(string, regex):
     """Function to retrieve parts of a string given a compiled pattern (re.compile(pattern))
     the pattern needs to match the beginning of the string
     (see https://docs.python.org/2/library/re.html#re.RegexObject.match)
@@ -106,16 +144,12 @@ def get_pattern_subgroups_from_string(string, pattern):
 
     :return: dictionary of fields matching a given pattern
     """
-    retype = type(re.compile(''))
-    if not isinstance(pattern, retype):
-        try:
-            pattern = re.compile(pattern)
-        except Exception as err:
-            raise TypeError("error compiling pattern '{pattern}': {e}".
-                            format(pattern=pattern, e=format_exception(err)))
-
-    m = pattern.match(string)
+    compiled_regex = ensure_regex(regex)
+    m = compiled_regex.match(string)
     return {} if m is None else m.groupdict()
+
+
+get_pattern_subgroups_from_string = get_regex_subgroups_from_string
 
 
 def is_function(o):
@@ -142,8 +176,8 @@ def is_valid_email_address(address):
     :param address: address to validate
     :return: True if address matches the regex, otherwise False
     """
-    pattern = re.compile(r"^[A-Z0-9_.+-]+@(localhost|[A-Z0-9-]+\.[A-Z0-9-.]+)$", re.IGNORECASE)
-    return re.match(pattern, address)
+    regex = re.compile(r"^[A-Z0-9_.+-]+@(localhost|[A-Z0-9-]+\.[A-Z0-9-.]+)$", re.IGNORECASE)
+    return regex.match(address)
 
 
 def iter_public_attributes(instance, ignored_attributes=None):
@@ -177,27 +211,14 @@ def matches_regexes(input_string, include_regexes=None, exclude_regexes=None):
     :param exclude_regexes: list of exclusions to *subtract* from the list produced by inclusions
     :return: True if the of the string matches one of the 'include_regexes' but *not* one of the 'exclude_regexes'
     """
-    if isinstance(include_regexes, six.string_types):
-        include_regexes = [include_regexes]
-    if not include_regexes:
-        include_regexes = ['.*']
-    if exclude_regexes and isinstance(exclude_regexes, six.string_types):
-        exclude_regexes = [exclude_regexes]
+    if include_regexes is None:
+        return True
 
-    matches_includes = False
-    for r in include_regexes:
-        validate_regex(r)
-        if re.match(r, input_string):
-            matches_includes = True
-            break
+    includes = ensure_regex_list(include_regexes)
+    excludes = ensure_regex_list(exclude_regexes)
 
-    matches_excludes = False
-    if matches_includes and exclude_regexes is not None:
-        for r in exclude_regexes:
-            validate_regex(r)
-            if re.match(r, input_string):
-                matches_excludes = True
-                break
+    matches_includes = any(re.match(r, input_string) for r in includes)
+    matches_excludes = any(re.match(r, input_string) for r in excludes)
 
     if matches_includes and not matches_excludes:
         return True
@@ -309,10 +330,20 @@ def validate_nonstring_iterable(o):
 
 
 def validate_regex(o):
+    if isinstance(o, Pattern):
+        return
     try:
         re.compile(o)
     except re.error as e:
         raise ValueError("invalid regex '{o}'. {e}".format(o=o, e=format_exception(e)))
+    except TypeError as e:
+        raise TypeError("invalid regex '{o}'. {e}".format(o=o, e=format_exception(e)))
+
+
+def validate_regexes(o):
+    validate_nonstring_iterable(o)
+    for regex in o:
+        validate_regex(regex)
 
 
 def validate_relative_path(o):

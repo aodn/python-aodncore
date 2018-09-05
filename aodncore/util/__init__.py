@@ -3,11 +3,12 @@ from .fileops import (TemporaryDirectory, extract_gzip, extract_zip, get_file_ch
                       is_netcdffile, is_zipfile, list_regular_files, mkdir_p, rm_f, rm_r, rm_rf, safe_copy_file,
                       safe_move_file, validate_dir_writable, validate_file_writable)
 from .misc import (CaptureStdIO, LoggingContext, TemplateRenderer, WriteOnceOrderedDict, discover_entry_points,
-                   ensure_writeonceordereddict, format_exception, get_pattern_subgroups_from_string, is_function,
-                   is_nonstring_iterable, is_valid_email_address, iter_public_attributes, matches_regexes, merge_dicts,
-                   slice_sequence, str_to_list, validate_bool, validate_callable, validate_dict, validate_int,
-                   validate_mapping, validate_mandatory_elements, validate_membership, validate_nonstring_iterable,
-                   validate_regex, validate_relative_path, validate_relative_path_attr, validate_string, validate_type)
+                   ensure_regex, ensure_regex_list, ensure_writeonceordereddict, format_exception,
+                   get_pattern_subgroups_from_string, is_function, is_nonstring_iterable, is_valid_email_address,
+                   iter_public_attributes, matches_regexes, merge_dicts, slice_sequence, str_to_list, validate_bool,
+                   validate_callable, validate_dict, validate_int, validate_mapping, validate_mandatory_elements,
+                   validate_membership, validate_nonstring_iterable, validate_regex, validate_regexes,
+                   validate_relative_path, validate_relative_path_attr, validate_string, validate_type)
 from .process import SystemProcess
 
 __all__ = [
@@ -22,6 +23,8 @@ __all__ = [
     'extract_gzip',
     'extract_zip',
     'discover_entry_points',
+    'ensure_regex',
+    'ensure_regex_list',
     'ensure_writeonceordereddict',
     'get_pattern_subgroups_from_string',
     'format_exception',
@@ -57,6 +60,7 @@ __all__ = [
     'validate_membership',
     'validate_nonstring_iterable',
     'validate_regex',
+    'validate_regexes',
     'validate_relative_path',
     'validate_relative_path_attr',
     'validate_string',

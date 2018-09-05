@@ -10,10 +10,9 @@ from .common import (FileType, PipelineFilePublishType, PipelineFileCheckType, v
                      validate_settable_checktype)
 from .exceptions import AttributeValidationError, DuplicatePipelineFileError, MissingFileError
 from .schema import validate_check_params
-from ..util import (IndexedSet, format_exception, get_file_checksum, iter_public_attributes, matches_regexes,
-                    slice_sequence, validate_bool, validate_callable, validate_mapping,
-                    validate_nonstring_iterable, validate_regex, validate_relative_path_attr, validate_string,
-                    validate_type)
+from ..util import (IndexedSet, ensure_regex, format_exception, get_file_checksum, iter_public_attributes,
+                    matches_regexes, slice_sequence, validate_bool, validate_callable, validate_mapping,
+                    validate_nonstring_iterable, validate_relative_path_attr, validate_string, validate_type)
 
 __all__ = [
     'PipelineFileCollection',
@@ -26,7 +25,7 @@ __all__ = [
 
 
 def ensure_pipelinefilecollection(o):
-    """Function to accept either a single PipelineFile OR and PipelineFileCollection and ensure that a
+    """Function to accept either a single PipelineFile OR a PipelineFileCollection and ensure that a
     PipelineFileCollection object is returned in either case
 
     :param o: PipelineFile or PipelineFileCollection object
@@ -609,18 +608,18 @@ class PipelineFileCollection(MutableSet):
         collection = PipelineFileCollection(f for f in self.__s if getattr(f, attribute) == value)
         return collection
 
-    def filter_by_attribute_regex(self, attribute, pattern):
+    def filter_by_attribute_regex(self, attribute, regex):
         """Return a new :py:class:`PipelineFileCollection` containing only elements where the value of the named
         attribute matches a given regex pattern
 
         :param attribute: attribute to filter on
-        :param pattern: regex pattern by which to filter PipelineFiles
+        :param regex: regex pattern by which to filter PipelineFiles
         :return: :py:class:`PipelineFileCollection` containing only :py:class:`PipelineFile` instances with the
             attribute matching the given pattern
         """
-        validate_regex(pattern)
+        ensured_regex = ensure_regex(regex)
         collection = PipelineFileCollection(
-            f for f in self.__s if getattr(f, attribute) and re.match(pattern, getattr(f, attribute)))
+            f for f in self.__s if getattr(f, attribute) and re.match(ensured_regex, getattr(f, attribute)))
         return collection
 
     def filter_by_bool_attribute(self, attribute):
