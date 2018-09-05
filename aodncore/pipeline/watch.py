@@ -96,29 +96,29 @@ class CeleryConfig(object):
 
 
 def delete_same_name_from_error_store_callback(handler, file_state_manager):
-    """Delete files from the error store if they match the pattern "INPUT_FILE.UUID"
+    """Delete files from the error store if they match the regular expression "INPUT_FILE.UUID"
 
     :param handler: Handler instance
     :param file_state_manager: IncomingFileStateManager instance
     :return: None
     """
     escaped_basename = re.escape(handler.file_basename)
-    cleanup_patterns = ensure_regex_list(r"^{basename}\.[0-9a-f\-]{{36}}$".format(basename=escaped_basename))
-    deleted_files = file_state_manager.error_broker.delete_regexes(cleanup_patterns)
+    cleanup_regexes = ensure_regex_list(r"^{basename}\.[0-9a-f\-]{{36}}$".format(basename=escaped_basename))
+    deleted_files = file_state_manager.error_broker.delete_regexes(cleanup_regexes)
     log = "delete_same_name_from_error_store_callback deleted -> {}".format(deleted_files.get_attribute_list('name'))
     return log
 
 
 def delete_custom_regexes_from_error_store_callback(handler, file_state_manager):
-    """Delete files from the error store if they match one of patterns in the error_cleanup_regexes attribute of the
-    handler
+    """Delete files from the error store if they match one of regular expressions in the error_cleanup_regexes attribute
+    of the handler
 
     :param handler: Handler instance
     :param file_state_manager: IncomingFileStateManager instance
     :return: None
     """
-    cleanup_patterns = ensure_regex_list(handler.error_cleanup_regexes)
-    deleted_files = file_state_manager.error_broker.delete_regexes(cleanup_patterns)
+    cleanup_regexes = ensure_regex_list(handler.error_cleanup_regexes)
+    deleted_files = file_state_manager.error_broker.delete_regexes(cleanup_regexes)
     log = "delete_custom_regexes_from_error_store_callback deleted -> {}".format(
         deleted_files.get_attribute_list('name'))
     return log

@@ -608,18 +608,18 @@ class PipelineFileCollection(MutableSet):
         collection = PipelineFileCollection(f for f in self.__s if getattr(f, attribute) == value)
         return collection
 
-    def filter_by_attribute_regex(self, attribute, pattern):
+    def filter_by_attribute_regex(self, attribute, regex):
         """Return a new :py:class:`PipelineFileCollection` containing only elements where the value of the named
         attribute matches a given regex pattern
 
         :param attribute: attribute to filter on
-        :param pattern: regex pattern by which to filter PipelineFiles
+        :param regex: regex pattern by which to filter PipelineFiles
         :return: :py:class:`PipelineFileCollection` containing only :py:class:`PipelineFile` instances with the
             attribute matching the given pattern
         """
-        ensured_pattern = ensure_regex(pattern)
+        ensured_regex = ensure_regex(regex)
         collection = PipelineFileCollection(
-            f for f in self.__s if getattr(f, attribute) and re.match(ensured_pattern, getattr(f, attribute)))
+            f for f in self.__s if getattr(f, attribute) and re.match(ensured_regex, getattr(f, attribute)))
         return collection
 
     def filter_by_bool_attribute(self, attribute):

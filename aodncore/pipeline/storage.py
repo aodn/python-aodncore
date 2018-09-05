@@ -144,19 +144,19 @@ class BaseStorageBroker(object):
 
         self._post_run_hook()
 
-    def delete_regexes(self, patterns):
-        """Delete files storage if they match one of the given patterns
+    def delete_regexes(self, regexes):
+        """Delete files storage if they match one of the given regular expressions
 
-        :param patterns: list of patterns to delete
+        :param regexes: list of regular expressions to delete
         :return: PipelineFileCollection of files which matched the patterns and were deleted
         """
-        delete_patterns = ensure_regex_list(patterns)
+        delete_regexes = ensure_regex_list(regexes)
 
         all_files = self.query()
         files_to_delete = PipelineFileCollection(
             PipelineFile(l, dest_path=os.path.join(self.prefix, l), is_deletion=True)
             for l in all_files
-            if matches_regexes(l, delete_patterns)
+            if matches_regexes(l, delete_regexes)
         )
         self.delete(files_to_delete)
         return files_to_delete
