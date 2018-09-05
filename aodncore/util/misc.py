@@ -20,8 +20,8 @@ StringIO = six.StringIO
 
 __all__ = [
     'discover_entry_points',
-    'ensure_pattern',
-    'ensure_pattern_list',
+    'ensure_regex',
+    'ensure_regex_list',
     'ensure_writeonceordereddict',
     'format_exception',
     'get_pattern_subgroups_from_string',
@@ -70,7 +70,7 @@ def discover_entry_points(entry_point_group, working_set=pkg_resources.working_s
     return entry_points
 
 
-def ensure_pattern(o):
+def ensure_regex(o):
     """Ensure that the returned value is a compiled regular expression (Pattern) from a given input, or raise if the
     object is not a valid regular expression
 
@@ -83,7 +83,7 @@ def ensure_pattern(o):
     return re.compile(o)
 
 
-def ensure_pattern_list(o):
+def ensure_regex_list(o):
     """Ensure that the returned value is a list of compiled regular expressions (Pattern) from a given input, or raise
     if the object is not a list of valid regular expression
 
@@ -95,12 +95,12 @@ def ensure_pattern_list(o):
 
     # if parameter is a single valid pattern, return it wrapped in a list
     try:
-        return [ensure_pattern(o)]
+        return [ensure_regex(o)]
     except TypeError:
         pass
 
     validate_nonstring_iterable(o)
-    return [ensure_pattern(p) for p in o]
+    return [ensure_regex(p) for p in o]
 
 
 def ensure_writeonceordereddict(o, empty_on_fail=True):
@@ -133,7 +133,7 @@ def format_exception(exception):
     return "{cls}: {message}".format(cls=exception.__class__.__name__, message=exception)
 
 
-def get_pattern_subgroups_from_string(string, compiled_pattern):
+def get_pattern_subgroups_from_string(string, pattern):
     """Function to retrieve parts of a string given a compiled pattern (re.compile(pattern))
     the pattern needs to match the beginning of the string
     (see https://docs.python.org/2/library/re.html#re.RegexObject.match)
@@ -143,7 +143,7 @@ def get_pattern_subgroups_from_string(string, compiled_pattern):
 
     :return: dictionary of fields matching a given pattern
     """
-    compiled_pattern = ensure_pattern(compiled_pattern)
+    compiled_pattern = ensure_regex(pattern)
     m = compiled_pattern.match(string)
     return {} if m is None else m.groupdict()
 
@@ -173,7 +173,7 @@ def is_valid_email_address(address):
     :return: True if address matches the regex, otherwise False
     """
     pattern = re.compile(r"^[A-Z0-9_.+-]+@(localhost|[A-Z0-9-]+\.[A-Z0-9-.]+)$", re.IGNORECASE)
-    return re.match(pattern, address)
+    return pattern.match(address)
 
 
 def iter_public_attributes(instance, ignored_attributes=None):
@@ -210,8 +210,8 @@ def matches_regexes(input_string, include_regexes=None, exclude_regexes=None):
     if include_regexes is None:
         return True
 
-    includes = ensure_pattern_list(include_regexes)
-    excludes = ensure_pattern_list(exclude_regexes)
+    includes = ensure_regex_list(include_regexes)
+    excludes = ensure_regex_list(exclude_regexes)
 
     matches_includes = any(re.match(r, input_string) for r in includes)
     matches_excludes = any(re.match(r, input_string) for r in excludes)

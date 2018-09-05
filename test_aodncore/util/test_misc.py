@@ -8,7 +8,7 @@ import six
 from typing import Pattern
 
 from aodncore.testlib import BaseTestCase
-from aodncore.util import (ensure_pattern, ensure_pattern_list, ensure_writeonceordereddict, format_exception,
+from aodncore.util import (ensure_regex, ensure_regex_list, ensure_writeonceordereddict, format_exception,
                            get_pattern_subgroups_from_string, is_function, is_nonstring_iterable, matches_regexes,
                            merge_dicts, slice_sequence, str_to_list, validate_callable, validate_mandatory_elements,
                            validate_membership, validate_nonstring_iterable, validate_regex, validate_regexes,
@@ -88,40 +88,40 @@ class TestWriteOnceOrderedDict(BaseTestCase):
 
 class TestUtilMisc(BaseTestCase):
     def test_ensure_pattern(self):
-        ensured_pattern = ensure_pattern(VALID_PATTERN)
+        ensured_pattern = ensure_regex(VALID_PATTERN)
         self.assertIsInstance(ensured_pattern, Pattern)
 
-        ensured_compiled_pattern = ensure_pattern(COMPILED_PATTERN)
+        ensured_compiled_pattern = ensure_regex(COMPILED_PATTERN)
         self.assertIs(ensured_compiled_pattern, COMPILED_PATTERN)
 
         with self.assertRaises(ValueError):
-            _ = ensure_pattern(INVALID_PATTERN)
+            _ = ensure_regex(INVALID_PATTERN)
 
         with self.assertRaises(TypeError):
-            _ = ensure_pattern(1)
+            _ = ensure_regex(1)
 
     def test_ensure_pattern_list(self):
-        ensured_pattern_list = ensure_pattern_list([VALID_PATTERN])
+        ensured_pattern_list = ensure_regex_list([VALID_PATTERN])
         self.assertIsInstance(ensured_pattern_list, list)
         self.assertTrue(all(isinstance(p, Pattern) for p in ensured_pattern_list))
 
         with self.assertNoException():
-            _ = ensure_pattern_list([VALID_PATTERN, COMPILED_PATTERN])
+            _ = ensure_regex_list([VALID_PATTERN, COMPILED_PATTERN])
 
         with self.assertRaises(ValueError):
-            _ = ensure_pattern_list([INVALID_PATTERN])
+            _ = ensure_regex_list([INVALID_PATTERN])
 
         with self.assertRaises(TypeError):  # not a Sequence
-            _ = ensure_pattern_list(1)
+            _ = ensure_regex_list(1)
 
-        list_from_none = ensure_pattern_list(None)
+        list_from_none = ensure_regex_list(None)
         self.assertListEqual(list_from_none, [])
 
-        list_from_pattern = ensure_pattern_list(VALID_PATTERN)
+        list_from_pattern = ensure_regex_list(VALID_PATTERN)
         self.assertIsInstance(list_from_pattern, list)
         self.assertTrue(all(isinstance(p, Pattern) for p in list_from_pattern))
 
-        list_from_compiled = ensure_pattern_list(COMPILED_PATTERN)
+        list_from_compiled = ensure_regex_list(COMPILED_PATTERN)
         self.assertIsInstance(list_from_compiled, list)
         self.assertTrue(all(isinstance(p, Pattern) for p in list_from_compiled))
 

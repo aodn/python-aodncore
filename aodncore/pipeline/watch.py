@@ -29,7 +29,7 @@ from transitions import Machine
 from .files import PipelineFile
 from .log import get_pipeline_logger
 from .storage import get_storage_broker
-from ..util import (ensure_pattern_list, format_exception, mkdir_p, rm_f, rm_r, validate_dir_writable,
+from ..util import (ensure_regex_list, format_exception, mkdir_p, rm_f, rm_r, validate_dir_writable,
                     validate_file_writable, validate_membership)
 
 # OS X test compatibility, due to absence of pyinotify (which is specific to the Linux kernel)
@@ -103,8 +103,8 @@ def delete_same_name_from_error_store_callback(handler, file_state_manager):
     :return: None
     """
     escaped_basename = re.escape(handler.file_basename)
-    cleanup_patterns = [re.compile(r"^{basename}\.[0-9a-f\-]{{36}}$".format(basename=escaped_basename))]
-    deleted_files = file_state_manager.error_broker.delete_patterns(cleanup_patterns)
+    cleanup_patterns = ensure_regex_list(r"^{basename}\.[0-9a-f\-]{{36}}$".format(basename=escaped_basename))
+    deleted_files = file_state_manager.error_broker.delete_regexes(cleanup_patterns)
     log = "delete_same_name_from_error_store_callback deleted -> {}".format(deleted_files.get_attribute_list('name'))
     return log
 
@@ -117,8 +117,8 @@ def delete_custom_regexes_from_error_store_callback(handler, file_state_manager)
     :param file_state_manager: IncomingFileStateManager instance
     :return: None
     """
-    cleanup_patterns = ensure_pattern_list(handler.error_cleanup_regexes)
-    deleted_files = file_state_manager.error_broker.delete_patterns(cleanup_patterns)
+    cleanup_patterns = ensure_regex_list(handler.error_cleanup_regexes)
+    deleted_files = file_state_manager.error_broker.delete_regexes(cleanup_patterns)
     log = "delete_custom_regexes_from_error_store_callback deleted -> {}".format(
         deleted_files.get_attribute_list('name'))
     return log
