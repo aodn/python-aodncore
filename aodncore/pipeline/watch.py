@@ -490,7 +490,7 @@ class IncomingFileStateManager(object):
             callbacks = [p.callback for p in self.error_exit_policies]
             for callback in callbacks:
                 callback_log = callback(self.handler, self)
-                self.logger.sysinfo(callback_log)
+                self.logger.info(callback_log)
         except Exception as e:
             self.logger.exception(
                 "error running error callbacks: '{policies}'. {e}".format(policies=self.error_exit_policies, e=e))
@@ -500,7 +500,7 @@ class IncomingFileStateManager(object):
             callbacks = [p.callback for p in self.success_exit_policies]
             for callback in callbacks:
                 callback_log = callback(self.handler, self)
-                self.logger.sysinfo(callback_log)
+                self.logger.info(callback_log)
         except Exception as e:
             self.logger.exception(
                 "error running success callbacks: '{policies}'. {e}".format(policies=self.success_exit_policies, e=e))
