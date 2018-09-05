@@ -11,7 +11,7 @@ TEST_LOG_FORMAT = "%(asctime)s %(levelname)s [%(name)s] %(message)s"
 TEST_LOG_LEVEL = SYSINFO
 
 
-class _AssertNoExceptionContext(object):
+class _AssertNoExceptionContext(object):  # pragma: no cover
     """A context manager used to implement BaseTestCase.assertNoException* method."""
 
     def __init__(self, test_case):
@@ -59,7 +59,7 @@ class BaseTestCase(unittest.TestCase):
         if hasattr(self, '_temp_dir'):
             rm_rf(self._temp_dir)
 
-    def assertNoException(self, callableObj=None, *args, **kwargs):
+    def assertNoException(self, callableObj=None, *args, **kwargs):   # pragma: no cover
         """Fail if any exception is raised
 
         :return: None
