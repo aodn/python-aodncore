@@ -15,8 +15,8 @@ except ImportError:
 
 from .exceptions import AttributeNotSetError, InvalidStoreUrlError, StorageBrokerError
 from .files import ensure_pipelinefilecollection, PipelineFile, PipelineFileCollection
-from ..util import (format_exception, matches_regexes, mkdir_p, retry_decorator, rm_f, safe_copy_file,
-                    validate_nonstring_iterable, validate_relative_path, validate_type)
+from ..util import (ensure_pattern_list, format_exception, matches_regexes, mkdir_p, retry_decorator, rm_f,
+                    safe_copy_file, validate_relative_path, validate_type)
 
 __all__ = [
     'get_storage_broker',
@@ -148,15 +148,15 @@ class BaseStorageBroker(object):
         """Delete files storage if they match one of the given patterns
 
         :param patterns: list of patterns to delete
-        :return: list of files which matched the patterns and were deleted
+        :return: PipelineFileCollection of files which matched the patterns and were deleted
         """
-        validate_nonstring_iterable(patterns)
+        delete_patterns = ensure_pattern_list(patterns)
 
         all_files = self.query()
         files_to_delete = PipelineFileCollection(
             PipelineFile(l, dest_path=os.path.join(self.prefix, l), is_deletion=True)
             for l in all_files
-            if matches_regexes(l, patterns)
+            if matches_regexes(l, delete_patterns)
         )
         self.delete(files_to_delete)
         return files_to_delete

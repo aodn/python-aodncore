@@ -87,11 +87,18 @@ def ensure_pattern_list(o):
     """Ensure that the returned value is a list of compiled regular expressions (Pattern) from a given input, or raise
     if the object is not a list of valid regular expression
 
-    :param o: input object (list of regex strings or pre-compiled Pattern objects)
+    :param o: input object (a single pattern or a sequence of regex strings or pre-compiled Pattern objects)
     :return: :py:class:`list` of :py:class:`Pattern` instances
     """
     if o is None:
         return []
+
+    # if parameter is a single valid pattern, return it wrapped in a list
+    try:
+        return [ensure_pattern(o)]
+    except TypeError:
+        pass
+
     validate_nonstring_iterable(o)
     return [ensure_pattern(p) for p in o]
 
@@ -200,27 +207,14 @@ def matches_regexes(input_string, include_regexes=None, exclude_regexes=None):
     :param exclude_regexes: list of exclusions to *subtract* from the list produced by inclusions
     :return: True if the of the string matches one of the 'include_regexes' but *not* one of the 'exclude_regexes'
     """
-    if isinstance(include_regexes, six.string_types):
-        include_regexes = [include_regexes]
-    if not include_regexes:
-        include_regexes = ['.*']
-    if exclude_regexes and isinstance(exclude_regexes, six.string_types):
-        exclude_regexes = [exclude_regexes]
+    if include_regexes is None:
+        return True
 
-    matches_includes = False
-    for r in include_regexes:
-        validate_regex(r)
-        if re.match(r, input_string):
-            matches_includes = True
-            break
+    includes = ensure_pattern_list(include_regexes)
+    excludes = ensure_pattern_list(exclude_regexes)
 
-    matches_excludes = False
-    if matches_includes and exclude_regexes is not None:
-        for r in exclude_regexes:
-            validate_regex(r)
-            if re.match(r, input_string):
-                matches_excludes = True
-                break
+    matches_includes = any(re.match(r, input_string) for r in includes)
+    matches_excludes = any(re.match(r, input_string) for r in excludes)
 
     if matches_includes and not matches_excludes:
         return True

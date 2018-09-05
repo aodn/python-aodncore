@@ -117,6 +117,14 @@ class TestUtilMisc(BaseTestCase):
         list_from_none = ensure_pattern_list(None)
         self.assertListEqual(list_from_none, [])
 
+        list_from_pattern = ensure_pattern_list(VALID_PATTERN)
+        self.assertIsInstance(list_from_pattern, list)
+        self.assertTrue(all(isinstance(p, Pattern) for p in list_from_pattern))
+
+        list_from_compiled = ensure_pattern_list(COMPILED_PATTERN)
+        self.assertIsInstance(list_from_compiled, list)
+        self.assertTrue(all(isinstance(p, Pattern) for p in list_from_compiled))
+
     def test_ensure_writeonceordereddict(self):
         test_wood = WriteOnceOrderedDict({'key': 'value'})
         ensured_wood = ensure_writeonceordereddict(test_wood)

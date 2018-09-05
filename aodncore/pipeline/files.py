@@ -10,10 +10,9 @@ from .common import (FileType, PipelineFilePublishType, PipelineFileCheckType, v
                      validate_settable_checktype)
 from .exceptions import AttributeValidationError, DuplicatePipelineFileError, MissingFileError
 from .schema import validate_check_params
-from ..util import (IndexedSet, format_exception, get_file_checksum, iter_public_attributes, matches_regexes,
-                    slice_sequence, validate_bool, validate_callable, validate_mapping,
-                    validate_nonstring_iterable, validate_regex, validate_relative_path_attr, validate_string,
-                    validate_type)
+from ..util import (IndexedSet, ensure_pattern, format_exception, get_file_checksum, iter_public_attributes,
+                    matches_regexes, slice_sequence, validate_bool, validate_callable, validate_mapping,
+                    validate_nonstring_iterable, validate_relative_path_attr, validate_string, validate_type)
 
 __all__ = [
     'PipelineFileCollection',
@@ -618,9 +617,9 @@ class PipelineFileCollection(MutableSet):
         :return: :py:class:`PipelineFileCollection` containing only :py:class:`PipelineFile` instances with the
             attribute matching the given pattern
         """
-        validate_regex(pattern)
+        ensured_pattern = ensure_pattern(pattern)
         collection = PipelineFileCollection(
-            f for f in self.__s if getattr(f, attribute) and re.match(pattern, getattr(f, attribute)))
+            f for f in self.__s if getattr(f, attribute) and re.match(ensured_pattern, getattr(f, attribute)))
         return collection
 
     def filter_by_bool_attribute(self, attribute):
