@@ -3,7 +3,9 @@
 """Simple script to generate a nice state machine diagram of the HandlerBase Machine
 
     .. note:: requires pygraphviz to be installed, which is omitted from requirements.txt due to not being required in
-        prod.
+        prod. Also requires various system packages:
+
+            Example for Ubuntu: $ sudo apt install python-dev graphviz libgraphviz-dev pkg-config
 """
 
 import argparse
