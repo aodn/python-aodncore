@@ -9,18 +9,19 @@ import re
 import sys
 import types
 from collections import Iterable, OrderedDict, Mapping
-from typing import Pattern
 
 import jinja2
 import pkg_resources
 import six
 from six.moves import range
+from typing import Pattern
 
 StringIO = six.StringIO
 
 __all__ = [
     'discover_entry_points',
     'ensure_pattern',
+    'ensure_pattern_list',
     'ensure_writeonceordereddict',
     'format_exception',
     'get_pattern_subgroups_from_string',
@@ -73,13 +74,26 @@ def ensure_pattern(o):
     """Ensure that the returned value is a compiled regular expression (Pattern) from a given input, or raise if the
     object is not a valid regular expression
 
-    :param o: input object
+    :param o: input object (regex string or pre-compiled Pattern)
     :return: :py:class:`Pattern` instance
     """
     validate_regex(o)
     if isinstance(o, Pattern):
         return o
     return re.compile(o)
+
+
+def ensure_pattern_list(o):
+    """Ensure that the returned value is a list of compiled regular expressions (Pattern) from a given input, or raise
+    if the object is not a list of valid regular expression
+
+    :param o: input object (list of regex strings or pre-compiled Pattern objects)
+    :return: :py:class:`list` of :py:class:`Pattern` instances
+    """
+    if o is None:
+        return []
+    validate_nonstring_iterable(o)
+    return [ensure_pattern(p) for p in o]
 
 
 def ensure_writeonceordereddict(o, empty_on_fail=True):

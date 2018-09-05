@@ -5,17 +5,23 @@ import uuid
 from collections import OrderedDict
 
 import six
+from typing import Pattern
 
 from aodncore.testlib import BaseTestCase
-from aodncore.util import (ensure_writeonceordereddict, format_exception, get_pattern_subgroups_from_string, is_function,
-                           is_nonstring_iterable, matches_regexes, merge_dicts, slice_sequence,
-                           str_to_list, validate_callable, validate_mandatory_elements, validate_membership,
-                           validate_nonstring_iterable, validate_regex, validate_regexes,validate_relative_path,
-                           validate_relative_path_attr, validate_type, CaptureStdIO, WriteOnceOrderedDict)
+from aodncore.util import (ensure_pattern, ensure_pattern_list, ensure_writeonceordereddict, format_exception,
+                           get_pattern_subgroups_from_string, is_function, is_nonstring_iterable, matches_regexes,
+                           merge_dicts, slice_sequence, str_to_list, validate_callable, validate_mandatory_elements,
+                           validate_membership, validate_nonstring_iterable, validate_regex, validate_regexes,
+                           validate_relative_path, validate_relative_path_attr, validate_type, CaptureStdIO,
+                           WriteOnceOrderedDict)
 
 StringIO = six.StringIO
 
 TEST_ROOT = os.path.join(os.path.dirname(__file__))
+
+VALID_PATTERN = r'.*'
+INVALID_PATTERN = r'^(?P<incomplete[A-Z]{3,4})'
+COMPILED_PATTERN = re.compile(VALID_PATTERN)
 
 
 def get_nonexistent_path():
@@ -81,6 +87,36 @@ class TestWriteOnceOrderedDict(BaseTestCase):
 
 
 class TestUtilMisc(BaseTestCase):
+    def test_ensure_pattern(self):
+        ensured_pattern = ensure_pattern(VALID_PATTERN)
+        self.assertIsInstance(ensured_pattern, Pattern)
+
+        ensured_compiled_pattern = ensure_pattern(COMPILED_PATTERN)
+        self.assertIs(ensured_compiled_pattern, COMPILED_PATTERN)
+
+        with self.assertRaises(ValueError):
+            _ = ensure_pattern(INVALID_PATTERN)
+
+        with self.assertRaises(TypeError):
+            _ = ensure_pattern(1)
+
+    def test_ensure_pattern_list(self):
+        ensured_pattern_list = ensure_pattern_list([VALID_PATTERN])
+        self.assertIsInstance(ensured_pattern_list, list)
+        self.assertTrue(all(isinstance(p, Pattern) for p in ensured_pattern_list))
+
+        with self.assertNoException():
+            _ = ensure_pattern_list([VALID_PATTERN, COMPILED_PATTERN])
+
+        with self.assertRaises(ValueError):
+            _ = ensure_pattern_list([INVALID_PATTERN])
+
+        with self.assertRaises(TypeError):  # not a Sequence
+            _ = ensure_pattern_list(1)
+
+        list_from_none = ensure_pattern_list(None)
+        self.assertListEqual(list_from_none, [])
+
     def test_ensure_writeonceordereddict(self):
         test_wood = WriteOnceOrderedDict({'key': 'value'})
         ensured_wood = ensure_writeonceordereddict(test_wood)
@@ -185,41 +221,33 @@ class TestUtilMisc(BaseTestCase):
             validate_nonstring_iterable('s')
 
     def test_validate_regex(self):
-        pattern = r'.*'
-        invalid_pattern = r'^(?P<incomplete[A-Z]{3,4})'
-        compiled_pattern = re.compile(pattern)
+        with self.assertNoException():
+            validate_regex(VALID_PATTERN)
 
         with self.assertNoException():
-            validate_regex(pattern)
-
-        with self.assertNoException():
-            validate_regex(compiled_pattern)
+            validate_regex(COMPILED_PATTERN)
 
         with self.assertRaises(ValueError):
-            validate_regex(invalid_pattern)
+            validate_regex(INVALID_PATTERN)
 
         with self.assertRaises(TypeError):
             validate_regex(1)
 
         with self.assertRaises(TypeError):
-            validate_regex([pattern])  # valid pattern, but in a list
+            validate_regex([VALID_PATTERN])  # valid pattern, but in a list
 
     def test_validate_regexes(self):
-        pattern = r'.*'
-        invalid_pattern = r'^(?P<incomplete[A-Z]{3,4})'
-        compiled_pattern = re.compile(pattern)
-
         with self.assertNoException():
-            validate_regexes([pattern, compiled_pattern])
+            validate_regexes([VALID_PATTERN, COMPILED_PATTERN])
 
         with self.assertRaises(ValueError):
-            validate_regexes([pattern, invalid_pattern])
+            validate_regexes([VALID_PATTERN, INVALID_PATTERN])
 
         with self.assertRaises(TypeError):
             validate_regexes([1, {}])
 
         with self.assertRaises(TypeError):
-            validate_regexes(pattern)  # valid pattern, but not in a list
+            validate_regexes(VALID_PATTERN)  # valid pattern, but not in a list
 
     def test_validate_relative_path(self):
         with self.assertRaises(ValueError):
