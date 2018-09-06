@@ -10,9 +10,10 @@ from .common import (FileType, PipelineFilePublishType, PipelineFileCheckType, v
                      validate_settable_checktype)
 from .exceptions import AttributeValidationError, DuplicatePipelineFileError, MissingFileError
 from .schema import validate_check_params
-from ..util import (IndexedSet, ensure_regex, format_exception, get_file_checksum, iter_public_attributes,
-                    matches_regexes, slice_sequence, validate_bool, validate_callable, validate_mapping,
-                    validate_nonstring_iterable, validate_relative_path_attr, validate_string, validate_type)
+from ..util import (IndexedSet, format_exception, get_file_checksum, iter_public_attributes, matches_regexes,
+                    slice_sequence, validate_bool, validate_callable, validate_int, validate_mapping,
+                    validate_nonstring_iterable, validate_regex, validate_regexes, validate_relative_path_attr,
+                    validate_string, validate_type)
 
 __all__ = [
     'PipelineFileCollection',
@@ -570,6 +571,7 @@ class PipelineFileCollection(MutableSet):
         :return: list containing the current object sliced into new :py:class:`PipelineFileCollection` instances of max
             length slice_size
         """
+        validate_int(slice_size)
         return slice_sequence(self, slice_size)
 
     def filter_by_attribute_id(self, attribute, value):
@@ -617,9 +619,9 @@ class PipelineFileCollection(MutableSet):
         :return: :py:class:`PipelineFileCollection` containing only :py:class:`PipelineFile` instances with the
             attribute matching the given pattern
         """
-        ensured_regex = ensure_regex(regex)
+        validate_regex(regex)
         collection = PipelineFileCollection(
-            f for f in self.__s if getattr(f, attribute) and re.match(ensured_regex, getattr(f, attribute)))
+            f for f in self.__s if getattr(f, attribute) and re.match(regex, getattr(f, attribute)))
         return collection
 
     def filter_by_bool_attribute(self, attribute):
@@ -850,6 +852,10 @@ class PipelineFileCollection(MutableSet):
         :param deletion_type: :py:class:`PipefileFilePublishType` enum member set for included deletion files
         :return: None
         """
+        validate_regexes(include_regexes)
+        if exclude_regexes:
+            validate_regexes(exclude_regexes)
+
         for f in self.__s:
             if matches_regexes(f.name, include_regexes, exclude_regexes):
                 f.publish_type = deletion_type if f.is_deletion else addition_type
@@ -880,6 +886,7 @@ class PipelineFileCollection(MutableSet):
         :param include_regexes: list of regexes of which the attribute must match at least one
         :return: None
         """
+        validate_regexes(include_regexes)
         unmatched = {f.name: getattr(f, attribute)
                      for f in self.__s
                      if not matches_regexes(getattr(f, attribute), include_regexes=include_regexes)}
