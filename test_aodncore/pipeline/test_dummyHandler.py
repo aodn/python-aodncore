@@ -90,10 +90,12 @@ class TestDummyHandler(HandlerTestCase):
             _ = self.handler_class(GOOD_NC, invalid_unknown_keyword_argument=1)
 
     def test_invalid_include_regex(self):
-        self.run_handler_with_exception(ValueError, GOOD_NC, include_regexes=['['])
+        with self.assertRaises(ValueError):
+            _ = self.handler_class(GOOD_NC, include_regexes=['['])
 
     def test_invalid_exclude_regex(self):
-        self.run_handler_with_exception(ValueError, GOOD_NC, include_regexes=['.*'], exclude_regexes=['['])
+        with self.assertRaises(ValueError):
+            _ = self.handler_class(GOOD_NC, include_regexes=['.*'], exclude_regexes=['['])
 
     def test_invalid_check_params(self):
         self.run_handler_with_exception(ValidationError, GOOD_NC, check_params={'invalid_param': 'value'})

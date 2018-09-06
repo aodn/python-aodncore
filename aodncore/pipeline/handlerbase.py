@@ -17,9 +17,9 @@ from .schema import (validate_check_params, validate_custom_params, validate_har
                      validate_resolve_params)
 from .statequery import StateQuery
 from .steps import (get_check_runner, get_harvester_runner, get_notify_runner, get_resolve_runner, get_store_runner)
-from ..util import (discover_entry_points, ensure_writeonceordereddict, format_exception, get_file_checksum,
-                    iter_public_attributes, matches_regexes, merge_dicts, validate_relative_path_attr,
-                    TemporaryDirectory)
+from ..util import (discover_entry_points, ensure_regex_list, ensure_writeonceordereddict, format_exception,
+                    get_file_checksum, iter_public_attributes, matches_regexes, merge_dicts,
+                    validate_relative_path_attr, TemporaryDirectory)
 from ..version import __version__ as _aodncore_version
 
 __all__ = [
@@ -298,11 +298,13 @@ class HandlerBase(object):
         self._default_deletion_publish_type = PipelineFilePublishType.DELETE_UNHARVEST
         self._error = None
         self._error_details = None
+        self._exclude_regexes = None
         self._file_basename = None
         self._file_checksum = None
         self._file_collection = None
         self._file_extension = None
         self._file_type = None
+        self._include_regexes = None
         self._input_file_archive_path = None
         self._input_file_object = None
         self._instance_working_directory = None
@@ -414,6 +416,19 @@ class HandlerBase(object):
         return self._error_details
 
     @property
+    def exclude_regexes(self):
+        """Property to manage exclude_regexes attribute
+
+        :return:
+        :rtype: :py:class:`list`
+        """
+        return self._exclude_regexes
+
+    @exclude_regexes.setter
+    def exclude_regexes(self, regexes):
+        self._exclude_regexes = ensure_regex_list(regexes)
+
+    @property
     def file_basename(self):
         """Read-only property to access the :py:attr:`input_file` basename
 
@@ -457,6 +472,19 @@ class HandlerBase(object):
         :rtype: :class:`FileType`
         """
         return self._file_type
+
+    @property
+    def include_regexes(self):
+        """Property to manage include_regexes attribute
+
+        :return:
+        :rtype: :py:class:`list`
+        """
+        return self._include_regexes
+
+    @include_regexes.setter
+    def include_regexes(self, regexes):
+        self._include_regexes = ensure_regex_list(regexes)
 
     @property
     def instance_working_directory(self):
@@ -684,7 +712,10 @@ class HandlerBase(object):
         resolved_files = resolve_runner.run()
 
         resolved_files.set_file_update_callback(self._file_update_callback)
-        resolved_files.set_publish_types_from_regexes(self.include_regexes, self.exclude_regexes,
+
+        # if include_regexes is not defined, default to including all files when setting publish types
+        include_regexes = self.include_regexes if self.include_regexes else ensure_regex_list([r'.*'])
+        resolved_files.set_publish_types_from_regexes(include_regexes, self.exclude_regexes,
                                                       self.default_addition_publish_type,
                                                       self.default_deletion_publish_type)
 

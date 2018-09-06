@@ -320,7 +320,7 @@ class TestUtilMisc(BaseTestCase):
 
     def test_matches_regexes(self):
         # Testing inclusion from list of regexes
-        self.assertTrue(matches_regexes('example-filename.nc', ['.*\.nc']))
+        self.assertTrue(matches_regexes('example-filename.nc', [VALID_PATTERN]))
 
         # Testing inclusion from string regex
         self.assertTrue(matches_regexes('example-filename.nc', 'example-.*\.nc'))
@@ -335,7 +335,14 @@ class TestUtilMisc(BaseTestCase):
         with self.assertRaises(TypeError):
             matches_regexes('example-filename.nc', 1)
         with self.assertRaises(TypeError):
-            matches_regexes('example-filename.nc', [], 1)
+            matches_regexes('example-filename.nc', '.*\.zip', 1)
+        with self.assertRaises(ValueError):
+            matches_regexes('example-filename.nc', INVALID_PATTERN)
+
+        # Testing inclusion from list of regexes
+        self.assertFalse(matches_regexes('example-filename.nc', None))
+        self.assertFalse(matches_regexes('example-filename.nc', ''))
+        self.assertFalse(matches_regexes('example-filename.nc', []))
 
     def test_merge_dicts(self):
         reference_dict = {

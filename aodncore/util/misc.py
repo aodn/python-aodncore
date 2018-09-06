@@ -203,7 +203,7 @@ def iter_public_attributes(instance, ignored_attributes=None):
     return six.iteritems(public_attrs)
 
 
-def matches_regexes(input_string, include_regexes=None, exclude_regexes=None):
+def matches_regexes(input_string, include_regexes, exclude_regexes=None):
     """Function to filter a string (e.g. file path) according to regular expression inclusions minus exclusions
 
     :param input_string: string for comparison to the regular expressions
@@ -211,8 +211,8 @@ def matches_regexes(input_string, include_regexes=None, exclude_regexes=None):
     :param exclude_regexes: list of exclusions to *subtract* from the list produced by inclusions
     :return: True if the of the string matches one of the 'include_regexes' but *not* one of the 'exclude_regexes'
     """
-    if include_regexes is None:
-        return True
+    if not include_regexes:
+        return False
 
     includes = ensure_regex_list(include_regexes)
     excludes = ensure_regex_list(exclude_regexes)
