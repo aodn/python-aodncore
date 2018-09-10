@@ -1,6 +1,7 @@
 import abc
 import errno
 import os
+import re
 from datetime import datetime
 
 import boto3
@@ -15,8 +16,8 @@ except ImportError:
 
 from .exceptions import AttributeNotSetError, InvalidStoreUrlError, StorageBrokerError
 from .files import ensure_pipelinefilecollection, PipelineFile, PipelineFileCollection
-from ..util import (ensure_regex_list, format_exception, matches_regexes, mkdir_p, retry_decorator, rm_f,
-                    safe_copy_file, validate_relative_path, validate_type)
+from ..util import (ensure_regex_list, format_exception, matches_regexes, mkdir_p, retry_decorator, safe_copy_file,
+                    validate_relative_path, validate_type)
 
 __all__ = [
     'get_storage_broker',
@@ -28,6 +29,9 @@ __all__ = [
     'sftp_path_exists',
     'validate_storage_broker'
 ]
+
+_disallowed_delete_regexes = {'', '.*', '.+'}
+DISALLOWED_DELETE_REGEXES = _disallowed_delete_regexes.union({re.compile(r) for r in _disallowed_delete_regexes})
 
 
 def get_storage_broker(store_url):
@@ -144,20 +148,30 @@ class BaseStorageBroker(object):
 
         self._post_run_hook()
 
-    def delete_regexes(self, regexes):
+    def delete_regexes(self, regexes, allow_match_all=False):
         """Delete files storage if they match one of the given regular expressions
 
         :param regexes: list of regular expressions to delete
+        :param allow_match_all: boolean flag controlling whether "match all" regexes are accepted
         :return: PipelineFileCollection of files which matched the patterns and were deleted
         """
         delete_regexes = ensure_regex_list(regexes)
 
+        if set(delete_regexes).intersection(DISALLOWED_DELETE_REGEXES) and not allow_match_all:
+            raise ValueError("regexes '{disallowed}' disallowed unless allow_match_all=True".format(
+                disallowed=list(_disallowed_delete_regexes)))
+
+        files_to_delete = PipelineFileCollection()
+        if not delete_regexes:
+            return files_to_delete
+
         all_files = self.query()
-        files_to_delete = PipelineFileCollection(
+        files_to_delete.update(
             PipelineFile(l, dest_path=os.path.join(self.prefix, l), is_deletion=True)
             for l in all_files
             if matches_regexes(l, delete_regexes)
         )
+
         self.delete(files_to_delete)
         return files_to_delete
 

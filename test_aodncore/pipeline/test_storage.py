@@ -1,6 +1,7 @@
 import datetime
 import errno
 import os
+import re
 import tempfile
 from uuid import uuid4
 
@@ -242,6 +243,14 @@ class TestBaseStorageBroker(BaseTestCase):
 
 
 class TestLocalFileStorageBroker(BaseTestCase):
+    def setUp(self):
+        self.test_broker = get_storage_broker(self.config.pipeline_config['global']['error_uri'])
+        previous_file_same_name = PipelineFile(self.temp_nc_file,
+                                               dest_path='dummy.input_file.40c4ec0d-c9db-498d-84f9-01011330086e')
+        self.existing_collection = get_upload_collection()
+        self.test_broker.upload(self.existing_collection)
+        self.test_broker.upload(previous_file_same_name)
+
     @mock.patch('aodncore.pipeline.storage.mkdir_p')
     @mock.patch('aodncore.pipeline.storage.safe_copy_file')
     def test_upload_collection(self, mock_safe_copy_file, mock_mkdir_p):
@@ -329,6 +338,45 @@ class TestLocalFileStorageBroker(BaseTestCase):
         mock_rm_f.assert_any_call(netcdf_dest_path)
 
         self.assertTrue(netcdf_file.is_stored)
+
+    def test_delete_regexes(self):
+        with self.assertRaises(ValueError):
+            self.test_broker.delete_regexes([r''])
+        with self.assertRaises(ValueError):
+            self.test_broker.delete_regexes([re.compile(r'.*')])
+
+        all_files = self.test_broker.query()
+        self.assertItemsEqual(all_files.keys(), [
+            'subdirectory/targetfile.unknown_file_extension',
+            'subdirectory/targetfile.nc',
+            'dummy.input_file.40c4ec0d-c9db-498d-84f9-01011330086e',
+            'subdirectory/targetfile.png',
+            'subdirectory/targetfile.ico'
+        ])
+
+        self.test_broker.delete_regexes([r'^subdirectory/targetfile\.(ico|nc)$'])
+
+        remaining_files = self.test_broker.query()
+        self.assertItemsEqual(remaining_files.keys(), [
+            'subdirectory/targetfile.unknown_file_extension',
+            'dummy.input_file.40c4ec0d-c9db-498d-84f9-01011330086e',
+            'subdirectory/targetfile.png'
+        ])
+
+    def test_delete_regexes_with_allow_match_all(self):
+        all_files = self.test_broker.query()
+        self.assertItemsEqual(all_files.keys(), [
+            'subdirectory/targetfile.unknown_file_extension',
+            'subdirectory/targetfile.nc',
+            'dummy.input_file.40c4ec0d-c9db-498d-84f9-01011330086e',
+            'subdirectory/targetfile.png',
+            'subdirectory/targetfile.ico'
+        ])
+
+        self.test_broker.delete_regexes([r'.*'], allow_match_all=True)
+
+        remaining_files = self.test_broker.query()
+        self.assertItemsEqual(remaining_files.keys(), [])
 
     def test_directory_query(self):
         with TemporaryDirectory() as d:

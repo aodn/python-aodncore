@@ -211,9 +211,6 @@ def matches_regexes(input_string, include_regexes, exclude_regexes=None):
     :param exclude_regexes: list of exclusions to *subtract* from the list produced by inclusions
     :return: True if the of the string matches one of the 'include_regexes' but *not* one of the 'exclude_regexes'
     """
-    if not include_regexes:
-        return False
-
     includes = ensure_regex_list(include_regexes)
     excludes = ensure_regex_list(exclude_regexes)
 
