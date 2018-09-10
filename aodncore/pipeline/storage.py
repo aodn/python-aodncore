@@ -203,7 +203,7 @@ class LocalFileStorageBroker(BaseStorageBroker):
 
     def _delete_file(self, pipeline_file, dest_path_attr):
         abs_path = self._get_absolute_dest_path(pipeline_file=pipeline_file, dest_path_attr=dest_path_attr)
-        rm_f(abs_path)
+        os.remove(abs_path)
 
     def _get_is_overwrite(self, pipeline_file, abs_path):
         return os.path.exists(abs_path)

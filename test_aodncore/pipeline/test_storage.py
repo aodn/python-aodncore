@@ -303,8 +303,8 @@ class TestLocalFileStorageBroker(BaseTestCase):
 
         self.assertTrue(netcdf_file.is_stored)
 
-    @mock.patch('aodncore.pipeline.storage.rm_f')
-    def test_delete_collection(self, mock_rm_f):
+    @mock.patch('aodncore.pipeline.storage.os.remove')
+    def test_delete_collection(self, mock_os_remove):
         collection = get_upload_collection(delete=True)
         netcdf_file, png_file, ico_file, unknown_file = collection
 
@@ -316,16 +316,16 @@ class TestLocalFileStorageBroker(BaseTestCase):
         ico_dest_path = os.path.join(file_storage_broker.prefix, ico_file.dest_path)
         unknown_dest_path = os.path.join(file_storage_broker.prefix, unknown_file.dest_path)
 
-        self.assertEqual(mock_rm_f.call_count, 4)
-        mock_rm_f.assert_any_call(netcdf_dest_path)
-        mock_rm_f.assert_any_call(png_dest_path)
-        mock_rm_f.assert_any_call(ico_dest_path)
-        mock_rm_f.assert_any_call(unknown_dest_path)
+        self.assertEqual(mock_os_remove.call_count, 4)
+        mock_os_remove.assert_any_call(netcdf_dest_path)
+        mock_os_remove.assert_any_call(png_dest_path)
+        mock_os_remove.assert_any_call(ico_dest_path)
+        mock_os_remove.assert_any_call(unknown_dest_path)
 
         self.assertTrue(all(p.is_stored for p in collection))
 
-    @mock.patch('aodncore.pipeline.storage.rm_f')
-    def test_delete_file(self, mock_rm_f):
+    @mock.patch('aodncore.pipeline.storage.os.remove')
+    def test_delete_file(self, mock_os_remove):
         collection = get_upload_collection(delete=True)
         netcdf_file, _, _, _ = collection
 
@@ -334,8 +334,8 @@ class TestLocalFileStorageBroker(BaseTestCase):
 
         netcdf_dest_path = os.path.join(file_storage_broker.prefix, netcdf_file.dest_path)
 
-        self.assertEqual(1, mock_rm_f.call_count)
-        mock_rm_f.assert_any_call(netcdf_dest_path)
+        self.assertEqual(1, mock_os_remove.call_count)
+        mock_os_remove.assert_any_call(netcdf_dest_path)
 
         self.assertTrue(netcdf_file.is_stored)
 
