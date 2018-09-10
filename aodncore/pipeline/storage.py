@@ -1,7 +1,6 @@
 import abc
 import errno
 import os
-import re
 from datetime import datetime
 
 import boto3
@@ -30,8 +29,7 @@ __all__ = [
     'validate_storage_broker'
 ]
 
-_disallowed_delete_regexes = {'', '.*', '.+'}
-DISALLOWED_DELETE_REGEXES = _disallowed_delete_regexes.union({re.compile(r) for r in _disallowed_delete_regexes})
+DISALLOWED_DELETE_REGEXES = {'', '.*', '.+'}
 
 
 def get_storage_broker(store_url):
@@ -157,9 +155,10 @@ class BaseStorageBroker(object):
         """
         delete_regexes = ensure_regex_list(regexes)
 
-        if set(delete_regexes).intersection(DISALLOWED_DELETE_REGEXES) and not allow_match_all:
+        delete_regex_strings = {r.pattern for r in delete_regexes}
+        if delete_regex_strings.intersection(DISALLOWED_DELETE_REGEXES) and not allow_match_all:
             raise ValueError("regexes '{disallowed}' disallowed unless allow_match_all=True".format(
-                disallowed=list(_disallowed_delete_regexes)))
+                disallowed=list(DISALLOWED_DELETE_REGEXES)))
 
         files_to_delete = PipelineFileCollection()
         if not delete_regexes:
