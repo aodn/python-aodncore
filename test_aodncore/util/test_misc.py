@@ -87,7 +87,7 @@ class TestWriteOnceOrderedDict(BaseTestCase):
 
 
 class TestUtilMisc(BaseTestCase):
-    def test_ensure_pattern(self):
+    def test_ensure_regex(self):
         ensured_pattern = ensure_regex(VALID_PATTERN)
         self.assertIsInstance(ensured_pattern, Pattern)
 
@@ -100,7 +100,7 @@ class TestUtilMisc(BaseTestCase):
         with self.assertRaises(TypeError):
             _ = ensure_regex(1)
 
-    def test_ensure_pattern_list(self):
+    def test_ensure_regex_list(self):
         ensured_pattern_list = ensure_regex_list([VALID_PATTERN])
         self.assertIsInstance(ensured_pattern_list, list)
         self.assertTrue(all(isinstance(p, Pattern) for p in ensured_pattern_list))
@@ -111,11 +111,14 @@ class TestUtilMisc(BaseTestCase):
         with self.assertRaises(ValueError):
             _ = ensure_regex_list([INVALID_PATTERN])
 
-        with self.assertRaises(TypeError):  # not a Sequence
+        with self.assertRaises(TypeError):
             _ = ensure_regex_list(1)
 
         list_from_none = ensure_regex_list(None)
         self.assertListEqual(list_from_none, [])
+
+        list_from_empty_list = ensure_regex_list([])
+        self.assertListEqual(list_from_empty_list, [])
 
         list_from_pattern = ensure_regex_list(VALID_PATTERN)
         self.assertIsInstance(list_from_pattern, list)
@@ -320,7 +323,7 @@ class TestUtilMisc(BaseTestCase):
 
     def test_matches_regexes(self):
         # Testing inclusion from list of regexes
-        self.assertTrue(matches_regexes('example-filename.nc', ['.*\.nc']))
+        self.assertTrue(matches_regexes('example-filename.nc', [VALID_PATTERN]))
 
         # Testing inclusion from string regex
         self.assertTrue(matches_regexes('example-filename.nc', 'example-.*\.nc'))
@@ -335,7 +338,15 @@ class TestUtilMisc(BaseTestCase):
         with self.assertRaises(TypeError):
             matches_regexes('example-filename.nc', 1)
         with self.assertRaises(TypeError):
-            matches_regexes('example-filename.nc', [], 1)
+            matches_regexes('example-filename.nc', '.*\.zip', 1)
+        with self.assertRaises(ValueError):
+            matches_regexes('example-filename.nc', INVALID_PATTERN)
+
+        # Empty string is a valid regex which matches everything
+        self.assertTrue(matches_regexes('example-filename.nc', ''))
+
+        self.assertFalse(matches_regexes('example-filename.nc', None))
+        self.assertFalse(matches_regexes('example-filename.nc', []))
 
     def test_merge_dicts(self):
         reference_dict = {
