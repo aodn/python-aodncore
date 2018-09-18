@@ -15,8 +15,8 @@ except ImportError:
 
 from .exceptions import AttributeNotSetError, InvalidStoreUrlError, StorageBrokerError
 from .files import ensure_pipelinefilecollection, PipelineFile, PipelineFileCollection
-from ..util import (ensure_regex_list, format_exception, matches_regexes, mkdir_p, retry_decorator, safe_copy_file,
-                    validate_relative_path, validate_type)
+from ..util import (ensure_regex_list, format_exception, matches_regexes, mkdir_p, retry_decorator, rm_f,
+                    safe_copy_file, validate_relative_path, validate_type)
 
 __all__ = [
     'get_storage_broker',
@@ -202,7 +202,7 @@ class LocalFileStorageBroker(BaseStorageBroker):
 
     def _delete_file(self, pipeline_file, dest_path_attr):
         abs_path = self._get_absolute_dest_path(pipeline_file=pipeline_file, dest_path_attr=dest_path_attr)
-        os.remove(abs_path)
+        rm_f(abs_path)
 
     def _get_is_overwrite(self, pipeline_file, abs_path):
         return os.path.exists(abs_path)
