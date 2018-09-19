@@ -18,10 +18,13 @@ collection may then be processed in a generic way.
 """
 
 from __future__ import absolute_import
+
 import abc
 import os
 import re
+from io import open
 
+import six
 from enum import Enum
 
 from .basestep import BaseStepRunner
@@ -29,7 +32,6 @@ from ..common import FileType
 from ..exceptions import InvalidFileFormatError
 from ..files import PipelineFile, PipelineFileCollection
 from ...util import extract_gzip, extract_zip, list_regular_files, is_gzipfile, is_zipfile, safe_copy_file
-import six
 
 __all__ = [
     'get_resolve_runner',

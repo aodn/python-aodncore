@@ -2,6 +2,7 @@
 """
 
 from __future__ import absolute_import
+
 import errno
 import gzip
 import hashlib
@@ -11,6 +12,7 @@ import shutil
 import tempfile
 import zipfile
 from functools import cmp_to_key, partial
+from io import open
 from tempfile import TemporaryFile
 
 import netCDF4
@@ -100,7 +102,7 @@ def extract_gzip(gzip_path, dest_dir, dest_name=None):
 
     dest_path = os.path.join(dest_dir, dest_name)
     with open(dest_path, 'wb') as f, gzip.open(gzip_path) as g:
-            shutil.copyfileobj(g, f)
+        shutil.copyfileobj(g, f)
 
 
 def extract_zip(zip_path, dest_dir):

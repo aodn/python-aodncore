@@ -1,5 +1,6 @@
 from __future__ import absolute_import
 from setuptools import setup, find_packages
+from io import open
 
 ENTRY_POINTS = {
     'pipeline.module_versions': [
