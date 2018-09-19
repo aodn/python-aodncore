@@ -3,6 +3,8 @@ import os
 import smtplib
 import socket
 
+import six
+
 from aodncore.pipeline import NotificationRecipientType, PipelineFile, PipelineFileCollection
 from aodncore.pipeline.steps.notify import (get_child_notify_runner, BaseNotifyRunner, EmailNotifyRunner,
                                             LogFailuresNotifyRunner, NotifyList, NotificationRecipient, SnsNotifyRunner)
@@ -64,7 +66,7 @@ class TestBaseNotifyRunner(BaseTestCase):
         expected_keys = ['html_collection_table', 'html_input_file_table', 'text_collection_table',
                          'text_input_file_table']
 
-        self.assertItemsEqual(expected_keys, list(file_tables.keys()))
+        six.assertCountEqual(self, expected_keys, list(file_tables.keys()))
 
 
 class TestEmailNotifyRunner(BaseTestCase):

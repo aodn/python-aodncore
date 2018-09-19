@@ -159,7 +159,7 @@ def is_function(o):
     :param o: object to check
     :return: True if object is a function, otherwise False
     """
-    return isinstance(o, types.FunctionType)
+    return isinstance(o, (types.FunctionType, types.MethodType))
 
 
 def is_nonstring_iterable(sequence):

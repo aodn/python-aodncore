@@ -25,7 +25,7 @@ GOOD_NC = os.path.join(TEST_ROOT, 'good.nc')
 
 class TestUtilFileOps(BaseTestCase):
     def test_extract_gzip(self):
-        temp_file_content = str(uuid.uuid4())
+        temp_file_content = str(uuid.uuid4()).encode('utf-8')
 
         temp_gz_dir = mkdtemp(prefix=self.__class__.__name__, dir=self.temp_dir)
         _, temp_gz_file = mkstemp(suffix='.gz', prefix=self.__class__.__name__, dir=self.temp_dir)
@@ -67,7 +67,7 @@ class TestUtilFileOps(BaseTestCase):
         self.assertFalse(is_netcdffile(temp_other_file))
 
     def test_isgzipfile(self):
-        temp_file_content = str(uuid.uuid4())
+        temp_file_content = str(uuid.uuid4()).encode('utf-8')
 
         _, temp_gz_file = mkstemp(suffix='.zip', prefix=self.__class__.__name__, dir=self.temp_dir)
         _, temp_other_file = mkstemp(suffix='.txt', prefix=self.__class__.__name__, dir=self.temp_dir)

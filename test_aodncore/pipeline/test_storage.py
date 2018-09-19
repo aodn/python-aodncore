@@ -1,4 +1,5 @@
 from __future__ import absolute_import
+
 import datetime
 import errno
 import os
@@ -8,6 +9,7 @@ from httplib import IncompleteRead
 from ssl import SSLError
 from uuid import uuid4
 
+import six
 from botocore.exceptions import ClientError
 from dateutil.tz import tzutc
 
@@ -188,8 +190,8 @@ class TestPipelineStorage(BaseTestCase):
         sftpclient = mock.MagicMock()
         path = get_nonexistent_path()
 
-        mock_sftp_makedirs.side_effect = EnvironmentError()
-        with self.assertRaises(EnvironmentError):
+        mock_sftp_makedirs.side_effect = RuntimeError()
+        with self.assertRaises(RuntimeError):
             sftp_mkdir_p(sftpclient, path)
 
     def test_validate_storage_broker(self):
@@ -349,7 +351,7 @@ class TestLocalFileStorageBroker(BaseTestCase):
             self.test_broker.delete_regexes([re.compile(r'.*')])
 
         all_files = self.test_broker.query()
-        self.assertItemsEqual(list(all_files.keys()), [
+        six.assertCountEqual(self, list(all_files.keys()), [
             'subdirectory/targetfile.unknown_file_extension',
             'subdirectory/targetfile.nc',
             'dummy.input_file.40c4ec0d-c9db-498d-84f9-01011330086e',
@@ -360,7 +362,7 @@ class TestLocalFileStorageBroker(BaseTestCase):
         self.test_broker.delete_regexes([r'^subdirectory/targetfile\.(ico|nc)$'])
 
         remaining_files = self.test_broker.query()
-        self.assertItemsEqual(list(remaining_files.keys()), [
+        six.assertCountEqual(self, list(remaining_files.keys()), [
             'subdirectory/targetfile.unknown_file_extension',
             'dummy.input_file.40c4ec0d-c9db-498d-84f9-01011330086e',
             'subdirectory/targetfile.png'
@@ -368,7 +370,7 @@ class TestLocalFileStorageBroker(BaseTestCase):
 
     def test_delete_regexes_with_allow_match_all(self):
         all_files = self.test_broker.query()
-        self.assertItemsEqual(list(all_files.keys()), [
+        six.assertCountEqual(self, list(all_files.keys()), [
             'subdirectory/targetfile.unknown_file_extension',
             'subdirectory/targetfile.nc',
             'dummy.input_file.40c4ec0d-c9db-498d-84f9-01011330086e',
@@ -379,7 +381,7 @@ class TestLocalFileStorageBroker(BaseTestCase):
         self.test_broker.delete_regexes([r'.*'], allow_match_all=True)
 
         remaining_files = self.test_broker.query()
-        self.assertItemsEqual(list(remaining_files.keys()), [])
+        six.assertCountEqual(self, list(remaining_files.keys()), [])
 
     def test_directory_query(self):
         with TemporaryDirectory() as d:
@@ -392,11 +394,11 @@ class TestLocalFileStorageBroker(BaseTestCase):
             file_storage_broker = LocalFileStorageBroker(d)
             result = file_storage_broker.query('subdir/')
 
-        self.assertItemsEqual(list(result.keys()), [
-            os.path.relpath(temp_file1, d),
-            os.path.relpath(temp_file2, d),
-            os.path.relpath(temp_file3, d)
-        ])
+            six.assertCountEqual(self, list(result.keys()), [
+                os.path.relpath(temp_file1, d),
+                os.path.relpath(temp_file2, d),
+                os.path.relpath(temp_file3, d)
+            ])
         self.assertTrue(all(isinstance(v['last_modified'], datetime.datetime) for k, v in result.items()))
         self.assertTrue(all(isinstance(v['size'], int) for k, v in result.items()))
 
@@ -412,7 +414,7 @@ class TestLocalFileStorageBroker(BaseTestCase):
             file_storage_broker = LocalFileStorageBroker(d)
             result = file_storage_broker.query('subdir/qwerty')
 
-        self.assertItemsEqual(list(result.keys()), [
+        six.assertCountEqual(self, list(result.keys()), [
             os.path.relpath(temp_file1, d),
             os.path.relpath(temp_file2, d)
         ])
@@ -432,19 +434,17 @@ class TestLocalFileStorageBroker(BaseTestCase):
 
         self.assertDictEqual(result, {})
 
-    @mock.patch('aodncore.pipeline.storage.os.stat')
-    def test_query_error(self, mock_stat):
-        dummy_error = IOError()
-        mock_stat.side_effect = dummy_error
-
+    def test_query_error(self):
         with TemporaryDirectory() as d:
             subdir = os.path.join(d, 'subdir')
             os.mkdir(subdir)
             _, temp_file1 = tempfile.mkstemp(suffix='.txt', prefix='qwerty', dir=subdir)
 
             file_storage_broker = LocalFileStorageBroker(d)
-            with self.assertRaises(StorageBrokerError):
-                _ = file_storage_broker.query('subdir/qwerty')
+
+            with mock.patch.object(file_storage_broker, '_run_query', side_effect=RuntimeError()):
+                with self.assertRaises(StorageBrokerError):
+                    _ = file_storage_broker.query('subdir/qwerty')
 
 
 class TestS3StorageBroker(BaseTestCase):
@@ -657,8 +657,9 @@ class TestS3StorageBroker(BaseTestCase):
         s3_storage_broker = S3StorageBroker('imos-data', '')
         result = s3_storage_broker.query('Department_of_Defence/DSTG/slocum_glider/PerthCanyonA20140213/')
 
-        self.assertItemsEqual(list(result.keys()),
-                              [l['Key'] for l in mock_boto3.client().list_objects_v2.return_value['Contents']])
+        six.assertCountEqual(self, list(result.keys()),
+                             [l['Key'] for l in mock_boto3.client().list_objects_v2.return_value['Contents']])
+
         self.assertTrue(all(isinstance(v['last_modified'], datetime.datetime) for k, v in result.items()))
         self.assertTrue(all(isinstance(v['size'], int) for k, v in result.items()))
 
@@ -699,8 +700,8 @@ class TestS3StorageBroker(BaseTestCase):
         s3_storage_broker = S3StorageBroker('imos-data', '')
         result = s3_storage_broker.query('Department_of_Defence/DSTG/slocum_glider/Perth')
 
-        self.assertItemsEqual(list(result.keys()),
-                              [l['Key'] for l in mock_boto3.client().list_objects_v2.return_value['Contents']])
+        six.assertCountEqual(self, list(result.keys()),
+                             [l['Key'] for l in mock_boto3.client().list_objects_v2.return_value['Contents']])
         self.assertTrue(all(isinstance(v['last_modified'], datetime.datetime) for k, v in result.items()))
         self.assertTrue(all(isinstance(v['size'], int) for k, v in result.items()))
 

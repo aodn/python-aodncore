@@ -3,6 +3,8 @@ import logging
 import os
 import stat
 
+import six
+
 from aodncore.pipeline import PipelineFile, PipelineFileCollection
 from aodncore.pipeline.log import get_pipeline_logger
 from aodncore.pipeline.watch import (delete_same_name_from_error_store_callback,
@@ -55,20 +57,20 @@ class TestPipelineWatch(BaseTestCase):
         actual_error_files_before_cleanup = list(self.state_manager.error_broker.query().keys())
         expected_error_files_before_cleanup = ['dummy.input_file.40c4ec0d-c9db-498d-84f9-01011330086e', 'good.nc',
                                                'test.unknown_file_extension', 'test.ico', 'invalid.png']
-        self.assertItemsEqual(expected_error_files_before_cleanup, actual_error_files_before_cleanup)
+        six.assertCountEqual(self, expected_error_files_before_cleanup, actual_error_files_before_cleanup)
 
         callback_log = delete_same_name_from_error_store_callback(self.state_manager.handler,
                                                                   self.state_manager)
 
         actual_error_files_after_cleanup = list(self.state_manager.error_broker.query().keys())
         expected_error_files_after_cleanup = ['good.nc', 'test.unknown_file_extension', 'test.ico', 'invalid.png']
-        self.assertItemsEqual(expected_error_files_after_cleanup, actual_error_files_after_cleanup)
+        six.assertCountEqual(self, expected_error_files_after_cleanup, actual_error_files_after_cleanup)
 
     def test_delete_custom_regexes_from_error_store_callback(self):
         actual_error_files_before_cleanup = list(self.state_manager.error_broker.query().keys())
         expected_error_files_before_cleanup = ['dummy.input_file.40c4ec0d-c9db-498d-84f9-01011330086e', 'good.nc',
                                                'test.unknown_file_extension', 'test.ico', 'invalid.png']
-        self.assertItemsEqual(expected_error_files_before_cleanup, actual_error_files_before_cleanup)
+        six.assertCountEqual(self, expected_error_files_before_cleanup, actual_error_files_before_cleanup)
 
         callback_log = delete_custom_regexes_from_error_store_callback(self.state_manager.handler,
                                                                        self.state_manager)
@@ -76,7 +78,7 @@ class TestPipelineWatch(BaseTestCase):
         actual_error_files_after_cleanup = list(self.state_manager.error_broker.query().keys())
         expected_error_files_after_cleanup = ['dummy.input_file.40c4ec0d-c9db-498d-84f9-01011330086e', 'good.nc',
                                               'invalid.png']
-        self.assertItemsEqual(expected_error_files_after_cleanup, actual_error_files_after_cleanup)
+        six.assertCountEqual(self, expected_error_files_after_cleanup, actual_error_files_after_cleanup)
 
 
 class TestCeleryConfig(BaseTestCase):
@@ -104,7 +106,7 @@ class TestExitPolicy(BaseTestCase):
         names = ['DELETE_SAME_NAME_FROM_ERROR_STORE', 'NO_ACTION']
         policies = ExitPolicy.from_names(names)
         expected_policies = [ExitPolicy.DELETE_SAME_NAME_FROM_ERROR_STORE, ExitPolicy.NO_ACTION]
-        self.assertItemsEqual(expected_policies, policies)
+        six.assertCountEqual(self, expected_policies, policies)
 
     def test_callbacks(self):
         callbacks = [e.callback for e in ExitPolicy]
@@ -183,14 +185,14 @@ class TestIncomingFileStateManager(BaseTestCase):
 
         actual_error_files_before_cleanup = list(self.state_manager.error_broker.query().keys())
         expected_error_files_before_cleanup = ['good.nc', 'test.unknown_file_extension', 'test.ico', 'invalid.png']
-        self.assertItemsEqual(expected_error_files_before_cleanup, actual_error_files_before_cleanup)
+        six.assertCountEqual(self, expected_error_files_before_cleanup, actual_error_files_before_cleanup)
 
         self.state_manager.success_exit_policies.append(ExitPolicy.DELETE_CUSTOM_REGEXES_FROM_ERROR_STORE)
         self.state_manager.move_to_success()
 
         actual_error_files_after_cleanup = list(self.state_manager.error_broker.query().keys())
         expected_error_files_after_cleanup = ['good.nc', 'invalid.png']
-        self.assertItemsEqual(expected_error_files_after_cleanup, actual_error_files_after_cleanup)
+        six.assertCountEqual(self, expected_error_files_after_cleanup, actual_error_files_after_cleanup)
 
 
 class TestIncomingFileEventHandler(BaseTestCase):

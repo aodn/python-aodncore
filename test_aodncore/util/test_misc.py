@@ -173,8 +173,8 @@ class TestUtilMisc(BaseTestCase):
         self.assertTrue(is_function(dummy_func))
         self.assertTrue(is_function(lambda p: p))
         self.assertTrue(is_function(DummyClass.dummy_staticmethod))
+        self.assertTrue(is_function(DummyClass.dummy_method))
         self.assertFalse(is_function(DummyClass))
-        self.assertFalse(is_function(DummyClass.dummy_method))
         self.assertFalse(is_function(1))
         self.assertFalse(is_function({1: 1}))
         self.assertFalse(is_function({1}))
@@ -305,11 +305,11 @@ class TestUtilMisc(BaseTestCase):
 
     def test_format_exception(self):
         try:
-            raise EnvironmentError('dummy exception for format test')
-        except EnvironmentError as e:
+            raise OSError('dummy exception for format test')
+        except OSError as e:
             formatted = format_exception(e)
 
-        self.assertEqual(formatted, 'EnvironmentError: dummy exception for format test')
+        self.assertEqual(formatted, 'OSError: dummy exception for format test')
 
     def test_is_nonstring_iterable(self):
         self.assertTrue(is_nonstring_iterable(('foo', 'bar')))

@@ -140,7 +140,7 @@ def is_dir_writable(path):
     """
     try:
         with TemporaryFile(prefix='is_dir_writable', suffix='.tmp', dir=path) as t:
-            t.write('is_dir_writable')
+            t.write('is_dir_writable'.encode('utf-8'))
     except IOError as e:
         if e.errno == errno.EACCES:
             return False
