@@ -7,6 +7,7 @@ the inputs expected by the AODN Talend wrapper scripts, but is written generical
 harvesting processes.
 """
 
+from __future__ import absolute_import
 import abc
 import itertools
 import os
@@ -19,6 +20,7 @@ from ..exceptions import InvalidHarvesterError, UnmappedFilesError
 from ..files import PipelineFileCollection, validate_pipelinefilecollection
 from ...util import (LoggingContext, SystemProcess, TemporaryDirectory, merge_dicts, mkdir_p, validate_string,
                      validate_type)
+import six
 
 __all__ = [
     'create_input_file_list',
@@ -67,7 +69,7 @@ class HarvesterMap(object):
 
         :return: list of all :py:class:`TriggerEvent` instances from all harvesters
         """
-        return itertools.chain.from_iterable(self._map.values())
+        return itertools.chain.from_iterable(list(self._map.values()))
 
     @property
     def all_pipeline_files(self):
@@ -183,11 +185,9 @@ def validate_harvester_mapping(pipeline_files, harvester_map):
             "no matching harvester(s) found for: {unmapped_files}".format(unmapped_files=unmapped_files))
 
 
-class BaseHarvesterRunner(BaseStepRunner):
+class BaseHarvesterRunner(six.with_metaclass(abc.ABCMeta, BaseStepRunner)):
     """Base class for HarvesterRunner classes
     """
-
-    __metaclass__ = abc.ABCMeta
 
     @abc.abstractmethod
     def run(self, pipeline_files):

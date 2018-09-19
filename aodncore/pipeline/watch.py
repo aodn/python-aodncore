@@ -15,6 +15,7 @@ This is typically run as an operating system service by something like superviso
 for debugging.
 """
 
+from __future__ import absolute_import
 import logging.config
 import os
 import re

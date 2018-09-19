@@ -1,6 +1,7 @@
 """This module provides general purpose code for interacting with operating system subprocesses
 """
 
+from __future__ import absolute_import
 import os
 import subprocess
 

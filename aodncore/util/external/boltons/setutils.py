@@ -12,6 +12,7 @@ characteristics of Python's built-in set implementation.
 
 from __future__ import print_function
 
+from __future__ import absolute_import
 from bisect import bisect_left
 from itertools import chain, islice
 from collections import MutableSet

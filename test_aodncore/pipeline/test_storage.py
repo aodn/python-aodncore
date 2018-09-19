@@ -1,3 +1,4 @@
+from __future__ import absolute_import
 import datetime
 import errno
 import os
@@ -348,7 +349,7 @@ class TestLocalFileStorageBroker(BaseTestCase):
             self.test_broker.delete_regexes([re.compile(r'.*')])
 
         all_files = self.test_broker.query()
-        self.assertItemsEqual(all_files.keys(), [
+        self.assertItemsEqual(list(all_files.keys()), [
             'subdirectory/targetfile.unknown_file_extension',
             'subdirectory/targetfile.nc',
             'dummy.input_file.40c4ec0d-c9db-498d-84f9-01011330086e',
@@ -359,7 +360,7 @@ class TestLocalFileStorageBroker(BaseTestCase):
         self.test_broker.delete_regexes([r'^subdirectory/targetfile\.(ico|nc)$'])
 
         remaining_files = self.test_broker.query()
-        self.assertItemsEqual(remaining_files.keys(), [
+        self.assertItemsEqual(list(remaining_files.keys()), [
             'subdirectory/targetfile.unknown_file_extension',
             'dummy.input_file.40c4ec0d-c9db-498d-84f9-01011330086e',
             'subdirectory/targetfile.png'
@@ -367,7 +368,7 @@ class TestLocalFileStorageBroker(BaseTestCase):
 
     def test_delete_regexes_with_allow_match_all(self):
         all_files = self.test_broker.query()
-        self.assertItemsEqual(all_files.keys(), [
+        self.assertItemsEqual(list(all_files.keys()), [
             'subdirectory/targetfile.unknown_file_extension',
             'subdirectory/targetfile.nc',
             'dummy.input_file.40c4ec0d-c9db-498d-84f9-01011330086e',
@@ -378,7 +379,7 @@ class TestLocalFileStorageBroker(BaseTestCase):
         self.test_broker.delete_regexes([r'.*'], allow_match_all=True)
 
         remaining_files = self.test_broker.query()
-        self.assertItemsEqual(remaining_files.keys(), [])
+        self.assertItemsEqual(list(remaining_files.keys()), [])
 
     def test_directory_query(self):
         with TemporaryDirectory() as d:
@@ -391,7 +392,7 @@ class TestLocalFileStorageBroker(BaseTestCase):
             file_storage_broker = LocalFileStorageBroker(d)
             result = file_storage_broker.query('subdir/')
 
-        self.assertItemsEqual(result.keys(), [
+        self.assertItemsEqual(list(result.keys()), [
             os.path.relpath(temp_file1, d),
             os.path.relpath(temp_file2, d),
             os.path.relpath(temp_file3, d)
@@ -411,7 +412,7 @@ class TestLocalFileStorageBroker(BaseTestCase):
             file_storage_broker = LocalFileStorageBroker(d)
             result = file_storage_broker.query('subdir/qwerty')
 
-        self.assertItemsEqual(result.keys(), [
+        self.assertItemsEqual(list(result.keys()), [
             os.path.relpath(temp_file1, d),
             os.path.relpath(temp_file2, d)
         ])
@@ -656,7 +657,7 @@ class TestS3StorageBroker(BaseTestCase):
         s3_storage_broker = S3StorageBroker('imos-data', '')
         result = s3_storage_broker.query('Department_of_Defence/DSTG/slocum_glider/PerthCanyonA20140213/')
 
-        self.assertItemsEqual(result.keys(),
+        self.assertItemsEqual(list(result.keys()),
                               [l['Key'] for l in mock_boto3.client().list_objects_v2.return_value['Contents']])
         self.assertTrue(all(isinstance(v['last_modified'], datetime.datetime) for k, v in result.items()))
         self.assertTrue(all(isinstance(v['size'], int) for k, v in result.items()))
@@ -698,7 +699,7 @@ class TestS3StorageBroker(BaseTestCase):
         s3_storage_broker = S3StorageBroker('imos-data', '')
         result = s3_storage_broker.query('Department_of_Defence/DSTG/slocum_glider/Perth')
 
-        self.assertItemsEqual(result.keys(),
+        self.assertItemsEqual(list(result.keys()),
                               [l['Key'] for l in mock_boto3.client().list_objects_v2.return_value['Contents']])
         self.assertTrue(all(isinstance(v['last_modified'], datetime.datetime) for k, v in result.items()))
         self.assertTrue(all(isinstance(v['size'], int) for k, v in result.items()))

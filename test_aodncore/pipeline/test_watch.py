@@ -1,3 +1,4 @@
+from __future__ import absolute_import
 import logging
 import os
 import stat
@@ -51,7 +52,7 @@ class TestPipelineWatch(BaseTestCase):
         self.assertEqual(actual_name, expected_name)
 
     def test_delete_same_name_from_error_store_callback(self):
-        actual_error_files_before_cleanup = self.state_manager.error_broker.query().keys()
+        actual_error_files_before_cleanup = list(self.state_manager.error_broker.query().keys())
         expected_error_files_before_cleanup = ['dummy.input_file.40c4ec0d-c9db-498d-84f9-01011330086e', 'good.nc',
                                                'test.unknown_file_extension', 'test.ico', 'invalid.png']
         self.assertItemsEqual(expected_error_files_before_cleanup, actual_error_files_before_cleanup)
@@ -59,12 +60,12 @@ class TestPipelineWatch(BaseTestCase):
         callback_log = delete_same_name_from_error_store_callback(self.state_manager.handler,
                                                                   self.state_manager)
 
-        actual_error_files_after_cleanup = self.state_manager.error_broker.query().keys()
+        actual_error_files_after_cleanup = list(self.state_manager.error_broker.query().keys())
         expected_error_files_after_cleanup = ['good.nc', 'test.unknown_file_extension', 'test.ico', 'invalid.png']
         self.assertItemsEqual(expected_error_files_after_cleanup, actual_error_files_after_cleanup)
 
     def test_delete_custom_regexes_from_error_store_callback(self):
-        actual_error_files_before_cleanup = self.state_manager.error_broker.query().keys()
+        actual_error_files_before_cleanup = list(self.state_manager.error_broker.query().keys())
         expected_error_files_before_cleanup = ['dummy.input_file.40c4ec0d-c9db-498d-84f9-01011330086e', 'good.nc',
                                                'test.unknown_file_extension', 'test.ico', 'invalid.png']
         self.assertItemsEqual(expected_error_files_before_cleanup, actual_error_files_before_cleanup)
@@ -72,7 +73,7 @@ class TestPipelineWatch(BaseTestCase):
         callback_log = delete_custom_regexes_from_error_store_callback(self.state_manager.handler,
                                                                        self.state_manager)
 
-        actual_error_files_after_cleanup = self.state_manager.error_broker.query().keys()
+        actual_error_files_after_cleanup = list(self.state_manager.error_broker.query().keys())
         expected_error_files_after_cleanup = ['dummy.input_file.40c4ec0d-c9db-498d-84f9-01011330086e', 'good.nc',
                                               'invalid.png']
         self.assertItemsEqual(expected_error_files_after_cleanup, actual_error_files_after_cleanup)
@@ -180,14 +181,14 @@ class TestIncomingFileStateManager(BaseTestCase):
 
         self.state_manager.move_to_processing()
 
-        actual_error_files_before_cleanup = self.state_manager.error_broker.query().keys()
+        actual_error_files_before_cleanup = list(self.state_manager.error_broker.query().keys())
         expected_error_files_before_cleanup = ['good.nc', 'test.unknown_file_extension', 'test.ico', 'invalid.png']
         self.assertItemsEqual(expected_error_files_before_cleanup, actual_error_files_before_cleanup)
 
         self.state_manager.success_exit_policies.append(ExitPolicy.DELETE_CUSTOM_REGEXES_FROM_ERROR_STORE)
         self.state_manager.move_to_success()
 
-        actual_error_files_after_cleanup = self.state_manager.error_broker.query().keys()
+        actual_error_files_after_cleanup = list(self.state_manager.error_broker.query().keys())
         expected_error_files_after_cleanup = ['good.nc', 'invalid.png']
         self.assertItemsEqual(expected_error_files_after_cleanup, actual_error_files_after_cleanup)
 

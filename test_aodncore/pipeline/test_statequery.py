@@ -1,3 +1,4 @@
+from __future__ import absolute_import
 import httpretty
 
 from aodncore.pipeline.statequery import StateQuery

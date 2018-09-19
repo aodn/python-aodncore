@@ -2,6 +2,7 @@
 configured :py:class:`LoggerAdapter`/:py:class:`Logger` instances
 """
 
+from __future__ import absolute_import
 import logging
 import os
 

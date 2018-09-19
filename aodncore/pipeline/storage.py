@@ -1,3 +1,4 @@
+from __future__ import absolute_import
 import abc
 import errno
 import os
@@ -9,6 +10,7 @@ import boto3
 from botocore.exceptions import ClientError, ConnectionError
 from paramiko import SSHClient, AutoAddPolicy
 from six.moves.urllib.parse import urlparse
+import six
 
 try:
     from os import walk
@@ -55,9 +57,7 @@ def get_storage_broker(store_url):
         raise InvalidStoreUrlError("invalid URL scheme '{url.scheme}'".format(url=url))
 
 
-class BaseStorageBroker(object):
-    __metaclass__ = abc.ABCMeta
-
+class BaseStorageBroker(six.with_metaclass(abc.ABCMeta, object)):
     def __init__(self):
         self.prefix = None
         self.mode = None

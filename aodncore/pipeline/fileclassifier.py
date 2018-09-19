@@ -21,6 +21,7 @@ Expected use::
 
 """
 
+from __future__ import absolute_import
 import os
 import re
 
@@ -29,6 +30,7 @@ from datetime import datetime
 from netCDF4 import Dataset
 
 from .exceptions import InvalidFileFormatError, InvalidFileNameError, InvalidFileContentError
+from six.moves import range
 
 
 class FileClassifier(object):
@@ -129,7 +131,7 @@ class FileClassifier(object):
     def _get_variable_names(cls, input_file):
         """Return a list of the variable names in the file."""
         dataset = cls._open_nc_file(input_file)
-        names = dataset.variables.keys()
+        names = list(dataset.variables.keys())
         dataset.close()
         return names
 

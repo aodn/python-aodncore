@@ -7,6 +7,7 @@ testing whether the file conforms to some arbitrary criteria.
 The most common use of this step is to test for compliance using the IOOS Compliance Checker.
 """
 
+from __future__ import absolute_import
 import abc
 import itertools
 import os
@@ -18,6 +19,7 @@ from ..common import CheckResult, PipelineFileCheckType, validate_checktype
 from ..exceptions import ComplianceCheckFailedError, InvalidCheckSuiteError, InvalidCheckTypeError
 from ..files import PipelineFileCollection
 from ...util import format_exception, is_netcdffile, is_nonemptyfile, CaptureStdIO
+import six
 
 __all__ = [
     'get_check_runner',
@@ -54,7 +56,7 @@ def get_child_check_runner(check_type, config, logger, check_params=None):
         raise InvalidCheckTypeError("invalid check type '{check_type}'".format(check_type=check_type))
 
 
-class BaseCheckRunner(BaseStepRunner):
+class BaseCheckRunner(six.with_metaclass(abc.ABCMeta, BaseStepRunner)):
     """A CheckRunner is responsible for performing checks on a given collection of files.
     
     The 'run' method is supplied with a PipelineFileCollection object and performs arbitrary checks against the files, 
@@ -66,8 +68,6 @@ class BaseCheckRunner(BaseStepRunner):
     arbitrary information about why the file is considered non-compliant. Note: 'compliance_log' is a collection type in
     order to correlate it to 'lines in a log file', and typically should return an empty tuple if the file is compliant.
     """
-
-    __metaclass__ = abc.ABCMeta
 
     @abc.abstractmethod
     def run(self, pipeline_files):

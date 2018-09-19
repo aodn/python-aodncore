@@ -17,6 +17,7 @@ This means the rest of the handler code has no further need to be aware of the s
 collection may then be processed in a generic way.
 """
 
+from __future__ import absolute_import
 import abc
 import os
 import re
@@ -28,6 +29,7 @@ from ..common import FileType
 from ..exceptions import InvalidFileFormatError
 from ..files import PipelineFile, PipelineFileCollection
 from ...util import extract_gzip, extract_zip, list_regular_files, is_gzipfile, is_zipfile, safe_copy_file
+import six
 
 __all__ = [
     'get_resolve_runner',
@@ -69,9 +71,7 @@ def get_resolve_runner(input_file, output_dir, config, logger, resolve_params=No
         return SingleFileResolveRunner(input_file, output_dir, config, logger)
 
 
-class BaseResolveRunner(BaseStepRunner):
-    __metaclass__ = abc.ABCMeta
-
+class BaseResolveRunner(six.with_metaclass(abc.ABCMeta, BaseStepRunner)):
     def __init__(self, input_file, output_dir, config, logger):
         super(BaseResolveRunner, self).__init__(config, logger)
         self.input_file = input_file

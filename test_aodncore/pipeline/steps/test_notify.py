@@ -1,3 +1,4 @@
+from __future__ import absolute_import
 import os
 import smtplib
 import socket
@@ -63,7 +64,7 @@ class TestBaseNotifyRunner(BaseTestCase):
         expected_keys = ['html_collection_table', 'html_input_file_table', 'text_collection_table',
                          'text_input_file_table']
 
-        self.assertItemsEqual(expected_keys, file_tables.keys())
+        self.assertItemsEqual(expected_keys, list(file_tables.keys()))
 
 
 class TestEmailNotifyRunner(BaseTestCase):
