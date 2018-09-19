@@ -13,6 +13,7 @@ characteristics of Python's built-in set implementation.
 from __future__ import print_function
 
 from __future__ import absolute_import
+from __future__ import division
 from bisect import bisect_left
 from itertools import chain, islice
 from collections import MutableSet
@@ -118,7 +119,7 @@ class IndexedSet(MutableSet):
             del ded[:]
         elif len(ded) > 384:
             self._compact()
-        elif self._dead_index_count > (len(items) / _COMPACTION_FACTOR):
+        elif self._dead_index_count > (len(items) // _COMPACTION_FACTOR):
             self._compact()
         elif items[-1] is _MISSING:  # get rid of dead right hand side
             num_dead = 1
