@@ -57,6 +57,7 @@ class BaseStorageBroker(object):
 
     def __init__(self):
         self.prefix = None
+        self.mode = None
 
     def __repr__(self):
         return "{name}(prefix='{prefix}')".format(name=self.__class__.__name__, prefix=self.prefix)
@@ -235,6 +236,8 @@ class LocalFileStorageBroker(BaseStorageBroker):
         abs_path = self._get_absolute_dest_path(pipeline_file=pipeline_file, dest_path_attr=dest_path_attr)
         mkdir_p(os.path.dirname(abs_path))
         safe_copy_file(pipeline_file.src_path, abs_path, overwrite=True)
+        if self.mode:
+            os.chmod(abs_path, self.mode)
 
 
 class S3StorageBroker(BaseStorageBroker):

@@ -1,5 +1,6 @@
 import logging
 import os
+import stat
 
 from aodncore.pipeline import PipelineFile, PipelineFileCollection
 from aodncore.pipeline.log import get_pipeline_logger
@@ -134,13 +135,18 @@ class TestIncomingFileStateManager(BaseTestCase):
         self.assertTrue(os.path.exists(self.state_manager.processing_path))
         error_result = self.state_manager.error_broker.query(self.state_manager.error_name)
         self.assertNotIn(self.state_manager.error_name, error_result)
+        self.assertEqual(stat.S_IMODE(os.stat(self.state_manager.processing_path).st_mode),
+                         self.state_manager.processing_mode)
 
         self.state_manager.move_to_error()
+
+        full_error_path = os.path.join(self.state_manager.error_broker.prefix, self.state_manager.error_name)
 
         self.assertFalse(os.path.exists(self.state_manager.input_file))
         self.assertFalse(os.path.exists(self.state_manager.processing_path))
         error_result = self.state_manager.error_broker.query(self.state_manager.error_name)
         self.assertIn(self.state_manager.error_name, error_result)
+        self.assertEqual(stat.S_IMODE(os.stat(full_error_path).st_mode), self.state_manager.error_mode)
 
     def test_success(self):
         self.assertTrue(os.path.exists(self.state_manager.input_file))
@@ -154,6 +160,8 @@ class TestIncomingFileStateManager(BaseTestCase):
         self.assertTrue(os.path.exists(self.state_manager.processing_path))
         error_result = self.state_manager.error_broker.query(self.state_manager.error_name)
         self.assertNotIn(self.state_manager.error_name, error_result)
+        self.assertEqual(stat.S_IMODE(os.stat(self.state_manager.processing_path).st_mode),
+                         self.state_manager.processing_mode)
 
         self.state_manager.move_to_success()
 

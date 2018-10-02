@@ -423,6 +423,7 @@ class IncomingFileStateManager(object):
     def error_broker(self):
         if self._error_broker is None:
             self._error_broker = get_storage_broker(self.error_uri)
+            self._error_broker.mode = self.error_mode
             self.logger.info("{name}.error_broker -> {broker}".format(name=self.__class__.__name__,
                                                                       broker=self._error_broker))
         return self._error_broker
