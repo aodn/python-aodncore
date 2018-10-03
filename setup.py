@@ -4,8 +4,7 @@ from aodncore.version import __version__
 
 ENTRY_POINTS = {
     'pipeline.module_versions': [
-        'compliance-checker = compliance_checker:__version__',
-        'cc-plugin-imos = cc_plugin_imos:__version__'
+        'compliance-checker = compliance_checker:__version__'
     ]
 }
 
@@ -18,7 +17,6 @@ EXTRAS_REQUIRE = {
 
 INSTALL_REQUIRES = [
     'boto3==1.4.4',
-    'cc-plugin-imos>=1.3.0',
     'celery==4.1.1',
     'compliance-checker==4.0.1',
     'Jinja2==2.9.6',

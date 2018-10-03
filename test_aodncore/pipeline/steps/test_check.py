@@ -77,8 +77,8 @@ class TestComplianceCheckerRunner(BaseTestCase):
         self.assertNotEqual(check_result.log, [])
 
     def test_multiple_check_suite(self):
-        collection = PipelineFileCollection([GOOD_NC])  # GOOD_NC complies with cf but NOT imos:1.4
-        self.cc_runner = ComplianceCheckerCheckRunner(None, self.test_logger, {'checks': ['cf', 'imos:1.4']})
+        collection = PipelineFileCollection([GOOD_NC])  # GOOD_NC complies with cf but NOT acdd:1.3
+        self.cc_runner = ComplianceCheckerCheckRunner(None, self.test_logger, {'checks': ['cf', 'acdd:1.3']})
         self.cc_runner.run(collection)
 
         check_result = collection[0].check_result
