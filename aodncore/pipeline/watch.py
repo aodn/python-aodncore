@@ -103,7 +103,8 @@ def delete_same_name_from_error_store_callback(handler, file_state_manager):
     :return: None
     """
     escaped_basename = re.escape(handler.file_basename)
-    cleanup_regexes = ensure_regex_list(r"^{basename}\.[0-9a-f\-]{{36}}$".format(basename=escaped_basename))
+    cleanup_regexes = ensure_regex_list(r"^{escaped_basename}\.[0-9a-f\-]{{36}}$".format(
+        escaped_basename=escaped_basename))
     deleted_files = file_state_manager.error_broker.delete_regexes(cleanup_regexes)
     log = "delete_same_name_from_error_store_callback deleted -> {}".format(deleted_files.get_attribute_list('name'))
     return log
@@ -193,13 +194,11 @@ def build_task(config, pipeline_name, handler_class, success_exit_policies, erro
                 self.logger = get_pipeline_logger(task_name, extra=logging_extra, logger_function=get_task_logger)
 
                 self.logger.sysinfo(
-                    "{name}.success_exit_policies -> {policies}".format(name=self.__class__.__name__,
-                                                                        policies=[p.name for p in
-                                                                                  success_exit_policies]))
+                    "{self.__class__.__name__}.success_exit_policies -> "
+                    "{policies}".format(self=self, policies=[p.name for p in success_exit_policies]))
                 self.logger.sysinfo(
-                    "{name}.error_exit_policies -> {policies}".format(name=self.__class__.__name__,
-                                                                      policies=[p.name for p in
-                                                                                error_exit_policies]))
+                    "{self.__class__.__name__}.error_exit_policies -> "
+                    "{policies}".format(self=self, policies=[p.name for p in error_exit_policies]))
 
                 file_state_manager = IncomingFileStateManager(input_file=incoming_file,
                                                               pipeline_name=pipeline_name,
@@ -272,7 +271,8 @@ class CeleryContext(object):
             except KeyError:
                 raise InvalidHandlerError(
                     "handler not found in discovered handlers. "
-                    "{name} not in {handlers}".format(name=items['handler'], handlers=available_handler_names))
+                    "{items['handler']} not in {available_handler_names}".format(items=items,
+                                                                                 available_handler_names=available_handler_names))
 
             params = items.get('params', {})
             success_exit_policies = ExitPolicy.from_names(items.get('success_exit_policies', []))
@@ -281,10 +281,8 @@ class CeleryContext(object):
             try:
                 _ = handler_class('', config=self._config, **params)
             except TypeError as e:
-                warnings.warn(
-                    "invalid parameters for pipeline '{pipeline}', handler '{name}': {e}".format(pipeline=pipeline_name,
-                                                                                                 name=items['handler'],
-                                                                                                 e=format_exception(e)))
+                warnings.warn("invalid parameters for pipeline '{pipeline}', handler '{items['handler']}': {e}".format(
+                    pipeline=pipeline_name, items=items, e=format_exception(e)))
             else:
                 task_object = build_task(self._config, pipeline_name, handler_class, success_exit_policies,
                                          error_exit_policies, params)
@@ -417,15 +415,14 @@ class IncomingFileStateManager(object):
 
     def _log_state(self):
         self.logger.sysinfo(
-            "{name}.state -> '{state}'".format(name=self.__class__.__name__, state=self.state))
+            "{self.__class__.__name__}.state -> '{self.state}'".format(self=self))
 
     @property
     def error_broker(self):
         if self._error_broker is None:
             self._error_broker = get_storage_broker(self.error_uri)
             self._error_broker.mode = self.error_mode
-            self.logger.info("{name}.error_broker -> {broker}".format(name=self.__class__.__name__,
-                                                                      broker=self._error_broker))
+            self.logger.info("{self.__class__.__name__}.error_broker -> {self._error_broker}".format(self=self))
         return self._error_broker
 
     @property
@@ -474,14 +471,13 @@ class IncomingFileStateManager(object):
             raise
 
     def _move_to_processing(self):
-        self.logger.info("{name}.move_to_processing -> '{path}'".format(name=self.__class__.__name__,
-                                                                        path=self.processing_path))
+        self.logger.info("{self.__class__.__name__}.move_to_processing -> '{self.processing_path}'".format(self=self))
         safe_move_file(self.input_file, self.processing_path)
         os.chmod(self.processing_path, self.processing_mode)
 
     def _move_to_error(self):
         full_error_path = os.path.join(self.error_broker.prefix, self.error_name)
-        self.logger.info("{name}.move_to_error -> '{path}'".format(name=self.__class__.__name__, path=full_error_path))
+        self.logger.info("{self.__class__.__name__}.move_to_error -> '{path}'".format(self=self, path=full_error_path))
         error_file = PipelineFile(self.processing_path, dest_path=self.error_name)
         self.error_broker.upload(error_file)
         rm_f(self.processing_path)

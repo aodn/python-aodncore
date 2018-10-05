@@ -14,3 +14,6 @@ class BaseStepRunner(object):
     def __init__(self, config, logger):
         self._config = config
         self._logger = logger
+
+    def __repr__(self):
+        return "{self.__class__.__name__}()".format(self=self)

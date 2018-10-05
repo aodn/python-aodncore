@@ -68,7 +68,7 @@ class WorkerLoggingConfigBuilder(object):
             'class': 'logging.FileHandler',
             'formatter': formatter,
             'filename': os.path.join(self.pipeline_config['logging']['log_root'], 'process',
-                                     "{task_name}.log".format(task_name=name))
+                                     "{name}.log".format(name=name))
         }
         self._dict_config['loggers'][name] = {
             'handlers': [handler_name],

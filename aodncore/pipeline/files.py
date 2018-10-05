@@ -117,10 +117,10 @@ class PipelineFile(object):
         return iter_public_attributes(self)
 
     def __repr__(self):  # pragma: no cover
-        return "{cls}({repr})".format(cls=self.__class__.__name__, repr=repr(dict(self)))
+        return "{name}({repr})".format(name=self.__class__.__name__, repr=repr(dict(self)))
 
     def __str__(self):
-        return "{cls}({str})".format(cls=self.__class__.__name__, str=dict(self))
+        return "{name}({str})".format(name=self.__class__.__name__, str=dict(self))
 
     #
     # Static properties (read-only, should never change during the lifecycle of the object)
@@ -464,7 +464,7 @@ class PipelineFileCollection(MutableSet):
         return len(self.__s)
 
     def __repr__(self):  # pragma: no cover
-        return "PipelineFileCollection({repr})".format(repr=repr(list(self.__s)))
+        return "{name}({repr})".format(name=self.__class__.__name__, repr=repr(list(self.__s)))
 
     def _set_attribute(self, attribute, value):
         for f in self.__s:

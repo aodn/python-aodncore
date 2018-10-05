@@ -359,7 +359,7 @@ class HandlerBase(object):
         return iter_public_attributes(self, ignored_attributes)
 
     def __str__(self):
-        return "{cls}({attrs})".format(cls=self.__class__.__name__, attrs=dict(self))
+        return "{name}({attrs})".format(name=self.__class__.__name__, attrs=dict(self))
 
     #
     # public properties
@@ -671,9 +671,7 @@ class HandlerBase(object):
         if self._archive_store_runner_object is None:
             self._archive_store_runner_object = get_store_runner(self._config.pipeline_config['global']['archive_uri'],
                                                                  self._config, self.logger, archive_mode=True)
-            self.logger.sysinfo("get_store_runner (archive)-> {runner}(broker='{broker}')".format(
-                runner=self._archive_store_runner_object.__class__.__name__,
-                broker=self._archive_store_runner_object.broker.__class__.__name__))
+            self.logger.sysinfo("get_store_runner (archive) -> {self._archive_store_runner_object}".format(self=self))
         return self._archive_store_runner_object
 
     @property
@@ -685,9 +683,7 @@ class HandlerBase(object):
         if self._upload_store_runner_object is None:
             self._upload_store_runner_object = get_store_runner(self._config.pipeline_config['global']['upload_uri'],
                                                                 self._config, self.logger)
-            self.logger.sysinfo("get_store_runner (upload)-> {runner}(broker='{broker}')".format(
-                runner=self._upload_store_runner_object.__class__.__name__,
-                broker=self._upload_store_runner_object.broker.__class__.__name__))
+            self.logger.sysinfo("get_store_runner (upload) -> {self._upload_store_runner_object}".format(self=self))
         return self._upload_store_runner_object
 
     #
@@ -695,7 +691,7 @@ class HandlerBase(object):
     #
 
     def _initialise(self):
-        self.logger.info("running handler -> '{str}'".format(str=self))
+        self.logger.info("running handler -> {self}".format(self=self))
 
         self._file_collection = PipelineFileCollection()
 
@@ -708,7 +704,7 @@ class HandlerBase(object):
     def _resolve(self):
         resolve_runner = get_resolve_runner(self.input_file, self.collection_dir, self.config, self.logger,
                                             self.resolve_params)
-        self.logger.sysinfo("get_resolve_runner -> '{runner}'".format(runner=resolve_runner.__class__.__name__))
+        self.logger.sysinfo("get_resolve_runner -> {resolve_runner}".format(resolve_runner=resolve_runner))
         resolved_files = resolve_runner.run()
 
         resolved_files.set_file_update_callback(self._file_update_callback)
@@ -723,7 +719,7 @@ class HandlerBase(object):
 
     def _check(self):
         check_runner = get_check_runner(self.config, self.logger, self.check_params)
-        self.logger.sysinfo("get_check_runner -> '{runner}'".format(runner=check_runner.__class__.__name__))
+        self.logger.sysinfo("get_check_runner -> {check_runner}".format(check_runner=check_runner))
 
         self.file_collection \
             .filter_by_attribute_id('check_type', PipelineFileCheckType.UNSET) \
@@ -748,7 +744,7 @@ class HandlerBase(object):
     def _harvest(self):
         harvest_runner = get_harvester_runner(self.harvest_type, self._upload_store_runner.broker, self.harvest_params,
                                               self.temp_dir, self.config, self.logger)
-        self.logger.sysinfo("get_harvester_runner -> '{runner}'".format(runner=harvest_runner.__class__.__name__))
+        self.logger.sysinfo("get_harvester_runner -> {harvest_runner}".format(harvest_runner=harvest_runner))
         files_to_harvest = self.file_collection.filter_by_bool_attribute('pending_harvest')
 
         if files_to_harvest:
@@ -813,7 +809,7 @@ class HandlerBase(object):
         notification_data = merge_dicts(class_dict, extra)
 
         notify_runner = get_notify_runner(notification_data, self.config, self.logger, self.notify_params)
-        self.logger.sysinfo("get_notify_runner -> '{runner}'".format(runner=notify_runner.__class__.__name__))
+        self.logger.sysinfo("get_notify_runner -> {notify_runner}".format(notify_runner=notify_runner))
 
         if self._should_notify:
             self._notification_results = notify_runner.run(self._should_notify)
@@ -825,8 +821,7 @@ class HandlerBase(object):
         self._notify_common()
 
     def _complete_common(self):
-        self.logger.info(
-            "handler result for input_file '{name}': {result}".format(name=self.input_file, result=self._result.name))
+        self.logger.info("handler result for input_file '{self.input_file}': {self._result.name}".format(self=self))
 
     def _complete_success(self):
         self._complete_common()
@@ -840,7 +835,7 @@ class HandlerBase(object):
 
     def _after_state_change(self):
         self.logger.sysinfo(
-            "{name} transitioned to state: {state}".format(name=self.__class__.__name__, state=self.state))
+            "{self.__class__.__name__} transitioned to state: {self.state}".format(self=self))
         if self.celery_task is not None:
             self.celery_task.update_state(state=self.state)
 
@@ -855,14 +850,12 @@ class HandlerBase(object):
 
     def _check_input_file_name(self):
         if self.allowed_extensions and self.file_extension not in self.allowed_extensions:
-            raise InvalidFileFormatError(
-                "input file extension '{extension}' not in allowed_extensions list: {allowed}".format(
-                    extension=self.file_extension, allowed=self.allowed_extensions))
+            raise InvalidFileFormatError("input file extension '{self.file_extension}' "
+                                         "not in allowed_extensions list: {self.allowed_extensions}".format(self=self))
 
         if self.allowed_regexes and not matches_regexes(self.file_basename, include_regexes=self.allowed_regexes):
-            raise InvalidInputFileError(
-                "input file '{basename}' does not match any patterns in the allowed_regexes list: {allowed}".format(
-                    basename=self.file_basename, allowed=self.allowed_regexes))
+            raise InvalidInputFileError("input file '{self.file_basename}' does not match any patterns "
+                                        "in the allowed_regexes list: {self.allowed_regexes}".format(self=self))
 
     def _init_logger(self):
         try:
@@ -959,29 +952,29 @@ class HandlerBase(object):
         except (IOError, OSError) as e:
             self.logger.exception(e)
             raise InvalidInputFileError(e)
-        self.logger.sysinfo("get_file_checksum -> '{checksum}'".format(checksum=self.file_checksum))
+        self.logger.sysinfo("get_file_checksum -> '{self.file_checksum}'".format(self=self))
 
         self._file_basename = os.path.basename(self.input_file)
-        self.logger.sysinfo("file_basename -> '{basename}'".format(basename=self._file_basename))
+        self.logger.sysinfo("file_basename -> '{self._file_basename}'".format(self=self))
         _, self._file_extension = os.path.splitext(self.input_file)
-        self.logger.sysinfo("file_extension -> '{extension}'".format(extension=self._file_extension))
+        self.logger.sysinfo("file_extension -> '{self._file_extension}'".format(self=self))
         self._file_type = FileType.get_type_from_extension(self.file_extension)
-        self.logger.sysinfo("file_type -> '{type}'".format(type=self._file_type))
+        self.logger.sysinfo("file_type -> {self._file_type}".format(self=self))
 
     def _set_path_functions(self):
         dest_path_function_ref, dest_path_function_name = get_path_function(self, self.config.pipeline_config[
             'pluggable']['path_function_group'])
         self._dest_path_function_ref = dest_path_function_ref
         self._dest_path_function_name = dest_path_function_name
-        self.logger.sysinfo(
-            "get_path_function -> '{function}'".format(function=self._dest_path_function_name))
+        self.logger.sysinfo("get_path_function (upload) -> {dest_path_function_name}".format(
+            dest_path_function_name=dest_path_function_name))
 
         archive_path_function_ref, archive_path_function_name = get_path_function(self, self.config.pipeline_config[
             'pluggable']['path_function_group'], archive_mode=True)
         self._archive_path_function_ref = archive_path_function_ref
         self._archive_path_function_name = archive_path_function_name
-        self.logger.sysinfo(
-            "get_path_function (archive) -> '{function}'".format(function=self._archive_path_function_name))
+        self.logger.sysinfo("get_path_function (archive) -> {archive_path_function_name}".format(
+            archive_path_function_name=archive_path_function_name))
 
     def _validate_and_freeze_params(self):
         if self.check_params is not None:
