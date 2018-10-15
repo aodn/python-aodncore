@@ -35,6 +35,9 @@ class StoreRunner(BaseStepRunner):
         self.broker = broker
         self.archive_mode = archive_mode
 
+    def __repr__(self):
+        return "{self.__class__.__name__}(broker={self.broker})".format(self=self)
+
     @property
     def is_stored_attr(self):
         """PipelineFile attribute to flag completion of upload operation

@@ -16,7 +16,7 @@ def main():
 
     LOGGER.info("initialising WatchServiceManager")
     with WatchServiceManager(CONFIG, context.event_handler, context.watch_manager, context.notifier) as watch_manager:
-        LOGGER.info("active watches: {watches}".format(watches=watch_manager.watches))
+        LOGGER.info("active watches: {watch_manager.watches}".format(watch_manager=watch_manager))
 
         # handle SIGTERM gracefully (e.g. from supervisord)
         signal.signal(signal.SIGTERM, watch_manager.handle_signal)

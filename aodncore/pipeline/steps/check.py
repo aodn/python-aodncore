@@ -91,7 +91,7 @@ class CheckRunnerAdapter(BaseCheckRunner):
         for check_type in check_types:
             check_list = pipeline_files.filter_by_attribute_id('check_type', check_type)
             check_runner = get_child_check_runner(check_type, self._config, self._logger, self.check_params)
-            self._logger.sysinfo("get_child_check_runner -> '{runner}'".format(runner=check_runner.__class__.__name__))
+            self._logger.sysinfo("get_child_check_runner -> {check_runner}".format(check_runner=check_runner))
             check_runner.run(check_list)
 
         failed_files = PipelineFileCollection(f for f in pipeline_files
@@ -104,7 +104,7 @@ class CheckRunnerAdapter(BaseCheckRunner):
         if failed_files:
             failed_list = failed_files.get_attribute_list('name')
             raise ComplianceCheckFailedError(
-                "the following files failed the check step: {failed}".format(failed=failed_list))
+                "the following files failed the check step: {failed_list}".format(failed_list=failed_list))
 
 
 class ComplianceCheckerCheckRunner(BaseCheckRunner):
@@ -132,14 +132,16 @@ class ComplianceCheckerCheckRunner(BaseCheckRunner):
             raise InvalidCheckSuiteError(
                 'invalid compliance check suites: {invalid_suites}'.format(invalid_suites=invalid_suites))
 
+    def __repr__(self):
+        return "{self.__class__.__name__}(checks={self.checks})".format(self=self)
+
     def run(self, pipeline_files):
         if self.skip_checks:
-            self._logger.info("compliance checks will skip {skip_checks}".format(skip_checks=self.skip_checks))
+            self._logger.info("compliance checks will skip {self.skip_checks}".format(self=self))
 
         for pipeline_file in pipeline_files:
-            self._logger.info(
-                "checking compliance of '{filepath}' against {checks}".format(filepath=pipeline_file.src_path,
-                                                                              checks=self.checks))
+            self._logger.info("checking compliance of '{pipeline_file.src_path}' "
+                              "against {self.checks}".format(pipeline_file=pipeline_file, self=self))
 
             # first check that it is a valid NetCDF format file
             if not is_netcdffile(pipeline_file.src_path):
@@ -214,7 +216,7 @@ class NetcdfFormatCheckRunner(BaseCheckRunner):
     def run(self, pipeline_files):
         for pipeline_file in pipeline_files:
             self._logger.info(
-                "checking that '{filepath}' is a valid NetCDF file".format(filepath=pipeline_file.src_path))
+                "checking that '{pipeline_file.src_path}' is a valid NetCDF file".format(pipeline_file=pipeline_file))
             compliant = is_netcdffile(pipeline_file.src_path)
             compliance_log = [] if compliant else ('invalid NetCDF file',)
             pipeline_file.check_result = CheckResult(compliant, compliance_log)
@@ -224,7 +226,7 @@ class NonEmptyCheckRunner(BaseCheckRunner):
     def run(self, pipeline_files):
         for pipeline_file in pipeline_files:
             self._logger.info(
-                "checking that '{filepath}' is not empty".format(filepath=pipeline_file.src_path))
+                "checking that '{pipeline_file.src_path}' is not empty".format(pipeline_file=pipeline_file))
             compliant = os.path.getsize(pipeline_file.src_path) > 0
             compliance_log = [] if compliant else ('empty file',)
             pipeline_file.check_result = CheckResult(compliant, compliance_log)

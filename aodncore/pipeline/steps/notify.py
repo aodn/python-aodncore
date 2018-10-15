@@ -222,8 +222,7 @@ class NotifyRunnerAdapter(BaseNotifyRunner):
         for notify_type in notify_types:
             type_notify_list = notify_list_object.filter_by_notify_type(notify_type)
             notify_runner = get_child_notify_runner(notify_type, self.notification_data, self._config, self._logger)
-            self._logger.sysinfo(
-                "get_child_notify_runner -> '{runner}'".format(runner=notify_runner.__class__.__name__))
+            self._logger.sysinfo("get_child_notify_runner -> {notify_runner}".format(notify_runner=notify_runner))
             notify_runner.run(type_notify_list)
 
         failed_notifications = notify_list_object.filter_by_failed()
@@ -317,7 +316,7 @@ class EmailNotifyRunner(BaseNotifyRunner):
         validate_notifylist(notify_list)
 
         recipient_addresses = self._get_recipient_addresses(notify_list)
-        self._logger.info("email recipients: {recipients}".format(recipients=recipient_addresses))
+        self._logger.info("email recipients: {recipient_addresses}".format(recipient_addresses=recipient_addresses))
 
         subject = self._config.pipeline_config['mail']['subject'].format(**self.template_values)
         from_address = self._config.pipeline_config['mail']['from']
@@ -383,7 +382,7 @@ class NotifyList(object):
         return len(self.__s)
 
     def __repr__(self):  # pragma: no cover
-        return "NotifyList({repr})".format(repr=repr(list(self.__s)))
+        return "{name}({repr})".format(name=self.__class__.__name__, repr=repr(list(self.__s)))
 
     def add(self, recipient):
         validate_notificationrecipient(recipient)
@@ -485,7 +484,7 @@ class NotificationRecipient(object):
         self._notification_succeeded = False
 
     def __repr__(self):  # pragma: no cover
-        return "NotificationRecipient({str})".format(str=str(self.__dict__))
+        return "{name}({str})".format(name=self.__class__.__name__, str=str(self.__dict__))
 
     @property
     def address(self):

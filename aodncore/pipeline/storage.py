@@ -42,14 +42,15 @@ def get_storage_broker(store_url):
     url = urlparse(store_url)
     if url.scheme == 'file':
         if url.netloc:
-            raise InvalidStoreUrlError("invalid URL '{url}'. Must be an absolute path".format(url=store_url))
+            raise InvalidStoreUrlError("invalid URL '{store_url}'. Must be an absolute path".format(
+                store_url=store_url))
         return LocalFileStorageBroker(url.path)
     elif url.scheme == 's3':
         return S3StorageBroker(url.netloc, url.path)
     elif url.scheme == 'sftp':
         return SftpStorageBroker(url.netloc, url.path)
     else:
-        raise InvalidStoreUrlError("invalid URL scheme '{scheme}'".format(scheme=url.scheme))
+        raise InvalidStoreUrlError("invalid URL scheme '{url.scheme}'".format(url=url))
 
 
 class BaseStorageBroker(object):
@@ -58,9 +59,6 @@ class BaseStorageBroker(object):
     def __init__(self):
         self.prefix = None
         self.mode = None
-
-    def __repr__(self):
-        return "{name}(prefix='{prefix}')".format(name=self.__class__.__name__, prefix=self.prefix)
 
     @abc.abstractmethod  # pragma: no cover
     def _delete_file(self, pipeline_file, dest_path_attr):
@@ -89,8 +87,8 @@ class BaseStorageBroker(object):
     def _get_absolute_dest_path(self, pipeline_file, dest_path_attr):
         rel_path = getattr(pipeline_file, dest_path_attr)
         if not rel_path:
-            raise AttributeNotSetError(
-                "attribute '{attr}' not set in '{pf}'".format(attr=dest_path_attr, pf=pipeline_file))
+            raise AttributeNotSetError("attribute '{dest_path_attr}' not set in '{pipeline_file}'".format(
+                dest_path_attr=dest_path_attr, pipeline_file=pipeline_file))
         return os.path.join(self.prefix, rel_path)
 
     def set_is_overwrite(self, pipeline_files, dest_path_attr='dest_path'):
@@ -201,6 +199,9 @@ class LocalFileStorageBroker(BaseStorageBroker):
         super(LocalFileStorageBroker, self).__init__()
         self.prefix = prefix
 
+    def __repr__(self):
+        return "{self.__class__.__name__}(prefix='{self.prefix}')".format(self=self)
+
     def _delete_file(self, pipeline_file, dest_path_attr):
         abs_path = self._get_absolute_dest_path(pipeline_file=pipeline_file, dest_path_attr=dest_path_attr)
         rm_f(abs_path)
@@ -266,6 +267,9 @@ class S3StorageBroker(BaseStorageBroker):
         self.prefix = prefix
 
         self.s3_client = boto3.client('s3')
+
+    def __repr__(self):
+        return "{self.__class__.__name__}(bucket='{self.bucket}', prefix='{self.prefix}')".format(self=self)
 
     @retry_decorator(**retry_kwargs)
     def _delete_file(self, pipeline_file, dest_path_attr):
@@ -382,6 +386,9 @@ class SftpStorageBroker(BaseStorageBroker):
         self._sshclient.set_missing_host_key_policy(AutoAddPolicy())
 
         self.sftp_client = None
+
+    def __repr__(self):
+        return "{self.__class__.__name__}(server='{self.server}', prefix='{self.prefix}')".format(self=self)
 
     def _connect_sftp(self):
         self._sshclient.connect(self.server)
