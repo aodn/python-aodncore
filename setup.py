@@ -10,20 +10,20 @@ EXTRAS_REQUIRE = {
     ':platform_system == "Linux"': ['pyinotify == 0.9.6'],
     ':python_version < "3.3"': ['mock == 2.0.0'],
     ':python_version < "3.4"': ['enum34==1.1.6'],
-    ':python_version < "3.5"': ['scandir == 1.6', 'typing==3.6.4'],
+    ':python_version < "3.5"': ['scandir == 1.9.0', 'typing==3.6.6'],
 }
 
 INSTALL_REQUIRES = [
-    'boto3==1.4.4',
-    'celery==4.1.1',
+    'boto3==1.9.27',
+    'celery==4.2.1',
     'compliance-checker==4.0.1',
-    'Jinja2==2.9.6',
+    'Jinja2==2.10',
     'jsonschema==2.6.0',
-    'numpy>=1.13.0',
+    'numpy>=1.15.2',
     'paramiko==2.4.2',
-    'six==1.10.0',
+    'six==1.11.0',
     'tabulate==0.8.2',
-    'transitions==0.5.3'
+    'transitions==0.6.8'
 ]
 
 PACKAGE_DATA = {
