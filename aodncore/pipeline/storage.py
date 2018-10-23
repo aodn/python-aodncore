@@ -4,7 +4,7 @@ import os
 from datetime import datetime
 
 import boto3
-from botocore.exceptions import ClientError
+from botocore.exceptions import ClientError, ConnectionError
 from paramiko import SSHClient, AutoAddPolicy
 from six.moves.urllib.parse import urlparse
 
@@ -257,7 +257,7 @@ class S3StorageBroker(BaseStorageBroker):
         'tries': 3,
         'delay': 5,
         'backoff': 2,
-        'exceptions': (ClientError,)
+        'exceptions': (ClientError, ConnectionError)
     }
 
     def __init__(self, bucket, prefix):
@@ -291,6 +291,7 @@ class S3StorageBroker(BaseStorageBroker):
             raise InvalidStoreUrlError(
                 "unable to access S3 bucket '{0}': {1}".format(self.bucket, format_exception(e)))
 
+    @retry_decorator(**retry_kwargs)
     def _run_query(self, query):
         full_query = os.path.join(self.prefix, query)
         raw_result = self.s3_client.list_objects_v2(Bucket=self.bucket, Prefix=full_query)
