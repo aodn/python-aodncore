@@ -3,15 +3,10 @@
 ### Prerequisites
 * sphinx (``pip install sphinx``)
 * make
-* rsync
 
 ### Build process
 
 ```bash
 $ cd sphinx
-$ ./generate_docs.sh
-$ git checkout -b updated-docs
-$ git add docs
-$ git commit -m "Regenerated documentation"
-git push origin HEAD
+$ make publish
 ```
