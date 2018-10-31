@@ -16,7 +16,7 @@ EXTRAS_REQUIRE = {
 INSTALL_REQUIRES = [
     'boto3==1.4.4',
     'celery==4.1.1',
-    'compliance-checker==4.0.1',
+    'compliance-checker==4.1.1',
     'Jinja2==2.9.6',
     'jsonschema==2.6.0',
     'numpy>=1.13.0',
