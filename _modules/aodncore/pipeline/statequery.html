@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>aodncore.common.exceptions &mdash; aodncore 0.21.2 documentation</title>
+  <title>aodncore.pipeline.statequery &mdash; aodncore 0.21.2 documentation</title>
   
 
   
@@ -182,7 +182,7 @@
         
           <li><a href="../../index.html">Module code</a> &raquo;</li>
         
-      <li>aodncore.common.exceptions</li>
+      <li>aodncore.pipeline.statequery</li>
     
     
       <li class="wy-breadcrumbs-aside">
@@ -197,24 +197,24 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <h1>Source code for aodncore.common.exceptions</h1><div class="highlight"><pre>
-<span></span><span class="sd">&quot;&quot;&quot;This module contains base exceptions for the :py:mod:`aodncore` package.</span>
-<span class="sd">&quot;&quot;&quot;</span>
-
-<span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span>
-    <span class="s1">&#39;AodnBaseError&#39;</span><span class="p">,</span>
-    <span class="s1">&#39;SystemCommandFailedError&#39;</span>
-<span class="p">]</span>
-
-
-<div class="viewcode-block" id="AodnBaseError"><a class="viewcode-back" href="../../../aodncore.common.html#aodncore.common.exceptions.AodnBaseError">[docs]</a><span class="k">class</span> <span class="nc">AodnBaseError</span><span class="p">(</span><span class="ne">Exception</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Base class for *all* exceptions</span>
+  <h1>Source code for aodncore.pipeline.statequery</h1><div class="highlight"><pre>
+<div class="viewcode-block" id="StateQuery"><a class="viewcode-back" href="../../../aodncore.pipeline.html#aodncore.pipeline.statequery.StateQuery">[docs]</a><span></span><span class="k">class</span> <span class="nc">StateQuery</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Simple state query interface, to provide user friendly access for querying existing Pipeline state</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">pass</span></div>
 
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">broker</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_broker</span> <span class="o">=</span> <span class="n">broker</span>
 
-<div class="viewcode-block" id="SystemCommandFailedError"><a class="viewcode-back" href="../../../aodncore.common.html#aodncore.common.exceptions.SystemCommandFailedError">[docs]</a><span class="k">class</span> <span class="nc">SystemCommandFailedError</span><span class="p">(</span><span class="n">AodnBaseError</span><span class="p">):</span>
-    <span class="k">pass</span></div>
+<div class="viewcode-block" id="StateQuery.query_storage"><a class="viewcode-back" href="../../../aodncore.pipeline.html#aodncore.pipeline.statequery.StateQuery.query_storage">[docs]</a>    <span class="k">def</span> <span class="nf">query_storage</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">query</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Query the storage backend and return existing files matching the given query</span>
+
+<span class="sd">        :param query: S3-style prefix for filtering query results</span>
+<span class="sd">        :return: dict containing the query results</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_broker</span><span class="o">.</span><span class="n">query</span><span class="p">(</span><span class="n">query</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="StateQuery.query_wfs"><a class="viewcode-back" href="../../../aodncore.pipeline.html#aodncore.pipeline.statequery.StateQuery.query_wfs">[docs]</a>    <span class="k">def</span> <span class="nf">query_wfs</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">query</span><span class="p">):</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span></div></div>
 </pre></div>
 
            </div>
