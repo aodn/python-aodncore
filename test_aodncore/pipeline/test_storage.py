@@ -718,7 +718,8 @@ class TestS3StorageBroker(BaseTestCase):
 
         s3_storage_broker = S3StorageBroker('imos-data', '')
         with self.assertRaises(StorageBrokerError):
-            _ = s3_storage_broker.query('Department_of_Defence/DSTG/slocum_glider/Perth')
+            with mock.patch('aodncore.util.external.retry.api.time.sleep', new=lambda x: None):
+                _ = s3_storage_broker.query('Department_of_Defence/DSTG/slocum_glider/Perth')
 
 
 # noinspection PyUnusedLocal
