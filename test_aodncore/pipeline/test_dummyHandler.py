@@ -45,17 +45,17 @@ class TestDummyHandler(HandlerTestCase):
 
     def test_include(self):
         handler = self.run_handler_with_exception(UnmatchedFilesError, BAD_ZIP, include_regexes=['good\.nc'])
-        eligible_filenames = handler.file_collection.filter_by_attribute_id_not('publish_type',
-                                                                                PipelineFilePublishType.UNSET).get_attribute_list(
-            'name')
+        eligible_filenames = handler.file_collection \
+                                    .filter_by_attribute_id_not('publish_type', PipelineFilePublishType.UNSET) \
+                                    .get_attribute_list('name')
         self.assertListEqual(['good.nc'], eligible_filenames)
 
     def test_exclude(self):
         handler = self.run_handler_with_exception(UnmatchedFilesError, BAD_ZIP, include_regexes=['.*\.nc'],
                                                   exclude_regexes=['bad\.nc'])
-        eligible_filenames = handler.file_collection.filter_by_attribute_id_not('publish_type',
-                                                                                PipelineFilePublishType.UNSET).get_attribute_list(
-            'name')
+        eligible_filenames = handler.file_collection \
+                                    .filter_by_attribute_id_not('publish_type', PipelineFilePublishType.UNSET) \
+                                    .get_attribute_list('name')
 
         self.assertListEqual(['good.nc'], eligible_filenames)
 
