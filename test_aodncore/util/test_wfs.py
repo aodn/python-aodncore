@@ -1,9 +1,9 @@
 import httpretty
 from owslib.etree import etree
 
-from aodncore.pipeline.wfs import WfsBroker, get_filter_for_file_url
 from aodncore.testlib import BaseTestCase
 from aodncore.util import IndexedSet
+from aodncore.util.wfs import WfsBroker, get_filter_for_file_url
 
 TEST_GETCAPABILITIES_RESPONSE = httpretty.Response('''<?xml version="1.0" encoding="UTF-8"?>
 <WFS_Capabilities version="1.0.0" xmlns="http://www.opengis.net/wfs" xmlns:aodn="aodn" xmlns:imos="imos.mod" xmlns:ogc="http://www.opengis.net/ogc" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.opengis.net/wfs http://geoserver.example.com/geoserver/schemas/wfs/1.0.0/WFS-capabilities.xsd">

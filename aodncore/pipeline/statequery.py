@@ -1,4 +1,4 @@
-from .wfs import WfsBroker
+from ..util.wfs import WfsBroker
 
 __all__ = [
     'StateQuery'
