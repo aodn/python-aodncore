@@ -13,7 +13,7 @@ from .exceptions import InvalidConfigError
 from .log import WorkerLoggingConfigBuilder, get_watchservice_logging_config
 from .schema import validate_logging_config, validate_pipeline_config
 from .watch import get_task_name, CeleryConfig, CeleryContext
-from ..util import discover_entry_points, format_exception, validate_type, WriteOnceOrderedDict
+from ..util import discover_entry_points, format_exception, lazyproperty, validate_type, WriteOnceOrderedDict
 
 __all__ = [
     'LazyConfigManager',
@@ -39,134 +39,82 @@ class LazyConfigManager(object):
     of this class to several modules, even if they only require one particular type of configuration to operate.
     """
 
-    def __init__(self):
-        self._celery_application = None
-        self._celery_routes = None
-        self._discovered_dest_path_functions = None
-        self._discovered_handlers = None
-        self._discovered_module_versions = None
-        self._watchservice_logging_config = None
-        self._worker_logging_config = None
-        self._pipeline_config = None
-        self._trigger_config = None
-        self._watch_config = None
-        self._watch_directory_map = None
-
-    @property
+    @lazyproperty
     def celery_application(self):
-        if self._celery_application is None:
-            application = Celery(self.pipeline_config['watch']['task_namespace'])
-            celeryconfig = CeleryConfig(self.celery_routes)
-            celerycontext = CeleryContext(application, self, celeryconfig)
-            self._celery_application = celerycontext.application
+        application = Celery(self.pipeline_config['watch']['task_namespace'])
+        celeryconfig = CeleryConfig(self.celery_routes)
+        celerycontext = CeleryContext(application, self, celeryconfig)
+        return celerycontext.application
 
-        return self._celery_application
-
-    @property
+    @lazyproperty
     def celery_routes(self):
-        if self._celery_routes is None:
-            routes = {}
-            for name in self.watch_config.keys():
-                task_name = get_task_name(self.pipeline_config['watch']['task_namespace'], name)
-                queue_dict = {'queue': name, 'routing_key': name}
-                routes[task_name] = queue_dict
-                self._celery_routes = routes
+        routes = {}
+        for name in self.watch_config.keys():
+            task_name = get_task_name(self.pipeline_config['watch']['task_namespace'], name)
+            queue_dict = {'queue': name, 'routing_key': name}
+            routes[task_name] = queue_dict
+            return routes
 
-        return self._celery_routes
-
-    @property
+    @lazyproperty
     def discovered_dest_path_functions(self):
-        if self._discovered_dest_path_functions is None:
-            discovered_dest_path_functions = discover_entry_points(
-                self.pipeline_config['pluggable']['path_function_group'])
-            self._discovered_dest_path_functions = discovered_dest_path_functions
-        return self._discovered_dest_path_functions
+        discovered_dest_path_functions = discover_entry_points(
+            self.pipeline_config['pluggable']['path_function_group'])
+        return discovered_dest_path_functions
 
-    @property
+    @lazyproperty
     def discovered_handlers(self):
-        if self._discovered_handlers is None:
-            discovered_handlers = discover_entry_points(self.pipeline_config['pluggable']['handlers_group'])
-            self._discovered_handlers = discovered_handlers
-        return self._discovered_handlers
+        discovered_handlers = discover_entry_points(self.pipeline_config['pluggable']['handlers_group'])
+        return discovered_handlers
 
-    @property
+    @lazyproperty
     def discovered_module_versions(self):
-        if self._discovered_module_versions is None:
-            discovered_module_versions = discover_entry_points(
-                self.pipeline_config['pluggable']['module_versions_group'])
-            self._discovered_module_versions = discovered_module_versions
-        return self._discovered_module_versions
+        discovered_module_versions = discover_entry_points(self.pipeline_config['pluggable']['module_versions_group'])
+        return discovered_module_versions
 
-    @property
+    @lazyproperty
     def watchservice_logging_config(self):
-        if self._watchservice_logging_config is None:
-            watchservice_logging_config = get_watchservice_logging_config(self.pipeline_config)
-            validate_logging_config(watchservice_logging_config)
-            self._watchservice_logging_config = watchservice_logging_config
+        watchservice_logging_config = get_watchservice_logging_config(self.pipeline_config)
+        validate_logging_config(watchservice_logging_config)
+        return watchservice_logging_config
 
-        return self._watchservice_logging_config
-
-    @property
+    @lazyproperty
     def worker_logging_config(self):
-        if self._worker_logging_config is None:
-            config_builder = WorkerLoggingConfigBuilder(self.pipeline_config)
+        config_builder = WorkerLoggingConfigBuilder(self.pipeline_config)
 
-            for name in self.watch_config.keys():
-                task_name = get_task_name(self.pipeline_config['watch']['task_namespace'], name)
-                config_builder.add_watch_config(task_name)
+        for name in self.watch_config.keys():
+            task_name = get_task_name(self.pipeline_config['watch']['task_namespace'], name)
+            config_builder.add_watch_config(task_name)
 
-            worker_logging_config = config_builder.get_config()
+        worker_logging_config = config_builder.get_config()
 
-            validate_logging_config(worker_logging_config)
-            self._worker_logging_config = worker_logging_config
+        validate_logging_config(worker_logging_config)
+        return worker_logging_config
 
-        return self._worker_logging_config
-
-    @property
+    @lazyproperty
     def pipeline_config(self):
-        if self._pipeline_config is None:
-            pipeline_config = load_pipeline_config(DEFAULT_CONFIG_FILE, envvar=DEFAULT_CONFIG_ENVVAR)
-            validate_pipeline_config(pipeline_config)
-            self._pipeline_config = pipeline_config
+        pipeline_config = load_pipeline_config(DEFAULT_CONFIG_FILE, envvar=DEFAULT_CONFIG_ENVVAR)
+        validate_pipeline_config(pipeline_config)
+        return pipeline_config
 
-        return self._pipeline_config
-
-    @property
+    @lazyproperty
     def watch_config(self):
-        if self._watch_config is None:
-            watch_config = load_watch_config(DEFAULT_WATCH_CONFIG)
-            self._watch_config = watch_config
+        watch_config = load_watch_config(DEFAULT_WATCH_CONFIG)
+        return watch_config
 
-        return self._watch_config
-
-    @property
+    @lazyproperty
     def trigger_config(self):
-        if self._trigger_config is None:
-            trigger_config = load_trigger_config(DEFAULT_TRIGGER_CONFIG)
-            self._trigger_config = trigger_config
+        trigger_config = load_trigger_config(DEFAULT_TRIGGER_CONFIG)
+        return trigger_config
 
-        return self._trigger_config
-
-    @property
+    @lazyproperty
     def watch_directory_map(self):
-        if self._watch_directory_map is None:
-            directories = {}
-            # noinspection PyTypeChecker
-            for name, items in iteritems(self.watch_config):
-                for rel_path in items['path']:
-                    path = os.path.join(self.pipeline_config['watch']['incoming_dir'], rel_path)
-                    directories[path] = name
-            self._watch_directory_map = directories
-
-        return self._watch_directory_map
-
-    def purge_lazy_properties(self):
-        self._celery_application = None
-        self._celery_routes = None
-        self._worker_logging_config = None
-        self._pipeline_config = None
-        self._watch_config = None
-        self._watch_directory_map = None
+        directories = {}
+        # noinspection PyTypeChecker
+        for name, items in iteritems(self.watch_config):
+            for rel_path in items['path']:
+                path = os.path.join(self.pipeline_config['watch']['incoming_dir'], rel_path)
+                directories[path] = name
+        return directories
 
 
 def load_pipeline_config(default_config_file=DEFAULT_WATCH_CONFIG, envvar=DEFAULT_CONFIG_ENVVAR):

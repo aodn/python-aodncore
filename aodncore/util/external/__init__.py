@@ -2,15 +2,18 @@
     unnecessary dependencies.
 
 Code taken from:
-    * retry :: https://github.com/invl/retry (Apache 2.0 License)
+    * astropy :: http://docs.astropy.org/en/stable/utils/index.html (BSD Licence)
     * boltons :: https://boltons.readthedocs.io/en/latest/index.html (BSD License)
+    * retry :: https://github.com/invl/retry (Apache 2.0 License)
 
 """
+from .astropy.decorators import classproperty, lazyproperty
+from .boltons.setutils import IndexedSet
 from .retry import retry as retry_decorator
-from .boltons import IndexedSet, classproperty
 
 __all__ = [
     'IndexedSet',
     'classproperty',
+    'lazyproperty',
     'retry_decorator'
 ]

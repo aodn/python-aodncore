@@ -139,28 +139,12 @@ class TestLazyConfigManager(BaseTestCase):
         self.assertIsInstance(app, Celery)
 
     def test_logging_config(self):
-        self.assertIsNone(self.config._worker_logging_config)
         logging_config = self.config.worker_logging_config
         pass
 
     def test_watch_directory_map(self):
-        self.assertIsNone(self.config._watch_directory_map)
         expected_map = {os.path.join(self.config.pipeline_config['watch']['incoming_dir'], 'ANMN/QLD/XXXX'): 'ANMN_QLD_XXXX'}
         self.assertDictEqual(expected_map, self.config.watch_directory_map)
-
-    def test_purge_lazy_properties(self):
-        _ = self.config.celery_application
-        _ = self.config.pipeline_config
-        _ = self.config.watch_config
-        self.assertIsNotNone(self.config._celery_application)
-        self.assertIsNotNone(self.config._pipeline_config)
-        self.assertIsNotNone(self.config._watch_config)
-
-        self.config.purge_lazy_properties()
-
-        self.assertIsNone(self.config._celery_application)
-        self.assertIsNone(self.config._pipeline_config)
-        self.assertIsNone(self.config._watch_config)
 
 
 class TestConfig(BaseTestCase):

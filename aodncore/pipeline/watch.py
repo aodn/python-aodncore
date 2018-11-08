@@ -29,7 +29,7 @@ from transitions import Machine
 from .files import PipelineFile
 from .log import get_pipeline_logger
 from .storage import get_storage_broker
-from ..util import (ensure_regex_list, format_exception, mkdir_p, rm_f, rm_r, validate_dir_writable,
+from ..util import (ensure_regex_list, format_exception, lazyproperty, mkdir_p, rm_f, rm_r, validate_dir_writable,
                     validate_file_writable, validate_membership)
 
 # OS X test compatibility, due to absence of pyinotify (which is specific to the Linux kernel)
@@ -417,13 +417,13 @@ class IncomingFileStateManager(object):
         self.logger.sysinfo(
             "{self.__class__.__name__}.state -> '{self.state}'".format(self=self))
 
-    @property
+    @lazyproperty
     def error_broker(self):
-        if self._error_broker is None:
-            self._error_broker = get_storage_broker(self.error_uri)
-            self._error_broker.mode = self.error_mode
-            self.logger.info("{self.__class__.__name__}.error_broker -> {self._error_broker}".format(self=self))
-        return self._error_broker
+        error_broker = get_storage_broker(self.error_uri)
+        error_broker.mode = self.error_mode
+        self.logger.info("{self.__class__.__name__}.error_broker -> {error_broker}".format(self=self,
+                                                                                           error_broker=error_broker))
+        return error_broker
 
     @property
     def basename(self):
