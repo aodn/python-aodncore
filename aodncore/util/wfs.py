@@ -39,6 +39,10 @@ class WfsBroker(object):
     response handling around JSON
     """
 
+    # The *first* matching property name found by the WebFeatureService.get_schema method will be considered to be the
+    # "url" property for a given layer. Accordingly, this should be ordered with highest priority name first.
+    url_propertyname_candidates = ('file_url', 'url')
+
     def __init__(self, wfs_url, version='1.0.0'):
         self._wfs = WebFeatureService(wfs_url, version=version)
 
@@ -71,7 +75,7 @@ class WfsBroker(object):
         :return: string containing the URL property name
         """
         schema = self.wfs.get_schema(layer)
-        for candidate in ('file_url', 'url'):
+        for candidate in self.url_propertyname_candidates:
             if candidate in schema['properties']:
                 return candidate
         else:
