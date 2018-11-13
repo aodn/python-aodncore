@@ -78,7 +78,7 @@ class WfsBroker(object):
         for candidate in self.url_propertyname_candidates:
             if candidate in schema['properties']:
                 return candidate
-        else:
+        else:  # pragma: no cover
             raise RuntimeError('unable to determine URL property name!')
 
     def query_urls_for_layer(self, layer, ogc_filter=None, url_property_name=None):

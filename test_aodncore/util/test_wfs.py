@@ -445,6 +445,37 @@ class TestWfsBroker(BaseTestCase):
         self.broker = WfsBroker(self.config.pipeline_config['global']['wfs_url'])
 
     @httpretty.activate
+    def test_getfeature_dict(self):
+        httpretty.register_uri(httpretty.GET, self.config.pipeline_config['global']['wfs_url'],
+                               responses=[TEST_GETFEATURE_RESPONSE])
+        response = self.broker.getfeature_dict(typename='anmn_velocity_timeseries_map', propertyname='file_url')
+
+        self.assertEqual(len(response['features']), 2)
+        self.assertEqual(response['features'][0]['properties']['file_url'],
+                         'IMOS/ANMN/QLD/GBROTE/Velocity/IMOS_ANMN-QLD_AETVZ_20140408T102930Z_GBROTE_FV01_GBROTE-1404-AWAC-13_END-20141022T052930Z_C-20150215T063708Z.nc')
+        self.assertEqual(response['features'][1]['properties']['file_url'],
+                         'IMOS/ANMN/NRS/NRSYON/Velocity/IMOS_ANMN-NRS_AETVZ_20110413T025900Z_NRSYON_FV01_NRSYON-1104-Workhorse-ADCP-27_END-20111014T222900Z_C-20150306T004801Z.nc')
+
+    @httpretty.activate
+    def test_get_url_property_name_for_layer(self):
+        httpretty.register_uri(httpretty.GET, self.config.pipeline_config['global']['wfs_url'],
+                               responses=[TEST_DESCRIBEFEATURETYPE_RESPONSE])
+
+        propertyname = self.broker.get_url_property_name_for_layer('anmn_velocity_timeseries_map')
+        self.assertEqual('file_url', propertyname)
+
+    @httpretty.activate
+    def test_get_url_property_name_for_layer_not_found(self):
+        httpretty.register_uri(httpretty.GET, self.config.pipeline_config['global']['wfs_url'],
+                               responses=[TEST_DESCRIBEFEATURETYPE_RESPONSE])
+
+        # patch the 'valid' candidates
+        self.broker.url_propertyname_candidates = ('nonexistent_property', 'another_nonexistent_property')
+
+        with self.assertRaises(RuntimeError):
+            _ = self.broker.get_url_property_name_for_layer('anmn_velocity_timeseries_map')
+
+    @httpretty.activate
     def test_query_files_for_layer(self):
         httpretty.register_uri(httpretty.GET, self.config.pipeline_config['global']['wfs_url'],
                                responses=[TEST_DESCRIBEFEATURETYPE_RESPONSE, TEST_GETFEATURE_RESPONSE])
