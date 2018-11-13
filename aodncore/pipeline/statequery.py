@@ -34,7 +34,7 @@ class StateQuery(object):
         """
         return self._wfs_broker.wfs
 
-    def query_storage(self, query):
+    def query_storage(self, query):  # pragma: no cover
         """Query the storage backend and return existing files matching the given query
 
         :param query: S3-style prefix for filtering query results
@@ -42,7 +42,7 @@ class StateQuery(object):
         """
         return self._storage_broker.query(query)
 
-    def query_wfs_urls_for_layer(self, layer):
+    def query_wfs_urls_for_layer(self, layer):  # pragma: no cover
         """Return an IndexedSet of files for a given layer
 
         :param layer: layer name supplied to GetFeature typename parameter
@@ -50,7 +50,7 @@ class StateQuery(object):
         """
         return self._wfs_broker.query_urls_for_layer(layer)
 
-    def query_wfs_url_exists(self, layer, name):
+    def query_wfs_url_exists(self, layer, name):  # pragma: no cover
         """Returns a bool representing whether a given 'file_url' is present in a layer
 
         :param layer: layer name supplied to GetFeature typename parameter
