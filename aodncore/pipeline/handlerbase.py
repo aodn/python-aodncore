@@ -592,7 +592,7 @@ class HandlerBase(object):
         """
         if self._state_query is None:
             self._state_query = StateQuery(storage_broker=self._upload_store_runner.broker,
-                                           wfs_url=self.config.pipeline_config['global']['wfs_server'])
+                                           wfs_url=self.config.pipeline_config['global'].get('wfs_url'))
         return self._state_query
 
     @property

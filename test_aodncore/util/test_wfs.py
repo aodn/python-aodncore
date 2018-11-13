@@ -440,13 +440,13 @@ class TestPipelineWfs(BaseTestCase):
 class TestWfsBroker(BaseTestCase):
     @httpretty.activate
     def setUp(self):
-        httpretty.register_uri(httpretty.GET, self.config.pipeline_config['global']['wfs_server'],
+        httpretty.register_uri(httpretty.GET, self.config.pipeline_config['global']['wfs_url'],
                                responses=[TEST_GETCAPABILITIES_RESPONSE])
-        self.broker = WfsBroker(self.config.pipeline_config['global']['wfs_server'])
+        self.broker = WfsBroker(self.config.pipeline_config['global']['wfs_url'])
 
     @httpretty.activate
     def test_query_files_for_layer(self):
-        httpretty.register_uri(httpretty.GET, self.config.pipeline_config['global']['wfs_server'],
+        httpretty.register_uri(httpretty.GET, self.config.pipeline_config['global']['wfs_url'],
                                responses=[TEST_DESCRIBEFEATURETYPE_RESPONSE, TEST_GETFEATURE_RESPONSE])
 
         files_for_layer = self.broker.query_urls_for_layer('anmn_velocity_timeseries_map')
@@ -454,7 +454,7 @@ class TestWfsBroker(BaseTestCase):
 
     @httpretty.activate
     def test_query_file_exists_for_layer_true(self):
-        httpretty.register_uri(httpretty.GET, self.config.pipeline_config['global']['wfs_server'],
+        httpretty.register_uri(httpretty.GET, self.config.pipeline_config['global']['wfs_url'],
                                responses=[TEST_DESCRIBEFEATURETYPE_RESPONSE, TEST_GETFEATURE_RESPONSE])
 
         file_to_check = 'IMOS/ANMN/QLD/GBROTE/Velocity/IMOS_ANMN-QLD_AETVZ_20140408T102930Z_GBROTE_FV01_GBROTE-1404-AWAC-13_END-20141022T052930Z_C-20150215T063708Z.nc'
@@ -464,7 +464,7 @@ class TestWfsBroker(BaseTestCase):
 
     @httpretty.activate
     def test_query_file_exists_for_layer_false(self):
-        httpretty.register_uri(httpretty.GET, self.config.pipeline_config['global']['wfs_server'],
+        httpretty.register_uri(httpretty.GET, self.config.pipeline_config['global']['wfs_url'],
                                responses=[TEST_DESCRIBEFEATURETYPE_RESPONSE, TEST_GETFEATURE_RESPONSE])
 
         file_to_check = "IMOS/ANMN/QLD/GBROTE/Velocity/FILE_THAT_ISNT_IN_RESULTS.nc"

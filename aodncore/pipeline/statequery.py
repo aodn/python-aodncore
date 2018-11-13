@@ -18,6 +18,9 @@ class StateQuery(object):
 
     @property
     def _wfs_broker(self):
+        if not self._wfs_url:
+            raise AttributeError('WFS querying unavailable: no wfs_url configured?')
+
         # lazy instantiation of broker to avoid any WFS activity unless a handler explicitly calls it
         if self._wfs_broker_object is None:
             self._wfs_broker_object = WfsBroker(self._wfs_url, version=self._wfs_version)

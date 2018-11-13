@@ -89,7 +89,7 @@ PIPELINE_CONFIG_SCHEMA = {
                 'processing_dir': {'type': 'string'},
                 'tmp_dir': {'type': 'string'},
                 'upload_uri': {'type': 'string'},
-                'wfs_server': {'type': 'string'},
+                'wfs_url': {'type': 'string'},
                 'wip_dir': {'type': 'string'}
             },
             'required': ['admin_recipients', 'archive_uri', 'error_uri', 'processing_dir', 'upload_uri', 'wip_dir'],
