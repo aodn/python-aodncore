@@ -20,10 +20,15 @@ INSTALL_REQUIRES = [
     'Jinja2==2.9.6',
     'jsonschema==2.6.0',
     'numpy>=1.13.0',
+    'OWSLib==0.16.0',
     'paramiko==2.4.2',
     'six==1.10.0',
     'tabulate==0.8.2',
     'transitions==0.5.3'
+]
+
+TESTS_REQUIRE = [
+    'httpretty==0.9.6'
 ]
 
 PACKAGE_DATA = {
@@ -55,6 +60,7 @@ setup(
     zip_safe=False,
     install_requires=INSTALL_REQUIRES,
     extras_require=EXTRAS_REQUIRE,
+    tests_require=TESTS_REQUIRE,
     test_suite='test_aodncore',
     entry_points=ENTRY_POINTS
 )
