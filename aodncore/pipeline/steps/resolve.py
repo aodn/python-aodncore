@@ -50,19 +50,19 @@ def get_resolve_runner(input_file, output_dir, config, logger, resolve_params=No
     :param resolve_params: dict of parameters to pass to :py:class:`BaseResolveRunner` class for runtime configuration
     :return: :py:class:`BaseResolveRunner` class
     """
-    _, file_extension = os.path.splitext(input_file)
+    file_type = FileType.get_type_from_name(input_file)
 
-    if file_extension == FileType.ZIP.extension:
+    if file_type is FileType.ZIP:
         return ZipFileResolveRunner(input_file, output_dir, config, logger)
-    elif file_extension == FileType.SIMPLE_MANIFEST.extension:
+    elif file_type is FileType.SIMPLE_MANIFEST:
         return SimpleManifestResolveRunner(input_file, output_dir, config, logger, resolve_params)
-    elif file_extension == FileType.MAP_MANIFEST.extension:
+    elif file_type is FileType.MAP_MANIFEST:
         return MapManifestResolveRunner(input_file, output_dir, config, logger, resolve_params)
-    elif file_extension == FileType.RSYNC_MANIFEST.extension:
+    elif file_type is FileType.RSYNC_MANIFEST:
         return RsyncManifestResolveRunner(input_file, output_dir, config, logger, resolve_params)
-    elif file_extension == FileType.DIR_MANIFEST.extension:
+    elif file_type is FileType.DIR_MANIFEST:
         return DirManifestResolveRunner(input_file, output_dir, config, logger, resolve_params)
-    elif file_extension == FileType.GZIP.extension:
+    elif file_type is FileType.GZIP:
         return GzipFileResolveRunner(input_file, output_dir, config, logger)
     else:
         return SingleFileResolveRunner(input_file, output_dir, config, logger)

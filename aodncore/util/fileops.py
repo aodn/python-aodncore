@@ -33,6 +33,7 @@ __all__ = [
     'is_file_writable',
     'is_gzipfile',
     'is_netcdffile',
+    'is_nonemptyfile',
     'is_zipfile',
     'list_regular_files',
     'mkdir_p',
@@ -155,6 +156,20 @@ def is_file_writable(path):
     return os.access(path, os.W_OK)
 
 
+def is_gzipfile(filepath):
+    """Check whether a file path refers to a valid ZIP file
+
+    :param filepath: path to the file being checked
+    :return: True if filepath is a valid ZIP file, otherwise False
+    """
+    try:
+        with gzip.open(filepath) as g:
+            _ = g.read(1)
+        return True
+    except IOError:
+        return False
+
+
 def is_netcdffile(filepath):
     """Check whether a file path refers to a valid NetCDF file
 
@@ -173,18 +188,13 @@ def is_netcdffile(filepath):
             fh.close()
 
 
-def is_gzipfile(filepath):
-    """Check whether a file path refers to a valid ZIP file
+def is_nonemptyfile(filepath):
+    """Check whether a file path refers to a file with length greater than zero
 
     :param filepath: path to the file being checked
-    :return: True if filepath is a valid ZIP file, otherwise False
+    :return: True if filepath is non-zero, otherwise False
     """
-    try:
-        with gzip.open(filepath) as g:
-            _ = g.read(1)
-        return True
-    except IOError:
-        return False
+    return os.path.getsize(filepath) > 0
 
 
 def is_zipfile(filepath):
