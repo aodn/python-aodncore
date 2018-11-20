@@ -97,10 +97,13 @@ class FileType(Enum):
 
     Each enum member may have it's attributes accessed by name when required for comparisons and filtering, e.g.
 
-    - lookup the extension for PNG file types in general::
+    - lookup the extension and mime-type for PNG file types in general::
 
-        FileType.PNG.extension
-        '.png'
+        FileType.PNG.extensions
+        ('.png',)
+
+        FileType.PNG.mime_type
+        'image/png'
 
     - assign a type attribute to an object, and query the type-specific values directly from the object::
 
@@ -108,37 +111,37 @@ class FileType(Enum):
             pass
 
         o = Object()
-        o.file_type = FileType.ZIP
-        o.file_type.extension
-        '.zip'
+        o.file_type = FileType.JPEG
+        o.file_type.extensions
+        ('.jpg', '.jpeg')
         o.file_type.mime_type
-        'application/zip'
+        'image/jpeg'
     """
-    __slots__ = ('extension', 'mime_type')
+    __slots__ = ('extensions', 'mime_type')
 
     UNKNOWN = ()
 
-    CSV = ('.csv', 'text/csv')
-    GZIP = ('.gz', 'application/gzip')
-    JPEG = ('.jpg', 'image/jpeg')
-    PDF = ('.pdf', 'application/pdf')
-    PNG = ('.png', 'image/png')
-    ZIP = ('.zip', 'application/zip')
+    CSV = (('.csv',), 'text/csv')
+    GZIP = (('.gz',), 'application/gzip')
+    JPEG = (('.jpg', '.jpeg'), 'image/jpeg')
+    PDF = (('.pdf',), 'application/pdf')
+    PNG = (('.png',), 'image/png')
+    ZIP = (('.zip',), 'application/zip')
 
-    NETCDF = ('.nc', 'application/octet-stream')
-    DIR_MANIFEST = ('.dir_manifest', 'text/plain')
-    MAP_MANIFEST = ('.map_manifest', 'text/plain')
-    RSYNC_MANIFEST = ('.rsync_manifest', 'text/plain')
-    SIMPLE_MANIFEST = ('.manifest', 'text/plain')
+    NETCDF = (('.nc',), 'application/octet-stream')
+    DIR_MANIFEST = (('.dir_manifest',), 'text/plain')
+    MAP_MANIFEST = (('.map_manifest',), 'text/plain')
+    RSYNC_MANIFEST = (('.rsync_manifest',), 'text/plain')
+    SIMPLE_MANIFEST = (('.manifest',), 'text/plain')
 
-    def __init__(self, extension=None, mime_type=None):
-        self.extension = extension
+    def __init__(self, extensions=None, mime_type=None):
+        self.extensions = extensions
         self.mime_type = mime_type
 
     # noinspection PyTypeChecker
     @classmethod
     def get_type_from_extension(cls, extension):
-        return next((t for t in cls if t.extension == extension), cls.UNKNOWN)
+        return next((t for t in cls if t.extensions and extension.lower() in t.extensions), cls.UNKNOWN)
 
     @classmethod
     def get_type_from_name(cls, name):
