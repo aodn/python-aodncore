@@ -19,15 +19,15 @@ import operator
 
 try:
     from typeutils import make_sentinel
-
     _MISSING = make_sentinel(var_name='_MISSING')
 except ImportError:
     _MISSING = object()
 
-__all__ = ['IndexedSet', 'classproperty']
+
+__all__ = ['IndexedSet']
+
 
 _COMPACTION_FACTOR = 8
-
 
 # TODO: inherit from set()
 # TODO: .discard_many(), .remove_many()
@@ -80,7 +80,6 @@ class IndexedSet(MutableSet):
     Otherwise, the API strives to be as complete a union of the
     :class:`list` and :class:`set` APIs as possible.
     """
-
     def __init__(self, other=None):
         self.item_index_map = dict()
         self.item_list = []
@@ -288,7 +287,7 @@ class IndexedSet(MutableSet):
         ret = self.union(*others)
         return ret.difference(self.intersection(*others))
 
-    __or__ = __ror__ = union
+    __or__  = __ror__  = union
     __and__ = __rand__ = intersection
     __sub__ = __rsub__ = difference
     __xor__ = __rxor__ = symmetric_difference
@@ -420,17 +419,3 @@ class IndexedSet(MutableSet):
         except KeyError:
             cn = self.__class__.__name__
             raise ValueError('%r is not in %s' % (val, cn))
-
-
-class classproperty(object):
-    """Much like a :class:`property`, but the wrapped get function is a
-    class method.  For simplicity, only read-only properties are
-    implemented.
-    """
-
-    def __init__(self, fn):
-        self.fn = fn
-
-    def __get__(self, instance, cls):
-        return self.fn(cls)
-

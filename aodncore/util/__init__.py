@@ -1,4 +1,4 @@
-from .external import retry_decorator, IndexedSet, classproperty
+from .external import retry_decorator, IndexedSet, classproperty, lazyproperty
 from .fileops import (TemporaryDirectory, extract_gzip, extract_zip, get_file_checksum, is_dir_writable, is_gzipfile,
                       is_netcdffile, is_nonemptyfile, is_zipfile, list_regular_files, mkdir_p, rm_f, rm_r, rm_rf,
                       safe_copy_file, safe_move_file, validate_dir_writable, validate_file_writable)
@@ -38,6 +38,7 @@ __all__ = [
     'is_nonstring_iterable',
     'is_valid_email_address',
     'iter_public_attributes',
+    'lazyproperty',
     'matches_regexes',
     'merge_dicts',
     'list_regular_files',

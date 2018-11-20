@@ -19,11 +19,10 @@ from zipfile import ZipFile
 
 from tabulate import tabulate
 
-from aodncore.util import validate_bool, validate_type
 from .basestep import BaseStepRunner
 from ..common import (NotificationRecipientType, validate_recipienttype)
 from ..exceptions import InvalidRecipientError, NotificationFailedError
-from ...util import (IndexedSet, TemplateRenderer, format_exception, validate_bool, validate_dict,
+from ...util import (IndexedSet, TemplateRenderer, format_exception, lazyproperty, validate_bool, validate_dict,
                      validate_nonstring_iterable, validate_type)
 
 __all__ = [
@@ -87,28 +86,25 @@ class BaseNotifyRunner(BaseStepRunner):
     def run(self, notify_list):
         pass
 
-    @property
+    @lazyproperty
     def message_parts(self):
         """Returns a tuple containing the rendered text and HTML templates
 
         :return: tuple containing (text_part, html_part)
         """
-        if self._message_parts is None:
-            self._message_parts = self._render()
-        return self._message_parts
+        message_parts = self._render()
+        return message_parts
 
-    @property
+    @lazyproperty
     def template_values(self):
         """Assemble the template values from the supplied notification data and rendered file tables
 
         :return: dict containing final template values
         """
-        if self._template_values is None:
-            tables = self._get_file_tables()
-            template_values = self.notification_data.copy()
-            template_values.update(tables)
-            self._template_values = template_values
-        return self._template_values
+        tables = self._get_file_tables()
+        template_values = self.notification_data.copy()
+        template_values.update(tables)
+        return template_values
 
     @staticmethod
     def _get_html_input_file_table(table_data):

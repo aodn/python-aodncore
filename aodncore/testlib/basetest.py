@@ -32,7 +32,7 @@ class BaseTestCase(unittest.TestCase):
         if not hasattr(self, '_config'):
             self._config = get_test_config(self.temp_dir)
             for subdir in ('celery', 'harvest', 'process', 'watchservice'):
-                mkdir_p(os.path.join(self.config.pipeline_config['logging']['log_root'], subdir))
+                mkdir_p(os.path.join(self._config.pipeline_config['logging']['log_root'], subdir))
         return self._config
 
     @property

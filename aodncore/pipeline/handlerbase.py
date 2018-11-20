@@ -18,7 +18,7 @@ from .schema import (validate_check_params, validate_custom_params, validate_har
 from .statequery import StateQuery
 from .steps import (get_check_runner, get_harvester_runner, get_notify_runner, get_resolve_runner, get_store_runner)
 from ..util import (discover_entry_points, ensure_regex_list, ensure_writeonceordereddict, format_exception,
-                    get_file_checksum, iter_public_attributes, matches_regexes, merge_dicts,
+                    get_file_checksum, iter_public_attributes, lazyproperty, matches_regexes, merge_dicts,
                     validate_relative_path_attr, TemporaryDirectory)
 from ..version import __version__ as _aodncore_version
 
@@ -292,7 +292,6 @@ class HandlerBase(object):
                  ):
 
         # property backing variables
-        self._archive_store_runner_object = None
         self._config = None
         self._default_addition_publish_type = PipelineFilePublishType.HARVEST_UPLOAD
         self._default_deletion_publish_type = PipelineFilePublishType.DELETE_UNHARVEST
@@ -306,17 +305,13 @@ class HandlerBase(object):
         self._file_type = None
         self._include_regexes = None
         self._input_file_archive_path = None
-        self._input_file_object = None
         self._instance_working_directory = None
         self._notification_results = None
         self._is_archived = False
         self._logger = None
-        self._module_versions = None
         self._result = HandlerResult.UNKNOWN
         self._should_notify = None
         self._start_time = datetime.now()
-        self._state_query = None
-        self._upload_store_runner_object = None
 
         # public attributes
         self.input_file = input_file
@@ -511,16 +506,15 @@ class HandlerBase(object):
         validate_relative_path_attr(path, 'input_file_archive_path')
         self._input_file_archive_path = path
 
-    @property
+    @lazyproperty
     def input_file_object(self):
         """Read-only property to access the original input file represented as a PipelineFile object
 
         :return: input file object
         :rtype: :py:class:`PipelineFile`
         """
-        if not self._input_file_object:
-            self._input_file_object = PipelineFile(self.input_file, file_update_callback=self._file_update_callback)
-        return self._input_file_object
+        input_file_object = PipelineFile(self.input_file, file_update_callback=self._file_update_callback)
+        return input_file_object
 
     @property
     def logger(self):
@@ -532,19 +526,17 @@ class HandlerBase(object):
             self._init_logger()
         return self._logger
 
-    @property
+    @lazyproperty
     def module_versions(self):
         """Read-only property to access module versions
 
         :return: module version strings for aodncore, aodndata and compliance checker modules
         :rtype: :class:`dict`
         """
-        if self._module_versions is None:
-            versions = {'aodncore': _aodncore_version}
-            discovered_versions = discover_entry_points('pipeline.module_versions')
-            versions.update(discovered_versions)
-            self._module_versions = versions
-        return self._module_versions
+        versions = {'aodncore': _aodncore_version}
+        discovered_versions = discover_entry_points('pipeline.module_versions')
+        versions.update(discovered_versions)
+        return versions
 
     @property
     def notification_results(self):
@@ -583,7 +575,7 @@ class HandlerBase(object):
         """
         return self._start_time
 
-    @property
+    @lazyproperty
     def state_query(self):
         """Read-only property containing an initialised StateQuery instance, for querying existing pipeline state
 
@@ -663,29 +655,29 @@ class HandlerBase(object):
     # private properties
     #
 
-    @property
+    @lazyproperty
     def _archive_store_runner(self):
         """Private read-only property for accessing the instance's 'archive' store runner (for internal use only)
 
         :return: :py:class:`StoreRunner`
         """
-        if self._archive_store_runner_object is None:
-            self._archive_store_runner_object = get_store_runner(self._config.pipeline_config['global']['archive_uri'],
-                                                                 self._config, self.logger, archive_mode=True)
-            self.logger.sysinfo("get_store_runner (archive) -> {self._archive_store_runner_object}".format(self=self))
-        return self._archive_store_runner_object
+        archive_store_runner_object = get_store_runner(self._config.pipeline_config['global']['archive_uri'],
+                                                       self._config, self.logger, archive_mode=True)
+        self.logger.sysinfo("get_store_runner (archive) -> {archive_store_runner_object}".format(
+            archive_store_runner_object=archive_store_runner_object))
+        return archive_store_runner_object
 
-    @property
+    @lazyproperty
     def _upload_store_runner(self):
         """Private read-only property for accessing the instance 'upload' store runner (for internal use only)
 
         :return: :py:class:`StoreRunner`
         """
-        if self._upload_store_runner_object is None:
-            self._upload_store_runner_object = get_store_runner(self._config.pipeline_config['global']['upload_uri'],
-                                                                self._config, self.logger)
-            self.logger.sysinfo("get_store_runner (upload) -> {self._upload_store_runner_object}".format(self=self))
-        return self._upload_store_runner_object
+        upload_store_runner_object = get_store_runner(self._config.pipeline_config['global']['upload_uri'],
+                                                      self._config, self.logger)
+        self.logger.sysinfo("get_store_runner (upload) -> {upload_store_runner_object}".format(
+            upload_store_runner_object=upload_store_runner_object))
+        return upload_store_runner_object
 
     #
     # 'before' methods for ordered state machine transitions
