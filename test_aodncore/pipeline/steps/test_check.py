@@ -1,11 +1,10 @@
 import os
 from tempfile import mkstemp
-from uuid import uuid4
 
-from aodncore.pipeline import CheckResult, FileType, PipelineFileCheckType, PipelineFileCollection
+from aodncore.pipeline import CheckResult, PipelineFile, PipelineFileCheckType, PipelineFileCollection
 from aodncore.pipeline.exceptions import InvalidCheckTypeError, InvalidCheckSuiteError
 from aodncore.pipeline.steps.check import (get_child_check_runner, ComplianceCheckerCheckRunner, FormatCheckRunner,
-                                           NetcdfFormatCheckRunner, NonEmptyCheckRunner)
+                                           NonEmptyCheckRunner)
 from aodncore.testlib import BaseTestCase
 from test_aodncore import TESTDATA_DIR
 
@@ -114,22 +113,30 @@ class TestFormatCheckRunner(BaseTestCase):
         super(TestFormatCheckRunner, self).setUp()
         self.fc_runner = FormatCheckRunner(None, self.test_logger)
 
-    def test_get_format_check_runner(self):
-        nc_runner = self.fc_runner.get_format_check_runner(FileType.NETCDF)
-        self.assertIsInstance(nc_runner, NetcdfFormatCheckRunner)
+    def test_nc_file(self):
+        nc_file = PipelineFile(GOOD_NC)
+        nc_file.check_type = PipelineFileCheckType.FORMAT_CHECK
+        collection = PipelineFileCollection(nc_file)
+        self.fc_runner.run(collection)
 
-        ne_runner = self.fc_runner.get_format_check_runner(str(uuid4()))
-        self.assertIsInstance(ne_runner, NonEmptyCheckRunner)
+        self.assertTrue(nc_file.is_checked)
+        self.assertTrue(nc_file.check_passed)
+        self.assertSequenceEqual([], nc_file.check_result.log)
 
     def test_nc_and_txt(self):
         _, temp_txt_file = mkstemp(suffix='.txt', prefix=self.__class__.__name__, dir=self.temp_dir)
         _, temp_invalid_nc_file = mkstemp(suffix='.nc', prefix=self.__class__.__name__, dir=self.temp_dir)
-        collection = PipelineFileCollection([GOOD_NC, BAD_NC, temp_txt_file, temp_invalid_nc_file])
+
+        txt = PipelineFile(temp_txt_file)
+        txt.check_type = PipelineFileCheckType.FORMAT_CHECK
+        nc = PipelineFile(temp_invalid_nc_file)
+        nc.check_type = PipelineFileCheckType.FORMAT_CHECK
+
+        collection = PipelineFileCollection([txt, nc])
         self.fc_runner.run(collection)
 
-
-class TestNetcdfFormatCheckRunner(BaseTestCase):
-    pass
+        self.assertFalse(txt.check_result.compliant)
+        self.assertFalse(nc.check_result.compliant)
 
 
 class TestNonEmptyCheckRunner(BaseTestCase):
@@ -138,21 +145,22 @@ class TestNonEmptyCheckRunner(BaseTestCase):
         self.ne_runner = NonEmptyCheckRunner(None, self.test_logger)
 
     def test_nonempty_file(self):
-        collection = PipelineFileCollection([GOOD_NC])
+        ne_file = PipelineFile(GOOD_NC)
+        collection = PipelineFileCollection(ne_file)
         self.ne_runner.run(collection)
 
-        check_result = collection[0].check_result
+        check_result = ne_file.check_result
 
-        self.assertIsInstance(check_result, CheckResult)
         self.assertTrue(check_result.compliant)
         self.assertFalse(check_result.errors)
-        self.assertEqual(check_result.log, [])
+        self.assertSequenceEqual(check_result.log, tuple())
 
     def test_empty_file(self):
-        collection = PipelineFileCollection([EMPTY_NC])
+        empty_file = PipelineFile(EMPTY_NC)
+        collection = PipelineFileCollection(empty_file)
         self.ne_runner.run(collection)
 
-        check_result = collection[0].check_result
+        check_result = empty_file.check_result
 
         self.assertIsInstance(check_result, CheckResult)
         self.assertFalse(check_result.compliant)

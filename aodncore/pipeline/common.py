@@ -6,7 +6,8 @@ import os
 
 from enum import Enum
 
-from ..util import classproperty, is_valid_email_address, iter_public_attributes, validate_membership, validate_type
+from ..util import (classproperty, is_gzipfile, is_netcdffile, is_nonemptyfile, is_valid_email_address, is_zipfile,
+                    iter_public_attributes, validate_membership, validate_type)
 
 __all__ = [
     'CheckResult',
@@ -93,7 +94,7 @@ class NotificationRecipientType(Enum):
 
 
 class FileType(Enum):
-    """Represents each known file type, including extension and mime type
+    """Represents each known file type, including extensions, mime type and validator function
 
     Each enum member may have it's attributes accessed by name when required for comparisons and filtering, e.g.
 
@@ -116,32 +117,38 @@ class FileType(Enum):
         ('.jpg', '.jpeg')
         o.file_type.mime_type
         'image/jpeg'
+
+    The function referenced by validator must accept a single parameter, which is the path to file being checked, and
+    return True if the path represents a valid file of that type. For example, this would typically attempt to
+    open/parse/read the file using a corresponding library (e.g. an NC file can be opened as a valid Dataset by the
+    NetCDF library, a ZIP file can be read using the zipfile module etc.). If
     """
-    __slots__ = ('extensions', 'mime_type')
+    __slots__ = ('extensions', 'mime_type', 'validator')
 
-    UNKNOWN = ()
+    UNKNOWN = ((), None, is_nonemptyfile)
 
-    CSV = (('.csv',), 'text/csv')
-    GZIP = (('.gz',), 'application/gzip')
-    JPEG = (('.jpg', '.jpeg'), 'image/jpeg')
-    PDF = (('.pdf',), 'application/pdf')
-    PNG = (('.png',), 'image/png')
-    ZIP = (('.zip',), 'application/zip')
+    CSV = (('.csv',), 'text/csv', is_nonemptyfile)
+    GZIP = (('.gz',), 'application/gzip', is_gzipfile)
+    JPEG = (('.jpg', '.jpeg'), 'image/jpeg', is_nonemptyfile)
+    PDF = (('.pdf',), 'application/pdf', is_nonemptyfile)
+    PNG = (('.png',), 'image/png', is_nonemptyfile)
+    ZIP = (('.zip',), 'application/zip', is_zipfile)
 
-    NETCDF = (('.nc',), 'application/octet-stream')
-    DIR_MANIFEST = (('.dir_manifest',), 'text/plain')
-    MAP_MANIFEST = (('.map_manifest',), 'text/plain')
-    RSYNC_MANIFEST = (('.rsync_manifest',), 'text/plain')
-    SIMPLE_MANIFEST = (('.manifest',), 'text/plain')
+    NETCDF = (('.nc',), 'application/octet-stream', is_netcdffile)
+    DIR_MANIFEST = (('.dir_manifest',), 'text/plain', is_nonemptyfile)
+    MAP_MANIFEST = (('.map_manifest',), 'text/plain', is_nonemptyfile)
+    RSYNC_MANIFEST = (('.rsync_manifest',), 'text/plain', is_nonemptyfile)
+    SIMPLE_MANIFEST = (('.manifest',), 'text/plain', is_nonemptyfile)
 
-    def __init__(self, extensions=None, mime_type=None):
+    def __init__(self, extensions, mime_type, validator):
         self.extensions = extensions
         self.mime_type = mime_type
+        self.validator = validator
 
     # noinspection PyTypeChecker
     @classmethod
     def get_type_from_extension(cls, extension):
-        return next((t for t in cls if t.extensions and extension.lower() in t.extensions), cls.UNKNOWN)
+        return next((t for t in cls if extension.lower() in t.extensions), cls.UNKNOWN)
 
     @classmethod
     def get_type_from_name(cls, name):
