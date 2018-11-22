@@ -54,14 +54,16 @@ class WfsBroker(object):
         """
         return self._wfs
 
-    def getfeature_dict(self, **kwargs):
+    def getfeature_dict(self, typename, **kwargs):
         """Make a GetFeature request, and return the response in a native dict
 
+        :param typename: name (or list of names) of layer to query
         :param kwargs: keyword arguments passed to the underlying WebFeatureService.getfeature method
         :return: dict containing the parsed GetFeature response
         """
+        type_list = typename if isinstance(typename, list) else  [typename]
         kwargs.pop('outputFormat', None)
-        response = self.wfs.getfeature(outputFormat='json', **kwargs)
+        response = self.wfs.getfeature(type_list, outputFormat='json', **kwargs)
         response_body = response.getvalue()
         try:
             return json.loads(response_body, object_pairs_hook=OrderedDict)
