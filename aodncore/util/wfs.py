@@ -5,7 +5,7 @@ from owslib.etree import etree
 from owslib.fes import PropertyIsEqualTo
 from owslib.wfs import WebFeatureService
 
-from ..util import IndexedSet
+from ..util import IndexedSet, is_nonstring_iterable
 
 __all__ = [
     'WfsBroker',
@@ -54,21 +54,29 @@ class WfsBroker(object):
         """
         return self._wfs
 
-    def getfeature_dict(self, typename, **kwargs):
+    def getfeature_dict(self, **kwargs):
         """Make a GetFeature request, and return the response in a native dict
 
-        :param typename: name (or list of names) of layer to query
         :param kwargs: keyword arguments passed to the underlying WebFeatureService.getfeature method
         :return: dict containing the parsed GetFeature response
         """
-        type_list = typename if isinstance(typename, list) else  [typename]
         kwargs.pop('outputFormat', None)
-        response = self.wfs.getfeature(type_list, outputFormat='json', **kwargs)
+        response = self.wfs.getfeature(outputFormat='json', **kwargs)
         response_body = response.getvalue()
         try:
             return json.loads(response_body, object_pairs_hook=OrderedDict)
         finally:
             response.close()
+
+    def getfeature_dict_layer(self, typename, **kwargs):
+        """Make a GetFeature request for the given layer(s), and return the response in a native dict
+
+        :param typename: name (or list of names) of layer to query
+        :param kwargs: keyword arguments passed to the underlying WebFeatureService.getfeature method
+        :return: dict containing the parsed GetFeature response
+        """
+        type_list = list(typename) if is_nonstring_iterable else [typename]
+        return self.getfeature_dict(typename=type_list, **kwargs)
 
     def get_url_property_name_for_layer(self, layer):
         """Get the URL property name for a given layer
