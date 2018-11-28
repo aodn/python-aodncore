@@ -133,6 +133,7 @@ class FileType(Enum):
     PDF = (('.pdf',), 'application/pdf', is_nonemptyfile)
     PNG = (('.png',), 'image/png', is_nonemptyfile)
     ZIP = (('.zip',), 'application/zip', is_zipfile)
+    TIFF = (('.tif', '.tiff'), 'image/tiff', is_nonemptyfile)
 
     NETCDF = (('.nc',), 'application/octet-stream', is_netcdffile)
     DIR_MANIFEST = (('.dir_manifest',), 'text/plain', is_nonemptyfile)
