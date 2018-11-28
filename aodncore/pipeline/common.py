@@ -156,6 +156,11 @@ class FileType(Enum):
         _, extension = os.path.splitext(name)
         return cls.get_type_from_extension(extension)
 
+    @property
+    def is_image_type(self):
+        """Read-only boolean property indicating whether the file type instance is an image type."""
+        return self.mime_type and self.mime_type.startswith('image/')
+
 
 class PipelineFileCheckType(Enum):
     """Each :py:class:`PipelineFile` may individually specify which checks are performed against it
