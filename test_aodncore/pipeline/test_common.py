@@ -39,7 +39,14 @@ class TestFileType(BaseTestCase):
         unknown_type = FileType.get_type_from_name(random_filename)
         self.assertIs(unknown_type, FileType.UNKNOWN)
 
-    def test_is_image(self):
+    def test_is_type(self):
+        self.assertTrue(FileType.CSV.is_type('text'))
+        self.assertTrue(FileType.NETCDF.is_type('application'))
+
+        self.assertFalse(FileType.JPEG.is_type('text'))
+        self.assertFalse(FileType.ZIP.is_type('image'))
+
+    def test_is_image_type(self):
         self.assertTrue(FileType.JPEG.is_image_type)
         self.assertTrue(FileType.TIFF.is_image_type)
 
