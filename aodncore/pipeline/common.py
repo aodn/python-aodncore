@@ -133,6 +133,7 @@ class FileType(Enum):
     PDF = (('.pdf',), 'application/pdf', is_nonemptyfile)
     PNG = (('.png',), 'image/png', is_nonemptyfile)
     ZIP = (('.zip',), 'application/zip', is_zipfile)
+    TIFF = (('.tif', '.tiff'), 'image/tiff', is_nonemptyfile)
 
     NETCDF = (('.nc',), 'application/octet-stream', is_netcdffile)
     DIR_MANIFEST = (('.dir_manifest',), 'text/plain', is_nonemptyfile)
@@ -154,6 +155,22 @@ class FileType(Enum):
     def get_type_from_name(cls, name):
         _, extension = os.path.splitext(name)
         return cls.get_type_from_extension(extension)
+
+    def is_type(self, value):
+        """Check whether the *type* (i.e. the information before the slash) equals the given value
+
+        :param value: type to compare against
+        :return: True if this type matches the given value, otherwise False
+        """
+        if self.mime_type is None:
+            return False
+        type_, subtype = self.mime_type.split('/')
+        return type_ == value
+
+    @property
+    def is_image_type(self):
+        """Read-only boolean property indicating whether the file type instance is an image type."""
+        return self.is_type('image')
 
 
 class PipelineFileCheckType(Enum):
