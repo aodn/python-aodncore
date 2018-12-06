@@ -582,10 +582,8 @@ class HandlerBase(object):
         :return: StateQuery instance
         :rtype: :py:class:`StateQuery`
         """
-        if self._state_query is None:
-            self._state_query = StateQuery(storage_broker=self._upload_store_runner.broker,
-                                           wfs_url=self.config.pipeline_config['global'].get('wfs_url'))
-        return self._state_query
+        return StateQuery(storage_broker=self._upload_store_runner.broker,
+                          wfs_url=self.config.pipeline_config['global'].get('wfs_url'))
 
     @property
     def default_addition_publish_type(self):
