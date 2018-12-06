@@ -13,7 +13,6 @@ env:
     - CC_PLUGIN_IMOS_URL="jenkins://imos-binary/cc_plugin_imos_prod?pattern=^.*\.whl$"
 
 before_install:
-  - pip install --install-option="--no-cython-compile" cython
   - pip install ${AODNFETCHER_URL}
 
 install:
