@@ -91,8 +91,10 @@ ENV/
 .idea/**/workspace.xml
 .idea/**/tasks.xml
 .idea/dictionaries
+.idea/encodings.xml
 .idea/misc.xml
 .idea/modules.xml
+.idea/vcs.xml
 .idea/python-aodncore.iml
 
 # Sensitive or high-churn files:
