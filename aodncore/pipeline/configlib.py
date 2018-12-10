@@ -53,7 +53,7 @@ class LazyConfigManager(object):
             task_name = get_task_name(self.pipeline_config['watch']['task_namespace'], name)
             queue_dict = {'queue': name, 'routing_key': name}
             routes[task_name] = queue_dict
-            return routes
+        return routes
 
     @lazyproperty
     def discovered_dest_path_functions(self):

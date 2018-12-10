@@ -126,6 +126,15 @@ REFERENCE_WATCH_CONFIG = {
         ],
         "error_exit_policies": [
         ]
+    },
+    "SOOP_DU_JOUR": {
+        "path": [
+            "SOOP/DU/JOUR",
+            "SOOP/A/L/OIGNON"
+        ],
+        "handler": "DummyHandler",
+        "params": {
+        }
     }
 }
 
@@ -138,12 +147,29 @@ class TestLazyConfigManager(BaseTestCase):
         app = self.config.celery_application
         self.assertIsInstance(app, Celery)
 
-    def test_logging_config(self):
-        logging_config = self.config.worker_logging_config
-        pass
+    def test_celery_routes(self):
+        expected_routes = {
+            'tasks.ANMN_QLD_XXXX': {'queue': 'ANMN_QLD_XXXX', 'routing_key': 'ANMN_QLD_XXXX'},
+            'tasks.SOOP_DU_JOUR': {'queue': 'SOOP_DU_JOUR', 'routing_key': 'SOOP_DU_JOUR'}
+        }
+        self.assertDictEqual(expected_routes, self.config.celery_routes)
+
+    def test_watchservice_logging_config(self):
+        watchservice_logging_config = self.config.watchservice_logging_config
+
+        self.assertIn('watchservice_handler', watchservice_logging_config['handlers'].keys())
+
+    def test_worker_logging_config(self):
+        worker_logging_config = self.config.worker_logging_config
+        expected_logging_handlers = ['tasks.ANMN_QLD_XXXX_handler', 'tasks.SOOP_DU_JOUR_handler']
+        self.assertItemsEqual(expected_logging_handlers, worker_logging_config['handlers'].keys())
 
     def test_watch_directory_map(self):
-        expected_map = {os.path.join(self.config.pipeline_config['watch']['incoming_dir'], 'ANMN/QLD/XXXX'): 'ANMN_QLD_XXXX'}
+        expected_map = {
+            os.path.join(self.config.pipeline_config['watch']['incoming_dir'], 'ANMN/QLD/XXXX'): 'ANMN_QLD_XXXX',
+            os.path.join(self.config.pipeline_config['watch']['incoming_dir'], 'SOOP/DU/JOUR'): 'SOOP_DU_JOUR',
+            os.path.join(self.config.pipeline_config['watch']['incoming_dir'], 'SOOP/A/L/OIGNON'): 'SOOP_DU_JOUR'
+        }
         self.assertDictEqual(expected_map, self.config.watch_directory_map)
 
 
