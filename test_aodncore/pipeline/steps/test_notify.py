@@ -86,7 +86,7 @@ class TestEmailNotifyRunner(BaseTestCase):
         self.notify_list.add(recipient)
         self.email_runner.run(self.notify_list)
 
-        mock_smtp.return_value.sendmail.assert_called_once()
+        self.assertEqual(1, mock_smtp.return_value.sendmail.call_count)
         self.assertTrue(recipient.notification_succeeded)
         self.assertIsNone(recipient.error)
 
@@ -132,7 +132,7 @@ class TestEmailNotifyRunner(BaseTestCase):
         self.notify_list.add(recipient2)
         self.email_runner.run(self.notify_list)
 
-        mock_smtp.return_value.sendmail.assert_called_once()
+        self.assertEqual(1, mock_smtp.return_value.sendmail.call_count)
         self.assertFalse(recipient1.notification_succeeded)
         self.assertIsNotNone(recipient1.error)
         self.assertTrue(recipient2.notification_succeeded)
@@ -153,7 +153,7 @@ class TestEmailNotifyRunner(BaseTestCase):
         self.notify_list.add(recipient2)
         self.email_runner.run(self.notify_list)
 
-        mock_smtp.return_value.sendmail.assert_called_once()
+        self.assertEqual(1, mock_smtp.return_value.sendmail.call_count)
         self.assertFalse(recipient1.notification_succeeded)
         self.assertFalse(recipient2.notification_succeeded)
 
