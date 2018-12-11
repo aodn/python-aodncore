@@ -69,7 +69,7 @@ class HarvesterMap(object):
 
         :return: list of all :py:class:`TriggerEvent` instances from all harvesters
         """
-        return itertools.chain.from_iterable(list(self._map.values()))
+        return itertools.chain.from_iterable(self._map.values())
 
     @property
     def all_pipeline_files(self):

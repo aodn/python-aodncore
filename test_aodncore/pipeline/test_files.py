@@ -41,7 +41,7 @@ class TestPipelineFile(BaseTestCase):
         check_runner = get_child_check_runner(PipelineFileCheckType.NC_COMPLIANCE_CHECK, None, self.test_logger,
                                               {'checks': ['cf']})
         check_runner.run(PipelineFileCollection(self.pipelinefile))
-        assertCountEqual(self, list(dict(self.pipelinefile.check_result).keys()), ['compliant', 'errors', 'log'])
+        assertCountEqual(self, dict(self.pipelinefile.check_result).keys(), ['compliant', 'errors', 'log'])
 
     def test_equal_files(self):
         duplicate_file = PipelineFile(GOOD_NC)
@@ -57,7 +57,7 @@ class TestPipelineFile(BaseTestCase):
         # Test file format checking
         check_runner = get_child_check_runner(PipelineFileCheckType.FORMAT_CHECK, None, self.test_logger)
         check_runner.run(PipelineFileCollection(self.pipelinefile))
-        assertCountEqual(self, list(dict(self.pipelinefile.check_result).keys()), ['compliant', 'errors', 'log'])
+        assertCountEqual(self, dict(self.pipelinefile.check_result).keys(), ['compliant', 'errors', 'log'])
 
     def test_nonexistent_attribute(self):
         nonexistent_attribute = str(uuid.uuid4())
