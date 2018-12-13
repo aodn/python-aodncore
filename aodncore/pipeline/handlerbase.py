@@ -903,6 +903,10 @@ class HandlerBase(object):
                 if not isinstance(exception, (InvalidConfigError, MissingConfigParameterError)):
                     should_notify.extend(notify_params_dict.get('owner_notify_list', []))
 
+                if notify_params_dict.get('error_notify_list'):
+                    self.logger.warning("exception is not a user-correctable problem, "
+                                        "excluding 'error_notify_list' from notification")
+
             else:
                 self.logger.error(format_exception(exception))
                 self._error_details = str(exception)
