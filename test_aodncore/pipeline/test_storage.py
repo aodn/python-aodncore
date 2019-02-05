@@ -4,6 +4,7 @@ import os
 import re
 import tempfile
 from httplib import IncompleteRead
+from ssl import SSLError
 from uuid import uuid4
 
 from botocore.exceptions import ClientError
@@ -722,6 +723,9 @@ class TestS3StorageBroker(BaseTestCase):
             with mock.patch('aodncore.util.external.retry.api.time.sleep', new=lambda x: None):
                 _ = s3_storage_broker.query('Department_of_Defence/DSTG/slocum_glider/Perth')
 
+        self.assertEqual(s3_storage_broker.s3_client.list_objects_v2.call_count,
+                         s3_storage_broker.retry_kwargs['tries'])
+
     @mock.patch('aodncore.pipeline.storage.boto3')
     def test_query_error_incomplete_read(self, mock_boto3):
         dummy_error = IncompleteRead('')
@@ -731,6 +735,38 @@ class TestS3StorageBroker(BaseTestCase):
         with self.assertRaises(StorageBrokerError):
             with mock.patch('aodncore.util.external.retry.api.time.sleep', new=lambda x: None):
                 _ = s3_storage_broker.query('Department_of_Defence/DSTG/slocum_glider/Perth')
+
+        self.assertEqual(s3_storage_broker.s3_client.list_objects_v2.call_count,
+                         s3_storage_broker.retry_kwargs['tries'])
+
+    @mock.patch('aodncore.pipeline.storage.boto3')
+    def test_query_error_ssl_error(self, mock_boto3):
+        dummy_error = SSLError('The read operation timed out',)
+        mock_boto3.client().list_objects_v2.side_effect = dummy_error
+
+        s3_storage_broker = S3StorageBroker('imos-data', '')
+        with self.assertRaises(StorageBrokerError):
+            with mock.patch('aodncore.util.external.retry.api.time.sleep', new=lambda x: None):
+                _ = s3_storage_broker.query('Department_of_Defence/DSTG/slocum_glider/Perth')
+
+        self.assertEqual(s3_storage_broker.s3_client.list_objects_v2.call_count,
+                         s3_storage_broker.retry_kwargs['tries'])
+
+    @mock.patch('aodncore.pipeline.storage.boto3')
+    def test_query_error_unlisted_exception_has_no_retries(self, mock_boto3):
+        class CustomException(Exception):
+            pass
+
+        dummy_error = CustomException('should not be retried')
+        mock_boto3.client().list_objects_v2.side_effect = dummy_error
+
+        s3_storage_broker = S3StorageBroker('imos-data', '')
+        with self.assertRaises(StorageBrokerError):
+            with mock.patch('aodncore.util.external.retry.api.time.sleep', new=lambda x: None):
+                _ = s3_storage_broker.query('Department_of_Defence/DSTG/slocum_glider/Perth')
+
+        # should *not* be retried, so attempts should always be 1
+        self.assertEqual(s3_storage_broker.s3_client.list_objects_v2.call_count, 1)
 
 
 # noinspection PyUnusedLocal
