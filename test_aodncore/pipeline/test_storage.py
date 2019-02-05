@@ -3,6 +3,7 @@ import errno
 import os
 import re
 import tempfile
+from httplib import IncompleteRead
 from uuid import uuid4
 
 from botocore.exceptions import ClientError
@@ -712,8 +713,18 @@ class TestS3StorageBroker(BaseTestCase):
         self.assertDictEqual(result, {})
 
     @mock.patch('aodncore.pipeline.storage.boto3')
-    def test_query_error(self, mock_boto3):
+    def test_query_error_client_error(self, mock_boto3):
         dummy_error = ClientError({'Error': {'Code': 'ServiceUnavailable'}}, 'ListObjects')
+        mock_boto3.client().list_objects_v2.side_effect = dummy_error
+
+        s3_storage_broker = S3StorageBroker('imos-data', '')
+        with self.assertRaises(StorageBrokerError):
+            with mock.patch('aodncore.util.external.retry.api.time.sleep', new=lambda x: None):
+                _ = s3_storage_broker.query('Department_of_Defence/DSTG/slocum_glider/Perth')
+
+    @mock.patch('aodncore.pipeline.storage.boto3')
+    def test_query_error_incomplete_read(self, mock_boto3):
+        dummy_error = IncompleteRead('')
         mock_boto3.client().list_objects_v2.side_effect = dummy_error
 
         s3_storage_broker = S3StorageBroker('imos-data', '')
