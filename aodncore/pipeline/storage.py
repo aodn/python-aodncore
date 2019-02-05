@@ -2,6 +2,8 @@ import abc
 import errno
 import os
 from datetime import datetime
+from httplib import IncompleteRead
+from ssl import SSLError
 
 import boto3
 from botocore.exceptions import ClientError, ConnectionError
@@ -257,7 +259,7 @@ class S3StorageBroker(BaseStorageBroker):
         'tries': 3,
         'delay': 5,
         'backoff': 2,
-        'exceptions': (ClientError, ConnectionError)
+        'exceptions': (ClientError, ConnectionError, IncompleteRead, SSLError)
     }
 
     def __init__(self, bucket, prefix):
