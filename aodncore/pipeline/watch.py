@@ -271,8 +271,8 @@ class CeleryContext(object):
             except KeyError:
                 raise InvalidHandlerError(
                     "handler not found in discovered handlers. "
-                    "{items['handler']} not in {available_handler_names}".format(items=items,
-                                                                                 available_handler_names=available_handler_names))
+                    "{items[handler]} not in {available_handler_names}".format(items=items,
+                                                                               available_handler_names=available_handler_names))
 
             params = items.get('params', {})
             success_exit_policies = ExitPolicy.from_names(items.get('success_exit_policies', []))
@@ -281,7 +281,7 @@ class CeleryContext(object):
             try:
                 _ = handler_class('', config=self._config, **params)
             except TypeError as e:
-                warnings.warn("invalid parameters for pipeline '{pipeline}', handler '{items['handler']}': {e}".format(
+                warnings.warn("invalid parameters for pipeline '{pipeline}', handler '{items[handler]}': {e}".format(
                     pipeline=pipeline_name, items=items, e=format_exception(e)))
             else:
                 task_object = build_task(self._config, pipeline_name, handler_class, success_exit_policies,
