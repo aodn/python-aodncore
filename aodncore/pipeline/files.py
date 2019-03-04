@@ -171,6 +171,10 @@ class PipelineFile(object):
     def check_result(self, check_result):
         validate_checkresult(check_result)
 
+        if check_result.path != self.src_path:
+            raise ValueError("invalid check result. CheckResult.path must match "
+                             "PipelineFile.src_path attribute, '{self.src_path}'".format(self=self))
+
         self._is_checked = True
         self._check_result = check_result
         self._post_property_update({'is_checked': True})

@@ -10,7 +10,9 @@ The most common use of this step is to test for compliance using the IOOS Compli
 import abc
 import itertools
 import os
+from functools import partial
 
+from billiard.pool import Pool
 from compliance_checker.runner import ComplianceChecker, CheckSuite
 
 from .basestep import BaseStepRunner
@@ -20,13 +22,18 @@ from ..files import PipelineFileCollection
 from ...util import format_exception, is_netcdffile, is_nonemptyfile, CaptureStdIO
 
 __all__ = [
+    'get_async_compliance_checker_broker',
     'get_check_runner',
     'get_child_check_runner',
+    'run_compliance_checks',
     'CheckRunnerAdapter',
     'ComplianceCheckerCheckRunner',
     'FormatCheckRunner',
+    'MultiprocessingAsyncComplianceCheckerBroker',
     'NonEmptyCheckRunner'
 ]
+
+CheckSuite.load_all_available_checkers()
 
 
 def get_check_runner(config, logger, check_params=None):
@@ -52,6 +59,18 @@ def get_child_check_runner(check_type, config, logger, check_params=None):
         return NonEmptyCheckRunner(config, logger)
     else:
         raise InvalidCheckTypeError("invalid check type '{check_type}'".format(check_type=check_type))
+
+
+def get_async_compliance_checker_broker(async_mode, config, logger, check_params=None):
+    """Factory function to return appropriate asynchronous Compliance Checker runner class based on async_mode value
+    """
+    if async_mode == 'pool':
+        return MultiprocessingAsyncComplianceCheckerBroker(config, logger, check_params, pool_class=Pool)
+    elif async_mode == 'celery':
+        # TODO: implement celery backend based on as yet undeveloped 'checkservice'
+        raise NotImplementedError
+    else:
+        raise ValueError("invalid async_mode '{async_mode}'".format(async_mode=async_mode))
 
 
 class BaseCheckRunner(BaseStepRunner):
@@ -106,73 +125,32 @@ class CheckRunnerAdapter(BaseCheckRunner):
                 "the following files failed the check step: {failed_list}".format(failed_list=failed_list))
 
 
-class ComplianceCheckerCheckRunner(BaseCheckRunner):
-    def __init__(self, config, logger, check_params=None):
-        super(ComplianceCheckerCheckRunner, self).__init__(config, logger)
-        if check_params is None:
-            check_params = {}
+def run_compliance_checks(file_path, checks, verbosity=0, criteria='normal', skip_checks=None, output_format='text'):
+    """Run the given check suites on the given file, and consolidate the results into a single result
 
-        self.checks = check_params.get('checks', None)
-        self.verbosity = check_params.get('verbosity', 0)
-        self.criteria = check_params.get('criteria', 'normal')
-        self.skip_checks = check_params.get('skip_checks', None)
-        self.output_format = check_params.get('output_format', 'text')
+    Note: this function deliberately avoids references to PipelineFile objects, so that it can be more easily used
+        by the asynchronous processing backends
 
-        if not self.checks:
-            raise InvalidCheckSuiteError('compliance check requested but no check suite specified')
+    :return: :py:class:`aodncore.pipeline.CheckResult` object
+    """
+    if not checks:
+        raise InvalidCheckSuiteError('compliance check requested but no check suite(s) specified')
 
-        CheckSuite.load_all_available_checkers()
+    # first check that it is a valid NetCDF format file
+    if not is_netcdffile(file_path):
+        compliance_log = ("invalid NetCDF file",)
+        overall_result = CheckResult(file_path, False, compliance_log)
+        return overall_result
 
-        # workaround a possible bug in the compliance checker where invalid check suites are ignored
-        available_checkers = set(CheckSuite.checkers)
-        these_checkers = set(self.checks)
-        if not these_checkers.issubset(available_checkers):
-            invalid_suites = list(these_checkers.difference(available_checkers))
-            raise InvalidCheckSuiteError(
-                'invalid compliance check suites: {invalid_suites}'.format(invalid_suites=invalid_suites))
-
-    def __repr__(self):
-        return "{self.__class__.__name__}(checks={self.checks})".format(self=self)
-
-    def run(self, pipeline_files):
-        if self.skip_checks:
-            self._logger.info("compliance checks will skip {self.skip_checks}".format(self=self))
-
-        for pipeline_file in pipeline_files:
-            self._logger.info("checking compliance of '{pipeline_file.src_path}' "
-                              "against {self.checks}".format(pipeline_file=pipeline_file, self=self))
-
-            # first check that it is a valid NetCDF format file
-            if not is_netcdffile(pipeline_file.src_path):
-                compliance_log = ("invalid NetCDF file",)
-                pipeline_file.check_result = CheckResult(False, compliance_log)
-                continue
-
-            check_results = []
-            for check in self.checks:
-                check_results.append(self._run_check(pipeline_file.src_path, check))
-
-            compliant = all(r.compliant for r in check_results)
-            compliance_log = list(itertools.chain.from_iterable(r.log for r in check_results))
-            errors = any(r.errors for r in check_results)
-
-            pipeline_file.check_result = CheckResult(compliant, compliance_log, errors)
-
-    def _run_check(self, file_path, check):
-        """
-        Run a single check suite on the given file.
-
-        :param str file_path: Full path to the file
-        :param str check: Name of check suite to run.
-        :return: :py:class:`aodncore.pipeline.CheckResult` object
-        """
+    check_results = []
+    for check in checks:
         stdout_log = []
         stderr_log = []
         try:
             with CaptureStdIO() as (stdout_log, stderr_log):
                 compliant, errors = ComplianceChecker.run_checker(file_path, [check],
-                                                                  self.verbosity, self.criteria, self.skip_checks,
-                                                                  output_format=self.output_format)
+                                                                  verbosity, criteria, skip_checks,
+                                                                  output_format=output_format)
         except Exception as e:  # pragma: no cover
             errors = True
             stderr_log.extend([
@@ -188,7 +166,131 @@ class ComplianceCheckerCheckRunner(BaseCheckRunner):
             compliance_log.extend(stdout_log)
             compliance_log.extend(stderr_log)
 
-        return CheckResult(compliant, compliance_log, errors)
+        check_results.append(CheckResult(file_path, compliant, compliance_log, errors))
+
+    # check results
+    compliant = all(r.compliant for r in check_results)
+    compliance_log = list(itertools.chain.from_iterable(r.log for r in check_results))
+    errors = any(r.errors for r in check_results)
+
+    overall_result = CheckResult(file_path, compliant, compliance_log, errors)
+    return overall_result
+
+
+class BaseAsyncComplianceCheckerBroker(object):
+    """This base class contains the common logic for submitting compliance checking tasks to asynchronous backends.
+    """
+    __metaclass__ = abc.ABCMeta
+
+    def __init__(self, config, logger, check_params=None):
+        if check_params is None:
+            check_params = {}
+
+        self.config = config
+        self.logger = logger
+        self._check_params = check_params
+
+        self.checks = check_params.get('checks')
+        self.verbosity = check_params.get('verbosity', 0)
+        self.criteria = check_params.get('criteria', 'normal')
+        self.skip_checks = check_params.get('skip_checks')
+        self.output_format = check_params.get('output_format', 'text')
+
+        self._check_function = partial(run_compliance_checks,
+                                       checks=self.checks,
+                                       verbosity=self.verbosity,
+                                       criteria=self.criteria,
+                                       skip_checks=self.skip_checks,
+                                       output_format=self.output_format)
+
+    def __repr__(self):
+        return "{self.__class__.__name__}(check_params={self._check_params})".format(self=self)
+
+    def _checker_callback(self, check_result):
+        self.logger.info("completed compliance check of '{check_result.path}', "
+                         "compliant: {check_result.compliant}".format(check_result=check_result))
+
+    @abc.abstractmethod
+    def _run(self, pipeline_files):
+        """The child classes must override _run, and are expected to return an ordered list of CheckResult instances,
+        corresponding to the input PipelineFileCollection
+
+        :param pipeline_files: :py:class:`aodncore.pipeline.PipelineFileCollection`
+        :return: None
+        """
+        pass
+
+    def run(self, pipeline_files):
+        check_results = self._run(pipeline_files)
+        for check_result, pipeline_file in zip(check_results, pipeline_files):
+            pipeline_file.check_result = check_result
+
+
+class MultiprocessingAsyncComplianceCheckerBroker(BaseAsyncComplianceCheckerBroker):
+    """Broker for delegating executions of the check function to the standard *Pool classes of the multiprocessing
+    module (typically Pool or ThreadPool)
+    """
+
+    def __init__(self, config, logger, check_params, pool_class=Pool):
+        super(MultiprocessingAsyncComplianceCheckerBroker, self).__init__(config, logger, check_params)
+        self.pool_class = pool_class
+        self.pool_process_count = config.pipeline_config.get('check', {}).get('pool_process_count', 1)
+
+    def __repr__(self):
+        return ("{self.__class__.__name__}(check_params={self._check_params}, "
+                "pool_class={self.pool_class.__name__})").format(self=self)
+
+    def _run(self, pipeline_files):
+        pool = self.pool_class(self.pool_process_count)
+        results = [pool.apply_async(self._check_function, (pf.src_path,), callback=self._checker_callback)
+                   for pf in pipeline_files]
+        check_results = [result.get() for result in results]
+        return check_results
+
+
+# TODO: implement celery backend for asynchronous compliance checking
+class CeleryAsyncComplianceCheckerBroker(BaseAsyncComplianceCheckerBroker):
+    def _run(self, pipeline_files):
+        raise NotImplementedError
+
+
+class ComplianceCheckerCheckRunner(BaseCheckRunner):
+    def __init__(self, config, logger, check_params=None):
+        super(ComplianceCheckerCheckRunner, self).__init__(config, logger)
+
+        self.check_params = check_params or {}
+        self.async_mode = config.pipeline_config.get('check', {}).get('async_mode', 'pool')
+
+        self._validate_checks()
+
+    def __repr__(self):
+        return "{self.__class__.__name__}(check_params={self.check_params})".format(self=self)
+
+    def _validate_checks(self):
+        checks = self.check_params.get('checks')
+
+        if not checks:
+            raise InvalidCheckSuiteError('compliance check requested but no check suite(s) specified')
+
+        # workaround a possible bug in the compliance checker where invalid check suites are ignored
+        available_checkers = set(CheckSuite.checkers)
+        these_checkers = set(checks)
+        if not these_checkers.issubset(available_checkers):
+            invalid_suites = list(these_checkers.difference(available_checkers))
+            raise InvalidCheckSuiteError(
+                'invalid compliance check suites: {invalid_suites}'.format(invalid_suites=invalid_suites))
+
+    def run(self, pipeline_files):
+        if self.check_params.get('skip_checks'):
+            self._logger.info("compliance checks will skip {skip_checks}".format(**self.check_params))
+
+        checker_broker = get_async_compliance_checker_broker(self.async_mode,
+                                                             self._config,
+                                                             self._logger,
+                                                             self.check_params)
+        self._logger.sysinfo(
+            "get_async_compliance_checker_broker -> {checker_broker}".format(checker_broker=checker_broker))
+        checker_broker.run(pipeline_files)
 
 
 class FormatCheckRunner(BaseCheckRunner):
@@ -201,7 +303,7 @@ class FormatCheckRunner(BaseCheckRunner):
             compliance_log = () if compliant else (
                 "invalid format: did not validate as type: {pipeline_file.file_type.name}".format(
                     pipeline_file=pipeline_file),)
-            pipeline_file.check_result = CheckResult(compliant, compliance_log)
+            pipeline_file.check_result = CheckResult(pipeline_file.src_path, compliant, compliance_log)
 
 
 class NonEmptyCheckRunner(BaseCheckRunner):
@@ -211,4 +313,4 @@ class NonEmptyCheckRunner(BaseCheckRunner):
                 "checking that '{pipeline_file.src_path}' is not empty".format(pipeline_file=pipeline_file))
             compliant = is_nonemptyfile(pipeline_file.src_path)
             compliance_log = () if compliant else ('empty file',)
-            pipeline_file.check_result = CheckResult(compliant, compliance_log)
+            pipeline_file.check_result = CheckResult(pipeline_file.src_path, compliant, compliance_log)

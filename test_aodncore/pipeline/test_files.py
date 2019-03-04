@@ -37,10 +37,10 @@ class TestPipelineFile(BaseTestCase):
 
     def test_compliance_check(self):
         # Test compliance checking
-        check_runner = get_child_check_runner(PipelineFileCheckType.NC_COMPLIANCE_CHECK, None, self.test_logger,
+        check_runner = get_child_check_runner(PipelineFileCheckType.NC_COMPLIANCE_CHECK, self.config, self.test_logger,
                                               {'checks': ['cf']})
         check_runner.run(PipelineFileCollection(self.pipelinefile))
-        assertCountEqual(self, dict(self.pipelinefile.check_result).keys(), ['compliant', 'errors', 'log'])
+        assertCountEqual(self, dict(self.pipelinefile.check_result).keys(), ['path', 'compliant', 'errors', 'log'])
 
     def test_equal_files(self):
         duplicate_file = PipelineFile(GOOD_NC)
@@ -56,7 +56,7 @@ class TestPipelineFile(BaseTestCase):
         # Test file format checking
         check_runner = get_child_check_runner(PipelineFileCheckType.FORMAT_CHECK, None, self.test_logger)
         check_runner.run(PipelineFileCollection(self.pipelinefile))
-        assertCountEqual(self, dict(self.pipelinefile.check_result).keys(), ['compliant', 'errors', 'log'])
+        assertCountEqual(self, dict(self.pipelinefile.check_result).keys(), ['path', 'compliant', 'errors', 'log'])
 
     def test_nonexistent_attribute(self):
         nonexistent_attribute = str(uuid.uuid4())
@@ -66,8 +66,12 @@ class TestPipelineFile(BaseTestCase):
 
     def test_property_check_result(self):
         self.assertFalse(self.pipelinefile.is_checked)
-        self.pipelinefile.check_result = CheckResult(True, False, None)
+        self.pipelinefile.check_result = CheckResult(self.pipelinefile.src_path, True, False, None)
         self.assertTrue(self.pipelinefile.is_checked)
+
+    def test_property_check_result_invalid_path(self):
+        with self.assertRaises(ValueError):
+            self.pipelinefile.check_result = CheckResult('invalid/path', True, False, None)
 
     def test_property_check_type(self):
         test_value = PipelineFileCheckType.FORMAT_CHECK

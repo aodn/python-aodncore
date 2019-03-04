@@ -30,13 +30,18 @@ class CheckResult(object):
     """Simple container class to hold a check result
     """
 
-    def __init__(self, compliant, log, errors=False):
+    def __init__(self, path, compliant, log, errors=False):
+        self._path = path
         self._compliant = compliant
         self._log = log
         self._errors = errors
 
     def __iter__(self):
         return iter_public_attributes(self)
+
+    @property
+    def path(self):
+        return self._path
 
     @property
     def compliant(self):

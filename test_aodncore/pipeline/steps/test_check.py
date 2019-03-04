@@ -1,10 +1,13 @@
 import os
 from tempfile import mkstemp
 
+from billiard.pool import Pool
+
 from aodncore.pipeline import CheckResult, PipelineFile, PipelineFileCheckType, PipelineFileCollection
 from aodncore.pipeline.exceptions import InvalidCheckTypeError, InvalidCheckSuiteError
-from aodncore.pipeline.steps.check import (get_child_check_runner, ComplianceCheckerCheckRunner, FormatCheckRunner,
-                                           NonEmptyCheckRunner)
+from aodncore.pipeline.steps.check import (get_async_compliance_checker_broker, get_child_check_runner,
+                                           run_compliance_checks, ComplianceCheckerCheckRunner, FormatCheckRunner,
+                                           MultiprocessingAsyncComplianceCheckerBroker, NonEmptyCheckRunner)
 from aodncore.testlib import BaseTestCase
 from test_aodncore import TESTDATA_DIR
 
@@ -17,28 +20,64 @@ WARNING_NC = os.path.join(TESTDATA_DIR, 'test_manifest.nc')
 class TestPipelineStepsCheck(BaseTestCase):
     def test_get_check_runner(self):
         with self.assertRaises(ValueError):
-            _ = get_child_check_runner(1, None, self.test_logger, None)
+            _ = get_child_check_runner(1, self.config, self.test_logger, None)
         with self.assertRaises(ValueError):
-            _ = get_child_check_runner('str', None, self.test_logger, None)
+            _ = get_child_check_runner('str', self.config, self.test_logger, None)
 
         with self.assertRaises(InvalidCheckTypeError):
             _ = get_child_check_runner(PipelineFileCheckType.NO_ACTION, None, self.test_logger, None)
 
-        cc_runner = get_child_check_runner(PipelineFileCheckType.NC_COMPLIANCE_CHECK, None, self.test_logger,
+        cc_runner = get_child_check_runner(PipelineFileCheckType.NC_COMPLIANCE_CHECK, self.config, self.test_logger,
                                            {'checks': ['cf']})
         self.assertIsInstance(cc_runner, ComplianceCheckerCheckRunner)
 
-        fc_runner = get_child_check_runner(PipelineFileCheckType.FORMAT_CHECK, None, self.test_logger, None)
+        fc_runner = get_child_check_runner(PipelineFileCheckType.FORMAT_CHECK, self.config, self.test_logger, None)
         self.assertIsInstance(fc_runner, FormatCheckRunner)
 
-        ne_runner = get_child_check_runner(PipelineFileCheckType.NONEMPTY_CHECK, None, self.test_logger, None)
+        ne_runner = get_child_check_runner(PipelineFileCheckType.NONEMPTY_CHECK, self.config, self.test_logger, None)
         self.assertIsInstance(ne_runner, NonEmptyCheckRunner)
+
+    def test_get_async_compliance_checker_broker(self):
+        with self.assertRaises(ValueError):
+            _ = get_async_compliance_checker_broker('invalid', self.config, self.test_logger)
+
+        process_broker = get_async_compliance_checker_broker('pool', self.config, self.test_logger)
+        self.assertIsInstance(process_broker, MultiprocessingAsyncComplianceCheckerBroker)
+        self.assertIs(process_broker.pool_class, Pool)
+
+        with self.assertRaises(NotImplementedError):
+            _ = get_async_compliance_checker_broker('celery', self.config, self.test_logger)
+
+    def test_run_compliance_checks_nochecks(self):
+        with self.assertRaises(InvalidCheckSuiteError):
+            _ = run_compliance_checks(GOOD_NC, [], 0)
+
+    def test_run_compliance_checks_compliant(self):
+        check_result = run_compliance_checks(GOOD_NC, ['cf'], 0)
+        self.assertTrue(check_result.compliant)
+
+    def test_run_compliance_checks_noncompliant(self):
+        check_result = run_compliance_checks(BAD_NC, ['cf'], 0)
+        self.assertFalse(check_result.compliant)
+
+    def test_run_compliance_checks_invalid(self):
+        _, temp_invalid_file = mkstemp(suffix='.nc', prefix=self.__class__.__name__, dir=self.temp_dir)
+        check_result = run_compliance_checks(temp_invalid_file, ['cf'], 0)
+        self.assertFalse(check_result.compliant)
+
+    def test_run_compliance_checks_warning_skip(self):
+        check_result = run_compliance_checks(WARNING_NC, ['cf'], 0, skip_checks=['check_convention_globals'])
+        self.assertTrue(check_result.compliant)
+
+    def test_run_compliance_checks_warning_noskip(self):
+        check_result = run_compliance_checks(WARNING_NC, ['cf'], 0)
+        self.assertFalse(check_result.compliant)
 
 
 class TestComplianceCheckerRunner(BaseTestCase):
     def setUp(self):
         super(TestComplianceCheckerRunner, self).setUp()
-        self.cc_runner = ComplianceCheckerCheckRunner(None, self.test_logger, {'checks': ['cf']})
+        self.cc_runner = ComplianceCheckerCheckRunner(self.config, self.test_logger, {'checks': ['cf']})
 
     def test_compliant_file(self):
         collection = PipelineFileCollection([GOOD_NC])
@@ -77,7 +116,7 @@ class TestComplianceCheckerRunner(BaseTestCase):
 
     def test_multiple_check_suite(self):
         collection = PipelineFileCollection([GOOD_NC])  # GOOD_NC complies with cf but NOT acdd:1.3
-        self.cc_runner = ComplianceCheckerCheckRunner(None, self.test_logger, {'checks': ['cf', 'acdd:1.3']})
+        self.cc_runner = ComplianceCheckerCheckRunner(self.config, self.test_logger, {'checks': ['cf', 'acdd:1.3']})
         self.cc_runner.run(collection)
 
         check_result = collection[0].check_result
@@ -89,18 +128,19 @@ class TestComplianceCheckerRunner(BaseTestCase):
 
     def test_invalid_check_suite(self):
         with self.assertRaises(InvalidCheckSuiteError):
-            self.cc_runner = ComplianceCheckerCheckRunner(None, self.test_logger, {'checks': ['cf', 'no_such_thing']})
+            _ = ComplianceCheckerCheckRunner(self.config, self.test_logger,
+                                             {'checks': ['cf', 'no_such_thing']})
 
     def test_no_check_suite(self):
         with self.assertRaises(InvalidCheckSuiteError):
-            self.cc_runner = ComplianceCheckerCheckRunner(None, self.test_logger)
+            _ = ComplianceCheckerCheckRunner(self.config, self.test_logger)
 
     def test_skip_checks(self):
         collection = PipelineFileCollection([WARNING_NC])
         self.cc_runner.run(collection)
         self.assertFalse(collection[0].check_result.compliant)  # WARNING_NC file fails with just one warning
 
-        self.cc_runner = ComplianceCheckerCheckRunner(None,
+        self.cc_runner = ComplianceCheckerCheckRunner(self.config,
                                                       self.test_logger,
                                                       {'checks': ['cf'], 'skip_checks': ['check_convention_globals']}
                                                       )

@@ -40,6 +40,10 @@ REFERENCE_PIPELINE_CONFIG = {
         "path_function_group": "pipeline.path_functions",
         "module_versions_group": "pipeline.module_versions"
     },
+    'check': {
+        'async_mode': 'pool',
+        'pool_process_count': 2
+    },
     'talend': {'talend_log_dir': '/tmp/probs/doesnt/exist/process'},
     'templating': {
         'template_package': 'aodncore.pipeline',

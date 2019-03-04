@@ -129,6 +129,14 @@ PIPELINE_CONFIG_SCHEMA = {
             'required': ['handlers_group', 'path_function_group', 'module_versions_group'],
             'additionalProperties': False
         },
+        'check': {
+            'type': 'object',
+            'properties': {
+                'async_mode': {'type': 'string', 'enum': ['pool', 'celery']},
+                'pool_process_count': {'type': 'integer', 'minimum': 1, 'maximum': 8}
+            },
+            'additionalProperties': False
+        },
         'talend': {
             'type': 'object',
             'properties': {
