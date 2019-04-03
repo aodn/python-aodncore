@@ -405,6 +405,11 @@ class TestDummyHandler(HandlerTestCase):
         handler = self.handler_class(self.temp_nc_file)
         self.assertIsInstance(handler.state_query, StateQuery)
 
+    def test_timeseries_harvester(self):
+        handler = self.run_handler(self.temp_nc_file, harvest_type='timeseries')
+        self.assertTrue(all(f.is_harvested for f in handler.file_collection))
+        self.assertTrue(all(f.is_stored for f in handler.file_collection))
+
 
 if __name__ == '__main__':
     unittest.main()

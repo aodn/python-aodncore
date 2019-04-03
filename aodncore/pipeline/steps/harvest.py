@@ -48,6 +48,8 @@ def get_harvester_runner(harvester_name, store_runner, harvest_params, tmp_base_
 
     if harvester_name == 'talend':
         return TalendHarvesterRunner(store_runner, harvest_params, tmp_base_dir, config, logger)
+    elif harvester_name == 'timeseries':
+        return TimeseriesHarvesterRunner(store_runner, harvest_params, tmp_base_dir, config, logger)
     else:
         raise InvalidHarvesterError("invalid harvester '{name}'".format(name=harvester_name))
 
@@ -396,6 +398,33 @@ class TalendHarvesterRunner(BaseHarvesterRunner):
                 files_to_upload = event.matched_files.filter_by_bool_attribute('pending_store_addition')
                 if files_to_upload:
                     self.storage_broker.upload(pipeline_files=files_to_upload)
+
+
+class TimeseriesHarvesterRunner(BaseHarvesterRunner):
+    def __init__(self, storage_broker, harvest_params, tmp_base_dir, config, logger):
+        super(TimeseriesHarvesterRunner, self).__init__(config, logger)
+        if harvest_params is None:
+            harvest_params = {}
+
+        self.params = harvest_params
+        self.tmp_base_dir = tmp_base_dir
+        self.storage_broker = storage_broker
+
+    def run(self, pipeline_files):
+        # TODO: since harvesting is an abstract concept to the calling handler, the only expectations are that when this
+        #  class is executed, and returns successfully:
+        #  1. the files are flagged as 'harvested'
+        #  2. the pending additions have been uploaded using the given storage_broker
+        #  3. the pending deletions have been deleted using the given storage broker
+        pipeline_files.set_bool_attribute('is_harvested', True)
+
+        files_to_upload = pipeline_files.filter_by_bool_attribute('pending_store_addition')
+        if files_to_upload:
+            self.storage_broker.upload(pipeline_files=files_to_upload)
+
+        files_to_delete = pipeline_files.filter_by_bool_attribute('pending_store_deletion')
+        if files_to_delete:
+            self.storage_broker.delete(pipeline_files=files_to_delete)
 
 
 validate_triggerevent = validate_type(TriggerEvent)
