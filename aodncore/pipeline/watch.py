@@ -226,7 +226,8 @@ def build_task(config, pipeline_name, handler_class, success_exit_policies, erro
                 else:
                     file_state_manager.move_to_success()
             except Exception:
-                self.logger.exception('unhandled exception in PipelineTask')
+                if self.logger:
+                    self.logger.exception('unhandled exception in PipelineTask')
                 raise
 
     return PipelineTask()
