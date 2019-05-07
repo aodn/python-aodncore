@@ -24,7 +24,8 @@ INSTALL_REQUIRES = [
     'paramiko==2.4.2',
     'six==1.10.0',
     'tabulate==0.8.2',
-    'transitions==0.5.3'
+    'transitions==0.5.3',
+    'vine==1.3.0'  # version 5 has dropped Python 2 support
 ]
 
 TESTS_REQUIRE = [
