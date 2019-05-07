@@ -1,21 +1,17 @@
 FROM ubuntu:16.04
 
-ENV HDF5_DIR=/usr/include/hdf5
-
 RUN apt-get update && apt-get install -y --no-install-recommends \
-    python-pip \
-    python-dev \
     build-essential \
-    libxml2-dev \
-    libxslt-dev \
-    libhdf5-dev \
-    libnetcdf-dev \
+    ca-certificates \
     libudunits2-dev \
+    python-dev \
+    wget \
     && rm -rf /var/lib/apt/lists/*
+
+RUN wget -q https://bootstrap.pypa.io/get-pip.py \
+    && python get-pip.py pip==18.1 \
+    && rm -rf get-pip.py
 
 RUN pip install \
     bump2version==0.5.10 \
-    Cython \
-    wheel \
-    setuptools \
-    numpy
+    Cython==0.29
