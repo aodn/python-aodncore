@@ -1,9 +1,21 @@
 FROM ubuntu:16.04
 
-RUN apt-get update
-RUN apt-get install -y git python-pip libxml2-dev libxslt-dev python-dev python-cffi
+ENV HDF5_DIR=/usr/include/hdf5
 
-ENV HDF5_DIR=/usr/include/hdf5/
-RUN apt-get install -y libhdf5-dev libnetcdf-dev
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    python-pip \
+    python-dev \
+    build-essential \
+    libxml2-dev \
+    libxslt-dev \
+    libhdf5-dev \
+    libnetcdf-dev \
+    libudunits2-dev \
+    && rm -rf /var/lib/apt/lists/*
 
-RUN pip install Cython wheel setuptools numpy
+RUN pip install \
+    bump2version==0.5.10 \
+    Cython \
+    wheel \
+    setuptools \
+    numpy
