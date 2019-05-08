@@ -4,6 +4,7 @@ pipeline {
     stages {
         stage('test') {
             steps {
+                sh 'pip install -e . .[testing]'
                 sh 'python setup.py test'
             }
         }
