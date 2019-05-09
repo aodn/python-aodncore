@@ -6,13 +6,6 @@ ENTRY_POINTS = {
     ]
 }
 
-EXTRAS_REQUIRE = {
-    ':platform_system == "Linux"': ['pyinotify == 0.9.6'],
-    ':python_version < "3.3"': ['mock == 2.0.0'],
-    ':python_version < "3.4"': ['enum34==1.1.6'],
-    ':python_version < "3.5"': ['scandir == 1.6', 'typing==3.6.4'],
-}
-
 INSTALL_REQUIRES = [
     'boto3==1.4.4',
     'celery==4.1.1',
@@ -24,12 +17,21 @@ INSTALL_REQUIRES = [
     'paramiko==2.4.2',
     'six==1.10.0',
     'tabulate==0.8.2',
-    'transitions==0.5.3'
+    'transitions==0.5.3',
+    'vine<=1.3.0'  # version 5 has dropped Python 2 support
 ]
 
 TESTS_REQUIRE = [
     'httpretty==0.9.6'
 ]
+
+EXTRAS_REQUIRE = {
+    'testing': TESTS_REQUIRE,
+    ':platform_system == "Linux"': ['pyinotify == 0.9.6'],
+    ':python_version < "3.3"': ['mock == 2.0.0'],
+    ':python_version < "3.4"': ['enum34==1.1.6'],
+    ':python_version < "3.5"': ['scandir == 1.6', 'typing==3.6.4'],
+}
 
 PACKAGE_DATA = {
     'aodncore': [
