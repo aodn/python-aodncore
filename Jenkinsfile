@@ -1,11 +1,10 @@
 #!groovy
 
 pipeline {
-    agent none
+    agent { label 'master' }
 
     stages {
         stage('clean') {
-            agent { label 'master' }
             steps {
                 sh 'git clean -fdx'
             }
@@ -15,10 +14,8 @@ pipeline {
             agent {
                 dockerfile {
                     additionalBuildArgs '--build-arg BUILDER_UID=${JENKINS_UID:-9999}'
+                    reuseNode true
                 }
-            }
-            environment {
-                HOME = '/home/builder'
             }
             stages {
                 stage('test') {
