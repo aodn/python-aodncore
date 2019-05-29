@@ -7,7 +7,7 @@ ENTRY_POINTS = {
 }
 
 INSTALL_REQUIRES = [
-    'boto3==1.4.4',
+    'boto3>=1.9.156',
     'celery==4.1.1',
     'compliance-checker==4.1.1',
     'Jinja2==2.9.6',
