@@ -20,7 +20,9 @@ REFERENCE_PIPELINE_CONFIG = {
         'processing_dir': '/tmp/probably/doesnt/exist/processing',
         'upload_uri': 'file:///tmp/probably/doesnt/exist/upload',
         "wfs_url": "http://geoserver.example.com/geoserver/wfs",
-        'wip_dir': '/tmp/probably/doesnt/exist/wip'
+        'wip_dir': '/tmp/probably/doesnt/exist/wip',
+        'platform_category_vocab_url': '/tmp/probably/doesnt/exist/aodn_aodn-platform-category-vocabulary.rdf',
+        'platform_vocab_url': '/tmp/probably/doesnt/exist/aodn_aodn-platform-vocabulary.rdf'
     },
     'logging': {
         'level': 'SYSINFO',
