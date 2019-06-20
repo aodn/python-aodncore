@@ -15,9 +15,7 @@ DEFAULT_PLATFORM_VOCAB_URL = '%s%s' % ('file://',
 
 class TestPlatformCodeVocab(BaseTestCase):
     def setUp(self):
-        self.platform_vocab_helper = PlatformVocabHelper(
-            platform_vocab_url=self.config.pipeline_config['global']['platform_vocab_url'],
-            platform_cat_vocab_url=self.config.pipeline_config['global']['platform_category_vocab_url'])
+        self.platform_vocab_helper = PlatformVocabHelper.from_config(self.config)
 
     def test_platform_type(self):
         res = self.platform_vocab_helper.platform_type_uris_by_category()

@@ -19,7 +19,6 @@ import xml.etree.ElementTree as ET
 
 from six.moves.urllib.request import urlopen
 
-
 DEFAULT_PLATFORM_CAT_VOCAB_URL = 'http://content.aodn.org.au/Vocabularies/platform-category/aodn_aodn-platform-category-vocabulary.rdf'
 DEFAULT_PLATFORM_VOCAB_URL = 'http://content.aodn.org.au/Vocabularies/platform/aodn_aodn-platform-vocabulary.rdf'
 
@@ -49,6 +48,16 @@ class PlatformVocabHelper(object):
     def __init__(self, platform_vocab_url, platform_cat_vocab_url):
         self.platform_vocab_url = platform_vocab_url
         self.platform_cat_vocab_url = platform_cat_vocab_url
+
+    @classmethod
+    def from_config(cls, config):
+        """Alternate initialiser to instantiate from a LazyConfigManager instance
+
+        :param config:
+        :return:
+        """
+        return cls(config.pipeline_config['global']['platform_vocab_url'],
+                   config.pipeline_config['global']['platform_category_vocab_url'])
 
     def platform_type_uris_by_category(self):
         """

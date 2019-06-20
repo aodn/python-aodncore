@@ -1,4 +1,5 @@
 from aodncore.pipeline import HandlerBase, PipelineFileCheckType, PipelineFilePublishType
+from aodncore.vocab import PlatformVocabHelper
 
 
 class DummyHandler(HandlerBase):
@@ -29,6 +30,8 @@ class DummyHandler(HandlerBase):
         super(DummyHandler, self).__init__(*args, **kwargs)
         self.default_addition_publish_type = PipelineFilePublishType.HARVEST_ARCHIVE_UPLOAD
         self.opendap_root = self.config.pipeline_config['global'].get('opendap_root')
+
+        self.platform_vocab_helper = PlatformVocabHelper.from_config(self.config)
 
     @staticmethod
     def dest_path(filename):
