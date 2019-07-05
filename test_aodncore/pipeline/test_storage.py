@@ -5,13 +5,13 @@ import errno
 import os
 import re
 import tempfile
-from httplib import IncompleteRead
 from ssl import SSLError
 from uuid import uuid4
 
 import six
 from botocore.exceptions import ClientError
 from dateutil.tz import tzutc
+from six.moves.http_client import IncompleteRead
 
 from aodncore.pipeline import PipelineFile, PipelineFileCollection, PipelineFilePublishType
 from aodncore.pipeline.exceptions import InvalidStoreUrlError, StorageBrokerError
@@ -743,7 +743,7 @@ class TestS3StorageBroker(BaseTestCase):
 
     @mock.patch('aodncore.pipeline.storage.boto3')
     def test_query_error_ssl_error(self, mock_boto3):
-        dummy_error = SSLError('The read operation timed out',)
+        dummy_error = SSLError('The read operation timed out', )
         mock_boto3.client().list_objects_v2.side_effect = dummy_error
 
         s3_storage_broker = S3StorageBroker('imos-data', '')

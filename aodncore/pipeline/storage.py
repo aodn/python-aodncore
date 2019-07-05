@@ -4,7 +4,6 @@ import abc
 import errno
 import os
 from datetime import datetime
-from httplib import IncompleteRead
 from io import open
 from ssl import SSLError
 
@@ -12,8 +11,8 @@ import boto3
 import six
 from botocore.exceptions import ClientError, ConnectionError
 from paramiko import SSHClient, AutoAddPolicy
+from six.moves.http_client import IncompleteRead
 from six.moves.urllib.parse import urlparse
-import six
 
 try:
     from os import walk
