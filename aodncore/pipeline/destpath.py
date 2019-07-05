@@ -4,7 +4,6 @@ may be in the handler class itself, or provided as a runtime parameter, this cod
 mechanism is consistent.
 """
 
-from __future__ import absolute_import
 import six
 
 from .exceptions import InvalidPathFunctionError

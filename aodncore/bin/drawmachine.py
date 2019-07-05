@@ -8,7 +8,6 @@
             Example for Ubuntu: $ sudo apt install python-dev graphviz libgraphviz-dev pkg-config
 """
 
-from __future__ import absolute_import
 import argparse
 import tempfile
 from datetime import datetime

@@ -1,8 +1,6 @@
 """This module provides utility functions relating to various filesystem operations
 """
 
-from __future__ import absolute_import
-
 import errno
 import gzip
 import hashlib

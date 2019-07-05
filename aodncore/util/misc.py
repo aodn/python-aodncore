@@ -3,7 +3,6 @@
 These are typically functions which query, manipulate or transform Python objects.
 """
 
-from __future__ import absolute_import
 import logging
 import os
 import re

@@ -17,8 +17,6 @@ This means the rest of the handler code has no further need to be aware of the s
 collection may then be processed in a generic way.
 """
 
-from __future__ import absolute_import
-
 import abc
 import os
 import re

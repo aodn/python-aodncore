@@ -6,7 +6,6 @@ notification protocol, in order to send a report detailing the status of the fil
 The most common use of this step is to send email notifications.
 """
 
-from __future__ import absolute_import
 import abc
 import os
 import smtplib

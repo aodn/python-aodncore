@@ -1,4 +1,3 @@
-from __future__ import absolute_import
 __all__ = ['retry', 'retry_call']
 
 import logging

@@ -1,7 +1,6 @@
 #!/usr/bin/env python
 """Unit tests for FileClassifier classes"""
 
-from __future__ import absolute_import
 import os
 import unittest
 

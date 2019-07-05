@@ -1,4 +1,3 @@
-from __future__ import absolute_import
 import uuid
 
 from aodncore.testlib import BaseTestCase

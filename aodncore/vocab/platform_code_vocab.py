@@ -14,7 +14,6 @@ How to use:
 author : Besnard, Laurent
 """
 
-from __future__ import absolute_import
 import warnings
 import xml.etree.ElementTree as ET
 

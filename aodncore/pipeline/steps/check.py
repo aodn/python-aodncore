@@ -7,7 +7,6 @@ testing whether the file conforms to some arbitrary criteria.
 The most common use of this step is to test for compliance using the IOOS Compliance Checker.
 """
 
-from __future__ import absolute_import
 import abc
 import itertools
 import os

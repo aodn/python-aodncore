@@ -7,7 +7,6 @@ the inputs expected by the AODN Talend wrapper scripts, but is written generical
 harvesting processes.
 """
 
-from __future__ import absolute_import
 import abc
 import itertools
 import os

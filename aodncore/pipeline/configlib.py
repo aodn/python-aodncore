@@ -3,8 +3,6 @@ typically access the configuration by importing :py:const:`CONFIG` from :py:mod:
 manually creating a new :py:class:`LazyConfigManager` instance.
 """
 
-from __future__ import absolute_import
-
 import json
 import os
 from io import open

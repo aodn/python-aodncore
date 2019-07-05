@@ -2,7 +2,6 @@
 pipeline, and also the helper functions necessary to validate an object against their respective schema.
 """
 
-from __future__ import absolute_import
 import jsonschema
 
 __all__ = [

@@ -1,4 +1,3 @@
-from __future__ import absolute_import
 from aodncore.pipeline import HandlerBase, PipelineFileCheckType, PipelineFilePublishType
 from aodncore.vocab import PlatformVocabHelper
 
