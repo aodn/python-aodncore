@@ -1,7 +1,6 @@
 FROM ubuntu:16.04
 
 ARG BUILDER_UID=9999
-ENV HOME /home/builder
 
 RUN apt-get update && apt-get install -y --no-install-recommends \
     build-essential \
