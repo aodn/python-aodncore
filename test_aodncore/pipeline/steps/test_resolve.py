@@ -1,7 +1,7 @@
 import os
 from uuid import uuid4
 
-from aodncore.pipeline.exceptions import DuplicatePipelineFileError
+from aodncore.pipeline.exceptions import DuplicatePipelineFileError, InvalidFileFormatError
 from aodncore.pipeline.steps.resolve import (get_resolve_runner, DirManifestResolveRunner, GzipFileResolveRunner,
                                              MapManifestResolveRunner, RsyncManifestResolveRunner,
                                              SimpleManifestResolveRunner, SingleFileResolveRunner, ZipFileResolveRunner)
@@ -147,6 +147,13 @@ class TestGzipFileResolveRunner(BaseTestCase):
         self.assertEqual(collection[0].src_path, good_nc)
         self.assertTrue(os.path.exists(good_nc))
 
+    def test_not_gzip_file(self):
+        collection_dir = os.path.join(self.temp_dir, 'collection')
+        gzip_file_resolve_runner = GzipFileResolveRunner(self.temp_nc_file, collection_dir, MOCK_CONFIG,
+                                                         self.test_logger)
+        with self.assertRaises(InvalidFileFormatError):
+            _ = gzip_file_resolve_runner.run()
+
 
 class TestZipFileResolveRunner(BaseTestCase):
     def test_zip_file_resolve_runner(self):
@@ -180,3 +187,9 @@ class TestZipFileResolveRunner(BaseTestCase):
 
         self.assertEqual(collection[1].src_path, bad_nc)
         self.assertTrue(os.path.exists(bad_nc))
+
+    def test_not_zip_file(self):
+        collection_dir = os.path.join(self.temp_dir, 'collection')
+        zip_file_resolve_runner = ZipFileResolveRunner(self.temp_nc_file, collection_dir, MOCK_CONFIG, self.test_logger)
+        with self.assertRaises(InvalidFileFormatError):
+            _ = zip_file_resolve_runner.run()
