@@ -25,6 +25,7 @@ from enum import Enum
 
 from .basestep import BaseStepRunner
 from ..common import FileType
+from ..exceptions import InvalidFileFormatError
 from ..files import PipelineFile, PipelineFileCollection
 from ...util import extract_gzip, extract_zip, list_regular_files, is_gzipfile, is_zipfile, safe_copy_file
 
@@ -95,7 +96,7 @@ class SingleFileResolveRunner(BaseResolveRunner):
 class GzipFileResolveRunner(BaseResolveRunner):
     def run(self):
         if not is_gzipfile(self.input_file):
-            raise ValueError("input_file must be a valid GZ file")
+            raise InvalidFileFormatError("input_file must be a valid GZ file")
 
         extract_gzip(self.input_file, self.output_dir)
 
@@ -107,7 +108,7 @@ class GzipFileResolveRunner(BaseResolveRunner):
 class ZipFileResolveRunner(BaseResolveRunner):
     def run(self):
         if not is_zipfile(self.input_file):
-            raise ValueError("input_file must be a valid ZIP file")
+            raise InvalidFileFormatError("input_file must be a valid ZIP file")
 
         extract_zip(self.input_file, self.output_dir)
 
