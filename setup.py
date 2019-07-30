@@ -12,7 +12,6 @@ INSTALL_REQUIRES = [
     'compliance-checker==4.1.1',
     'Jinja2==2.9.6',
     'jsonschema==2.6.0',
-    'numpy>=1.13.0',
     'OWSLib==0.16.0',
     'paramiko==2.4.2',
     'six==1.10.0',
