@@ -152,7 +152,8 @@ PIPELINE_CONFIG_SCHEMA = {
             'properties': {
                 'incoming_dir': {'type': 'string'},
                 'logger_name': {'type': 'string'},
-                'task_namespace': {'type': 'string'}
+                'task_namespace': {'type': 'string'},
+                'uuid_path': {'type': 'string'}
             },
             'required': ['incoming_dir', 'logger_name', 'task_namespace'],
             'additionalProperties': False

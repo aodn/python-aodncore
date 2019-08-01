@@ -313,6 +313,11 @@ def should_ignore_event(pathname):
 
 
 class IncomingFileEventHandler(pyinotify.ProcessEvent):
+
+    @property
+    def uuid_path(self):
+        return self._config.pipeline_config['watch']['uuid_path']
+
     def __init__(self, config):
         super(IncomingFileEventHandler, self).__init__()
         self._config = config
@@ -321,7 +326,7 @@ class IncomingFileEventHandler(pyinotify.ProcessEvent):
     def process_default(self, event):
         # event_id is distinct from task_id, and exists in order to correlate log messages before *and* after a task
         # is queued for a given event
-        event_id = uuid4()
+        event_id = self.event_id(event.pathname)
         self._logger.info("inotify event: event_id='{event_id}' maskname='{event.maskname}'".format(event_id=event_id,
                                                                                                     event=event))
         self.queue_task(event.path, event.pathname, event_id)
@@ -342,7 +347,7 @@ class IncomingFileEventHandler(pyinotify.ProcessEvent):
         task_name = get_task_name(self._config.pipeline_config['watch']['task_namespace'], queue)
 
         task_data = {
-            'event_id': event_id or uuid4(),
+            'event_id': event_id or self.event_id(pathname),
             'pathname': pathname,
             'queue': queue,
             'task_name': task_name
@@ -362,6 +367,18 @@ class IncomingFileEventHandler(pyinotify.ProcessEvent):
                 **task_data))
         self._logger.debug("full task_data: {task_data}".format(task_data=task_data))
 
+    def event_id(self, pathname):
+
+        # check if a uuid has been externally allocated for tracking
+        # externally allocated uuids should be randomly generated
+        if os.path.isfile(self.uuid_path):
+            with open(self.uuid_path) as uuid_file:
+                for line in uuid_file:
+                    uuid_filename, uuid = os.path.split(line)
+                    if os.path.basename(pathname) == uuid_filename:
+                        return uuid
+
+        return uuid4()
 
 class IncomingFileStateManager(object):
     processing_mode = stat.S_IRUSR | stat.S_IRGRP | stat.S_IROTH
