@@ -121,10 +121,16 @@ REFERENCE_WATCH_CONFIG = {
                 "error_notify_list": [
                     "4.XXXX"
                 ]
+            },
+            "exit_policy_params": {
+                "downstream_pipeline": {
+                    "name": "SOOP_DU_JOUR"
+                }
             }
         },
         "success_exit_policies": [
-            "DELETE_SAME_NAME_FROM_ERROR_STORE"
+            "DELETE_SAME_NAME_FROM_ERROR_STORE",
+            "NOTIFY_DOWNSTREAM_PIPELINE"
         ],
         "error_exit_policies": [
         ]

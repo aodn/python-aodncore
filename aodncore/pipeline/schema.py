@@ -7,6 +7,7 @@ import jsonschema
 __all__ = [
     'validate_check_params',
     'validate_custom_params',
+    'validate_exit_policy_params',
     'validate_harvest_params',
     'validate_json_manifest',
     'validate_logging_config',
@@ -29,6 +30,23 @@ CHECK_PARAMS_SCHEMA = {
 
 CUSTOM_PARAMS_SCHEMA = {
     'type': 'object'
+}
+
+EXIT_POLICY_PARAMS_SCHEMA = {
+    'type': 'object',
+    'properties': {
+        'downstream_pipeline': {
+            'type': 'object',
+            'properties': {
+                'name': {'type': 'string'},
+                'path': {'type': 'string'},
+            },
+            'required': ['name'],
+            'additionalProperties': False
+        },
+        'error_cleanup_regexes': {'type': 'array'},
+    },
+    'additionalProperties': False
 }
 
 HARVEST_PARAMS_SCHEMA = {
@@ -206,6 +224,10 @@ def validate_check_params(check_params):
 
 def validate_custom_params(check_params):
     jsonschema.validate(check_params, CUSTOM_PARAMS_SCHEMA)
+
+
+def validate_exit_policy_params(check_params):
+    jsonschema.validate(check_params, EXIT_POLICY_PARAMS_SCHEMA)
 
 
 def validate_harvest_params(harvest_params):

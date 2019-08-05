@@ -15,6 +15,7 @@ This is typically run as an operating system service by something like superviso
 for debugging.
 """
 
+import json
 import logging.config
 import os
 import re
@@ -27,6 +28,7 @@ from transitions import Machine
 
 from .files import PipelineFile
 from .log import get_pipeline_logger
+from .serialisation import PipelineJSONEncoder
 from .storage import get_storage_broker
 from ..util import (ensure_regex_list, format_exception, lazyproperty, mkdir_p, rm_f, rm_r, validate_dir_writable,
                     validate_file_writable, validate_membership)
@@ -116,10 +118,34 @@ def delete_custom_regexes_from_error_store_callback(handler, file_state_manager)
     :param file_state_manager: IncomingFileStateManager instance
     :return: None
     """
-    cleanup_regexes = ensure_regex_list(handler.error_cleanup_regexes)
+    cleanup_regexes = ensure_regex_list(handler.exit_policy_params.get('error_cleanup_regexes', []))
     deleted_files = file_state_manager.error_broker.delete_regexes(cleanup_regexes)
     log = "delete_custom_regexes_from_error_store_callback deleted -> {}".format(
         deleted_files.get_attribute_list('name'))
+    return log
+
+
+def notify_downstream_pipeline_callback(handler, file_state_manager):
+    downstream_pipeline = handler.exit_policy_params.get('downstream_pipeline', {}).get('name')
+    if not downstream_pipeline:
+        return ''
+
+    # output to specific path if defined, otherwise write to the first watched path defined for the pipeline
+    if handler.exit_policy_params.get('downstream_pipeline', {}).get('path'):
+        rel_path = handler.exit_policy_params['downstream_pipeline']['path']
+    else:
+        rel_path = file_state_manager.config.watch_config[downstream_pipeline]['path'][0]
+
+    output_file = os.path.join(
+        file_state_manager.config.pipeline_config['watch']['incoming_dir'],
+        rel_path,
+        "{handler.file_basename}.json".format(handler=handler)
+    )
+
+    with open(output_file, 'w') as f:
+        json.dump(handler.to_json(), f, cls=PipelineJSONEncoder)
+
+    log = "notify_downstream_pipeline_callback notified -> '{}'".format(downstream_pipeline)
     return log
 
 
@@ -140,10 +166,13 @@ class ExitPolicy(Enum):
         trailing UUID)
     DELETE_CUSTOM_REGEXES_FROM_ERROR_STORE: remove all files matching one of a list of regexes defined by the handler
         instance
+    NOTIFY_DOWNSTREAM_PIPELINE: write the JSON representation of the handler class to a downstream pipeline's incoming
+        directory
     """
     NO_ACTION = {'callback': lambda handler, file_state_manager: None}
     DELETE_SAME_NAME_FROM_ERROR_STORE = {'callback': delete_same_name_from_error_store_callback}
     DELETE_CUSTOM_REGEXES_FROM_ERROR_STORE = {'callback': delete_custom_regexes_from_error_store_callback}
+    NOTIFY_DOWNSTREAM_PIPELINE = {'callback': notify_downstream_pipeline_callback}
 
     @classmethod
     def from_name(cls, name):

@@ -5,10 +5,10 @@ from unittest.mock import MagicMock
 
 from aodncore.pipeline import PipelineFile, PipelineFileCollection
 from aodncore.pipeline.log import get_pipeline_logger
-from aodncore.pipeline.watch import (delete_same_name_from_error_store_callback,
+from aodncore.pipeline.watch import (notify_downstream_pipeline_callback, delete_same_name_from_error_store_callback,
                                      delete_custom_regexes_from_error_store_callback, get_task_name, CeleryConfig,
                                      ExitPolicy, IncomingFileStateManager)
-from aodncore.testlib import BaseTestCase
+from aodncore.testlib import BaseTestCase, DummyHandler
 from aodncore.util import safe_copy_file
 from test_aodncore import TESTDATA_DIR
 
@@ -26,9 +26,11 @@ class TestPipelineWatch(BaseTestCase):
     def setUp(self):
         self.logger = get_pipeline_logger('unittest')
 
-        self.dummy_input_file = 'dummy.input_file'
+        self.dummy_input_file = os.path.basename(self.temp_nc_file)
+        self.dummy_error_file = "{}.40c4ec0d-c9db-498d-84f9-01011330086e".format(self.dummy_input_file)
+
         incoming_file_path = os.path.join(self.config.pipeline_config['watch']['incoming_dir'],
-                                          os.path.basename(self.temp_nc_file))
+                                          self.dummy_input_file)
         safe_copy_file(self.temp_nc_file, incoming_file_path)
 
         celery_request = type('DummyRequest', (object,), {'id': 'NO_REQUEST_ID'})()
@@ -37,8 +39,12 @@ class TestPipelineWatch(BaseTestCase):
         self.state_manager.handler = MagicMock(file_basename=self.dummy_input_file,
                                                error_cleanup_regexes=[r'test.*'])
 
-        previous_file_same_name = PipelineFile(self.temp_nc_file,
-                                               dest_path='dummy.input_file.40c4ec0d-c9db-498d-84f9-01011330086e')
+        self.state_manager.handler = DummyHandler(incoming_file_path, config=self.config,
+                                                  exit_policy_params={'error_cleanup_regexes': ['test.*'],
+                                                                      'downstream_pipeline': {'name': 'SOOP_DU_JOUR'}})
+        self.state_manager.handler.run()
+
+        previous_file_same_name = PipelineFile(self.temp_nc_file, dest_path=self.dummy_error_file)
         nc = PipelineFile(GOOD_NC, dest_path=os.path.basename(GOOD_NC))
         png = PipelineFile(INVALID_PNG, dest_path=os.path.basename(INVALID_PNG))
         ico = PipelineFile(TEST_ICO, dest_path=os.path.basename(TEST_ICO))
@@ -53,8 +59,8 @@ class TestPipelineWatch(BaseTestCase):
 
     def test_delete_same_name_from_error_store_callback(self):
         actual_error_files_before_cleanup = [rf.dest_path for rf in self.state_manager.error_broker.query()]
-        expected_error_files_before_cleanup = ['dummy.input_file.40c4ec0d-c9db-498d-84f9-01011330086e', 'good.nc',
-                                               'test.unknown_file_extension', 'test.ico', 'invalid.png']
+        expected_error_files_before_cleanup = [self.dummy_error_file, 'good.nc', 'test.unknown_file_extension',
+                                               'test.ico', 'invalid.png']
         self.assertCountEqual(expected_error_files_before_cleanup, actual_error_files_before_cleanup)
 
         callback_log = delete_same_name_from_error_store_callback(self.state_manager.handler,
@@ -66,17 +72,25 @@ class TestPipelineWatch(BaseTestCase):
 
     def test_delete_custom_regexes_from_error_store_callback(self):
         actual_error_files_before_cleanup = [rf.dest_path for rf in self.state_manager.error_broker.query()]
-        expected_error_files_before_cleanup = ['dummy.input_file.40c4ec0d-c9db-498d-84f9-01011330086e', 'good.nc',
-                                               'test.unknown_file_extension', 'test.ico', 'invalid.png']
+        expected_error_files_before_cleanup = [self.dummy_error_file, 'good.nc', 'test.unknown_file_extension',
+                                               'test.ico', 'invalid.png']
         self.assertCountEqual(expected_error_files_before_cleanup, actual_error_files_before_cleanup)
 
         callback_log = delete_custom_regexes_from_error_store_callback(self.state_manager.handler,
                                                                        self.state_manager)
 
         actual_error_files_after_cleanup = [rf.dest_path for rf in self.state_manager.error_broker.query()]
-        expected_error_files_after_cleanup = ['dummy.input_file.40c4ec0d-c9db-498d-84f9-01011330086e', 'good.nc',
-                                              'invalid.png']
+        expected_error_files_after_cleanup = [self.dummy_error_file, 'good.nc', 'invalid.png']
         self.assertCountEqual(expected_error_files_after_cleanup, actual_error_files_after_cleanup)
+
+    def test_notify_downstream_pipeline_callback(self):
+        downstream_input_file = os.path.join(self.config.pipeline_config['watch']['incoming_dir'],
+                                             'SOOP/DU/JOUR',
+                                             "{}.json".format(self.dummy_input_file))
+
+        callback_log = notify_downstream_pipeline_callback(self.state_manager.handler, self.state_manager)
+
+        self.assertTrue(os.path.exists(downstream_input_file))
 
 
 class TestCeleryConfig(BaseTestCase):
@@ -122,7 +136,7 @@ class TestIncomingFileStateManager(BaseTestCase):
         self.state_manager = IncomingFileStateManager(incoming_file_path, pipeline_name='UNITTEST', config=self.config,
                                                       logger=self.logger, celery_request=celery_request)
         self.state_manager.handler = MagicMock(file_basename=self.dummy_input_file,
-                                               error_cleanup_regexes=[r'test.*'])
+                                               exit_policy_params={'error_cleanup_regexes': [r'test.*']})
 
     def test_error(self):
         self.assertTrue(os.path.exists(self.state_manager.input_file))

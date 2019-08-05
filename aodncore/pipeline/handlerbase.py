@@ -14,8 +14,8 @@ from .exceptions import (PipelineProcessingError, HandlerAlreadyRunError, Invali
                          InvalidFileFormatError, MissingConfigParameterError, UnmatchedFilesError)
 from .files import PipelineFile, PipelineFileCollection
 from .log import SYSINFO, get_pipeline_logger
-from .schema import (validate_check_params, validate_custom_params, validate_harvest_params, validate_notify_params,
-                     validate_resolve_params)
+from .schema import (validate_check_params, validate_custom_params, validate_exit_policy_params,
+                     validate_harvest_params, validate_notify_params, validate_resolve_params)
 from .statequery import StateQuery
 from .steps import (get_check_runner, get_harvester_runner, get_notify_runner, get_resolve_runner, get_store_runner)
 from ..util import (ensure_regex_list, ensure_writeonceordereddict, format_exception,
@@ -114,13 +114,11 @@ class HandlerBase(object):
             *pipeline.handlers* entry point group.
     :type dest_path_function: :py:class:`str`, :py:class:`callable`
 
-    :param error_cleanup_regexes: A list of regular expressions which, when a cleanup policy of
-        DELETE_CUSTOM_REGEXES_FROM_ERROR_STORE is set, controls which files are deleted from the error store upon
-        successful execution of the handler instance
-    :type error_cleanup_regexes: :py:class:`list`
-
     :param exclude_regexes: See :py:attr:`include_regexes`.
     :type exclude_regexes: :py:class:`list`
+
+    :param exit_policy_params: A dict containing parameters which control the behaviour of the exit policies
+    :type exit_policy_params: :py:class:`dict`
 
     :param harvest_params: A dict containing parameters passed directly to the harvest step (e.g. slice size,
         undo behaviour). The structure of the dict is defined by the :py:const:`HARVEST_PARAMS_SCHEMA` object in the
@@ -282,8 +280,8 @@ class HandlerBase(object):
                  config=None,
                  custom_params=None,
                  dest_path_function=None,
-                 error_cleanup_regexes=None,
                  exclude_regexes=None,
+                 exit_policy_params=None,
                  harvest_params=None,
                  harvest_type='talend',
                  include_regexes=None,
@@ -330,8 +328,8 @@ class HandlerBase(object):
         self.custom_params = custom_params
         self.config = config
         self.dest_path_function = dest_path_function
-        self.error_cleanup_regexes = error_cleanup_regexes
         self.exclude_regexes = exclude_regexes
+        self.exit_policy_params = exit_policy_params
         self.harvest_params = harvest_params
         self.harvest_type = harvest_type
         self.include_regexes = include_regexes
@@ -1001,6 +999,9 @@ class HandlerBase(object):
         if self.custom_params is not None:
             validate_custom_params(self.custom_params)
             self.custom_params = ensure_writeonceordereddict(self.custom_params)
+        if self.exit_policy_params is not None:
+            validate_exit_policy_params(self.exit_policy_params)
+            self.exit_policy_params = ensure_writeonceordereddict(self.exit_policy_params)
         if self.harvest_params is not None:
             validate_harvest_params(self.harvest_params)
             self.harvest_params = ensure_writeonceordereddict(self.harvest_params)
