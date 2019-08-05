@@ -1,9 +1,11 @@
+import json
 import os
 import uuid
 from collections import MutableSet, OrderedDict
 from unittest.mock import patch
 
-from aodncore.pipeline.common import (CheckResult, PipelineFileCheckType, PipelineFilePublishType)
+from aodncore.pipeline.common import (CheckResult, PipelineFileCheckType, PipelineFilePublishType, FileType)
+from aodncore.pipeline.serialisation import PipelineJSONDecoder, PipelineJSONEncoder
 from aodncore.pipeline.exceptions import AttributeValidationError, DuplicatePipelineFileError, MissingFileError
 from aodncore.pipeline.files import (PipelineFileCollection, PipelineFile, RemotePipelineFile,
                                      RemotePipelineFileCollection, ensure_pipelinefilecollection,
@@ -230,6 +232,17 @@ class TestPipelineFile(BaseTestCase):
         self.pipelinefile.is_stored = True
         self.assertTrue(test_callback_instance.test_attribute)
         self.assertEqual(test_callback_instance.test_kwargs['name'], self.pipelinefile.name)
+
+    def test_serialise_deserialise_file(self):
+        # set Enum attributes to test the nested (de)serialisation
+        self.pipelinefile.file_type = FileType.NETCDF
+        self.pipelinefile.check_type = PipelineFileCheckType.NONEMPTY_CHECK
+        self.pipelinefile.publish_type = PipelineFilePublishType.NO_ACTION
+
+        encoded = json.dumps(self.pipelinefile.to_json(), cls=PipelineJSONEncoder)
+        decoded = json.loads(encoded, cls=PipelineJSONDecoder)
+
+        self.assertEqual(self.pipelinefile, decoded)
 
 
 class TestRemotePipelineFile(BaseTestCase):
@@ -910,6 +923,25 @@ class TestPipelineFileCollection(BaseTestCase):
 
         with self.assertNoException():
             self.collection.set_string_attribute('dest_path', 'valid/string')
+
+    def test_serialise_deserialise_collection(self):
+        p1 = PipelineFile(GOOD_NC)
+        p1.file_type = FileType.NETCDF
+        p1.check_type = PipelineFileCheckType.NONEMPTY_CHECK
+        p1.publish_type = PipelineFilePublishType.UPLOAD_ONLY
+        p1.dest_path = 'FIXED_DEST_PATH'
+        self.collection.add(p1)
+
+        p2 = PipelineFile(BAD_NC)
+        p2.file_type = FileType.UNKNOWN
+        p2.check_type = PipelineFileCheckType.FORMAT_CHECK
+        p2.publish_type = PipelineFilePublishType.UPLOAD_ONLY
+        self.collection.add(p2)
+
+        encoded = json.dumps(self.collection, cls=PipelineJSONEncoder)
+        decoded = json.loads(encoded, cls=PipelineJSONDecoder)
+
+        self.assertEqual(self.collection, decoded)
 
 
 class TestRemotePipelineFileCollection(BaseTestCase):

@@ -18,6 +18,8 @@ import warnings
 from urllib.request import urlopen
 import xml.etree.ElementTree as ET
 
+from ..util import iter_public_attributes
+
 DEFAULT_PLATFORM_CAT_VOCAB_URL = 'http://content.aodn.org.au/Vocabularies/platform-category/aodn_aodn-platform-category-vocabulary.rdf'
 DEFAULT_PLATFORM_VOCAB_URL = 'http://content.aodn.org.au/Vocabularies/platform/aodn_aodn-platform-vocabulary.rdf'
 
@@ -47,6 +49,31 @@ class PlatformVocabHelper(object):
     def __init__(self, platform_vocab_url, platform_cat_vocab_url):
         self.platform_vocab_url = platform_vocab_url
         self.platform_cat_vocab_url = platform_cat_vocab_url
+
+    def __eq__(self, other):
+        if isinstance(other, type(self)):
+            return (self.platform_vocab_url,
+                    self.platform_cat_vocab_url) == (other.platform_vocab_url,
+                                                     other.platform_cat_vocab_url)
+        return False
+
+    def __hash__(self):
+        return hash((self.platform_vocab_url, self.platform_cat_vocab_url))
+
+    def __iter__(self):
+        return iter_public_attributes(self)
+
+    def to_json(self):
+        return {
+            '__decode_class__': self.__class__.__name__,
+            '__module__': self.__module__,
+            'data': dict(self)
+        }
+
+    @classmethod
+    def from_json(cls, o):
+        return cls(o['data']['platform_vocab_url'],
+                   o['data']['platform_cat_vocab_url'])
 
     @classmethod
     def from_config(cls, config):

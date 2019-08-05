@@ -1,3 +1,4 @@
+import json
 import os
 import sys
 from functools import partial
@@ -9,6 +10,7 @@ from aodncore.pipeline import PipelineFile, PipelineFileCheckType, PipelineFileP
 from aodncore.pipeline.exceptions import (AttributeValidationError, ComplianceCheckFailedError, HandlerAlreadyRunError,
                                           InvalidCheckSuiteError, InvalidInputFileError, InvalidFileFormatError,
                                           InvalidRecipientError, UnmatchedFilesError)
+from aodncore.pipeline.serialisation import PipelineJSONEncoder, PipelineJSONDecoder
 from aodncore.pipeline.statequery import StateQuery
 from aodncore.pipeline.steps import NotifyList
 from aodncore.testlib import DummyHandler, HandlerTestCase, dest_path_testing, get_nonexistent_path
@@ -410,3 +412,20 @@ class TestDummyHandler(HandlerTestCase):
         handler = self.handler_class(self.temp_nc_file)
         self.assertIsInstance(handler.platform_vocab_helper.platform_type_uris_by_category(), dict)
         self.assertEqual(handler.platform_vocab_helper.platform_altlabels_per_preflabel('Vessel')['9VUU'], 'Anro Asia')
+
+    @patch("aodncore.pipeline.files.get_file_checksum")
+    def test_serialise_deserialise_handler(self, mock_get_file_checksum):
+        mock_get_file_checksum.return_value = 'MOCK_CHECKSUM'
+
+        handler = self.run_handler(self.temp_nc_file)
+
+        expected = {
+            '__class__': 'DummyHandler',
+            '__module__': 'aodncore.testlib.dummyhandler',
+            'data': dict(handler)
+        }
+
+        encoded = json.dumps(handler.to_json(), cls=PipelineJSONEncoder)
+        decoded = json.loads(encoded, cls=PipelineJSONDecoder)
+
+        self.assertDictEqual(expected, decoded)

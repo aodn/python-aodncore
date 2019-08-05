@@ -293,6 +293,8 @@ class HandlerBase(object):
                  ):
 
         # property backing variables
+        self._celery_task_id = None
+        self._celery_task_name = None
         self._config = None
         self._default_addition_publish_type = PipelineFilePublishType.HARVEST_UPLOAD
         self._default_deletion_publish_type = PipelineFilePublishType.DELETE_UNHARVEST
@@ -308,6 +310,7 @@ class HandlerBase(object):
         self._input_file_archive_path = None
         self._instance_working_directory = None
         self._notification_results = None
+        self._pipeline_name = None
         self._is_archived = False
         self._logger = None
         self._result = HandlerResult.UNKNOWN
@@ -356,6 +359,22 @@ class HandlerBase(object):
 
     def __str__(self):
         return "{name}({attrs})".format(name=self.__class__.__name__, attrs=dict(self))
+
+    def to_json(self):
+        """Return a JSON representation of this class
+
+        Note: this deliberately does not return `__decode_class__`, as it is not currently intended to be deserialised
+        (which is why there is no corresponding from_json method). Serialisation of this class is intended to be for
+        information only, and not in order to re-instantiate a class instance from a JSON representation.
+
+        :return: dict containing public handler attributes
+        :rtype: :class:`dict`,
+        """
+        return {
+            '__class__': self.__class__.__name__,
+            '__module__': self.__module__,
+            'data': dict(self)
+        }
 
     #
     # public properties
@@ -498,7 +517,7 @@ class HandlerBase(object):
         :return: string containing the archive path
         :rtype: :class:`str`
         """
-        if not self._input_file_archive_path:
+        if self._pipeline_name and not self._input_file_archive_path:
             self.input_file_archive_path = os.path.join(self._pipeline_name, os.path.basename(self.input_file))
         return self._input_file_archive_path
 

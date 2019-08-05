@@ -1,7 +1,6 @@
 """This module contains common "types" (typically enums or simple data classes) used by more than one module in the
     project.
 """
-
 import os
 
 from enum import Enum
@@ -49,6 +48,19 @@ class CheckResult(object):
     @property
     def errors(self):
         return self._errors
+
+    def to_json(self):
+        return {
+            '__decode_class__': self.__class__.__name__,
+            '__module__': self.__module__,
+            'data': dict(self)
+        }
+
+    @classmethod
+    def from_json(cls, o):
+        return cls(o['data']['compliant'],
+                   o['data']['log'],
+                   o['data']['errors'])
 
 
 class HandlerResult(Enum):

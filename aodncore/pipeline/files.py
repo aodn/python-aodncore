@@ -261,6 +261,30 @@ class PipelineFile(PipelineFileBase):
     def _key(self):
         return self.name, self.local_path, self.file_checksum
 
+    def __repr__(self):  # pragma: no cover
+        return "{name}({repr})".format(name=self.__class__.__name__, repr=repr(dict(self)))
+
+    def __str__(self):
+        return "{name}({str})".format(name=self.__class__.__name__, str=dict(self))
+
+    def to_json(self):
+        return {
+            '__decode_class__': self.__class__.__name__,
+            '__module__': self.__module__,
+            'data': dict(self)
+        }
+
+    @classmethod
+    def from_json(cls, o):
+        return cls(o['data']['src_path'],
+                   name=o['data']['name'],
+                   archive_path=o['data']['archive_path'],
+                   dest_path=o['data']['dest_path'],
+                   is_deletion=o['data']['is_deletion'])
+
+    #
+    # Static properties (read-only, should never change during the lifecycle of the object)
+    #
     @property
     def src_path(self):
         return self._local_path
@@ -609,7 +633,23 @@ class PipelineFileCollectionBase(MutableSet):
     def __repr__(self):  # pragma: no cover
         return "{name}({repr})".format(name=self.__class__.__name__, repr=repr(list(self._s)))
 
-    def add(self, pipeline_file, overwrite=False, **kwargs):
+    def _set_attribute(self, attribute, value):
+        for f in self._s:
+            setattr(f, attribute, value)
+
+    def to_json(self):
+        as_list = list(f.to_json() for f in self._s)
+        return {
+            '__decode_class__': self.__class__.__name__,
+            '__module__': self.__module__,
+            'data': as_list
+        }
+
+    @classmethod
+    def from_json(cls, o):
+        return cls(o['data'])
+
+    def add(self, pipeline_file, deletion=False, overwrite=False, **kwargs):
         """Add a file to the collection
 
         :param pipeline_file: :py:class:`PipelineFile` or file path
