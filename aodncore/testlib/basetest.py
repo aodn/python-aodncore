@@ -33,6 +33,8 @@ class BaseTestCase(unittest.TestCase):
             self._config = get_test_config(self.temp_dir)
             for subdir in ('celery', 'harvest', 'process', 'watchservice'):
                 mkdir_p(os.path.join(self._config.pipeline_config['logging']['log_root'], subdir))
+            for watchdir in self._config.watch_directory_map:
+                mkdir_p(watchdir)
         return self._config
 
     @property
