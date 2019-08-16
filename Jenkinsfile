@@ -4,13 +4,6 @@ pipeline {
     agent none
 
     stages {
-        stage('clean') {
-            agent { label 'master' }
-            steps {
-                sh 'git clean -fdx'
-            }
-        }
-
         stage('container') {
             agent {
                 dockerfile {
@@ -18,6 +11,20 @@ pipeline {
                 }
             }
             stages {
+                stage('set_version') {
+                    when { not { branch "master" } }
+                    steps {
+                        sh './bumpversion.sh build'
+                    }
+                }
+                stage('release') {
+                    when { branch 'master' }
+                    steps {
+                        withCredentials([usernamePassword(credentialsId: env.CREDENTIALS_ID, passwordVariable: 'GIT_PASSWORD', usernameVariable: 'GIT_USERNAME')]) {
+                            sh './bumpversion.sh release'
+                        }
+                    }
+                }
                 stage('test') {
                     steps {
                         sh 'pip install --user -e . .[testing]'
