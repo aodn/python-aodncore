@@ -11,9 +11,9 @@ from .common import (FileType, PipelineFilePublishType, PipelineFileCheckType, v
 from .exceptions import AttributeValidationError, DuplicatePipelineFileError, MissingFileError
 from .schema import validate_check_params
 from ..util import (IndexedSet, ensure_regex_list, format_exception, get_file_checksum, iter_public_attributes,
-                    matches_regexes, slice_sequence, validate_bool, validate_callable, validate_int, validate_mapping,
-                    validate_nonstring_iterable, validate_regexes, validate_relative_path_attr, validate_string,
-                    validate_type)
+                    matches_regexes, rm_f, slice_sequence, validate_bool, validate_callable, validate_int,
+                    validate_mapping, validate_nonstring_iterable, validate_regexes, validate_relative_path_attr,
+                    validate_string, validate_type)
 
 __all__ = [
     'PipelineFileCollection',
@@ -184,6 +184,11 @@ class RemotePipelineFile(PipelineFileBase):
         # reset file_checksum to None, so that it will be re-evaluated lazily if required
         self._file_checksum = None
         self._set_local_file_attributes()
+
+    def remove_local(self):
+        _local_path = self.local_path
+        self.local_path = None
+        rm_f(_local_path)
 
 
 class PipelineFile(PipelineFileBase):
@@ -951,6 +956,15 @@ class RemotePipelineFileCollection(PipelineFileCollectionBase):
     @classmethod
     def from_pipelinefilecollection(cls, pipelinefilecollection):
         return cls(RemotePipelineFile.from_pipelinefile(f) for f in pipelinefilecollection)
+
+    def download(self, broker, local_path):
+        """Helper method to download the current collection from a given broker to a given local path
+
+        :param broker: BaseStorageBroker subclass to download from
+        :param local_path: local path into which files are downloaded
+        :return: None
+        """
+        broker.download(self, local_path)
 
     def keys(self):
         # backwards compatibility for code expecting broker query method to return a dict with keys being "dest_path"

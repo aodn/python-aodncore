@@ -11,7 +11,7 @@ from aodncore.pipeline.files import (PipelineFileCollection, PipelineFile, Remot
                                      RemotePipelineFileCollection, ensure_pipelinefilecollection,
                                      ensure_remotepipelinefilecollection)
 from aodncore.pipeline.steps import get_child_check_runner
-from aodncore.testlib import BaseTestCase, get_nonexistent_path, mock
+from aodncore.testlib import BaseTestCase, NullStorageBroker, get_nonexistent_path, mock
 from test_aodncore import TESTDATA_DIR
 
 BAD_NC = os.path.join(TESTDATA_DIR, 'bad.nc')
@@ -933,6 +933,17 @@ class TestRemotePipelineFileCollection(BaseTestCase):
         remote_collection = RemotePipelineFileCollection.from_pipelinefilecollection(collection)
 
         self.assertEqual(remote_collection, expected_remote_collection)
+
+    def test_download(self):
+        local_path = os.path.join(self.temp_dir, 'local_download_path')
+        broker = NullStorageBroker('')
+
+        self.remote_collection.download(broker, local_path)
+        local_paths = self.remote_collection.get_attribute_list('local_path')
+        expected = [os.path.join(local_path, rf.dest_path) for rf in self.remote_collection]
+
+        broker.assert_download_call_count(1)
+        self.assertItemsEqual(local_paths, expected)
 
     def test_file_objects(self):
         f1 = RemotePipelineFile('dest/path/1.nc', name='1.nc')
