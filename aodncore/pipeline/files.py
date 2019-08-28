@@ -1,6 +1,6 @@
+import abc
 import mimetypes
 import os
-import re
 from collections import Counter, MutableSet, OrderedDict
 
 import six
@@ -10,15 +10,18 @@ from .common import (FileType, PipelineFilePublishType, PipelineFileCheckType, v
                      validate_settable_checktype)
 from .exceptions import AttributeValidationError, DuplicatePipelineFileError, MissingFileError
 from .schema import validate_check_params
-from ..util import (IndexedSet, format_exception, get_file_checksum, iter_public_attributes, matches_regexes,
-                    slice_sequence, validate_bool, validate_callable, validate_int, validate_mapping,
-                    validate_nonstring_iterable, validate_regex, validate_regexes, validate_relative_path_attr,
-                    validate_string, validate_type)
+from ..util import (IndexedSet, ensure_regex_list, format_exception, get_file_checksum, iter_public_attributes,
+                    matches_regexes, slice_sequence, validate_bool, validate_callable, validate_int, validate_mapping,
+                    validate_nonstring_iterable, validate_regexes, validate_relative_path_attr, validate_string,
+                    validate_type)
 
 __all__ = [
     'PipelineFileCollection',
     'PipelineFile',
+    'RemotePipelineFile',
+    'RemotePipelineFileCollection',
     'ensure_pipelinefilecollection',
+    'ensure_remotepipelinefilecollection',
     'validate_pipelinefilecollection',
     'validate_pipelinefile_or_pipelinefilecollection',
     'validate_pipelinefile_or_string'
@@ -36,13 +39,160 @@ def ensure_pipelinefilecollection(o):
     return o if isinstance(o, PipelineFileCollection) else PipelineFileCollection(o)
 
 
-class PipelineFile(object):
+def ensure_remotepipelinefilecollection(o):
+    """Function to accept either a single RemotePipelineFile OR a RemotePipelineFileCollection and ensure that a
+    RemotePipelineFileCollection object is returned in either case
+
+    :param o: PipelineFile or PipelineFileCollection object
+    :return: PipelineFileCollection object
+    """
+    validate_remotepipelinefile_or_remotepipelinefilecollection(o)
+    return o if isinstance(o, RemotePipelineFileCollection) else RemotePipelineFileCollection(o)
+
+
+class PipelineFileBase(object):
+    """A base class to represent a "pipeline file", which consists of a local path and a remote "destination path"
+    """
+    __metaclass__ = abc.ABCMeta
+    __slots__ = ['_file_checksum', '_dest_path', '_local_path', '_extension', '_name', 'file_type']
+
+    def __init__(self, local_path, dest_path=None, name=None):
+        self._local_path = local_path
+        self._dest_path = dest_path
+
+        self._file_checksum = None
+
+        self._set_local_file_attributes()
+
+    def _set_local_file_attributes(self):
+        if self.local_path:
+            _, self._extension = os.path.splitext(self.local_path)
+            self.file_type = FileType.get_type_from_extension(self._extension)
+        else:
+            self._extension = None
+            self.file_type = FileType.UNKNOWN
+
+    def __eq__(self, other):
+        if isinstance(other, type(self)):
+            return self._key() == other._key()
+        return False
+
+    def __hash__(self):
+        return hash(self._key())
+
+    @abc.abstractmethod
+    def _key(self):
+        raise NotImplementedError
+
+    def __iter__(self):
+        return iter_public_attributes(self)
+
+    def __repr__(self):  # pragma: no cover
+        return "{name}({repr})".format(name=self.__class__.__name__, repr=repr(dict(self)))
+
+    def __str__(self):
+        return "{name}({str})".format(name=self.__class__.__name__, str=dict(self))
+
+    #
+    # Static properties (read-only, should never change during the lifecycle of the object)
+    #
+    @property
+    def extension(self):
+        return self._extension
+
+    @property
+    def file_checksum(self):
+        if self._file_checksum is None:
+            try:
+                self._file_checksum = get_file_checksum(self._local_path)
+            except (IOError, OSError) as e:
+                raise MissingFileError(
+                    "failed to determine checksum for RemoteFile '{local_path}'. {e}".format(
+                        local_path=self._local_path,
+                        e=format_exception(e)))
+        return self._file_checksum
+
+    @property
+    def name(self):
+        return self._name
+
+    @property
+    def local_path(self):
+        return self._local_path
+
+    @property
+    def dest_path(self):
+        return self._dest_path
+
+
+class RemotePipelineFile(PipelineFileBase):
+    """Implementation of PipelineFileBase to represents a single *remote* file. This is used to provide a common
+        interface for a remote file, to facilitate querying and downloading operations where the *current* state
+        of the storage is relevant information
+    """
+    __slots__ = ['_last_modified', '_size']
+
+    def __init__(self, dest_path, local_path=None, name=None, last_modified=None, size=None):
+        super(RemotePipelineFile, self).__init__(local_path, dest_path, name)
+        self._name = name if name is not None else os.path.basename(dest_path)
+        self._last_modified = last_modified
+        self._size = size
+
+    def __getattr__(self, item):
+        # backwards compatibility for code expecting items to be a key/value pair like "(dest_path, metadata_dict)"
+        return getattr(self.dest_path, item)
+
+    def __getitem__(self, item):
+        # backwards compatibility for code expecting items to be a key/value pair like "(dest_path, metadata_dict)"
+        return self.dest_path.__getitem__(item)
+
+    @classmethod
+    def from_pipelinefile(cls, pipeline_file):
+        """Construct a RemotePipelineFile instance from an existing PipelineFile instance
+
+        Note: the local_path is deliberately *not* set in the new instance, primarily to avoid accidental overwriting of
+        local files in case of conversion to a remote file and having the remote file downloaded. The local_path
+        attribute may still be set, but it is an explicit operation.
+
+        :param pipeline_file: PipelineFile instance used to instantiate a RemotePipelineFile instance
+        :return: RemotePipelineFile instance
+        """
+        return cls(dest_path=pipeline_file.dest_path, local_path=None, name=pipeline_file.name)
+
+    def _key(self):
+        return self.name, self.dest_path
+
+    @property
+    def file_checksum(self):
+        # override superclass property to not attempt to checksum the file if it has no local path
+        # (i.e. has not been downloaded)
+        if self.local_path is None:
+            return None
+        return super(RemotePipelineFile, self).file_checksum
+
+    @property
+    def last_modified(self):
+        return self._last_modified
+
+    @property
+    def size(self):
+        return self._size
+
+    @PipelineFileBase.local_path.setter
+    def local_path(self, local_path):
+        self._local_path = local_path
+        # reset file_checksum to None, so that it will be re-evaluated lazily if required
+        self._file_checksum = None
+        self._set_local_file_attributes()
+
+
+class PipelineFile(PipelineFileBase):
     """Represents a single file in order to store state information relating to the intended actions to be performed
     on the file, and the actions that *were* performed on the file
 
-    :param src_path: absolute source path to the file being represented
-    :type src_path: :py:class:`str`
-    :param name: arbitrary name (defaults to the output of :py:func:`os.path.basename` on src_path)
+    :param local_path: absolute source path to the file being represented
+    :type local_path: :py:class:`str`
+    :param name: arbitrary name (defaults to the output of :py:func:`os.path.basename` on local_path)
     :type name: :py:class:`str`
     :param archive_path: relative path used when archiving the file
     :type archive_path: :py:class:`str`
@@ -53,29 +203,18 @@ class PipelineFile(object):
     :param file_update_callback: optional callback to call when a file property is updated
     :type file_update_callback: :py:class:`callable`
     """
-    __slots__ = ['_file_checksum', '_name', '_src_path', '_archive_path', '_dest_path', '_extension', 'file_type',
-                 '_file_update_callback', '_check_type', '_is_deletion', '_publish_type', '_should_archive',
-                 '_should_harvest', '_should_store', '_should_undo', '_is_checked', '_is_archived', '_is_harvested',
-                 '_is_overwrite', '_is_stored', '_is_harvest_undone', "_is_upload_undone", '_check_result',
-                 '_mime_type']
+    __slots__ = ['_archive_path', '_file_update_callback', '_check_type', '_is_deletion', '_publish_type',
+                 '_should_archive', '_should_harvest', '_should_store', '_should_undo', '_is_checked', '_is_archived',
+                 '_is_harvested', '_is_overwrite', '_is_stored', '_is_harvest_undone', '_is_upload_undone',
+                 '_check_result', '_mime_type']
 
-    def __init__(self, src_path, name=None, archive_path=None, dest_path=None, is_deletion=False,
+    def __init__(self, local_path, name=None, archive_path=None, dest_path=None, is_deletion=False,
                  file_update_callback=None):
-        try:
-            self._file_checksum = None if is_deletion else get_file_checksum(src_path)
-        except (IOError, OSError) as e:
-            raise MissingFileError(
-                "failed to create PipelineFile addition for '{src_path}'. {e}".format(src_path=src_path,
-                                                                                      e=format_exception(e)))
+        super(PipelineFile, self).__init__(local_path, dest_path, name)
 
-        self._name = name if name is not None else os.path.basename(src_path)
-        self._src_path = src_path
+        self._name = name if name is not None else os.path.basename(local_path)
 
         self._archive_path = archive_path
-        self._dest_path = dest_path
-
-        _, self._extension = os.path.splitext(src_path)
-        self.file_type = FileType.get_type_from_extension(self.extension)
 
         self._file_update_callback = None
         if file_update_callback is not None:
@@ -102,44 +241,30 @@ class PipelineFile(object):
         self._check_result = None
         self._mime_type = None
 
-    def __eq__(self, other):
-        if isinstance(other, type(self)):
-            return self.__key() == other.__key()
-        return False
+    @classmethod
+    def from_remotepipelinefile(cls, remotepipelinefile, is_deletion=False):
+        """Construct a PipelineFile instance from an existing RemotePipelineFile instance
 
-    def __hash__(self):
-        return hash(self.__key())
+        :param remotepipelinefile: RemotePipelineFile instance used to instantiate a PipelineFile instance
+        :param is_deletion: is_deletion flag passed directly to __init__
+        :return: PipelineFile instance
+        """
+        return cls(local_path=remotepipelinefile.local_path, dest_path=remotepipelinefile.dest_path,
+                   name=remotepipelinefile.name, is_deletion=is_deletion)
 
-    def __key(self):
-        return self.file_checksum, self.name, self.src_path
-
-    def __iter__(self):
-        return iter_public_attributes(self)
-
-    def __repr__(self):  # pragma: no cover
-        return "{name}({repr})".format(name=self.__class__.__name__, repr=repr(dict(self)))
-
-    def __str__(self):
-        return "{name}({str})".format(name=self.__class__.__name__, str=dict(self))
-
-    #
-    # Static properties (read-only, should never change during the lifecycle of the object)
-    #
-    @property
-    def extension(self):
-        return self._extension
-
-    @property
-    def file_checksum(self):
-        return self._file_checksum
-
-    @property
-    def name(self):
-        return self._name
+    def _key(self):
+        return self.name, self.local_path, self.file_checksum
 
     @property
     def src_path(self):
-        return self._src_path
+        return self._local_path
+
+    @property
+    def file_checksum(self):
+        # override superclass property to handle deletions (which have no local_path and therefore can't be summed)
+        if self.is_deletion:
+            return None
+        return super(PipelineFile, self).file_checksum
 
     #
     # State properties (may change during the lifecycle of the object to reflect the current state)
@@ -419,56 +544,52 @@ class PipelineFile(object):
                                       message="{properties}".format(properties=log_output))
 
 
-class PipelineFileCollection(MutableSet):
-    """A collection which implements the MutableSet abstract base class to allow clean set operations, but limited to
-    containing only :py:class:`PipelineFile` elements and providing specific functionality for handling a collection of
-    them (e.g. filtering, managing attributes, generating tabular data, etc.)
+class PipelineFileCollectionBase(MutableSet):
+    """A collection base class which implements the MutableSet abstract base class to allow clean set operations, but
+    limited to containing only :py:class:`PipelineFile` or :py:class:`RemotePipelineFile`elements and providing specific
+    functionality for handling a collection of them (e.g. filtering, generating tabular data, etc.)
 
     :param data: data to add during initialisation of the collection, either a single :py:class:`PipelineFile` or file
         path, or an :py:class:`Iterable` whose elements are :py:class:`PipelineFile` instances or file paths
-    :type data: :py:class:`PipelineFile`, :py:class:`str`, :py:class:`Iterable`
+    :type data: :py:class:`PipelineFile`, :py:class:`RemotePipelineFile`, :py:class:`str`, :py:class:`Iterable`
     """
-    __slots__ = ['__s']
+    __slots__ = ['_s', 'member_class', 'member_validator', 'member_from_string_method', 'unique_attributes']
 
-    unique_attributes = {'archive_path', 'dest_path'}
+    def __init__(self, data=None, member_class=PipelineFile, member_validator=None, member_from_string_method=None,
+                 unique_attributes=()):
+        super(PipelineFileCollectionBase, self).__init__()
 
-    def __init__(self, data=None):
-        super(PipelineFileCollection, self).__init__()
+        self._s = IndexedSet()
 
-        self.__s = IndexedSet()
+        self.member_class = member_class
+        self.member_validator = member_validator or validate_pipelinefile_or_string
+        self.member_from_string_method = getattr(self, member_from_string_method) or self.get_pipelinefile_from_src_path
+        self.unique_attributes = unique_attributes
 
         if data is not None:
-            if isinstance(data, (PipelineFile, six.string_types)):
+            if isinstance(data, (self.member_class, six.string_types)):
                 data = [data]
             for f in data:
                 self.add(f)
 
     def __bool__(self):
-        return bool(self.__s)
+        return bool(self._s)
 
     def __contains__(self, v):
-        if isinstance(v, PipelineFile):
-            element = v
-        else:
-            element = self.get_pipelinefile_from_src_path(v)
-        return element in self.__s
+        return v in self._s
 
     def __getitem__(self, index):
-        result = self.__s[index]
-        return PipelineFileCollection(result) if isinstance(result, IndexedSet) else result
+        result = self._s[index]
+        return self.__class__(result) if isinstance(result, IndexedSet) else result
 
     def __iter__(self):
-        return iter(self.__s)
+        return iter(self._s)
 
     def __len__(self):
-        return len(self.__s)
+        return len(self._s)
 
     def __repr__(self):  # pragma: no cover
-        return "{name}({repr})".format(name=self.__class__.__name__, repr=repr(list(self.__s)))
-
-    def _set_attribute(self, attribute, value):
-        for f in self.__s:
-            setattr(f, attribute, value)
+        return "{name}({repr})".format(name=self.__class__.__name__, repr=repr(list(self._s)))
 
     def add(self, pipeline_file, deletion=False, overwrite=False):
         """Add a file to the collection
@@ -478,23 +599,23 @@ class PipelineFileCollection(MutableSet):
         :param overwrite: :py:class:`bool` which, if True, will overwrite an existing matching file in the collection
         :return: :py:class:`bool` which indicates whether the file was successfully added
         """
-        validate_pipelinefile_or_string(pipeline_file)
+        self.member_validator(pipeline_file)
         validate_bool(deletion)
         validate_bool(overwrite)
 
-        if isinstance(pipeline_file, PipelineFile):
+        if isinstance(pipeline_file, self.member_class):
             fileobj = pipeline_file
         else:
             if not deletion and not os.path.isfile(pipeline_file):
                 raise MissingFileError("file '{src}' doesn't exist".format(src=pipeline_file))
-            fileobj = PipelineFile(pipeline_file, is_deletion=deletion)
+            fileobj = self.member_class(pipeline_file, is_deletion=deletion)
 
-        result = fileobj not in self.__s
+        result = fileobj not in self._s
         if not result and not overwrite:
             raise DuplicatePipelineFileError("{f.name} already in collection".format(f=fileobj))
 
         if overwrite:
-            self.__s.discard(fileobj)
+            self._s.discard(fileobj)
             result = True
 
         for attribute in self.unique_attributes:
@@ -502,7 +623,7 @@ class PipelineFileCollection(MutableSet):
             if value is not None:
                 self.validate_unique_attribute_value(attribute, value)
 
-        self.__s.add(fileobj)
+        self._s.add(fileobj)
         return result
 
     # alias append to the add method
@@ -514,30 +635,30 @@ class PipelineFileCollection(MutableSet):
         :param pipeline_file: :py:class:`PipelineFile` or file path
         :return: :py:class:`bool` which indicates whether the file was in the collection AND was successfully discarded
         """
-        validate_pipelinefile_or_string(pipeline_file)
-        if isinstance(pipeline_file, PipelineFile):
+        self.member_validator(pipeline_file)
+        if isinstance(pipeline_file, self.member_class):
             fileobj = pipeline_file
         else:
-            fileobj = self.get_pipelinefile_from_src_path(pipeline_file)
+            fileobj = self.member_from_string_method(pipeline_file)
 
-        result = fileobj in self.__s
+        result = fileobj in self._s
 
-        self.__s.discard(fileobj)
+        self._s.discard(fileobj)
         return result
 
     def difference(self, sequence):
-        return PipelineFileCollection(self.__s.difference(sequence))
+        return self.__class__(self._s.difference(sequence))
 
     def issubset(self, sequence):
-        return self.__s.issubset(sequence)
+        return self._s.issubset(sequence)
 
     def issuperset(self, sequence):
-        return self.__s.issuperset(sequence)
+        return self._s.issuperset(sequence)
 
     def union(self, sequence):
-        if not all(isinstance(f, PipelineFile) for f in sequence):
+        if not all(isinstance(f, self.member_class) for f in sequence):
             raise TypeError('invalid sequence, all elements must be PipelineFile objects')
-        return PipelineFileCollection(self.__s.union(sequence))
+        return self.__class__(self._s.union(sequence))
 
     def update(self, sequence, overwrite=False):
         """Add the elements of an existing :py:class:`Sequence` to this collection
@@ -555,13 +676,23 @@ class PipelineFileCollection(MutableSet):
             results.append(self.add(item, overwrite=overwrite))
         return any(results)
 
+    def get_pipelinefile_from_dest_path(self, dest_path):
+        """Get PipelineFile for a given src_path
+
+        :param dest_path: destination path string for which to retrieve corresponding :py:class:`RemotePipelineFile`
+        instance
+        :return: matching :py:class:`RemotePipelineFile` instance or :py:const:`None` if it is not in the collection
+        """
+        pipeline_file = next((f for f in self._s if f.dest_path == dest_path), None)
+        return pipeline_file
+
     def get_pipelinefile_from_src_path(self, src_path):
         """Get PipelineFile for a given src_path
 
         :param src_path: source path string for which to retrieve corresponding :py:class:`PipelineFile` instances
         :return: matching :py:class:`PipelineFile` instance or :py:const:`None` if it is not in the collection
         """
-        pipeline_file = next((f for f in self.__s if f.src_path == src_path), None)
+        pipeline_file = next((f for f in self._s if f.local_path == src_path), None)
         return pipeline_file
 
     def get_slices(self, slice_size):
@@ -583,7 +714,7 @@ class PipelineFileCollection(MutableSet):
         :return: :py:class:`PipelineFileCollection` containing only :py:class:`PipelineFile` instances with the given
             attribute matching the given value
         """
-        collection = PipelineFileCollection(f for f in self.__s if getattr(f, attribute) is value)
+        collection = self.__class__(f for f in self._s if getattr(f, attribute) is value)
         return collection
 
     def filter_by_attribute_id_not(self, attribute, value):
@@ -595,7 +726,7 @@ class PipelineFileCollection(MutableSet):
         :return: :py:class:`PipelineFileCollection` containing only :py:class:`PipelineFile` instances with the given
             attribute not matching the given value
         """
-        collection = PipelineFileCollection(f for f in self.__s if getattr(f, attribute) is not value)
+        collection = self.__class__(f for f in self._s if getattr(f, attribute) is not value)
         return collection
 
     def filter_by_attribute_value(self, attribute, value):
@@ -607,22 +738,25 @@ class PipelineFileCollection(MutableSet):
         :return: :py:class:`PipelineFileCollection` containing only :py:class:`PipelineFile`instances with the given
             attribute matching the given value
         """
-        collection = PipelineFileCollection(f for f in self.__s if getattr(f, attribute) == value)
+        collection = self.__class__(f for f in self._s if getattr(f, attribute) == value)
         return collection
 
-    def filter_by_attribute_regex(self, attribute, regex):
+    def filter_by_attribute_regexes(self, attribute, regexes):
         """Return a new :py:class:`PipelineFileCollection` containing only elements where the value of the named
         attribute matches a given regex pattern
 
         :param attribute: attribute to filter on
-        :param regex: regex pattern by which to filter PipelineFiles
+        :param regexes: regex pattern(s) by which to filter PipelineFiles
         :return: :py:class:`PipelineFileCollection` containing only :py:class:`PipelineFile` instances with the
             attribute matching the given pattern
         """
-        validate_regex(regex)
-        collection = PipelineFileCollection(
-            f for f in self.__s if getattr(f, attribute) and re.match(regex, getattr(f, attribute)))
+        regexes = ensure_regex_list(regexes)
+        collection = self.__class__(
+            f for f in self._s if matches_regexes(getattr(f, attribute), include_regexes=regexes))
         return collection
+
+    # add method alias for backwards compatibility
+    filter_by_attribute_regex = filter_by_attribute_regexes
 
     def filter_by_bool_attribute(self, attribute):
         """Return a new :py:class:`PipelineFileCollection` containing only elements where the named attribute resolves
@@ -632,7 +766,7 @@ class PipelineFileCollection(MutableSet):
         :return: :py:class:`PipelineFileCollection` containing only :py:class:`PipelineFile` instances with a True value
             for the given attribute
         """
-        collection = PipelineFileCollection(f for f in self.__s if getattr(f, attribute))
+        collection = self.__class__(f for f in self._s if getattr(f, attribute))
         return collection
 
     def filter_by_bool_attribute_not(self, attribute):
@@ -643,7 +777,7 @@ class PipelineFileCollection(MutableSet):
         :return: :py:class:`PipelineFileCollection` containing only :py:class:`PipelineFile` instances with a False
             value for the given attribute
         """
-        collection = PipelineFileCollection(f for f in self.__s if not getattr(f, attribute))
+        collection = self.__class__(f for f in self._s if not getattr(f, attribute))
         return collection
 
     def filter_by_bool_attributes_and(self, *attributes):
@@ -659,7 +793,7 @@ class PipelineFileCollection(MutableSet):
         def all_attributes_true(pf):
             return all(getattr(pf, a) for a in attributes_set)
 
-        collection = PipelineFileCollection(f for f in self.__s if all_attributes_true(f))
+        collection = self.__class__(f for f in self._s if all_attributes_true(f))
         return collection
 
     def filter_by_bool_attributes_and_not(self, true_attributes, false_attributes):
@@ -685,8 +819,8 @@ class PipelineFileCollection(MutableSet):
         def check_false_attributes(pf):
             return not any(getattr(pf, a) for a in false_attributes_set)
 
-        collection = PipelineFileCollection(
-            f for f in self.__s if check_true_attributes(f) and check_false_attributes(f))
+        collection = self.__class__(
+            f for f in self._s if check_true_attributes(f) and check_false_attributes(f))
         return collection
 
     def filter_by_bool_attributes_not(self, *attributes):
@@ -702,7 +836,7 @@ class PipelineFileCollection(MutableSet):
         def no_attributes_true(pf):
             return not any(getattr(pf, a) for a in attributes_set)
 
-        collection = PipelineFileCollection(f for f in self.__s if no_attributes_true(f))
+        collection = self.__class__(f for f in self._s if no_attributes_true(f))
         return collection
 
     def filter_by_bool_attributes_or(self, *attributes):
@@ -718,7 +852,7 @@ class PipelineFileCollection(MutableSet):
         def any_attributes_true(pf):
             return any(getattr(pf, a) for a in attributes_set)
 
-        collection = PipelineFileCollection(f for f in self.__s if any_attributes_true(f))
+        collection = self.__class__(f for f in self._s if any_attributes_true(f))
         return collection
 
     def get_attribute_list(self, attribute):
@@ -727,7 +861,7 @@ class PipelineFileCollection(MutableSet):
         :param attribute: the attribute name to retrieve from the objects
         :return: :py:class:`list` containing the value of the given attribute for each file in the collection
         """
-        return [getattr(f, attribute) for f in self.__s]
+        return [getattr(f, attribute) for f in self._s]
 
     def get_table_data(self):
         """Return :py:class:`PipelineFile` members in a simple tabular data format suitable for rendering into formatted
@@ -736,12 +870,116 @@ class PipelineFileCollection(MutableSet):
         :return: a :py:class:`tuple` with the first element being a list of columns, and the second being a 2D list of
             the data
         """
-        data = [OrderedDict(e) for e in self.__s]
+        data = [OrderedDict(e) for e in self._s]
         try:
             columns = list(data[0].keys())
         except IndexError:
             columns = []
         return columns, data
+
+    def validate_unique_attribute_value(self, attribute, value):
+        """Check that a given value is not already in the collection for the given :py:class:`PipelineFile` attribute,
+        and raise an exception if it is
+
+        This is intended for the use case of when an *intended* value is known for a particular attribute, and it is
+        desirable to check uniqueness before setting it (e.g. when adding new files to the collection).
+
+        :param attribute: the attribute to check
+        :param value: the value being tested for uniqueness for the given attribute
+        :return: None
+        """
+        duplicates = [f for f in self._s if getattr(f, attribute) == value]
+        if duplicates:
+            raise AttributeValidationError(
+                "{attribute} value '{value}' already set for file(s) '{duplicates}'".format(attribute=attribute,
+                                                                                            value=value,
+                                                                                            duplicates=duplicates))
+
+    def validate_attribute_value_matches_regexes(self, attribute, include_regexes):
+        """Check that the given :py:class:`PipelineFile` attribute matches at least one of the given regexes for each
+        file in the collection and raise an exception if any have a non-matched value
+
+        :param attribute: the attribute to compare
+        :param include_regexes: list of regexes of which the attribute must match at least one
+        :return: None
+        """
+        validate_regexes(include_regexes)
+        unmatched = {f.name: getattr(f, attribute)
+                     for f in self._s
+                     if not matches_regexes(getattr(f, attribute), include_regexes=include_regexes)}
+        if unmatched:
+            raise AttributeValidationError(
+                "invalid '{attribute}' values found for files: {unmatched}. Must match one of: {regexes}".format(
+                    attribute=attribute, unmatched=unmatched, regexes=include_regexes))
+
+    def validate_attribute_uniqueness(self, attribute):
+        """Check that the given :py:class:`PipelineFile` attribute is unique amongst all :py:class:`PipelineFile`
+        instances currently in the collection, and raise an exception if any duplicates are found
+
+        This is intended for the use case of a final sanity check of the collection before using it (e.g. before
+        progressing to the :ref:`publish` step).
+
+        :param attribute: the attribute to compare
+        :return: None
+        """
+        counter = Counter(getattr(f, attribute) for f in self._s if getattr(f, attribute) is not None)
+        duplicate_values = [k for k, v in counter.items() if v > 1]
+        if duplicate_values:
+            duplicates = []
+            for value in duplicate_values:
+                duplicates.extend(f for f in self._s if getattr(f, attribute) == value)
+            raise AttributeValidationError(
+                "duplicate attribute '{attribute}' found for files '{duplicates}'".format(attribute=attribute,
+                                                                                          duplicates=duplicates))
+
+
+class RemotePipelineFileCollection(PipelineFileCollectionBase):
+    """A PipelineFileCollectionBase subclass to hold a set of RemotePipelineFile instances
+    """
+
+    def __init__(self, *args, **kwargs):
+        kwargs['member_class'] = RemotePipelineFile
+        kwargs['member_validator'] = validate_remotepipelinefile_or_string
+        kwargs['member_from_string_method'] = 'get_pipelinefile_from_dest_path'
+        kwargs['unique_attributes'] = {'local_path', 'dest_path'}
+        super(RemotePipelineFileCollection, self).__init__(*args, **kwargs)
+
+    def __contains__(self, v):
+        element = v if isinstance(v, self.member_class) else self.get_pipelinefile_from_dest_path(v)
+        return element in self._s
+
+    @classmethod
+    def from_pipelinefilecollection(cls, pipelinefilecollection):
+        return cls(RemotePipelineFile.from_pipelinefile(f) for f in pipelinefilecollection)
+
+    def keys(self):
+        # backwards compatibility for code expecting broker query method to return a dict with keys being "dest_path"
+        return self.get_attribute_list('dest_path')
+
+
+class PipelineFileCollection(PipelineFileCollectionBase):
+    """A PipelineFileCollectionBase subclass to hold a set of PipelineFile instances
+    """
+
+    def __init__(self, *args, **kwargs):
+        kwargs['member_class'] = PipelineFile
+        kwargs['member_validator'] = validate_pipelinefile_or_string
+        kwargs['member_from_string_method'] = 'get_pipelinefile_from_src_path'
+        kwargs['unique_attributes'] = {'archive_path', 'dest_path'}
+        super(PipelineFileCollection, self).__init__(*args, **kwargs)
+
+    def __contains__(self, v):
+        element = v if isinstance(v, self.member_class) else self.get_pipelinefile_from_src_path(v)
+        return element in self._s
+
+    @classmethod
+    def from_remotepipelinefilecollection(cls, remotepipelinefilecollection, are_deletions=False):
+        return cls(PipelineFile.from_remotepipelinefile(f, is_deletion=are_deletions)
+                   for f in remotepipelinefilecollection)
+
+    def _set_attribute(self, attribute, value):
+        for f in self._s:
+            setattr(f, attribute, value)
 
     def set_archive_paths(self, archive_path_function):
         """Set archive_path attributes for each file in the collection
@@ -751,7 +989,7 @@ class PipelineFileCollection(MutableSet):
         """
         validate_callable(archive_path_function)
 
-        for f in self.__s:
+        for f in self._s:
             if f.archive_path is None and f.should_archive:
                 candidate_path = archive_path_function(f.src_path)
                 self.validate_unique_attribute_value('archive_path', candidate_path)
@@ -764,7 +1002,7 @@ class PipelineFileCollection(MutableSet):
         :return: None
         """
         validate_settable_checktype(check_type)
-        additions = PipelineFileCollection(f for f in self.__s if not f.is_deletion)
+        additions = self.__class__(f for f in self._s if not f.is_deletion)
         additions._set_attribute('check_type', check_type)
 
     def set_dest_paths(self, dest_path_function):
@@ -775,7 +1013,7 @@ class PipelineFileCollection(MutableSet):
         """
         validate_callable(dest_path_function)
 
-        for f in self.__s:
+        for f in self._s:
             if f.dest_path is None and any((f.should_store, f.should_harvest)):
                 candidate_path = dest_path_function(f.src_path)
                 self.validate_unique_attribute_value('dest_path', candidate_path)
@@ -816,7 +1054,7 @@ class PipelineFileCollection(MutableSet):
         :param file_update_callback: callback (function)
         :return: None
         """
-        for f in self.__s:
+        for f in self._s:
             f.file_update_callback = file_update_callback
 
     def set_default_check_types(self, check_params=None):
@@ -833,8 +1071,8 @@ class PipelineFileCollection(MutableSet):
 
         checks = check_params.get('checks', ())
 
-        all_additions = PipelineFileCollection(f for f in self.__s if not f.is_deletion)
-        netcdf_additions = PipelineFileCollection(f for f in all_additions if f.file_type is FileType.NETCDF)
+        all_additions = self.__class__(f for f in self._s if not f.is_deletion)
+        netcdf_additions = self.__class__(f for f in all_additions if f.file_type is FileType.NETCDF)
         non_netcdf_additions = all_additions.difference(netcdf_additions)
 
         netcdf_check_type = PipelineFileCheckType.NC_COMPLIANCE_CHECK if checks else PipelineFileCheckType.FORMAT_CHECK
@@ -856,65 +1094,16 @@ class PipelineFileCollection(MutableSet):
         if exclude_regexes:
             validate_regexes(exclude_regexes)
 
-        for f in self.__s:
+        for f in self._s:
             if matches_regexes(f.name, include_regexes, exclude_regexes):
                 f.publish_type = deletion_type if f.is_deletion else addition_type
-
-    def validate_unique_attribute_value(self, attribute, value):
-        """Check that a given value is not already in the collection for the given :py:class:`PipelineFile` attribute,
-        and raise an exception if it is
-
-        This is intended for the use case of when an *intended* value is known for a particular attribute, and it is
-        desirable to check uniqueness before setting it (e.g. when adding new files to the collection).
-
-        :param attribute: the attribute to check
-        :param value: the value being tested for uniqueness for the given attribute
-        :return: None
-        """
-        duplicates = [f for f in self.__s if getattr(f, attribute) == value]
-        if duplicates:
-            raise AttributeValidationError(
-                "{attribute} value '{value}' already set for file(s) '{duplicates}'".format(attribute=attribute,
-                                                                                            value=value,
-                                                                                            duplicates=duplicates))
-
-    def validate_attribute_value_matches_regexes(self, attribute, include_regexes):
-        """Check that the given :py:class:`PipelineFile` attribute matches at least one of the given regexes for each
-        file in the collection and raise an exception if any have a non-matched value
-
-        :param attribute: the attribute to compare
-        :param include_regexes: list of regexes of which the attribute must match at least one
-        :return: None
-        """
-        validate_regexes(include_regexes)
-        unmatched = {f.name: getattr(f, attribute)
-                     for f in self.__s
-                     if not matches_regexes(getattr(f, attribute), include_regexes=include_regexes)}
-        if unmatched:
-            raise AttributeValidationError(
-                "invalid '{attribute}' values found for files: {unmatched}. Must match one of: {regexes}".format(
-                    attribute=attribute, unmatched=unmatched, regexes=include_regexes))
-
-    def validate_attribute_uniqueness(self, attribute):
-        """Check that the given :py:class:`PipelineFile` attribute is unique amongst all :py:class:`PipelineFile`
-        instances currently in the collection, and raise an exception if any duplicates are found
-
-        This is intended for the use case of a final sanity check of the collection before using it (e.g. before
-        progressing to the :ref:`publish` step).
-
-        :param attribute: the attribute to compare
-        :return: None
-        """
-        counter = Counter(getattr(f, attribute) for f in self.__s if getattr(f, attribute) is not None)
-        duplicate_values = [k for k, v in counter.items() if v > 1]
-        if duplicate_values:
-            duplicates = []
-            for value in duplicate_values:
-                duplicates.extend(f for f in self.__s if getattr(f, attribute) == value)
-            raise AttributeValidationError(
-                "duplicate paths found for files '{duplicates}'".format(duplicates=duplicates))
 
 
 validate_pipelinefilecollection = validate_type(PipelineFileCollection)
 validate_pipelinefile_or_pipelinefilecollection = validate_type((PipelineFile, PipelineFileCollection))
 validate_pipelinefile_or_string = validate_type((PipelineFile, six.string_types))
+
+validate_remotepipelinefilecollection = validate_type(RemotePipelineFileCollection)
+validate_remotepipelinefile_or_remotepipelinefilecollection = validate_type((RemotePipelineFile,
+                                                                             RemotePipelineFileCollection))
+validate_remotepipelinefile_or_string = validate_type((RemotePipelineFile, six.string_types))
