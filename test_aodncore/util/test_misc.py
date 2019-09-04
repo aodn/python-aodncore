@@ -5,14 +5,13 @@ import uuid
 from collections import OrderedDict
 
 import six
-from typing import Pattern
 
 from aodncore.testlib import BaseTestCase
 from aodncore.util import (ensure_regex, ensure_regex_list, ensure_writeonceordereddict, format_exception,
                            get_pattern_subgroups_from_string, is_function, is_nonstring_iterable, matches_regexes,
                            merge_dicts, slice_sequence, str_to_list, validate_callable, validate_mandatory_elements,
                            validate_membership, validate_nonstring_iterable, validate_regex, validate_regexes,
-                           validate_relative_path, validate_relative_path_attr, validate_type, CaptureStdIO,
+                           validate_relative_path, validate_relative_path_attr, validate_type, CaptureStdIO, Pattern,
                            WriteOnceOrderedDict)
 
 StringIO = six.StringIO

@@ -14,7 +14,8 @@ import jinja2
 import pkg_resources
 import six
 from six.moves import range
-from typing import Pattern
+
+Pattern = type(re.compile(''))
 
 StringIO = six.StringIO
 
@@ -50,6 +51,7 @@ __all__ = [
     'validate_type',
     'CaptureStdIO',
     'LoggingContext',
+    'Pattern',
     'TemplateRenderer',
     'WriteOnceOrderedDict'
 ]
