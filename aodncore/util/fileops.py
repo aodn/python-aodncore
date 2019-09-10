@@ -10,6 +10,7 @@ import shutil
 import tempfile
 import zipfile
 from functools import cmp_to_key, partial
+from io import open
 from tempfile import TemporaryFile
 
 import netCDF4
@@ -99,7 +100,7 @@ def extract_gzip(gzip_path, dest_dir, dest_name=None):
 
     dest_path = os.path.join(dest_dir, dest_name)
     with open(dest_path, 'wb') as f, gzip.open(gzip_path) as g:
-            shutil.copyfileobj(g, f)
+        shutil.copyfileobj(g, f)
 
 
 def extract_zip(zip_path, dest_dir):
@@ -137,7 +138,7 @@ def is_dir_writable(path):
     """
     try:
         with TemporaryFile(prefix='is_dir_writable', suffix='.tmp', dir=path) as t:
-            t.write('is_dir_writable')
+            t.write('is_dir_writable'.encode('utf-8'))
     except IOError as e:
         if e.errno == errno.EACCES:
             return False

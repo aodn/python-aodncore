@@ -2,6 +2,8 @@ import os
 import smtplib
 import socket
 
+import six
+
 from aodncore.pipeline import NotificationRecipientType, PipelineFile, PipelineFileCollection
 from aodncore.pipeline.steps.notify import (get_child_notify_runner, BaseNotifyRunner, EmailNotifyRunner,
                                             LogFailuresNotifyRunner, NotifyList, NotificationRecipient, SnsNotifyRunner)
@@ -63,7 +65,7 @@ class TestBaseNotifyRunner(BaseTestCase):
         expected_keys = ['html_collection_table', 'html_input_file_table', 'text_collection_table',
                          'text_input_file_table']
 
-        self.assertItemsEqual(expected_keys, file_tables.keys())
+        six.assertCountEqual(self, expected_keys, list(file_tables.keys()))
 
 
 class TestEmailNotifyRunner(BaseTestCase):
@@ -83,7 +85,7 @@ class TestEmailNotifyRunner(BaseTestCase):
         self.notify_list.add(recipient)
         self.email_runner.run(self.notify_list)
 
-        mock_smtp.return_value.sendmail.assert_called_once()
+        self.assertEqual(1, mock_smtp.return_value.sendmail.call_count)
         self.assertTrue(recipient.notification_succeeded)
         self.assertIsNone(recipient.error)
 
@@ -129,7 +131,7 @@ class TestEmailNotifyRunner(BaseTestCase):
         self.notify_list.add(recipient2)
         self.email_runner.run(self.notify_list)
 
-        mock_smtp.return_value.sendmail.assert_called_once()
+        self.assertEqual(1, mock_smtp.return_value.sendmail.call_count)
         self.assertFalse(recipient1.notification_succeeded)
         self.assertIsNotNone(recipient1.error)
         self.assertTrue(recipient2.notification_succeeded)
@@ -150,7 +152,7 @@ class TestEmailNotifyRunner(BaseTestCase):
         self.notify_list.add(recipient2)
         self.email_runner.run(self.notify_list)
 
-        mock_smtp.return_value.sendmail.assert_called_once()
+        self.assertEqual(1, mock_smtp.return_value.sendmail.call_count)
         self.assertFalse(recipient1.notification_succeeded)
         self.assertFalse(recipient2.notification_succeeded)
 

@@ -414,7 +414,7 @@ class PipelineFile(object):
         validate_mapping(properties)
 
         if self.file_update_callback:
-            log_output = properties if include_values else properties.keys()
+            log_output = properties if include_values else list(properties.keys())
             self.file_update_callback(name=self.name, is_deletion=self.is_deletion,
                                       message="{properties}".format(properties=log_output))
 
@@ -738,7 +738,7 @@ class PipelineFileCollection(MutableSet):
         """
         data = [OrderedDict(e) for e in self.__s]
         try:
-            columns = data[0].keys()
+            columns = list(data[0].keys())
         except IndexError:
             columns = []
         return columns, data

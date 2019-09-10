@@ -1,6 +1,9 @@
 import os
 
-from mock import patch
+try:
+    import mock
+except ImportError:
+    import unittest.mock as mock
 
 from aodncore.common import SystemCommandFailedError
 from aodncore.pipeline import PipelineFile, PipelineFileCollection, PipelineFilePublishType
@@ -70,7 +73,7 @@ class TestTalendHarvesterRunner(BaseTestCase):
         super(TestTalendHarvesterRunner, self).setUp()
         self.uploader = NullStorageBroker("/")
 
-    @patch('aodncore.util.process.subprocess')
+    @mock.patch('aodncore.util.process.subprocess')
     def test_extra_params(self, mock_subprocess):
         mock_subprocess.Popen().wait.return_value = HARVEST_SUCCESS
         mock_subprocess.Popen().communicate.return_value = ('mocked stdout', 'mocked stderr')
@@ -97,7 +100,7 @@ class TestTalendHarvesterRunner(BaseTestCase):
         self.assertTrue(called_commands[3].startswith('echo mmm_my_test_harvester '))
         self.assertFalse(called_commands[3].endswith(expected_extra_params))
 
-    @patch('aodncore.util.process.subprocess')
+    @mock.patch('aodncore.util.process.subprocess')
     def test_harvest_only_deletion(self, mock_subprocess):
         mock_subprocess.Popen().wait.return_value = HARVEST_SUCCESS
         mock_subprocess.Popen().communicate.return_value = ('mocked stdout', 'mocked stderr')
@@ -114,7 +117,7 @@ class TestTalendHarvesterRunner(BaseTestCase):
         self.assertTrue(all(f.is_harvested for f in collection))
         self.assertFalse(any(f.is_stored for f in collection))
 
-    @patch('aodncore.util.process.subprocess')
+    @mock.patch('aodncore.util.process.subprocess')
     def test_harvest_only_deletion_sliced(self, mock_subprocess):
         mock_subprocess.Popen().wait.return_value = HARVEST_SUCCESS
         mock_subprocess.Popen().communicate.return_value = ('mocked stdout', 'mocked stderr')
@@ -132,7 +135,7 @@ class TestTalendHarvesterRunner(BaseTestCase):
         self.assertTrue(all(f.is_harvested for f in collection))
         self.assertFalse(any(f.is_stored for f in collection))
 
-    @patch('aodncore.util.process.subprocess')
+    @mock.patch('aodncore.util.process.subprocess')
     def test_harvest_upload_deletion(self, mock_subprocess):
         mock_subprocess.Popen().wait.return_value = HARVEST_SUCCESS
         mock_subprocess.Popen().communicate.return_value = ('mocked stdout', 'mocked stderr')
@@ -149,7 +152,7 @@ class TestTalendHarvesterRunner(BaseTestCase):
         self.assertTrue(all(f.is_harvested for f in collection))
         self.assertTrue(all(f.is_deleted for f in collection))
 
-    @patch('aodncore.util.process.subprocess')
+    @mock.patch('aodncore.util.process.subprocess')
     def test_harvest_upload_deletion_sliced(self, mock_subprocess):
         mock_subprocess.Popen().wait.return_value = HARVEST_SUCCESS
         mock_subprocess.Popen().communicate.return_value = ('mocked stdout', 'mocked stderr')
@@ -167,7 +170,7 @@ class TestTalendHarvesterRunner(BaseTestCase):
         self.assertTrue(all(f.is_harvested for f in collection))
         self.assertTrue(all(f.is_deleted for f in collection))
 
-    @patch('aodncore.util.process.subprocess')
+    @mock.patch('aodncore.util.process.subprocess')
     def test_harvest_only_fail(self, mock_subprocess):
         mock_subprocess.Popen().wait.return_value = HARVEST_FAIL
         mock_subprocess.Popen().communicate.return_value = ('mocked stdout', 'mocked stderr')
@@ -184,7 +187,7 @@ class TestTalendHarvesterRunner(BaseTestCase):
         self.assertFalse(any(f.is_harvested for f in collection))
         self.assertFalse(any(f.is_stored for f in collection))
 
-    @patch('aodncore.util.process.subprocess')
+    @mock.patch('aodncore.util.process.subprocess')
     def test_harvest_only_fail_sliced(self, mock_subprocess):
         mock_subprocess.Popen().wait.return_value = HARVEST_FAIL
         mock_subprocess.Popen().communicate.return_value = ('mocked stdout', 'mocked stderr')
@@ -202,7 +205,7 @@ class TestTalendHarvesterRunner(BaseTestCase):
         self.assertFalse(any(f.is_harvested for f in collection))
         self.assertFalse(any(f.is_uploaded for f in collection))
 
-    @patch('aodncore.util.process.subprocess')
+    @mock.patch('aodncore.util.process.subprocess')
     def test_harvest_upload_fail(self, mock_subprocess):
         mock_subprocess.Popen().wait.return_value = HARVEST_FAIL
         mock_subprocess.Popen().communicate.return_value = ('mocked stdout', 'mocked stderr')
@@ -219,7 +222,7 @@ class TestTalendHarvesterRunner(BaseTestCase):
         self.assertFalse(any(f.is_harvested for f in collection))
         self.assertFalse(any(f.is_uploaded for f in collection))
 
-    @patch('aodncore.util.process.subprocess')
+    @mock.patch('aodncore.util.process.subprocess')
     def test_harvest_upload_fail_sliced(self, mock_subprocess):
         mock_subprocess.Popen().wait.return_value = HARVEST_FAIL
         mock_subprocess.Popen().communicate.return_value = ('mocked stdout', 'mocked stderr')
@@ -237,7 +240,7 @@ class TestTalendHarvesterRunner(BaseTestCase):
         self.assertFalse(any(f.is_harvested for f in collection))
         self.assertFalse(any(f.is_uploaded for f in collection))
 
-    @patch('aodncore.util.process.subprocess')
+    @mock.patch('aodncore.util.process.subprocess')
     def test_harvest_only_success(self, mock_subprocess):
         mock_subprocess.Popen().wait.return_value = HARVEST_SUCCESS
         mock_subprocess.Popen().communicate.return_value = ('mocked stdout', 'mocked stderr')
@@ -253,7 +256,7 @@ class TestTalendHarvesterRunner(BaseTestCase):
         self.assertTrue(all(f.is_harvested for f in collection))
         self.assertFalse(any(f.is_uploaded for f in collection))
 
-    @patch('aodncore.util.process.subprocess')
+    @mock.patch('aodncore.util.process.subprocess')
     def test_harvest_only_success_sliced(self, mock_subprocess):
         mock_subprocess.Popen().wait.return_value = 0
         mock_subprocess.Popen().communicate.return_value = ('mocked stdout', 'mocked stderr')
@@ -270,7 +273,7 @@ class TestTalendHarvesterRunner(BaseTestCase):
         self.assertTrue(all(f.is_harvested for f in collection))
         self.assertFalse(any(f.is_uploaded for f in collection))
 
-    @patch('aodncore.util.process.subprocess')
+    @mock.patch('aodncore.util.process.subprocess')
     def test_harvest_upload_success(self, mock_subprocess):
         mock_subprocess.Popen().wait.return_value = HARVEST_SUCCESS
         mock_subprocess.Popen().communicate.return_value = ('mocked stdout', 'mocked stderr')
@@ -290,7 +293,7 @@ class TestTalendHarvesterRunner(BaseTestCase):
         self.assertFalse(any(f.is_harvest_undone for f in collection))
         self.assertFalse(any(f.is_upload_undone for f in collection))
 
-    @patch('aodncore.util.process.subprocess')
+    @mock.patch('aodncore.util.process.subprocess')
     def test_harvest_upload_success_sliced(self, mock_subprocess):
         mock_subprocess.Popen().wait.return_value = HARVEST_SUCCESS
         mock_subprocess.Popen().communicate.return_value = ('mocked stdout', 'mocked stderr')
@@ -310,7 +313,7 @@ class TestTalendHarvesterRunner(BaseTestCase):
         self.assertFalse(any(f.is_harvest_undone for f in collection))
         self.assertFalse(any(f.is_upload_undone for f in collection))
 
-    @patch('aodncore.util.process.subprocess')
+    @mock.patch('aodncore.util.process.subprocess')
     def test_harvest_only_undo(self, mock_subprocess):
         mock_subprocess.Popen().wait.side_effect = (1, 0)
         mock_subprocess.Popen().communicate.return_value = ('mocked stdout', 'mocked stderr')
@@ -327,7 +330,7 @@ class TestTalendHarvesterRunner(BaseTestCase):
 
         self.assertTrue(all(f.is_harvest_undone for f in collection))  # *should* be undone
 
-    @patch('aodncore.util.process.subprocess')
+    @mock.patch('aodncore.util.process.subprocess')
     def test_harvest_only_undo_sliced(self, mock_subprocess):
         mock_subprocess.Popen().wait.side_effect = (HARVEST_SUCCESS,  # slice 1, zzz_my_test_harvester, event 1
                                                     HARVEST_SUCCESS,  # slice 1, aaa_my_test_harvester, event 1
@@ -363,7 +366,7 @@ class TestTalendHarvesterRunner(BaseTestCase):
         self.assertFalse(all(f.is_harvested for f in pending_slice))
         self.assertFalse(all(f.is_harvest_undone for f in pending_slice))  # should *not* be undone, since never 'done'
 
-    @patch('aodncore.util.process.subprocess')
+    @mock.patch('aodncore.util.process.subprocess')
     def test_harvest_upload_undo(self, mock_subprocess):
         mock_subprocess.Popen().wait.side_effect = (1, 0)
         mock_subprocess.Popen().communicate.return_value = ('mocked stdout', 'mocked stderr')
@@ -383,7 +386,7 @@ class TestTalendHarvesterRunner(BaseTestCase):
         self.assertTrue(all(f.is_harvest_undone for f in collection))  # *should* be undone
         self.assertFalse(all(f.is_upload_undone for f in collection))  # should *not* be undone, since never 'done'
 
-    @patch('aodncore.util.process.subprocess')
+    @mock.patch('aodncore.util.process.subprocess')
     def test_harvest_upload_undo_sliced(self, mock_subprocess):
         mock_subprocess.Popen().wait.side_effect = (HARVEST_SUCCESS,  # zzz_my_test_harvester, event 1, slice 1
                                                     HARVEST_SUCCESS,  # aaa_my_test_harvester, event 1, slice 1
@@ -425,7 +428,7 @@ class TestTalendHarvesterRunner(BaseTestCase):
         self.assertFalse(all(f.is_harvest_undone for f in pending_slice))  # should *not* be undone, since never 'done'
         self.assertFalse(all(f.is_upload_undone for f in pending_slice))  # should *not* be undone, since never 'done'
 
-    @patch('aodncore.util.process.subprocess')
+    @mock.patch('aodncore.util.process.subprocess')
     def test_harvest_only_undo_only_current_slice(self, mock_subprocess):
         mock_subprocess.Popen().wait.side_effect = (HARVEST_SUCCESS,  # slice 1, zzz_my_test_harvester, event 1
                                                     HARVEST_SUCCESS,  # slice 1, aaa_my_test_harvester, event 1
@@ -457,7 +460,7 @@ class TestTalendHarvesterRunner(BaseTestCase):
         self.assertFalse(all(f.is_harvested for f in pending_slice))
         self.assertFalse(all(f.is_harvest_undone for f in pending_slice))  # should *not* be undone, since never 'done'
 
-    @patch('aodncore.util.process.subprocess')
+    @mock.patch('aodncore.util.process.subprocess')
     def test_harvest_upload_undo_only_current_slice(self, mock_subprocess):
         mock_subprocess.Popen().wait.side_effect = (HARVEST_SUCCESS,  # slice 1, zzz_my_test_harvester, event 1
                                                     HARVEST_SUCCESS,  # slice 1, aaa_my_test_harvester, event 1

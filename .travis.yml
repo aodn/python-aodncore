@@ -1,22 +1,15 @@
 language: python
 python:
   - "2.7"
+  - "3.5"
+  - "3.6"
 
 addons:
   apt:
     packages:
     - libudunits2-dev
 
-env:
-  global:
-    - AODNFETCHER_URL="git+https://github.com/aodn/python-aodnfetcher.git@master"
-    - CC_PLUGIN_IMOS_URL="jenkins://imos-binary/cc_plugin_imos_prod?pattern=^.*\.whl$"
-
-before_install:
-  - pip install ${AODNFETCHER_URL}
-
 install:
-  - pip install $(aodnfetcher ${CC_PLUGIN_IMOS_URL} | python -c "import sys, json; print json.load(sys.stdin)['${CC_PLUGIN_IMOS_URL}']['local_file']")
   - pip install -r requirements.txt
   - pip install coverage
   - pip install codecov

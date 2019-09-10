@@ -14,7 +14,8 @@ import jinja2
 import pkg_resources
 import six
 from six.moves import range
-from typing import Pattern
+
+Pattern = type(re.compile(''))
 
 StringIO = six.StringIO
 
@@ -50,6 +51,7 @@ __all__ = [
     'validate_type',
     'CaptureStdIO',
     'LoggingContext',
+    'Pattern',
     'TemplateRenderer',
     'WriteOnceOrderedDict'
 ]
@@ -158,7 +160,7 @@ def is_function(o):
     :param o: object to check
     :return: True if object is a function, otherwise False
     """
-    return isinstance(o, types.FunctionType)
+    return isinstance(o, (types.FunctionType, types.MethodType))
 
 
 def is_nonstring_iterable(sequence):

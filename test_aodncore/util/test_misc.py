@@ -5,14 +5,13 @@ import uuid
 from collections import OrderedDict
 
 import six
-from typing import Pattern
 
 from aodncore.testlib import BaseTestCase
 from aodncore.util import (ensure_regex, ensure_regex_list, ensure_writeonceordereddict, format_exception,
                            get_pattern_subgroups_from_string, is_function, is_nonstring_iterable, matches_regexes,
                            merge_dicts, slice_sequence, str_to_list, validate_callable, validate_mandatory_elements,
                            validate_membership, validate_nonstring_iterable, validate_regex, validate_regexes,
-                           validate_relative_path, validate_relative_path_attr, validate_type, CaptureStdIO,
+                           validate_relative_path, validate_relative_path_attr, validate_type, CaptureStdIO, Pattern,
                            WriteOnceOrderedDict)
 
 StringIO = six.StringIO
@@ -172,8 +171,8 @@ class TestUtilMisc(BaseTestCase):
         self.assertTrue(is_function(dummy_func))
         self.assertTrue(is_function(lambda p: p))
         self.assertTrue(is_function(DummyClass.dummy_staticmethod))
+        self.assertTrue(is_function(DummyClass.dummy_method))
         self.assertFalse(is_function(DummyClass))
-        self.assertFalse(is_function(DummyClass.dummy_method))
         self.assertFalse(is_function(1))
         self.assertFalse(is_function({1: 1}))
         self.assertFalse(is_function({1}))
@@ -304,11 +303,11 @@ class TestUtilMisc(BaseTestCase):
 
     def test_format_exception(self):
         try:
-            raise EnvironmentError('dummy exception for format test')
-        except EnvironmentError as e:
+            raise OSError('dummy exception for format test')
+        except OSError as e:
             formatted = format_exception(e)
 
-        self.assertEqual(formatted, 'EnvironmentError: dummy exception for format test')
+        self.assertEqual(formatted, 'OSError: dummy exception for format test')
 
     def test_is_nonstring_iterable(self):
         self.assertTrue(is_nonstring_iterable(('foo', 'bar')))

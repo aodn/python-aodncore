@@ -1,4 +1,5 @@
 from setuptools import setup, find_packages
+from io import open
 
 ENTRY_POINTS = {
     'pipeline.module_versions': [
@@ -29,7 +30,7 @@ EXTRAS_REQUIRE = {
     ':platform_system == "Linux"': ['pyinotify == 0.9.6'],
     ':python_version < "3.3"': ['mock == 2.0.0'],
     ':python_version < "3.4"': ['enum34==1.1.6'],
-    ':python_version < "3.5"': ['scandir == 1.6', 'typing==3.6.4'],
+    ':python_version < "3.5"': ['scandir == 1.6'],
 }
 
 PACKAGE_DATA = {

@@ -3,6 +3,7 @@ import sys
 import unittest
 from functools import partial
 
+import six
 from jsonschema import ValidationError
 
 from aodncore.pipeline import PipelineFile, PipelineFileCheckType, PipelineFilePublishType, HandlerResult
@@ -250,7 +251,7 @@ class TestDummyHandler(HandlerTestCase):
         expected_recipients = ['email:nobody3@example.com', 'email:nobody4@example.com']
 
         self.assertIsInstance(handler.notification_results, NotifyList)
-        self.assertItemsEqual(expected_recipients, [n.raw_string for n in handler.notification_results])
+        six.assertCountEqual(self, expected_recipients, [n.raw_string for n in handler.notification_results])
         self.assertTrue(all(r.notification_succeeded for r in handler.notification_results))
         self.assertTrue(all(r.error is None for r in handler.notification_results))
 
@@ -271,7 +272,7 @@ class TestDummyHandler(HandlerTestCase):
         expected_recipients = ['email:nobody3@example.com', 'email:nobody4@example.com']
 
         self.assertIsInstance(handler.notification_results, NotifyList)
-        self.assertItemsEqual(expected_recipients, [n.raw_string for n in handler.notification_results])
+        six.assertCountEqual(self, expected_recipients, [n.raw_string for n in handler.notification_results])
         self.assertTrue(all(r.notification_succeeded for r in handler.notification_results))
         self.assertTrue(all(r.error is None for r in handler.notification_results))
 
@@ -291,7 +292,7 @@ class TestDummyHandler(HandlerTestCase):
         expected_recipients = ['email:owner1@example.com', 'email:nobody3@example.com', 'email:nobody4@example.com']
 
         self.assertIsInstance(handler.notification_results, NotifyList)
-        self.assertItemsEqual(expected_recipients, [n.raw_string for n in handler.notification_results])
+        six.assertCountEqual(self, expected_recipients, [n.raw_string for n in handler.notification_results])
         self.assertTrue(all(r.notification_succeeded for r in handler.notification_results))
         self.assertTrue(all(r.error is None for r in handler.notification_results))
 
@@ -313,7 +314,7 @@ class TestDummyHandler(HandlerTestCase):
         expected_recipients = ['email:owner1@example.com']
 
         self.assertIsInstance(handler.notification_results, NotifyList)
-        self.assertItemsEqual(expected_recipients, [n.raw_string for n in handler.notification_results])
+        six.assertCountEqual(self, expected_recipients, [n.raw_string for n in handler.notification_results])
         self.assertTrue(all(r.notification_succeeded for r in handler.notification_results))
         self.assertTrue(all(r.error is None for r in handler.notification_results))
 
@@ -334,7 +335,7 @@ class TestDummyHandler(HandlerTestCase):
         expected_recipients = ['email:nobody1@example.com', 'INVALID:nobody2@example.com']
 
         self.assertIsInstance(handler.notification_results, NotifyList)
-        self.assertItemsEqual(expected_recipients, [n.raw_string for n in handler.notification_results])
+        six.assertCountEqual(self, expected_recipients, [n.raw_string for n in handler.notification_results])
         self.assertTrue(handler.notification_results[0].notification_succeeded)
         self.assertFalse(handler.notification_results[1].notification_succeeded)
         self.assertIsNone(handler.notification_results[0].error)
@@ -355,7 +356,7 @@ class TestDummyHandler(HandlerTestCase):
         expected_recipients = ['email:nobody1@example.com', 'email:nobody2@example.com']
 
         self.assertIsInstance(handler.notification_results, NotifyList)
-        self.assertItemsEqual(expected_recipients, [n.raw_string for n in handler.notification_results])
+        six.assertCountEqual(self, expected_recipients, [n.raw_string for n in handler.notification_results])
         self.assertTrue(all(r.notification_succeeded for r in handler.notification_results))
         self.assertTrue(all(r.error is None for r in handler.notification_results))
 
@@ -376,7 +377,7 @@ class TestDummyHandler(HandlerTestCase):
         expected_recipients = ['email:owner1@example.com', 'email:nobody1@example.com', 'email:nobody2@example.com']
 
         self.assertIsInstance(handler.notification_results, NotifyList)
-        self.assertItemsEqual(expected_recipients, [n.raw_string for n in handler.notification_results])
+        six.assertCountEqual(self, expected_recipients, [n.raw_string for n in handler.notification_results])
         self.assertTrue(all(r.notification_succeeded for r in handler.notification_results))
         self.assertTrue(all(r.error is None for r in handler.notification_results))
 

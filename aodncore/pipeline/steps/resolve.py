@@ -20,7 +20,9 @@ collection may then be processed in a generic way.
 import abc
 import os
 import re
+from io import open
 
+import six
 from enum import Enum
 
 from .basestep import BaseStepRunner
@@ -69,9 +71,7 @@ def get_resolve_runner(input_file, output_dir, config, logger, resolve_params=No
         return SingleFileResolveRunner(input_file, output_dir, config, logger)
 
 
-class BaseResolveRunner(BaseStepRunner):
-    __metaclass__ = abc.ABCMeta
-
+class BaseResolveRunner(six.with_metaclass(abc.ABCMeta, BaseStepRunner)):
     def __init__(self, input_file, output_dir, config, logger):
         super(BaseResolveRunner, self).__init__(config, logger)
         self.input_file = input_file

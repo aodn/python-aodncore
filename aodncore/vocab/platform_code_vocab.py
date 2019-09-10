@@ -80,7 +80,7 @@ class PlatformVocabHelper(object):
                     # handle more than 1 url match per category of platform
                     if platform_element_sublabels is not None:
                         if 'narrowMatch' in platform_element_sublabels:
-                            val_cat_url = val.attrib.values()[0]
+                            val_cat_url = list(val.attrib.values())[0]
                             platform_cat_url_list.append(val_cat_url)
 
                         elif 'prefLabel' in platform_element_sublabels:
@@ -141,7 +141,7 @@ class PlatformVocabHelper(object):
                             platform_name = val.text
 
                         elif 'broader' in platform_element_sublabels:
-                            val_cat_url = val.attrib.values()[0]
+                            val_cat_url = list(val.attrib.values())[0]
                             platform_url_cat = val_cat_url
 
                 # use the optional argument

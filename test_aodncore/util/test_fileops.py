@@ -4,6 +4,7 @@ import os
 import socket
 import uuid
 import zipfile
+from io import open
 from tempfile import mkdtemp, mkstemp
 
 import six
@@ -22,7 +23,7 @@ GOOD_NC = os.path.join(TEST_ROOT, 'good.nc')
 
 class TestUtilFileOps(BaseTestCase):
     def test_extract_gzip(self):
-        temp_file_content = str(uuid.uuid4())
+        temp_file_content = str(uuid.uuid4()).encode('utf-8')
 
         temp_gz_dir = mkdtemp(prefix=self.__class__.__name__, dir=self.temp_dir)
         _, temp_gz_file = mkstemp(suffix='.gz', prefix=self.__class__.__name__, dir=self.temp_dir)
@@ -58,13 +59,13 @@ class TestUtilFileOps(BaseTestCase):
     def test_isnetcdffile(self):
         _, temp_other_file = mkstemp(suffix='.txt', prefix=self.__class__.__name__, dir=self.temp_dir)
         with open(temp_other_file, 'w') as f:
-            f.write('foobar')
+            f.write(u'foobar')
 
         self.assertTrue(is_netcdffile(self.temp_nc_file))
         self.assertFalse(is_netcdffile(temp_other_file))
 
     def test_isgzipfile(self):
-        temp_file_content = str(uuid.uuid4())
+        temp_file_content = str(uuid.uuid4()).encode('utf-8')
 
         _, temp_gz_file = mkstemp(suffix='.zip', prefix=self.__class__.__name__, dir=self.temp_dir)
         _, temp_other_file = mkstemp(suffix='.txt', prefix=self.__class__.__name__, dir=self.temp_dir)
@@ -72,7 +73,7 @@ class TestUtilFileOps(BaseTestCase):
             gz.write(temp_file_content)
 
         with open(temp_other_file, 'w') as f:
-            f.write('foobar')
+            f.write(u'foobar')
 
         self.assertTrue(is_gzipfile(temp_gz_file))
         self.assertFalse(is_gzipfile(temp_other_file))
@@ -86,7 +87,7 @@ class TestUtilFileOps(BaseTestCase):
         with zipfile.ZipFile(temp_zip_file, 'w', zipfile.ZIP_DEFLATED) as z:
             z.writestr(temp_file_name, temp_file_content)
         with open(temp_other_file, 'w') as f:
-            f.write('foobar')
+            f.write(u'foobar')
 
         self.assertTrue(is_zipfile(temp_zip_file))
         self.assertFalse(is_zipfile(temp_other_file))
@@ -224,7 +225,7 @@ class TestUtilFileOps(BaseTestCase):
         temp_dest_file_path = os.path.join(self.temp_dir, str(uuid.uuid4()))
 
         with open(temp_source_file_path, 'w') as f:
-            f.write('foobar')
+            f.write(u'foobar')
 
         with self.assertRaisesRegexp(OSError, "source file and destination file can't refer the to same file"):
             safe_copy_file(temp_source_file_path, temp_source_file_path)
@@ -250,7 +251,7 @@ class TestUtilFileOps(BaseTestCase):
         temp_file_path = os.path.join(self.temp_dir, str(uuid.uuid4()))
 
         with open(temp_file_path, 'w') as f:
-            f.write('foobar')
+            f.write(u'foobar')
 
         expected_checksum = 'c3ab8ff13720e8ad9047dd39466b3c8974e592c2fa383d4a3960714caef0c4f2'
         actual_checksum = get_file_checksum(temp_file_path)
@@ -262,7 +263,7 @@ class TestUtilFileOps(BaseTestCase):
             try:
                 _, temp_file_path = mkstemp(suffix='.txt', prefix=self.__class__.__name__, dir=d)
                 with open(temp_file_path, 'w') as f:
-                    f.write('foobar')
+                    f.write(u'foobar')
             except Exception as e:
                 raise AssertionError(
                     "temporary directory is not writable. {e}".format(e=format_exception(e)))

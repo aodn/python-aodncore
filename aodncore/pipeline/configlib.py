@@ -5,6 +5,7 @@ manually creating a new :py:class:`LazyConfigManager` instance.
 
 import json
 import os
+from io import open
 
 from celery import Celery
 from six import iteritems
@@ -143,7 +144,7 @@ def load_trigger_config(default_config_file=DEFAULT_TRIGGER_CONFIG):
     return config
 
 
-def load_json_file(default_config_file, envvar=None, object_pairs_hook=WriteOnceOrderedDict):
+def load_json_file(default_config_file, envvar='', object_pairs_hook=WriteOnceOrderedDict):
     """Load a JSON file into a :py:class:`dict`
 
     :param default_config_file:

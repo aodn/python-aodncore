@@ -1,6 +1,7 @@
 import logging
 import logging.config
 import os
+import platform
 from datetime import datetime
 from tempfile import gettempdir
 
@@ -527,13 +528,14 @@ class HandlerBase(object):
         return self._logger
 
     @lazyproperty
-    def module_versions(self):
+    def versions(self):
         """Read-only property to access module versions
 
         :return: module version strings for aodncore, aodndata and compliance checker modules
         :rtype: :class:`dict`
         """
-        versions = {'aodncore': _aodncore_version}
+        versions = {'python': platform.python_version(),
+                    'aodncore': _aodncore_version}
         discovered_versions = discover_entry_points('pipeline.module_versions')
         versions.update(discovered_versions)
         return versions

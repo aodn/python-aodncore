@@ -2,12 +2,14 @@ import abc
 import errno
 import os
 from datetime import datetime
-from httplib import IncompleteRead
+from io import open
 from ssl import SSLError
 
 import boto3
+import six
 from botocore.exceptions import ClientError, ConnectionError
 from paramiko import SSHClient, AutoAddPolicy
+from six.moves.http_client import IncompleteRead
 from six.moves.urllib.parse import urlparse
 
 try:
@@ -55,9 +57,7 @@ def get_storage_broker(store_url):
         raise InvalidStoreUrlError("invalid URL scheme '{url.scheme}'".format(url=url))
 
 
-class BaseStorageBroker(object):
-    __metaclass__ = abc.ABCMeta
-
+class BaseStorageBroker(six.with_metaclass(abc.ABCMeta, object)):
     def __init__(self):
         self.prefix = None
         self.mode = None
