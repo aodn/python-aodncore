@@ -596,24 +596,21 @@ class PipelineFileCollectionBase(MutableSet):
     def __repr__(self):  # pragma: no cover
         return "{name}({repr})".format(name=self.__class__.__name__, repr=repr(list(self._s)))
 
-    def add(self, pipeline_file, deletion=False, overwrite=False):
+    def add(self, pipeline_file, overwrite=False, **kwargs):
         """Add a file to the collection
 
         :param pipeline_file: :py:class:`PipelineFile` or file path
-        :param deletion: :py:class:`bool` which, if True, designates the file as a deletion
+        :param kwargs: :py:class:`dict` additional keywords passed to to PipelineFileBase __init__ method
         :param overwrite: :py:class:`bool` which, if True, will overwrite an existing matching file in the collection
         :return: :py:class:`bool` which indicates whether the file was successfully added
         """
         self.member_validator(pipeline_file)
-        validate_bool(deletion)
         validate_bool(overwrite)
 
         if isinstance(pipeline_file, self.member_class):
             fileobj = pipeline_file
         else:
-            if not deletion and not os.path.isfile(pipeline_file):
-                raise MissingFileError("file '{src}' doesn't exist".format(src=pipeline_file))
-            fileobj = self.member_class(pipeline_file, is_deletion=deletion)
+            fileobj = self.member_class(pipeline_file, **kwargs)
 
         result = fileobj not in self._s
         if not result and not overwrite:
@@ -990,6 +987,15 @@ class PipelineFileCollection(PipelineFileCollectionBase):
     def from_remotepipelinefilecollection(cls, remotepipelinefilecollection, are_deletions=False):
         return cls(PipelineFile.from_remotepipelinefile(f, is_deletion=are_deletions)
                    for f in remotepipelinefilecollection)
+
+    def add(self, pipeline_file, deletion=False, overwrite=False):
+        self.member_validator(pipeline_file)
+        validate_bool(deletion)
+
+        if not isinstance(pipeline_file, self.member_class) and not deletion and not os.path.isfile(pipeline_file):
+            raise MissingFileError("file '{src}' doesn't exist".format(src=pipeline_file))
+
+        return super(PipelineFileCollection, self).add(pipeline_file, overwrite=overwrite, is_deletion=deletion)
 
     def _set_attribute(self, attribute, value):
         for f in self._s:
