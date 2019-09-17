@@ -6,8 +6,8 @@ import os
 
 from enum import Enum
 
-from ..util import (classproperty, is_gzipfile, is_netcdffile, is_nonemptyfile, is_valid_email_address, is_zipfile,
-                    iter_public_attributes, validate_membership, validate_type)
+from ..util import (classproperty, is_gzipfile, is_jsonfile, is_netcdffile, is_nonemptyfile, is_valid_email_address,
+                    is_zipfile, iter_public_attributes, validate_membership, validate_type)
 
 __all__ = [
     'CheckResult',
@@ -137,6 +137,7 @@ class FileType(Enum):
 
     NETCDF = (('.nc',), 'application/octet-stream', is_netcdffile)
     DIR_MANIFEST = (('.dir_manifest',), 'text/plain', is_nonemptyfile)
+    JSON_MANIFEST = (('.json_manifest',), 'application/json', is_jsonfile)
     MAP_MANIFEST = (('.map_manifest',), 'text/plain', is_nonemptyfile)
     RSYNC_MANIFEST = (('.rsync_manifest',), 'text/plain', is_nonemptyfile)
     SIMPLE_MANIFEST = (('.manifest',), 'text/plain', is_nonemptyfile)

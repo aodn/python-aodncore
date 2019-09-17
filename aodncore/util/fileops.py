@@ -4,6 +4,7 @@
 import errno
 import gzip
 import hashlib
+import json
 import locale
 import os
 import shutil
@@ -33,6 +34,7 @@ __all__ = [
     'is_dir_writable',
     'is_file_writable',
     'is_gzipfile',
+    'is_jsonfile',
     'is_netcdffile',
     'is_nonemptyfile',
     'is_zipfile',
@@ -169,6 +171,21 @@ def is_gzipfile(filepath):
         return True
     except IOError:
         return False
+
+
+def is_jsonfile(filepath):
+    """Check whether a file path refers to a valid JSON file
+
+    :param filepath: path to the file being checked
+    :return: True if filepath is a valid JSON file, otherwise False
+    """
+    try:
+        with open(filepath) as f:
+            _ = json.load(f)
+    except ValueError:
+        return False
+    else:
+        return True
 
 
 def is_netcdffile(filepath):

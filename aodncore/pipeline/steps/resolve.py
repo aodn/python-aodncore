@@ -29,12 +29,13 @@ from .basestep import BaseStepRunner
 from ..common import FileType
 from ..exceptions import InvalidFileFormatError
 from ..files import PipelineFile, PipelineFileCollection
-from ...util import extract_gzip, extract_zip, list_regular_files, is_gzipfile, is_zipfile, safe_copy_file
+from ...util import extract_gzip, extract_zip, list_regular_files, is_gzipfile, is_jsonfile, is_zipfile, safe_copy_file
 
 __all__ = [
     'get_resolve_runner',
     'DirManifestResolveRunner',
     'GzipFileResolveRunner',
+    'JsonManifestResolveRunner',
     'MapManifestResolveRunner',
     'RsyncManifestResolveRunner',
     'SimpleManifestResolveRunner',
@@ -59,6 +60,8 @@ def get_resolve_runner(input_file, output_dir, config, logger, resolve_params=No
         return ZipFileResolveRunner(input_file, output_dir, config, logger)
     elif file_type is FileType.SIMPLE_MANIFEST:
         return SimpleManifestResolveRunner(input_file, output_dir, config, logger, resolve_params)
+    elif file_type is FileType.JSON_MANIFEST:
+        return JsonManifestResolveRunner(input_file, output_dir, config, logger, resolve_params)
     elif file_type is FileType.MAP_MANIFEST:
         return MapManifestResolveRunner(input_file, output_dir, config, logger, resolve_params)
     elif file_type is FileType.RSYNC_MANIFEST:
@@ -130,6 +133,14 @@ class BaseManifestResolveRunner(BaseResolveRunner):
 
     def get_abs_path(self, path):
         return path if os.path.isabs(path) else os.path.join(self.relative_path_root, path)
+
+
+class JsonManifestResolveRunner(BaseManifestResolveRunner):
+    def run(self):
+        if not is_jsonfile(self.input_file):
+            raise InvalidFileFormatError("input_file must be a valid JSON file")
+        # TODO: handle any particular structure, e.g. array of input files?
+        return self._collection
 
 
 class MapManifestResolveRunner(BaseManifestResolveRunner):

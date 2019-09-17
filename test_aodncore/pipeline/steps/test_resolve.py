@@ -3,8 +3,9 @@ from uuid import uuid4
 
 from aodncore.pipeline.exceptions import DuplicatePipelineFileError, InvalidFileFormatError
 from aodncore.pipeline.steps.resolve import (get_resolve_runner, DirManifestResolveRunner, GzipFileResolveRunner,
-                                             MapManifestResolveRunner, RsyncManifestResolveRunner,
-                                             SimpleManifestResolveRunner, SingleFileResolveRunner, ZipFileResolveRunner)
+                                             JsonManifestResolveRunner, MapManifestResolveRunner,
+                                             RsyncManifestResolveRunner, SimpleManifestResolveRunner,
+                                             SingleFileResolveRunner, ZipFileResolveRunner)
 from aodncore.testlib import BaseTestCase
 from test_aodncore import TESTDATA_DIR
 
@@ -20,6 +21,7 @@ NOT_NETCDF_NC_FILE = os.path.join(TESTDATA_DIR, 'not_a_netcdf_file.nc')
 TEST_MANIFEST_NC = os.path.join(TESTDATA_DIR, 'test_manifest.nc')
 TEST_DIR_MANIFEST_NC = os.path.join(TESTDATA_DIR, 'layer1', 'layer2', 'test_manifest.nc')
 DIR_MANIFEST = os.path.join(TESTDATA_DIR, 'test.dir_manifest')
+JSON_MANIFEST = os.path.join(TESTDATA_DIR, 'test.json_manifest')
 MAP_MANIFEST = os.path.join(TESTDATA_DIR, 'test.map_manifest')
 RSYNC_MANIFEST = os.path.join(TESTDATA_DIR, 'test.rsync_manifest')
 RSYNC_MANIFEST_DUPLICATE = os.path.join(TESTDATA_DIR, 'test_duplicate.rsync_manifest')
@@ -39,6 +41,9 @@ MOCK_CONFIG = MockConfig
 
 class TestPipelineStepsResolve(BaseTestCase):
     def test_get_resolve_runner(self):
+        json_manifest_resolve_runner = get_resolve_runner(JSON_MANIFEST, self.temp_dir, MOCK_CONFIG, self.test_logger)
+        self.assertIsInstance(json_manifest_resolve_runner, JsonManifestResolveRunner)
+
         map_manifest_resolve_runner = get_resolve_runner(MAP_MANIFEST, self.temp_dir, MOCK_CONFIG, self.test_logger)
         self.assertIsInstance(map_manifest_resolve_runner, MapManifestResolveRunner)
 
@@ -49,17 +54,17 @@ class TestPipelineStepsResolve(BaseTestCase):
                                                             self.test_logger)
         self.assertIsInstance(simple_manifest_resolve_runner, SimpleManifestResolveRunner)
 
-        nc_resolve_runner = get_resolve_runner(GOOD_NC, self.temp_dir, TESTDATA_DIR, MOCK_CONFIG, self.test_logger)
+        nc_resolve_runner = get_resolve_runner(GOOD_NC, self.temp_dir, MOCK_CONFIG, self.test_logger)
         self.assertIsInstance(nc_resolve_runner, SingleFileResolveRunner)
 
-        unknown_file_extension = get_resolve_runner(str(uuid4()), self.temp_dir, TESTDATA_DIR, MOCK_CONFIG,
+        unknown_file_extension = get_resolve_runner(str(uuid4()), self.temp_dir, MOCK_CONFIG,
                                                     self.test_logger)
         self.assertIsInstance(unknown_file_extension, SingleFileResolveRunner)
 
-        gzip_resolve_runner = get_resolve_runner(GOOD_GZ, self.temp_dir, TESTDATA_DIR, MOCK_CONFIG, None)
+        gzip_resolve_runner = get_resolve_runner(GOOD_GZ, self.temp_dir, MOCK_CONFIG, self.test_logger)
         self.assertIsInstance(gzip_resolve_runner, GzipFileResolveRunner)
 
-        zip_resolve_runner = get_resolve_runner(GOOD_ZIP, self.temp_dir, TESTDATA_DIR, MOCK_CONFIG, None)
+        zip_resolve_runner = get_resolve_runner(GOOD_ZIP, self.temp_dir, MOCK_CONFIG, self.test_logger)
         self.assertIsInstance(zip_resolve_runner, ZipFileResolveRunner)
 
 
@@ -74,6 +79,21 @@ class TestDirManifestResolveRunner(BaseTestCase):
                                                               os.path.basename(TEST_DIR_MANIFEST_NC)))
         self.assertEqual(collection[1].src_path, os.path.join(MOCK_CONFIG.pipeline_config['global']['wip_dir'],
                                                               os.path.basename(NOT_NETCDF_NC_FILE)))
+
+
+class TestJsonManifestResolveRunner(BaseTestCase):
+    def test_json_manifest_resolve_runner_valid(self):
+        json_manifest_resolve_runner = JsonManifestResolveRunner(JSON_MANIFEST, self.temp_dir, MOCK_CONFIG,
+                                                                 self.test_logger)
+        collection = json_manifest_resolve_runner.run()
+
+        self.assertSetEqual(collection, set())
+
+    def test_json_manifest_resolve_runner_invalid(self):
+        json_manifest_resolve_runner = JsonManifestResolveRunner(GOOD_NC, self.temp_dir, MOCK_CONFIG,
+                                                                 self.test_logger)
+        with self.assertRaises(InvalidFileFormatError):
+            _ = json_manifest_resolve_runner.run()
 
 
 class TestMapManifestResolveRunner(BaseTestCase):
