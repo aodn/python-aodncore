@@ -364,7 +364,10 @@ class S3StorageBroker(BaseStorageBroker):
 
     @retry_decorator(**retry_kwargs)
     def _download_file(self, remote_pipeline_file):
-        raise NotImplementedError
+        abs_path = self._get_absolute_dest_path(pipeline_file=remote_pipeline_file, dest_path_attr='dest_path')
+
+        with open(remote_pipeline_file.local_path, 'wb') as f:
+            self.s3_client.download_fileobj(Bucket=self.bucket, Key=abs_path, Fileobj=f)
 
     @retry_decorator(**retry_kwargs)
     def _upload_file(self, pipeline_file, dest_path_attr):

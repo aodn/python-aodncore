@@ -588,6 +588,35 @@ class TestS3StorageBroker(BaseTestCase):
         self.assertTrue(all(p.is_stored for p in collection))
 
     @mock.patch('aodncore.pipeline.storage.boto3')
+    def test_download_collection(self, mock_boto3):
+        collection = get_download_collection()
+        netcdf_file, png_file, ico_file, unknown_file = collection
+
+        dummy_bucket = str(uuid4())
+        dummy_prefix = str(uuid4())
+        s3_storage_broker = S3StorageBroker(dummy_bucket, dummy_prefix)
+
+        mock_boto3.client.assert_called_once_with('s3')
+
+        with mock.patch('aodncore.pipeline.storage.open', mock.mock_open()) as m:
+            s3_storage_broker.download(collection, self.temp_dir)
+
+        self.assertEqual(4, s3_storage_broker.s3_client.download_fileobj.call_count)
+        netcdf_abs_path = os.path.join(dummy_prefix, netcdf_file.dest_path)
+        png_abs_path = os.path.join(dummy_prefix, png_file.dest_path)
+        ico_abs_path = os.path.join(dummy_prefix, ico_file.dest_path)
+        unknown_abs_path = os.path.join(dummy_prefix, unknown_file.dest_path)
+
+        s3_storage_broker.s3_client.download_fileobj.assert_any_call(Bucket=dummy_bucket, Key=netcdf_abs_path,
+                                                                     Fileobj=m())
+        s3_storage_broker.s3_client.download_fileobj.assert_any_call(Bucket=dummy_bucket, Key=png_abs_path,
+                                                                     Fileobj=m())
+        s3_storage_broker.s3_client.download_fileobj.assert_any_call(Bucket=dummy_bucket, Key=ico_abs_path,
+                                                                     Fileobj=m())
+        s3_storage_broker.s3_client.download_fileobj.assert_any_call(Bucket=dummy_bucket, Key=unknown_abs_path,
+                                                                     Fileobj=m())
+
+    @mock.patch('aodncore.pipeline.storage.boto3')
     def test_upload_file(self, mock_boto3):
         collection = get_upload_collection()
         netcdf_file, _, _, _ = collection
