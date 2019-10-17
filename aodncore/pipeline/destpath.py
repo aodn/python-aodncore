@@ -86,13 +86,14 @@ class PathFunctionResolver(object):
     def _resolve_from_param(self):
         if isinstance(self.function_param, six.string_types):
             # a string parameter is assumed to be referring to an advertised entry point of the same name
+            loaded_functions, failed_functions = self.handler_instance.config.discovered_dest_path_functions
             try:
-                function_ref = self.handler_instance.config.discovered_dest_path_functions[self.function_param]
+                function_ref = loaded_functions[self.function_param]
             except KeyError:
                 message = "{attribute_name} function '{function}' not found in '{functions}'".format(
                     attribute_name=self.attribute_name,
                     function=self.function_param,
-                    functions=self.handler_instance.config.discovered_dest_path_functions)
+                    functions=loaded_functions)
                 raise InvalidPathFunctionError(message)
         elif callable(self.function_param):
             # dest_path_function parameter is already a Callable object, use it

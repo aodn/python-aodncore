@@ -63,14 +63,20 @@ def discover_entry_points(entry_point_group, working_set=pkg_resources.working_s
 
     :param entry_point_group: entry point group name used to find entry points in working set
     :param working_set: :py:class:`pkg_resources.WorkingSet` instance
-    :return: :py:class:`dict` containing each discovered entry point, with keys being the entry point name and values
-        being a reference to the object referenced by the entry point
+    :return: :py:class:`tuple` containing two elements, with the first being a :py:class:`dict` containing each
+        discovered and *successfully loaded* entry point (with keys being the entry point name and values being a
+        reference to the object referenced by the entry point), and the second tuple element being a :py:class:`list` of
+        objects which failed to be loaded
     """
     entry_points = {}
+    failed = []
     for entry_point in working_set.iter_entry_points(entry_point_group):
-        entry_point_object = entry_point.load()
-        entry_points[entry_point.name] = entry_point_object
-    return entry_points
+        try:
+            entry_point_object = entry_point.load()
+            entry_points[entry_point.name] = entry_point_object
+        except ImportError:
+            failed.append(entry_point.name)
+    return entry_points, failed
 
 
 def ensure_regex(o):
