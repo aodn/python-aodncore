@@ -331,7 +331,7 @@ class TestLocalFileStorageBroker(BaseTestCase):
         for f in self.test_broker.download_iterator(remote_collection, local_path=local_path):
             actual = list(list_regular_files(local_path, recursive=True))
             expected = [f.local_path]
-            self.assertItemsEqual(actual, expected)
+            six.assertCountEqual(self, actual, expected)
 
     @mock.patch('aodncore.pipeline.storage.rm_f')
     def test_delete_collection(self, mock_rm_f):
@@ -384,7 +384,7 @@ class TestLocalFileStorageBroker(BaseTestCase):
             RemotePipelineFile('subdirectory/targetfile.ico')
         ])
 
-        self.assertItemsEqual(expected, all_files)
+        six.assertCountEqual(self, expected, all_files)
 
         self.test_broker.delete_regexes([r'^subdirectory/targetfile\.(ico|nc)$'])
 
@@ -395,7 +395,7 @@ class TestLocalFileStorageBroker(BaseTestCase):
             RemotePipelineFile('subdirectory/targetfile.png')
         ])
 
-        self.assertItemsEqual(expected_remaining, remaining_files)
+        six.assertCountEqual(self, expected_remaining, remaining_files)
 
     def test_delete_regexes_with_allow_match_all(self):
         all_files = self.test_broker.query()
@@ -406,12 +406,12 @@ class TestLocalFileStorageBroker(BaseTestCase):
             RemotePipelineFile('subdirectory/targetfile.png'),
             RemotePipelineFile('subdirectory/targetfile.ico')
         ])
-        self.assertItemsEqual(expected, all_files)
+        six.assertCountEqual(self, expected, all_files)
 
         self.test_broker.delete_regexes([r'.*'], allow_match_all=True)
 
         remaining_files = self.test_broker.query()
-        self.assertItemsEqual(remaining_files, RemotePipelineFileCollection())
+        six.assertCountEqual(self, remaining_files, RemotePipelineFileCollection())
 
     def test_directory_query(self):
         with TemporaryDirectory() as d:
@@ -430,7 +430,7 @@ class TestLocalFileStorageBroker(BaseTestCase):
             RemotePipelineFile(os.path.relpath(temp_file3, d))
         ])
 
-        self.assertItemsEqual(expected, result)
+        six.assertCountEqual(self, expected, result)
         self.assertTrue(all(isinstance(v.last_modified, datetime.datetime) for v in result))
         self.assertTrue(all(isinstance(v.size, int) for v in result))
 
@@ -451,7 +451,7 @@ class TestLocalFileStorageBroker(BaseTestCase):
             RemotePipelineFile(os.path.relpath(temp_file2, d))
         ])
 
-        self.assertItemsEqual(result, expected)
+        six.assertCountEqual(self, result, expected)
         self.assertTrue(all(isinstance(f.last_modified, datetime.datetime) for f in result))
         self.assertTrue(all(isinstance(f.size, int) for f in result))
 
