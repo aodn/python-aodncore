@@ -90,11 +90,18 @@ class PathFunctionResolver(object):
             try:
                 function_ref = loaded_functions[self.function_param]
             except KeyError:
-                message = "{attribute_name} function '{function}' not found in '{functions}'".format(
+                if self.function_param in set(failed_functions):
+                    message_template = "{attribute_name} function '{function}' failed to load"
+                else:
+                    message_template = "{attribute_name} function '{function}' not found in '{functions}'"
+
+                message = message_template.format(
                     attribute_name=self.attribute_name,
                     function=self.function_param,
                     functions=loaded_functions)
+
                 raise InvalidPathFunctionError(message)
+
         elif callable(self.function_param):
             # dest_path_function parameter is already a Callable object, use it
             function_ref = self.function_param
