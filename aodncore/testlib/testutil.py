@@ -227,8 +227,8 @@ def get_test_config(temp_dir):
     test_watch_config_file = os.path.join(TESTLIB_CONF_DIR, 'watches.conf')
 
     config = LazyConfigManager()
-    config.__dict__['discovered_dest_path_functions'] = {'dest_path_testing': dest_path_testing}
-    config.__dict__['discovered_handlers'] = {'DummyHandler': DummyHandler}
+    config.__dict__['discovered_dest_path_functions'] = ({'dest_path_testing': dest_path_testing}, [])
+    config.__dict__['discovered_handlers'] = ({'DummyHandler': DummyHandler}, [])
 
     config.__dict__['pipeline_config'] = load_runtime_patched_pipeline_config_file(test_pipeline_config_file,
                                                                                    GLOBAL_TEST_BASE, temp_dir)

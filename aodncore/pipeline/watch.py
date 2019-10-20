@@ -257,8 +257,16 @@ class CeleryContext(object):
         self._application_configured = True
 
     def _register_tasks(self):
-        available_handler_names = set(self._config.discovered_handlers.keys())
+        loaded_handlers, failed_handlers = self._config.discovered_handlers
+
+        available_handler_names = set(loaded_handlers)
+        failed_handler_names = set(failed_handlers)
         configured_handler_names = {h['handler'] for h in self._config.watch_config.values()}
+
+        failed_configured_handlers = failed_handler_names.intersection(configured_handler_names)
+        if failed_configured_handlers:
+            warnings.warn("one or more configured handlers failed to load successfully: "
+                          "{failed}".format(failed=list(failed_configured_handlers)))
 
         if not configured_handler_names.issubset(available_handler_names):
             invalid_handlers = configured_handler_names.difference(available_handler_names)
@@ -268,7 +276,7 @@ class CeleryContext(object):
 
         for pipeline_name, items in iteritems(self._config.watch_config):
             try:
-                handler_class = self._config.discovered_handlers[items['handler']]
+                handler_class = loaded_handlers[items['handler']]
             except KeyError:
                 raise InvalidHandlerError(
                     "handler not found in discovered handlers. "
