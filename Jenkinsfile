@@ -7,6 +7,7 @@ pipeline {
         stage('container') {
             agent {
                 dockerfile {
+                    args '-v ${HOME}/bin:${HOME}/bin'
                     additionalBuildArgs '--build-arg BUILDER_UID=$(id -u)'
                 }
             }
@@ -20,7 +21,7 @@ pipeline {
                 stage('release') {
                     when { branch 'master' }
                     steps {
-                        withCredentials([usernamePassword(credentialsId: env.CREDENTIALS_ID, passwordVariable: 'GIT_PASSWORD', usernameVariable: 'GIT_USERNAME')]) {
+                        withCredentials([usernamePassword(credentialsId: env.GIT_CREDENTIALS_ID, passwordVariable: 'GIT_PASSWORD', usernameVariable: 'GIT_USERNAME')]) {
                             sh './bumpversion.sh release'
                         }
                     }

@@ -18,7 +18,7 @@ from .schema import (validate_check_params, validate_custom_params, validate_har
                      validate_resolve_params)
 from .statequery import StateQuery
 from .steps import (get_check_runner, get_harvester_runner, get_notify_runner, get_resolve_runner, get_store_runner)
-from ..util import (discover_entry_points, ensure_regex_list, ensure_writeonceordereddict, format_exception,
+from ..util import (ensure_regex_list, ensure_writeonceordereddict, format_exception,
                     get_file_checksum, iter_public_attributes, lazyproperty, matches_regexes, merge_dicts,
                     validate_relative_path_attr, TemporaryDirectory)
 from ..version import __version__ as _aodncore_version
@@ -536,8 +536,10 @@ class HandlerBase(object):
         """
         versions = {'python': platform.python_version(),
                     'aodncore': _aodncore_version}
-        discovered_versions = discover_entry_points('pipeline.module_versions')
-        versions.update(discovered_versions)
+        loaded_versions, failed_versions = self.config.discovered_module_versions
+        failed_version_dict = dict.fromkeys(failed_versions, 'LOAD_FAILED')
+        versions.update(loaded_versions)
+        versions.update(failed_version_dict)
         return versions
 
     @property
