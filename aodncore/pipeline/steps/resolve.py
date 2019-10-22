@@ -18,23 +18,27 @@ collection may then be processed in a generic way.
 """
 
 import abc
+import json
 import os
 import re
+from enum import Enum
 from io import open
 
 import six
-from enum import Enum
+from jsonschema.exceptions import ValidationError
 
 from .basestep import BaseStepRunner
 from ..common import FileType
 from ..exceptions import InvalidFileFormatError
 from ..files import PipelineFile, PipelineFileCollection
+from ..schema import validate_json_manifest
 from ...util import extract_gzip, extract_zip, list_regular_files, is_gzipfile, is_zipfile, safe_copy_file
 
 __all__ = [
     'get_resolve_runner',
     'DirManifestResolveRunner',
     'GzipFileResolveRunner',
+    'JsonManifestResolveRunner',
     'MapManifestResolveRunner',
     'RsyncManifestResolveRunner',
     'SimpleManifestResolveRunner',
@@ -59,6 +63,8 @@ def get_resolve_runner(input_file, output_dir, config, logger, resolve_params=No
         return ZipFileResolveRunner(input_file, output_dir, config, logger)
     elif file_type is FileType.SIMPLE_MANIFEST:
         return SimpleManifestResolveRunner(input_file, output_dir, config, logger, resolve_params)
+    elif file_type is FileType.JSON_MANIFEST:
+        return JsonManifestResolveRunner(input_file, output_dir, config, logger, resolve_params)
     elif file_type is FileType.MAP_MANIFEST:
         return MapManifestResolveRunner(input_file, output_dir, config, logger, resolve_params)
     elif file_type is FileType.RSYNC_MANIFEST:
@@ -130,6 +136,51 @@ class BaseManifestResolveRunner(BaseResolveRunner):
 
     def get_abs_path(self, path):
         return path if os.path.isabs(path) else os.path.join(self.relative_path_root, path)
+
+
+class JsonManifestResolveRunner(BaseManifestResolveRunner):
+    """Handles a JSON manifest file, *optionally* with a pre-determined destination path. Unlike other resolve runners,
+    this creates :py:class:`PipelineFile` objects to add to the collection rather than allowing the collection to
+    generate the objects.
+
+    If a "files" attribute is present, the files will be added to the collection. The elements of the "files"
+    attribute may be one of the following types::
+
+        1. an object, in which the 'local_path' attribute represents the source path of the file
+            1. optionally, if a the 'dest_path' attribute is provided, this will be used as a predetermined destination
+                path, (similar to the MapManifestResolveRunner)
+        e.g.
+
+        {
+            "files": [
+                {
+                    "local_path": "/path/to/source/file1"
+                },
+                {
+                    "local_path": "/path/to/source/file2",
+                    "dest_path": "destination/path/for/upload2"
+                }
+            ]
+        }
+
+    """
+
+    def run(self):
+        try:
+            with open(self.input_file) as f:
+                contents = json.load(f)
+            validate_json_manifest(contents)
+        except ValueError:
+            raise InvalidFileFormatError("input_file must be a valid JSON file")
+        except ValidationError:
+            raise InvalidFileFormatError("input_file failed to validate against the JSON manifest schema")
+
+        for entry in contents.get('files', []):
+            abs_path = self.get_abs_path(entry['local_path'])
+            fileobj = PipelineFile(abs_path, dest_path=entry.get('dest_path'))
+            self._collection.add(fileobj)
+
+        return self._collection
 
 
 class MapManifestResolveRunner(BaseManifestResolveRunner):
