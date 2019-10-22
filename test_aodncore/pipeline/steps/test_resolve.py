@@ -87,7 +87,13 @@ class TestJsonManifestResolveRunner(BaseTestCase):
                                                                  self.test_logger)
         collection = json_manifest_resolve_runner.run()
 
-        self.assertSetEqual(collection, set())
+        self.assertEqual(collection[0].src_path, os.path.join(MOCK_CONFIG.pipeline_config['global']['wip_dir'],
+                                                              os.path.basename(GOOD_NC)))
+        self.assertEqual(collection[0].dest_path, None)
+
+        self.assertEqual(collection[1].src_path, os.path.join(MOCK_CONFIG.pipeline_config['global']['wip_dir'],
+                                                              os.path.basename(BAD_NC)))
+        self.assertEqual(collection[1].dest_path, 'UNITTEST/NOT/A/REAL/PATH')
 
     def test_json_manifest_resolve_runner_invalid(self):
         json_manifest_resolve_runner = JsonManifestResolveRunner(GOOD_NC, self.temp_dir, MOCK_CONFIG,

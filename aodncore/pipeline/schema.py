@@ -8,6 +8,7 @@ __all__ = [
     'validate_check_params',
     'validate_custom_params',
     'validate_harvest_params',
+    'validate_json_manifest',
     'validate_logging_config',
     'validate_pipeline_config',
     'validate_notify_params',
@@ -179,6 +180,26 @@ RESOLVE_PARAMS_SCHEMA = {
 }
 
 
+JSON_MANIFEST_SCHEMA = {
+    'type': 'object',
+    'properties': {
+        'files': {'type': 'array', 'items': {'$ref': '#/definitions/manifestEntry'}},
+    },
+    'additionalProperties': True,
+    'definitions': {
+        'manifestEntry': {
+            'type': 'object',
+            'properties': {
+                'local_path': {'type': 'string'},
+                'dest_path': {'type': 'string'}
+            },
+            'required': ['local_path'],
+            'additionalProperties': False
+        }
+    }
+}
+
+
 def validate_check_params(check_params):
     jsonschema.validate(check_params, CHECK_PARAMS_SCHEMA)
 
@@ -205,3 +226,7 @@ def validate_pipeline_config(pipeline_config):
 
 def validate_resolve_params(resolve_params):
     jsonschema.validate(resolve_params, RESOLVE_PARAMS_SCHEMA)
+
+
+def validate_json_manifest(json_manifest):
+    jsonschema.validate(json_manifest, JSON_MANIFEST_SCHEMA)

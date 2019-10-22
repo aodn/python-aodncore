@@ -1,0 +1,11 @@
+{
+    "files": [
+        {
+            "incorrect_property_name": "good.nc"
+        },
+        {
+            "local_path": "bad.nc",
+            "incorrect_property_name2": "UNITTEST/NOT/A/REAL/PATH"
+        }
+    ]
+}

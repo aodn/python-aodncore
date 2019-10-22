@@ -1,3 +1,11 @@
 {
-    "key": "value"
+    "files": [
+        {
+            "local_path": "good.nc"
+        },
+        {
+            "local_path": "bad.nc",
+            "dest_path": "UNITTEST/NOT/A/REAL/PATH"
+        }
+    ]
 }
