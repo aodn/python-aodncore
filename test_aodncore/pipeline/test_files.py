@@ -2,14 +2,16 @@ import os
 import uuid
 from collections import MutableSet, OrderedDict
 
-from six import assertCountEqual
+import six
 from six.moves import range
 
 from aodncore.pipeline.common import (CheckResult, PipelineFileCheckType, PipelineFilePublishType)
 from aodncore.pipeline.exceptions import AttributeValidationError, DuplicatePipelineFileError, MissingFileError
-from aodncore.pipeline.files import PipelineFileCollection, PipelineFile, ensure_pipelinefilecollection
+from aodncore.pipeline.files import (PipelineFileCollection, PipelineFile, RemotePipelineFile,
+                                     RemotePipelineFileCollection, ensure_pipelinefilecollection,
+                                     ensure_remotepipelinefilecollection)
 from aodncore.pipeline.steps import get_child_check_runner
-from aodncore.testlib import BaseTestCase, get_nonexistent_path, mock
+from aodncore.testlib import BaseTestCase, NullStorageBroker, get_nonexistent_path, mock
 from test_aodncore import TESTDATA_DIR
 
 BAD_NC = os.path.join(TESTDATA_DIR, 'bad.nc')
@@ -27,28 +29,45 @@ class TestPipelineFiles(BaseTestCase):
         with self.assertRaises(TypeError):
             _ = ensure_pipelinefilecollection('invalid_type')
 
+    def test_ensure_remotepipelinefilecollection(self):
+        collection_from_collection = ensure_remotepipelinefilecollection(RemotePipelineFileCollection())
+        self.assertIsInstance(collection_from_collection, RemotePipelineFileCollection)
+
+        collection_from_file = ensure_remotepipelinefilecollection(RemotePipelineFile(GOOD_NC + '.dest'))
+        self.assertIsInstance(collection_from_file, RemotePipelineFileCollection)
+
+        with self.assertRaises(TypeError):
+            _ = ensure_pipelinefilecollection('invalid_type')
+
 
 # noinspection PyAttributeOutsideInit
 class TestPipelineFile(BaseTestCase):
     def setUp(self):
         super(TestPipelineFile, self).setUp()
-        self.pipelinefile = PipelineFile(GOOD_NC, dest_path=GOOD_NC + '.dest')
-        self.pipelinefile_deletion = PipelineFile(get_nonexistent_path(), is_deletion=True)
+        deletion_path = get_nonexistent_path()
+        self.pipelinefile = PipelineFile(GOOD_NC, dest_path=GOOD_NC + '.dest', name='pipelinefile')
+        self.pipelinefile_deletion = PipelineFile(deletion_path, is_deletion=True)
+        self.remotepipelinefile = RemotePipelineFile(GOOD_NC + '.dest', local_path=GOOD_NC, name='remotepipelinefile')
+
+    def test_from_remotepipelinefile(self):
+        expected = PipelineFile(GOOD_NC, dest_path=GOOD_NC + '.dest', name='remotepipelinefile')
+        actual = PipelineFile.from_remotepipelinefile(self.remotepipelinefile)
+        self.assertEqual(expected, actual)
 
     def test_compliance_check(self):
         # Test compliance checking
         check_runner = get_child_check_runner(PipelineFileCheckType.NC_COMPLIANCE_CHECK, None, self.test_logger,
                                               {'checks': ['cf']})
         check_runner.run(PipelineFileCollection(self.pipelinefile))
-        assertCountEqual(self, dict(self.pipelinefile.check_result).keys(), ['compliant', 'errors', 'log'])
+        six.assertCountEqual(self, dict(self.pipelinefile.check_result).keys(), ['compliant', 'errors', 'log'])
 
     def test_equal_files(self):
-        duplicate_file = PipelineFile(GOOD_NC)
+        duplicate_file = PipelineFile(GOOD_NC, name='pipelinefile')
         self.assertFalse(id(self.pipelinefile) == id(duplicate_file))
         self.assertTrue(self.pipelinefile == duplicate_file)
 
     def test_unequal_files(self):
-        different_file = PipelineFile(BAD_NC)
+        different_file = PipelineFile(BAD_NC, name='pipelinefile')
         self.assertFalse(id(self.pipelinefile) == id(different_file))
         self.assertFalse(self.pipelinefile == different_file)
 
@@ -56,7 +75,7 @@ class TestPipelineFile(BaseTestCase):
         # Test file format checking
         check_runner = get_child_check_runner(PipelineFileCheckType.FORMAT_CHECK, None, self.test_logger)
         check_runner.run(PipelineFileCollection(self.pipelinefile))
-        assertCountEqual(self, dict(self.pipelinefile.check_result).keys(), ['compliant', 'errors', 'log'])
+        six.assertCountEqual(self, dict(self.pipelinefile.check_result).keys(), ['compliant', 'errors', 'log'])
 
     def test_nonexistent_attribute(self):
         nonexistent_attribute = str(uuid.uuid4())
@@ -215,6 +234,23 @@ class TestPipelineFile(BaseTestCase):
         self.assertEqual(test_callback_instance.test_kwargs['name'], self.pipelinefile.name)
 
 
+class TestRemotePipelineFile(BaseTestCase):
+    def setUp(self):
+        super(TestRemotePipelineFile, self).setUp()
+        self.pipelinefile = PipelineFile(GOOD_NC, dest_path=GOOD_NC + '.dest', name='pipelinefile')
+        self.remotepipelinefile = RemotePipelineFile(GOOD_NC + '.dest', local_path=GOOD_NC, name='remotepipelinefile')
+
+    def test_frompipelinefile(self):
+        expected = RemotePipelineFile(GOOD_NC + '.dest', local_path=GOOD_NC, name='pipelinefile')
+        actual = RemotePipelineFile.from_pipelinefile(self.pipelinefile)
+        self.assertEqual(expected, actual)
+
+    def test_basename(self):
+        remote_file = RemotePipelineFile('dest/path/1.nc')
+        basename = os.path.basename(remote_file.dest_path)
+        self.assertEqual(basename, '1.nc')
+
+
 # noinspection PyAttributeOutsideInit
 class TestPipelineFileCollection(BaseTestCase):
     def setUp(self):
@@ -225,6 +261,15 @@ class TestPipelineFileCollection(BaseTestCase):
 
     def test_abstract_class(self):
         self.assertIsInstance(self.collection, MutableSet)
+
+    def test_from_remotepipelinefilecollection(self):
+        dest_path = get_nonexistent_path(relative=True)
+        remote_collection = RemotePipelineFileCollection(RemotePipelineFile(dest_path, local_path=GOOD_NC,
+                                                                            name='custom_name'))
+
+        collection = PipelineFileCollection.from_remotepipelinefilecollection(remote_collection)
+        expected_collection = PipelineFileCollection(PipelineFile(GOOD_NC, dest_path=dest_path, name='custom_name'))
+        self.assertEqual(collection, expected_collection)
 
     def test_add(self):
         p1 = PipelineFile(GOOD_NC)
@@ -468,7 +513,7 @@ class TestPipelineFileCollection(BaseTestCase):
         self.assertIn(f2, self.collection)
 
         self.collection.clear()
-        assertCountEqual(self, self.collection, set())
+        six.assertCountEqual(self, self.collection, set())
 
     def test_pipelinefile_objects(self):
         # Test add/discard/remove methods for PipelineFile instances
@@ -492,7 +537,7 @@ class TestPipelineFileCollection(BaseTestCase):
         self.assertIn(fileobj2, self.collection)
 
         self.collection.clear()
-        assertCountEqual(self, self.collection, set())
+        six.assertCountEqual(self, self.collection, set())
 
     def test_ordering(self):
         # Test that the order of elements is maintained and slicing returns expected results
@@ -556,7 +601,7 @@ class TestPipelineFileCollection(BaseTestCase):
 
         filtered_collection = self.collection.filter_by_attribute_id('publish_type',
                                                                      PipelineFilePublishType.DELETE_UNHARVEST)
-        assertCountEqual(self, self.collection, filtered_collection)
+        six.assertCountEqual(self, self.collection, filtered_collection)
 
     def test_filter_by_attribute_id_not(self):
         f1 = get_nonexistent_path()
@@ -572,7 +617,7 @@ class TestPipelineFileCollection(BaseTestCase):
 
         filtered_collection = self.collection.filter_by_attribute_id_not('publish_type',
                                                                          PipelineFilePublishType.NO_ACTION)
-        assertCountEqual(self, filtered_collection, PipelineFileCollection((fileobj1, fileobj2)))
+        six.assertCountEqual(self, filtered_collection, PipelineFileCollection((fileobj1, fileobj2)))
 
     def test_filter_by_attribute_value(self):
         f1 = get_nonexistent_path()
@@ -580,9 +625,9 @@ class TestPipelineFileCollection(BaseTestCase):
         self.collection.add(fileobj1)
 
         filtered_collection = self.collection.filter_by_attribute_value('src_path', f1)
-        assertCountEqual(self, self.collection, filtered_collection)
+        six.assertCountEqual(self, self.collection, filtered_collection)
 
-    def test_filter_by_attribute_regex(self):
+    def test_filter_by_attribute_regexes(self):
         f1 = get_nonexistent_path()
         f2 = get_nonexistent_path()
         f3 = get_nonexistent_path()
@@ -593,7 +638,7 @@ class TestPipelineFileCollection(BaseTestCase):
         fileobj4 = PipelineFile(f4, dest_path="BAR/1", is_deletion=True)
         self.collection.update((fileobj1, fileobj2, fileobj3, fileobj4))
 
-        filtered_collection = self.collection.filter_by_attribute_regex('dest_path', '^FOO/[1-3]$')
+        filtered_collection = self.collection.filter_by_attribute_regexes('dest_path', '^FOO/[1-3]$')
         self.assertSetEqual(filtered_collection, {fileobj1, fileobj2})
 
     @mock.patch("aodncore.pipeline.files.get_file_checksum")
@@ -608,7 +653,7 @@ class TestPipelineFileCollection(BaseTestCase):
         self.collection.add(fileobj1)
 
         filtered_collection = self.collection.filter_by_bool_attribute('should_store')
-        assertCountEqual(self, self.collection, filtered_collection)
+        six.assertCountEqual(self, self.collection, filtered_collection)
 
         filtered_collection = self.collection.filter_by_bool_attribute('is_stored')
         self.assertSetEqual(filtered_collection, PipelineFileCollection())
@@ -867,3 +912,86 @@ class TestPipelineFileCollection(BaseTestCase):
 
         with self.assertNoException():
             self.collection.set_string_attribute('dest_path', 'valid/string')
+
+
+class TestRemotePipelineFileCollection(BaseTestCase):
+    def setUp(self):
+        self.remote_collection = RemotePipelineFileCollection([
+            RemotePipelineFile('dest/path/1.nc', name='1.nc'),
+            RemotePipelineFile('dest/path/2.nc', name='2.nc')
+        ])
+
+    def tearDown(self):
+        del self.remote_collection
+
+    def test_from_pipelinefilecollection(self):
+        dest_path = get_nonexistent_path(relative=True)
+        collection = PipelineFileCollection(PipelineFile(GOOD_NC, dest_path=dest_path))
+        expected_remote_collection = RemotePipelineFileCollection(
+            RemotePipelineFile(dest_path, name='good.nc')
+        )
+        remote_collection = RemotePipelineFileCollection.from_pipelinefilecollection(collection)
+
+        self.assertEqual(remote_collection, expected_remote_collection)
+
+    def test_download(self):
+        local_path = os.path.join(self.temp_dir, 'local_download_path')
+        broker = NullStorageBroker('')
+
+        self.remote_collection.download(broker, local_path)
+        local_paths = self.remote_collection.get_attribute_list('local_path')
+        expected = [os.path.join(local_path, rf.dest_path) for rf in self.remote_collection]
+
+        broker.assert_download_call_count(1)
+        six.assertCountEqual(self, local_paths, expected)
+
+    def test_file_objects(self):
+        f1 = RemotePipelineFile('dest/path/1.nc', name='1.nc')
+        f2 = RemotePipelineFile('dest/path/3.nc', name='3.nc')
+        self.assertIn(f1, self.remote_collection)
+        self.assertNotIn(f2, self.remote_collection)
+
+        self.remote_collection.remove(f1)
+        self.assertNotIn(f1, self.remote_collection)
+
+        self.remote_collection.discard(f2)
+        self.assertNotIn(f2, self.remote_collection)
+
+        self.remote_collection.update([f1, f2])
+        self.assertIn(f1, self.remote_collection)
+        self.assertIn(f2, self.remote_collection)
+
+        self.remote_collection.clear()
+        six.assertCountEqual(self, self.remote_collection, set())
+
+    def test_file_paths(self):
+        self.assertIn('dest/path/1.nc',self.remote_collection)
+        self.assertNotIn('dest/path/3.nc', self.remote_collection)
+
+    def test_keys(self):
+        actual = self.remote_collection.keys()
+        expected = ['dest/path/1.nc', 'dest/path/2.nc']
+        six.assertCountEqual(self, actual, expected)
+
+
+# noinspection PyAttributeOutsideInit
+class TestRemoteFile(BaseTestCase):
+    def setUp(self):
+        super(TestRemoteFile, self).setUp()
+        self.remotefile = RemotePipelineFile(GOOD_NC + '.dest', local_path=GOOD_NC)
+
+    def test_equal_files(self):
+        duplicate_file = RemotePipelineFile(GOOD_NC + '.dest', local_path=GOOD_NC)
+        self.assertFalse(id(self.remotefile) == id(duplicate_file))
+        self.assertTrue(self.remotefile == duplicate_file)
+
+    def test_unequal_files(self):
+        different_file = RemotePipelineFile(BAD_NC + '.dest', local_path=BAD_NC)
+        self.assertFalse(id(self.remotefile) == id(different_file))
+        self.assertFalse(self.remotefile == different_file)
+
+    def test_nonexistent_attribute(self):
+        nonexistent_attribute = str(uuid.uuid4())
+
+        with self.assertRaises(AttributeError):
+            setattr(self.remotefile, nonexistent_attribute, None)

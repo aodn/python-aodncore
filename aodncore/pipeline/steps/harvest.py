@@ -247,7 +247,7 @@ class TalendHarvesterRunner(BaseHarvesterRunner):
                 for config_type, value in event.items():
                     if config_type == 'regex':
                         for regex in value:
-                            matched_files_for_regex = pipeline_files.filter_by_attribute_regex('dest_path', regex)
+                            matched_files_for_regex = pipeline_files.filter_by_attribute_regexes('dest_path', regex)
                             if matched_files_for_regex:
                                 for mf in matched_files_for_regex:
                                     self._logger.sysinfo(

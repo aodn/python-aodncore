@@ -18,8 +18,9 @@ except ImportError:
     from scandir import walk
 
 from .exceptions import AttributeNotSetError, InvalidStoreUrlError, StorageBrokerError
-from .files import ensure_pipelinefilecollection, PipelineFile, PipelineFileCollection
-from ..util import (ensure_regex_list, format_exception, matches_regexes, mkdir_p, retry_decorator, rm_f,
+from .files import (ensure_pipelinefilecollection, ensure_remotepipelinefilecollection, PipelineFileCollection,
+                    RemotePipelineFile, RemotePipelineFileCollection)
+from ..util import (ensure_regex_list, format_exception, mkdir_p, retry_decorator, rm_f,
                     safe_copy_file, validate_relative_path, validate_type)
 
 __all__ = [
@@ -79,6 +80,10 @@ class BaseStorageBroker(six.with_metaclass(abc.ABCMeta, object)):
         pass
 
     @abc.abstractmethod  # pragma: no cover
+    def _download_file(self, remote_pipeline_file):
+        pass
+
+    @abc.abstractmethod  # pragma: no cover
     def _upload_file(self, pipeline_file, dest_path_attr):
         pass
 
@@ -93,6 +98,12 @@ class BaseStorageBroker(six.with_metaclass(abc.ABCMeta, object)):
                 dest_path_attr=dest_path_attr, pipeline_file=pipeline_file))
         return os.path.join(self.prefix, rel_path)
 
+    @staticmethod
+    def _prepare_file_for_download(remote_pipeline_file, local_path):
+        abs_local_path = os.path.join(local_path, remote_pipeline_file.dest_path)
+        mkdir_p(os.path.dirname(abs_local_path))
+        remote_pipeline_file.local_path = abs_local_path
+
     def set_is_overwrite(self, pipeline_files, dest_path_attr='dest_path'):
         overwrite_collection = ensure_pipelinefilecollection(pipeline_files)
 
@@ -100,6 +111,52 @@ class BaseStorageBroker(six.with_metaclass(abc.ABCMeta, object)):
         for pipeline_file in should_upload:
             abs_path = self._get_absolute_dest_path(pipeline_file=pipeline_file, dest_path_attr=dest_path_attr)
             pipeline_file.is_overwrite = self._get_is_overwrite(pipeline_file, abs_path)
+
+    def download(self, remote_pipeline_files, local_path):
+        """Download the given RemotePipelineFileCollection or RemotePipelineFile from the storage backend
+
+        :param remote_pipeline_files: collection to download
+        :param local_path: local path to download the files into
+        :return: None
+        """
+        download_collection = ensure_remotepipelinefilecollection(remote_pipeline_files)
+
+        self._pre_run_hook()
+
+        for remote_pipeline_file in download_collection:
+            try:
+                self._prepare_file_for_download(remote_pipeline_file, local_path)
+                self._download_file(remote_pipeline_file)
+            except Exception as e:
+                raise StorageBrokerError("error downloading '{dest_path}' to '{local_path}': {e}".format(
+                    dest_path=remote_pipeline_file.dest_path, local_path=local_path, e=format_exception(e)))
+
+        self._post_run_hook()
+
+    def download_iterator(self, remote_pipeline_files, local_path):
+        """Iterate over the given RemotePipelineFileCollection, downloading the file to the given local_path before
+        yielding it and then deleting the local path at the end of the iteration
+
+        :param remote_pipeline_files: collection to download
+        :param local_path: local path to download the files into
+        :return: generator instance
+        """
+        download_collection = ensure_remotepipelinefilecollection(remote_pipeline_files)
+
+        self._pre_run_hook()
+
+        for remote_pipeline_file in download_collection:
+            try:
+                self._prepare_file_for_download(remote_pipeline_file, local_path)
+                self._download_file(remote_pipeline_file)
+                yield remote_pipeline_file
+            except Exception as e:
+                raise StorageBrokerError("error downloading '{dest_path}' to '{local_path}': {e}".format(
+                    dest_path=remote_pipeline_file.dest_path, local_path=local_path, e=format_exception(e)))
+            finally:
+                remote_pipeline_file.remove_local()
+
+        self._post_run_hook()
 
     def upload(self, pipeline_files, is_stored_attr='is_stored', dest_path_attr='dest_path'):
         """Upload the given PipelineFileCollection or PipelineFile to the storage backend
@@ -161,16 +218,12 @@ class BaseStorageBroker(six.with_metaclass(abc.ABCMeta, object)):
             raise ValueError("regexes '{disallowed}' disallowed unless allow_match_all=True".format(
                 disallowed=list(DISALLOWED_DELETE_REGEXES)))
 
-        files_to_delete = PipelineFileCollection()
         if not delete_regexes:
-            return files_to_delete
+            return PipelineFileCollection()
 
         all_files = self.query()
-        files_to_delete.update(
-            PipelineFile(l, dest_path=os.path.join(self.prefix, l), is_deletion=True)
-            for l in all_files
-            if matches_regexes(l, delete_regexes)
-        )
+        files_to_delete = PipelineFileCollection.from_remotepipelinefilecollection(all_files, are_deletions=True) \
+                                                .filter_by_attribute_regexes('dest_path', delete_regexes)
 
         self.delete(files_to_delete)
         return files_to_delete
@@ -230,10 +283,18 @@ class LocalFileStorageBroker(BaseStorageBroker):
                     if fullpath.startswith(full_query) and not os.path.islink(fullpath):
                         stats = os.stat(fullpath)
                         key = os.path.relpath(fullpath, self.prefix)
-                        yield key, {'last_modified': datetime.fromtimestamp(stats.st_mtime), 'size': stats.st_size}
+                        yield RemotePipelineFile(key,
+                                                 local_path=None,
+                                                 name=os.path.basename(key),
+                                                 last_modified=datetime.fromtimestamp(stats.st_mtime),
+                                                 size=stats.st_size)
 
-        result = dict(_find_prefix(full_query))
+        result = RemotePipelineFileCollection(_find_prefix(full_query))
         return result
+
+    def _download_file(self, remote_pipeline_file):
+        abs_path = self._get_absolute_dest_path(pipeline_file=remote_pipeline_file, dest_path_attr='dest_path')
+        safe_copy_file(abs_path, remote_pipeline_file.local_path, overwrite=True)
 
     def _upload_file(self, pipeline_file, dest_path_attr):
         abs_path = self._get_absolute_dest_path(pipeline_file=pipeline_file, dest_path_attr=dest_path_attr)
@@ -300,6 +361,13 @@ class S3StorageBroker(BaseStorageBroker):
         result = {k['Key']: {'last_modified': k['LastModified'], 'size': k['Size']}
                   for k in raw_result.get('Contents', [])}
         return result
+
+    @retry_decorator(**retry_kwargs)
+    def _download_file(self, remote_pipeline_file):
+        abs_path = self._get_absolute_dest_path(pipeline_file=remote_pipeline_file, dest_path_attr='dest_path')
+
+        with open(remote_pipeline_file.local_path, 'wb') as f:
+            self.s3_client.download_fileobj(Bucket=self.bucket, Key=abs_path, Fileobj=f)
 
     @retry_decorator(**retry_kwargs)
     def _upload_file(self, pipeline_file, dest_path_attr):
@@ -411,6 +479,9 @@ class SftpStorageBroker(BaseStorageBroker):
         self._connect_sftp()
 
     def _run_query(self, query):
+        raise NotImplementedError
+
+    def _download_file(self, remote_pipeline_file):
         raise NotImplementedError
 
     def _upload_file(self, pipeline_file, dest_path_attr):

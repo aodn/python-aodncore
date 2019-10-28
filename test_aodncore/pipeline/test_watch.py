@@ -53,7 +53,7 @@ class TestPipelineWatch(BaseTestCase):
         self.assertEqual(actual_name, expected_name)
 
     def test_delete_same_name_from_error_store_callback(self):
-        actual_error_files_before_cleanup = list(self.state_manager.error_broker.query().keys())
+        actual_error_files_before_cleanup = [rf.dest_path for rf in self.state_manager.error_broker.query()]
         expected_error_files_before_cleanup = ['dummy.input_file.40c4ec0d-c9db-498d-84f9-01011330086e', 'good.nc',
                                                'test.unknown_file_extension', 'test.ico', 'invalid.png']
         six.assertCountEqual(self, expected_error_files_before_cleanup, actual_error_files_before_cleanup)
@@ -61,12 +61,12 @@ class TestPipelineWatch(BaseTestCase):
         callback_log = delete_same_name_from_error_store_callback(self.state_manager.handler,
                                                                   self.state_manager)
 
-        actual_error_files_after_cleanup = list(self.state_manager.error_broker.query().keys())
+        actual_error_files_after_cleanup = [rf.dest_path for rf in self.state_manager.error_broker.query()]
         expected_error_files_after_cleanup = ['good.nc', 'test.unknown_file_extension', 'test.ico', 'invalid.png']
         six.assertCountEqual(self, expected_error_files_after_cleanup, actual_error_files_after_cleanup)
 
     def test_delete_custom_regexes_from_error_store_callback(self):
-        actual_error_files_before_cleanup = list(self.state_manager.error_broker.query().keys())
+        actual_error_files_before_cleanup = [rf.dest_path for rf in self.state_manager.error_broker.query()]
         expected_error_files_before_cleanup = ['dummy.input_file.40c4ec0d-c9db-498d-84f9-01011330086e', 'good.nc',
                                                'test.unknown_file_extension', 'test.ico', 'invalid.png']
         six.assertCountEqual(self, expected_error_files_before_cleanup, actual_error_files_before_cleanup)
@@ -74,7 +74,7 @@ class TestPipelineWatch(BaseTestCase):
         callback_log = delete_custom_regexes_from_error_store_callback(self.state_manager.handler,
                                                                        self.state_manager)
 
-        actual_error_files_after_cleanup = list(self.state_manager.error_broker.query().keys())
+        actual_error_files_after_cleanup = [rf.dest_path for rf in self.state_manager.error_broker.query()]
         expected_error_files_after_cleanup = ['dummy.input_file.40c4ec0d-c9db-498d-84f9-01011330086e', 'good.nc',
                                               'invalid.png']
         six.assertCountEqual(self, expected_error_files_after_cleanup, actual_error_files_after_cleanup)
@@ -128,15 +128,15 @@ class TestIncomingFileStateManager(BaseTestCase):
     def test_error(self):
         self.assertTrue(os.path.exists(self.state_manager.input_file))
         self.assertFalse(os.path.exists(self.state_manager.processing_path))
-        error_result = self.state_manager.error_broker.query(self.state_manager.error_name)
-        self.assertNotIn(self.state_manager.error_name, error_result)
+        error_paths = [v.dest_path for v in self.state_manager.error_broker.query(self.state_manager.error_name)]
+        self.assertNotIn(self.state_manager.error_name, error_paths)
 
         self.state_manager.move_to_processing()
 
         self.assertFalse(os.path.exists(self.state_manager.input_file))
         self.assertTrue(os.path.exists(self.state_manager.processing_path))
-        error_result = self.state_manager.error_broker.query(self.state_manager.error_name)
-        self.assertNotIn(self.state_manager.error_name, error_result)
+        error_paths = [v.dest_path for v in self.state_manager.error_broker.query(self.state_manager.error_name)]
+        self.assertNotIn(self.state_manager.error_name, error_paths)
         self.assertEqual(stat.S_IMODE(os.stat(self.state_manager.processing_path).st_mode),
                          self.state_manager.processing_mode)
 
@@ -146,22 +146,22 @@ class TestIncomingFileStateManager(BaseTestCase):
 
         self.assertFalse(os.path.exists(self.state_manager.input_file))
         self.assertFalse(os.path.exists(self.state_manager.processing_path))
-        error_result = self.state_manager.error_broker.query(self.state_manager.error_name)
-        self.assertIn(self.state_manager.error_name, error_result)
+        error_paths = [v.dest_path for v in self.state_manager.error_broker.query(self.state_manager.error_name)]
+        self.assertIn(self.state_manager.error_name, error_paths)
         self.assertEqual(stat.S_IMODE(os.stat(full_error_path).st_mode), self.state_manager.error_mode)
 
     def test_success(self):
         self.assertTrue(os.path.exists(self.state_manager.input_file))
         self.assertFalse(os.path.exists(self.state_manager.processing_path))
-        error_result = self.state_manager.error_broker.query(self.state_manager.error_name)
-        self.assertNotIn(self.state_manager.error_name, error_result)
+        error_paths = [v.dest_path for v in self.state_manager.error_broker.query(self.state_manager.error_name)]
+        self.assertNotIn(self.state_manager.error_name, error_paths)
 
         self.state_manager.move_to_processing()
 
         self.assertFalse(os.path.exists(self.state_manager.input_file))
         self.assertTrue(os.path.exists(self.state_manager.processing_path))
-        error_result = self.state_manager.error_broker.query(self.state_manager.error_name)
-        self.assertNotIn(self.state_manager.error_name, error_result)
+        error_paths = [v.dest_path for v in self.state_manager.error_broker.query(self.state_manager.error_name)]
+        self.assertNotIn(self.state_manager.error_name, error_paths)
         self.assertEqual(stat.S_IMODE(os.stat(self.state_manager.processing_path).st_mode),
                          self.state_manager.processing_mode)
 
@@ -169,8 +169,8 @@ class TestIncomingFileStateManager(BaseTestCase):
 
         self.assertFalse(os.path.exists(self.state_manager.input_file))
         self.assertFalse(os.path.exists(self.state_manager.processing_path))
-        error_result = self.state_manager.error_broker.query(self.state_manager.error_name)
-        self.assertNotIn(self.state_manager.error_name, error_result)
+        error_paths = [v.dest_path for v in self.state_manager.error_broker.query(self.state_manager.error_name)]
+        self.assertNotIn(self.state_manager.error_name, error_paths)
 
     def test_cleanup(self):
         nc = PipelineFile(GOOD_NC, dest_path=os.path.basename(GOOD_NC))
@@ -182,14 +182,14 @@ class TestIncomingFileStateManager(BaseTestCase):
 
         self.state_manager.move_to_processing()
 
-        actual_error_files_before_cleanup = list(self.state_manager.error_broker.query().keys())
+        actual_error_files_before_cleanup = [v.dest_path for v in self.state_manager.error_broker.query()]
         expected_error_files_before_cleanup = ['good.nc', 'test.unknown_file_extension', 'test.ico', 'invalid.png']
         six.assertCountEqual(self, expected_error_files_before_cleanup, actual_error_files_before_cleanup)
 
         self.state_manager.success_exit_policies.append(ExitPolicy.DELETE_CUSTOM_REGEXES_FROM_ERROR_STORE)
         self.state_manager.move_to_success()
 
-        actual_error_files_after_cleanup = list(self.state_manager.error_broker.query().keys())
+        actual_error_files_after_cleanup = [v.dest_path for v in self.state_manager.error_broker.query()]
         expected_error_files_after_cleanup = ['good.nc', 'invalid.png']
         six.assertCountEqual(self, expected_error_files_after_cleanup, actual_error_files_after_cleanup)
 

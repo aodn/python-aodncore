@@ -44,6 +44,7 @@ class NullStorageBroker(BaseStorageBroker):
 
         self.upload_call_count = 0
         self.delete_call_count = 0
+        self.download_call_count = 0
         self.query_call_count = 0
 
     def _delete_file(self, pipeline_file, dest_path_attr):
@@ -56,6 +57,10 @@ class NullStorageBroker(BaseStorageBroker):
     def _pre_run_hook(self):
         pass
 
+    def _download_file(self, remote_pipeline_file):
+        if self.fail:
+            raise Exception('deliberate failure requested')
+
     def _upload_file(self, pipeline_file, dest_path_attr):
         if self.fail:
             raise Exception('deliberate failure requested')
@@ -67,6 +72,10 @@ class NullStorageBroker(BaseStorageBroker):
         if self.fail:
             raise Exception('deliberate failure requested')
 
+    def download(self, remote_pipeline_files, local_path, dest_path_attr='dest_path'):
+        self.download_call_count += 1
+        super(NullStorageBroker, self).download(remote_pipeline_files, local_path)
+
     def upload(self, pipeline_files, is_stored_attr='is_stored', dest_path_attr='dest_path'):
         self.upload_call_count += 1
         super(NullStorageBroker, self).upload(pipeline_files, is_stored_attr, dest_path_attr)
@@ -75,9 +84,17 @@ class NullStorageBroker(BaseStorageBroker):
         self.delete_call_count += 1
         super(NullStorageBroker, self).delete(pipeline_files, is_stored_attr, dest_path_attr)
 
-    def query(self, query):
+    def query(self, query=''):
         self.query_call_count += 1
         super(NullStorageBroker, self).query(query)
+
+    def assert_download_call_count(self, count):
+        if self.download_call_count != count:
+            raise AssertionError("download method call count: {call_count}".format(call_count=self.download_call_count))
+
+    def assert_download_called(self):
+        if self.download_call_count == 0:
+            raise AssertionError("download method not called")
 
     def assert_upload_call_count(self, count):
         if self.upload_call_count != count:

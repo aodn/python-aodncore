@@ -11,19 +11,26 @@ from botocore.exceptions import ClientError
 from dateutil.tz import tzutc
 from six.moves.http_client import IncompleteRead
 
-from aodncore.pipeline import PipelineFile, PipelineFileCollection, PipelineFilePublishType
+from aodncore.pipeline.common import PipelineFilePublishType
 from aodncore.pipeline.exceptions import InvalidStoreUrlError, StorageBrokerError
+from aodncore.pipeline.files import (PipelineFile, PipelineFileCollection, RemotePipelineFile,
+                                     RemotePipelineFileCollection)
 from aodncore.pipeline.storage import (get_storage_broker, sftp_path_exists, sftp_makedirs, sftp_mkdir_p,
                                        validate_storage_broker, LocalFileStorageBroker, S3StorageBroker,
                                        SftpStorageBroker)
 from aodncore.testlib import BaseTestCase, NullStorageBroker, get_nonexistent_path, mock
-from aodncore.util import TemporaryDirectory
+from aodncore.util import TemporaryDirectory, list_regular_files
 from test_aodncore import TESTDATA_DIR
 
 GOOD_NC = os.path.join(TESTDATA_DIR, 'good.nc')
 INVALID_PNG = os.path.join(TESTDATA_DIR, 'invalid.png')
 TEST_ICO = os.path.join(TESTDATA_DIR, 'test.ico')
 UNKNOWN_FILE_TYPE = os.path.join(TESTDATA_DIR, 'test.unknown_file_extension')
+
+
+def get_download_collection():
+    collection = get_upload_collection()
+    return RemotePipelineFileCollection.from_pipelinefilecollection(collection)
 
 
 def get_upload_collection(delete=False):
@@ -214,6 +221,12 @@ class TestBaseStorageBroker(BaseTestCase):
         broker.delete(pipeline_files=collection, is_stored_attr='is_stored', dest_path_attr='dest_path')
         self.assertTrue(collection[0].is_stored)
 
+    def test_download_fail(self):
+        collection = get_download_collection()
+        broker = NullStorageBroker("/", fail=True)
+        with self.assertRaises(StorageBrokerError):
+            broker.download(remote_pipeline_files=collection, local_path=self.temp_dir)
+
     def test_upload_fail(self):
         collection = get_upload_collection()
         broker = NullStorageBroker("/", fail=True)
@@ -306,6 +319,20 @@ class TestLocalFileStorageBroker(BaseTestCase):
 
         self.assertTrue(netcdf_file.is_stored)
 
+    def test_download_collection(self):
+        local_path = os.path.join(self.temp_dir, 'local_download_path')
+        remote_collection = get_download_collection()
+        self.test_broker.download(remote_collection, local_path=local_path)
+        self.assertTrue(all(os.path.exists(p.local_path) for p in remote_collection))
+
+    def test_download_iterator(self):
+        local_path = os.path.join(self.temp_dir, 'local_download_path')
+        remote_collection = get_download_collection()
+        for f in self.test_broker.download_iterator(remote_collection, local_path=local_path):
+            actual = list(list_regular_files(local_path, recursive=True))
+            expected = [f.local_path]
+            six.assertCountEqual(self, actual, expected)
+
     @mock.patch('aodncore.pipeline.storage.rm_f')
     def test_delete_collection(self, mock_rm_f):
         collection = get_upload_collection(delete=True)
@@ -349,37 +376,42 @@ class TestLocalFileStorageBroker(BaseTestCase):
             self.test_broker.delete_regexes([re.compile(r'.*')])
 
         all_files = self.test_broker.query()
-        six.assertCountEqual(self, all_files.keys(), [
-            'subdirectory/targetfile.unknown_file_extension',
-            'subdirectory/targetfile.nc',
-            'dummy.input_file.40c4ec0d-c9db-498d-84f9-01011330086e',
-            'subdirectory/targetfile.png',
-            'subdirectory/targetfile.ico'
+        expected = RemotePipelineFileCollection([
+            RemotePipelineFile('subdirectory/targetfile.unknown_file_extension'),
+            RemotePipelineFile('subdirectory/targetfile.nc'),
+            RemotePipelineFile('dummy.input_file.40c4ec0d-c9db-498d-84f9-01011330086e'),
+            RemotePipelineFile('subdirectory/targetfile.png'),
+            RemotePipelineFile('subdirectory/targetfile.ico')
         ])
+
+        six.assertCountEqual(self, expected, all_files)
 
         self.test_broker.delete_regexes([r'^subdirectory/targetfile\.(ico|nc)$'])
 
         remaining_files = self.test_broker.query()
-        six.assertCountEqual(self, remaining_files.keys(), [
-            'subdirectory/targetfile.unknown_file_extension',
-            'dummy.input_file.40c4ec0d-c9db-498d-84f9-01011330086e',
-            'subdirectory/targetfile.png'
+        expected_remaining = RemotePipelineFileCollection([
+            RemotePipelineFile('subdirectory/targetfile.unknown_file_extension'),
+            RemotePipelineFile('dummy.input_file.40c4ec0d-c9db-498d-84f9-01011330086e'),
+            RemotePipelineFile('subdirectory/targetfile.png')
         ])
+
+        six.assertCountEqual(self, expected_remaining, remaining_files)
 
     def test_delete_regexes_with_allow_match_all(self):
         all_files = self.test_broker.query()
-        six.assertCountEqual(self, all_files.keys(), [
-            'subdirectory/targetfile.unknown_file_extension',
-            'subdirectory/targetfile.nc',
-            'dummy.input_file.40c4ec0d-c9db-498d-84f9-01011330086e',
-            'subdirectory/targetfile.png',
-            'subdirectory/targetfile.ico'
+        expected = RemotePipelineFileCollection([
+            RemotePipelineFile('subdirectory/targetfile.unknown_file_extension'),
+            RemotePipelineFile('subdirectory/targetfile.nc'),
+            RemotePipelineFile('dummy.input_file.40c4ec0d-c9db-498d-84f9-01011330086e'),
+            RemotePipelineFile('subdirectory/targetfile.png'),
+            RemotePipelineFile('subdirectory/targetfile.ico')
         ])
+        six.assertCountEqual(self, expected, all_files)
 
         self.test_broker.delete_regexes([r'.*'], allow_match_all=True)
 
         remaining_files = self.test_broker.query()
-        six.assertCountEqual(self, remaining_files.keys(), [])
+        six.assertCountEqual(self, remaining_files, RemotePipelineFileCollection())
 
     def test_directory_query(self):
         with TemporaryDirectory() as d:
@@ -392,13 +424,15 @@ class TestLocalFileStorageBroker(BaseTestCase):
             file_storage_broker = LocalFileStorageBroker(d)
             result = file_storage_broker.query('subdir/')
 
-            six.assertCountEqual(self, result.keys(), [
-                os.path.relpath(temp_file1, d),
-                os.path.relpath(temp_file2, d),
-                os.path.relpath(temp_file3, d)
-            ])
-        self.assertTrue(all(isinstance(v['last_modified'], datetime.datetime) for k, v in result.items()))
-        self.assertTrue(all(isinstance(v['size'], int) for k, v in result.items()))
+        expected = RemotePipelineFileCollection([
+            RemotePipelineFile(os.path.relpath(temp_file1, d)),
+            RemotePipelineFile(os.path.relpath(temp_file2, d)),
+            RemotePipelineFile(os.path.relpath(temp_file3, d))
+        ])
+
+        six.assertCountEqual(self, expected, result)
+        self.assertTrue(all(isinstance(v.last_modified, datetime.datetime) for v in result))
+        self.assertTrue(all(isinstance(v.size, int) for v in result))
 
     def test_prefix_query(self):
         with TemporaryDirectory() as d:
@@ -412,12 +446,14 @@ class TestLocalFileStorageBroker(BaseTestCase):
             file_storage_broker = LocalFileStorageBroker(d)
             result = file_storage_broker.query('subdir/qwerty')
 
-        six.assertCountEqual(self, result.keys(), [
-            os.path.relpath(temp_file1, d),
-            os.path.relpath(temp_file2, d)
+        expected = RemotePipelineFileCollection([
+            RemotePipelineFile(os.path.relpath(temp_file1, d)),
+            RemotePipelineFile(os.path.relpath(temp_file2, d))
         ])
-        self.assertTrue(all(isinstance(v['last_modified'], datetime.datetime) for k, v in result.items()))
-        self.assertTrue(all(isinstance(v['size'], int) for k, v in result.items()))
+
+        six.assertCountEqual(self, result, expected)
+        self.assertTrue(all(isinstance(f.last_modified, datetime.datetime) for f in result))
+        self.assertTrue(all(isinstance(f.size, int) for f in result))
 
     def test_query_empty(self):
         with TemporaryDirectory() as d:
@@ -430,7 +466,7 @@ class TestLocalFileStorageBroker(BaseTestCase):
             with self.assertNoException():
                 result = file_storage_broker.query('subdir/qwerty')
 
-        self.assertDictEqual(result, {})
+        self.assertEqual(result, RemotePipelineFileCollection())
 
     def test_query_error(self):
         with TemporaryDirectory() as d:
@@ -550,6 +586,35 @@ class TestS3StorageBroker(BaseTestCase):
                                                                        'ContentType': 'application/octet-stream'})
 
         self.assertTrue(all(p.is_stored for p in collection))
+
+    @mock.patch('aodncore.pipeline.storage.boto3')
+    def test_download_collection(self, mock_boto3):
+        collection = get_download_collection()
+        netcdf_file, png_file, ico_file, unknown_file = collection
+
+        dummy_bucket = str(uuid4())
+        dummy_prefix = str(uuid4())
+        s3_storage_broker = S3StorageBroker(dummy_bucket, dummy_prefix)
+
+        mock_boto3.client.assert_called_once_with('s3')
+
+        with mock.patch('aodncore.pipeline.storage.open', mock.mock_open()) as m:
+            s3_storage_broker.download(collection, self.temp_dir)
+
+        self.assertEqual(4, s3_storage_broker.s3_client.download_fileobj.call_count)
+        netcdf_abs_path = os.path.join(dummy_prefix, netcdf_file.dest_path)
+        png_abs_path = os.path.join(dummy_prefix, png_file.dest_path)
+        ico_abs_path = os.path.join(dummy_prefix, ico_file.dest_path)
+        unknown_abs_path = os.path.join(dummy_prefix, unknown_file.dest_path)
+
+        s3_storage_broker.s3_client.download_fileobj.assert_any_call(Bucket=dummy_bucket, Key=netcdf_abs_path,
+                                                                     Fileobj=m())
+        s3_storage_broker.s3_client.download_fileobj.assert_any_call(Bucket=dummy_bucket, Key=png_abs_path,
+                                                                     Fileobj=m())
+        s3_storage_broker.s3_client.download_fileobj.assert_any_call(Bucket=dummy_bucket, Key=ico_abs_path,
+                                                                     Fileobj=m())
+        s3_storage_broker.s3_client.download_fileobj.assert_any_call(Bucket=dummy_bucket, Key=unknown_abs_path,
+                                                                     Fileobj=m())
 
     @mock.patch('aodncore.pipeline.storage.boto3')
     def test_upload_file(self, mock_boto3):
