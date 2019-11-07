@@ -10,7 +10,7 @@ addons:
     - libudunits2-dev
 
 install:
-  - pip install -r requirements.txt
+  - pip install -c constraints.txt -r requirements.txt
   - pip install coverage
   - pip install codecov
 
