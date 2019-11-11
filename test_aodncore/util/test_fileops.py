@@ -7,15 +7,11 @@ import zipfile
 from io import open
 from tempfile import mkdtemp, mkstemp
 
-import six
-
 from aodncore.testlib import BaseTestCase, get_nonexistent_path
 from aodncore.util import (extract_gzip, extract_zip, is_gzipfile, is_netcdffile, is_zipfile, list_regular_files,
                            mkdir_p, rm_f, rm_r, rm_rf, safe_copy_file, safe_move_file, get_file_checksum,
                            TemporaryDirectory)
 from aodncore.util.misc import format_exception
-
-StringIO = six.StringIO
 
 TEST_ROOT = os.path.join(os.path.dirname(__file__))
 GOOD_NC = os.path.join(TEST_ROOT, 'good.nc')
@@ -154,12 +150,7 @@ class TestUtilFileOps(BaseTestCase):
         dir_entries = list(list_regular_files(self.temp_dir, recursive=True))
         self.assertListEqual(dir_entries, reference_list)
 
-        try:
-            unicode
-        except NameError:
-            unicode = str
-
-        dir_entries_unicode = list(list_regular_files(unicode(self.temp_dir), recursive=True))
+        dir_entries_unicode = list(list_regular_files(self.temp_dir, recursive=True))
         self.assertListEqual(dir_entries_unicode, reference_list)
 
     def test_mkdir_p(self):
@@ -187,14 +178,14 @@ class TestUtilFileOps(BaseTestCase):
         rm_f(temp_file)
         self.assertFalse(os.path.exists(temp_file))
 
-        with self.assertRaisesRegexp(OSError, '[Errno 21].*'):
+        with self.assertRaisesRegex(OSError, r'\[Errno 21\].*'):
             rm_f(temp_dir)
 
     def test_rm_r(self):
         _, temp_file = mkstemp(suffix='.tmp', prefix=self.__class__.__name__, dir=self.temp_dir)
         temp_dir = mkdtemp(prefix=self.__class__.__name__, dir=self.temp_dir)
 
-        with self.assertRaisesRegexp(OSError, '[Errno 2].*'):
+        with self.assertRaisesRegex(OSError, r'\[Errno 2\].*'):
             rm_r(get_nonexistent_path())
 
         with self.assertNoException():

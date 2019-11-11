@@ -1,9 +1,8 @@
 import os
 import sys
-import unittest
+from unittest.mock import patch
 from functools import partial
 
-import six
 from jsonschema import ValidationError
 
 from aodncore.pipeline import PipelineFile, PipelineFileCheckType, PipelineFilePublishType, HandlerResult
@@ -12,7 +11,7 @@ from aodncore.pipeline.exceptions import (AttributeValidationError, ComplianceCh
                                           InvalidRecipientError, UnmatchedFilesError)
 from aodncore.pipeline.statequery import StateQuery
 from aodncore.pipeline.steps import NotifyList
-from aodncore.testlib import DummyHandler, HandlerTestCase, dest_path_testing, get_nonexistent_path, mock
+from aodncore.testlib import DummyHandler, HandlerTestCase, dest_path_testing, get_nonexistent_path
 from aodncore.util import WriteOnceOrderedDict
 from test_aodncore import TESTDATA_DIR
 
@@ -46,15 +45,15 @@ class TestDummyHandler(HandlerTestCase):
         self.assertIs(handler._dest_path_function_ref, dest_path_testing)
 
     def test_include(self):
-        handler = self.run_handler_with_exception(UnmatchedFilesError, BAD_ZIP, include_regexes=['good\.nc'])
+        handler = self.run_handler_with_exception(UnmatchedFilesError, BAD_ZIP, include_regexes=[r'good\.nc'])
         eligible_filenames = handler.file_collection \
                                     .filter_by_attribute_id_not('publish_type', PipelineFilePublishType.UNSET) \
                                     .get_attribute_list('name')
         self.assertListEqual(['good.nc'], eligible_filenames)
 
     def test_exclude(self):
-        handler = self.run_handler_with_exception(UnmatchedFilesError, BAD_ZIP, include_regexes=['.*\.nc'],
-                                                  exclude_regexes=['bad\.nc'])
+        handler = self.run_handler_with_exception(UnmatchedFilesError, BAD_ZIP, include_regexes=[r'.*\.nc'],
+                                                  exclude_regexes=[r'bad.nc'])
         eligible_filenames = handler.file_collection \
                                     .filter_by_attribute_id_not('publish_type', PipelineFilePublishType.UNSET) \
                                     .get_attribute_list('name')
@@ -94,11 +93,11 @@ class TestDummyHandler(HandlerTestCase):
 
     def test_invalid_include_regex(self):
         with self.assertRaises(ValueError):
-            _ = self.handler_class(GOOD_NC, include_regexes=['['])
+            _ = self.handler_class(GOOD_NC, include_regexes=[r'['])
 
     def test_invalid_exclude_regex(self):
         with self.assertRaises(ValueError):
-            _ = self.handler_class(GOOD_NC, include_regexes=['.*'], exclude_regexes=['['])
+            _ = self.handler_class(GOOD_NC, include_regexes=[r'.*'], exclude_regexes=[r'['])
 
     def test_invalid_check_params(self):
         self.run_handler_with_exception(ValidationError, GOOD_NC, check_params={'invalid_param': 'value'})
@@ -154,25 +153,25 @@ class TestDummyHandler(HandlerTestCase):
     def test_allowed_regexes(self):
         handler = self.run_handler_with_exception(InvalidInputFileError, self.temp_nc_file,
                                                   dest_path_function=dest_path_testing,
-                                                  allowed_regexes=['.*\.zip'])
-        self.assertRegexpMatches(handler._error_details,
-                                 "input file '.*' does not match any patterns in the allowed_regexes list:.*")
+                                                  allowed_regexes=[r'.*\.zip'])
+        self.assertRegex(handler._error_details,
+                         r"input file '.*' does not match any patterns in the allowed_regexes list:.*")
 
-        self.run_handler(self.temp_nc_file, dest_path_function=dest_path_testing, allowed_regexes=['.*\.nc'])
+        self.run_handler(self.temp_nc_file, dest_path_function=dest_path_testing, allowed_regexes=[r'.*.nc'])
 
     def test_allowed_dest_path_regexes(self):
         self.run_handler_with_exception(AttributeValidationError, self.temp_nc_file,
                                         dest_path_function=dest_path_testing,
-                                        allowed_dest_path_regexes=['DEFINITELY/NOT/A/MATCH'])
+                                        allowed_dest_path_regexes=[r'DEFINITELY/NOT/A/MATCH'])
 
-        self.run_handler(self.temp_nc_file, dest_path_function=dest_path_testing, allowed_dest_path_regexes=['DUMMY.*'])
+        self.run_handler(self.temp_nc_file, dest_path_function=dest_path_testing, allowed_dest_path_regexes=[r'DUMMY.*'])
 
     def test_allowed_extensions_and_allowed_regexes(self):
         self.run_handler_with_exception(InvalidInputFileError, GOOD_NC, dest_path_function=dest_path_testing,
-                                        allowed_extensions=['.nc'], allowed_regexes=['bad\.nc'])
+                                        allowed_extensions=[r'.nc'], allowed_regexes=[r'bad.nc'])
 
         self.run_handler(GOOD_NC, dest_path_function=dest_path_testing, allowed_extensions=['.nc'],
-                         allowed_regexes=['good\.nc'])
+                         allowed_regexes=[r'good\.nc'])
 
     def test_archive_collection(self):
         handler = self.run_handler(self.temp_nc_file, archive_path_function=dest_path_testing, archive_input_file=True)
@@ -235,7 +234,7 @@ class TestDummyHandler(HandlerTestCase):
         self.assertFalse(deletion.is_checked)
         self.assertIs(deletion.check_type, PipelineFileCheckType.UNSET)
 
-    @mock.patch('aodncore.pipeline.steps.notify.smtplib.SMTP')
+    @patch('aodncore.pipeline.steps.notify.smtplib.SMTP')
     def test_notify_error(self, mock_smtp):
         mock_smtp.return_value.sendmail.return_value = {}
 
@@ -251,11 +250,11 @@ class TestDummyHandler(HandlerTestCase):
         expected_recipients = ['email:nobody3@example.com', 'email:nobody4@example.com']
 
         self.assertIsInstance(handler.notification_results, NotifyList)
-        six.assertCountEqual(self, expected_recipients, [n.raw_string for n in handler.notification_results])
+        self.assertCountEqual(expected_recipients, [n.raw_string for n in handler.notification_results])
         self.assertTrue(all(r.notification_succeeded for r in handler.notification_results))
         self.assertTrue(all(r.error is None for r in handler.notification_results))
 
-    @mock.patch('aodncore.pipeline.steps.notify.smtplib.SMTP')
+    @patch('aodncore.pipeline.steps.notify.smtplib.SMTP')
     def test_notify_error_unicode(self, mock_smtp):
         mock_smtp.return_value.sendmail.return_value = {}
 
@@ -272,11 +271,11 @@ class TestDummyHandler(HandlerTestCase):
         expected_recipients = ['email:nobody3@example.com', 'email:nobody4@example.com']
 
         self.assertIsInstance(handler.notification_results, NotifyList)
-        six.assertCountEqual(self, expected_recipients, [n.raw_string for n in handler.notification_results])
+        self.assertCountEqual(expected_recipients, [n.raw_string for n in handler.notification_results])
         self.assertTrue(all(r.notification_succeeded for r in handler.notification_results))
         self.assertTrue(all(r.error is None for r in handler.notification_results))
 
-    @mock.patch('aodncore.pipeline.steps.notify.smtplib.SMTP')
+    @patch('aodncore.pipeline.steps.notify.smtplib.SMTP')
     def test_notify_owner_error(self, mock_smtp):
         mock_smtp.return_value.sendmail.return_value = {}
 
@@ -292,11 +291,11 @@ class TestDummyHandler(HandlerTestCase):
         expected_recipients = ['email:owner1@example.com', 'email:nobody3@example.com', 'email:nobody4@example.com']
 
         self.assertIsInstance(handler.notification_results, NotifyList)
-        six.assertCountEqual(self, expected_recipients, [n.raw_string for n in handler.notification_results])
+        self.assertCountEqual(expected_recipients, [n.raw_string for n in handler.notification_results])
         self.assertTrue(all(r.notification_succeeded for r in handler.notification_results))
         self.assertTrue(all(r.error is None for r in handler.notification_results))
 
-    @mock.patch('aodncore.pipeline.steps.notify.smtplib.SMTP')
+    @patch('aodncore.pipeline.steps.notify.smtplib.SMTP')
     def test_notify_system_error(self, mock_smtp):
         mock_smtp.return_value.sendmail.return_value = {}
 
@@ -314,11 +313,11 @@ class TestDummyHandler(HandlerTestCase):
         expected_recipients = ['email:owner1@example.com']
 
         self.assertIsInstance(handler.notification_results, NotifyList)
-        six.assertCountEqual(self, expected_recipients, [n.raw_string for n in handler.notification_results])
+        self.assertCountEqual(expected_recipients, [n.raw_string for n in handler.notification_results])
         self.assertTrue(all(r.notification_succeeded for r in handler.notification_results))
         self.assertTrue(all(r.error is None for r in handler.notification_results))
 
-    @mock.patch('aodncore.pipeline.steps.notify.smtplib.SMTP')
+    @patch('aodncore.pipeline.steps.notify.smtplib.SMTP')
     def test_notify_fail(self, mock_smtp):
         mock_smtp.return_value.sendmail.return_value = {}
 
@@ -335,13 +334,13 @@ class TestDummyHandler(HandlerTestCase):
         expected_recipients = ['email:nobody1@example.com', 'INVALID:nobody2@example.com']
 
         self.assertIsInstance(handler.notification_results, NotifyList)
-        six.assertCountEqual(self, expected_recipients, [n.raw_string for n in handler.notification_results])
+        self.assertCountEqual(expected_recipients, [n.raw_string for n in handler.notification_results])
         self.assertTrue(handler.notification_results[0].notification_succeeded)
         self.assertFalse(handler.notification_results[1].notification_succeeded)
         self.assertIsNone(handler.notification_results[0].error)
         self.assertIsInstance(handler.notification_results[1].error, InvalidRecipientError)
 
-    @mock.patch('aodncore.pipeline.steps.notify.smtplib.SMTP')
+    @patch('aodncore.pipeline.steps.notify.smtplib.SMTP')
     def test_notify_success(self, mock_smtp):
         mock_smtp.return_value.sendmail.return_value = {}
 
@@ -356,11 +355,11 @@ class TestDummyHandler(HandlerTestCase):
         expected_recipients = ['email:nobody1@example.com', 'email:nobody2@example.com']
 
         self.assertIsInstance(handler.notification_results, NotifyList)
-        six.assertCountEqual(self, expected_recipients, [n.raw_string for n in handler.notification_results])
+        self.assertCountEqual(expected_recipients, [n.raw_string for n in handler.notification_results])
         self.assertTrue(all(r.notification_succeeded for r in handler.notification_results))
         self.assertTrue(all(r.error is None for r in handler.notification_results))
 
-    @mock.patch('aodncore.pipeline.steps.notify.smtplib.SMTP')
+    @patch('aodncore.pipeline.steps.notify.smtplib.SMTP')
     def test_notify_owner_success(self, mock_smtp):
         mock_smtp.return_value.sendmail.return_value = {}
 
@@ -377,7 +376,7 @@ class TestDummyHandler(HandlerTestCase):
         expected_recipients = ['email:owner1@example.com', 'email:nobody1@example.com', 'email:nobody2@example.com']
 
         self.assertIsInstance(handler.notification_results, NotifyList)
-        six.assertCountEqual(self, expected_recipients, [n.raw_string for n in handler.notification_results])
+        self.assertCountEqual(expected_recipients, [n.raw_string for n in handler.notification_results])
         self.assertTrue(all(r.notification_succeeded for r in handler.notification_results))
         self.assertTrue(all(r.error is None for r in handler.notification_results))
 
@@ -410,7 +409,3 @@ class TestDummyHandler(HandlerTestCase):
         handler = self.handler_class(self.temp_nc_file)
         self.assertIsInstance(handler.platform_vocab_helper.platform_type_uris_by_category(), dict)
         self.assertEqual(handler.platform_vocab_helper.platform_altlabels_per_preflabel('Vessel')['9VUU'], 'Anro Asia')
-
-
-if __name__ == '__main__':
-    unittest.main()

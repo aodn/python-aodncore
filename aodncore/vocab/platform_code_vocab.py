@@ -15,9 +15,8 @@ author : Besnard, Laurent
 """
 
 import warnings
+from urllib.request import urlopen
 import xml.etree.ElementTree as ET
-
-from six.moves.urllib.request import urlopen
 
 DEFAULT_PLATFORM_CAT_VOCAB_URL = 'http://content.aodn.org.au/Vocabularies/platform-category/aodn_aodn-platform-category-vocabulary.rdf'
 DEFAULT_PLATFORM_VOCAB_URL = 'http://content.aodn.org.au/Vocabularies/platform/aodn_aodn-platform-vocabulary.rdf'

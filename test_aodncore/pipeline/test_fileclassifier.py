@@ -2,7 +2,6 @@
 """Unit tests for FileClassifier classes"""
 
 import os
-import unittest
 
 from datetime import datetime
 from tempfile import mkstemp
@@ -69,7 +68,3 @@ class TestFileClassifier(BaseTestCase):
     def test_make_path(self):
         path = FileClassifier._make_path(['dir1', u'dir2', u'dir3'])
         self.assertTrue(isinstance(path, str))
-
-
-if __name__ == '__main__':
-    unittest.main()

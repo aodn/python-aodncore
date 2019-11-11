@@ -2,8 +2,6 @@ import os
 import sys
 import uuid
 
-import six
-
 from aodncore.common import SystemCommandFailedError
 from aodncore.testlib import BaseTestCase
 from aodncore.util import SystemProcess
@@ -48,24 +46,24 @@ class TestUtilProcess(BaseTestCase):
         self.assertEqual(envvalue, process.stdout_text.decode('utf-8').rstrip())
 
     def test_empty_command(self):
-        with six.assertRaisesRegex(self, SystemCommandFailedError,
+        with self.assertRaisesRegex(SystemCommandFailedError,
                                    'command parameter must be a list if not a bash shell command'):
             _ = SystemProcess(())
 
     def test_empty_shell_command(self):
-        with six.assertRaisesRegex(self, SystemCommandFailedError,
+        with self.assertRaisesRegex(SystemCommandFailedError,
                                    'command param must not be empty if bash shell command'):
             _ = SystemProcess('', shell=True)
 
     def test_empty_non_string_shell_command(self):
-        with six.assertRaisesRegex(self, SystemCommandFailedError,
+        with self.assertRaisesRegex(SystemCommandFailedError,
                                    'command param must be a string if bash shell command'):
             _ = SystemProcess((), shell=True)
 
     def test_nonexistent_command(self):
         command = [os.path.join('/nonexistent/path/with/a/{uuid}/in/the/middle'.format(uuid=uuid.uuid4()))]
         process = SystemProcess(command)
-        with six.assertRaisesRegex(self, SystemCommandFailedError, ".*\[Errno 2\] No such file or directory"):
+        with self.assertRaisesRegex(SystemCommandFailedError, ".*\[Errno 2\] No such file or directory"):
             process.execute()
 
     def test_execute_failure(self):
@@ -76,5 +74,5 @@ class TestUtilProcess(BaseTestCase):
     def test_execute_multiple(self):
         process = SystemProcess([TRUE_CMD])
         process.execute()
-        with six.assertRaisesRegex(self, SystemCommandFailedError, '.*command has already been executed'):
+        with self.assertRaisesRegex(SystemCommandFailedError, '.*command has already been executed'):
             process.execute()

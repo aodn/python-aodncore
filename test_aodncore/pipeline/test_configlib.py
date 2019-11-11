@@ -2,7 +2,6 @@ import inspect
 import os
 from collections import OrderedDict
 
-import six
 from celery import Celery
 
 from aodncore.pipeline.configlib import load_pipeline_config, load_trigger_config, load_watch_config
@@ -165,7 +164,7 @@ class TestLazyConfigManager(BaseTestCase):
     def test_get_worker_logging_config(self):
         worker_logging_config = self.config.get_worker_logging_config('tasks.ANMN_QLD_XXXX')
         expected_logging_handlers = ['tasks.ANMN_QLD_XXXX_handler']
-        six.assertCountEqual(self, expected_logging_handlers, worker_logging_config['handlers'].keys())
+        self.assertCountEqual(expected_logging_handlers, worker_logging_config['handlers'].keys())
 
     def test_watch_directory_map(self):
         expected_map = {

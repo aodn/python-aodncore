@@ -1,9 +1,7 @@
 import os
 import uuid
 from collections import MutableSet, OrderedDict
-
-import six
-from six.moves import range
+from unittest.mock import patch
 
 from aodncore.pipeline.common import (CheckResult, PipelineFileCheckType, PipelineFilePublishType)
 from aodncore.pipeline.exceptions import AttributeValidationError, DuplicatePipelineFileError, MissingFileError
@@ -11,7 +9,7 @@ from aodncore.pipeline.files import (PipelineFileCollection, PipelineFile, Remot
                                      RemotePipelineFileCollection, ensure_pipelinefilecollection,
                                      ensure_remotepipelinefilecollection)
 from aodncore.pipeline.steps import get_child_check_runner
-from aodncore.testlib import BaseTestCase, NullStorageBroker, get_nonexistent_path, mock
+from aodncore.testlib import BaseTestCase, NullStorageBroker, get_nonexistent_path
 from test_aodncore import TESTDATA_DIR
 
 BAD_NC = os.path.join(TESTDATA_DIR, 'bad.nc')
@@ -59,7 +57,7 @@ class TestPipelineFile(BaseTestCase):
         check_runner = get_child_check_runner(PipelineFileCheckType.NC_COMPLIANCE_CHECK, None, self.test_logger,
                                               {'checks': ['cf']})
         check_runner.run(PipelineFileCollection(self.pipelinefile))
-        six.assertCountEqual(self, dict(self.pipelinefile.check_result).keys(), ['compliant', 'errors', 'log'])
+        self.assertCountEqual(dict(self.pipelinefile.check_result).keys(), ['compliant', 'errors', 'log'])
 
     def test_equal_files(self):
         duplicate_file = PipelineFile(GOOD_NC, name='pipelinefile')
@@ -75,7 +73,7 @@ class TestPipelineFile(BaseTestCase):
         # Test file format checking
         check_runner = get_child_check_runner(PipelineFileCheckType.FORMAT_CHECK, None, self.test_logger)
         check_runner.run(PipelineFileCollection(self.pipelinefile))
-        six.assertCountEqual(self, dict(self.pipelinefile.check_result).keys(), ['compliant', 'errors', 'log'])
+        self.assertCountEqual(dict(self.pipelinefile.check_result).keys(), ['compliant', 'errors', 'log'])
 
     def test_nonexistent_attribute(self):
         nonexistent_attribute = str(uuid.uuid4())
@@ -374,7 +372,7 @@ class TestPipelineFileCollection(BaseTestCase):
             self.collection.set_archive_paths(archive_path_static)
 
     def test_validate_attribute_value_matches_regexes(self):
-        allowed_regexes = ['^VALID/PREFIX.*$']
+        allowed_regexes = [r'^VALID/PREFIX.*$']
         p1 = PipelineFile(GOOD_NC)
         p1.dest_path = 'VALID/PREFIX/TO/TEST'
         self.collection.add(p1)
@@ -383,7 +381,7 @@ class TestPipelineFileCollection(BaseTestCase):
             self.collection.validate_attribute_value_matches_regexes('dest_path', allowed_regexes)
 
     def test_validate_attribute_value_matches_regexes_failure(self):
-        allowed_regexes = ['^VALID/PREFIX.*$']
+        allowed_regexes = [r'^VALID/PREFIX.*$']
         p1 = PipelineFile(GOOD_NC)
         p1.dest_path = 'INVALID/PREFIX/TO/TEST'
         self.collection.add(p1)
@@ -489,8 +487,8 @@ class TestPipelineFileCollection(BaseTestCase):
         with self.assertRaises(MissingFileError):
             self.collection.add(os.path.join('/nonexistent/path/with/a/{uuid}/in/the/middle'.format(uuid=uuid.uuid4())))
 
-    @mock.patch("aodncore.pipeline.files.get_file_checksum")
-    @mock.patch("os.path.isfile")
+    @patch("aodncore.pipeline.files.get_file_checksum")
+    @patch("os.path.isfile")
     def test_file_paths(self, mock_isfile, mock_get_file_checksum):
         mock_isfile.return_value = True
         mock_get_file_checksum.return_value = ''
@@ -513,7 +511,7 @@ class TestPipelineFileCollection(BaseTestCase):
         self.assertIn(f2, self.collection)
 
         self.collection.clear()
-        six.assertCountEqual(self, self.collection, set())
+        self.assertCountEqual(self.collection, set())
 
     def test_pipelinefile_objects(self):
         # Test add/discard/remove methods for PipelineFile instances
@@ -537,7 +535,7 @@ class TestPipelineFileCollection(BaseTestCase):
         self.assertIn(fileobj2, self.collection)
 
         self.collection.clear()
-        six.assertCountEqual(self, self.collection, set())
+        self.assertCountEqual(self.collection, set())
 
     def test_ordering(self):
         # Test that the order of elements is maintained and slicing returns expected results
@@ -601,7 +599,7 @@ class TestPipelineFileCollection(BaseTestCase):
 
         filtered_collection = self.collection.filter_by_attribute_id('publish_type',
                                                                      PipelineFilePublishType.DELETE_UNHARVEST)
-        six.assertCountEqual(self, self.collection, filtered_collection)
+        self.assertCountEqual(self.collection, filtered_collection)
 
     def test_filter_by_attribute_id_not(self):
         f1 = get_nonexistent_path()
@@ -617,7 +615,7 @@ class TestPipelineFileCollection(BaseTestCase):
 
         filtered_collection = self.collection.filter_by_attribute_id_not('publish_type',
                                                                          PipelineFilePublishType.NO_ACTION)
-        six.assertCountEqual(self, filtered_collection, PipelineFileCollection((fileobj1, fileobj2)))
+        self.assertCountEqual(filtered_collection, PipelineFileCollection((fileobj1, fileobj2)))
 
     def test_filter_by_attribute_value(self):
         f1 = get_nonexistent_path()
@@ -625,7 +623,7 @@ class TestPipelineFileCollection(BaseTestCase):
         self.collection.add(fileobj1)
 
         filtered_collection = self.collection.filter_by_attribute_value('src_path', f1)
-        six.assertCountEqual(self, self.collection, filtered_collection)
+        self.assertCountEqual(self.collection, filtered_collection)
 
     def test_filter_by_attribute_regexes(self):
         f1 = get_nonexistent_path()
@@ -641,8 +639,8 @@ class TestPipelineFileCollection(BaseTestCase):
         filtered_collection = self.collection.filter_by_attribute_regexes('dest_path', '^FOO/[1-3]$')
         self.assertSetEqual(filtered_collection, {fileobj1, fileobj2})
 
-    @mock.patch("aodncore.pipeline.files.get_file_checksum")
-    @mock.patch("os.path.isfile")
+    @patch("aodncore.pipeline.files.get_file_checksum")
+    @patch("os.path.isfile")
     def test_filter_by_bool_attribute(self, mock_isfile, mock_get_file_checksum):
         mock_isfile.return_value = True
         mock_get_file_checksum.return_value = ''
@@ -653,13 +651,13 @@ class TestPipelineFileCollection(BaseTestCase):
         self.collection.add(fileobj1)
 
         filtered_collection = self.collection.filter_by_bool_attribute('should_store')
-        six.assertCountEqual(self, self.collection, filtered_collection)
+        self.assertCountEqual(self.collection, filtered_collection)
 
         filtered_collection = self.collection.filter_by_bool_attribute('is_stored')
         self.assertSetEqual(filtered_collection, PipelineFileCollection())
 
-    @mock.patch("aodncore.pipeline.files.get_file_checksum")
-    @mock.patch("os.path.isfile")
+    @patch("aodncore.pipeline.files.get_file_checksum")
+    @patch("os.path.isfile")
     def test_filter_by_bool_attribute_not(self, mock_isfile, mock_get_file_checksum):
         mock_isfile.return_value = True
         mock_get_file_checksum.return_value = ''
@@ -675,8 +673,8 @@ class TestPipelineFileCollection(BaseTestCase):
         filtered_collection = self.collection.filter_by_bool_attribute_not('is_deletion')
         self.assertSetEqual(filtered_collection, PipelineFileCollection((fileobj1, fileobj3)))
 
-    @mock.patch("aodncore.pipeline.files.get_file_checksum")
-    @mock.patch("os.path.isfile")
+    @patch("aodncore.pipeline.files.get_file_checksum")
+    @patch("os.path.isfile")
     def test_filter_by_bool_attributes_and(self, mock_isfile, mock_get_file_checksum):
         mock_isfile.return_value = True
         mock_get_file_checksum.return_value = ''
@@ -699,8 +697,8 @@ class TestPipelineFileCollection(BaseTestCase):
         filtered_collection2 = self.collection.filter_by_bool_attributes_and('is_deletion', 'should_store')
         self.assertSetEqual(filtered_collection2, PipelineFileCollection((fileobj2,)))
 
-    @mock.patch("aodncore.pipeline.files.get_file_checksum")
-    @mock.patch("os.path.isfile")
+    @patch("aodncore.pipeline.files.get_file_checksum")
+    @patch("os.path.isfile")
     def test_filter_by_bool_attributes_and_not(self, mock_isfile, mock_get_file_checksum):
         mock_isfile.return_value = True
         mock_get_file_checksum.return_value = ''
@@ -723,8 +721,8 @@ class TestPipelineFileCollection(BaseTestCase):
         filtered_collection2 = self.collection.filter_by_bool_attributes_and_not(('is_deletion',), ('should_harvest',))
         self.assertSetEqual(filtered_collection2, PipelineFileCollection((fileobj2,)))
 
-    @mock.patch("aodncore.pipeline.files.get_file_checksum")
-    @mock.patch("os.path.isfile")
+    @patch("aodncore.pipeline.files.get_file_checksum")
+    @patch("os.path.isfile")
     def test_filter_by_bool_attributes_not(self, mock_isfile, mock_get_file_checksum):
         mock_isfile.return_value = True
         mock_get_file_checksum.return_value = ''
@@ -745,8 +743,8 @@ class TestPipelineFileCollection(BaseTestCase):
 
         self.assertSetEqual(filtered_collection, PipelineFileCollection((fileobj3,)))
 
-    @mock.patch("aodncore.pipeline.files.get_file_checksum")
-    @mock.patch("os.path.isfile")
+    @patch("aodncore.pipeline.files.get_file_checksum")
+    @patch("os.path.isfile")
     def test_filter_by_bool_attributes_or(self, mock_isfile, mock_get_file_checksum):
         mock_isfile.return_value = True
         mock_get_file_checksum.return_value = ''
@@ -819,8 +817,8 @@ class TestPipelineFileCollection(BaseTestCase):
         self.assertListEqual([], table_headers)
         self.assertListEqual([], table_data)
 
-    @mock.patch("aodncore.pipeline.files.get_file_checksum")
-    @mock.patch("os.path.isfile")
+    @patch("aodncore.pipeline.files.get_file_checksum")
+    @patch("os.path.isfile")
     def test_set_bool_attribute(self, mock_isfile, mock_get_file_checksum):
         mock_isfile.return_value = True
         mock_get_file_checksum.return_value = ''
@@ -843,8 +841,8 @@ class TestPipelineFileCollection(BaseTestCase):
         with self.assertNoException():
             self.collection.set_bool_attribute('is_harvested', True)
 
-    @mock.patch("aodncore.pipeline.files.get_file_checksum")
-    @mock.patch("os.path.isfile")
+    @patch("aodncore.pipeline.files.get_file_checksum")
+    @patch("os.path.isfile")
     def test_set_check_types(self, mock_isfile, mock_get_file_checksum):
         f1 = get_nonexistent_path()
         f2 = get_nonexistent_path()
@@ -859,8 +857,8 @@ class TestPipelineFileCollection(BaseTestCase):
         with self.assertRaises(ValueError):
             self.collection.set_check_types('invalid_type')
 
-    @mock.patch("aodncore.pipeline.files.get_file_checksum")
-    @mock.patch("os.path.isfile")
+    @patch("aodncore.pipeline.files.get_file_checksum")
+    @patch("os.path.isfile")
     def test_set_default_check_types(self, mock_isfile, mock_get_file_checksum):
         f1 = get_nonexistent_path()
         f2 = get_nonexistent_path()
@@ -889,8 +887,8 @@ class TestPipelineFileCollection(BaseTestCase):
         with self.assertRaises(ValueError):
             self.collection.set_publish_types('invalid_type')
 
-    @mock.patch("aodncore.pipeline.files.get_file_checksum")
-    @mock.patch("os.path.isfile")
+    @patch("aodncore.pipeline.files.get_file_checksum")
+    @patch("os.path.isfile")
     def test_set_string_attribute(self, mock_isfile, mock_get_file_checksum):
         mock_isfile.return_value = True
         mock_get_file_checksum.return_value = ''
@@ -943,7 +941,7 @@ class TestRemotePipelineFileCollection(BaseTestCase):
         expected = [os.path.join(local_path, rf.dest_path) for rf in self.remote_collection]
 
         broker.assert_download_call_count(1)
-        six.assertCountEqual(self, local_paths, expected)
+        self.assertCountEqual(local_paths, expected)
 
     def test_file_objects(self):
         f1 = RemotePipelineFile('dest/path/1.nc', name='1.nc')
@@ -962,16 +960,16 @@ class TestRemotePipelineFileCollection(BaseTestCase):
         self.assertIn(f2, self.remote_collection)
 
         self.remote_collection.clear()
-        six.assertCountEqual(self, self.remote_collection, set())
+        self.assertCountEqual(self.remote_collection, set())
 
     def test_file_paths(self):
-        self.assertIn('dest/path/1.nc',self.remote_collection)
+        self.assertIn('dest/path/1.nc', self.remote_collection)
         self.assertNotIn('dest/path/3.nc', self.remote_collection)
 
     def test_keys(self):
         actual = self.remote_collection.keys()
         expected = ['dest/path/1.nc', 'dest/path/2.nc']
-        six.assertCountEqual(self, actual, expected)
+        self.assertCountEqual(actual, expected)
 
 
 # noinspection PyAttributeOutsideInit

@@ -19,7 +19,6 @@ from ..exceptions import InvalidHarvesterError, UnmappedFilesError
 from ..files import PipelineFileCollection, validate_pipelinefilecollection
 from ...util import (LoggingContext, SystemProcess, TemporaryDirectory, merge_dicts, mkdir_p, validate_string,
                      validate_type)
-import six
 
 __all__ = [
     'create_input_file_list',
@@ -184,7 +183,7 @@ def validate_harvester_mapping(pipeline_files, harvester_map):
             "no matching harvester(s) found for: {unmapped_files}".format(unmapped_files=unmapped_files))
 
 
-class BaseHarvesterRunner(six.with_metaclass(abc.ABCMeta, BaseStepRunner)):
+class BaseHarvesterRunner(BaseStepRunner, metaclass=abc.ABCMeta):
     """Base class for HarvesterRunner classes
     """
 

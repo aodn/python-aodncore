@@ -18,7 +18,6 @@ from ..common import CheckResult, PipelineFileCheckType, validate_checktype
 from ..exceptions import ComplianceCheckFailedError, InvalidCheckSuiteError, InvalidCheckTypeError
 from ..files import PipelineFileCollection
 from ...util import format_exception, is_netcdffile, is_nonemptyfile, CaptureStdIO
-import six
 
 __all__ = [
     'get_check_runner',
@@ -55,7 +54,7 @@ def get_child_check_runner(check_type, config, logger, check_params=None):
         raise InvalidCheckTypeError("invalid check type '{check_type}'".format(check_type=check_type))
 
 
-class BaseCheckRunner(six.with_metaclass(abc.ABCMeta, BaseStepRunner)):
+class BaseCheckRunner(BaseStepRunner, metaclass=abc.ABCMeta):
     """A CheckRunner is responsible for performing checks on a given collection of files.
     
     The 'run' method is supplied with a PipelineFileCollection object and performs arbitrary checks against the files, 

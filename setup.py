@@ -1,5 +1,4 @@
 from setuptools import setup, find_packages
-from io import open
 
 ENTRY_POINTS = {
     'pipeline.module_versions': [
@@ -15,7 +14,6 @@ INSTALL_REQUIRES = [
     'jsonschema==2.6.0',
     'OWSLib==0.16.0',
     'paramiko==2.4.2',
-    'six==1.10.0',
     'tabulate==0.8.2',
     'transitions==0.5.3',
     'vine<=1.3.0'  # version 5 has dropped Python 2 support
@@ -27,10 +25,7 @@ TESTS_REQUIRE = [
 
 EXTRAS_REQUIRE = {
     'testing': TESTS_REQUIRE,
-    ':platform_system == "Linux"': ['pyinotify == 0.9.6'],
-    ':python_version < "3.3"': ['mock == 2.0.0'],
-    ':python_version < "3.4"': ['enum34==1.1.6'],
-    ':python_version < "3.5"': ['scandir == 1.6'],
+    ':platform_system == "Linux"': ['pyinotify == 0.9.6']
 }
 
 PACKAGE_DATA = {
@@ -60,9 +55,21 @@ setup(
     author_email='developers@emii.org.au',
     description='AODN pipeline library',
     zip_safe=False,
+    python_requires='>=3.5',
     install_requires=INSTALL_REQUIRES,
     extras_require=EXTRAS_REQUIRE,
     tests_require=TESTS_REQUIRE,
     test_suite='test_aodncore',
-    entry_points=ENTRY_POINTS
+    entry_points=ENTRY_POINTS,
+    classifiers=[
+        'Development Status :: 5 - Production/Stable',
+        'Intended Audience :: Developers',
+        'Natural Language :: English',
+        'License :: OSI Approved :: GNU General Public License v3 (GPLv3)',
+        'Programming Language :: Python',
+        'Programming Language :: Python :: 3',
+        'Programming Language :: Python :: 3.5',
+        'Programming Language :: Python :: 3.6',
+        'Programming Language :: Python :: Implementation :: CPython',
+    ],
 )

@@ -4,20 +4,15 @@ import tempfile
 import uuid
 import zipfile
 from collections import OrderedDict
+from urllib.parse import urlunsplit
 
 from netCDF4 import Dataset
-from six import iteritems
-from six.moves.urllib.parse import urlunsplit
 
 from ..pipeline.configlib import LazyConfigManager, load_json_file
 from ..pipeline.storage import BaseStorageBroker
 from ..testlib.dummyhandler import DummyHandler
 from ..util import WriteOnceOrderedDict
 
-try:
-    from unittest import mock
-except ImportError:
-    import mock
 
 __all__ = [
     'NullStorageBroker',
@@ -25,7 +20,6 @@ __all__ = [
     'get_nonexistent_path',
     'make_test_file',
     'make_zip',
-    'mock',
     'get_test_config',
     'load_runtime_patched_pipeline_config_file'
 ]
@@ -184,7 +178,7 @@ def make_test_file(filename, attributes=None, **variables):
 
     with Dataset(filename, 'w') as ds:
         ds.setncatts(attributes)
-        for name, adict in iteritems(variables):
+        for name, adict in variables.items():
             var = ds.createVariable(name, float)
             var.setncatts(adict)
 

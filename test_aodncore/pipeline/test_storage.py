@@ -3,13 +3,13 @@ import errno
 import os
 import re
 import tempfile
+from unittest.mock import MagicMock, mock_open, patch
+from http.client import IncompleteRead
 from ssl import SSLError
 from uuid import uuid4
 
-import six
 from botocore.exceptions import ClientError
 from dateutil.tz import tzutc
-from six.moves.http_client import IncompleteRead
 
 from aodncore.pipeline.common import PipelineFilePublishType
 from aodncore.pipeline.exceptions import InvalidStoreUrlError, StorageBrokerError
@@ -18,7 +18,7 @@ from aodncore.pipeline.files import (PipelineFile, PipelineFileCollection, Remot
 from aodncore.pipeline.storage import (get_storage_broker, sftp_path_exists, sftp_makedirs, sftp_mkdir_p,
                                        validate_storage_broker, LocalFileStorageBroker, S3StorageBroker,
                                        SftpStorageBroker)
-from aodncore.testlib import BaseTestCase, NullStorageBroker, get_nonexistent_path, mock
+from aodncore.testlib import BaseTestCase, NullStorageBroker, get_nonexistent_path
 from aodncore.util import TemporaryDirectory, list_regular_files
 from test_aodncore import TESTDATA_DIR
 
@@ -89,7 +89,7 @@ class TestPipelineStorage(BaseTestCase):
             _ = get_storage_broker('invalid_url')
 
     def test_sftp_path_exists_error(self):
-        sftpclient = mock.MagicMock()
+        sftpclient = MagicMock()
         path = get_nonexistent_path()
 
         sftpclient.stat.side_effect = IOError()
@@ -98,7 +98,7 @@ class TestPipelineStorage(BaseTestCase):
             _ = sftp_path_exists(sftpclient, path)
 
     def test_sftp_path_exists_false(self):
-        sftpclient = mock.MagicMock()
+        sftpclient = MagicMock()
         path = get_nonexistent_path()
 
         sftpclient.stat.side_effect = IOError(errno.ENOENT, "No such file or directory")
@@ -107,7 +107,7 @@ class TestPipelineStorage(BaseTestCase):
         self.assertFalse(result)
 
     def test_sftp_path_exists_true(self):
-        sftpclient = mock.MagicMock()
+        sftpclient = MagicMock()
         path = get_nonexistent_path()
 
         sftpclient.stat.return_value = True
@@ -115,9 +115,9 @@ class TestPipelineStorage(BaseTestCase):
         result = sftp_path_exists(sftpclient, path)
         self.assertTrue(result)
 
-    @mock.patch('aodncore.pipeline.storage.sftp_path_exists')
+    @patch('aodncore.pipeline.storage.sftp_path_exists')
     def test_sftp_makedirs_parent_dotsegment(self, mock_sftp_path_exists):
-        sftpclient = mock.MagicMock()
+        sftpclient = MagicMock()
         path = get_nonexistent_path()
         path_with_dot = os.path.join(path, '.')
         mode = 0o755
@@ -129,9 +129,9 @@ class TestPipelineStorage(BaseTestCase):
         sftpclient.mkdir.assert_called_with(path, mode)
         self.assertEqual(sftpclient.mkdir.call_count, 9)
 
-    @mock.patch('aodncore.pipeline.storage.sftp_path_exists')
+    @patch('aodncore.pipeline.storage.sftp_path_exists')
     def test_sftp_makedirs_parent_exists(self, mock_sftp_path_exists):
-        sftpclient = mock.MagicMock()
+        sftpclient = MagicMock()
         path = get_nonexistent_path()
         mode = 0o755
 
@@ -141,9 +141,9 @@ class TestPipelineStorage(BaseTestCase):
 
         sftpclient.mkdir.assert_called_once_with(path, mode)
 
-    @mock.patch('aodncore.pipeline.storage.sftp_path_exists')
+    @patch('aodncore.pipeline.storage.sftp_path_exists')
     def test_sftp_makedirs_parent_notexists(self, mock_sftp_path_exists):
-        sftpclient = mock.MagicMock()
+        sftpclient = MagicMock()
         path = get_nonexistent_path()
         mode = 0o755
 
@@ -154,10 +154,10 @@ class TestPipelineStorage(BaseTestCase):
         sftpclient.mkdir.assert_called_with(path, mode)
         self.assertEqual(sftpclient.mkdir.call_count, 9)
 
-    @mock.patch('aodncore.pipeline.storage.sftp_path_exists')
-    @mock.patch('aodncore.pipeline.storage.sftp_makedirs')
+    @patch('aodncore.pipeline.storage.sftp_path_exists')
+    @patch('aodncore.pipeline.storage.sftp_makedirs')
     def test_sftp_mkdir_p_newdir(self, mock_sftp_makedirs, mock_sftp_path_exists):
-        sftpclient = mock.MagicMock()
+        sftpclient = MagicMock()
         path = get_nonexistent_path()
         mode = 0o755
 
@@ -165,10 +165,10 @@ class TestPipelineStorage(BaseTestCase):
 
         mock_sftp_makedirs.assert_called_once_with(sftpclient, path, mode)
 
-    @mock.patch('aodncore.pipeline.storage.sftp_path_exists')
-    @mock.patch('aodncore.pipeline.storage.sftp_makedirs')
+    @patch('aodncore.pipeline.storage.sftp_path_exists')
+    @patch('aodncore.pipeline.storage.sftp_makedirs')
     def test_sftp_mkdir_p_ioerror_existingdir(self, mock_sftp_makedirs, mock_sftp_path_exists):
-        sftpclient = mock.MagicMock()
+        sftpclient = MagicMock()
         path = get_nonexistent_path()
         mode = 0o755
 
@@ -179,10 +179,10 @@ class TestPipelineStorage(BaseTestCase):
         mock_sftp_makedirs.assert_called_once_with(sftpclient, path, mode)
         mock_sftp_path_exists.assert_called_once_with(sftpclient, path)
 
-    @mock.patch('aodncore.pipeline.storage.sftp_path_exists')
-    @mock.patch('aodncore.pipeline.storage.sftp_makedirs')
+    @patch('aodncore.pipeline.storage.sftp_path_exists')
+    @patch('aodncore.pipeline.storage.sftp_makedirs')
     def test_sftp_mkdir_p_error_ioerror_nonexistingdir(self, mock_sftp_makedirs, mock_sftp_path_exists):
-        sftpclient = mock.MagicMock()
+        sftpclient = MagicMock()
         path = get_nonexistent_path()
 
         mock_sftp_path_exists.return_value = False
@@ -190,9 +190,9 @@ class TestPipelineStorage(BaseTestCase):
         with self.assertRaises(IOError):
             sftp_mkdir_p(sftpclient, path)
 
-    @mock.patch('aodncore.pipeline.storage.sftp_makedirs')
+    @patch('aodncore.pipeline.storage.sftp_makedirs')
     def test_sftp_mkdir_p_error_unknownerror(self, mock_sftp_makedirs):
-        sftpclient = mock.MagicMock()
+        sftpclient = MagicMock()
         path = get_nonexistent_path()
 
         mock_sftp_makedirs.side_effect = RuntimeError()
@@ -267,8 +267,8 @@ class TestLocalFileStorageBroker(BaseTestCase):
         self.test_broker.upload(self.existing_collection)
         self.test_broker.upload(previous_file_same_name)
 
-    @mock.patch('aodncore.pipeline.storage.mkdir_p')
-    @mock.patch('aodncore.pipeline.storage.safe_copy_file')
+    @patch('aodncore.pipeline.storage.mkdir_p')
+    @patch('aodncore.pipeline.storage.safe_copy_file')
     def test_upload_collection(self, mock_safe_copy_file, mock_mkdir_p):
         collection = get_upload_collection()
         netcdf_file, png_file, ico_file, unknown_file = collection
@@ -299,8 +299,8 @@ class TestLocalFileStorageBroker(BaseTestCase):
 
         self.assertTrue(all(p.is_stored for p in collection))
 
-    @mock.patch('aodncore.pipeline.storage.mkdir_p')
-    @mock.patch('aodncore.pipeline.storage.safe_copy_file')
+    @patch('aodncore.pipeline.storage.mkdir_p')
+    @patch('aodncore.pipeline.storage.safe_copy_file')
     def test_upload_file(self, mock_safe_copy_file, mock_mkdir_p):
         collection = get_upload_collection()
         netcdf_file, _, _, _ = collection
@@ -331,9 +331,9 @@ class TestLocalFileStorageBroker(BaseTestCase):
         for f in self.test_broker.download_iterator(remote_collection, local_path=local_path):
             actual = list(list_regular_files(local_path, recursive=True))
             expected = [f.local_path]
-            six.assertCountEqual(self, actual, expected)
+            self.assertCountEqual(actual, expected)
 
-    @mock.patch('aodncore.pipeline.storage.rm_f')
+    @patch('aodncore.pipeline.storage.rm_f')
     def test_delete_collection(self, mock_rm_f):
         collection = get_upload_collection(delete=True)
         netcdf_file, png_file, ico_file, unknown_file = collection
@@ -354,7 +354,7 @@ class TestLocalFileStorageBroker(BaseTestCase):
 
         self.assertTrue(all(p.is_stored for p in collection))
 
-    @mock.patch('aodncore.pipeline.storage.rm_f')
+    @patch('aodncore.pipeline.storage.rm_f')
     def test_delete_file(self, mock_rm_f):
         collection = get_upload_collection(delete=True)
         netcdf_file, _, _, _ = collection
@@ -384,7 +384,7 @@ class TestLocalFileStorageBroker(BaseTestCase):
             RemotePipelineFile('subdirectory/targetfile.ico')
         ])
 
-        six.assertCountEqual(self, expected, all_files)
+        self.assertCountEqual(expected, all_files)
 
         self.test_broker.delete_regexes([r'^subdirectory/targetfile\.(ico|nc)$'])
 
@@ -395,7 +395,7 @@ class TestLocalFileStorageBroker(BaseTestCase):
             RemotePipelineFile('subdirectory/targetfile.png')
         ])
 
-        six.assertCountEqual(self, expected_remaining, remaining_files)
+        self.assertCountEqual(expected_remaining, remaining_files)
 
     def test_delete_regexes_with_allow_match_all(self):
         all_files = self.test_broker.query()
@@ -406,12 +406,12 @@ class TestLocalFileStorageBroker(BaseTestCase):
             RemotePipelineFile('subdirectory/targetfile.png'),
             RemotePipelineFile('subdirectory/targetfile.ico')
         ])
-        six.assertCountEqual(self, expected, all_files)
+        self.assertCountEqual(expected, all_files)
 
         self.test_broker.delete_regexes([r'.*'], allow_match_all=True)
 
         remaining_files = self.test_broker.query()
-        six.assertCountEqual(self, remaining_files, RemotePipelineFileCollection())
+        self.assertCountEqual(remaining_files, RemotePipelineFileCollection())
 
     def test_directory_query(self):
         with TemporaryDirectory() as d:
@@ -430,7 +430,7 @@ class TestLocalFileStorageBroker(BaseTestCase):
             RemotePipelineFile(os.path.relpath(temp_file3, d))
         ])
 
-        six.assertCountEqual(self, expected, result)
+        self.assertCountEqual(expected, result)
         self.assertTrue(all(isinstance(v.last_modified, datetime.datetime) for v in result))
         self.assertTrue(all(isinstance(v.size, int) for v in result))
 
@@ -451,7 +451,7 @@ class TestLocalFileStorageBroker(BaseTestCase):
             RemotePipelineFile(os.path.relpath(temp_file2, d))
         ])
 
-        six.assertCountEqual(self, result, expected)
+        self.assertCountEqual(result, expected)
         self.assertTrue(all(isinstance(f.last_modified, datetime.datetime) for f in result))
         self.assertTrue(all(isinstance(f.size, int) for f in result))
 
@@ -476,13 +476,13 @@ class TestLocalFileStorageBroker(BaseTestCase):
 
             file_storage_broker = LocalFileStorageBroker(d)
 
-            with mock.patch.object(file_storage_broker, '_run_query', side_effect=RuntimeError()):
+            with patch.object(file_storage_broker, '_run_query', side_effect=RuntimeError()):
                 with self.assertRaises(StorageBrokerError):
                     _ = file_storage_broker.query('subdir/qwerty')
 
 
 class TestS3StorageBroker(BaseTestCase):
-    @mock.patch('aodncore.pipeline.storage.boto3')
+    @patch('aodncore.pipeline.storage.boto3')
     def test_invalid_bucket(self, mock_boto3):
         collection = get_upload_collection()
 
@@ -497,14 +497,14 @@ class TestS3StorageBroker(BaseTestCase):
 
         with self.assertRaises(InvalidStoreUrlError):
             # mock out sleep to avoid long and unnecessary waiting during tests
-            with mock.patch('aodncore.util.external.retry.api.time.sleep', new=lambda x: None):
+            with patch('aodncore.util.external.retry.api.time.sleep', new=lambda x: None):
                 s3_storage_broker.upload(collection)
 
         self.assertEqual(s3_storage_broker.s3_client.head_bucket.call_count, s3_storage_broker.retry_kwargs['tries'])
 
         s3_storage_broker.s3_client.head_bucket.assert_called_with(Bucket=dummy_bucket)
 
-    @mock.patch('aodncore.pipeline.storage.boto3')
+    @patch('aodncore.pipeline.storage.boto3')
     def test_set_is_overwrite_not_present_s3(self, mock_boto3):
         collection = get_upload_collection()
         dummy_bucket = str(uuid4())
@@ -514,7 +514,7 @@ class TestS3StorageBroker(BaseTestCase):
         self.assertEqual(s3_storage_broker.s3_client.list_objects_v2.call_count, 4)
         self.assertFalse(any(f.is_overwrite for f in collection))
 
-    @mock.patch('aodncore.pipeline.storage.boto3')
+    @patch('aodncore.pipeline.storage.boto3')
     def test_set_is_overwrite_present_s3(self, mock_boto3):
         collection = get_upload_collection()
         dummy_bucket = str(uuid4())
@@ -527,7 +527,7 @@ class TestS3StorageBroker(BaseTestCase):
         self.assertEqual(s3_storage_broker.s3_client.list_objects_v2.call_count, 4)
         self.assertTrue(all(f.is_overwrite for f in collection.filter_by_attribute_value('dest_path', dest_path)))
 
-    @mock.patch('aodncore.pipeline.storage.boto3')
+    @patch('aodncore.pipeline.storage.boto3')
     def test_set_is_overwrite_prefix_present_s3(self, mock_boto3):
         collection = get_upload_collection()
         dummy_bucket = str(uuid4())
@@ -542,7 +542,7 @@ class TestS3StorageBroker(BaseTestCase):
         self.assertEqual(s3_storage_broker.s3_client.list_objects_v2.call_count, 4)
         self.assertTrue(all(f.is_overwrite for f in collection.filter_by_attribute_value('dest_path', dest_path)))
 
-    @mock.patch('aodncore.pipeline.storage.boto3')
+    @patch('aodncore.pipeline.storage.boto3')
     def test_upload_collection(self, mock_boto3):
         collection = get_upload_collection()
         netcdf_file, png_file, ico_file, unknown_file = collection
@@ -553,7 +553,7 @@ class TestS3StorageBroker(BaseTestCase):
 
         mock_boto3.client.assert_called_once_with('s3')
 
-        with mock.patch('aodncore.pipeline.storage.open', mock.mock_open(read_data='')) as m:
+        with patch('aodncore.pipeline.storage.open', mock_open(read_data='')) as m:
             s3_storage_broker.upload(collection)
         self.assertEqual(m.call_count, 4)
         m.assert_any_call(netcdf_file.src_path, 'rb')
@@ -587,7 +587,7 @@ class TestS3StorageBroker(BaseTestCase):
 
         self.assertTrue(all(p.is_stored for p in collection))
 
-    @mock.patch('aodncore.pipeline.storage.boto3')
+    @patch('aodncore.pipeline.storage.boto3')
     def test_download_collection(self, mock_boto3):
         collection = get_download_collection()
         netcdf_file, png_file, ico_file, unknown_file = collection
@@ -598,7 +598,7 @@ class TestS3StorageBroker(BaseTestCase):
 
         mock_boto3.client.assert_called_once_with('s3')
 
-        with mock.patch('aodncore.pipeline.storage.open', mock.mock_open()) as m:
+        with patch('aodncore.pipeline.storage.open', mock_open()) as m:
             s3_storage_broker.download(collection, self.temp_dir)
 
         self.assertEqual(4, s3_storage_broker.s3_client.download_fileobj.call_count)
@@ -616,7 +616,7 @@ class TestS3StorageBroker(BaseTestCase):
         s3_storage_broker.s3_client.download_fileobj.assert_any_call(Bucket=dummy_bucket, Key=unknown_abs_path,
                                                                      Fileobj=m())
 
-    @mock.patch('aodncore.pipeline.storage.boto3')
+    @patch('aodncore.pipeline.storage.boto3')
     def test_upload_file(self, mock_boto3):
         collection = get_upload_collection()
         netcdf_file, _, _, _ = collection
@@ -627,7 +627,7 @@ class TestS3StorageBroker(BaseTestCase):
 
         mock_boto3.client.assert_called_once_with('s3')
 
-        with mock.patch('aodncore.pipeline.storage.open', mock.mock_open(read_data='')) as m:
+        with patch('aodncore.pipeline.storage.open', mock_open(read_data='')) as m:
             s3_storage_broker.upload(netcdf_file)
         self.assertEqual(m.call_count, 1)
         m.assert_any_call(netcdf_file.src_path, 'rb')
@@ -644,7 +644,7 @@ class TestS3StorageBroker(BaseTestCase):
 
         self.assertTrue(netcdf_file.is_stored)
 
-    @mock.patch('aodncore.pipeline.storage.boto3')
+    @patch('aodncore.pipeline.storage.boto3')
     def test_delete_collection(self, mock_boto3):
         collection = get_upload_collection(delete=True)
         netcdf_file, png_file, ico_file, unknown_file = collection
@@ -655,7 +655,7 @@ class TestS3StorageBroker(BaseTestCase):
 
         mock_boto3.client.assert_called_once_with('s3')
 
-        with mock.patch('aodncore.pipeline.storage.open', mock.mock_open(read_data='')) as m:
+        with patch('aodncore.pipeline.storage.open', mock_open(read_data='')) as m:
             s3_storage_broker.delete(collection)
         m.assert_not_called()
 
@@ -674,7 +674,7 @@ class TestS3StorageBroker(BaseTestCase):
 
         self.assertTrue(all(p.is_stored for p in collection))
 
-    @mock.patch('aodncore.pipeline.storage.boto3')
+    @patch('aodncore.pipeline.storage.boto3')
     def test_delete_file(self, mock_boto3):
         collection = get_upload_collection(delete=True)
         netcdf_file, _, _, _ = collection
@@ -685,7 +685,7 @@ class TestS3StorageBroker(BaseTestCase):
 
         mock_boto3.client.assert_called_once_with('s3')
 
-        with mock.patch('aodncore.pipeline.storage.open', mock.mock_open(read_data='')) as m:
+        with patch('aodncore.pipeline.storage.open', mock_open(read_data='')) as m:
             s3_storage_broker.delete(netcdf_file)
         m.assert_not_called()
 
@@ -698,7 +698,7 @@ class TestS3StorageBroker(BaseTestCase):
 
         self.assertTrue(netcdf_file.is_stored)
 
-    @mock.patch('aodncore.pipeline.storage.boto3')
+    @patch('aodncore.pipeline.storage.boto3')
     def test_directory_query(self, mock_boto3):
         mock_boto3.client().list_objects_v2.return_value = {'Contents': [
             {u'LastModified': datetime.datetime(2016, 4, 27, 2, 30, 9, tzinfo=tzutc()),
@@ -720,13 +720,13 @@ class TestS3StorageBroker(BaseTestCase):
         s3_storage_broker = S3StorageBroker('imos-data', '')
         result = s3_storage_broker.query('Department_of_Defence/DSTG/slocum_glider/PerthCanyonA20140213/')
 
-        six.assertCountEqual(self, result.keys(),
-                             [l['Key'] for l in mock_boto3.client().list_objects_v2.return_value['Contents']])
+        self.assertCountEqual(result.keys(),
+                              [l['Key'] for l in mock_boto3.client().list_objects_v2.return_value['Contents']])
 
         self.assertTrue(all(isinstance(v['last_modified'], datetime.datetime) for k, v in result.items()))
         self.assertTrue(all(isinstance(v['size'], int) for k, v in result.items()))
 
-    @mock.patch('aodncore.pipeline.storage.boto3')
+    @patch('aodncore.pipeline.storage.boto3')
     def test_prefix_query(self, mock_boto3):
         mock_boto3.client().list_objects_v2.return_value = {'Contents': [
             {u'LastModified': datetime.datetime(2016, 4, 27, 2, 30, 9, tzinfo=tzutc()),
@@ -763,12 +763,12 @@ class TestS3StorageBroker(BaseTestCase):
         s3_storage_broker = S3StorageBroker('imos-data', '')
         result = s3_storage_broker.query('Department_of_Defence/DSTG/slocum_glider/Perth')
 
-        six.assertCountEqual(self, result.keys(),
-                             [l['Key'] for l in mock_boto3.client().list_objects_v2.return_value['Contents']])
+        self.assertCountEqual(result.keys(),
+                              [l['Key'] for l in mock_boto3.client().list_objects_v2.return_value['Contents']])
         self.assertTrue(all(isinstance(v['last_modified'], datetime.datetime) for k, v in result.items()))
         self.assertTrue(all(isinstance(v['size'], int) for k, v in result.items()))
 
-    @mock.patch('aodncore.pipeline.storage.boto3')
+    @patch('aodncore.pipeline.storage.boto3')
     def test_query_empty(self, mock_boto3):
         mock_boto3.client().list_objects_v2.return_value = {}
 
@@ -778,46 +778,46 @@ class TestS3StorageBroker(BaseTestCase):
 
         self.assertDictEqual(result, {})
 
-    @mock.patch('aodncore.pipeline.storage.boto3')
+    @patch('aodncore.pipeline.storage.boto3')
     def test_query_error_client_error(self, mock_boto3):
         dummy_error = ClientError({'Error': {'Code': 'ServiceUnavailable'}}, 'ListObjects')
         mock_boto3.client().list_objects_v2.side_effect = dummy_error
 
         s3_storage_broker = S3StorageBroker('imos-data', '')
         with self.assertRaises(StorageBrokerError):
-            with mock.patch('aodncore.util.external.retry.api.time.sleep', new=lambda x: None):
+            with patch('aodncore.util.external.retry.api.time.sleep', new=lambda x: None):
                 _ = s3_storage_broker.query('Department_of_Defence/DSTG/slocum_glider/Perth')
 
         self.assertEqual(s3_storage_broker.s3_client.list_objects_v2.call_count,
                          s3_storage_broker.retry_kwargs['tries'])
 
-    @mock.patch('aodncore.pipeline.storage.boto3')
+    @patch('aodncore.pipeline.storage.boto3')
     def test_query_error_incomplete_read(self, mock_boto3):
         dummy_error = IncompleteRead('')
         mock_boto3.client().list_objects_v2.side_effect = dummy_error
 
         s3_storage_broker = S3StorageBroker('imos-data', '')
         with self.assertRaises(StorageBrokerError):
-            with mock.patch('aodncore.util.external.retry.api.time.sleep', new=lambda x: None):
+            with patch('aodncore.util.external.retry.api.time.sleep', new=lambda x: None):
                 _ = s3_storage_broker.query('Department_of_Defence/DSTG/slocum_glider/Perth')
 
         self.assertEqual(s3_storage_broker.s3_client.list_objects_v2.call_count,
                          s3_storage_broker.retry_kwargs['tries'])
 
-    @mock.patch('aodncore.pipeline.storage.boto3')
+    @patch('aodncore.pipeline.storage.boto3')
     def test_query_error_ssl_error(self, mock_boto3):
         dummy_error = SSLError('The read operation timed out', )
         mock_boto3.client().list_objects_v2.side_effect = dummy_error
 
         s3_storage_broker = S3StorageBroker('imos-data', '')
         with self.assertRaises(StorageBrokerError):
-            with mock.patch('aodncore.util.external.retry.api.time.sleep', new=lambda x: None):
+            with patch('aodncore.util.external.retry.api.time.sleep', new=lambda x: None):
                 _ = s3_storage_broker.query('Department_of_Defence/DSTG/slocum_glider/Perth')
 
         self.assertEqual(s3_storage_broker.s3_client.list_objects_v2.call_count,
                          s3_storage_broker.retry_kwargs['tries'])
 
-    @mock.patch('aodncore.pipeline.storage.boto3')
+    @patch('aodncore.pipeline.storage.boto3')
     def test_query_error_unlisted_exception_has_no_retries(self, mock_boto3):
         class CustomException(Exception):
             pass
@@ -827,7 +827,7 @@ class TestS3StorageBroker(BaseTestCase):
 
         s3_storage_broker = S3StorageBroker('imos-data', '')
         with self.assertRaises(StorageBrokerError):
-            with mock.patch('aodncore.util.external.retry.api.time.sleep', new=lambda x: None):
+            with patch('aodncore.util.external.retry.api.time.sleep', new=lambda x: None):
                 _ = s3_storage_broker.query('Department_of_Defence/DSTG/slocum_glider/Perth')
 
         # should *not* be retried, so attempts should always be 1
@@ -836,16 +836,16 @@ class TestS3StorageBroker(BaseTestCase):
 
 # noinspection PyUnusedLocal
 class TestSftpStorageBroker(BaseTestCase):
-    @mock.patch('aodncore.pipeline.storage.SSHClient')
-    @mock.patch('aodncore.pipeline.storage.AutoAddPolicy')
+    @patch('aodncore.pipeline.storage.SSHClient')
+    @patch('aodncore.pipeline.storage.AutoAddPolicy')
     def test_init(self, mock_autoaddpolicy, mock_sshclient):
         sftp_storage_broker = SftpStorageBroker('', '')
 
         mock_sshclient.assert_called_once_with()
         sftp_storage_broker._sshclient.set_missing_host_key_policy.assert_called_once_with(mock_autoaddpolicy())
 
-    @mock.patch('aodncore.pipeline.storage.SSHClient')
-    @mock.patch('aodncore.pipeline.storage.AutoAddPolicy')
+    @patch('aodncore.pipeline.storage.SSHClient')
+    @patch('aodncore.pipeline.storage.AutoAddPolicy')
     def test_upload_collection(self, mock_autoaddpolicy, mock_sshclient):
         collection = get_upload_collection()
         netcdf_file, png_file, ico_file, unknown_file = collection
@@ -855,7 +855,7 @@ class TestSftpStorageBroker(BaseTestCase):
 
         sftp_storage_broker = SftpStorageBroker(dummy_server, dummy_prefix)
 
-        with mock.patch('aodncore.pipeline.storage.open', mock.mock_open(read_data='')) as m:
+        with patch('aodncore.pipeline.storage.open', mock_open(read_data='')) as m:
             sftp_storage_broker.upload(collection)
 
         sftp_storage_broker._sshclient.connect.assert_called_once_with(sftp_storage_broker.server)
@@ -883,8 +883,8 @@ class TestSftpStorageBroker(BaseTestCase):
 
         self.assertTrue(all(p.is_stored for p in collection))
 
-    @mock.patch('aodncore.pipeline.storage.SSHClient')
-    @mock.patch('aodncore.pipeline.storage.AutoAddPolicy')
+    @patch('aodncore.pipeline.storage.SSHClient')
+    @patch('aodncore.pipeline.storage.AutoAddPolicy')
     def test_upload_file(self, mock_autoaddpolicy, mock_sshclient):
         collection = get_upload_collection()
         netcdf_file, _, _, _ = collection
@@ -894,7 +894,7 @@ class TestSftpStorageBroker(BaseTestCase):
 
         sftp_storage_broker = SftpStorageBroker(dummy_server, dummy_prefix)
 
-        with mock.patch('aodncore.pipeline.storage.open', mock.mock_open(read_data='')) as m:
+        with patch('aodncore.pipeline.storage.open', mock_open(read_data='')) as m:
             sftp_storage_broker.upload(netcdf_file)
 
         sftp_storage_broker._sshclient.connect.assert_called_once_with(sftp_storage_broker.server)
@@ -910,8 +910,8 @@ class TestSftpStorageBroker(BaseTestCase):
 
         self.assertTrue(netcdf_file.is_stored)
 
-    @mock.patch('aodncore.pipeline.storage.SSHClient')
-    @mock.patch('aodncore.pipeline.storage.AutoAddPolicy')
+    @patch('aodncore.pipeline.storage.SSHClient')
+    @patch('aodncore.pipeline.storage.AutoAddPolicy')
     def test_delete_collection(self, mock_autoaddpolicy, mock_sshclient):
         collection = get_upload_collection(delete=True)
         netcdf_file, png_file, ico_file, unknown_file = collection
@@ -937,8 +937,8 @@ class TestSftpStorageBroker(BaseTestCase):
 
         self.assertTrue(all(p.is_stored for p in collection))
 
-    @mock.patch('aodncore.pipeline.storage.SSHClient')
-    @mock.patch('aodncore.pipeline.storage.AutoAddPolicy')
+    @patch('aodncore.pipeline.storage.SSHClient')
+    @patch('aodncore.pipeline.storage.AutoAddPolicy')
     def test_delete_file(self, mock_autoaddpolicy, mock_sshclient):
         collection = get_upload_collection(delete=True)
         netcdf_file, _, _, _ = collection

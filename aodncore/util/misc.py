@@ -9,15 +9,12 @@ import re
 import sys
 import types
 from collections import Iterable, OrderedDict, Mapping
+from io import StringIO
 
 import jinja2
 import pkg_resources
-import six
-from six.moves import range
 
 Pattern = type(re.compile(''))
-
-StringIO = six.StringIO
 
 __all__ = [
     'discover_entry_points',
@@ -175,7 +172,7 @@ def is_nonstring_iterable(sequence):
     :param sequence: object to check 
     :return: True if object is a non-string sub class of :py:class:`Iterable`
     """
-    return isinstance(sequence, Iterable) and not isinstance(sequence, (six.string_types, bytes, Mapping))
+    return isinstance(sequence, Iterable) and not isinstance(sequence, (str, bytes, Mapping))
 
 
 def is_valid_email_address(address):
@@ -208,7 +205,7 @@ def iter_public_attributes(instance, ignored_attributes=None):
 
     public_attrs = {a: getattr(instance, a) for a in all_names if includeattr(a)}
 
-    return six.iteritems(public_attrs)
+    return iter(public_attrs.items())
 
 
 def matches_regexes(input_string, include_regexes, exclude_regexes=None):
@@ -245,7 +242,7 @@ def merge_dicts(*args):
         master = {}
 
     for current_dict in args:
-        for k, v in six.iteritems(current_dict):
+        for k, v in current_dict.items():
             if k in master and isinstance(master[k], (dict, OrderedDict)) and isinstance(current_dict[k], Mapping):
                 master[k] = merge_dicts(master[k], current_dict[k])
             elif k in master and isinstance(master[k], list) and isinstance(current_dict[k], Iterable):
@@ -321,7 +318,7 @@ validate_bool = validate_type(bool)
 validate_dict = validate_type(dict)
 validate_int = validate_type(int)
 validate_mapping = validate_type(Mapping)
-validate_string = validate_type(six.string_types)
+validate_string = validate_type(str)
 
 
 def validate_callable(o):
