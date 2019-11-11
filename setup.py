@@ -8,19 +8,18 @@ ENTRY_POINTS = {
 
 INSTALL_REQUIRES = [
     'boto3>=1.9.156',
-    'celery==4.1.1',
+    'celery==4.3.0',
     'compliance-checker==4.1.1',
-    'Jinja2==2.9.6',
-    'jsonschema==2.6.0',
-    'OWSLib==0.16.0',
-    'paramiko==2.4.2',
+    'Jinja2==2.10.3',
+    'jsonschema==3.1.1',
+    'OWSLib==0.18.0',
+    'paramiko==2.6.0',
     'tabulate==0.8.2',
-    'transitions==0.5.3',
-    'vine<=1.3.0'  # version 5 has dropped Python 2 support
+    'transitions==0.7.1'
 ]
 
 TESTS_REQUIRE = [
-    'httpretty==0.9.6'
+    'httpretty==0.9.7'
 ]
 
 EXTRAS_REQUIRE = {
