@@ -4,6 +4,7 @@ ARG BUILDER_UID=9999
 
 ENV LC_ALL C.UTF-8
 ENV LANG C.UTF-8
+ENV PATH /home/builder/.local/bin:$PATH
 
 RUN apt-get update && apt-get install -y --no-install-recommends \
     build-essential \
