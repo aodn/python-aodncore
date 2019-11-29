@@ -209,7 +209,7 @@ class TestUtilFileOps(BaseTestCase):
 
     def test_safe_copy_file(self):
         nonexistent_file = get_nonexistent_path()
-        with self.assertRaisesRegexp(OSError, "source file .* does not exist"):
+        with self.assertRaisesRegex(OSError, r'source file .* does not exist'):
             safe_copy_file(nonexistent_file, os.path.join(self.temp_dir, nonexistent_file))
 
         temp_source_file_path = os.path.join(self.temp_dir, str(uuid.uuid4()))
@@ -218,13 +218,13 @@ class TestUtilFileOps(BaseTestCase):
         with open(temp_source_file_path, 'w') as f:
             f.write(u'foobar')
 
-        with self.assertRaisesRegexp(OSError, "source file and destination file can't refer the to same file"):
+        with self.assertRaisesRegex(OSError, r"source file and destination file can't refer the to same file"):
             safe_copy_file(temp_source_file_path, temp_source_file_path)
 
         safe_copy_file(temp_source_file_path, temp_dest_file_path)
         self.assertTrue(filecmp.cmp(temp_source_file_path, temp_dest_file_path, shallow=False))
 
-        with self.assertRaisesRegexp(OSError, "destination file .* already exists"):
+        with self.assertRaisesRegex(OSError, r'destination file .* already exists'):
             safe_copy_file(temp_source_file_path, temp_dest_file_path)
 
         safe_copy_file(temp_source_file_path, temp_dest_file_path, overwrite=True)

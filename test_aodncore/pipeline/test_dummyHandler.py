@@ -1,7 +1,7 @@
 import os
 import sys
-from unittest.mock import patch
 from functools import partial
+from unittest.mock import patch
 
 from jsonschema import ValidationError
 
@@ -146,7 +146,7 @@ class TestDummyHandler(HandlerTestCase):
         handler = self.run_handler_with_exception(InvalidFileFormatError, self.temp_nc_file,
                                                   dest_path_function=dest_path_testing,
                                                   allowed_extensions=['.pdf', '.zip'])
-        self.assertRegexpMatches(handler._error_details, "input file extension '.nc' not in allowed_extensions list:.*")
+        self.assertRegex(handler._error_details, r"input file extension '.nc' not in allowed_extensions list:.*")
 
         self.run_handler(self.temp_nc_file, dest_path_function=dest_path_testing, allowed_extensions=['.nc'])
 
@@ -164,7 +164,8 @@ class TestDummyHandler(HandlerTestCase):
                                         dest_path_function=dest_path_testing,
                                         allowed_dest_path_regexes=[r'DEFINITELY/NOT/A/MATCH'])
 
-        self.run_handler(self.temp_nc_file, dest_path_function=dest_path_testing, allowed_dest_path_regexes=[r'DUMMY.*'])
+        self.run_handler(self.temp_nc_file, dest_path_function=dest_path_testing,
+                         allowed_dest_path_regexes=[r'DUMMY.*'])
 
     def test_allowed_extensions_and_allowed_regexes(self):
         self.run_handler_with_exception(InvalidInputFileError, GOOD_NC, dest_path_function=dest_path_testing,

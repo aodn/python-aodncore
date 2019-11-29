@@ -263,7 +263,7 @@ class TestUtilMisc(BaseTestCase):
             validate_relative_path('relative/path')
 
     def test_validate_relative_path_attr(self):
-        with self.assertRaisesRegexp(ValueError, r'.*dest_path.*'):
+        with self.assertRaisesRegex(ValueError, r'.*dest_path.*'):
             validate_relative_path_attr('/absolute/path', 'dest_path')
 
         with self.assertNoException():
