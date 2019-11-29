@@ -73,7 +73,7 @@ class BaseNotifyRunner(BaseStepRunner, metaclass=abc.ABCMeta):
     """
 
     def __init__(self, notification_data, config, logger):
-        super(BaseNotifyRunner, self).__init__(config, logger)
+        super().__init__(config, logger)
         self.notification_data = notification_data
 
         self.error = None
@@ -193,7 +193,7 @@ class BaseNotifyRunner(BaseStepRunner, metaclass=abc.ABCMeta):
 
 class NotifyRunnerAdapter(BaseNotifyRunner):
     def __init__(self, notification_data, config, logger, notify_params):
-        super(NotifyRunnerAdapter, self).__init__(notification_data, config, logger)
+        super().__init__(notification_data, config, logger)
         self.notification_data = notification_data
 
         if notify_params is None:

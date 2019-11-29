@@ -53,7 +53,7 @@ class DummyNotifyRunner(BaseNotifyRunner):
 
 class TestBaseNotifyRunner(BaseTestCase):
     def setUp(self):
-        super(TestBaseNotifyRunner, self).setUp()
+        super().setUp()
         notification_data = get_notification_data()
         self.dummy_runner = DummyNotifyRunner(notification_data, self.config, self.test_logger)
 
@@ -68,7 +68,7 @@ class TestBaseNotifyRunner(BaseTestCase):
 
 class TestEmailNotifyRunner(BaseTestCase):
     def setUp(self):
-        super(TestEmailNotifyRunner, self).setUp()
+        super().setUp()
         notification_data = get_notification_data()
         self.email_runner = EmailNotifyRunner(notification_data, self.config, self.test_logger)
         self.notify_list = NotifyList()
@@ -162,7 +162,7 @@ class TestEmailNotifyRunner(BaseTestCase):
 
 class TestLogFailuresNotifyRunner(BaseTestCase):
     def setUp(self):
-        super(TestLogFailuresNotifyRunner, self).setUp()
+        super().setUp()
         notification_data = get_notification_data()
         self.fail_runner = LogFailuresNotifyRunner(notification_data, self.config, MagicMock())
         self.notify_list = NotifyList()

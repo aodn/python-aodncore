@@ -37,7 +37,7 @@ class TestPipelineStepsCheck(BaseTestCase):
 
 class TestComplianceCheckerRunner(BaseTestCase):
     def setUp(self):
-        super(TestComplianceCheckerRunner, self).setUp()
+        super().setUp()
         self.cc_runner = ComplianceCheckerCheckRunner(None, self.test_logger, {'checks': ['cf']})
 
     def test_compliant_file(self):
@@ -110,7 +110,7 @@ class TestComplianceCheckerRunner(BaseTestCase):
 
 class TestFormatCheckRunner(BaseTestCase):
     def setUp(self):
-        super(TestFormatCheckRunner, self).setUp()
+        super().setUp()
         self.fc_runner = FormatCheckRunner(None, self.test_logger)
 
     def test_nc_file(self):
@@ -141,7 +141,7 @@ class TestFormatCheckRunner(BaseTestCase):
 
 class TestNonEmptyCheckRunner(BaseTestCase):
     def setUp(self):
-        super(TestNonEmptyCheckRunner, self).setUp()
+        super().setUp()
         self.ne_runner = NonEmptyCheckRunner(None, self.test_logger)
 
     def test_nonempty_file(self):

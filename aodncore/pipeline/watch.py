@@ -321,7 +321,7 @@ def should_ignore_event(pathname):
 
 class IncomingFileEventHandler(pyinotify.ProcessEvent):
     def __init__(self, config):
-        super(IncomingFileEventHandler, self).__init__()
+        super().__init__()
         self._config = config
         self._logger = get_pipeline_logger(config.pipeline_config['watch']['logger_name'])
 

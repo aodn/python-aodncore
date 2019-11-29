@@ -74,7 +74,7 @@ class BaseCheckRunner(BaseStepRunner, metaclass=abc.ABCMeta):
 
 class CheckRunnerAdapter(BaseCheckRunner):
     def __init__(self, config, logger, check_params=None):
-        super(CheckRunnerAdapter, self).__init__(config, logger)
+        super().__init__(config, logger)
 
         if check_params is None:
             check_params = {}
@@ -106,7 +106,7 @@ class CheckRunnerAdapter(BaseCheckRunner):
 
 class ComplianceCheckerCheckRunner(BaseCheckRunner):
     def __init__(self, config, logger, check_params=None):
-        super(ComplianceCheckerCheckRunner, self).__init__(config, logger)
+        super().__init__(config, logger)
         if check_params is None:
             check_params = {}
 

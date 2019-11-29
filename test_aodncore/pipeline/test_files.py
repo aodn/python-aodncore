@@ -41,7 +41,7 @@ class TestPipelineFiles(BaseTestCase):
 # noinspection PyAttributeOutsideInit
 class TestPipelineFile(BaseTestCase):
     def setUp(self):
-        super(TestPipelineFile, self).setUp()
+        super().setUp()
         deletion_path = get_nonexistent_path()
         self.pipelinefile = PipelineFile(GOOD_NC, dest_path=GOOD_NC + '.dest', name='pipelinefile')
         self.pipelinefile_deletion = PipelineFile(deletion_path, is_deletion=True)
@@ -234,7 +234,7 @@ class TestPipelineFile(BaseTestCase):
 
 class TestRemotePipelineFile(BaseTestCase):
     def setUp(self):
-        super(TestRemotePipelineFile, self).setUp()
+        super().setUp()
         self.pipelinefile = PipelineFile(GOOD_NC, dest_path=GOOD_NC + '.dest', name='pipelinefile')
         self.remotepipelinefile = RemotePipelineFile(GOOD_NC + '.dest', local_path=GOOD_NC, name='remotepipelinefile')
 
@@ -975,7 +975,7 @@ class TestRemotePipelineFileCollection(BaseTestCase):
 # noinspection PyAttributeOutsideInit
 class TestRemoteFile(BaseTestCase):
     def setUp(self):
-        super(TestRemoteFile, self).setUp()
+        super().setUp()
         self.remotefile = RemotePipelineFile(GOOD_NC + '.dest', local_path=GOOD_NC)
 
     def test_equal_files(self):

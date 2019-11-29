@@ -40,7 +40,7 @@ def get_harvest_collection(delete=False, late_deletion=False, with_store=False, 
 
 class TestPipelineStepsHarvest(BaseTestCase):
     def setUp(self):
-        super(TestPipelineStepsHarvest, self).setUp()
+        super().setUp()
 
         self.uploader = StoreRunner(NullStorageBroker("/"), None, None)
 
@@ -65,7 +65,7 @@ class TestPipelineStepsHarvest(BaseTestCase):
 
 class TestTalendHarvesterRunner(BaseTestCase):
     def setUp(self):
-        super(TestTalendHarvesterRunner, self).setUp()
+        super().setUp()
         self.uploader = NullStorageBroker("/")
 
     @patch('aodncore.util.process.subprocess')

@@ -455,7 +455,7 @@ class WriteOnceOrderedDict(OrderedDict):
     def __setitem__(self, key, value):
         if key in self:
             raise RuntimeError("key '{}' has already been set".format(key))
-        super(WriteOnceOrderedDict, self).__setitem__(key, value)
+        super().__setitem__(key, value)
 
     __delitem__ = __readonly__
     clear = __readonly__
@@ -470,7 +470,7 @@ class TemplateRenderer(object):
     """
 
     def __init__(self, package='aodncore.pipeline', package_path='templates'):
-        super(TemplateRenderer, self).__init__()
+        super().__init__()
         self._package = package
         self._loader = jinja2.PackageLoader(package, package_path)
         self._env = jinja2.Environment(loader=self._loader)

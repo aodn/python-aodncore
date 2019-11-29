@@ -245,7 +245,7 @@ class LocalFileStorageBroker(BaseStorageBroker):
     """
 
     def __init__(self, prefix):
-        super(LocalFileStorageBroker, self).__init__()
+        super().__init__()
         self.prefix = prefix
 
     def __repr__(self):
@@ -318,7 +318,7 @@ class S3StorageBroker(BaseStorageBroker):
     }
 
     def __init__(self, bucket, prefix):
-        super(S3StorageBroker, self).__init__()
+        super().__init__()
 
         self.bucket = bucket
         self.prefix = prefix
@@ -441,7 +441,7 @@ class SftpStorageBroker(BaseStorageBroker):
     """
 
     def __init__(self, server, prefix):
-        super(SftpStorageBroker, self).__init__()
+        super().__init__()
         self.server = server
         self.prefix = prefix
 

@@ -143,7 +143,7 @@ REFERENCE_WATCH_CONFIG = {
 
 class TestLazyConfigManager(BaseTestCase):
     def setUp(self):
-        super(TestLazyConfigManager, self).setUp()
+        super().setUp()
 
     def test_celery_application(self):
         app = self.config.celery_application
@@ -177,7 +177,7 @@ class TestLazyConfigManager(BaseTestCase):
 
 class TestConfig(BaseTestCase):
     def setUp(self):
-        super(TestConfig, self).setUp()
+        super().setUp()
 
     def test_load_pipeline_config(self):
         pipeline_conf_file = os.path.join(CONF_ROOT, 'pipeline.conf')

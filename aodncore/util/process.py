@@ -17,7 +17,7 @@ class SystemProcess(object):
     """
 
     def __init__(self, command, stdin=subprocess.PIPE, stdout=subprocess.PIPE, stdin_text=None, env=None, shell=False):
-        super(SystemProcess, self).__init__()
+        super().__init__()
 
         self.command = command
         self.shell = shell

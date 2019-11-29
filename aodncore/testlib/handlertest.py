@@ -17,7 +17,7 @@ class HandlerTestCase(BaseTestCase):
         cls._metadata_regenerated = set()
 
     def setUp(self):
-        super(HandlerTestCase, self).setUp()
+        super().setUp()
         handler_class = getattr(self, 'handler_class', HandlerBase)
 
         self.handler_class = partial(handler_class, config=self.config)

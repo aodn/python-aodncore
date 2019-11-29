@@ -131,7 +131,7 @@ class RemotePipelineFile(PipelineFileBase):
     __slots__ = ['_last_modified', '_size']
 
     def __init__(self, dest_path, local_path=None, name=None, last_modified=None, size=None):
-        super(RemotePipelineFile, self).__init__(local_path, dest_path)
+        super().__init__(local_path, dest_path)
         self._name = name if name is not None else os.path.basename(dest_path)
         self._last_modified = last_modified
         self._size = size
@@ -166,7 +166,7 @@ class RemotePipelineFile(PipelineFileBase):
         # (i.e. has not been downloaded)
         if self.local_path is None:
             return None
-        return super(RemotePipelineFile, self).file_checksum
+        return super().file_checksum
 
     @property
     def last_modified(self):
@@ -215,7 +215,7 @@ class PipelineFile(PipelineFileBase):
 
     def __init__(self, local_path, name=None, archive_path=None, dest_path=None, is_deletion=False, late_deletion=False,
                  file_update_callback=None):
-        super(PipelineFile, self).__init__(local_path, dest_path)
+        super().__init__(local_path, dest_path)
 
         self._name = name if name is not None else os.path.basename(local_path)
 
@@ -270,7 +270,7 @@ class PipelineFile(PipelineFileBase):
         # override superclass property to handle deletions (which have no local_path and therefore can't be summed)
         if self.is_deletion:
             return None
-        return super(PipelineFile, self).file_checksum
+        return super().file_checksum
 
     #
     # State properties (may change during the lifecycle of the object to reflect the current state)
@@ -575,7 +575,7 @@ class PipelineFileCollectionBase(MutableSet):
 
     def __init__(self, data=None, member_class=PipelineFile, member_validator=None, member_from_string_method=None,
                  unique_attributes=()):
-        super(PipelineFileCollectionBase, self).__init__()
+        super().__init__()
 
         self._s = IndexedSet()
 
@@ -957,7 +957,7 @@ class RemotePipelineFileCollection(PipelineFileCollectionBase):
         kwargs['member_validator'] = validate_remotepipelinefile_or_string
         kwargs['member_from_string_method'] = 'get_pipelinefile_from_dest_path'
         kwargs['unique_attributes'] = {'local_path', 'dest_path'}
-        super(RemotePipelineFileCollection, self).__init__(*args, **kwargs)
+        super().__init__(*args, **kwargs)
 
     def __contains__(self, v):
         element = v if isinstance(v, self.member_class) else self.get_pipelinefile_from_dest_path(v)
@@ -990,7 +990,7 @@ class PipelineFileCollection(PipelineFileCollectionBase):
         kwargs['member_validator'] = validate_pipelinefile_or_string
         kwargs['member_from_string_method'] = 'get_pipelinefile_from_src_path'
         kwargs['unique_attributes'] = {'archive_path', 'dest_path'}
-        super(PipelineFileCollection, self).__init__(*args, **kwargs)
+        super().__init__(*args, **kwargs)
 
     def __contains__(self, v):
         element = v if isinstance(v, self.member_class) else self.get_pipelinefile_from_src_path(v)
@@ -1008,7 +1008,7 @@ class PipelineFileCollection(PipelineFileCollectionBase):
         if not isinstance(pipeline_file, self.member_class) and not deletion and not os.path.isfile(pipeline_file):
             raise MissingFileError("file '{src}' doesn't exist".format(src=pipeline_file))
 
-        return super(PipelineFileCollection, self).add(pipeline_file, overwrite=overwrite, is_deletion=deletion)
+        return super().add(pipeline_file, overwrite=overwrite, is_deletion=deletion)
 
     def _set_attribute(self, attribute, value):
         for f in self._s:

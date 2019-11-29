@@ -197,7 +197,7 @@ class TalendHarvesterRunner(BaseHarvesterRunner):
     """
 
     def __init__(self, storage_broker, harvest_params, tmp_base_dir, config, logger, deletion=False):
-        super(TalendHarvesterRunner, self).__init__(config, logger)
+        super().__init__(config, logger)
         if harvest_params is None:
             harvest_params = {}
 

@@ -30,7 +30,7 @@ SIMPLE_MANIFEST = os.path.join(TESTDATA_DIR, 'test.manifest')
 class TestDummyHandler(HandlerTestCase):
     def setUp(self):
         self.handler_class = DummyHandler
-        super(TestDummyHandler, self).setUp()
+        super().setUp()
 
     def test_dest_path_from_handler(self):
         handler = self.run_handler(self.temp_nc_file)
