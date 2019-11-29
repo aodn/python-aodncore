@@ -10,11 +10,13 @@ addons:
 
 install:
   - pip install -r requirements.txt
-  - pip install coverage
+  - pip install .[testing]
+  - pip install pytest
+  - pip install pytest-cov
   - pip install codecov
 
 script:
-  - coverage run setup.py test
+  - pytest --cov=./
 
 after_success:
   - codecov
