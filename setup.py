@@ -15,6 +15,7 @@ INSTALL_REQUIRES = [
     'jsonschema==2.6.0',
     'OWSLib==0.16.0',
     'paramiko==2.4.2',
+    'python-dateutil<2.8.1',  # capped due to https://github.com/boto/botocore/pull/1871
     'six==1.10.0',
     'tabulate==0.8.2',
     'transitions==0.5.3',
