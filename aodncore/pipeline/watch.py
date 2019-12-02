@@ -186,7 +186,7 @@ def build_task(config, pipeline_name, handler_class, success_exit_policies, erro
 
         def run(self, incoming_file):
             try:
-                logging.config.dictConfig(config.worker_logging_config)
+                logging.config.dictConfig(config.get_worker_logging_config(task_name))
                 logging_extra = {
                     'celery_task_id': self.request.id,
                     'celery_task_name': task_name
