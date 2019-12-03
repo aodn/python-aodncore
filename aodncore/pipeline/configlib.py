@@ -25,9 +25,9 @@ __all__ = [
     'validate_lazyconfigmanager'
 ]
 
-DEFAULT_CONFIG_FILE = '/mnt/ebs/aodn-pipeline/etc/pipeline.conf'
+DEFAULT_CONFIG_FILE = '/mnt/ebs/pipeline/etc/pipeline.conf'
 DEFAULT_CONFIG_ENVVAR = 'PIPELINE_CONFIG_FILE'
-DEFAULT_WATCH_CONFIG = '/mnt/ebs/aodn-pipeline/etc/watches.conf'
+DEFAULT_WATCH_CONFIG = '/mnt/ebs/pipeline/etc/watches.conf'
 DEFAULT_WATCH_CONFIG_ENVVAR = 'PIPELINE_WATCH_CONFIG_FILE'
 DEFAULT_TRIGGER_CONFIG = '/usr/local/talend/etc/trigger.conf'
 DEFAULT_TRIGGER_CONFIG_ENVVAR = 'PIPELINE_TRIGGER_CONFIG_FILE'
