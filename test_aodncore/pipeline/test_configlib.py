@@ -162,9 +162,9 @@ class TestLazyConfigManager(BaseTestCase):
 
         self.assertIn('watchservice_handler', watchservice_logging_config['handlers'].keys())
 
-    def test_worker_logging_config(self):
-        worker_logging_config = self.config.worker_logging_config
-        expected_logging_handlers = ['tasks.ANMN_QLD_XXXX_handler', 'tasks.SOOP_DU_JOUR_handler']
+    def test_get_worker_logging_config(self):
+        worker_logging_config = self.config.get_worker_logging_config('tasks.ANMN_QLD_XXXX')
+        expected_logging_handlers = ['tasks.ANMN_QLD_XXXX_handler']
         six.assertCountEqual(self, expected_logging_handlers, worker_logging_config['handlers'].keys())
 
     def test_watch_directory_map(self):

@@ -68,13 +68,15 @@ class WorkerLoggingConfigBuilder(object):
             'class': 'logging.FileHandler',
             'formatter': formatter,
             'filename': os.path.join(self.pipeline_config['logging']['log_root'], 'process',
-                                     "{name}.log".format(name=name))
+                                     "{name}.log".format(name=name)),
+            'delay': True
         }
         self._dict_config['loggers'][name] = {
             'handlers': [handler_name],
             'level': level,
             'propagate': False
         }
+        return self
 
     def add_watches(self, watches):
         validate_nonstring_iterable(watches)
@@ -82,7 +84,7 @@ class WorkerLoggingConfigBuilder(object):
         for watch in watches:
             self.add_watch_config(watch)
 
-    def get_config(self):
+    def build(self):
         return self._dict_config
 
 

@@ -25,9 +25,9 @@ __all__ = [
     'validate_lazyconfigmanager'
 ]
 
-DEFAULT_CONFIG_FILE = '/mnt/ebs/aodn-pipeline/etc/pipeline.conf'
+DEFAULT_CONFIG_FILE = '/mnt/ebs/pipeline/etc/pipeline.conf'
 DEFAULT_CONFIG_ENVVAR = 'PIPELINE_CONFIG_FILE'
-DEFAULT_WATCH_CONFIG = '/mnt/ebs/aodn-pipeline/etc/watches.conf'
+DEFAULT_WATCH_CONFIG = '/mnt/ebs/pipeline/etc/watches.conf'
 DEFAULT_WATCH_CONFIG_ENVVAR = 'PIPELINE_WATCH_CONFIG_FILE'
 DEFAULT_TRIGGER_CONFIG = '/usr/local/talend/etc/trigger.conf'
 DEFAULT_TRIGGER_CONFIG_ENVVAR = 'PIPELINE_TRIGGER_CONFIG_FILE'
@@ -78,16 +78,13 @@ class LazyConfigManager(object):
         validate_logging_config(watchservice_logging_config)
         return watchservice_logging_config
 
-    @lazyproperty
-    def worker_logging_config(self):
-        config_builder = WorkerLoggingConfigBuilder(self.pipeline_config)
+    def get_worker_logging_config(self, task_name):
+        """Get the logging config for an individual task
 
-        for name in self.watch_config.keys():
-            task_name = get_task_name(self.pipeline_config['watch']['task_namespace'], name)
-            config_builder.add_watch_config(task_name)
-
-        worker_logging_config = config_builder.get_config()
-
+        :param task_name: name of the task to retrieve the log config for
+        :return: logging config for use by logging.config.dictConfig
+        """
+        worker_logging_config = WorkerLoggingConfigBuilder(self.pipeline_config).add_watch_config(task_name).build()
         validate_logging_config(worker_logging_config)
         return worker_logging_config
 
