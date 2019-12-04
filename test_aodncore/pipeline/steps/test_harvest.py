@@ -23,10 +23,10 @@ HARVEST_SUCCESS = 0
 HARVEST_FAIL = 1
 
 
-def get_harvest_collection(delete=False, with_store=False, already_stored=False):
-    pf_bad = PipelineFile(BAD_NC, is_deletion=delete)
-    pf_empty = PipelineFile(EMPTY_NC, is_deletion=delete)
-    pf_good = PipelineFile(GOOD_NC, is_deletion=delete)
+def get_harvest_collection(delete=False, late_deletion=False, with_store=False, already_stored=False):
+    pf_bad = PipelineFile(BAD_NC, is_deletion=delete, late_deletion=late_deletion)
+    pf_empty = PipelineFile(EMPTY_NC, is_deletion=delete, late_deletion=late_deletion)
+    pf_good = PipelineFile(GOOD_NC, is_deletion=delete, late_deletion=late_deletion)
 
     collection = PipelineFileCollection([pf_bad, pf_empty, pf_good])
 
@@ -169,6 +169,59 @@ class TestTalendHarvesterRunner(BaseTestCase):
         self.assertTrue(all(f.is_deletion for f in collection))
         self.assertTrue(all(f.is_harvested for f in collection))
         self.assertTrue(all(f.is_deleted for f in collection))
+
+    @mock.patch('aodncore.util.process.subprocess')
+    def test_harvest_late_deletion(self, mock_subprocess):
+        mock_subprocess.Popen().wait.return_value = HARVEST_SUCCESS
+        mock_subprocess.Popen().communicate.return_value = ('mocked stdout', 'mocked stderr')
+
+        collection = get_harvest_collection(with_store=True, delete=True)
+        collection[2]._late_deletion = True
+
+        harvester_runner = TalendHarvesterRunner(self.uploader, {'slice_size': 1}, TESTDATA_DIR, self.config, self.test_logger)
+        harvester_runner.run(collection)
+
+        harvester_runner.storage_broker.assert_upload_call_count(0)
+        harvester_runner.storage_broker.assert_delete_call_count(3)
+
+        self.assertTrue(all(f.is_deletion for f in collection))
+        self.assertTrue(all(f.is_harvested for f in collection))
+        self.assertTrue(all(f.is_deleted for f in collection))
+
+    @mock.patch('aodncore.util.process.subprocess')
+    def test_harvest_late_deletion_not_run_with_addition_error(self, mock_subprocess):
+        mock_subprocess.Popen().wait.side_effect = (HARVEST_SUCCESS,  # slice 1, zzz_my_test_harvester, event 1
+                                                    HARVEST_SUCCESS,  # slice 1, aaa_my_test_harvester, event 1
+                                                    HARVEST_SUCCESS,  # slice 1, aaa_my_test_harvester, event 2
+                                                    HARVEST_SUCCESS,  # slice 1, mmm_my_test_harvester, event 1
+                                                    HARVEST_FAIL,  # failure slice 2, zzz_my_test_harvester, event 1
+                                                    HARVEST_SUCCESS,  # undo slice 1, zzz_my_test_harvester, event 1
+                                                    HARVEST_SUCCESS,  # undo slice 1, zzz_my_test_harvester, event 1
+                                                    HARVEST_SUCCESS,  # undo slice 1, aaa_my_test_harvester, event 1
+                                                    HARVEST_SUCCESS,  # undo slice 1, aaa_my_test_harvester, event 2
+                                                    HARVEST_SUCCESS)  # undo slice 1, mmm_my_test_harvester, event 1
+        mock_subprocess.Popen().communicate.return_value = ('mocked stdout', 'mocked stderr')
+
+        collection = get_harvest_collection(with_store=True)
+        collection[0]._is_deletion = True
+        collection[0]._late_deletion = False
+        collection[2]._is_deletion = True
+        collection[2]._late_deletion = True
+
+        harvester_runner = TalendHarvesterRunner(self.uploader, {'slice_size': 1}, TESTDATA_DIR, self.config, self.test_logger)
+
+        with self.assertRaises(SystemCommandFailedError):
+            harvester_runner.run(collection)
+
+        harvester_runner.storage_broker.assert_upload_call_count(0)
+        harvester_runner.storage_broker.assert_delete_call_count(1)
+
+        # early deletion should have been triggered (i.e. run before additions)
+        self.assertTrue(all((collection[0].is_deletion, collection[0].is_harvested, collection[0].is_stored)))
+        # addition causes an error
+        self.assertTrue(all((not collection[1].is_deletion, not collection[1].is_harvested, not collection[1].is_stored)))
+        # late deletion should *not* have been triggered due to addition error
+        self.assertTrue(all((collection[2].is_deletion, not collection[2].is_harvested, not collection[2].is_stored)))
 
     @mock.patch('aodncore.util.process.subprocess')
     def test_harvest_only_fail(self, mock_subprocess):
