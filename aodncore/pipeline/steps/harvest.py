@@ -217,12 +217,14 @@ class TalendHarvesterRunner(BaseHarvesterRunner):
         """
         validate_pipelinefilecollection(pipeline_files)
 
-        deletions = pipeline_files.filter_by_bool_attribute('pending_harvest_deletion')
+        deletions = pipeline_files.filter_by_bool_attribute('pending_harvest_early_deletion')
         additions = pipeline_files.filter_by_bool_attribute('pending_harvest_addition')
+        late_deletions = pipeline_files.filter_by_bool_attribute('pending_harvest_late_deletion')
 
         self._logger.sysinfo("harvesting slice size: {slice_size}".format(slice_size=self.slice_size))
         deletion_slices = deletions.get_slices(self.slice_size)
         addition_slices = additions.get_slices(self.slice_size)
+        late_deletions_slices = late_deletions.get_slices(self.slice_size)
 
         for file_slice in deletion_slices:
             deletion_map = self.match_harvester_to_files(file_slice)
@@ -233,6 +235,11 @@ class TalendHarvesterRunner(BaseHarvesterRunner):
             addition_map = self.match_harvester_to_files(file_slice)
             validate_harvester_mapping(file_slice, addition_map)
             self.run_additions(addition_map, self.tmp_base_dir)
+
+        for file_slice in late_deletions_slices:
+            late_deletion_map = self.match_harvester_to_files(file_slice)
+            validate_harvester_mapping(file_slice, late_deletion_map)
+            self.run_deletions(late_deletion_map, self.tmp_base_dir)
 
     def match_harvester_to_files(self, pipeline_files):
         validate_pipelinefilecollection(pipeline_files)

@@ -205,15 +205,17 @@ class PipelineFile(PipelineFileBase):
     :type dest_path: :py:class:`str`
     :param is_deletion: flag designating whether this is a deletion
     :type is_deletion: :py:class:`bool`
+    :param late_deletion: flag to indicate that this file should be deleted *after* additions are performed (note: ignored if `is_deletion=False`)
+    :type late_deletion: :py:class:`bool`
     :param file_update_callback: optional callback to call when a file property is updated
     :type file_update_callback: :py:class:`callable`
     """
-    __slots__ = ['_archive_path', '_file_update_callback', '_check_type', '_is_deletion', '_publish_type',
-                 '_should_archive', '_should_harvest', '_should_store', '_should_undo', '_is_checked', '_is_archived',
-                 '_is_harvested', '_is_overwrite', '_is_stored', '_is_harvest_undone', '_is_upload_undone',
-                 '_check_result', '_mime_type']
+    __slots__ = ['_archive_path', '_file_update_callback', '_check_type', '_is_deletion', '_late_deletion',
+                 '_publish_type', '_should_archive', '_should_harvest', '_should_store', '_should_undo', '_is_checked',
+                 '_is_archived', '_is_harvested', '_is_overwrite', '_is_stored', '_is_harvest_undone',
+                 '_is_upload_undone', '_check_result', '_mime_type']
 
-    def __init__(self, local_path, name=None, archive_path=None, dest_path=None, is_deletion=False,
+    def __init__(self, local_path, name=None, archive_path=None, dest_path=None, is_deletion=False, late_deletion=False,
                  file_update_callback=None):
         super(PipelineFile, self).__init__(local_path, dest_path, name)
 
@@ -228,6 +230,7 @@ class PipelineFile(PipelineFileBase):
         # processing flags - these express the *intended actions* for the file
         self._check_type = PipelineFileCheckType.UNSET
         self._is_deletion = is_deletion
+        self._late_deletion = late_deletion
         self._publish_type = PipelineFilePublishType.UNSET
         self._should_archive = False
         self._should_harvest = False
@@ -368,6 +371,10 @@ class PipelineFile(PipelineFileBase):
         return self._is_deletion
 
     @property
+    def late_deletion(self):
+        return self._late_deletion
+
+    @property
     def is_deleted(self):
         return self.is_deletion and self.is_stored
 
@@ -458,6 +465,14 @@ class PipelineFile(PipelineFileBase):
     @property
     def pending_harvest_deletion(self):
         return self.pending_harvest and self.is_deletion
+
+    @property
+    def pending_harvest_early_deletion(self):
+        return self.pending_harvest and self.is_deletion and not self.late_deletion
+
+    @property
+    def pending_harvest_late_deletion(self):
+        return self.pending_harvest and self.is_deletion and self.late_deletion
 
     @property
     def pending_harvest_undo(self):
