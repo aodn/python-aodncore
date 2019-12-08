@@ -39,13 +39,9 @@ PACKAGE_EXCLUDES = ['test_aodncore.*', 'test_aodncore']
 PACKAGE_NAME = 'aodncore'
 PACKAGE_SCRIPTS = ['aodncore/bin/drawmachine.py', 'aodncore/pipeline/watchservice.py']
 
-version = {}
-with open('aodncore/version.py') as f:
-    exec(f.read(), version)
-
 setup(
     name=PACKAGE_NAME,
-    version=version['__version__'],
+    version='0.31.5',
     scripts=PACKAGE_SCRIPTS,
     packages=find_packages(exclude=PACKAGE_EXCLUDES),
     package_data=PACKAGE_DATA,
