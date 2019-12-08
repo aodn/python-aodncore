@@ -14,6 +14,7 @@ INSTALL_REQUIRES = [
     'jsonschema==3.1.1',
     'OWSLib==0.18.0',
     'paramiko==2.6.0',
+    'python-dateutil<2.8.1',  # dateutil capped due to: https://github.com/boto/botocore/issues/1872
     'tabulate==0.8.2',
     'transitions==0.7.1'
 ]
