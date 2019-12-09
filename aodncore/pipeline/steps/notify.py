@@ -24,7 +24,6 @@ from ..common import (NotificationRecipientType, validate_recipienttype)
 from ..exceptions import InvalidRecipientError, NotificationFailedError
 from ...util import (IndexedSet, TemplateRenderer, format_exception, lazyproperty, validate_bool, validate_dict,
                      validate_nonstring_iterable, validate_type)
-import six
 
 __all__ = [
     'get_notify_runner',
@@ -68,13 +67,13 @@ def get_child_notify_runner(recipient_type, notification_data, config, logger):
         return LogFailuresNotifyRunner(notification_data, config, logger)
 
 
-class BaseNotifyRunner(six.with_metaclass(abc.ABCMeta, BaseStepRunner)):
+class BaseNotifyRunner(BaseStepRunner, metaclass=abc.ABCMeta):
     """Base class for NotifyRunner classes, provides *protocol agnostic* helper methods and properties for child
         NotifyRunner classes
     """
 
     def __init__(self, notification_data, config, logger):
-        super(BaseNotifyRunner, self).__init__(config, logger)
+        super().__init__(config, logger)
         self.notification_data = notification_data
 
         self.error = None
@@ -194,7 +193,7 @@ class BaseNotifyRunner(six.with_metaclass(abc.ABCMeta, BaseStepRunner)):
 
 class NotifyRunnerAdapter(BaseNotifyRunner):
     def __init__(self, notification_data, config, logger, notify_params):
-        super(NotifyRunnerAdapter, self).__init__(notification_data, config, logger)
+        super().__init__(notification_data, config, logger)
         self.notification_data = notification_data
 
         if notify_params is None:

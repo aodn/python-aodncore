@@ -7,15 +7,11 @@ import zipfile
 from io import open
 from tempfile import mkdtemp, mkstemp
 
-import six
-
 from aodncore.testlib import BaseTestCase, get_nonexistent_path
 from aodncore.util import (extract_gzip, extract_zip, is_gzipfile, is_netcdffile, is_zipfile, list_regular_files,
                            mkdir_p, rm_f, rm_r, rm_rf, safe_copy_file, safe_move_file, get_file_checksum,
                            TemporaryDirectory)
 from aodncore.util.misc import format_exception
-
-StringIO = six.StringIO
 
 TEST_ROOT = os.path.join(os.path.dirname(__file__))
 GOOD_NC = os.path.join(TEST_ROOT, 'good.nc')
@@ -154,12 +150,7 @@ class TestUtilFileOps(BaseTestCase):
         dir_entries = list(list_regular_files(self.temp_dir, recursive=True))
         self.assertListEqual(dir_entries, reference_list)
 
-        try:
-            unicode
-        except NameError:
-            unicode = str
-
-        dir_entries_unicode = list(list_regular_files(unicode(self.temp_dir), recursive=True))
+        dir_entries_unicode = list(list_regular_files(self.temp_dir, recursive=True))
         self.assertListEqual(dir_entries_unicode, reference_list)
 
     def test_mkdir_p(self):
@@ -187,14 +178,14 @@ class TestUtilFileOps(BaseTestCase):
         rm_f(temp_file)
         self.assertFalse(os.path.exists(temp_file))
 
-        with self.assertRaisesRegexp(OSError, '[Errno 21].*'):
+        with self.assertRaisesRegex(OSError, r'\[Errno 21\].*'):
             rm_f(temp_dir)
 
     def test_rm_r(self):
         _, temp_file = mkstemp(suffix='.tmp', prefix=self.__class__.__name__, dir=self.temp_dir)
         temp_dir = mkdtemp(prefix=self.__class__.__name__, dir=self.temp_dir)
 
-        with self.assertRaisesRegexp(OSError, '[Errno 2].*'):
+        with self.assertRaisesRegex(OSError, r'\[Errno 2\].*'):
             rm_r(get_nonexistent_path())
 
         with self.assertNoException():
@@ -218,7 +209,7 @@ class TestUtilFileOps(BaseTestCase):
 
     def test_safe_copy_file(self):
         nonexistent_file = get_nonexistent_path()
-        with self.assertRaisesRegexp(OSError, "source file .* does not exist"):
+        with self.assertRaisesRegex(OSError, r'source file .* does not exist'):
             safe_copy_file(nonexistent_file, os.path.join(self.temp_dir, nonexistent_file))
 
         temp_source_file_path = os.path.join(self.temp_dir, str(uuid.uuid4()))
@@ -227,13 +218,13 @@ class TestUtilFileOps(BaseTestCase):
         with open(temp_source_file_path, 'w') as f:
             f.write(u'foobar')
 
-        with self.assertRaisesRegexp(OSError, "source file and destination file can't refer the to same file"):
+        with self.assertRaisesRegex(OSError, r"source file and destination file can't refer the to same file"):
             safe_copy_file(temp_source_file_path, temp_source_file_path)
 
         safe_copy_file(temp_source_file_path, temp_dest_file_path)
         self.assertTrue(filecmp.cmp(temp_source_file_path, temp_dest_file_path, shallow=False))
 
-        with self.assertRaisesRegexp(OSError, "destination file .* already exists"):
+        with self.assertRaisesRegex(OSError, r'destination file .* already exists'):
             safe_copy_file(temp_source_file_path, temp_dest_file_path)
 
         safe_copy_file(temp_source_file_path, temp_dest_file_path, overwrite=True)

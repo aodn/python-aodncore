@@ -2,20 +2,14 @@ import abc
 import errno
 import os
 from datetime import datetime
+from http.client import IncompleteRead
 from io import open
 from ssl import SSLError
+from urllib.parse import urlparse
 
 import boto3
-import six
 from botocore.exceptions import ClientError, ConnectionError
 from paramiko import SSHClient, AutoAddPolicy
-from six.moves.http_client import IncompleteRead
-from six.moves.urllib.parse import urlparse
-
-try:
-    from os import walk
-except ImportError:
-    from scandir import walk
 
 from .exceptions import AttributeNotSetError, InvalidStoreUrlError, StorageBrokerError
 from .files import (ensure_pipelinefilecollection, ensure_remotepipelinefilecollection, PipelineFileCollection,
@@ -58,36 +52,36 @@ def get_storage_broker(store_url):
         raise InvalidStoreUrlError("invalid URL scheme '{url.scheme}'".format(url=url))
 
 
-class BaseStorageBroker(six.with_metaclass(abc.ABCMeta, object)):
+class BaseStorageBroker(object, metaclass=abc.ABCMeta):
     def __init__(self):
         self.prefix = None
         self.mode = None
 
-    @abc.abstractmethod  # pragma: no cover
+    @abc.abstractmethod
     def _delete_file(self, pipeline_file, dest_path_attr):
         pass
 
-    @abc.abstractmethod  # pragma: no cover
+    @abc.abstractmethod
     def _post_run_hook(self):
         pass
 
-    @abc.abstractmethod  # pragma: no cover
+    @abc.abstractmethod
     def _pre_run_hook(self):
         pass
 
-    @abc.abstractmethod  # pragma: no cover
+    @abc.abstractmethod
     def _run_query(self, query):
         pass
 
-    @abc.abstractmethod  # pragma: no cover
+    @abc.abstractmethod
     def _download_file(self, remote_pipeline_file):
         pass
 
-    @abc.abstractmethod  # pragma: no cover
+    @abc.abstractmethod
     def _upload_file(self, pipeline_file, dest_path_attr):
         pass
 
-    @abc.abstractmethod  # pragma: no cover
+    @abc.abstractmethod
     def _get_is_overwrite(self, pipeline_file, abs_path):
         pass
 
@@ -251,7 +245,7 @@ class LocalFileStorageBroker(BaseStorageBroker):
     """
 
     def __init__(self, prefix):
-        super(LocalFileStorageBroker, self).__init__()
+        super().__init__()
         self.prefix = prefix
 
     def __repr__(self):
@@ -277,7 +271,7 @@ class LocalFileStorageBroker(BaseStorageBroker):
 
         def _find_prefix(path):
             parent_path = os.path.dirname(path)
-            for root, dirs, files in walk(parent_path):
+            for root, dirs, files in os.walk(parent_path):
                 for name in files:
                     fullpath = os.path.join(root, name)
                     if fullpath.startswith(full_query) and not os.path.islink(fullpath):
@@ -324,7 +318,7 @@ class S3StorageBroker(BaseStorageBroker):
     }
 
     def __init__(self, bucket, prefix):
-        super(S3StorageBroker, self).__init__()
+        super().__init__()
 
         self.bucket = bucket
         self.prefix = prefix
@@ -447,7 +441,7 @@ class SftpStorageBroker(BaseStorageBroker):
     """
 
     def __init__(self, server, prefix):
-        super(SftpStorageBroker, self).__init__()
+        super().__init__()
         self.server = server
         self.prefix = prefix
 

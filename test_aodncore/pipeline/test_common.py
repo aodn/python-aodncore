@@ -6,7 +6,7 @@ from aodncore.testlib import BaseTestCase
 
 class TestFileType(BaseTestCase):
     def setUp(self):
-        super(TestFileType, self).setUp()
+        super().setUp()
 
     def test_get_type_from_extension_nc(self):
         nc = FileType.get_type_from_extension('.nc')

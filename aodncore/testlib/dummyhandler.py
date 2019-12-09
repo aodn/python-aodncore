@@ -27,7 +27,7 @@ class DummyHandler(HandlerBase):
     """
 
     def __init__(self, *args, **kwargs):
-        super(DummyHandler, self).__init__(*args, **kwargs)
+        super().__init__(*args, **kwargs)
         self.default_addition_publish_type = PipelineFilePublishType.HARVEST_ARCHIVE_UPLOAD
         self.opendap_root = self.config.pipeline_config['global'].get('opendap_root')
 

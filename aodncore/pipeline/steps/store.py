@@ -31,7 +31,7 @@ def get_store_runner(store_base_url, config, logger, archive_mode=False):
 
 class StoreRunner(BaseStepRunner):
     def __init__(self, broker, config, logger, archive_mode=False):
-        super(StoreRunner, self).__init__(config, logger)
+        super().__init__(config, logger)
         self.broker = broker
         self.archive_mode = archive_mode
 

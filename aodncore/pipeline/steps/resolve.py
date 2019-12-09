@@ -24,7 +24,6 @@ import re
 from enum import Enum
 from io import open
 
-import six
 from jsonschema.exceptions import ValidationError
 
 from .basestep import BaseStepRunner
@@ -77,9 +76,9 @@ def get_resolve_runner(input_file, output_dir, config, logger, resolve_params=No
         return SingleFileResolveRunner(input_file, output_dir, config, logger)
 
 
-class BaseResolveRunner(six.with_metaclass(abc.ABCMeta, BaseStepRunner)):
+class BaseResolveRunner(BaseStepRunner, metaclass=abc.ABCMeta):
     def __init__(self, input_file, output_dir, config, logger):
-        super(BaseResolveRunner, self).__init__(config, logger)
+        super().__init__(config, logger)
         self.input_file = input_file
         self.output_dir = output_dir
         self._collection = PipelineFileCollection()
@@ -126,7 +125,7 @@ class ZipFileResolveRunner(BaseResolveRunner):
 # noinspection PyAbstractClass
 class BaseManifestResolveRunner(BaseResolveRunner):
     def __init__(self, input_file, output_dir, config, logger, resolve_params=None):
-        super(BaseManifestResolveRunner, self).__init__(input_file, output_dir, config, logger)
+        super().__init__(input_file, output_dir, config, logger)
 
         if resolve_params is None:
             resolve_params = {}

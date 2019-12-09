@@ -23,7 +23,6 @@ import warnings
 from uuid import uuid4
 
 from enum import Enum
-from six import PY2
 from transitions import Machine
 
 from .files import PipelineFile
@@ -49,7 +48,6 @@ except ImportError:
 
 from celery import Task
 from celery.utils.log import get_task_logger
-from six import iteritems
 
 from .exceptions import InvalidHandlerError
 from ..util import list_regular_files, safe_move_file
@@ -274,7 +272,7 @@ class CeleryContext(object):
                           "{invalid} not in {discovered}".format(invalid=list(invalid_handlers),
                                                                  discovered=list(available_handler_names)))
 
-        for pipeline_name, items in iteritems(self._config.watch_config):
+        for pipeline_name, items in self._config.watch_config.items():
             try:
                 handler_class = loaded_handlers[items['handler']]
             except KeyError:
@@ -323,7 +321,7 @@ def should_ignore_event(pathname):
 
 class IncomingFileEventHandler(pyinotify.ProcessEvent):
     def __init__(self, config):
-        super(IncomingFileEventHandler, self).__init__()
+        super().__init__()
         self._config = config
         self._logger = get_pipeline_logger(config.pipeline_config['watch']['logger_name'])
 
@@ -571,11 +569,8 @@ class WatchServiceManager(object):
 
         :return: None
         """
-        for directory, queue in iteritems(self._config.watch_directory_map):
-            # Python 2 cannot handle the unicode string due to using str.* methods for sorting
-            str_directory = str(directory) if PY2 else directory
-
-            for existing_file in list_regular_files(str_directory):
+        for directory, queue in self._config.watch_directory_map.items():
+            for existing_file in list_regular_files(directory):
                 self._logger.info(
                     "queuing existing file: existing_file='{existing_file}'".format(
                         existing_file=existing_file))

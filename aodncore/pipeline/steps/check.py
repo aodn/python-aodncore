@@ -18,7 +18,6 @@ from ..common import CheckResult, PipelineFileCheckType, validate_checktype
 from ..exceptions import ComplianceCheckFailedError, InvalidCheckSuiteError, InvalidCheckTypeError
 from ..files import PipelineFileCollection
 from ...util import format_exception, is_netcdffile, is_nonemptyfile, CaptureStdIO
-import six
 
 __all__ = [
     'get_check_runner',
@@ -55,7 +54,7 @@ def get_child_check_runner(check_type, config, logger, check_params=None):
         raise InvalidCheckTypeError("invalid check type '{check_type}'".format(check_type=check_type))
 
 
-class BaseCheckRunner(six.with_metaclass(abc.ABCMeta, BaseStepRunner)):
+class BaseCheckRunner(BaseStepRunner, metaclass=abc.ABCMeta):
     """A CheckRunner is responsible for performing checks on a given collection of files.
     
     The 'run' method is supplied with a PipelineFileCollection object and performs arbitrary checks against the files, 
@@ -75,7 +74,7 @@ class BaseCheckRunner(six.with_metaclass(abc.ABCMeta, BaseStepRunner)):
 
 class CheckRunnerAdapter(BaseCheckRunner):
     def __init__(self, config, logger, check_params=None):
-        super(CheckRunnerAdapter, self).__init__(config, logger)
+        super().__init__(config, logger)
 
         if check_params is None:
             check_params = {}
@@ -107,7 +106,7 @@ class CheckRunnerAdapter(BaseCheckRunner):
 
 class ComplianceCheckerCheckRunner(BaseCheckRunner):
     def __init__(self, config, logger, check_params=None):
-        super(ComplianceCheckerCheckRunner, self).__init__(config, logger)
+        super().__init__(config, logger)
         if check_params is None:
             check_params = {}
 

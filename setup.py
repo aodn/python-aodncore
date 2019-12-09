@@ -1,5 +1,4 @@
 from setuptools import setup, find_packages
-from io import open
 
 ENTRY_POINTS = {
     'pipeline.module_versions': [
@@ -9,28 +8,24 @@ ENTRY_POINTS = {
 
 INSTALL_REQUIRES = [
     'boto3>=1.9.156',
-    'celery==4.1.1',
+    'celery==4.3.0',
     'compliance-checker==4.1.1',
-    'Jinja2==2.9.6',
-    'jsonschema==2.6.0',
-    'OWSLib==0.16.0',
-    'paramiko==2.4.2',
-    'six==1.10.0',
+    'Jinja2==2.10.3',
+    'jsonschema==3.1.1',
+    'OWSLib==0.18.0',
+    'paramiko==2.6.0',
+    'python-dateutil<2.8.1',  # dateutil capped due to: https://github.com/boto/botocore/issues/1872
     'tabulate==0.8.2',
-    'transitions==0.5.3',
-    'vine<=1.3.0'  # version 5 has dropped Python 2 support
+    'transitions==0.7.1'
 ]
 
 TESTS_REQUIRE = [
-    'httpretty==0.9.6'
+    'httpretty==0.9.7'
 ]
 
 EXTRAS_REQUIRE = {
     'testing': TESTS_REQUIRE,
-    ':platform_system == "Linux"': ['pyinotify == 0.9.6'],
-    ':python_version < "3.3"': ['mock == 2.0.0'],
-    ':python_version < "3.4"': ['enum34==1.1.6'],
-    ':python_version < "3.5"': ['scandir == 1.6'],
+    ':platform_system == "Linux"': ['pyinotify == 0.9.6']
 }
 
 PACKAGE_DATA = {
@@ -44,13 +39,9 @@ PACKAGE_EXCLUDES = ['test_aodncore.*', 'test_aodncore']
 PACKAGE_NAME = 'aodncore'
 PACKAGE_SCRIPTS = ['aodncore/bin/drawmachine.py', 'aodncore/pipeline/watchservice.py']
 
-version = {}
-with open('aodncore/version.py') as f:
-    exec(f.read(), version)
-
 setup(
     name=PACKAGE_NAME,
-    version=version['__version__'],
+    version='0.31.5',
     scripts=PACKAGE_SCRIPTS,
     packages=find_packages(exclude=PACKAGE_EXCLUDES),
     package_data=PACKAGE_DATA,
@@ -60,9 +51,21 @@ setup(
     author_email='developers@emii.org.au',
     description='AODN pipeline library',
     zip_safe=False,
+    python_requires='>=3.5',
     install_requires=INSTALL_REQUIRES,
     extras_require=EXTRAS_REQUIRE,
     tests_require=TESTS_REQUIRE,
     test_suite='test_aodncore',
-    entry_points=ENTRY_POINTS
+    entry_points=ENTRY_POINTS,
+    classifiers=[
+        'Development Status :: 5 - Production/Stable',
+        'Intended Audience :: Developers',
+        'Natural Language :: English',
+        'License :: OSI Approved :: GNU General Public License v3 (GPLv3)',
+        'Programming Language :: Python',
+        'Programming Language :: Python :: 3',
+        'Programming Language :: Python :: 3.5',
+        'Programming Language :: Python :: 3.6',
+        'Programming Language :: Python :: Implementation :: CPython',
+    ],
 )

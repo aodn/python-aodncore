@@ -4,7 +4,6 @@
 import os
 import subprocess
 
-import six
 from .misc import format_exception
 from ..common import SystemCommandFailedError
 
@@ -18,7 +17,7 @@ class SystemProcess(object):
     """
 
     def __init__(self, command, stdin=subprocess.PIPE, stdout=subprocess.PIPE, stdin_text=None, env=None, shell=False):
-        super(SystemProcess, self).__init__()
+        super().__init__()
 
         self.command = command
         self.shell = shell
@@ -45,7 +44,7 @@ class SystemProcess(object):
             if not isinstance(self.command, list):
                 raise SystemCommandFailedError("command parameter must be a list if not a bash shell command")
         else:
-            if not isinstance(self.command, six.string_types):
+            if not isinstance(self.command, str):
                 raise SystemCommandFailedError("command param must be a string if bash shell command")
             else:
                 if not self.command:

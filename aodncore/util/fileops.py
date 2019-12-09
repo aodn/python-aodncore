@@ -15,14 +15,6 @@ from io import open
 from tempfile import TemporaryFile
 
 import netCDF4
-import six
-
-try:
-    from os import scandir, walk
-except ImportError:
-    from scandir import scandir, walk
-
-StringIO = six.StringIO
 
 locale.setlocale(locale.LC_ALL, 'C')
 
@@ -236,11 +228,11 @@ def list_regular_files(path, recursive=False, sort_key=cmp_to_key(locale.strcoll
         raise ValueError("sort_key must be callable")
 
     def nonrecursive_list(path_):
-        dir_entries = sorted(scandir(os.path.abspath(path_)), key=lambda p: sort_key(p.name))
+        dir_entries = sorted(os.scandir(os.path.abspath(path_)), key=lambda p: sort_key(p.name))
         return (f.path for f in dir_entries if f.is_file(follow_symlinks=False))
 
     def recursive_list(path_):
-        for root, dirs, files in walk(path_):
+        for root, dirs, files in os.walk(path_):
             dirs.sort(key=sort_key)
             files.sort(key=sort_key)
             for name in files:

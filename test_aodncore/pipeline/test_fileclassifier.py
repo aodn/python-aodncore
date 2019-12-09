@@ -2,7 +2,6 @@
 """Unit tests for FileClassifier classes"""
 
 import os
-import unittest
 
 from datetime import datetime
 from tempfile import mkstemp
@@ -30,13 +29,13 @@ class TestFileClassifier(BaseTestCase):
         fields = ['IMOS', 'ANMN-NRS', '20110203', 'NRSPHB', 'FV01', 'LOGSHT']
         filename = '_'.join(fields) + '.nc'
         self.assertEqual(FileClassifier._get_file_name_fields(filename), fields)
-        with self.assertRaisesRegexp(InvalidFileNameError, 'has less than 4 fields in file name'):
+        with self.assertRaisesRegex(InvalidFileNameError, 'has less than 4 fields in file name'):
             FileClassifier._get_file_name_fields('bad_file_name', min_fields=4)
 
     def test_get_facility(self):
         filename = 'IMOS_ANMN-NRS_CDEKOSTUZ_20121113T001841Z_NRSMAI_FV01_Profile-SBE-19plus.nc'
         self.assertEqual(FileClassifier._get_facility(filename), ('ANMN', 'NRS'))
-        with self.assertRaisesRegexp(InvalidFileNameError, 'Missing sub-facility in file name'):
+        with self.assertRaisesRegex(InvalidFileNameError, 'Missing sub-facility in file name'):
             FileClassifier._get_facility('IMOS_NO_SUB_FACILITY.nc')
 
     def test_bad_file(self):
@@ -69,7 +68,3 @@ class TestFileClassifier(BaseTestCase):
     def test_make_path(self):
         path = FileClassifier._make_path(['dir1', u'dir2', u'dir3'])
         self.assertTrue(isinstance(path, str))
-
-
-if __name__ == '__main__':
-    unittest.main()

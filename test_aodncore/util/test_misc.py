@@ -4,8 +4,6 @@ import sys
 import uuid
 from collections import OrderedDict
 
-import six
-
 from aodncore.testlib import BaseTestCase
 from aodncore.util import (ensure_regex, ensure_regex_list, ensure_writeonceordereddict, format_exception,
                            get_pattern_subgroups_from_string, is_function, is_nonstring_iterable, matches_regexes,
@@ -13,8 +11,6 @@ from aodncore.util import (ensure_regex, ensure_regex_list, ensure_writeonceorde
                            validate_membership, validate_nonstring_iterable, validate_regex, validate_regexes,
                            validate_relative_path, validate_relative_path_attr, validate_type, CaptureStdIO, Pattern,
                            WriteOnceOrderedDict)
-
-StringIO = six.StringIO
 
 TEST_ROOT = os.path.join(os.path.dirname(__file__))
 
@@ -267,7 +263,7 @@ class TestUtilMisc(BaseTestCase):
             validate_relative_path('relative/path')
 
     def test_validate_relative_path_attr(self):
-        with self.assertRaisesRegexp(ValueError, r'.*dest_path.*'):
+        with self.assertRaisesRegex(ValueError, r'.*dest_path.*'):
             validate_relative_path_attr('/absolute/path', 'dest_path')
 
         with self.assertNoException():
@@ -325,19 +321,19 @@ class TestUtilMisc(BaseTestCase):
         self.assertTrue(matches_regexes('example-filename.nc', [VALID_PATTERN]))
 
         # Testing inclusion from string regex
-        self.assertTrue(matches_regexes('example-filename.nc', 'example-.*\.nc'))
+        self.assertTrue(matches_regexes('example-filename.nc', r'example-.*\.nc'))
 
         # Testing exclusion from list of regexes
-        self.assertFalse(matches_regexes('another-example.zip', ['.*\.zip'], ['another-example.zip']))
+        self.assertFalse(matches_regexes('another-example.zip', [r'.*\.zip'], [r'another-example\.zip']))
 
         # Testing exclusion from string regex
-        self.assertFalse(matches_regexes('another-example.zip', '.*\.zip', 'another-example.zip'))
+        self.assertFalse(matches_regexes('another-example.zip', r'.*\.zip', r'another-example\.zip'))
 
         # Testing invalid arguments
         with self.assertRaises(TypeError):
             matches_regexes('example-filename.nc', 1)
         with self.assertRaises(TypeError):
-            matches_regexes('example-filename.nc', '.*\.zip', 1)
+            matches_regexes('example-filename.nc', r'.*\.zip', 1)
         with self.assertRaises(ValueError):
             matches_regexes('example-filename.nc', INVALID_PATTERN)
 

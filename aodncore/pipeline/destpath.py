@@ -4,8 +4,6 @@ may be in the handler class itself, or provided as a runtime parameter, this cod
 mechanism is consistent.
 """
 
-import six
-
 from .exceptions import InvalidPathFunctionError
 from ..util import validate_callable
 
@@ -84,7 +82,7 @@ class PathFunctionResolver(object):
         return function_ref, function_parent
 
     def _resolve_from_param(self):
-        if isinstance(self.function_param, six.string_types):
+        if isinstance(self.function_param, str):
             # a string parameter is assumed to be referring to an advertised entry point of the same name
             loaded_functions, failed_functions = self.handler_instance.config.discovered_dest_path_functions
             try:

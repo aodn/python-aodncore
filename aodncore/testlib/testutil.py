@@ -4,20 +4,15 @@ import tempfile
 import uuid
 import zipfile
 from collections import OrderedDict
+from urllib.parse import urlunsplit
 
 from netCDF4 import Dataset
-from six import iteritems
-from six.moves.urllib.parse import urlunsplit
 
 from ..pipeline.configlib import LazyConfigManager, load_json_file
 from ..pipeline.storage import BaseStorageBroker
 from ..testlib.dummyhandler import DummyHandler
 from ..util import WriteOnceOrderedDict
 
-try:
-    from unittest import mock
-except ImportError:
-    import mock
 
 __all__ = [
     'NullStorageBroker',
@@ -25,7 +20,6 @@ __all__ = [
     'get_nonexistent_path',
     'make_test_file',
     'make_zip',
-    'mock',
     'get_test_config',
     'load_runtime_patched_pipeline_config_file'
 ]
@@ -38,7 +32,7 @@ TESTLIB_VOCAB_DIR = os.path.join(os.path.dirname(__file__), 'vocab')
 
 class NullStorageBroker(BaseStorageBroker):
     def __init__(self, prefix, fail=False):
-        super(NullStorageBroker, self).__init__()
+        super().__init__()
         self.prefix = prefix
         self.fail = fail
 
@@ -74,19 +68,19 @@ class NullStorageBroker(BaseStorageBroker):
 
     def download(self, remote_pipeline_files, local_path, dest_path_attr='dest_path'):
         self.download_call_count += 1
-        super(NullStorageBroker, self).download(remote_pipeline_files, local_path)
+        super().download(remote_pipeline_files, local_path)
 
     def upload(self, pipeline_files, is_stored_attr='is_stored', dest_path_attr='dest_path'):
         self.upload_call_count += 1
-        super(NullStorageBroker, self).upload(pipeline_files, is_stored_attr, dest_path_attr)
+        super().upload(pipeline_files, is_stored_attr, dest_path_attr)
 
     def delete(self, pipeline_files, is_stored_attr='is_stored', dest_path_attr='dest_path'):
         self.delete_call_count += 1
-        super(NullStorageBroker, self).delete(pipeline_files, is_stored_attr, dest_path_attr)
+        super().delete(pipeline_files, is_stored_attr, dest_path_attr)
 
     def query(self, query=''):
         self.query_call_count += 1
-        super(NullStorageBroker, self).query(query)
+        super().query(query)
 
     def assert_download_call_count(self, count):
         if self.download_call_count != count:
@@ -184,7 +178,7 @@ def make_test_file(filename, attributes=None, **variables):
 
     with Dataset(filename, 'w') as ds:
         ds.setncatts(attributes)
-        for name, adict in iteritems(variables):
+        for name, adict in variables.items():
             var = ds.createVariable(name, float)
             var.setncatts(adict)
 

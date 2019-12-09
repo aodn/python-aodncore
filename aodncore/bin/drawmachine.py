@@ -12,16 +12,11 @@ import argparse
 import tempfile
 from datetime import datetime
 from functools import partial
-
+from unittest.mock import MagicMock, patch
 from transitions.extensions import GraphMachine
 
 from aodncore.pipeline.handlerbase import HandlerBase
 from aodncore.pipeline.watch import IncomingFileStateManager
-
-try:
-    from unittest import mock
-except ImportError:
-    import mock
 
 
 def draw_diagram(output_file, class_name):
@@ -30,12 +25,12 @@ def draw_diagram(output_file, class_name):
                                                                               timestamp=datetime.now()))
 
     if class_name == 'HandlerBase':
-        with mock.patch('aodncore.pipeline.handlerbase.Machine', new=machine), \
-             mock.patch('aodncore.pipeline.handlerbase.validate_lazyconfigmanager', new=lambda p: True):
+        with patch('aodncore.pipeline.handlerbase.Machine', new=machine), \
+             patch('aodncore.pipeline.handlerbase.validate_lazyconfigmanager', new=lambda p: True):
             m = HandlerBase(None)
     elif class_name == 'IncomingFileStateManager':
-        with mock.patch('aodncore.pipeline.watch.Machine', new=machine):
-            m = IncomingFileStateManager('', None, None, mock.MagicMock(), None, None, None, None)
+        with patch('aodncore.pipeline.watch.Machine', new=machine):
+            m = IncomingFileStateManager('', None, None, MagicMock(), None, None, None, None)
 
     m.get_graph().draw(output_file, prog='dot')
 

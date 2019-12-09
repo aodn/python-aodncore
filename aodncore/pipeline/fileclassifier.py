@@ -29,7 +29,6 @@ from datetime import datetime
 from netCDF4 import Dataset
 
 from .exceptions import InvalidFileFormatError, InvalidFileNameError, InvalidFileContentError
-from six.moves import range
 
 
 class FileClassifier(object):
@@ -42,7 +41,7 @@ class FileClassifier(object):
         """
         # trim off dirs & extention
         basename = os.path.basename(input_file)
-        just_the_name = re.sub('\.\w*$', '', basename)
+        just_the_name = re.sub(r'.\w*$', '', basename)
 
         fields = just_the_name.split('_')
         if len(fields) < min_fields:
@@ -69,7 +68,7 @@ class FileClassifier(object):
         """Open a NetCDF file for reading"""
         try:
             return Dataset(file_path, mode='r')
-        except:
+        except Exception:
             raise InvalidFileFormatError("Could not open NetCDF file '{path}'.".format(path=file_path))
 
     @classmethod

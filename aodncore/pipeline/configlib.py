@@ -8,7 +8,6 @@ import os
 from io import open
 
 from celery import Celery
-from six import iteritems
 
 from .exceptions import InvalidConfigError
 from .log import WorkerLoggingConfigBuilder, get_watchservice_logging_config
@@ -108,7 +107,7 @@ class LazyConfigManager(object):
     def watch_directory_map(self):
         directories = {}
         # noinspection PyTypeChecker
-        for name, items in iteritems(self.watch_config):
+        for name, items in self.watch_config.items():
             for rel_path in items['path']:
                 path = os.path.join(self.pipeline_config['watch']['incoming_dir'], rel_path)
                 directories[path] = name

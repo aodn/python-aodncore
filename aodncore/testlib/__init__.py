@@ -5,7 +5,7 @@ from .basetest import BaseTestCase
 from .dummyhandler import DummyHandler
 from .handlertest import HandlerTestCase
 from .testutil import (NullStorageBroker, dest_path_testing, get_nonexistent_path, get_test_config, make_test_file,
-                       make_zip, mock)
+                       make_zip)
 
 __all__ = [
     'BaseTestCase',
@@ -16,6 +16,5 @@ __all__ = [
     'get_nonexistent_path',
     'get_test_config',
     'make_test_file',
-    'make_zip',
-    'mock'
+    'make_zip'
 ]

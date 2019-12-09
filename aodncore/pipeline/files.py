@@ -3,8 +3,6 @@ import mimetypes
 import os
 from collections import Counter, MutableSet, OrderedDict
 
-import six
-
 from .common import (FileType, PipelineFilePublishType, PipelineFileCheckType, validate_addition_publishtype,
                      validate_checkresult, validate_deletion_publishtype, validate_publishtype,
                      validate_settable_checktype)
@@ -50,16 +48,16 @@ def ensure_remotepipelinefilecollection(o):
     return o if isinstance(o, RemotePipelineFileCollection) else RemotePipelineFileCollection(o)
 
 
-class PipelineFileBase(object):
+class PipelineFileBase(object, metaclass=abc.ABCMeta):
     """A base class to represent a "pipeline file", which consists of a local path and a remote "destination path"
     """
-    __metaclass__ = abc.ABCMeta
     __slots__ = ['_file_checksum', '_dest_path', '_local_path', '_extension', '_name', 'file_type']
 
-    def __init__(self, local_path, dest_path=None, name=None):
+    def __init__(self, local_path, dest_path=None):
         self._local_path = local_path
         self._dest_path = dest_path
 
+        self._name = None
         self._file_checksum = None
 
         self._set_local_file_attributes()
@@ -133,7 +131,7 @@ class RemotePipelineFile(PipelineFileBase):
     __slots__ = ['_last_modified', '_size']
 
     def __init__(self, dest_path, local_path=None, name=None, last_modified=None, size=None):
-        super(RemotePipelineFile, self).__init__(local_path, dest_path, name)
+        super().__init__(local_path, dest_path)
         self._name = name if name is not None else os.path.basename(dest_path)
         self._last_modified = last_modified
         self._size = size
@@ -168,7 +166,7 @@ class RemotePipelineFile(PipelineFileBase):
         # (i.e. has not been downloaded)
         if self.local_path is None:
             return None
-        return super(RemotePipelineFile, self).file_checksum
+        return super().file_checksum
 
     @property
     def last_modified(self):
@@ -217,7 +215,7 @@ class PipelineFile(PipelineFileBase):
 
     def __init__(self, local_path, name=None, archive_path=None, dest_path=None, is_deletion=False, late_deletion=False,
                  file_update_callback=None):
-        super(PipelineFile, self).__init__(local_path, dest_path, name)
+        super().__init__(local_path, dest_path)
 
         self._name = name if name is not None else os.path.basename(local_path)
 
@@ -272,7 +270,7 @@ class PipelineFile(PipelineFileBase):
         # override superclass property to handle deletions (which have no local_path and therefore can't be summed)
         if self.is_deletion:
             return None
-        return super(PipelineFile, self).file_checksum
+        return super().file_checksum
 
     #
     # State properties (may change during the lifecycle of the object to reflect the current state)
@@ -577,7 +575,7 @@ class PipelineFileCollectionBase(MutableSet):
 
     def __init__(self, data=None, member_class=PipelineFile, member_validator=None, member_from_string_method=None,
                  unique_attributes=()):
-        super(PipelineFileCollectionBase, self).__init__()
+        super().__init__()
 
         self._s = IndexedSet()
 
@@ -587,7 +585,7 @@ class PipelineFileCollectionBase(MutableSet):
         self.unique_attributes = unique_attributes
 
         if data is not None:
-            if isinstance(data, (self.member_class, six.string_types)):
+            if isinstance(data, (self.member_class, str)):
                 data = [data]
             for f in data:
                 self.add(f)
@@ -822,9 +820,9 @@ class PipelineFileCollectionBase(MutableSet):
         :return: :py:class:`PipelineFileCollection` containing only :py:class:`PipelineFile` instances with a True value
             for all attributes named in true_attributes and a False value for all attributes named in false_attributes
         """
-        if isinstance(true_attributes, six.string_types):
+        if isinstance(true_attributes, str):
             true_attributes = [true_attributes]
-        if isinstance(false_attributes, six.string_types):
+        if isinstance(false_attributes, str):
             false_attributes = [false_attributes]
 
         true_attributes_set = set(true_attributes)
@@ -959,7 +957,7 @@ class RemotePipelineFileCollection(PipelineFileCollectionBase):
         kwargs['member_validator'] = validate_remotepipelinefile_or_string
         kwargs['member_from_string_method'] = 'get_pipelinefile_from_dest_path'
         kwargs['unique_attributes'] = {'local_path', 'dest_path'}
-        super(RemotePipelineFileCollection, self).__init__(*args, **kwargs)
+        super().__init__(*args, **kwargs)
 
     def __contains__(self, v):
         element = v if isinstance(v, self.member_class) else self.get_pipelinefile_from_dest_path(v)
@@ -992,7 +990,7 @@ class PipelineFileCollection(PipelineFileCollectionBase):
         kwargs['member_validator'] = validate_pipelinefile_or_string
         kwargs['member_from_string_method'] = 'get_pipelinefile_from_src_path'
         kwargs['unique_attributes'] = {'archive_path', 'dest_path'}
-        super(PipelineFileCollection, self).__init__(*args, **kwargs)
+        super().__init__(*args, **kwargs)
 
     def __contains__(self, v):
         element = v if isinstance(v, self.member_class) else self.get_pipelinefile_from_src_path(v)
@@ -1010,7 +1008,7 @@ class PipelineFileCollection(PipelineFileCollectionBase):
         if not isinstance(pipeline_file, self.member_class) and not deletion and not os.path.isfile(pipeline_file):
             raise MissingFileError("file '{src}' doesn't exist".format(src=pipeline_file))
 
-        return super(PipelineFileCollection, self).add(pipeline_file, overwrite=overwrite, is_deletion=deletion)
+        return super().add(pipeline_file, overwrite=overwrite, is_deletion=deletion)
 
     def _set_attribute(self, attribute, value):
         for f in self._s:
@@ -1136,9 +1134,9 @@ class PipelineFileCollection(PipelineFileCollectionBase):
 
 validate_pipelinefilecollection = validate_type(PipelineFileCollection)
 validate_pipelinefile_or_pipelinefilecollection = validate_type((PipelineFile, PipelineFileCollection))
-validate_pipelinefile_or_string = validate_type((PipelineFile, six.string_types))
+validate_pipelinefile_or_string = validate_type((PipelineFile, str))
 
 validate_remotepipelinefilecollection = validate_type(RemotePipelineFileCollection)
 validate_remotepipelinefile_or_remotepipelinefilecollection = validate_type((RemotePipelineFile,
                                                                              RemotePipelineFileCollection))
-validate_remotepipelinefile_or_string = validate_type((RemotePipelineFile, six.string_types))
+validate_remotepipelinefile_or_string = validate_type((RemotePipelineFile, str))

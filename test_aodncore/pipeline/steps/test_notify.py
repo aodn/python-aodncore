@@ -1,13 +1,11 @@
 import os
 import smtplib
 import socket
-
-import six
-
+from unittest.mock import MagicMock, patch
 from aodncore.pipeline import NotificationRecipientType, PipelineFile, PipelineFileCollection
 from aodncore.pipeline.steps.notify import (get_child_notify_runner, BaseNotifyRunner, EmailNotifyRunner,
                                             LogFailuresNotifyRunner, NotifyList, NotificationRecipient, SnsNotifyRunner)
-from aodncore.testlib import BaseTestCase, mock
+from aodncore.testlib import BaseTestCase
 
 TESTDATA_DIR = os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(__file__))), 'testdata')
 GOOD_NC = os.path.join(TESTDATA_DIR, 'good.nc')
@@ -55,7 +53,7 @@ class DummyNotifyRunner(BaseNotifyRunner):
 
 class TestBaseNotifyRunner(BaseTestCase):
     def setUp(self):
-        super(TestBaseNotifyRunner, self).setUp()
+        super().setUp()
         notification_data = get_notification_data()
         self.dummy_runner = DummyNotifyRunner(notification_data, self.config, self.test_logger)
 
@@ -65,18 +63,18 @@ class TestBaseNotifyRunner(BaseTestCase):
         expected_keys = ['html_collection_table', 'html_input_file_table', 'text_collection_table',
                          'text_input_file_table']
 
-        six.assertCountEqual(self, expected_keys, list(file_tables.keys()))
+        self.assertCountEqual(expected_keys, list(file_tables.keys()))
 
 
 class TestEmailNotifyRunner(BaseTestCase):
     def setUp(self):
-        super(TestEmailNotifyRunner, self).setUp()
+        super().setUp()
         notification_data = get_notification_data()
         self.email_runner = EmailNotifyRunner(notification_data, self.config, self.test_logger)
         self.notify_list = NotifyList()
 
-    @mock.patch('aodncore.pipeline.steps.notify.smtplib.SMTP')
-    @mock.patch('aodncore.pipeline.steps.notify.TemplateRenderer')
+    @patch('aodncore.pipeline.steps.notify.smtplib.SMTP')
+    @patch('aodncore.pipeline.steps.notify.TemplateRenderer')
     def test_email_success(self, mock_templaterenderer, mock_smtp):
         mock_templaterenderer.return_value.render.return_value = 'DUMMY EMAIL BODY'
         mock_smtp.return_value.sendmail.return_value = {}
@@ -89,8 +87,8 @@ class TestEmailNotifyRunner(BaseTestCase):
         self.assertTrue(recipient.notification_succeeded)
         self.assertIsNone(recipient.error)
 
-    @mock.patch('aodncore.pipeline.steps.notify.smtplib.SMTP')
-    @mock.patch('aodncore.pipeline.steps.notify.TemplateRenderer')
+    @patch('aodncore.pipeline.steps.notify.smtplib.SMTP')
+    @patch('aodncore.pipeline.steps.notify.TemplateRenderer')
     def test_invalid_login(self, mock_templaterenderer, mock_smtp):
         mock_templaterenderer.return_value.render.return_value = 'DUMMY EMAIL BODY'
         mock_smtp.return_value.login.side_effect = smtplib.SMTPException
@@ -104,8 +102,8 @@ class TestEmailNotifyRunner(BaseTestCase):
         self.assertIsNotNone(recipient.error)
         self.assertIsInstance(self.email_runner.error, smtplib.SMTPException)
 
-    @mock.patch('aodncore.pipeline.steps.notify.smtplib.SMTP')
-    @mock.patch('aodncore.pipeline.steps.notify.TemplateRenderer')
+    @patch('aodncore.pipeline.steps.notify.smtplib.SMTP')
+    @patch('aodncore.pipeline.steps.notify.TemplateRenderer')
     def test_invalid_server(self, mock_templaterenderer, mock_smtp):
         mock_templaterenderer.return_value.render.return_value = 'DUMMY EMAIL BODY'
         mock_smtp.return_value.connect.side_effect = socket.gaierror
@@ -119,8 +117,8 @@ class TestEmailNotifyRunner(BaseTestCase):
         self.assertIsNotNone(recipient.error)
         self.assertIsInstance(self.email_runner.error, socket.gaierror)
 
-    @mock.patch('aodncore.pipeline.steps.notify.smtplib.SMTP')
-    @mock.patch('aodncore.pipeline.steps.notify.TemplateRenderer')
+    @patch('aodncore.pipeline.steps.notify.smtplib.SMTP')
+    @patch('aodncore.pipeline.steps.notify.TemplateRenderer')
     def test_recipients_one_failed(self, mock_templaterenderer, mock_smtp):
         mock_templaterenderer.return_value.render.return_value = 'DUMMY EMAIL BODY'
         mock_smtp.return_value.sendmail.return_value = {'recipient1@example.com': (550, "User unknown")}
@@ -138,8 +136,8 @@ class TestEmailNotifyRunner(BaseTestCase):
         self.assertIsNone(recipient2.error)
         self.assertIsNone(self.email_runner.error)
 
-    @mock.patch('aodncore.pipeline.steps.notify.smtplib.SMTP')
-    @mock.patch('aodncore.pipeline.steps.notify.TemplateRenderer')
+    @patch('aodncore.pipeline.steps.notify.smtplib.SMTP')
+    @patch('aodncore.pipeline.steps.notify.TemplateRenderer')
     def test_recipients_all_failed(self, mock_templaterenderer, mock_smtp):
         mock_templaterenderer.return_value.render.return_value = 'DUMMY EMAIL BODY'
         mock_smtp.return_value.sendmail.side_effect = smtplib.SMTPRecipientsRefused(
@@ -164,9 +162,9 @@ class TestEmailNotifyRunner(BaseTestCase):
 
 class TestLogFailuresNotifyRunner(BaseTestCase):
     def setUp(self):
-        super(TestLogFailuresNotifyRunner, self).setUp()
+        super().setUp()
         notification_data = get_notification_data()
-        self.fail_runner = LogFailuresNotifyRunner(notification_data, self.config, mock.MagicMock())
+        self.fail_runner = LogFailuresNotifyRunner(notification_data, self.config, MagicMock())
         self.notify_list = NotifyList()
 
     def test_invalid_recipient(self):

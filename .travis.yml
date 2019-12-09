@@ -1,6 +1,5 @@
 language: python
 python:
-  - "2.7"
   - "3.5"
   - "3.6"
 
@@ -10,12 +9,14 @@ addons:
     - libudunits2-dev
 
 install:
-  - pip install -c constraints.txt -r requirements.txt
-  - pip install coverage
+  - pip install -r requirements.txt
+  - pip install .[testing]
+  - pip install pytest
+  - pip install pytest-cov
   - pip install codecov
 
 script:
-  - coverage run setup.py test
+  - pytest --cov=./
 
 after_success:
   - codecov
