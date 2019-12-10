@@ -741,25 +741,30 @@ class TestS3StorageBroker(BaseTestCase):
 
         expected = RemotePipelineFileCollection([
             RemotePipelineFile(
-                'Department_of_Defence/DSTG/slocum_glider/PerthCanyonA20140213/DSTO_MD_CEPSTUV_20140213T050333Z_SL085_FV01_timeseries_END-20140312T003551Z.nc',
-                last_modified=datetime.datetime(2016, 4, 27, 2, 30, 9, tzinfo=tzutc()),
-                size=39203028),
+                dest_path='Department_of_Defence/DSTG/slocum_glider/PerthCanyonA20140213/DSTO_MD_CEPSTUV_20140213T050333Z_SL085_FV01_timeseries_END-20140312T003551Z.nc',
+                name='DSTO_MD_CEPSTUV_20140213T050333Z_SL085_FV01_timeseries_END-20140312T003551Z.nc',
+                size=39203028,
+                last_modified=datetime.datetime(2016, 4, 27, 2, 30, 9, tzinfo=tzutc())),
             RemotePipelineFile(
-                'Department_of_Defence/DSTG/slocum_glider/PerthCanyonA20140213/PerthCanyonA20140213.kml',
-                last_modified=datetime.datetime(2016, 4, 27, 2, 30, 10, tzinfo=tzutc()),
-                size=48877),
+                dest_path='Department_of_Defence/DSTG/slocum_glider/PerthCanyonA20140213/PerthCanyonA20140213.kml',
+                name='PerthCanyonA20140213.kml',
+                size=48877,
+                last_modified=datetime.datetime(2016, 4, 27, 2, 30, 9, tzinfo=tzutc())),
             RemotePipelineFile(
-                'Department_of_Defence/DSTG/slocum_glider/PerthCanyonA20140213/PerthCanyonA20140213_CNDC.jpg',
-                last_modified=datetime.datetime(2016, 4, 27, 2, 30, 10, tzinfo=tzutc()),
-                size=104238),
+                dest_path='Department_of_Defence/DSTG/slocum_glider/PerthCanyonA20140213/PerthCanyonA20140213_CNDC.jpg',
+                name='PerthCanyonA20140213_CNDC.jpg',
+                size=104238,
+                last_modified=datetime.datetime(2016, 4, 27, 2, 30, 10, tzinfo=tzutc())),
             RemotePipelineFile(
-                'Department_of_Defence/DSTG/slocum_glider/PerthCanyonA20140213/PerthCanyonA20140213_PSAL.jpg',
-                last_modified=datetime.datetime(2016, 4, 27, 2, 30, 10, tzinfo=tzutc()),
-                size=115044),
+                dest_path='Department_of_Defence/DSTG/slocum_glider/PerthCanyonA20140213/PerthCanyonA20140213_PSAL.jpg',
+                name='PerthCanyonA20140213_PSAL.jpg',
+                size=115044,
+                last_modified=datetime.datetime(2016, 4, 27, 2, 30, 10, tzinfo=tzutc())),
             RemotePipelineFile(
-                'Department_of_Defence/DSTG/slocum_glider/PerthCanyonA20140213/PerthCanyonA20140213_TEMP.jpg',
-                last_modified=datetime.datetime(2016, 4, 27, 2, 30, 9, tzinfo=tzutc()),
-                size=106141)
+                dest_path='Department_of_Defence/DSTG/slocum_glider/PerthCanyonA20140213/PerthCanyonA20140213_TEMP.jpg',
+                name='PerthCanyonA20140213_TEMP.jpg',
+                size=106141,
+                last_modified=datetime.datetime(2016, 4, 27, 2, 30, 10, tzinfo=tzutc()))
         ])
 
         self.assertEqual(expected, result)
@@ -798,7 +803,7 @@ class TestS3StorageBroker(BaseTestCase):
              u'Key': 'Department_of_Defence/DSTG/slocum_glider/PerthCanyonB20140213/PerthCanyonB20140213_TEMP.jpg',
              u'Size': 132122}]}
 
-        s3_storage_broker = S3StorageBroker('imos-data', '')
+        s3_storage_broker = S3StorageBroker('', '')
         result = s3_storage_broker.query('Department_of_Defence/DSTG/slocum_glider/Perth')
 
         expected = RemotePipelineFileCollection([
@@ -850,9 +855,9 @@ class TestS3StorageBroker(BaseTestCase):
     def test_query_empty(self, mock_boto3):
         mock_boto3.client().list_objects_v2.return_value = {}
 
-        s3_storage_broker = S3StorageBroker('imos-data', '')
+        s3_storage_broker = S3StorageBroker('', '')
         with self.assertNoException():
-            result = s3_storage_broker.query('Department_of_Defence/DSTG/slocum_glider/Perth')
+            result = s3_storage_broker.query('UNITTEST/')
 
         self.assertEqual(result, RemotePipelineFileCollection())
 

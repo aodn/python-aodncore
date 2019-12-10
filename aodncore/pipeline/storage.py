@@ -351,16 +351,22 @@ class S3StorageBroker(BaseStorageBroker):
             raise InvalidStoreUrlError(
                 "unable to access S3 bucket '{0}': {1}".format(self.bucket, format_exception(e)))
 
+    @staticmethod
+    def result_to_remote_pipelinefile_collection(result):
+        return RemotePipelineFileCollection([
+            RemotePipelineFile(k['Key'],
+                               name=os.path.basename(k['Key']),
+                               last_modified=k['LastModified'],
+                               size=k['Size'])
+            for k in result.get('Contents', [])
+        ])
+
     @retry_decorator(**retry_kwargs)
     def _run_query(self, query):
         full_query = os.path.join(self.prefix, query)
         raw_result = self.s3_client.list_objects_v2(Bucket=self.bucket, Prefix=full_query)
-        result = RemotePipelineFileCollection(RemotePipelineFile(k['Key'],
-                                                                 name=os.path.basename(k['Key']),
-                                                                 last_modified=k['LastModified'],
-                                                                 size=k['Size'])
-                                              for k in raw_result.get('Contents', []))
-        return result
+        collection = self.result_to_remote_pipelinefile_collection(raw_result)
+        return collection
 
     @retry_decorator(**retry_kwargs)
     def _download_file(self, remote_pipeline_file):
