@@ -14,7 +14,7 @@ from paramiko import SSHClient, AutoAddPolicy
 from .exceptions import AttributeNotSetError, InvalidStoreUrlError, StorageBrokerError
 from .files import (ensure_pipelinefilecollection, ensure_remotepipelinefilecollection, PipelineFileCollection,
                     RemotePipelineFile, RemotePipelineFileCollection)
-from ..util import (ensure_regex_list, format_exception, mkdir_p, retry_decorator, rm_f,
+from ..util import (ensure_regex_list, filesystem_sort_key, format_exception, mkdir_p, retry_decorator, rm_f,
                     safe_copy_file, validate_relative_path, validate_type)
 
 __all__ = [
@@ -272,6 +272,9 @@ class LocalFileStorageBroker(BaseStorageBroker):
         def _find_prefix(path):
             parent_path = os.path.dirname(path)
             for root, dirs, files in os.walk(parent_path):
+                dirs = sorted(dirs, key=filesystem_sort_key)
+                files = sorted(files, key=filesystem_sort_key)
+
                 for name in files:
                     fullpath = os.path.join(root, name)
                     if fullpath.startswith(full_query) and not os.path.islink(fullpath):
