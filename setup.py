@@ -12,7 +12,7 @@ INSTALL_REQUIRES = [
     'compliance-checker==4.1.1',
     'Jinja2==2.10.3',
     'jsonschema>=2.6.0',
-    'OWSLib==0.18.0',
+    'OWSLib>=0.16.0',
     'paramiko==2.6.0',
     'python-dateutil<2.8.1',  # dateutil capped due to: https://github.com/boto/botocore/issues/1872
     'tabulate==0.8.2',
