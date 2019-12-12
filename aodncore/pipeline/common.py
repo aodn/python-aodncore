@@ -6,8 +6,9 @@ import os
 
 from enum import Enum
 
-from ..util import (classproperty, is_gzipfile, is_jsonfile, is_netcdffile, is_nonemptyfile, is_valid_email_address,
-                    is_zipfile, iter_public_attributes, validate_membership, validate_type)
+from ..util import (classproperty, is_gzip_file, is_jpeg_file, is_json_file, is_netcdf_file, is_nonempty_file,
+                    is_pdf_file, is_png_file, is_valid_email_address, is_tiff_file, is_zip_file, iter_public_attributes,
+                    validate_membership, validate_type)
 
 __all__ = [
     'CheckResult',
@@ -125,22 +126,22 @@ class FileType(Enum):
     """
     __slots__ = ('extensions', 'mime_type', 'validator')
 
-    UNKNOWN = ((), None, is_nonemptyfile)
+    UNKNOWN = ((), None, is_nonempty_file)
 
-    CSV = (('.csv',), 'text/csv', is_nonemptyfile)
-    GZIP = (('.gz',), 'application/gzip', is_gzipfile)
-    JPEG = (('.jpg', '.jpeg'), 'image/jpeg', is_nonemptyfile)
-    PDF = (('.pdf',), 'application/pdf', is_nonemptyfile)
-    PNG = (('.png',), 'image/png', is_nonemptyfile)
-    ZIP = (('.zip',), 'application/zip', is_zipfile)
-    TIFF = (('.tif', '.tiff'), 'image/tiff', is_nonemptyfile)
+    CSV = (('.csv',), 'text/csv', is_nonempty_file)
+    GZIP = (('.gz',), 'application/gzip', is_gzip_file)
+    JPEG = (('.jpg', '.jpeg'), 'image/jpeg', is_jpeg_file)
+    PDF = (('.pdf',), 'application/pdf', is_pdf_file)
+    PNG = (('.png',), 'image/png', is_png_file)
+    ZIP = (('.zip',), 'application/zip', is_zip_file)
+    TIFF = (('.tif', '.tiff'), 'image/tiff', is_tiff_file)
 
-    NETCDF = (('.nc',), 'application/octet-stream', is_netcdffile)
-    DIR_MANIFEST = (('.dir_manifest',), 'text/plain', is_nonemptyfile)
-    JSON_MANIFEST = (('.json_manifest',), 'application/json', is_jsonfile)
-    MAP_MANIFEST = (('.map_manifest',), 'text/plain', is_nonemptyfile)
-    RSYNC_MANIFEST = (('.rsync_manifest',), 'text/plain', is_nonemptyfile)
-    SIMPLE_MANIFEST = (('.manifest',), 'text/plain', is_nonemptyfile)
+    NETCDF = (('.nc',), 'application/octet-stream', is_netcdf_file)
+    DIR_MANIFEST = (('.dir_manifest',), 'text/plain', is_nonempty_file)
+    JSON_MANIFEST = (('.json_manifest',), 'application/json', is_json_file)
+    MAP_MANIFEST = (('.map_manifest',), 'text/plain', is_nonempty_file)
+    RSYNC_MANIFEST = (('.rsync_manifest',), 'text/plain', is_nonempty_file)
+    SIMPLE_MANIFEST = (('.manifest',), 'text/plain', is_nonempty_file)
 
     def __init__(self, extensions, mime_type, validator):
         self.extensions = extensions

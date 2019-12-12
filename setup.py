@@ -15,6 +15,7 @@ INSTALL_REQUIRES = [
     'OWSLib>=0.16.0',
     'paramiko==2.6.0',
     'python-dateutil<2.8.1',  # dateutil capped due to: https://github.com/boto/botocore/issues/1872
+    'python-magic>=0.4.15',
     'tabulate==0.8.2',
     'transitions==0.7.1'
 ]
