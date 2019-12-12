@@ -9,9 +9,7 @@ addons:
     - libudunits2-dev
 
 install:
-  - pip install -r requirements.txt
-  - pip install .[testing]
-  - pip install pytest
+  - pip install -r test_requirements.txt
   - pip install pytest-cov
   - pip install codecov
 

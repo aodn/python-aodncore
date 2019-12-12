@@ -8,18 +8,17 @@ ENTRY_POINTS = {
 
 INSTALL_REQUIRES = [
     'boto3>=1.9.156',
-    'celery==4.3.0',
+    'celery>=4.3.0',
     'compliance-checker==4.1.1',
-    'Jinja2==2.10.3',
     'jsonschema>=2.6.0',
-    'OWSLib>=0.16.0',
-    'paramiko==2.6.0',
+    'paramiko>=2.6.0',
     'python-magic>=0.4.15',
-    'tabulate==0.8.2',
-    'transitions==0.7.1'
+    'transitions>=0.7.1'
 ]
 
-TESTS_REQUIRE = []
+TESTS_REQUIRE = [
+    'pytest'
+]
 
 EXTRAS_REQUIRE = {
     'testing': TESTS_REQUIRE,

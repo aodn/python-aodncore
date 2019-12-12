@@ -2,6 +2,7 @@
 branch = True
 source = aodncore
 omit =
+    setup.py
     test_aodncore/*
     aodncore/util/external/*
 
