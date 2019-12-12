@@ -8,13 +8,17 @@ from io import open
 from tempfile import mkdtemp, mkstemp
 
 from aodncore.testlib import BaseTestCase, get_nonexistent_path
-from aodncore.util import (extract_gzip, extract_zip, is_gzipfile, is_netcdffile, is_zipfile, list_regular_files,
-                           mkdir_p, rm_f, rm_r, rm_rf, safe_copy_file, safe_move_file, get_file_checksum,
-                           TemporaryDirectory)
+from aodncore.util import (extract_gzip, extract_zip, is_gzip_file, is_jpeg_file, is_netcdf_file, is_pdf_file,
+                           is_png_file, is_tiff_file, is_zip_file, list_regular_files, mkdir_p, rm_f, rm_r, rm_rf,
+                           safe_copy_file, safe_move_file, get_file_checksum, TemporaryDirectory)
 from aodncore.util.misc import format_exception
 
-TEST_ROOT = os.path.join(os.path.dirname(__file__))
-GOOD_NC = os.path.join(TEST_ROOT, 'good.nc')
+from test_aodncore import TESTDATA_DIR
+
+JPEG_FILE = os.path.join(TESTDATA_DIR, 'aodn.jpeg')
+PDF_FILE = os.path.join(TESTDATA_DIR, 'aodn.pdf')
+PNG_FILE = os.path.join(TESTDATA_DIR, 'invalid.png')
+TIFF_FILE = os.path.join(TESTDATA_DIR, 'aodn.tiff')
 
 
 class TestUtilFileOps(BaseTestCase):
@@ -52,13 +56,33 @@ class TestUtilFileOps(BaseTestCase):
             temp_file_content2 = f.readline()
         self.assertEqual(temp_file_content, temp_file_content2)
 
+    def test_isjpegfile(self):
+        self.assertTrue(is_jpeg_file(JPEG_FILE))
+        self.assertFalse(is_jpeg_file(self.temp_nc_file))
+        self.assertFalse(is_jpeg_file(PNG_FILE))
+
     def test_isnetcdffile(self):
         _, temp_other_file = mkstemp(suffix='.txt', prefix=self.__class__.__name__, dir=self.temp_dir)
         with open(temp_other_file, 'w') as f:
             f.write(u'foobar')
 
-        self.assertTrue(is_netcdffile(self.temp_nc_file))
-        self.assertFalse(is_netcdffile(temp_other_file))
+        self.assertTrue(is_netcdf_file(self.temp_nc_file))
+        self.assertFalse(is_netcdf_file(temp_other_file))
+
+    def test_ispdffile(self):
+        self.assertTrue(is_pdf_file(PDF_FILE))
+        self.assertFalse(is_pdf_file(self.temp_nc_file))
+        self.assertFalse(is_pdf_file(JPEG_FILE))
+
+    def test_ispngfile(self):
+        self.assertTrue(is_png_file(PNG_FILE))
+        self.assertFalse(is_png_file(self.temp_nc_file))
+        self.assertFalse(is_png_file(JPEG_FILE))
+
+    def test_istifffile(self):
+        self.assertTrue(is_tiff_file(TIFF_FILE))
+        self.assertFalse(is_tiff_file(self.temp_nc_file))
+        self.assertFalse(is_tiff_file(JPEG_FILE))
 
     def test_isgzipfile(self):
         temp_file_content = str(uuid.uuid4()).encode('utf-8')
@@ -71,8 +95,8 @@ class TestUtilFileOps(BaseTestCase):
         with open(temp_other_file, 'w') as f:
             f.write(u'foobar')
 
-        self.assertTrue(is_gzipfile(temp_gz_file))
-        self.assertFalse(is_gzipfile(temp_other_file))
+        self.assertTrue(is_gzip_file(temp_gz_file))
+        self.assertFalse(is_gzip_file(temp_other_file))
 
     def test_iszipfile(self):
         temp_file_name = str(uuid.uuid4())
@@ -85,8 +109,8 @@ class TestUtilFileOps(BaseTestCase):
         with open(temp_other_file, 'w') as f:
             f.write(u'foobar')
 
-        self.assertTrue(is_zipfile(temp_zip_file))
-        self.assertFalse(is_zipfile(temp_other_file))
+        self.assertTrue(is_zip_file(temp_zip_file))
+        self.assertFalse(is_zip_file(temp_other_file))
 
     def test_list_regular_files(self):
         # regular file

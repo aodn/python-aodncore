@@ -31,7 +31,7 @@ from ..common import FileType
 from ..exceptions import InvalidFileFormatError
 from ..files import PipelineFile, PipelineFileCollection
 from ..schema import validate_json_manifest
-from ...util import extract_gzip, extract_zip, list_regular_files, is_gzipfile, is_zipfile, safe_copy_file
+from ...util import extract_gzip, extract_zip, list_regular_files, is_gzip_file, is_zip_file, safe_copy_file
 
 __all__ = [
     'get_resolve_runner',
@@ -100,7 +100,7 @@ class SingleFileResolveRunner(BaseResolveRunner):
 
 class GzipFileResolveRunner(BaseResolveRunner):
     def run(self):
-        if not is_gzipfile(self.input_file):
+        if not is_gzip_file(self.input_file):
             raise InvalidFileFormatError("input_file must be a valid GZ file")
 
         extract_gzip(self.input_file, self.output_dir)
@@ -112,7 +112,7 @@ class GzipFileResolveRunner(BaseResolveRunner):
 
 class ZipFileResolveRunner(BaseResolveRunner):
     def run(self):
-        if not is_zipfile(self.input_file):
+        if not is_zip_file(self.input_file):
             raise InvalidFileFormatError("input_file must be a valid ZIP file")
 
         extract_zip(self.input_file, self.output_dir)

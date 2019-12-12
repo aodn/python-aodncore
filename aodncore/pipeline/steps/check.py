@@ -17,7 +17,7 @@ from .basestep import BaseStepRunner
 from ..common import CheckResult, PipelineFileCheckType, validate_checktype
 from ..exceptions import ComplianceCheckFailedError, InvalidCheckSuiteError, InvalidCheckTypeError
 from ..files import PipelineFileCollection
-from ...util import format_exception, is_netcdffile, is_nonemptyfile, CaptureStdIO
+from ...util import format_exception, is_netcdf_file, is_nonempty_file, CaptureStdIO
 
 __all__ = [
     'get_check_runner',
@@ -141,7 +141,7 @@ class ComplianceCheckerCheckRunner(BaseCheckRunner):
                               "against {self.checks}".format(pipeline_file=pipeline_file, self=self))
 
             # first check that it is a valid NetCDF format file
-            if not is_netcdffile(pipeline_file.src_path):
+            if not is_netcdf_file(pipeline_file.src_path):
                 compliance_log = ("invalid NetCDF file",)
                 pipeline_file.check_result = CheckResult(False, compliance_log)
                 continue
@@ -207,6 +207,6 @@ class NonEmptyCheckRunner(BaseCheckRunner):
         for pipeline_file in pipeline_files:
             self._logger.info(
                 "checking that '{pipeline_file.src_path}' is not empty".format(pipeline_file=pipeline_file))
-            compliant = is_nonemptyfile(pipeline_file.src_path)
+            compliant = is_nonempty_file(pipeline_file.src_path)
             compliance_log = () if compliant else ('empty file',)
             pipeline_file.check_result = CheckResult(compliant, compliance_log)

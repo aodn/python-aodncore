@@ -14,6 +14,7 @@ from functools import cmp_to_key, partial
 from io import open
 from tempfile import TemporaryFile
 
+import magic
 import netCDF4
 
 locale.setlocale(locale.LC_ALL, 'C')
@@ -25,11 +26,15 @@ __all__ = [
     'get_file_checksum',
     'is_dir_writable',
     'is_file_writable',
-    'is_gzipfile',
-    'is_jsonfile',
-    'is_netcdffile',
-    'is_nonemptyfile',
-    'is_zipfile',
+    'is_gzip_file',
+    'is_jpeg_file',
+    'is_json_file',
+    'is_netcdf_file',
+    'is_nonempty_file',
+    'is_pdf_file',
+    'is_png_file',
+    'is_tiff_file',
+    'is_zip_file',
     'list_regular_files',
     'mkdir_p',
     'rm_f',
@@ -151,7 +156,7 @@ def is_file_writable(path):
     return os.access(path, os.W_OK)
 
 
-def is_gzipfile(filepath):
+def is_gzip_file(filepath):
     """Check whether a file path refers to a valid ZIP file
 
     :param filepath: path to the file being checked
@@ -165,7 +170,7 @@ def is_gzipfile(filepath):
         return False
 
 
-def is_jsonfile(filepath):
+def is_json_file(filepath):
     """Check whether a file path refers to a valid JSON file
 
     :param filepath: path to the file being checked
@@ -180,7 +185,7 @@ def is_jsonfile(filepath):
         return True
 
 
-def is_netcdffile(filepath):
+def is_netcdf_file(filepath):
     """Check whether a file path refers to a valid NetCDF file
 
     :param filepath: path to the file being checked
@@ -198,7 +203,7 @@ def is_netcdffile(filepath):
             fh.close()
 
 
-def is_nonemptyfile(filepath):
+def is_nonempty_file(filepath):
     """Check whether a file path refers to a file with length greater than zero
 
     :param filepath: path to the file being checked
@@ -207,7 +212,7 @@ def is_nonemptyfile(filepath):
     return os.path.getsize(filepath) > 0
 
 
-def is_zipfile(filepath):
+def is_zip_file(filepath):
     """Check whether a file path refers to a valid ZIP file
 
     :param filepath: path to the file being checked
@@ -355,3 +360,60 @@ def validate_dir_writable(path):
 def validate_file_writable(path):
     if not is_file_writable(path):
         raise ValueError("file '{file}' is not writable".format(file=path))
+
+
+def validate_mime_type(t):
+    """Closure to generate mime type validation functions
+
+    :param t: type
+    :return: function reference to a function which validates a given path is a file with the mime type of type `t`
+    """
+
+    def validate_type_func(o):
+        mime_type = magic.Magic(mime=True).from_file(o)
+        if mime_type != t:
+            raise TypeError("filepath '{o}' must be of type '{t}'. Detected type: {m}".format(o=o, t=t, m=mime_type))
+
+    return validate_type_func
+
+
+validate_jpeg_file = validate_mime_type('image/jpeg')
+validate_pdf_file = validate_mime_type('application/pdf')
+validate_png_file = validate_mime_type('image/png')
+validate_tiff_file = validate_mime_type('image/tiff')
+
+
+def is_jpeg_file(filepath):
+    try:
+        validate_jpeg_file(filepath)
+    except TypeError:
+        return False
+    else:
+        return True
+
+
+def is_pdf_file(filepath):
+    try:
+        validate_pdf_file(filepath)
+    except TypeError:
+        return False
+    else:
+        return True
+
+
+def is_png_file(filepath):
+    try:
+        validate_png_file(filepath)
+    except TypeError:
+        return False
+    else:
+        return True
+
+
+def is_tiff_file(filepath):
+    try:
+        validate_tiff_file(filepath)
+    except TypeError:
+        return False
+    else:
+        return True
