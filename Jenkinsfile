@@ -29,6 +29,9 @@ pipeline {
                     steps {
                         withCredentials([usernamePassword(credentialsId: env.GIT_CREDENTIALS_ID, passwordVariable: 'GIT_PASSWORD', usernameVariable: 'GIT_USERNAME')]) {
                             sh './bumpversion.sh release'
+                            dir('sphinx') {
+                                sh 'make publish'
+                            }
                         }
                     }
                 }
