@@ -3,20 +3,14 @@ python:
   - "3.5"
   - "3.6"
 
-addons:
-  apt:
-    packages:
-    - libudunits2-dev
+services:
+  - docker
 
 install:
-  - pip install -r requirements.txt
-  - pip install .[testing]
-  - pip install pytest
-  - pip install pytest-cov
-  - pip install codecov
+  - docker build --build-arg BUILDER_UID=$(id -u) -t aodn/python-aodncore .
 
 script:
-  - pytest --cov=./
+  - docker run -w /app --mount type=bind,source="$(pwd)",target=/app aodn/python-aodncore /bin/sh -c "pip install --user -e . .[testing] pytest pytest-cov codecov; pytest --cov=./"
 
 after_success:
   - codecov
