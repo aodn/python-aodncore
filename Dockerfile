@@ -10,6 +10,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     build-essential \
     ca-certificates \
     git \
+    libmagic1 \
     libudunits2-dev \
     python3-dev \
     wget \
