@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>aodncore.pipeline.handlerbase &mdash; aodncore 0.21.2 documentation</title>
+  <title>aodncore.pipeline.handlerbase &mdash; aodncore 1.0.6 documentation</title>
   
 
   
@@ -57,7 +57,7 @@
             
             
               <div class="version">
-                0.21.2
+                1.0.6
               </div>
             
           
@@ -83,7 +83,7 @@
             
               <p class="caption"><span class="caption-text">Quick Start Guide:</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../quickstartdoc.html">Writing a <code class="docutils literal notranslate"><span class="pre">dest_path()</span></code> function</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../quickstartdoc.html">Writing a <code class="xref py py-meth docutils literal notranslate"><span class="pre">dest_path()</span></code> function</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../quickstartdoc.html#overriding-default-file-actions">Overriding default file actions</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../quickstartdoc.html#creating-products-during-the-handler-lifetime">Creating products during the handler lifetime</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../quickstartdoc.html#query-storage">Query Storage</a></li>
@@ -201,26 +201,27 @@
 <span></span><span class="kn">import</span> <span class="nn">logging</span>
 <span class="kn">import</span> <span class="nn">logging.config</span>
 <span class="kn">import</span> <span class="nn">os</span>
-<span class="kn">from</span> <span class="nn">datetime</span> <span class="k">import</span> <span class="n">datetime</span>
-<span class="kn">from</span> <span class="nn">tempfile</span> <span class="k">import</span> <span class="n">gettempdir</span>
+<span class="kn">import</span> <span class="nn">platform</span>
+<span class="kn">from</span> <span class="nn">datetime</span> <span class="kn">import</span> <span class="n">datetime</span>
+<span class="kn">from</span> <span class="nn">tempfile</span> <span class="kn">import</span> <span class="n">gettempdir</span>
 
-<span class="kn">from</span> <span class="nn">transitions</span> <span class="k">import</span> <span class="n">Machine</span>
+<span class="kn">from</span> <span class="nn">transitions</span> <span class="kn">import</span> <span class="n">Machine</span>
 
-<span class="kn">from</span> <span class="nn">.common</span> <span class="k">import</span> <span class="n">FileType</span><span class="p">,</span> <span class="n">HandlerResult</span><span class="p">,</span> <span class="n">PipelineFilePublishType</span><span class="p">,</span> <span class="n">PipelineFileCheckType</span><span class="p">,</span> <span class="n">validate_publishtype</span>
-<span class="kn">from</span> <span class="nn">.configlib</span> <span class="k">import</span> <span class="n">validate_lazyconfigmanager</span>
-<span class="kn">from</span> <span class="nn">.destpath</span> <span class="k">import</span> <span class="n">get_path_function</span>
-<span class="kn">from</span> <span class="nn">.exceptions</span> <span class="k">import</span> <span class="p">(</span><span class="n">PipelineProcessingError</span><span class="p">,</span> <span class="n">HandlerAlreadyRunError</span><span class="p">,</span> <span class="n">InvalidConfigError</span><span class="p">,</span> <span class="n">InvalidInputFileError</span><span class="p">,</span>
+<span class="kn">from</span> <span class="nn">.common</span> <span class="kn">import</span> <span class="n">FileType</span><span class="p">,</span> <span class="n">HandlerResult</span><span class="p">,</span> <span class="n">PipelineFilePublishType</span><span class="p">,</span> <span class="n">PipelineFileCheckType</span><span class="p">,</span> <span class="n">validate_publishtype</span>
+<span class="kn">from</span> <span class="nn">.configlib</span> <span class="kn">import</span> <span class="n">validate_lazyconfigmanager</span>
+<span class="kn">from</span> <span class="nn">.destpath</span> <span class="kn">import</span> <span class="n">get_path_function</span>
+<span class="kn">from</span> <span class="nn">.exceptions</span> <span class="kn">import</span> <span class="p">(</span><span class="n">PipelineProcessingError</span><span class="p">,</span> <span class="n">HandlerAlreadyRunError</span><span class="p">,</span> <span class="n">InvalidConfigError</span><span class="p">,</span> <span class="n">InvalidInputFileError</span><span class="p">,</span>
                          <span class="n">InvalidFileFormatError</span><span class="p">,</span> <span class="n">MissingConfigParameterError</span><span class="p">,</span> <span class="n">UnmatchedFilesError</span><span class="p">)</span>
-<span class="kn">from</span> <span class="nn">.files</span> <span class="k">import</span> <span class="n">PipelineFile</span><span class="p">,</span> <span class="n">PipelineFileCollection</span>
-<span class="kn">from</span> <span class="nn">.log</span> <span class="k">import</span> <span class="n">SYSINFO</span><span class="p">,</span> <span class="n">get_pipeline_logger</span>
-<span class="kn">from</span> <span class="nn">.schema</span> <span class="k">import</span> <span class="p">(</span><span class="n">validate_check_params</span><span class="p">,</span> <span class="n">validate_custom_params</span><span class="p">,</span> <span class="n">validate_harvest_params</span><span class="p">,</span> <span class="n">validate_notify_params</span><span class="p">,</span>
+<span class="kn">from</span> <span class="nn">.files</span> <span class="kn">import</span> <span class="n">PipelineFile</span><span class="p">,</span> <span class="n">PipelineFileCollection</span>
+<span class="kn">from</span> <span class="nn">.log</span> <span class="kn">import</span> <span class="n">SYSINFO</span><span class="p">,</span> <span class="n">get_pipeline_logger</span>
+<span class="kn">from</span> <span class="nn">.schema</span> <span class="kn">import</span> <span class="p">(</span><span class="n">validate_check_params</span><span class="p">,</span> <span class="n">validate_custom_params</span><span class="p">,</span> <span class="n">validate_harvest_params</span><span class="p">,</span> <span class="n">validate_notify_params</span><span class="p">,</span>
                      <span class="n">validate_resolve_params</span><span class="p">)</span>
-<span class="kn">from</span> <span class="nn">.statequery</span> <span class="k">import</span> <span class="n">StateQuery</span>
-<span class="kn">from</span> <span class="nn">.steps</span> <span class="k">import</span> <span class="p">(</span><span class="n">get_check_runner</span><span class="p">,</span> <span class="n">get_harvester_runner</span><span class="p">,</span> <span class="n">get_notify_runner</span><span class="p">,</span> <span class="n">get_resolve_runner</span><span class="p">,</span> <span class="n">get_store_runner</span><span class="p">)</span>
-<span class="kn">from</span> <span class="nn">..util</span> <span class="k">import</span> <span class="p">(</span><span class="n">discover_entry_points</span><span class="p">,</span> <span class="n">ensure_regex_list</span><span class="p">,</span> <span class="n">ensure_writeonceordereddict</span><span class="p">,</span> <span class="n">format_exception</span><span class="p">,</span>
-                    <span class="n">get_file_checksum</span><span class="p">,</span> <span class="n">iter_public_attributes</span><span class="p">,</span> <span class="n">matches_regexes</span><span class="p">,</span> <span class="n">merge_dicts</span><span class="p">,</span>
+<span class="kn">from</span> <span class="nn">.statequery</span> <span class="kn">import</span> <span class="n">StateQuery</span>
+<span class="kn">from</span> <span class="nn">.steps</span> <span class="kn">import</span> <span class="p">(</span><span class="n">get_check_runner</span><span class="p">,</span> <span class="n">get_harvester_runner</span><span class="p">,</span> <span class="n">get_notify_runner</span><span class="p">,</span> <span class="n">get_resolve_runner</span><span class="p">,</span> <span class="n">get_store_runner</span><span class="p">)</span>
+<span class="kn">from</span> <span class="nn">..util</span> <span class="kn">import</span> <span class="p">(</span><span class="n">ensure_regex_list</span><span class="p">,</span> <span class="n">ensure_writeonceordereddict</span><span class="p">,</span> <span class="n">format_exception</span><span class="p">,</span>
+                    <span class="n">get_file_checksum</span><span class="p">,</span> <span class="n">iter_public_attributes</span><span class="p">,</span> <span class="n">lazyproperty</span><span class="p">,</span> <span class="n">matches_regexes</span><span class="p">,</span> <span class="n">merge_dicts</span><span class="p">,</span>
                     <span class="n">validate_relative_path_attr</span><span class="p">,</span> <span class="n">TemporaryDirectory</span><span class="p">)</span>
-<span class="kn">from</span> <span class="nn">..version</span> <span class="k">import</span> <span class="n">__version__</span> <span class="k">as</span> <span class="n">_aodncore_version</span>
+<span class="kn">from</span> <span class="nn">..version</span> <span class="kn">import</span> <span class="n">__version__</span> <span class="k">as</span> <span class="n">_aodncore_version</span>
 
 <span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span>
     <span class="s1">&#39;HandlerBase&#39;</span>
@@ -469,7 +470,7 @@
     <span class="n">all_transitions</span> <span class="o">=</span> <span class="n">ordered_transitions</span><span class="p">[:]</span>
     <span class="n">all_transitions</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">other_transitions</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">input_file</span><span class="p">,</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">input_file</span><span class="p">,</span>
                  <span class="n">allowed_archive_path_regexes</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
                  <span class="n">allowed_dest_path_regexes</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
                  <span class="n">allowed_extensions</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
@@ -492,7 +493,6 @@
                  <span class="p">):</span>
 
         <span class="c1"># property backing variables</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_archive_store_runner_object</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_config</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_default_addition_publish_type</span> <span class="o">=</span> <span class="n">PipelineFilePublishType</span><span class="o">.</span><span class="n">HARVEST_UPLOAD</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_default_deletion_publish_type</span> <span class="o">=</span> <span class="n">PipelineFilePublishType</span><span class="o">.</span><span class="n">DELETE_UNHARVEST</span>
@@ -506,17 +506,13 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">_file_type</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_include_regexes</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_input_file_archive_path</span> <span class="o">=</span> <span class="kc">None</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_input_file_object</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_instance_working_directory</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_notification_results</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_is_archived</span> <span class="o">=</span> <span class="kc">False</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_logger</span> <span class="o">=</span> <span class="kc">None</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_module_versions</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_result</span> <span class="o">=</span> <span class="n">HandlerResult</span><span class="o">.</span><span class="n">UNKNOWN</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_should_notify</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_start_time</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">()</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_state_query</span> <span class="o">=</span> <span class="kc">None</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_upload_store_runner_object</span> <span class="o">=</span> <span class="kc">None</span>
 
         <span class="c1"># public attributes</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">input_file</span> <span class="o">=</span> <span class="n">input_file</span>
@@ -551,14 +547,14 @@
                                 <span class="n">auto_transitions</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">transitions</span><span class="o">=</span><span class="n">HandlerBase</span><span class="o">.</span><span class="n">all_transitions</span><span class="p">,</span>
                                 <span class="n">after_state_change</span><span class="o">=</span><span class="s1">&#39;_after_state_change&#39;</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">__iter__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__iter__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="n">ignored_attributes</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;celery_task&#39;</span><span class="p">,</span> <span class="s1">&#39;config&#39;</span><span class="p">,</span> <span class="s1">&#39;default_addition_publish_type&#39;</span><span class="p">,</span> <span class="s1">&#39;default_deletion_publish_type&#39;</span><span class="p">,</span>
                               <span class="s1">&#39;input_file_object&#39;</span><span class="p">,</span> <span class="s1">&#39;logger&#39;</span><span class="p">,</span> <span class="s1">&#39;state&#39;</span><span class="p">,</span> <span class="s1">&#39;state_query&#39;</span><span class="p">,</span> <span class="s1">&#39;trigger&#39;</span><span class="p">}</span>
         <span class="n">ignored_attributes</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="s2">&quot;is_</span><span class="si">{state}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">state</span><span class="o">=</span><span class="n">s</span><span class="p">)</span> <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">all_states</span><span class="p">)</span>
 
         <span class="k">return</span> <span class="n">iter_public_attributes</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ignored_attributes</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="s2">&quot;</span><span class="si">{name}</span><span class="s2">(</span><span class="si">{attrs}</span><span class="s2">)&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="p">,</span> <span class="n">attrs</span><span class="o">=</span><span class="nb">dict</span><span class="p">(</span><span class="bp">self</span><span class="p">))</span>
 
     <span class="c1">#</span>
@@ -711,16 +707,15 @@
         <span class="n">validate_relative_path_attr</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="s1">&#39;input_file_archive_path&#39;</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_input_file_archive_path</span> <span class="o">=</span> <span class="n">path</span>
 
-    <span class="nd">@property</span>
+    <span class="nd">@lazyproperty</span>
     <span class="k">def</span> <span class="nf">input_file_object</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Read-only property to access the original input file represented as a PipelineFile object</span>
 
 <span class="sd">        :return: input file object</span>
 <span class="sd">        :rtype: :py:class:`PipelineFile`</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_input_file_object</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_input_file_object</span> <span class="o">=</span> <span class="n">PipelineFile</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">input_file</span><span class="p">,</span> <span class="n">file_update_callback</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_file_update_callback</span><span class="p">)</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_input_file_object</span>
+        <span class="n">input_file_object</span> <span class="o">=</span> <span class="n">PipelineFile</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">input_file</span><span class="p">,</span> <span class="n">file_update_callback</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_file_update_callback</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">input_file_object</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">logger</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
@@ -732,19 +727,20 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">_init_logger</span><span class="p">()</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_logger</span>
 
-    <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">module_versions</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="nd">@lazyproperty</span>
+    <span class="k">def</span> <span class="nf">versions</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Read-only property to access module versions</span>
 
 <span class="sd">        :return: module version strings for aodncore, aodndata and compliance checker modules</span>
 <span class="sd">        :rtype: :class:`dict`</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_module_versions</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="n">versions</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;aodncore&#39;</span><span class="p">:</span> <span class="n">_aodncore_version</span><span class="p">}</span>
-            <span class="n">discovered_versions</span> <span class="o">=</span> <span class="n">discover_entry_points</span><span class="p">(</span><span class="s1">&#39;pipeline.module_versions&#39;</span><span class="p">)</span>
-            <span class="n">versions</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">discovered_versions</span><span class="p">)</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_module_versions</span> <span class="o">=</span> <span class="n">versions</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_module_versions</span>
+        <span class="n">versions</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;python&#39;</span><span class="p">:</span> <span class="n">platform</span><span class="o">.</span><span class="n">python_version</span><span class="p">(),</span>
+                    <span class="s1">&#39;aodncore&#39;</span><span class="p">:</span> <span class="n">_aodncore_version</span><span class="p">}</span>
+        <span class="n">loaded_versions</span><span class="p">,</span> <span class="n">failed_versions</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">discovered_module_versions</span>
+        <span class="n">failed_version_dict</span> <span class="o">=</span> <span class="nb">dict</span><span class="o">.</span><span class="n">fromkeys</span><span class="p">(</span><span class="n">failed_versions</span><span class="p">,</span> <span class="s1">&#39;LOAD_FAILED&#39;</span><span class="p">)</span>
+        <span class="n">versions</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">loaded_versions</span><span class="p">)</span>
+        <span class="n">versions</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">failed_version_dict</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">versions</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">notification_results</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
@@ -783,16 +779,15 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_start_time</span>
 
-    <span class="nd">@property</span>
+    <span class="nd">@lazyproperty</span>
     <span class="k">def</span> <span class="nf">state_query</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Read-only property containing an initialised StateQuery instance, for querying existing pipeline state</span>
 
 <span class="sd">        :return: StateQuery instance</span>
 <span class="sd">        :rtype: :py:class:`StateQuery`</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_state_query</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_state_query</span> <span class="o">=</span> <span class="n">StateQuery</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_upload_store_runner</span><span class="o">.</span><span class="n">broker</span><span class="p">)</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_state_query</span>
+        <span class="k">return</span> <span class="n">StateQuery</span><span class="p">(</span><span class="n">storage_broker</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_upload_store_runner</span><span class="o">.</span><span class="n">broker</span><span class="p">,</span>
+                          <span class="n">wfs_url</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">pipeline_config</span><span class="p">[</span><span class="s1">&#39;global&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;wfs_url&#39;</span><span class="p">))</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">default_addition_publish_type</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
@@ -862,29 +857,29 @@
     <span class="c1"># private properties</span>
     <span class="c1">#</span>
 
-    <span class="nd">@property</span>
+    <span class="nd">@lazyproperty</span>
     <span class="k">def</span> <span class="nf">_archive_store_runner</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Private read-only property for accessing the instance&#39;s &#39;archive&#39; store runner (for internal use only)</span>
 
 <span class="sd">        :return: :py:class:`StoreRunner`</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_archive_store_runner_object</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_archive_store_runner_object</span> <span class="o">=</span> <span class="n">get_store_runner</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_config</span><span class="o">.</span><span class="n">pipeline_config</span><span class="p">[</span><span class="s1">&#39;global&#39;</span><span class="p">][</span><span class="s1">&#39;archive_uri&#39;</span><span class="p">],</span>
-                                                                 <span class="bp">self</span><span class="o">.</span><span class="n">_config</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="p">,</span> <span class="n">archive_mode</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">sysinfo</span><span class="p">(</span><span class="s2">&quot;get_store_runner (archive) -&gt; </span><span class="si">{self._archive_store_runner_object}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">=</span><span class="bp">self</span><span class="p">))</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_archive_store_runner_object</span>
+        <span class="n">archive_store_runner_object</span> <span class="o">=</span> <span class="n">get_store_runner</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_config</span><span class="o">.</span><span class="n">pipeline_config</span><span class="p">[</span><span class="s1">&#39;global&#39;</span><span class="p">][</span><span class="s1">&#39;archive_uri&#39;</span><span class="p">],</span>
+                                                       <span class="bp">self</span><span class="o">.</span><span class="n">_config</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="p">,</span> <span class="n">archive_mode</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">sysinfo</span><span class="p">(</span><span class="s2">&quot;get_store_runner (archive) -&gt; </span><span class="si">{archive_store_runner_object}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+            <span class="n">archive_store_runner_object</span><span class="o">=</span><span class="n">archive_store_runner_object</span><span class="p">))</span>
+        <span class="k">return</span> <span class="n">archive_store_runner_object</span>
 
-    <span class="nd">@property</span>
+    <span class="nd">@lazyproperty</span>
     <span class="k">def</span> <span class="nf">_upload_store_runner</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Private read-only property for accessing the instance &#39;upload&#39; store runner (for internal use only)</span>
 
 <span class="sd">        :return: :py:class:`StoreRunner`</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_upload_store_runner_object</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_upload_store_runner_object</span> <span class="o">=</span> <span class="n">get_store_runner</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_config</span><span class="o">.</span><span class="n">pipeline_config</span><span class="p">[</span><span class="s1">&#39;global&#39;</span><span class="p">][</span><span class="s1">&#39;upload_uri&#39;</span><span class="p">],</span>
-                                                                <span class="bp">self</span><span class="o">.</span><span class="n">_config</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="p">)</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">sysinfo</span><span class="p">(</span><span class="s2">&quot;get_store_runner (upload) -&gt; </span><span class="si">{self._upload_store_runner_object}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">=</span><span class="bp">self</span><span class="p">))</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_upload_store_runner_object</span>
+        <span class="n">upload_store_runner_object</span> <span class="o">=</span> <span class="n">get_store_runner</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_config</span><span class="o">.</span><span class="n">pipeline_config</span><span class="p">[</span><span class="s1">&#39;global&#39;</span><span class="p">][</span><span class="s1">&#39;upload_uri&#39;</span><span class="p">],</span>
+                                                      <span class="bp">self</span><span class="o">.</span><span class="n">_config</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">sysinfo</span><span class="p">(</span><span class="s2">&quot;get_store_runner (upload) -&gt; </span><span class="si">{upload_store_runner_object}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+            <span class="n">upload_store_runner_object</span><span class="o">=</span><span class="n">upload_store_runner_object</span><span class="p">))</span>
+        <span class="k">return</span> <span class="n">upload_store_runner_object</span>
 
     <span class="c1">#</span>
     <span class="c1"># &#39;before&#39; methods for ordered state machine transitions</span>
@@ -1112,6 +1107,10 @@
                 <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">exception</span><span class="p">,</span> <span class="p">(</span><span class="n">InvalidConfigError</span><span class="p">,</span> <span class="n">MissingConfigParameterError</span><span class="p">)):</span>
                     <span class="n">should_notify</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">notify_params_dict</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;owner_notify_list&#39;</span><span class="p">,</span> <span class="p">[]))</span>
 
+                <span class="k">if</span> <span class="n">notify_params_dict</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;error_notify_list&#39;</span><span class="p">):</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s2">&quot;exception is not a user-correctable problem, &quot;</span>
+                                        <span class="s2">&quot;excluding &#39;error_notify_list&#39; from notification&quot;</span><span class="p">)</span>
+
             <span class="k">else</span><span class="p">:</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="n">format_exception</span><span class="p">(</span><span class="n">exception</span><span class="p">))</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">_error_details</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">exception</span><span class="p">)</span>
@@ -1276,7 +1275,7 @@
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'../../../',
-            VERSION:'0.21.2',
+            VERSION:'1.0.6',
             LANGUAGE:'None',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
@@ -1287,6 +1286,7 @@
       <script type="text/javascript" src="../../../_static/jquery.js"></script>
       <script type="text/javascript" src="../../../_static/underscore.js"></script>
       <script type="text/javascript" src="../../../_static/doctools.js"></script>
+      <script type="text/javascript" src="../../../_static/language_data.js"></script>
 
   
 

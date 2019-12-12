@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>aodncore.pipeline.schema &mdash; aodncore 0.21.2 documentation</title>
+  <title>aodncore.pipeline.schema &mdash; aodncore 1.0.6 documentation</title>
   
 
   
@@ -57,7 +57,7 @@
             
             
               <div class="version">
-                0.21.2
+                1.0.6
               </div>
             
           
@@ -83,7 +83,7 @@
             
               <p class="caption"><span class="caption-text">Quick Start Guide:</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../quickstartdoc.html">Writing a <code class="docutils literal notranslate"><span class="pre">dest_path()</span></code> function</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../quickstartdoc.html">Writing a <code class="xref py py-meth docutils literal notranslate"><span class="pre">dest_path()</span></code> function</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../quickstartdoc.html#overriding-default-file-actions">Overriding default file actions</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../quickstartdoc.html#creating-products-during-the-handler-lifetime">Creating products during the handler lifetime</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../quickstartdoc.html#query-storage">Query Storage</a></li>
@@ -208,6 +208,7 @@
     <span class="s1">&#39;validate_check_params&#39;</span><span class="p">,</span>
     <span class="s1">&#39;validate_custom_params&#39;</span><span class="p">,</span>
     <span class="s1">&#39;validate_harvest_params&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;validate_json_manifest&#39;</span><span class="p">,</span>
     <span class="s1">&#39;validate_logging_config&#39;</span><span class="p">,</span>
     <span class="s1">&#39;validate_pipeline_config&#39;</span><span class="p">,</span>
     <span class="s1">&#39;validate_notify_params&#39;</span><span class="p">,</span>
@@ -289,7 +290,10 @@
                 <span class="s1">&#39;processing_dir&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;type&#39;</span><span class="p">:</span> <span class="s1">&#39;string&#39;</span><span class="p">},</span>
                 <span class="s1">&#39;tmp_dir&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;type&#39;</span><span class="p">:</span> <span class="s1">&#39;string&#39;</span><span class="p">},</span>
                 <span class="s1">&#39;upload_uri&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;type&#39;</span><span class="p">:</span> <span class="s1">&#39;string&#39;</span><span class="p">},</span>
-                <span class="s1">&#39;wip_dir&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;type&#39;</span><span class="p">:</span> <span class="s1">&#39;string&#39;</span><span class="p">}</span>
+                <span class="s1">&#39;wfs_url&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;type&#39;</span><span class="p">:</span> <span class="s1">&#39;string&#39;</span><span class="p">},</span>
+                <span class="s1">&#39;wip_dir&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;type&#39;</span><span class="p">:</span> <span class="s1">&#39;string&#39;</span><span class="p">},</span>
+                <span class="s1">&#39;platform_category_vocab_url&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;type&#39;</span><span class="p">:</span> <span class="s1">&#39;string&#39;</span><span class="p">},</span>
+                <span class="s1">&#39;platform_vocab_url&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;type&#39;</span><span class="p">:</span> <span class="s1">&#39;string&#39;</span><span class="p">}</span>
             <span class="p">},</span>
             <span class="s1">&#39;required&#39;</span><span class="p">:</span> <span class="p">[</span><span class="s1">&#39;admin_recipients&#39;</span><span class="p">,</span> <span class="s1">&#39;archive_uri&#39;</span><span class="p">,</span> <span class="s1">&#39;error_uri&#39;</span><span class="p">,</span> <span class="s1">&#39;processing_dir&#39;</span><span class="p">,</span> <span class="s1">&#39;upload_uri&#39;</span><span class="p">,</span> <span class="s1">&#39;wip_dir&#39;</span><span class="p">],</span>
             <span class="s1">&#39;additionalProperties&#39;</span><span class="p">:</span> <span class="kc">False</span>
@@ -376,6 +380,26 @@
 <span class="p">}</span>
 
 
+<span class="n">JSON_MANIFEST_SCHEMA</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s1">&#39;type&#39;</span><span class="p">:</span> <span class="s1">&#39;object&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;properties&#39;</span><span class="p">:</span> <span class="p">{</span>
+        <span class="s1">&#39;files&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;type&#39;</span><span class="p">:</span> <span class="s1">&#39;array&#39;</span><span class="p">,</span> <span class="s1">&#39;items&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;$ref&#39;</span><span class="p">:</span> <span class="s1">&#39;#/definitions/manifestEntry&#39;</span><span class="p">}},</span>
+    <span class="p">},</span>
+    <span class="s1">&#39;additionalProperties&#39;</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span>
+    <span class="s1">&#39;definitions&#39;</span><span class="p">:</span> <span class="p">{</span>
+        <span class="s1">&#39;manifestEntry&#39;</span><span class="p">:</span> <span class="p">{</span>
+            <span class="s1">&#39;type&#39;</span><span class="p">:</span> <span class="s1">&#39;object&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;properties&#39;</span><span class="p">:</span> <span class="p">{</span>
+                <span class="s1">&#39;local_path&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;type&#39;</span><span class="p">:</span> <span class="s1">&#39;string&#39;</span><span class="p">},</span>
+                <span class="s1">&#39;dest_path&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;type&#39;</span><span class="p">:</span> <span class="s1">&#39;string&#39;</span><span class="p">}</span>
+            <span class="p">},</span>
+            <span class="s1">&#39;required&#39;</span><span class="p">:</span> <span class="p">[</span><span class="s1">&#39;local_path&#39;</span><span class="p">],</span>
+            <span class="s1">&#39;additionalProperties&#39;</span><span class="p">:</span> <span class="kc">False</span>
+        <span class="p">}</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+
+
 <div class="viewcode-block" id="validate_check_params"><a class="viewcode-back" href="../../../aodncore.pipeline.html#aodncore.pipeline.schema.validate_check_params">[docs]</a><span class="k">def</span> <span class="nf">validate_check_params</span><span class="p">(</span><span class="n">check_params</span><span class="p">):</span>
     <span class="n">jsonschema</span><span class="o">.</span><span class="n">validate</span><span class="p">(</span><span class="n">check_params</span><span class="p">,</span> <span class="n">CHECK_PARAMS_SCHEMA</span><span class="p">)</span></div>
 
@@ -402,6 +426,10 @@
 
 <div class="viewcode-block" id="validate_resolve_params"><a class="viewcode-back" href="../../../aodncore.pipeline.html#aodncore.pipeline.schema.validate_resolve_params">[docs]</a><span class="k">def</span> <span class="nf">validate_resolve_params</span><span class="p">(</span><span class="n">resolve_params</span><span class="p">):</span>
     <span class="n">jsonschema</span><span class="o">.</span><span class="n">validate</span><span class="p">(</span><span class="n">resolve_params</span><span class="p">,</span> <span class="n">RESOLVE_PARAMS_SCHEMA</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="validate_json_manifest"><a class="viewcode-back" href="../../../aodncore.pipeline.html#aodncore.pipeline.schema.validate_json_manifest">[docs]</a><span class="k">def</span> <span class="nf">validate_json_manifest</span><span class="p">(</span><span class="n">json_manifest</span><span class="p">):</span>
+    <span class="n">jsonschema</span><span class="o">.</span><span class="n">validate</span><span class="p">(</span><span class="n">json_manifest</span><span class="p">,</span> <span class="n">JSON_MANIFEST_SCHEMA</span><span class="p">)</span></div>
 </pre></div>
 
            </div>
@@ -436,7 +464,7 @@
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'../../../',
-            VERSION:'0.21.2',
+            VERSION:'1.0.6',
             LANGUAGE:'None',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
@@ -447,6 +475,7 @@
       <script type="text/javascript" src="../../../_static/jquery.js"></script>
       <script type="text/javascript" src="../../../_static/underscore.js"></script>
       <script type="text/javascript" src="../../../_static/doctools.js"></script>
+      <script type="text/javascript" src="../../../_static/language_data.js"></script>
 
   
 

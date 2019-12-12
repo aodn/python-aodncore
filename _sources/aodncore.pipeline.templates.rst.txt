@@ -5,6 +5,6 @@ Module contents
 ---------------
 
 .. automodule:: aodncore.pipeline.templates
-    :members:
-    :undoc-members:
-    :show-inheritance:
+   :members:
+   :undoc-members:
+   :show-inheritance:

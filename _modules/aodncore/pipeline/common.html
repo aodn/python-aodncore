@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>aodncore.pipeline.common &mdash; aodncore 0.21.2 documentation</title>
+  <title>aodncore.pipeline.common &mdash; aodncore 1.0.6 documentation</title>
   
 
   
@@ -57,7 +57,7 @@
             
             
               <div class="version">
-                0.21.2
+                1.0.6
               </div>
             
           
@@ -83,7 +83,7 @@
             
               <p class="caption"><span class="caption-text">Quick Start Guide:</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../quickstartdoc.html">Writing a <code class="docutils literal notranslate"><span class="pre">dest_path()</span></code> function</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../quickstartdoc.html">Writing a <code class="xref py py-meth docutils literal notranslate"><span class="pre">dest_path()</span></code> function</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../quickstartdoc.html#overriding-default-file-actions">Overriding default file actions</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../quickstartdoc.html#creating-products-during-the-handler-lifetime">Creating products during the handler lifetime</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../quickstartdoc.html#query-storage">Query Storage</a></li>
@@ -204,9 +204,11 @@
 
 <span class="kn">import</span> <span class="nn">os</span>
 
-<span class="kn">from</span> <span class="nn">enum</span> <span class="k">import</span> <span class="n">Enum</span>
+<span class="kn">from</span> <span class="nn">enum</span> <span class="kn">import</span> <span class="n">Enum</span>
 
-<span class="kn">from</span> <span class="nn">..util</span> <span class="k">import</span> <span class="n">classproperty</span><span class="p">,</span> <span class="n">is_valid_email_address</span><span class="p">,</span> <span class="n">iter_public_attributes</span><span class="p">,</span> <span class="n">validate_membership</span><span class="p">,</span> <span class="n">validate_type</span>
+<span class="kn">from</span> <span class="nn">..util</span> <span class="kn">import</span> <span class="p">(</span><span class="n">classproperty</span><span class="p">,</span> <span class="n">is_gzip_file</span><span class="p">,</span> <span class="n">is_jpeg_file</span><span class="p">,</span> <span class="n">is_json_file</span><span class="p">,</span> <span class="n">is_netcdf_file</span><span class="p">,</span> <span class="n">is_nonempty_file</span><span class="p">,</span>
+                    <span class="n">is_pdf_file</span><span class="p">,</span> <span class="n">is_png_file</span><span class="p">,</span> <span class="n">is_valid_email_address</span><span class="p">,</span> <span class="n">is_tiff_file</span><span class="p">,</span> <span class="n">is_zip_file</span><span class="p">,</span> <span class="n">iter_public_attributes</span><span class="p">,</span>
+                    <span class="n">validate_membership</span><span class="p">,</span> <span class="n">validate_type</span><span class="p">)</span>
 
 <span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span>
     <span class="s1">&#39;CheckResult&#39;</span><span class="p">,</span>
@@ -229,12 +231,12 @@
     <span class="sd">&quot;&quot;&quot;Simple container class to hold a check result</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">compliant</span><span class="p">,</span> <span class="n">log</span><span class="p">,</span> <span class="n">errors</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">compliant</span><span class="p">,</span> <span class="n">log</span><span class="p">,</span> <span class="n">errors</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_compliant</span> <span class="o">=</span> <span class="n">compliant</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_log</span> <span class="o">=</span> <span class="n">log</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_errors</span> <span class="o">=</span> <span class="n">errors</span>
 
-    <span class="k">def</span> <span class="nf">__iter__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__iter__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="n">iter_public_attributes</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
 
     <span class="nd">@property</span>
@@ -263,7 +265,7 @@
     <span class="n">EMAIL</span> <span class="o">=</span> <span class="p">(</span><span class="s1">&#39;email&#39;</span><span class="p">,</span> <span class="n">is_valid_email_address</span><span class="p">,</span> <span class="s1">&#39;invalid email address&#39;</span><span class="p">)</span>
     <span class="n">SNS</span> <span class="o">=</span> <span class="p">(</span><span class="s1">&#39;sns&#39;</span><span class="p">,</span> <span class="k">lambda</span> <span class="n">p</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span> <span class="s1">&#39;invalid SNS topic&#39;</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">protocol</span><span class="p">,</span> <span class="n">address_validation_function</span><span class="p">,</span> <span class="n">error_string</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">protocol</span><span class="p">,</span> <span class="n">address_validation_function</span><span class="p">,</span> <span class="n">error_string</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 
 <span class="sd">        :param protocol: protocol string used to map string representation of a protocol to an Enum element</span>
@@ -287,20 +289,23 @@
     <span class="k">def</span> <span class="nf">error_string</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_error_string</span>
 
-    <span class="nd">@classmethod</span>
+<div class="viewcode-block" id="NotificationRecipientType.get_type_from_protocol"><a class="viewcode-back" href="../../../aodncore.pipeline.html#aodncore.pipeline.common.NotificationRecipientType.get_type_from_protocol">[docs]</a>    <span class="nd">@classmethod</span>
     <span class="k">def</span> <span class="nf">get_type_from_protocol</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">protocol</span><span class="p">):</span>
-        <span class="k">return</span> <span class="nb">next</span><span class="p">((</span><span class="n">t</span> <span class="k">for</span> <span class="n">t</span> <span class="ow">in</span> <span class="bp">cls</span> <span class="k">if</span> <span class="n">t</span><span class="o">.</span><span class="n">protocol</span> <span class="o">==</span> <span class="n">protocol</span><span class="p">),</span> <span class="bp">cls</span><span class="o">.</span><span class="n">INVALID</span><span class="p">)</span></div>
+        <span class="k">return</span> <span class="nb">next</span><span class="p">((</span><span class="n">t</span> <span class="k">for</span> <span class="n">t</span> <span class="ow">in</span> <span class="bp">cls</span> <span class="k">if</span> <span class="n">t</span><span class="o">.</span><span class="n">protocol</span> <span class="o">==</span> <span class="n">protocol</span><span class="p">),</span> <span class="bp">cls</span><span class="o">.</span><span class="n">INVALID</span><span class="p">)</span></div></div>
 
 
 <div class="viewcode-block" id="FileType"><a class="viewcode-back" href="../../../aodncore.pipeline.html#aodncore.pipeline.common.FileType">[docs]</a><span class="k">class</span> <span class="nc">FileType</span><span class="p">(</span><span class="n">Enum</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Represents each known file type, including extension and mime type</span>
+    <span class="sd">&quot;&quot;&quot;Represents each known file type, including extensions, mime type and validator function</span>
 
 <span class="sd">    Each enum member may have it&#39;s attributes accessed by name when required for comparisons and filtering, e.g.</span>
 
-<span class="sd">    - lookup the extension for PNG file types in general::</span>
+<span class="sd">    - lookup the extension and mime-type for PNG file types in general::</span>
 
-<span class="sd">        FileType.PNG.extension</span>
-<span class="sd">        &#39;.png&#39;</span>
+<span class="sd">        FileType.PNG.extensions</span>
+<span class="sd">        (&#39;.png&#39;,)</span>
+
+<span class="sd">        FileType.PNG.mime_type</span>
+<span class="sd">        &#39;image/png&#39;</span>
 
 <span class="sd">    - assign a type attribute to an object, and query the type-specific values directly from the object::</span>
 
@@ -308,42 +313,66 @@
 <span class="sd">            pass</span>
 
 <span class="sd">        o = Object()</span>
-<span class="sd">        o.file_type = FileType.ZIP</span>
-<span class="sd">        o.file_type.extension</span>
-<span class="sd">        &#39;.zip&#39;</span>
+<span class="sd">        o.file_type = FileType.JPEG</span>
+<span class="sd">        o.file_type.extensions</span>
+<span class="sd">        (&#39;.jpg&#39;, &#39;.jpeg&#39;)</span>
 <span class="sd">        o.file_type.mime_type</span>
-<span class="sd">        &#39;application/zip&#39;</span>
+<span class="sd">        &#39;image/jpeg&#39;</span>
+
+<span class="sd">    The function referenced by validator must accept a single parameter, which is the path to file being checked, and</span>
+<span class="sd">    return True if the path represents a valid file of that type. For example, this would typically attempt to</span>
+<span class="sd">    open/parse/read the file using a corresponding library (e.g. an NC file can be opened as a valid Dataset by the</span>
+<span class="sd">    NetCDF library, a ZIP file can be read using the zipfile module etc.). If</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="vm">__slots__</span> <span class="o">=</span> <span class="p">(</span><span class="s1">&#39;extension&#39;</span><span class="p">,</span> <span class="s1">&#39;mime_type&#39;</span><span class="p">)</span>
+    <span class="vm">__slots__</span> <span class="o">=</span> <span class="p">(</span><span class="s1">&#39;extensions&#39;</span><span class="p">,</span> <span class="s1">&#39;mime_type&#39;</span><span class="p">,</span> <span class="s1">&#39;validator&#39;</span><span class="p">)</span>
 
-    <span class="n">UNKNOWN</span> <span class="o">=</span> <span class="p">()</span>
+    <span class="n">UNKNOWN</span> <span class="o">=</span> <span class="p">((),</span> <span class="kc">None</span><span class="p">,</span> <span class="n">is_nonempty_file</span><span class="p">)</span>
 
-    <span class="n">CSV</span> <span class="o">=</span> <span class="p">(</span><span class="s1">&#39;.csv&#39;</span><span class="p">,</span> <span class="s1">&#39;text/csv&#39;</span><span class="p">)</span>
-    <span class="n">GZIP</span> <span class="o">=</span> <span class="p">(</span><span class="s1">&#39;.gz&#39;</span><span class="p">,</span> <span class="s1">&#39;application/gzip&#39;</span><span class="p">)</span>
-    <span class="n">JPEG</span> <span class="o">=</span> <span class="p">(</span><span class="s1">&#39;.jpg&#39;</span><span class="p">,</span> <span class="s1">&#39;image/jpeg&#39;</span><span class="p">)</span>
-    <span class="n">PDF</span> <span class="o">=</span> <span class="p">(</span><span class="s1">&#39;.pdf&#39;</span><span class="p">,</span> <span class="s1">&#39;application/pdf&#39;</span><span class="p">)</span>
-    <span class="n">PNG</span> <span class="o">=</span> <span class="p">(</span><span class="s1">&#39;.png&#39;</span><span class="p">,</span> <span class="s1">&#39;image/png&#39;</span><span class="p">)</span>
-    <span class="n">ZIP</span> <span class="o">=</span> <span class="p">(</span><span class="s1">&#39;.zip&#39;</span><span class="p">,</span> <span class="s1">&#39;application/zip&#39;</span><span class="p">)</span>
+    <span class="n">CSV</span> <span class="o">=</span> <span class="p">((</span><span class="s1">&#39;.csv&#39;</span><span class="p">,),</span> <span class="s1">&#39;text/csv&#39;</span><span class="p">,</span> <span class="n">is_nonempty_file</span><span class="p">)</span>
+    <span class="n">GZIP</span> <span class="o">=</span> <span class="p">((</span><span class="s1">&#39;.gz&#39;</span><span class="p">,),</span> <span class="s1">&#39;application/gzip&#39;</span><span class="p">,</span> <span class="n">is_gzip_file</span><span class="p">)</span>
+    <span class="n">JPEG</span> <span class="o">=</span> <span class="p">((</span><span class="s1">&#39;.jpg&#39;</span><span class="p">,</span> <span class="s1">&#39;.jpeg&#39;</span><span class="p">),</span> <span class="s1">&#39;image/jpeg&#39;</span><span class="p">,</span> <span class="n">is_jpeg_file</span><span class="p">)</span>
+    <span class="n">PDF</span> <span class="o">=</span> <span class="p">((</span><span class="s1">&#39;.pdf&#39;</span><span class="p">,),</span> <span class="s1">&#39;application/pdf&#39;</span><span class="p">,</span> <span class="n">is_pdf_file</span><span class="p">)</span>
+    <span class="n">PNG</span> <span class="o">=</span> <span class="p">((</span><span class="s1">&#39;.png&#39;</span><span class="p">,),</span> <span class="s1">&#39;image/png&#39;</span><span class="p">,</span> <span class="n">is_png_file</span><span class="p">)</span>
+    <span class="n">ZIP</span> <span class="o">=</span> <span class="p">((</span><span class="s1">&#39;.zip&#39;</span><span class="p">,),</span> <span class="s1">&#39;application/zip&#39;</span><span class="p">,</span> <span class="n">is_zip_file</span><span class="p">)</span>
+    <span class="n">TIFF</span> <span class="o">=</span> <span class="p">((</span><span class="s1">&#39;.tif&#39;</span><span class="p">,</span> <span class="s1">&#39;.tiff&#39;</span><span class="p">),</span> <span class="s1">&#39;image/tiff&#39;</span><span class="p">,</span> <span class="n">is_tiff_file</span><span class="p">)</span>
 
-    <span class="n">NETCDF</span> <span class="o">=</span> <span class="p">(</span><span class="s1">&#39;.nc&#39;</span><span class="p">,</span> <span class="s1">&#39;application/octet-stream&#39;</span><span class="p">)</span>
-    <span class="n">DIR_MANIFEST</span> <span class="o">=</span> <span class="p">(</span><span class="s1">&#39;.dir_manifest&#39;</span><span class="p">,</span> <span class="s1">&#39;text/plain&#39;</span><span class="p">)</span>
-    <span class="n">MAP_MANIFEST</span> <span class="o">=</span> <span class="p">(</span><span class="s1">&#39;.map_manifest&#39;</span><span class="p">,</span> <span class="s1">&#39;text/plain&#39;</span><span class="p">)</span>
-    <span class="n">RSYNC_MANIFEST</span> <span class="o">=</span> <span class="p">(</span><span class="s1">&#39;.rsync_manifest&#39;</span><span class="p">,</span> <span class="s1">&#39;text/plain&#39;</span><span class="p">)</span>
-    <span class="n">SIMPLE_MANIFEST</span> <span class="o">=</span> <span class="p">(</span><span class="s1">&#39;.manifest&#39;</span><span class="p">,</span> <span class="s1">&#39;text/plain&#39;</span><span class="p">)</span>
+    <span class="n">NETCDF</span> <span class="o">=</span> <span class="p">((</span><span class="s1">&#39;.nc&#39;</span><span class="p">,),</span> <span class="s1">&#39;application/octet-stream&#39;</span><span class="p">,</span> <span class="n">is_netcdf_file</span><span class="p">)</span>
+    <span class="n">DIR_MANIFEST</span> <span class="o">=</span> <span class="p">((</span><span class="s1">&#39;.dir_manifest&#39;</span><span class="p">,),</span> <span class="s1">&#39;text/plain&#39;</span><span class="p">,</span> <span class="n">is_nonempty_file</span><span class="p">)</span>
+    <span class="n">JSON_MANIFEST</span> <span class="o">=</span> <span class="p">((</span><span class="s1">&#39;.json_manifest&#39;</span><span class="p">,),</span> <span class="s1">&#39;application/json&#39;</span><span class="p">,</span> <span class="n">is_json_file</span><span class="p">)</span>
+    <span class="n">MAP_MANIFEST</span> <span class="o">=</span> <span class="p">((</span><span class="s1">&#39;.map_manifest&#39;</span><span class="p">,),</span> <span class="s1">&#39;text/plain&#39;</span><span class="p">,</span> <span class="n">is_nonempty_file</span><span class="p">)</span>
+    <span class="n">RSYNC_MANIFEST</span> <span class="o">=</span> <span class="p">((</span><span class="s1">&#39;.rsync_manifest&#39;</span><span class="p">,),</span> <span class="s1">&#39;text/plain&#39;</span><span class="p">,</span> <span class="n">is_nonempty_file</span><span class="p">)</span>
+    <span class="n">SIMPLE_MANIFEST</span> <span class="o">=</span> <span class="p">((</span><span class="s1">&#39;.manifest&#39;</span><span class="p">,),</span> <span class="s1">&#39;text/plain&#39;</span><span class="p">,</span> <span class="n">is_nonempty_file</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">extension</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">mime_type</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">extension</span> <span class="o">=</span> <span class="n">extension</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">extensions</span><span class="p">,</span> <span class="n">mime_type</span><span class="p">,</span> <span class="n">validator</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">extensions</span> <span class="o">=</span> <span class="n">extensions</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">mime_type</span> <span class="o">=</span> <span class="n">mime_type</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">validator</span> <span class="o">=</span> <span class="n">validator</span>
 
     <span class="c1"># noinspection PyTypeChecker</span>
-    <span class="nd">@classmethod</span>
+<div class="viewcode-block" id="FileType.get_type_from_extension"><a class="viewcode-back" href="../../../aodncore.pipeline.html#aodncore.pipeline.common.FileType.get_type_from_extension">[docs]</a>    <span class="nd">@classmethod</span>
     <span class="k">def</span> <span class="nf">get_type_from_extension</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">extension</span><span class="p">):</span>
-        <span class="k">return</span> <span class="nb">next</span><span class="p">((</span><span class="n">t</span> <span class="k">for</span> <span class="n">t</span> <span class="ow">in</span> <span class="bp">cls</span> <span class="k">if</span> <span class="n">t</span><span class="o">.</span><span class="n">extension</span> <span class="o">==</span> <span class="n">extension</span><span class="p">),</span> <span class="bp">cls</span><span class="o">.</span><span class="n">UNKNOWN</span><span class="p">)</span>
+        <span class="k">return</span> <span class="nb">next</span><span class="p">((</span><span class="n">t</span> <span class="k">for</span> <span class="n">t</span> <span class="ow">in</span> <span class="bp">cls</span> <span class="k">if</span> <span class="n">extension</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="ow">in</span> <span class="n">t</span><span class="o">.</span><span class="n">extensions</span><span class="p">),</span> <span class="bp">cls</span><span class="o">.</span><span class="n">UNKNOWN</span><span class="p">)</span></div>
 
-    <span class="nd">@classmethod</span>
+<div class="viewcode-block" id="FileType.get_type_from_name"><a class="viewcode-back" href="../../../aodncore.pipeline.html#aodncore.pipeline.common.FileType.get_type_from_name">[docs]</a>    <span class="nd">@classmethod</span>
     <span class="k">def</span> <span class="nf">get_type_from_name</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">name</span><span class="p">):</span>
         <span class="n">_</span><span class="p">,</span> <span class="n">extension</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">splitext</span><span class="p">(</span><span class="n">name</span><span class="p">)</span>
         <span class="k">return</span> <span class="bp">cls</span><span class="o">.</span><span class="n">get_type_from_extension</span><span class="p">(</span><span class="n">extension</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="FileType.is_type"><a class="viewcode-back" href="../../../aodncore.pipeline.html#aodncore.pipeline.common.FileType.is_type">[docs]</a>    <span class="k">def</span> <span class="nf">is_type</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Check whether the *type* (i.e. the information before the slash) equals the given value</span>
+
+<span class="sd">        :param value: type to compare against</span>
+<span class="sd">        :return: True if this type matches the given value, otherwise False</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">mime_type</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">return</span> <span class="kc">False</span>
+        <span class="n">type_</span><span class="p">,</span> <span class="n">subtype</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">mime_type</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;/&#39;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">type_</span> <span class="o">==</span> <span class="n">value</span></div>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">is_image_type</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Read-only boolean property indicating whether the file type instance is an image type.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">is_type</span><span class="p">(</span><span class="s1">&#39;image&#39;</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="PipelineFileCheckType"><a class="viewcode-back" href="../../../aodncore.pipeline.html#aodncore.pipeline.common.PipelineFileCheckType">[docs]</a><span class="k">class</span> <span class="nc">PipelineFileCheckType</span><span class="p">(</span><span class="n">Enum</span><span class="p">):</span>
@@ -400,7 +429,7 @@
     <span class="n">DELETE_ONLY</span> <span class="o">=</span> <span class="p">(</span><span class="kc">False</span><span class="p">,</span> <span class="kc">True</span><span class="p">,</span> <span class="kc">False</span><span class="p">,</span> <span class="kc">True</span><span class="p">,</span> <span class="kc">False</span><span class="p">)</span>
     <span class="n">DELETE_UNHARVEST</span> <span class="o">=</span> <span class="p">(</span><span class="kc">False</span><span class="p">,</span> <span class="kc">True</span><span class="p">,</span> <span class="kc">False</span><span class="p">,</span> <span class="kc">True</span><span class="p">,</span> <span class="kc">True</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">is_addition_type</span><span class="p">,</span> <span class="n">is_deletion_type</span><span class="p">,</span> <span class="n">is_archive_type</span><span class="p">,</span> <span class="n">is_store_type</span><span class="p">,</span> <span class="n">is_harvest_type</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">is_addition_type</span><span class="p">,</span> <span class="n">is_deletion_type</span><span class="p">,</span> <span class="n">is_archive_type</span><span class="p">,</span> <span class="n">is_store_type</span><span class="p">,</span> <span class="n">is_harvest_type</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_is_addition_type</span> <span class="o">=</span> <span class="n">is_addition_type</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_is_deletion_type</span> <span class="o">=</span> <span class="n">is_deletion_type</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_is_archive_type</span> <span class="o">=</span> <span class="n">is_archive_type</span>
@@ -480,7 +509,7 @@
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'../../../',
-            VERSION:'0.21.2',
+            VERSION:'1.0.6',
             LANGUAGE:'None',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
@@ -491,6 +520,7 @@
       <script type="text/javascript" src="../../../_static/jquery.js"></script>
       <script type="text/javascript" src="../../../_static/underscore.js"></script>
       <script type="text/javascript" src="../../../_static/doctools.js"></script>
+      <script type="text/javascript" src="../../../_static/language_data.js"></script>
 
   
 

@@ -1,0 +1,10 @@
+aodncore.testlib.vocab package
+==============================
+
+Module contents
+---------------
+
+.. automodule:: aodncore.testlib.vocab
+   :members:
+   :undoc-members:
+   :show-inheritance:

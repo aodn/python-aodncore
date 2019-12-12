@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>aodncore.pipeline.steps.check &mdash; aodncore 0.21.2 documentation</title>
+  <title>aodncore.pipeline.steps.check &mdash; aodncore 1.0.6 documentation</title>
   
 
   
@@ -57,7 +57,7 @@
             
             
               <div class="version">
-                0.21.2
+                1.0.6
               </div>
             
           
@@ -83,7 +83,7 @@
             
               <p class="caption"><span class="caption-text">Quick Start Guide:</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../../quickstartdoc.html">Writing a <code class="docutils literal notranslate"><span class="pre">dest_path()</span></code> function</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../quickstartdoc.html">Writing a <code class="xref py py-meth docutils literal notranslate"><span class="pre">dest_path()</span></code> function</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../quickstartdoc.html#overriding-default-file-actions">Overriding default file actions</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../quickstartdoc.html#creating-products-during-the-handler-lifetime">Creating products during the handler lifetime</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../quickstartdoc.html#query-storage">Query Storage</a></li>
@@ -211,13 +211,13 @@
 <span class="kn">import</span> <span class="nn">itertools</span>
 <span class="kn">import</span> <span class="nn">os</span>
 
-<span class="kn">from</span> <span class="nn">compliance_checker.runner</span> <span class="k">import</span> <span class="n">ComplianceChecker</span><span class="p">,</span> <span class="n">CheckSuite</span>
+<span class="kn">from</span> <span class="nn">compliance_checker.runner</span> <span class="kn">import</span> <span class="n">ComplianceChecker</span><span class="p">,</span> <span class="n">CheckSuite</span>
 
-<span class="kn">from</span> <span class="nn">.basestep</span> <span class="k">import</span> <span class="n">BaseStepRunner</span>
-<span class="kn">from</span> <span class="nn">..common</span> <span class="k">import</span> <span class="n">FileType</span><span class="p">,</span> <span class="n">CheckResult</span><span class="p">,</span> <span class="n">PipelineFileCheckType</span><span class="p">,</span> <span class="n">validate_checktype</span>
-<span class="kn">from</span> <span class="nn">..exceptions</span> <span class="k">import</span> <span class="n">ComplianceCheckFailedError</span><span class="p">,</span> <span class="n">InvalidCheckSuiteError</span><span class="p">,</span> <span class="n">InvalidCheckTypeError</span>
-<span class="kn">from</span> <span class="nn">..files</span> <span class="k">import</span> <span class="n">PipelineFileCollection</span>
-<span class="kn">from</span> <span class="nn">...util</span> <span class="k">import</span> <span class="n">format_exception</span><span class="p">,</span> <span class="n">is_netcdffile</span><span class="p">,</span> <span class="n">CaptureStdIO</span>
+<span class="kn">from</span> <span class="nn">.basestep</span> <span class="kn">import</span> <span class="n">BaseStepRunner</span>
+<span class="kn">from</span> <span class="nn">..common</span> <span class="kn">import</span> <span class="n">CheckResult</span><span class="p">,</span> <span class="n">PipelineFileCheckType</span><span class="p">,</span> <span class="n">validate_checktype</span>
+<span class="kn">from</span> <span class="nn">..exceptions</span> <span class="kn">import</span> <span class="n">ComplianceCheckFailedError</span><span class="p">,</span> <span class="n">InvalidCheckSuiteError</span><span class="p">,</span> <span class="n">InvalidCheckTypeError</span>
+<span class="kn">from</span> <span class="nn">..files</span> <span class="kn">import</span> <span class="n">PipelineFileCollection</span>
+<span class="kn">from</span> <span class="nn">...util</span> <span class="kn">import</span> <span class="n">format_exception</span><span class="p">,</span> <span class="n">is_netcdf_file</span><span class="p">,</span> <span class="n">is_nonempty_file</span><span class="p">,</span> <span class="n">CaptureStdIO</span>
 
 <span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span>
     <span class="s1">&#39;get_check_runner&#39;</span><span class="p">,</span>
@@ -225,7 +225,6 @@
     <span class="s1">&#39;CheckRunnerAdapter&#39;</span><span class="p">,</span>
     <span class="s1">&#39;ComplianceCheckerCheckRunner&#39;</span><span class="p">,</span>
     <span class="s1">&#39;FormatCheckRunner&#39;</span><span class="p">,</span>
-    <span class="s1">&#39;NetcdfFormatCheckRunner&#39;</span><span class="p">,</span>
     <span class="s1">&#39;NonEmptyCheckRunner&#39;</span>
 <span class="p">]</span>
 
@@ -255,7 +254,7 @@
         <span class="k">raise</span> <span class="n">InvalidCheckTypeError</span><span class="p">(</span><span class="s2">&quot;invalid check type &#39;</span><span class="si">{check_type}</span><span class="s2">&#39;&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">check_type</span><span class="o">=</span><span class="n">check_type</span><span class="p">))</span></div>
 
 
-<span class="k">class</span> <span class="nc">BaseCheckRunner</span><span class="p">(</span><span class="n">BaseStepRunner</span><span class="p">):</span>
+<span class="k">class</span> <span class="nc">BaseCheckRunner</span><span class="p">(</span><span class="n">BaseStepRunner</span><span class="p">,</span> <span class="n">metaclass</span><span class="o">=</span><span class="n">abc</span><span class="o">.</span><span class="n">ABCMeta</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;A CheckRunner is responsible for performing checks on a given collection of files.</span>
 <span class="sd">    </span>
 <span class="sd">    The &#39;run&#39; method is supplied with a PipelineFileCollection object and performs arbitrary checks against the files, </span>
@@ -268,16 +267,14 @@
 <span class="sd">    order to correlate it to &#39;lines in a log file&#39;, and typically should return an empty tuple if the file is compliant.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="n">__metaclass__</span> <span class="o">=</span> <span class="n">abc</span><span class="o">.</span><span class="n">ABCMeta</span>
-
     <span class="nd">@abc</span><span class="o">.</span><span class="n">abstractmethod</span>
     <span class="k">def</span> <span class="nf">run</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pipeline_files</span><span class="p">):</span>
         <span class="k">pass</span>
 
 
 <div class="viewcode-block" id="CheckRunnerAdapter"><a class="viewcode-back" href="../../../../aodncore.pipeline.steps.html#aodncore.pipeline.steps.check.CheckRunnerAdapter">[docs]</a><span class="k">class</span> <span class="nc">CheckRunnerAdapter</span><span class="p">(</span><span class="n">BaseCheckRunner</span><span class="p">):</span>
-    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">config</span><span class="p">,</span> <span class="n">logger</span><span class="p">,</span> <span class="n">check_params</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-        <span class="nb">super</span><span class="p">(</span><span class="n">CheckRunnerAdapter</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">config</span><span class="p">,</span> <span class="n">logger</span><span class="p">)</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">config</span><span class="p">,</span> <span class="n">logger</span><span class="p">,</span> <span class="n">check_params</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">config</span><span class="p">,</span> <span class="n">logger</span><span class="p">)</span>
 
         <span class="k">if</span> <span class="n">check_params</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">check_params</span> <span class="o">=</span> <span class="p">{}</span>
@@ -308,8 +305,8 @@
 
 
 <div class="viewcode-block" id="ComplianceCheckerCheckRunner"><a class="viewcode-back" href="../../../../aodncore.pipeline.steps.html#aodncore.pipeline.steps.check.ComplianceCheckerCheckRunner">[docs]</a><span class="k">class</span> <span class="nc">ComplianceCheckerCheckRunner</span><span class="p">(</span><span class="n">BaseCheckRunner</span><span class="p">):</span>
-    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">config</span><span class="p">,</span> <span class="n">logger</span><span class="p">,</span> <span class="n">check_params</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-        <span class="nb">super</span><span class="p">(</span><span class="n">ComplianceCheckerCheckRunner</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">config</span><span class="p">,</span> <span class="n">logger</span><span class="p">)</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">config</span><span class="p">,</span> <span class="n">logger</span><span class="p">,</span> <span class="n">check_params</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">config</span><span class="p">,</span> <span class="n">logger</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">check_params</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">check_params</span> <span class="o">=</span> <span class="p">{}</span>
 
@@ -332,7 +329,7 @@
             <span class="k">raise</span> <span class="n">InvalidCheckSuiteError</span><span class="p">(</span>
                 <span class="s1">&#39;invalid compliance check suites: </span><span class="si">{invalid_suites}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">invalid_suites</span><span class="o">=</span><span class="n">invalid_suites</span><span class="p">))</span>
 
-    <span class="k">def</span> <span class="nf">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="s2">&quot;</span><span class="si">{self.__class__.__name__}</span><span class="s2">(checks=</span><span class="si">{self.checks}</span><span class="s2">)&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">=</span><span class="bp">self</span><span class="p">)</span>
 
 <div class="viewcode-block" id="ComplianceCheckerCheckRunner.run"><a class="viewcode-back" href="../../../../aodncore.pipeline.steps.html#aodncore.pipeline.steps.check.ComplianceCheckerCheckRunner.run">[docs]</a>    <span class="k">def</span> <span class="nf">run</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pipeline_files</span><span class="p">):</span>
@@ -344,7 +341,7 @@
                               <span class="s2">&quot;against </span><span class="si">{self.checks}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">pipeline_file</span><span class="o">=</span><span class="n">pipeline_file</span><span class="p">,</span> <span class="bp">self</span><span class="o">=</span><span class="bp">self</span><span class="p">))</span>
 
             <span class="c1"># first check that it is a valid NetCDF format file</span>
-            <span class="k">if</span> <span class="ow">not</span> <span class="n">is_netcdffile</span><span class="p">(</span><span class="n">pipeline_file</span><span class="o">.</span><span class="n">src_path</span><span class="p">):</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">is_netcdf_file</span><span class="p">(</span><span class="n">pipeline_file</span><span class="o">.</span><span class="n">src_path</span><span class="p">):</span>
                 <span class="n">compliance_log</span> <span class="o">=</span> <span class="p">(</span><span class="s2">&quot;invalid NetCDF file&quot;</span><span class="p">,)</span>
                 <span class="n">pipeline_file</span><span class="o">.</span><span class="n">check_result</span> <span class="o">=</span> <span class="n">CheckResult</span><span class="p">(</span><span class="kc">False</span><span class="p">,</span> <span class="n">compliance_log</span><span class="p">)</span>
                 <span class="k">continue</span>
@@ -394,31 +391,14 @@
 
 <div class="viewcode-block" id="FormatCheckRunner"><a class="viewcode-back" href="../../../../aodncore.pipeline.steps.html#aodncore.pipeline.steps.check.FormatCheckRunner">[docs]</a><span class="k">class</span> <span class="nc">FormatCheckRunner</span><span class="p">(</span><span class="n">BaseCheckRunner</span><span class="p">):</span>
 <div class="viewcode-block" id="FormatCheckRunner.run"><a class="viewcode-back" href="../../../../aodncore.pipeline.steps.html#aodncore.pipeline.steps.check.FormatCheckRunner.run">[docs]</a>    <span class="k">def</span> <span class="nf">run</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pipeline_files</span><span class="p">):</span>
-        <span class="n">file_types</span> <span class="o">=</span> <span class="p">{</span><span class="n">e</span><span class="o">.</span><span class="n">file_type</span> <span class="k">for</span> <span class="n">e</span> <span class="ow">in</span> <span class="n">pipeline_files</span><span class="p">}</span>
-        <span class="k">for</span> <span class="n">file_type</span> <span class="ow">in</span> <span class="n">file_types</span><span class="p">:</span>
-            <span class="n">check_list</span> <span class="o">=</span> <span class="n">pipeline_files</span><span class="o">.</span><span class="n">filter_by_attribute_id</span><span class="p">(</span><span class="s1">&#39;file_type&#39;</span><span class="p">,</span> <span class="n">file_type</span><span class="p">)</span>
-            <span class="n">format_check_runner</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_format_check_runner</span><span class="p">(</span><span class="n">file_type</span><span class="p">)</span>
-            <span class="n">format_check_runner</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">check_list</span><span class="p">)</span></div>
-
-<div class="viewcode-block" id="FormatCheckRunner.get_format_check_runner"><a class="viewcode-back" href="../../../../aodncore.pipeline.steps.html#aodncore.pipeline.steps.check.FormatCheckRunner.get_format_check_runner">[docs]</a>    <span class="k">def</span> <span class="nf">get_format_check_runner</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">file_type</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Factory method to return appropriate FormatCheckRunner instance based on file type</span>
-<span class="sd">        </span>
-<span class="sd">        :param file_type: :py:class:`FileType` enum member</span>
-<span class="sd">        :return: :py:class:`FormatCheckRunner` instance</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">if</span> <span class="n">file_type</span> <span class="ow">is</span> <span class="n">FileType</span><span class="o">.</span><span class="n">NETCDF</span><span class="p">:</span>
-            <span class="k">return</span> <span class="n">NetcdfFormatCheckRunner</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_config</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_logger</span><span class="p">)</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="k">return</span> <span class="n">NonEmptyCheckRunner</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_config</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_logger</span><span class="p">)</span></div></div>
-
-
-<div class="viewcode-block" id="NetcdfFormatCheckRunner"><a class="viewcode-back" href="../../../../aodncore.pipeline.steps.html#aodncore.pipeline.steps.check.NetcdfFormatCheckRunner">[docs]</a><span class="k">class</span> <span class="nc">NetcdfFormatCheckRunner</span><span class="p">(</span><span class="n">BaseCheckRunner</span><span class="p">):</span>
-<div class="viewcode-block" id="NetcdfFormatCheckRunner.run"><a class="viewcode-back" href="../../../../aodncore.pipeline.steps.html#aodncore.pipeline.steps.check.NetcdfFormatCheckRunner.run">[docs]</a>    <span class="k">def</span> <span class="nf">run</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pipeline_files</span><span class="p">):</span>
         <span class="k">for</span> <span class="n">pipeline_file</span> <span class="ow">in</span> <span class="n">pipeline_files</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span>
-                <span class="s2">&quot;checking that &#39;</span><span class="si">{pipeline_file.src_path}</span><span class="s2">&#39; is a valid NetCDF file&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">pipeline_file</span><span class="o">=</span><span class="n">pipeline_file</span><span class="p">))</span>
-            <span class="n">compliant</span> <span class="o">=</span> <span class="n">is_netcdffile</span><span class="p">(</span><span class="n">pipeline_file</span><span class="o">.</span><span class="n">src_path</span><span class="p">)</span>
-            <span class="n">compliance_log</span> <span class="o">=</span> <span class="p">[]</span> <span class="k">if</span> <span class="n">compliant</span> <span class="k">else</span> <span class="p">(</span><span class="s1">&#39;invalid NetCDF file&#39;</span><span class="p">,)</span>
+                <span class="s2">&quot;checking &#39;</span><span class="si">{pipeline_file.src_path}</span><span class="s2">&#39; is a valid &#39;</span><span class="si">{pipeline_file.file_type.name}</span><span class="s2">&#39; file&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                    <span class="n">pipeline_file</span><span class="o">=</span><span class="n">pipeline_file</span><span class="p">))</span>
+            <span class="n">compliant</span> <span class="o">=</span> <span class="n">pipeline_file</span><span class="o">.</span><span class="n">file_type</span><span class="o">.</span><span class="n">validator</span><span class="p">(</span><span class="n">pipeline_file</span><span class="o">.</span><span class="n">src_path</span><span class="p">)</span>
+            <span class="n">compliance_log</span> <span class="o">=</span> <span class="p">()</span> <span class="k">if</span> <span class="n">compliant</span> <span class="k">else</span> <span class="p">(</span>
+                <span class="s2">&quot;invalid format: did not validate as type: </span><span class="si">{pipeline_file.file_type.name}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                    <span class="n">pipeline_file</span><span class="o">=</span><span class="n">pipeline_file</span><span class="p">),)</span>
             <span class="n">pipeline_file</span><span class="o">.</span><span class="n">check_result</span> <span class="o">=</span> <span class="n">CheckResult</span><span class="p">(</span><span class="n">compliant</span><span class="p">,</span> <span class="n">compliance_log</span><span class="p">)</span></div></div>
 
 
@@ -427,8 +407,8 @@
         <span class="k">for</span> <span class="n">pipeline_file</span> <span class="ow">in</span> <span class="n">pipeline_files</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span>
                 <span class="s2">&quot;checking that &#39;</span><span class="si">{pipeline_file.src_path}</span><span class="s2">&#39; is not empty&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">pipeline_file</span><span class="o">=</span><span class="n">pipeline_file</span><span class="p">))</span>
-            <span class="n">compliant</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">getsize</span><span class="p">(</span><span class="n">pipeline_file</span><span class="o">.</span><span class="n">src_path</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span>
-            <span class="n">compliance_log</span> <span class="o">=</span> <span class="p">[]</span> <span class="k">if</span> <span class="n">compliant</span> <span class="k">else</span> <span class="p">(</span><span class="s1">&#39;empty file&#39;</span><span class="p">,)</span>
+            <span class="n">compliant</span> <span class="o">=</span> <span class="n">is_nonempty_file</span><span class="p">(</span><span class="n">pipeline_file</span><span class="o">.</span><span class="n">src_path</span><span class="p">)</span>
+            <span class="n">compliance_log</span> <span class="o">=</span> <span class="p">()</span> <span class="k">if</span> <span class="n">compliant</span> <span class="k">else</span> <span class="p">(</span><span class="s1">&#39;empty file&#39;</span><span class="p">,)</span>
             <span class="n">pipeline_file</span><span class="o">.</span><span class="n">check_result</span> <span class="o">=</span> <span class="n">CheckResult</span><span class="p">(</span><span class="n">compliant</span><span class="p">,</span> <span class="n">compliance_log</span><span class="p">)</span></div></div>
 </pre></div>
 
@@ -464,7 +444,7 @@
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'../../../../',
-            VERSION:'0.21.2',
+            VERSION:'1.0.6',
             LANGUAGE:'None',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
@@ -475,6 +455,7 @@
       <script type="text/javascript" src="../../../../_static/jquery.js"></script>
       <script type="text/javascript" src="../../../../_static/underscore.js"></script>
       <script type="text/javascript" src="../../../../_static/doctools.js"></script>
+      <script type="text/javascript" src="../../../../_static/language_data.js"></script>
 
   
 

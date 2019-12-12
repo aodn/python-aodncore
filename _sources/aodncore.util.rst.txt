@@ -6,7 +6,7 @@ Subpackages
 
 .. toctree::
 
-    aodncore.util.external
+   aodncore.util.external
 
 Submodules
 ----------
@@ -15,31 +15,39 @@ aodncore.util.fileops module
 ----------------------------
 
 .. automodule:: aodncore.util.fileops
-    :members:
-    :undoc-members:
-    :show-inheritance:
+   :members:
+   :undoc-members:
+   :show-inheritance:
 
 aodncore.util.misc module
 -------------------------
 
 .. automodule:: aodncore.util.misc
-    :members:
-    :undoc-members:
-    :show-inheritance:
+   :members:
+   :undoc-members:
+   :show-inheritance:
 
 aodncore.util.process module
 ----------------------------
 
 .. automodule:: aodncore.util.process
-    :members:
-    :undoc-members:
-    :show-inheritance:
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+aodncore.util.wfs module
+------------------------
+
+.. automodule:: aodncore.util.wfs
+   :members:
+   :undoc-members:
+   :show-inheritance:
 
 
 Module contents
 ---------------
 
 .. automodule:: aodncore.util
-    :members:
-    :undoc-members:
-    :show-inheritance:
+   :members:
+   :undoc-members:
+   :show-inheritance:

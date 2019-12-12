@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>aodncore.pipeline.destpath &mdash; aodncore 0.21.2 documentation</title>
+  <title>aodncore.pipeline.destpath &mdash; aodncore 1.0.6 documentation</title>
   
 
   
@@ -57,7 +57,7 @@
             
             
               <div class="version">
-                0.21.2
+                1.0.6
               </div>
             
           
@@ -83,7 +83,7 @@
             
               <p class="caption"><span class="caption-text">Quick Start Guide:</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../quickstartdoc.html">Writing a <code class="docutils literal notranslate"><span class="pre">dest_path()</span></code> function</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../quickstartdoc.html">Writing a <code class="xref py py-meth docutils literal notranslate"><span class="pre">dest_path()</span></code> function</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../quickstartdoc.html#overriding-default-file-actions">Overriding default file actions</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../quickstartdoc.html#creating-products-during-the-handler-lifetime">Creating products during the handler lifetime</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../quickstartdoc.html#query-storage">Query Storage</a></li>
@@ -204,10 +204,8 @@
 <span class="sd">mechanism is consistent.</span>
 <span class="sd">&quot;&quot;&quot;</span>
 
-<span class="kn">import</span> <span class="nn">six</span>
-
-<span class="kn">from</span> <span class="nn">.exceptions</span> <span class="k">import</span> <span class="n">InvalidPathFunctionError</span>
-<span class="kn">from</span> <span class="nn">..util</span> <span class="k">import</span> <span class="n">validate_callable</span>
+<span class="kn">from</span> <span class="nn">.exceptions</span> <span class="kn">import</span> <span class="n">InvalidPathFunctionError</span>
+<span class="kn">from</span> <span class="nn">..util</span> <span class="kn">import</span> <span class="n">validate_callable</span>
 
 <span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span>
     <span class="s1">&#39;get_path_function&#39;</span>
@@ -227,7 +225,7 @@
 
 
 <span class="k">class</span> <span class="nc">PathFunctionResolver</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
-    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">handler_instance</span><span class="p">,</span> <span class="n">entry_point_group</span><span class="p">,</span> <span class="n">archive_mode</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">handler_instance</span><span class="p">,</span> <span class="n">entry_point_group</span><span class="p">,</span> <span class="n">archive_mode</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">handler_instance</span> <span class="o">=</span> <span class="n">handler_instance</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">entry_point_group</span> <span class="o">=</span> <span class="n">entry_point_group</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">archive_mode</span> <span class="o">=</span> <span class="n">archive_mode</span>
@@ -284,16 +282,24 @@
         <span class="k">return</span> <span class="n">function_ref</span><span class="p">,</span> <span class="n">function_parent</span>
 
     <span class="k">def</span> <span class="nf">_resolve_from_param</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">function_param</span><span class="p">,</span> <span class="n">six</span><span class="o">.</span><span class="n">string_types</span><span class="p">):</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">function_param</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
             <span class="c1"># a string parameter is assumed to be referring to an advertised entry point of the same name</span>
+            <span class="n">loaded_functions</span><span class="p">,</span> <span class="n">failed_functions</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">handler_instance</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">discovered_dest_path_functions</span>
             <span class="k">try</span><span class="p">:</span>
-                <span class="n">function_ref</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">handler_instance</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">discovered_dest_path_functions</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">function_param</span><span class="p">]</span>
+                <span class="n">function_ref</span> <span class="o">=</span> <span class="n">loaded_functions</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">function_param</span><span class="p">]</span>
             <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
-                <span class="n">message</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="si">{attribute_name}</span><span class="s2"> function &#39;</span><span class="si">{function}</span><span class="s2">&#39; not found in &#39;</span><span class="si">{functions}</span><span class="s2">&#39;&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">function_param</span> <span class="ow">in</span> <span class="nb">set</span><span class="p">(</span><span class="n">failed_functions</span><span class="p">):</span>
+                    <span class="n">message_template</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="si">{attribute_name}</span><span class="s2"> function &#39;</span><span class="si">{function}</span><span class="s2">&#39; failed to load&quot;</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">message_template</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="si">{attribute_name}</span><span class="s2"> function &#39;</span><span class="si">{function}</span><span class="s2">&#39; not found in &#39;</span><span class="si">{functions}</span><span class="s2">&#39;&quot;</span>
+
+                <span class="n">message</span> <span class="o">=</span> <span class="n">message_template</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
                     <span class="n">attribute_name</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">attribute_name</span><span class="p">,</span>
                     <span class="n">function</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">function_param</span><span class="p">,</span>
-                    <span class="n">functions</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">handler_instance</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">discovered_dest_path_functions</span><span class="p">)</span>
+                    <span class="n">functions</span><span class="o">=</span><span class="n">loaded_functions</span><span class="p">)</span>
+
                 <span class="k">raise</span> <span class="n">InvalidPathFunctionError</span><span class="p">(</span><span class="n">message</span><span class="p">)</span>
+
         <span class="k">elif</span> <span class="n">callable</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">function_param</span><span class="p">):</span>
             <span class="c1"># dest_path_function parameter is already a Callable object, use it</span>
             <span class="n">function_ref</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">function_param</span>
@@ -338,7 +344,7 @@
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'../../../',
-            VERSION:'0.21.2',
+            VERSION:'1.0.6',
             LANGUAGE:'None',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
@@ -349,6 +355,7 @@
       <script type="text/javascript" src="../../../_static/jquery.js"></script>
       <script type="text/javascript" src="../../../_static/underscore.js"></script>
       <script type="text/javascript" src="../../../_static/doctools.js"></script>
+      <script type="text/javascript" src="../../../_static/language_data.js"></script>
 
   
 

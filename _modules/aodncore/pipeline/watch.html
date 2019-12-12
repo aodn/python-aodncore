@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>aodncore.pipeline.watch &mdash; aodncore 0.21.2 documentation</title>
+  <title>aodncore.pipeline.watch &mdash; aodncore 1.0.6 documentation</title>
   
 
   
@@ -57,7 +57,7 @@
             
             
               <div class="version">
-                0.21.2
+                1.0.6
               </div>
             
           
@@ -83,7 +83,7 @@
             
               <p class="caption"><span class="caption-text">Quick Start Guide:</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../quickstartdoc.html">Writing a <code class="docutils literal notranslate"><span class="pre">dest_path()</span></code> function</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../quickstartdoc.html">Writing a <code class="xref py py-meth docutils literal notranslate"><span class="pre">dest_path()</span></code> function</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../quickstartdoc.html#overriding-default-file-actions">Overriding default file actions</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../quickstartdoc.html#creating-products-during-the-handler-lifetime">Creating products during the handler lifetime</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../quickstartdoc.html#query-storage">Query Storage</a></li>
@@ -220,16 +220,15 @@
 <span class="kn">import</span> <span class="nn">re</span>
 <span class="kn">import</span> <span class="nn">stat</span>
 <span class="kn">import</span> <span class="nn">warnings</span>
-<span class="kn">from</span> <span class="nn">uuid</span> <span class="k">import</span> <span class="n">uuid4</span>
+<span class="kn">from</span> <span class="nn">uuid</span> <span class="kn">import</span> <span class="n">uuid4</span>
 
-<span class="kn">from</span> <span class="nn">enum</span> <span class="k">import</span> <span class="n">Enum</span>
-<span class="kn">from</span> <span class="nn">six</span> <span class="k">import</span> <span class="n">PY2</span>
-<span class="kn">from</span> <span class="nn">transitions</span> <span class="k">import</span> <span class="n">Machine</span>
+<span class="kn">from</span> <span class="nn">enum</span> <span class="kn">import</span> <span class="n">Enum</span>
+<span class="kn">from</span> <span class="nn">transitions</span> <span class="kn">import</span> <span class="n">Machine</span>
 
-<span class="kn">from</span> <span class="nn">.files</span> <span class="k">import</span> <span class="n">PipelineFile</span>
-<span class="kn">from</span> <span class="nn">.log</span> <span class="k">import</span> <span class="n">get_pipeline_logger</span>
-<span class="kn">from</span> <span class="nn">.storage</span> <span class="k">import</span> <span class="n">get_storage_broker</span>
-<span class="kn">from</span> <span class="nn">..util</span> <span class="k">import</span> <span class="p">(</span><span class="n">ensure_regex_list</span><span class="p">,</span> <span class="n">format_exception</span><span class="p">,</span> <span class="n">mkdir_p</span><span class="p">,</span> <span class="n">rm_f</span><span class="p">,</span> <span class="n">rm_r</span><span class="p">,</span> <span class="n">validate_dir_writable</span><span class="p">,</span>
+<span class="kn">from</span> <span class="nn">.files</span> <span class="kn">import</span> <span class="n">PipelineFile</span>
+<span class="kn">from</span> <span class="nn">.log</span> <span class="kn">import</span> <span class="n">get_pipeline_logger</span>
+<span class="kn">from</span> <span class="nn">.storage</span> <span class="kn">import</span> <span class="n">get_storage_broker</span>
+<span class="kn">from</span> <span class="nn">..util</span> <span class="kn">import</span> <span class="p">(</span><span class="n">ensure_regex_list</span><span class="p">,</span> <span class="n">format_exception</span><span class="p">,</span> <span class="n">lazyproperty</span><span class="p">,</span> <span class="n">mkdir_p</span><span class="p">,</span> <span class="n">rm_f</span><span class="p">,</span> <span class="n">rm_r</span><span class="p">,</span> <span class="n">validate_dir_writable</span><span class="p">,</span>
                     <span class="n">validate_file_writable</span><span class="p">,</span> <span class="n">validate_membership</span><span class="p">)</span>
 
 <span class="c1"># OS X test compatibility, due to absence of pyinotify (which is specific to the Linux kernel)</span>
@@ -240,19 +239,18 @@
         <span class="n">IN_MOVED_TO</span> <span class="o">=</span> <span class="mi">0</span>
         <span class="n">IN_CLOSE_WRITE</span> <span class="o">=</span> <span class="mi">0</span>
 
-        <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
             <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="s1">&#39;pyinotify package is not installed&#39;</span><span class="p">)</span>
 
         <span class="k">class</span> <span class="nc">ProcessEvent</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
-            <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+            <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
                 <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="s1">&#39;pyinotify package is not installed&#39;</span><span class="p">)</span>
 
-<span class="kn">from</span> <span class="nn">celery</span> <span class="k">import</span> <span class="n">Task</span>
-<span class="kn">from</span> <span class="nn">celery.utils.log</span> <span class="k">import</span> <span class="n">get_task_logger</span>
-<span class="kn">from</span> <span class="nn">six</span> <span class="k">import</span> <span class="n">iteritems</span>
+<span class="kn">from</span> <span class="nn">celery</span> <span class="kn">import</span> <span class="n">Task</span>
+<span class="kn">from</span> <span class="nn">celery.utils.log</span> <span class="kn">import</span> <span class="n">get_task_logger</span>
 
-<span class="kn">from</span> <span class="nn">.exceptions</span> <span class="k">import</span> <span class="n">InvalidHandlerError</span>
-<span class="kn">from</span> <span class="nn">..util</span> <span class="k">import</span> <span class="n">list_regular_files</span><span class="p">,</span> <span class="n">safe_move_file</span>
+<span class="kn">from</span> <span class="nn">.exceptions</span> <span class="kn">import</span> <span class="n">InvalidHandlerError</span>
+<span class="kn">from</span> <span class="nn">..util</span> <span class="kn">import</span> <span class="n">list_regular_files</span><span class="p">,</span> <span class="n">safe_move_file</span>
 
 <span class="c1"># Filter noisy and useless numpy warnings</span>
 <span class="c1"># Reference: https://github.com/numpy/numpy/pull/432</span>
@@ -291,7 +289,7 @@
 
     <span class="n">CELERY_ROUTES</span> <span class="o">=</span> <span class="p">{}</span>
 
-    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">routes</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">routes</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">CELERY_ROUTES</span> <span class="o">=</span> <span class="n">routes</span> <span class="ow">or</span> <span class="p">{}</span></div>
 
 
@@ -380,13 +378,13 @@
         <span class="n">ignore_result</span> <span class="o">=</span> <span class="kc">True</span>
         <span class="n">name</span> <span class="o">=</span> <span class="n">task_name</span>
 
-        <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">logger</span> <span class="o">=</span> <span class="kc">None</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">pipeline_name</span> <span class="o">=</span> <span class="n">pipeline_name</span>
 
         <span class="k">def</span> <span class="nf">run</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">incoming_file</span><span class="p">):</span>
             <span class="k">try</span><span class="p">:</span>
-                <span class="n">logging</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">dictConfig</span><span class="p">(</span><span class="n">config</span><span class="o">.</span><span class="n">worker_logging_config</span><span class="p">)</span>
+                <span class="n">logging</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">dictConfig</span><span class="p">(</span><span class="n">config</span><span class="o">.</span><span class="n">get_worker_logging_config</span><span class="p">(</span><span class="n">task_name</span><span class="p">))</span>
                 <span class="n">logging_extra</span> <span class="o">=</span> <span class="p">{</span>
                     <span class="s1">&#39;celery_task_id&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">request</span><span class="o">.</span><span class="n">id</span><span class="p">,</span>
                     <span class="s1">&#39;celery_task_name&#39;</span><span class="p">:</span> <span class="n">task_name</span>
@@ -426,14 +424,15 @@
                 <span class="k">else</span><span class="p">:</span>
                     <span class="n">file_state_manager</span><span class="o">.</span><span class="n">move_to_success</span><span class="p">()</span>
             <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">exception</span><span class="p">(</span><span class="s1">&#39;unhandled exception in PipelineTask&#39;</span><span class="p">)</span>
+                <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="p">:</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">exception</span><span class="p">(</span><span class="s1">&#39;unhandled exception in PipelineTask&#39;</span><span class="p">)</span>
                 <span class="k">raise</span>
 
     <span class="k">return</span> <span class="n">PipelineTask</span><span class="p">()</span>
 
 
 <div class="viewcode-block" id="CeleryContext"><a class="viewcode-back" href="../../../aodncore.pipeline.html#aodncore.pipeline.watch.CeleryContext">[docs]</a><span class="k">class</span> <span class="nc">CeleryContext</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
-    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">application</span><span class="p">,</span> <span class="n">config</span><span class="p">,</span> <span class="n">celeryconfig</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">application</span><span class="p">,</span> <span class="n">config</span><span class="p">,</span> <span class="n">celeryconfig</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_application</span> <span class="o">=</span> <span class="n">application</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_config</span> <span class="o">=</span> <span class="n">config</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_celeryconfig</span> <span class="o">=</span> <span class="n">celeryconfig</span>
@@ -456,8 +455,16 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">_application_configured</span> <span class="o">=</span> <span class="kc">True</span>
 
     <span class="k">def</span> <span class="nf">_register_tasks</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="n">available_handler_names</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_config</span><span class="o">.</span><span class="n">discovered_handlers</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span>
+        <span class="n">loaded_handlers</span><span class="p">,</span> <span class="n">failed_handlers</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_config</span><span class="o">.</span><span class="n">discovered_handlers</span>
+
+        <span class="n">available_handler_names</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="n">loaded_handlers</span><span class="p">)</span>
+        <span class="n">failed_handler_names</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="n">failed_handlers</span><span class="p">)</span>
         <span class="n">configured_handler_names</span> <span class="o">=</span> <span class="p">{</span><span class="n">h</span><span class="p">[</span><span class="s1">&#39;handler&#39;</span><span class="p">]</span> <span class="k">for</span> <span class="n">h</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_config</span><span class="o">.</span><span class="n">watch_config</span><span class="o">.</span><span class="n">values</span><span class="p">()}</span>
+
+        <span class="n">failed_configured_handlers</span> <span class="o">=</span> <span class="n">failed_handler_names</span><span class="o">.</span><span class="n">intersection</span><span class="p">(</span><span class="n">configured_handler_names</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">failed_configured_handlers</span><span class="p">:</span>
+            <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="s2">&quot;one or more configured handlers failed to load successfully: &quot;</span>
+                          <span class="s2">&quot;</span><span class="si">{failed}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">failed</span><span class="o">=</span><span class="nb">list</span><span class="p">(</span><span class="n">failed_configured_handlers</span><span class="p">)))</span>
 
         <span class="k">if</span> <span class="ow">not</span> <span class="n">configured_handler_names</span><span class="o">.</span><span class="n">issubset</span><span class="p">(</span><span class="n">available_handler_names</span><span class="p">):</span>
             <span class="n">invalid_handlers</span> <span class="o">=</span> <span class="n">configured_handler_names</span><span class="o">.</span><span class="n">difference</span><span class="p">(</span><span class="n">available_handler_names</span><span class="p">)</span>
@@ -465,14 +472,14 @@
                           <span class="s2">&quot;</span><span class="si">{invalid}</span><span class="s2"> not in </span><span class="si">{discovered}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">invalid</span><span class="o">=</span><span class="nb">list</span><span class="p">(</span><span class="n">invalid_handlers</span><span class="p">),</span>
                                                                  <span class="n">discovered</span><span class="o">=</span><span class="nb">list</span><span class="p">(</span><span class="n">available_handler_names</span><span class="p">)))</span>
 
-        <span class="k">for</span> <span class="n">pipeline_name</span><span class="p">,</span> <span class="n">items</span> <span class="ow">in</span> <span class="n">iteritems</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_config</span><span class="o">.</span><span class="n">watch_config</span><span class="p">):</span>
+        <span class="k">for</span> <span class="n">pipeline_name</span><span class="p">,</span> <span class="n">items</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_config</span><span class="o">.</span><span class="n">watch_config</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
             <span class="k">try</span><span class="p">:</span>
-                <span class="n">handler_class</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_config</span><span class="o">.</span><span class="n">discovered_handlers</span><span class="p">[</span><span class="n">items</span><span class="p">[</span><span class="s1">&#39;handler&#39;</span><span class="p">]]</span>
+                <span class="n">handler_class</span> <span class="o">=</span> <span class="n">loaded_handlers</span><span class="p">[</span><span class="n">items</span><span class="p">[</span><span class="s1">&#39;handler&#39;</span><span class="p">]]</span>
             <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
                 <span class="k">raise</span> <span class="n">InvalidHandlerError</span><span class="p">(</span>
                     <span class="s2">&quot;handler not found in discovered handlers. &quot;</span>
-                    <span class="s2">&quot;</span><span class="si">{items[&#39;handler&#39;]}</span><span class="s2"> not in </span><span class="si">{available_handler_names}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">items</span><span class="o">=</span><span class="n">items</span><span class="p">,</span>
-                                                                                 <span class="n">available_handler_names</span><span class="o">=</span><span class="n">available_handler_names</span><span class="p">))</span>
+                    <span class="s2">&quot;</span><span class="si">{items[handler]}</span><span class="s2"> not in </span><span class="si">{available_handler_names}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">items</span><span class="o">=</span><span class="n">items</span><span class="p">,</span>
+                                                                               <span class="n">available_handler_names</span><span class="o">=</span><span class="n">available_handler_names</span><span class="p">))</span>
 
             <span class="n">params</span> <span class="o">=</span> <span class="n">items</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;params&#39;</span><span class="p">,</span> <span class="p">{})</span>
             <span class="n">success_exit_policies</span> <span class="o">=</span> <span class="n">ExitPolicy</span><span class="o">.</span><span class="n">from_names</span><span class="p">(</span><span class="n">items</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;success_exit_policies&#39;</span><span class="p">,</span> <span class="p">[]))</span>
@@ -481,7 +488,7 @@
             <span class="k">try</span><span class="p">:</span>
                 <span class="n">_</span> <span class="o">=</span> <span class="n">handler_class</span><span class="p">(</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">config</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_config</span><span class="p">,</span> <span class="o">**</span><span class="n">params</span><span class="p">)</span>
             <span class="k">except</span> <span class="ne">TypeError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
-                <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="s2">&quot;invalid parameters for pipeline &#39;</span><span class="si">{pipeline}</span><span class="s2">&#39;, handler &#39;</span><span class="si">{items[&#39;handler&#39;]}</span><span class="s2">&#39;: </span><span class="si">{e}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="s2">&quot;invalid parameters for pipeline &#39;</span><span class="si">{pipeline}</span><span class="s2">&#39;, handler &#39;</span><span class="si">{items[handler]}</span><span class="s2">&#39;: </span><span class="si">{e}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
                     <span class="n">pipeline</span><span class="o">=</span><span class="n">pipeline_name</span><span class="p">,</span> <span class="n">items</span><span class="o">=</span><span class="n">items</span><span class="p">,</span> <span class="n">e</span><span class="o">=</span><span class="n">format_exception</span><span class="p">(</span><span class="n">e</span><span class="p">)))</span>
             <span class="k">else</span><span class="p">:</span>
                 <span class="n">task_object</span> <span class="o">=</span> <span class="n">build_task</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_config</span><span class="p">,</span> <span class="n">pipeline_name</span><span class="p">,</span> <span class="n">handler_class</span><span class="p">,</span> <span class="n">success_exit_policies</span><span class="p">,</span>
@@ -513,8 +520,8 @@
 
 
 <div class="viewcode-block" id="IncomingFileEventHandler"><a class="viewcode-back" href="../../../aodncore.pipeline.html#aodncore.pipeline.watch.IncomingFileEventHandler">[docs]</a><span class="k">class</span> <span class="nc">IncomingFileEventHandler</span><span class="p">(</span><span class="n">pyinotify</span><span class="o">.</span><span class="n">ProcessEvent</span><span class="p">):</span>
-    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">config</span><span class="p">):</span>
-        <span class="nb">super</span><span class="p">(</span><span class="n">IncomingFileEventHandler</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">config</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_config</span> <span class="o">=</span> <span class="n">config</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_logger</span> <span class="o">=</span> <span class="n">get_pipeline_logger</span><span class="p">(</span><span class="n">config</span><span class="o">.</span><span class="n">pipeline_config</span><span class="p">[</span><span class="s1">&#39;watch&#39;</span><span class="p">][</span><span class="s1">&#39;logger_name&#39;</span><span class="p">])</span>
 
@@ -596,7 +603,7 @@
         <span class="p">}</span>
     <span class="p">]</span>
 
-    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">input_file</span><span class="p">,</span> <span class="n">pipeline_name</span><span class="p">,</span> <span class="n">config</span><span class="p">,</span> <span class="n">logger</span><span class="p">,</span> <span class="n">celery_request</span><span class="p">,</span> <span class="n">error_exit_policies</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">input_file</span><span class="p">,</span> <span class="n">pipeline_name</span><span class="p">,</span> <span class="n">config</span><span class="p">,</span> <span class="n">logger</span><span class="p">,</span> <span class="n">celery_request</span><span class="p">,</span> <span class="n">error_exit_policies</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
                  <span class="n">success_exit_policies</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">error_broker</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">input_file</span> <span class="o">=</span> <span class="n">input_file</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">pipeline_name</span> <span class="o">=</span> <span class="n">pipeline_name</span>
@@ -617,13 +624,13 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">sysinfo</span><span class="p">(</span>
             <span class="s2">&quot;</span><span class="si">{self.__class__.__name__}</span><span class="s2">.state -&gt; &#39;</span><span class="si">{self.state}</span><span class="s2">&#39;&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">=</span><span class="bp">self</span><span class="p">))</span>
 
-    <span class="nd">@property</span>
+    <span class="nd">@lazyproperty</span>
     <span class="k">def</span> <span class="nf">error_broker</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_error_broker</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_error_broker</span> <span class="o">=</span> <span class="n">get_storage_broker</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">error_uri</span><span class="p">)</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_error_broker</span><span class="o">.</span><span class="n">mode</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">error_mode</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;</span><span class="si">{self.__class__.__name__}</span><span class="s2">.error_broker -&gt; </span><span class="si">{self._error_broker}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">=</span><span class="bp">self</span><span class="p">))</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_error_broker</span>
+        <span class="n">error_broker</span> <span class="o">=</span> <span class="n">get_storage_broker</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">error_uri</span><span class="p">)</span>
+        <span class="n">error_broker</span><span class="o">.</span><span class="n">mode</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">error_mode</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;</span><span class="si">{self.__class__.__name__}</span><span class="s2">.error_broker -&gt; </span><span class="si">{error_broker}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">=</span><span class="bp">self</span><span class="p">,</span>
+                                                                                           <span class="n">error_broker</span><span class="o">=</span><span class="n">error_broker</span><span class="p">))</span>
+        <span class="k">return</span> <span class="n">error_broker</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">basename</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
@@ -712,7 +719,7 @@
 
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">config</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">config</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">event_handler</span> <span class="o">=</span> <span class="n">IncomingFileEventHandler</span><span class="p">(</span><span class="n">config</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">watch_manager</span> <span class="o">=</span> <span class="n">pyinotify</span><span class="o">.</span><span class="n">WatchManager</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">notifier</span> <span class="o">=</span> <span class="n">pyinotify</span><span class="o">.</span><span class="n">Notifier</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">watch_manager</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">event_handler</span><span class="p">)</span></div>
@@ -721,7 +728,7 @@
 <div class="viewcode-block" id="WatchServiceManager"><a class="viewcode-back" href="../../../aodncore.pipeline.html#aodncore.pipeline.watch.WatchServiceManager">[docs]</a><span class="k">class</span> <span class="nc">WatchServiceManager</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
     <span class="n">EVENT_MASK</span> <span class="o">=</span> <span class="n">pyinotify</span><span class="o">.</span><span class="n">IN_MOVED_TO</span> <span class="o">|</span> <span class="n">pyinotify</span><span class="o">.</span><span class="n">IN_CLOSE_WRITE</span>
 
-    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">config</span><span class="p">,</span> <span class="n">event_handler</span><span class="p">,</span> <span class="n">watch_manager</span><span class="p">,</span> <span class="n">notifier</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">config</span><span class="p">,</span> <span class="n">event_handler</span><span class="p">,</span> <span class="n">watch_manager</span><span class="p">,</span> <span class="n">notifier</span><span class="p">):</span>
         <span class="c1"># noinspection PyProtectedMember</span>
         <span class="k">if</span> <span class="n">watch_manager</span> <span class="ow">is</span> <span class="ow">not</span> <span class="n">notifier</span><span class="o">.</span><span class="n">_watch_manager</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;notifier must be instantiated with the same watch_manager instance as __init__ param&quot;</span><span class="p">)</span>
@@ -750,11 +757,11 @@
             <span class="c1"># already stopped</span>
             <span class="k">pass</span></div>
 
-    <span class="k">def</span> <span class="nf">__enter__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__enter__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_queue_and_watch_directories</span><span class="p">()</span>
         <span class="k">return</span> <span class="bp">self</span>
 
-    <span class="k">def</span> <span class="nf">__exit__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">exc_type</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">exc_val</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">exc_tb</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__exit__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">exc_type</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">exc_val</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">exc_tb</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">stop</span><span class="p">(</span><span class="s1">&#39;context manager exiting&#39;</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">_queue_and_watch_directories</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
@@ -762,11 +769,8 @@
 
 <span class="sd">        :return: None</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">for</span> <span class="n">directory</span><span class="p">,</span> <span class="n">queue</span> <span class="ow">in</span> <span class="n">iteritems</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_config</span><span class="o">.</span><span class="n">watch_directory_map</span><span class="p">):</span>
-            <span class="c1"># Python 2 cannot handle the unicode string due to using str.* methods for sorting</span>
-            <span class="n">str_directory</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">directory</span><span class="p">)</span> <span class="k">if</span> <span class="n">PY2</span> <span class="k">else</span> <span class="n">directory</span>
-
-            <span class="k">for</span> <span class="n">existing_file</span> <span class="ow">in</span> <span class="n">list_regular_files</span><span class="p">(</span><span class="n">str_directory</span><span class="p">):</span>
+        <span class="k">for</span> <span class="n">directory</span><span class="p">,</span> <span class="n">queue</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_config</span><span class="o">.</span><span class="n">watch_directory_map</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="k">for</span> <span class="n">existing_file</span> <span class="ow">in</span> <span class="n">list_regular_files</span><span class="p">(</span><span class="n">directory</span><span class="p">):</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">_logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span>
                     <span class="s2">&quot;queuing existing file: existing_file=&#39;</span><span class="si">{existing_file}</span><span class="s2">&#39;&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
                         <span class="n">existing_file</span><span class="o">=</span><span class="n">existing_file</span><span class="p">))</span>
@@ -811,7 +815,7 @@
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'../../../',
-            VERSION:'0.21.2',
+            VERSION:'1.0.6',
             LANGUAGE:'None',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
@@ -822,6 +826,7 @@
       <script type="text/javascript" src="../../../_static/jquery.js"></script>
       <script type="text/javascript" src="../../../_static/underscore.js"></script>
       <script type="text/javascript" src="../../../_static/doctools.js"></script>
+      <script type="text/javascript" src="../../../_static/language_data.js"></script>
 
   
 

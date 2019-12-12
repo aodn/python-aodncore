@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>aodncore.pipeline.files &mdash; aodncore 0.21.2 documentation</title>
+  <title>aodncore.pipeline.files &mdash; aodncore 1.0.6 documentation</title>
   
 
   
@@ -57,7 +57,7 @@
             
             
               <div class="version">
-                0.21.2
+                1.0.6
               </div>
             
           
@@ -83,7 +83,7 @@
             
               <p class="caption"><span class="caption-text">Quick Start Guide:</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../quickstartdoc.html">Writing a <code class="docutils literal notranslate"><span class="pre">dest_path()</span></code> function</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../quickstartdoc.html">Writing a <code class="xref py py-meth docutils literal notranslate"><span class="pre">dest_path()</span></code> function</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../quickstartdoc.html#overriding-default-file-actions">Overriding default file actions</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../quickstartdoc.html#creating-products-during-the-handler-lifetime">Creating products during the handler lifetime</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../quickstartdoc.html#query-storage">Query Storage</a></li>
@@ -198,27 +198,28 @@
            <div itemprop="articleBody">
             
   <h1>Source code for aodncore.pipeline.files</h1><div class="highlight"><pre>
-<span></span><span class="kn">import</span> <span class="nn">mimetypes</span>
+<span></span><span class="kn">import</span> <span class="nn">abc</span>
+<span class="kn">import</span> <span class="nn">mimetypes</span>
 <span class="kn">import</span> <span class="nn">os</span>
-<span class="kn">import</span> <span class="nn">re</span>
-<span class="kn">from</span> <span class="nn">collections</span> <span class="k">import</span> <span class="n">Counter</span><span class="p">,</span> <span class="n">MutableSet</span><span class="p">,</span> <span class="n">OrderedDict</span>
+<span class="kn">from</span> <span class="nn">collections</span> <span class="kn">import</span> <span class="n">Counter</span><span class="p">,</span> <span class="n">MutableSet</span><span class="p">,</span> <span class="n">OrderedDict</span>
 
-<span class="kn">import</span> <span class="nn">six</span>
-
-<span class="kn">from</span> <span class="nn">.common</span> <span class="k">import</span> <span class="p">(</span><span class="n">FileType</span><span class="p">,</span> <span class="n">PipelineFilePublishType</span><span class="p">,</span> <span class="n">PipelineFileCheckType</span><span class="p">,</span> <span class="n">validate_addition_publishtype</span><span class="p">,</span>
+<span class="kn">from</span> <span class="nn">.common</span> <span class="kn">import</span> <span class="p">(</span><span class="n">FileType</span><span class="p">,</span> <span class="n">PipelineFilePublishType</span><span class="p">,</span> <span class="n">PipelineFileCheckType</span><span class="p">,</span> <span class="n">validate_addition_publishtype</span><span class="p">,</span>
                      <span class="n">validate_checkresult</span><span class="p">,</span> <span class="n">validate_deletion_publishtype</span><span class="p">,</span> <span class="n">validate_publishtype</span><span class="p">,</span>
                      <span class="n">validate_settable_checktype</span><span class="p">)</span>
-<span class="kn">from</span> <span class="nn">.exceptions</span> <span class="k">import</span> <span class="n">AttributeValidationError</span><span class="p">,</span> <span class="n">DuplicatePipelineFileError</span><span class="p">,</span> <span class="n">MissingFileError</span>
-<span class="kn">from</span> <span class="nn">.schema</span> <span class="k">import</span> <span class="n">validate_check_params</span>
-<span class="kn">from</span> <span class="nn">..util</span> <span class="k">import</span> <span class="p">(</span><span class="n">IndexedSet</span><span class="p">,</span> <span class="n">format_exception</span><span class="p">,</span> <span class="n">get_file_checksum</span><span class="p">,</span> <span class="n">iter_public_attributes</span><span class="p">,</span> <span class="n">matches_regexes</span><span class="p">,</span>
-                    <span class="n">slice_sequence</span><span class="p">,</span> <span class="n">validate_bool</span><span class="p">,</span> <span class="n">validate_callable</span><span class="p">,</span> <span class="n">validate_int</span><span class="p">,</span> <span class="n">validate_mapping</span><span class="p">,</span>
-                    <span class="n">validate_nonstring_iterable</span><span class="p">,</span> <span class="n">validate_regex</span><span class="p">,</span> <span class="n">validate_regexes</span><span class="p">,</span> <span class="n">validate_relative_path_attr</span><span class="p">,</span>
+<span class="kn">from</span> <span class="nn">.exceptions</span> <span class="kn">import</span> <span class="n">AttributeValidationError</span><span class="p">,</span> <span class="n">DuplicatePipelineFileError</span><span class="p">,</span> <span class="n">MissingFileError</span>
+<span class="kn">from</span> <span class="nn">.schema</span> <span class="kn">import</span> <span class="n">validate_check_params</span>
+<span class="kn">from</span> <span class="nn">..util</span> <span class="kn">import</span> <span class="p">(</span><span class="n">IndexedSet</span><span class="p">,</span> <span class="n">ensure_regex_list</span><span class="p">,</span> <span class="n">format_exception</span><span class="p">,</span> <span class="n">get_file_checksum</span><span class="p">,</span> <span class="n">iter_public_attributes</span><span class="p">,</span>
+                    <span class="n">matches_regexes</span><span class="p">,</span> <span class="n">rm_f</span><span class="p">,</span> <span class="n">slice_sequence</span><span class="p">,</span> <span class="n">validate_bool</span><span class="p">,</span> <span class="n">validate_callable</span><span class="p">,</span> <span class="n">validate_int</span><span class="p">,</span>
+                    <span class="n">validate_mapping</span><span class="p">,</span> <span class="n">validate_nonstring_iterable</span><span class="p">,</span> <span class="n">validate_regexes</span><span class="p">,</span> <span class="n">validate_relative_path_attr</span><span class="p">,</span>
                     <span class="n">validate_string</span><span class="p">,</span> <span class="n">validate_type</span><span class="p">)</span>
 
 <span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span>
     <span class="s1">&#39;PipelineFileCollection&#39;</span><span class="p">,</span>
     <span class="s1">&#39;PipelineFile&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;RemotePipelineFile&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;RemotePipelineFileCollection&#39;</span><span class="p">,</span>
     <span class="s1">&#39;ensure_pipelinefilecollection&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;ensure_remotepipelinefilecollection&#39;</span><span class="p">,</span>
     <span class="s1">&#39;validate_pipelinefilecollection&#39;</span><span class="p">,</span>
     <span class="s1">&#39;validate_pipelinefile_or_pipelinefilecollection&#39;</span><span class="p">,</span>
     <span class="s1">&#39;validate_pipelinefile_or_string&#39;</span>
@@ -236,13 +237,165 @@
     <span class="k">return</span> <span class="n">o</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">o</span><span class="p">,</span> <span class="n">PipelineFileCollection</span><span class="p">)</span> <span class="k">else</span> <span class="n">PipelineFileCollection</span><span class="p">(</span><span class="n">o</span><span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="PipelineFile"><a class="viewcode-back" href="../../../aodncore.pipeline.html#aodncore.pipeline.files.PipelineFile">[docs]</a><span class="k">class</span> <span class="nc">PipelineFile</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+<div class="viewcode-block" id="ensure_remotepipelinefilecollection"><a class="viewcode-back" href="../../../aodncore.pipeline.html#aodncore.pipeline.files.ensure_remotepipelinefilecollection">[docs]</a><span class="k">def</span> <span class="nf">ensure_remotepipelinefilecollection</span><span class="p">(</span><span class="n">o</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Function to accept either a single RemotePipelineFile OR a RemotePipelineFileCollection and ensure that a</span>
+<span class="sd">    RemotePipelineFileCollection object is returned in either case</span>
+
+<span class="sd">    :param o: PipelineFile or PipelineFileCollection object</span>
+<span class="sd">    :return: PipelineFileCollection object</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">validate_remotepipelinefile_or_remotepipelinefilecollection</span><span class="p">(</span><span class="n">o</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">o</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">o</span><span class="p">,</span> <span class="n">RemotePipelineFileCollection</span><span class="p">)</span> <span class="k">else</span> <span class="n">RemotePipelineFileCollection</span><span class="p">(</span><span class="n">o</span><span class="p">)</span></div>
+
+
+<span class="k">class</span> <span class="nc">PipelineFileBase</span><span class="p">(</span><span class="nb">object</span><span class="p">,</span> <span class="n">metaclass</span><span class="o">=</span><span class="n">abc</span><span class="o">.</span><span class="n">ABCMeta</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;A base class to represent a &quot;pipeline file&quot;, which consists of a local path and a remote &quot;destination path&quot;</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="vm">__slots__</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;_file_checksum&#39;</span><span class="p">,</span> <span class="s1">&#39;_dest_path&#39;</span><span class="p">,</span> <span class="s1">&#39;_local_path&#39;</span><span class="p">,</span> <span class="s1">&#39;_extension&#39;</span><span class="p">,</span> <span class="s1">&#39;_name&#39;</span><span class="p">,</span> <span class="s1">&#39;file_type&#39;</span><span class="p">]</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">local_path</span><span class="p">,</span> <span class="n">dest_path</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_local_path</span> <span class="o">=</span> <span class="n">local_path</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_dest_path</span> <span class="o">=</span> <span class="n">dest_path</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_name</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_file_checksum</span> <span class="o">=</span> <span class="kc">None</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_set_local_file_attributes</span><span class="p">()</span>
+
+    <span class="k">def</span> <span class="nf">_set_local_file_attributes</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">local_path</span><span class="p">:</span>
+            <span class="n">_</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_extension</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">splitext</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">local_path</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">file_type</span> <span class="o">=</span> <span class="n">FileType</span><span class="o">.</span><span class="n">get_type_from_extension</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_extension</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_extension</span> <span class="o">=</span> <span class="kc">None</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">file_type</span> <span class="o">=</span> <span class="n">FileType</span><span class="o">.</span><span class="n">UNKNOWN</span>
+
+    <span class="k">def</span> <span class="fm">__eq__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">other</span><span class="p">,</span> <span class="nb">type</span><span class="p">(</span><span class="bp">self</span><span class="p">)):</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_key</span><span class="p">()</span> <span class="o">==</span> <span class="n">other</span><span class="o">.</span><span class="n">_key</span><span class="p">()</span>
+        <span class="k">return</span> <span class="kc">False</span>
+
+    <span class="k">def</span> <span class="fm">__hash__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="nb">hash</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_key</span><span class="p">())</span>
+
+    <span class="nd">@abc</span><span class="o">.</span><span class="n">abstractmethod</span>
+    <span class="k">def</span> <span class="nf">_key</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span>
+
+    <span class="k">def</span> <span class="fm">__iter__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">iter_public_attributes</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>  <span class="c1"># pragma: no cover</span>
+        <span class="k">return</span> <span class="s2">&quot;</span><span class="si">{name}</span><span class="s2">(</span><span class="si">{repr}</span><span class="s2">)&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="p">,</span> <span class="nb">repr</span><span class="o">=</span><span class="nb">repr</span><span class="p">(</span><span class="nb">dict</span><span class="p">(</span><span class="bp">self</span><span class="p">)))</span>
+
+    <span class="k">def</span> <span class="fm">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="s2">&quot;</span><span class="si">{name}</span><span class="s2">(</span><span class="si">{str}</span><span class="s2">)&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="p">,</span> <span class="nb">str</span><span class="o">=</span><span class="nb">dict</span><span class="p">(</span><span class="bp">self</span><span class="p">))</span>
+
+    <span class="c1">#</span>
+    <span class="c1"># Static properties (read-only, should never change during the lifecycle of the object)</span>
+    <span class="c1">#</span>
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">extension</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_extension</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">file_checksum</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_file_checksum</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_file_checksum</span> <span class="o">=</span> <span class="n">get_file_checksum</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_local_path</span><span class="p">)</span>
+            <span class="k">except</span> <span class="p">(</span><span class="ne">IOError</span><span class="p">,</span> <span class="ne">OSError</span><span class="p">)</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="n">MissingFileError</span><span class="p">(</span>
+                    <span class="s2">&quot;failed to determine checksum for RemoteFile &#39;</span><span class="si">{local_path}</span><span class="s2">&#39;. </span><span class="si">{e}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                        <span class="n">local_path</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_local_path</span><span class="p">,</span>
+                        <span class="n">e</span><span class="o">=</span><span class="n">format_exception</span><span class="p">(</span><span class="n">e</span><span class="p">)))</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_file_checksum</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">name</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_name</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">local_path</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_local_path</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">dest_path</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_dest_path</span>
+
+
+<div class="viewcode-block" id="RemotePipelineFile"><a class="viewcode-back" href="../../../aodncore.pipeline.html#aodncore.pipeline.files.RemotePipelineFile">[docs]</a><span class="k">class</span> <span class="nc">RemotePipelineFile</span><span class="p">(</span><span class="n">PipelineFileBase</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Implementation of PipelineFileBase to represents a single *remote* file. This is used to provide a common</span>
+<span class="sd">        interface for a remote file, to facilitate querying and downloading operations where the *current* state</span>
+<span class="sd">        of the storage is relevant information</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="vm">__slots__</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;_last_modified&#39;</span><span class="p">,</span> <span class="s1">&#39;_size&#39;</span><span class="p">]</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dest_path</span><span class="p">,</span> <span class="n">local_path</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">last_modified</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">size</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">local_path</span><span class="p">,</span> <span class="n">dest_path</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_name</span> <span class="o">=</span> <span class="n">name</span> <span class="k">if</span> <span class="n">name</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="k">else</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">basename</span><span class="p">(</span><span class="n">dest_path</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_last_modified</span> <span class="o">=</span> <span class="n">last_modified</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_size</span> <span class="o">=</span> <span class="n">size</span>
+
+    <span class="k">def</span> <span class="fm">__getattr__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">item</span><span class="p">):</span>
+        <span class="c1"># backwards compatibility for code expecting items to be a key/value pair like &quot;(dest_path, metadata_dict)&quot;</span>
+        <span class="k">return</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">dest_path</span><span class="p">,</span> <span class="n">item</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="fm">__getitem__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">item</span><span class="p">):</span>
+        <span class="c1"># backwards compatibility for code expecting items to be a key/value pair like &quot;(dest_path, metadata_dict)&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">dest_path</span><span class="o">.</span><span class="fm">__getitem__</span><span class="p">(</span><span class="n">item</span><span class="p">)</span>
+
+<div class="viewcode-block" id="RemotePipelineFile.from_pipelinefile"><a class="viewcode-back" href="../../../aodncore.pipeline.html#aodncore.pipeline.files.RemotePipelineFile.from_pipelinefile">[docs]</a>    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">from_pipelinefile</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">pipeline_file</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Construct a RemotePipelineFile instance from an existing PipelineFile instance</span>
+
+<span class="sd">        Note: the local_path is deliberately *not* set in the new instance, primarily to avoid accidental overwriting of</span>
+<span class="sd">        local files in case of conversion to a remote file and having the remote file downloaded. The local_path</span>
+<span class="sd">        attribute may still be set, but it is an explicit operation.</span>
+
+<span class="sd">        :param pipeline_file: PipelineFile instance used to instantiate a RemotePipelineFile instance</span>
+<span class="sd">        :return: RemotePipelineFile instance</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">cls</span><span class="p">(</span><span class="n">dest_path</span><span class="o">=</span><span class="n">pipeline_file</span><span class="o">.</span><span class="n">dest_path</span><span class="p">,</span> <span class="n">local_path</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="n">pipeline_file</span><span class="o">.</span><span class="n">name</span><span class="p">)</span></div>
+
+    <span class="k">def</span> <span class="nf">_key</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">dest_path</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">file_checksum</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="c1"># override superclass property to not attempt to checksum the file if it has no local path</span>
+        <span class="c1"># (i.e. has not been downloaded)</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">local_path</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">return</span> <span class="kc">None</span>
+        <span class="k">return</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">file_checksum</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">last_modified</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_last_modified</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">size</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_size</span>
+
+    <span class="nd">@PipelineFileBase</span><span class="o">.</span><span class="n">local_path</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span> <span class="nf">local_path</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">local_path</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_local_path</span> <span class="o">=</span> <span class="n">local_path</span>
+        <span class="c1"># reset file_checksum to None, so that it will be re-evaluated lazily if required</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_file_checksum</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_set_local_file_attributes</span><span class="p">()</span>
+
+<div class="viewcode-block" id="RemotePipelineFile.remove_local"><a class="viewcode-back" href="../../../aodncore.pipeline.html#aodncore.pipeline.files.RemotePipelineFile.remove_local">[docs]</a>    <span class="k">def</span> <span class="nf">remove_local</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">_local_path</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">local_path</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">local_path</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="n">rm_f</span><span class="p">(</span><span class="n">_local_path</span><span class="p">)</span></div></div>
+
+
+<div class="viewcode-block" id="PipelineFile"><a class="viewcode-back" href="../../../aodncore.pipeline.html#aodncore.pipeline.files.PipelineFile">[docs]</a><span class="k">class</span> <span class="nc">PipelineFile</span><span class="p">(</span><span class="n">PipelineFileBase</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Represents a single file in order to store state information relating to the intended actions to be performed</span>
 <span class="sd">    on the file, and the actions that *were* performed on the file</span>
 
-<span class="sd">    :param src_path: absolute source path to the file being represented</span>
-<span class="sd">    :type src_path: :py:class:`str`</span>
-<span class="sd">    :param name: arbitrary name (defaults to the output of :py:func:`os.path.basename` on src_path)</span>
+<span class="sd">    :param local_path: absolute source path to the file being represented</span>
+<span class="sd">    :type local_path: :py:class:`str`</span>
+<span class="sd">    :param name: arbitrary name (defaults to the output of :py:func:`os.path.basename` on local_path)</span>
 <span class="sd">    :type name: :py:class:`str`</span>
 <span class="sd">    :param archive_path: relative path used when archiving the file</span>
 <span class="sd">    :type archive_path: :py:class:`str`</span>
@@ -250,32 +403,23 @@
 <span class="sd">    :type dest_path: :py:class:`str`</span>
 <span class="sd">    :param is_deletion: flag designating whether this is a deletion</span>
 <span class="sd">    :type is_deletion: :py:class:`bool`</span>
+<span class="sd">    :param late_deletion: flag to indicate that this file should be deleted *after* additions are performed (note: ignored if `is_deletion=False`)</span>
+<span class="sd">    :type late_deletion: :py:class:`bool`</span>
 <span class="sd">    :param file_update_callback: optional callback to call when a file property is updated</span>
 <span class="sd">    :type file_update_callback: :py:class:`callable`</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="vm">__slots__</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;_file_checksum&#39;</span><span class="p">,</span> <span class="s1">&#39;_name&#39;</span><span class="p">,</span> <span class="s1">&#39;_src_path&#39;</span><span class="p">,</span> <span class="s1">&#39;_archive_path&#39;</span><span class="p">,</span> <span class="s1">&#39;_dest_path&#39;</span><span class="p">,</span> <span class="s1">&#39;_extension&#39;</span><span class="p">,</span> <span class="s1">&#39;file_type&#39;</span><span class="p">,</span>
-                 <span class="s1">&#39;_file_update_callback&#39;</span><span class="p">,</span> <span class="s1">&#39;_check_type&#39;</span><span class="p">,</span> <span class="s1">&#39;_is_deletion&#39;</span><span class="p">,</span> <span class="s1">&#39;_publish_type&#39;</span><span class="p">,</span> <span class="s1">&#39;_should_archive&#39;</span><span class="p">,</span>
-                 <span class="s1">&#39;_should_harvest&#39;</span><span class="p">,</span> <span class="s1">&#39;_should_store&#39;</span><span class="p">,</span> <span class="s1">&#39;_should_undo&#39;</span><span class="p">,</span> <span class="s1">&#39;_is_checked&#39;</span><span class="p">,</span> <span class="s1">&#39;_is_archived&#39;</span><span class="p">,</span> <span class="s1">&#39;_is_harvested&#39;</span><span class="p">,</span>
-                 <span class="s1">&#39;_is_overwrite&#39;</span><span class="p">,</span> <span class="s1">&#39;_is_stored&#39;</span><span class="p">,</span> <span class="s1">&#39;_is_harvest_undone&#39;</span><span class="p">,</span> <span class="s2">&quot;_is_upload_undone&quot;</span><span class="p">,</span> <span class="s1">&#39;_check_result&#39;</span><span class="p">,</span>
-                 <span class="s1">&#39;_mime_type&#39;</span><span class="p">]</span>
+    <span class="vm">__slots__</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;_archive_path&#39;</span><span class="p">,</span> <span class="s1">&#39;_file_update_callback&#39;</span><span class="p">,</span> <span class="s1">&#39;_check_type&#39;</span><span class="p">,</span> <span class="s1">&#39;_is_deletion&#39;</span><span class="p">,</span> <span class="s1">&#39;_late_deletion&#39;</span><span class="p">,</span>
+                 <span class="s1">&#39;_publish_type&#39;</span><span class="p">,</span> <span class="s1">&#39;_should_archive&#39;</span><span class="p">,</span> <span class="s1">&#39;_should_harvest&#39;</span><span class="p">,</span> <span class="s1">&#39;_should_store&#39;</span><span class="p">,</span> <span class="s1">&#39;_should_undo&#39;</span><span class="p">,</span> <span class="s1">&#39;_is_checked&#39;</span><span class="p">,</span>
+                 <span class="s1">&#39;_is_archived&#39;</span><span class="p">,</span> <span class="s1">&#39;_is_harvested&#39;</span><span class="p">,</span> <span class="s1">&#39;_is_overwrite&#39;</span><span class="p">,</span> <span class="s1">&#39;_is_stored&#39;</span><span class="p">,</span> <span class="s1">&#39;_is_harvest_undone&#39;</span><span class="p">,</span>
+                 <span class="s1">&#39;_is_upload_undone&#39;</span><span class="p">,</span> <span class="s1">&#39;_check_result&#39;</span><span class="p">,</span> <span class="s1">&#39;_mime_type&#39;</span><span class="p">]</span>
 
-    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">src_path</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">archive_path</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">dest_path</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">is_deletion</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">local_path</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">archive_path</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">dest_path</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">is_deletion</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">late_deletion</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
                  <span class="n">file_update_callback</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-        <span class="k">try</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_file_checksum</span> <span class="o">=</span> <span class="kc">None</span> <span class="k">if</span> <span class="n">is_deletion</span> <span class="k">else</span> <span class="n">get_file_checksum</span><span class="p">(</span><span class="n">src_path</span><span class="p">)</span>
-        <span class="k">except</span> <span class="p">(</span><span class="ne">IOError</span><span class="p">,</span> <span class="ne">OSError</span><span class="p">)</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="n">MissingFileError</span><span class="p">(</span>
-                <span class="s2">&quot;failed to create PipelineFile addition for &#39;</span><span class="si">{src_path}</span><span class="s2">&#39;. </span><span class="si">{e}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">src_path</span><span class="o">=</span><span class="n">src_path</span><span class="p">,</span>
-                                                                                      <span class="n">e</span><span class="o">=</span><span class="n">format_exception</span><span class="p">(</span><span class="n">e</span><span class="p">)))</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">local_path</span><span class="p">,</span> <span class="n">dest_path</span><span class="p">)</span>
 
-        <span class="bp">self</span><span class="o">.</span><span class="n">_name</span> <span class="o">=</span> <span class="n">name</span> <span class="k">if</span> <span class="n">name</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="k">else</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">basename</span><span class="p">(</span><span class="n">src_path</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_src_path</span> <span class="o">=</span> <span class="n">src_path</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_name</span> <span class="o">=</span> <span class="n">name</span> <span class="k">if</span> <span class="n">name</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="k">else</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">basename</span><span class="p">(</span><span class="n">local_path</span><span class="p">)</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">_archive_path</span> <span class="o">=</span> <span class="n">archive_path</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_dest_path</span> <span class="o">=</span> <span class="n">dest_path</span>
-
-        <span class="n">_</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_extension</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">splitext</span><span class="p">(</span><span class="n">src_path</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">file_type</span> <span class="o">=</span> <span class="n">FileType</span><span class="o">.</span><span class="n">get_type_from_extension</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">extension</span><span class="p">)</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">_file_update_callback</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="k">if</span> <span class="n">file_update_callback</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
@@ -284,6 +428,7 @@
         <span class="c1"># processing flags - these express the *intended actions* for the file</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_check_type</span> <span class="o">=</span> <span class="n">PipelineFileCheckType</span><span class="o">.</span><span class="n">UNSET</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_is_deletion</span> <span class="o">=</span> <span class="n">is_deletion</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_late_deletion</span> <span class="o">=</span> <span class="n">late_deletion</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_publish_type</span> <span class="o">=</span> <span class="n">PipelineFilePublishType</span><span class="o">.</span><span class="n">UNSET</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_should_archive</span> <span class="o">=</span> <span class="kc">False</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_should_harvest</span> <span class="o">=</span> <span class="kc">False</span>
@@ -302,44 +447,30 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">_check_result</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_mime_type</span> <span class="o">=</span> <span class="kc">None</span>
 
-    <span class="k">def</span> <span class="nf">__eq__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
-        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">other</span><span class="p">,</span> <span class="nb">type</span><span class="p">(</span><span class="bp">self</span><span class="p">)):</span>
-            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">__key</span><span class="p">()</span> <span class="o">==</span> <span class="n">other</span><span class="o">.</span><span class="n">__key</span><span class="p">()</span>
-        <span class="k">return</span> <span class="kc">False</span>
+<div class="viewcode-block" id="PipelineFile.from_remotepipelinefile"><a class="viewcode-back" href="../../../aodncore.pipeline.html#aodncore.pipeline.files.PipelineFile.from_remotepipelinefile">[docs]</a>    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">from_remotepipelinefile</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">remotepipelinefile</span><span class="p">,</span> <span class="n">is_deletion</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Construct a PipelineFile instance from an existing RemotePipelineFile instance</span>
 
-    <span class="k">def</span> <span class="nf">__hash__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">return</span> <span class="nb">hash</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">__key</span><span class="p">())</span>
+<span class="sd">        :param remotepipelinefile: RemotePipelineFile instance used to instantiate a PipelineFile instance</span>
+<span class="sd">        :param is_deletion: is_deletion flag passed directly to __init__</span>
+<span class="sd">        :return: PipelineFile instance</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">cls</span><span class="p">(</span><span class="n">local_path</span><span class="o">=</span><span class="n">remotepipelinefile</span><span class="o">.</span><span class="n">local_path</span><span class="p">,</span> <span class="n">dest_path</span><span class="o">=</span><span class="n">remotepipelinefile</span><span class="o">.</span><span class="n">dest_path</span><span class="p">,</span>
+                   <span class="n">name</span><span class="o">=</span><span class="n">remotepipelinefile</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="n">is_deletion</span><span class="o">=</span><span class="n">is_deletion</span><span class="p">)</span></div>
 
-    <span class="k">def</span> <span class="nf">__key</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">file_checksum</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">src_path</span>
-
-    <span class="k">def</span> <span class="nf">__iter__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">return</span> <span class="n">iter_public_attributes</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
-
-    <span class="k">def</span> <span class="nf">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>  <span class="c1"># pragma: no cover</span>
-        <span class="k">return</span> <span class="s2">&quot;</span><span class="si">{name}</span><span class="s2">(</span><span class="si">{repr}</span><span class="s2">)&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="p">,</span> <span class="nb">repr</span><span class="o">=</span><span class="nb">repr</span><span class="p">(</span><span class="nb">dict</span><span class="p">(</span><span class="bp">self</span><span class="p">)))</span>
-
-    <span class="k">def</span> <span class="nf">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">return</span> <span class="s2">&quot;</span><span class="si">{name}</span><span class="s2">(</span><span class="si">{str}</span><span class="s2">)&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="p">,</span> <span class="nb">str</span><span class="o">=</span><span class="nb">dict</span><span class="p">(</span><span class="bp">self</span><span class="p">))</span>
-
-    <span class="c1">#</span>
-    <span class="c1"># Static properties (read-only, should never change during the lifecycle of the object)</span>
-    <span class="c1">#</span>
-    <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">extension</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_extension</span>
-
-    <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">file_checksum</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_file_checksum</span>
-
-    <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">name</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_name</span>
+    <span class="k">def</span> <span class="nf">_key</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">local_path</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">file_checksum</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">src_path</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_src_path</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_local_path</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">file_checksum</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="c1"># override superclass property to handle deletions (which have no local_path and therefore can&#39;t be summed)</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">is_deletion</span><span class="p">:</span>
+            <span class="k">return</span> <span class="kc">None</span>
+        <span class="k">return</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">file_checksum</span>
 
     <span class="c1">#</span>
     <span class="c1"># State properties (may change during the lifecycle of the object to reflect the current state)</span>
@@ -438,6 +569,10 @@
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_is_deletion</span>
 
     <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">late_deletion</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_late_deletion</span>
+
+    <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">is_deleted</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">is_deletion</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">is_stored</span>
 
@@ -530,6 +665,14 @@
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">pending_harvest</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">is_deletion</span>
 
     <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">pending_harvest_early_deletion</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">pending_harvest</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">is_deletion</span> <span class="ow">and</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">late_deletion</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">pending_harvest_late_deletion</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">pending_harvest</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">is_deletion</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">late_deletion</span>
+
+    <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">pending_harvest_undo</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">should_undo</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">should_harvest</span> <span class="ow">and</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">is_harvest_undone</span>
 
@@ -614,87 +757,80 @@
         <span class="n">validate_mapping</span><span class="p">(</span><span class="n">properties</span><span class="p">)</span>
 
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">file_update_callback</span><span class="p">:</span>
-            <span class="n">log_output</span> <span class="o">=</span> <span class="n">properties</span> <span class="k">if</span> <span class="n">include_values</span> <span class="k">else</span> <span class="n">properties</span><span class="o">.</span><span class="n">keys</span><span class="p">()</span>
+            <span class="n">log_output</span> <span class="o">=</span> <span class="n">properties</span> <span class="k">if</span> <span class="n">include_values</span> <span class="k">else</span> <span class="nb">list</span><span class="p">(</span><span class="n">properties</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">file_update_callback</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="n">is_deletion</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">is_deletion</span><span class="p">,</span>
                                       <span class="n">message</span><span class="o">=</span><span class="s2">&quot;</span><span class="si">{properties}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">properties</span><span class="o">=</span><span class="n">log_output</span><span class="p">))</span></div>
 
 
-<div class="viewcode-block" id="PipelineFileCollection"><a class="viewcode-back" href="../../../aodncore.pipeline.html#aodncore.pipeline.files.PipelineFileCollection">[docs]</a><span class="k">class</span> <span class="nc">PipelineFileCollection</span><span class="p">(</span><span class="n">MutableSet</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;A collection which implements the MutableSet abstract base class to allow clean set operations, but limited to</span>
-<span class="sd">    containing only :py:class:`PipelineFile` elements and providing specific functionality for handling a collection of</span>
-<span class="sd">    them (e.g. filtering, managing attributes, generating tabular data, etc.)</span>
+<span class="k">class</span> <span class="nc">PipelineFileCollectionBase</span><span class="p">(</span><span class="n">MutableSet</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;A collection base class which implements the MutableSet abstract base class to allow clean set operations, but</span>
+<span class="sd">    limited to containing only :py:class:`PipelineFile` or :py:class:`RemotePipelineFile`elements and providing specific</span>
+<span class="sd">    functionality for handling a collection of them (e.g. filtering, generating tabular data, etc.)</span>
 
 <span class="sd">    :param data: data to add during initialisation of the collection, either a single :py:class:`PipelineFile` or file</span>
 <span class="sd">        path, or an :py:class:`Iterable` whose elements are :py:class:`PipelineFile` instances or file paths</span>
-<span class="sd">    :type data: :py:class:`PipelineFile`, :py:class:`str`, :py:class:`Iterable`</span>
+<span class="sd">    :type data: :py:class:`PipelineFile`, :py:class:`RemotePipelineFile`, :py:class:`str`, :py:class:`Iterable`</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="vm">__slots__</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;__s&#39;</span><span class="p">]</span>
+    <span class="vm">__slots__</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;_s&#39;</span><span class="p">,</span> <span class="s1">&#39;member_class&#39;</span><span class="p">,</span> <span class="s1">&#39;member_validator&#39;</span><span class="p">,</span> <span class="s1">&#39;member_from_string_method&#39;</span><span class="p">,</span> <span class="s1">&#39;unique_attributes&#39;</span><span class="p">]</span>
 
-    <span class="n">unique_attributes</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;archive_path&#39;</span><span class="p">,</span> <span class="s1">&#39;dest_path&#39;</span><span class="p">}</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">member_class</span><span class="o">=</span><span class="n">PipelineFile</span><span class="p">,</span> <span class="n">member_validator</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">member_from_string_method</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                 <span class="n">unique_attributes</span><span class="o">=</span><span class="p">()):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
 
-    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-        <span class="nb">super</span><span class="p">(</span><span class="n">PipelineFileCollection</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_s</span> <span class="o">=</span> <span class="n">IndexedSet</span><span class="p">()</span>
 
-        <span class="bp">self</span><span class="o">.</span><span class="n">__s</span> <span class="o">=</span> <span class="n">IndexedSet</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">member_class</span> <span class="o">=</span> <span class="n">member_class</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">member_validator</span> <span class="o">=</span> <span class="n">member_validator</span> <span class="ow">or</span> <span class="n">validate_pipelinefile_or_string</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">member_from_string_method</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">member_from_string_method</span><span class="p">)</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_pipelinefile_from_src_path</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">unique_attributes</span> <span class="o">=</span> <span class="n">unique_attributes</span>
 
         <span class="k">if</span> <span class="n">data</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="p">(</span><span class="n">PipelineFile</span><span class="p">,</span> <span class="n">six</span><span class="o">.</span><span class="n">string_types</span><span class="p">)):</span>
+            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">member_class</span><span class="p">,</span> <span class="nb">str</span><span class="p">)):</span>
                 <span class="n">data</span> <span class="o">=</span> <span class="p">[</span><span class="n">data</span><span class="p">]</span>
             <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="n">data</span><span class="p">:</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">f</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">__bool__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">return</span> <span class="nb">bool</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">__s</span><span class="p">)</span>
+    <span class="k">def</span> <span class="fm">__bool__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="nb">bool</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_s</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">__contains__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">v</span><span class="p">):</span>
-        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="n">PipelineFile</span><span class="p">):</span>
-            <span class="n">element</span> <span class="o">=</span> <span class="n">v</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="n">element</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_pipelinefile_from_src_path</span><span class="p">(</span><span class="n">v</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">element</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">__s</span>
+    <span class="k">def</span> <span class="fm">__contains__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">v</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">v</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_s</span>
 
-    <span class="k">def</span> <span class="nf">__getitem__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">index</span><span class="p">):</span>
-        <span class="n">result</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">__s</span><span class="p">[</span><span class="n">index</span><span class="p">]</span>
-        <span class="k">return</span> <span class="n">PipelineFileCollection</span><span class="p">(</span><span class="n">result</span><span class="p">)</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">result</span><span class="p">,</span> <span class="n">IndexedSet</span><span class="p">)</span> <span class="k">else</span> <span class="n">result</span>
+    <span class="k">def</span> <span class="fm">__getitem__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">index</span><span class="p">):</span>
+        <span class="n">result</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_s</span><span class="p">[</span><span class="n">index</span><span class="p">]</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="p">(</span><span class="n">result</span><span class="p">)</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">result</span><span class="p">,</span> <span class="n">IndexedSet</span><span class="p">)</span> <span class="k">else</span> <span class="n">result</span>
 
-    <span class="k">def</span> <span class="nf">__iter__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">return</span> <span class="nb">iter</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">__s</span><span class="p">)</span>
+    <span class="k">def</span> <span class="fm">__iter__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="nb">iter</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_s</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">__len__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">return</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">__s</span><span class="p">)</span>
+    <span class="k">def</span> <span class="fm">__len__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_s</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>  <span class="c1"># pragma: no cover</span>
-        <span class="k">return</span> <span class="s2">&quot;</span><span class="si">{name}</span><span class="s2">(</span><span class="si">{repr}</span><span class="s2">)&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="p">,</span> <span class="nb">repr</span><span class="o">=</span><span class="nb">repr</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">__s</span><span class="p">)))</span>
+    <span class="k">def</span> <span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>  <span class="c1"># pragma: no cover</span>
+        <span class="k">return</span> <span class="s2">&quot;</span><span class="si">{name}</span><span class="s2">(</span><span class="si">{repr}</span><span class="s2">)&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="p">,</span> <span class="nb">repr</span><span class="o">=</span><span class="nb">repr</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_s</span><span class="p">)))</span>
 
-    <span class="k">def</span> <span class="nf">_set_attribute</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">attribute</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
-        <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">__s</span><span class="p">:</span>
-            <span class="nb">setattr</span><span class="p">(</span><span class="n">f</span><span class="p">,</span> <span class="n">attribute</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span>
-
-<div class="viewcode-block" id="PipelineFileCollection.add"><a class="viewcode-back" href="../../../aodncore.pipeline.html#aodncore.pipeline.files.PipelineFileCollection.add">[docs]</a>    <span class="k">def</span> <span class="nf">add</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pipeline_file</span><span class="p">,</span> <span class="n">deletion</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">overwrite</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">add</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pipeline_file</span><span class="p">,</span> <span class="n">overwrite</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Add a file to the collection</span>
 
 <span class="sd">        :param pipeline_file: :py:class:`PipelineFile` or file path</span>
-<span class="sd">        :param deletion: :py:class:`bool` which, if True, designates the file as a deletion</span>
+<span class="sd">        :param kwargs: :py:class:`dict` additional keywords passed to to PipelineFileBase __init__ method</span>
 <span class="sd">        :param overwrite: :py:class:`bool` which, if True, will overwrite an existing matching file in the collection</span>
 <span class="sd">        :return: :py:class:`bool` which indicates whether the file was successfully added</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">validate_pipelinefile_or_string</span><span class="p">(</span><span class="n">pipeline_file</span><span class="p">)</span>
-        <span class="n">validate_bool</span><span class="p">(</span><span class="n">deletion</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">member_validator</span><span class="p">(</span><span class="n">pipeline_file</span><span class="p">)</span>
         <span class="n">validate_bool</span><span class="p">(</span><span class="n">overwrite</span><span class="p">)</span>
 
-        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">pipeline_file</span><span class="p">,</span> <span class="n">PipelineFile</span><span class="p">):</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">pipeline_file</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">member_class</span><span class="p">):</span>
             <span class="n">fileobj</span> <span class="o">=</span> <span class="n">pipeline_file</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="k">if</span> <span class="ow">not</span> <span class="n">deletion</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isfile</span><span class="p">(</span><span class="n">pipeline_file</span><span class="p">):</span>
-                <span class="k">raise</span> <span class="n">MissingFileError</span><span class="p">(</span><span class="s2">&quot;file &#39;</span><span class="si">{src}</span><span class="s2">&#39; doesn&#39;t exist&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">src</span><span class="o">=</span><span class="n">pipeline_file</span><span class="p">))</span>
-            <span class="n">fileobj</span> <span class="o">=</span> <span class="n">PipelineFile</span><span class="p">(</span><span class="n">pipeline_file</span><span class="p">,</span> <span class="n">is_deletion</span><span class="o">=</span><span class="n">deletion</span><span class="p">)</span>
+            <span class="n">fileobj</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">member_class</span><span class="p">(</span><span class="n">pipeline_file</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
 
-        <span class="n">result</span> <span class="o">=</span> <span class="n">fileobj</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">__s</span>
+        <span class="n">result</span> <span class="o">=</span> <span class="n">fileobj</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_s</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="n">result</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">overwrite</span><span class="p">:</span>
             <span class="k">raise</span> <span class="n">DuplicatePipelineFileError</span><span class="p">(</span><span class="s2">&quot;</span><span class="si">{f.name}</span><span class="s2"> already in collection&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">f</span><span class="o">=</span><span class="n">fileobj</span><span class="p">))</span>
 
         <span class="k">if</span> <span class="n">overwrite</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">__s</span><span class="o">.</span><span class="n">discard</span><span class="p">(</span><span class="n">fileobj</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_s</span><span class="o">.</span><span class="n">discard</span><span class="p">(</span><span class="n">fileobj</span><span class="p">)</span>
             <span class="n">result</span> <span class="o">=</span> <span class="kc">True</span>
 
         <span class="k">for</span> <span class="n">attribute</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">unique_attributes</span><span class="p">:</span>
@@ -702,44 +838,44 @@
             <span class="k">if</span> <span class="n">value</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">validate_unique_attribute_value</span><span class="p">(</span><span class="n">attribute</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span>
 
-        <span class="bp">self</span><span class="o">.</span><span class="n">__s</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">fileobj</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">result</span></div>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_s</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">fileobj</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">result</span>
 
     <span class="c1"># alias append to the add method</span>
     <span class="n">append</span> <span class="o">=</span> <span class="n">add</span>
 
-<div class="viewcode-block" id="PipelineFileCollection.discard"><a class="viewcode-back" href="../../../aodncore.pipeline.html#aodncore.pipeline.files.PipelineFileCollection.discard">[docs]</a>    <span class="k">def</span> <span class="nf">discard</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pipeline_file</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">discard</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pipeline_file</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Remove an element from the collection. Do not raise an exception if absent.</span>
 
 <span class="sd">        :param pipeline_file: :py:class:`PipelineFile` or file path</span>
 <span class="sd">        :return: :py:class:`bool` which indicates whether the file was in the collection AND was successfully discarded</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">validate_pipelinefile_or_string</span><span class="p">(</span><span class="n">pipeline_file</span><span class="p">)</span>
-        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">pipeline_file</span><span class="p">,</span> <span class="n">PipelineFile</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">member_validator</span><span class="p">(</span><span class="n">pipeline_file</span><span class="p">)</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">pipeline_file</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">member_class</span><span class="p">):</span>
             <span class="n">fileobj</span> <span class="o">=</span> <span class="n">pipeline_file</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="n">fileobj</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_pipelinefile_from_src_path</span><span class="p">(</span><span class="n">pipeline_file</span><span class="p">)</span>
+            <span class="n">fileobj</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">member_from_string_method</span><span class="p">(</span><span class="n">pipeline_file</span><span class="p">)</span>
 
-        <span class="n">result</span> <span class="o">=</span> <span class="n">fileobj</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">__s</span>
+        <span class="n">result</span> <span class="o">=</span> <span class="n">fileobj</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_s</span>
 
-        <span class="bp">self</span><span class="o">.</span><span class="n">__s</span><span class="o">.</span><span class="n">discard</span><span class="p">(</span><span class="n">fileobj</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">result</span></div>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_s</span><span class="o">.</span><span class="n">discard</span><span class="p">(</span><span class="n">fileobj</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">result</span>
 
-<div class="viewcode-block" id="PipelineFileCollection.difference"><a class="viewcode-back" href="../../../aodncore.pipeline.html#aodncore.pipeline.files.PipelineFileCollection.difference">[docs]</a>    <span class="k">def</span> <span class="nf">difference</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">sequence</span><span class="p">):</span>
-        <span class="k">return</span> <span class="n">PipelineFileCollection</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">__s</span><span class="o">.</span><span class="n">difference</span><span class="p">(</span><span class="n">sequence</span><span class="p">))</span></div>
+    <span class="k">def</span> <span class="nf">difference</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">sequence</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_s</span><span class="o">.</span><span class="n">difference</span><span class="p">(</span><span class="n">sequence</span><span class="p">))</span>
 
-<div class="viewcode-block" id="PipelineFileCollection.issubset"><a class="viewcode-back" href="../../../aodncore.pipeline.html#aodncore.pipeline.files.PipelineFileCollection.issubset">[docs]</a>    <span class="k">def</span> <span class="nf">issubset</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">sequence</span><span class="p">):</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">__s</span><span class="o">.</span><span class="n">issubset</span><span class="p">(</span><span class="n">sequence</span><span class="p">)</span></div>
+    <span class="k">def</span> <span class="nf">issubset</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">sequence</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_s</span><span class="o">.</span><span class="n">issubset</span><span class="p">(</span><span class="n">sequence</span><span class="p">)</span>
 
-<div class="viewcode-block" id="PipelineFileCollection.issuperset"><a class="viewcode-back" href="../../../aodncore.pipeline.html#aodncore.pipeline.files.PipelineFileCollection.issuperset">[docs]</a>    <span class="k">def</span> <span class="nf">issuperset</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">sequence</span><span class="p">):</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">__s</span><span class="o">.</span><span class="n">issuperset</span><span class="p">(</span><span class="n">sequence</span><span class="p">)</span></div>
+    <span class="k">def</span> <span class="nf">issuperset</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">sequence</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_s</span><span class="o">.</span><span class="n">issuperset</span><span class="p">(</span><span class="n">sequence</span><span class="p">)</span>
 
-<div class="viewcode-block" id="PipelineFileCollection.union"><a class="viewcode-back" href="../../../aodncore.pipeline.html#aodncore.pipeline.files.PipelineFileCollection.union">[docs]</a>    <span class="k">def</span> <span class="nf">union</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">sequence</span><span class="p">):</span>
-        <span class="k">if</span> <span class="ow">not</span> <span class="nb">all</span><span class="p">(</span><span class="nb">isinstance</span><span class="p">(</span><span class="n">f</span><span class="p">,</span> <span class="n">PipelineFile</span><span class="p">)</span> <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="n">sequence</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">union</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">sequence</span><span class="p">):</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">all</span><span class="p">(</span><span class="nb">isinstance</span><span class="p">(</span><span class="n">f</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">member_class</span><span class="p">)</span> <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="n">sequence</span><span class="p">):</span>
             <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s1">&#39;invalid sequence, all elements must be PipelineFile objects&#39;</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">PipelineFileCollection</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">__s</span><span class="o">.</span><span class="n">union</span><span class="p">(</span><span class="n">sequence</span><span class="p">))</span></div>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_s</span><span class="o">.</span><span class="n">union</span><span class="p">(</span><span class="n">sequence</span><span class="p">))</span>
 
-<div class="viewcode-block" id="PipelineFileCollection.update"><a class="viewcode-back" href="../../../aodncore.pipeline.html#aodncore.pipeline.files.PipelineFileCollection.update">[docs]</a>    <span class="k">def</span> <span class="nf">update</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">sequence</span><span class="p">,</span> <span class="n">overwrite</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">update</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">sequence</span><span class="p">,</span> <span class="n">overwrite</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Add the elements of an existing :py:class:`Sequence` to this collection</span>
 
 <span class="sd">        :param sequence: :py:class:`Sequence` containing :py:class:`PipelineFile` or file path elements to be added to</span>
@@ -753,18 +889,28 @@
         <span class="n">results</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="n">sequence</span><span class="p">:</span>
             <span class="n">results</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">item</span><span class="p">,</span> <span class="n">overwrite</span><span class="o">=</span><span class="n">overwrite</span><span class="p">))</span>
-        <span class="k">return</span> <span class="nb">any</span><span class="p">(</span><span class="n">results</span><span class="p">)</span></div>
+        <span class="k">return</span> <span class="nb">any</span><span class="p">(</span><span class="n">results</span><span class="p">)</span>
 
-<div class="viewcode-block" id="PipelineFileCollection.get_pipelinefile_from_src_path"><a class="viewcode-back" href="../../../aodncore.pipeline.html#aodncore.pipeline.files.PipelineFileCollection.get_pipelinefile_from_src_path">[docs]</a>    <span class="k">def</span> <span class="nf">get_pipelinefile_from_src_path</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">src_path</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">get_pipelinefile_from_dest_path</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dest_path</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Get PipelineFile for a given src_path</span>
+
+<span class="sd">        :param dest_path: destination path string for which to retrieve corresponding :py:class:`RemotePipelineFile`</span>
+<span class="sd">        instance</span>
+<span class="sd">        :return: matching :py:class:`RemotePipelineFile` instance or :py:const:`None` if it is not in the collection</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">pipeline_file</span> <span class="o">=</span> <span class="nb">next</span><span class="p">((</span><span class="n">f</span> <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_s</span> <span class="k">if</span> <span class="n">f</span><span class="o">.</span><span class="n">dest_path</span> <span class="o">==</span> <span class="n">dest_path</span><span class="p">),</span> <span class="kc">None</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">pipeline_file</span>
+
+    <span class="k">def</span> <span class="nf">get_pipelinefile_from_src_path</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">src_path</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Get PipelineFile for a given src_path</span>
 
 <span class="sd">        :param src_path: source path string for which to retrieve corresponding :py:class:`PipelineFile` instances</span>
 <span class="sd">        :return: matching :py:class:`PipelineFile` instance or :py:const:`None` if it is not in the collection</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">pipeline_file</span> <span class="o">=</span> <span class="nb">next</span><span class="p">((</span><span class="n">f</span> <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">__s</span> <span class="k">if</span> <span class="n">f</span><span class="o">.</span><span class="n">src_path</span> <span class="o">==</span> <span class="n">src_path</span><span class="p">),</span> <span class="kc">None</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">pipeline_file</span></div>
+        <span class="n">pipeline_file</span> <span class="o">=</span> <span class="nb">next</span><span class="p">((</span><span class="n">f</span> <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_s</span> <span class="k">if</span> <span class="n">f</span><span class="o">.</span><span class="n">local_path</span> <span class="o">==</span> <span class="n">src_path</span><span class="p">),</span> <span class="kc">None</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">pipeline_file</span>
 
-<div class="viewcode-block" id="PipelineFileCollection.get_slices"><a class="viewcode-back" href="../../../aodncore.pipeline.html#aodncore.pipeline.files.PipelineFileCollection.get_slices">[docs]</a>    <span class="k">def</span> <span class="nf">get_slices</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">slice_size</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">get_slices</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">slice_size</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Slice this collection into a list of :py:class:`PipelineFileCollections` with maximum length of slice_size</span>
 
 <span class="sd">        :param slice_size: maximum length of each slice</span>
@@ -772,9 +918,9 @@
 <span class="sd">            length slice_size</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">validate_int</span><span class="p">(</span><span class="n">slice_size</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">slice_sequence</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">slice_size</span><span class="p">)</span></div>
+        <span class="k">return</span> <span class="n">slice_sequence</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">slice_size</span><span class="p">)</span>
 
-<div class="viewcode-block" id="PipelineFileCollection.filter_by_attribute_id"><a class="viewcode-back" href="../../../aodncore.pipeline.html#aodncore.pipeline.files.PipelineFileCollection.filter_by_attribute_id">[docs]</a>    <span class="k">def</span> <span class="nf">filter_by_attribute_id</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">attribute</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">filter_by_attribute_id</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">attribute</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Return a new :py:class:`PipelineFileCollection` containing only elements where the id of the given attribute</span>
 <span class="sd">        *is* the given id (i.e. refers to the same object)</span>
 <span class="sd">        </span>
@@ -783,10 +929,10 @@
 <span class="sd">        :return: :py:class:`PipelineFileCollection` containing only :py:class:`PipelineFile` instances with the given</span>
 <span class="sd">            attribute matching the given value</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">collection</span> <span class="o">=</span> <span class="n">PipelineFileCollection</span><span class="p">(</span><span class="n">f</span> <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">__s</span> <span class="k">if</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">f</span><span class="p">,</span> <span class="n">attribute</span><span class="p">)</span> <span class="ow">is</span> <span class="n">value</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">collection</span></div>
+        <span class="n">collection</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="p">(</span><span class="n">f</span> <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_s</span> <span class="k">if</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">f</span><span class="p">,</span> <span class="n">attribute</span><span class="p">)</span> <span class="ow">is</span> <span class="n">value</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">collection</span>
 
-<div class="viewcode-block" id="PipelineFileCollection.filter_by_attribute_id_not"><a class="viewcode-back" href="../../../aodncore.pipeline.html#aodncore.pipeline.files.PipelineFileCollection.filter_by_attribute_id_not">[docs]</a>    <span class="k">def</span> <span class="nf">filter_by_attribute_id_not</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">attribute</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">filter_by_attribute_id_not</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">attribute</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Return a new :py:class:`PipelineFileCollection` containing only elements where the id of the given attribute</span>
 <span class="sd">        is *not* the given id (i.e. refers to the same object)</span>
 
@@ -795,10 +941,10 @@
 <span class="sd">        :return: :py:class:`PipelineFileCollection` containing only :py:class:`PipelineFile` instances with the given</span>
 <span class="sd">            attribute not matching the given value</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">collection</span> <span class="o">=</span> <span class="n">PipelineFileCollection</span><span class="p">(</span><span class="n">f</span> <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">__s</span> <span class="k">if</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">f</span><span class="p">,</span> <span class="n">attribute</span><span class="p">)</span> <span class="ow">is</span> <span class="ow">not</span> <span class="n">value</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">collection</span></div>
+        <span class="n">collection</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="p">(</span><span class="n">f</span> <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_s</span> <span class="k">if</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">f</span><span class="p">,</span> <span class="n">attribute</span><span class="p">)</span> <span class="ow">is</span> <span class="ow">not</span> <span class="n">value</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">collection</span>
 
-<div class="viewcode-block" id="PipelineFileCollection.filter_by_attribute_value"><a class="viewcode-back" href="../../../aodncore.pipeline.html#aodncore.pipeline.files.PipelineFileCollection.filter_by_attribute_value">[docs]</a>    <span class="k">def</span> <span class="nf">filter_by_attribute_value</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">attribute</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">filter_by_attribute_value</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">attribute</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Return a new :py:class:`PipelineFileCollection` containing only elements where the value of the given</span>
 <span class="sd">        attribute is equal to the given value</span>
 
@@ -807,24 +953,27 @@
 <span class="sd">        :return: :py:class:`PipelineFileCollection` containing only :py:class:`PipelineFile`instances with the given</span>
 <span class="sd">            attribute matching the given value</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">collection</span> <span class="o">=</span> <span class="n">PipelineFileCollection</span><span class="p">(</span><span class="n">f</span> <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">__s</span> <span class="k">if</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">f</span><span class="p">,</span> <span class="n">attribute</span><span class="p">)</span> <span class="o">==</span> <span class="n">value</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">collection</span></div>
+        <span class="n">collection</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="p">(</span><span class="n">f</span> <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_s</span> <span class="k">if</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">f</span><span class="p">,</span> <span class="n">attribute</span><span class="p">)</span> <span class="o">==</span> <span class="n">value</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">collection</span>
 
-<div class="viewcode-block" id="PipelineFileCollection.filter_by_attribute_regex"><a class="viewcode-back" href="../../../aodncore.pipeline.html#aodncore.pipeline.files.PipelineFileCollection.filter_by_attribute_regex">[docs]</a>    <span class="k">def</span> <span class="nf">filter_by_attribute_regex</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">attribute</span><span class="p">,</span> <span class="n">regex</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">filter_by_attribute_regexes</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">attribute</span><span class="p">,</span> <span class="n">regexes</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Return a new :py:class:`PipelineFileCollection` containing only elements where the value of the named</span>
 <span class="sd">        attribute matches a given regex pattern</span>
 
 <span class="sd">        :param attribute: attribute to filter on</span>
-<span class="sd">        :param regex: regex pattern by which to filter PipelineFiles</span>
+<span class="sd">        :param regexes: regex pattern(s) by which to filter PipelineFiles</span>
 <span class="sd">        :return: :py:class:`PipelineFileCollection` containing only :py:class:`PipelineFile` instances with the</span>
 <span class="sd">            attribute matching the given pattern</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">validate_regex</span><span class="p">(</span><span class="n">regex</span><span class="p">)</span>
-        <span class="n">collection</span> <span class="o">=</span> <span class="n">PipelineFileCollection</span><span class="p">(</span>
-            <span class="n">f</span> <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">__s</span> <span class="k">if</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">f</span><span class="p">,</span> <span class="n">attribute</span><span class="p">)</span> <span class="ow">and</span> <span class="n">re</span><span class="o">.</span><span class="n">match</span><span class="p">(</span><span class="n">regex</span><span class="p">,</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">f</span><span class="p">,</span> <span class="n">attribute</span><span class="p">)))</span>
-        <span class="k">return</span> <span class="n">collection</span></div>
+        <span class="n">regexes</span> <span class="o">=</span> <span class="n">ensure_regex_list</span><span class="p">(</span><span class="n">regexes</span><span class="p">)</span>
+        <span class="n">collection</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="p">(</span>
+            <span class="n">f</span> <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_s</span> <span class="k">if</span> <span class="n">matches_regexes</span><span class="p">(</span><span class="nb">getattr</span><span class="p">(</span><span class="n">f</span><span class="p">,</span> <span class="n">attribute</span><span class="p">),</span> <span class="n">include_regexes</span><span class="o">=</span><span class="n">regexes</span><span class="p">))</span>
+        <span class="k">return</span> <span class="n">collection</span>
 
-<div class="viewcode-block" id="PipelineFileCollection.filter_by_bool_attribute"><a class="viewcode-back" href="../../../aodncore.pipeline.html#aodncore.pipeline.files.PipelineFileCollection.filter_by_bool_attribute">[docs]</a>    <span class="k">def</span> <span class="nf">filter_by_bool_attribute</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">attribute</span><span class="p">):</span>
+    <span class="c1"># add method alias for backwards compatibility</span>
+    <span class="n">filter_by_attribute_regex</span> <span class="o">=</span> <span class="n">filter_by_attribute_regexes</span>
+
+    <span class="k">def</span> <span class="nf">filter_by_bool_attribute</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">attribute</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Return a new :py:class:`PipelineFileCollection` containing only elements where the named attribute resolves</span>
 <span class="sd">        to True</span>
 
@@ -832,10 +981,10 @@
 <span class="sd">        :return: :py:class:`PipelineFileCollection` containing only :py:class:`PipelineFile` instances with a True value</span>
 <span class="sd">            for the given attribute</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">collection</span> <span class="o">=</span> <span class="n">PipelineFileCollection</span><span class="p">(</span><span class="n">f</span> <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">__s</span> <span class="k">if</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">f</span><span class="p">,</span> <span class="n">attribute</span><span class="p">))</span>
-        <span class="k">return</span> <span class="n">collection</span></div>
+        <span class="n">collection</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="p">(</span><span class="n">f</span> <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_s</span> <span class="k">if</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">f</span><span class="p">,</span> <span class="n">attribute</span><span class="p">))</span>
+        <span class="k">return</span> <span class="n">collection</span>
 
-<div class="viewcode-block" id="PipelineFileCollection.filter_by_bool_attribute_not"><a class="viewcode-back" href="../../../aodncore.pipeline.html#aodncore.pipeline.files.PipelineFileCollection.filter_by_bool_attribute_not">[docs]</a>    <span class="k">def</span> <span class="nf">filter_by_bool_attribute_not</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">attribute</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">filter_by_bool_attribute_not</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">attribute</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Return a new :py:class:`PipelineFileCollection` containing only elements where the named attribute resolves</span>
 <span class="sd">        to False</span>
 
@@ -843,10 +992,10 @@
 <span class="sd">        :return: :py:class:`PipelineFileCollection` containing only :py:class:`PipelineFile` instances with a False</span>
 <span class="sd">            value for the given attribute</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">collection</span> <span class="o">=</span> <span class="n">PipelineFileCollection</span><span class="p">(</span><span class="n">f</span> <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">__s</span> <span class="k">if</span> <span class="ow">not</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">f</span><span class="p">,</span> <span class="n">attribute</span><span class="p">))</span>
-        <span class="k">return</span> <span class="n">collection</span></div>
+        <span class="n">collection</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="p">(</span><span class="n">f</span> <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_s</span> <span class="k">if</span> <span class="ow">not</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">f</span><span class="p">,</span> <span class="n">attribute</span><span class="p">))</span>
+        <span class="k">return</span> <span class="n">collection</span>
 
-<div class="viewcode-block" id="PipelineFileCollection.filter_by_bool_attributes_and"><a class="viewcode-back" href="../../../aodncore.pipeline.html#aodncore.pipeline.files.PipelineFileCollection.filter_by_bool_attributes_and">[docs]</a>    <span class="k">def</span> <span class="nf">filter_by_bool_attributes_and</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">attributes</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">filter_by_bool_attributes_and</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">attributes</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Return a new :py:class:`PipelineFileCollection` containing only elements where *all* of the named attributes</span>
 <span class="sd">        resolve to True</span>
 
@@ -859,10 +1008,10 @@
         <span class="k">def</span> <span class="nf">all_attributes_true</span><span class="p">(</span><span class="n">pf</span><span class="p">):</span>
             <span class="k">return</span> <span class="nb">all</span><span class="p">(</span><span class="nb">getattr</span><span class="p">(</span><span class="n">pf</span><span class="p">,</span> <span class="n">a</span><span class="p">)</span> <span class="k">for</span> <span class="n">a</span> <span class="ow">in</span> <span class="n">attributes_set</span><span class="p">)</span>
 
-        <span class="n">collection</span> <span class="o">=</span> <span class="n">PipelineFileCollection</span><span class="p">(</span><span class="n">f</span> <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">__s</span> <span class="k">if</span> <span class="n">all_attributes_true</span><span class="p">(</span><span class="n">f</span><span class="p">))</span>
-        <span class="k">return</span> <span class="n">collection</span></div>
+        <span class="n">collection</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="p">(</span><span class="n">f</span> <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_s</span> <span class="k">if</span> <span class="n">all_attributes_true</span><span class="p">(</span><span class="n">f</span><span class="p">))</span>
+        <span class="k">return</span> <span class="n">collection</span>
 
-<div class="viewcode-block" id="PipelineFileCollection.filter_by_bool_attributes_and_not"><a class="viewcode-back" href="../../../aodncore.pipeline.html#aodncore.pipeline.files.PipelineFileCollection.filter_by_bool_attributes_and_not">[docs]</a>    <span class="k">def</span> <span class="nf">filter_by_bool_attributes_and_not</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">true_attributes</span><span class="p">,</span> <span class="n">false_attributes</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">filter_by_bool_attributes_and_not</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">true_attributes</span><span class="p">,</span> <span class="n">false_attributes</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Return a new :py:class:`PipelineFileCollection` containing only elements where *all* of the named</span>
 <span class="sd">        true_attributes have a value of True and all of the false_attributes have a value of False</span>
 
@@ -871,9 +1020,9 @@
 <span class="sd">        :return: :py:class:`PipelineFileCollection` containing only :py:class:`PipelineFile` instances with a True value</span>
 <span class="sd">            for all attributes named in true_attributes and a False value for all attributes named in false_attributes</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">true_attributes</span><span class="p">,</span> <span class="n">six</span><span class="o">.</span><span class="n">string_types</span><span class="p">):</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">true_attributes</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
             <span class="n">true_attributes</span> <span class="o">=</span> <span class="p">[</span><span class="n">true_attributes</span><span class="p">]</span>
-        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">false_attributes</span><span class="p">,</span> <span class="n">six</span><span class="o">.</span><span class="n">string_types</span><span class="p">):</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">false_attributes</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
             <span class="n">false_attributes</span> <span class="o">=</span> <span class="p">[</span><span class="n">false_attributes</span><span class="p">]</span>
 
         <span class="n">true_attributes_set</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="n">true_attributes</span><span class="p">)</span>
@@ -885,11 +1034,11 @@
         <span class="k">def</span> <span class="nf">check_false_attributes</span><span class="p">(</span><span class="n">pf</span><span class="p">):</span>
             <span class="k">return</span> <span class="ow">not</span> <span class="nb">any</span><span class="p">(</span><span class="nb">getattr</span><span class="p">(</span><span class="n">pf</span><span class="p">,</span> <span class="n">a</span><span class="p">)</span> <span class="k">for</span> <span class="n">a</span> <span class="ow">in</span> <span class="n">false_attributes_set</span><span class="p">)</span>
 
-        <span class="n">collection</span> <span class="o">=</span> <span class="n">PipelineFileCollection</span><span class="p">(</span>
-            <span class="n">f</span> <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">__s</span> <span class="k">if</span> <span class="n">check_true_attributes</span><span class="p">(</span><span class="n">f</span><span class="p">)</span> <span class="ow">and</span> <span class="n">check_false_attributes</span><span class="p">(</span><span class="n">f</span><span class="p">))</span>
-        <span class="k">return</span> <span class="n">collection</span></div>
+        <span class="n">collection</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="p">(</span>
+            <span class="n">f</span> <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_s</span> <span class="k">if</span> <span class="n">check_true_attributes</span><span class="p">(</span><span class="n">f</span><span class="p">)</span> <span class="ow">and</span> <span class="n">check_false_attributes</span><span class="p">(</span><span class="n">f</span><span class="p">))</span>
+        <span class="k">return</span> <span class="n">collection</span>
 
-<div class="viewcode-block" id="PipelineFileCollection.filter_by_bool_attributes_not"><a class="viewcode-back" href="../../../aodncore.pipeline.html#aodncore.pipeline.files.PipelineFileCollection.filter_by_bool_attributes_not">[docs]</a>    <span class="k">def</span> <span class="nf">filter_by_bool_attributes_not</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">attributes</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">filter_by_bool_attributes_not</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">attributes</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Return a new :py:class:`PipelineFileCollection` containing only elements where *all* of the named attributes</span>
 <span class="sd">        resolve to False</span>
 
@@ -902,10 +1051,10 @@
         <span class="k">def</span> <span class="nf">no_attributes_true</span><span class="p">(</span><span class="n">pf</span><span class="p">):</span>
             <span class="k">return</span> <span class="ow">not</span> <span class="nb">any</span><span class="p">(</span><span class="nb">getattr</span><span class="p">(</span><span class="n">pf</span><span class="p">,</span> <span class="n">a</span><span class="p">)</span> <span class="k">for</span> <span class="n">a</span> <span class="ow">in</span> <span class="n">attributes_set</span><span class="p">)</span>
 
-        <span class="n">collection</span> <span class="o">=</span> <span class="n">PipelineFileCollection</span><span class="p">(</span><span class="n">f</span> <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">__s</span> <span class="k">if</span> <span class="n">no_attributes_true</span><span class="p">(</span><span class="n">f</span><span class="p">))</span>
-        <span class="k">return</span> <span class="n">collection</span></div>
+        <span class="n">collection</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="p">(</span><span class="n">f</span> <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_s</span> <span class="k">if</span> <span class="n">no_attributes_true</span><span class="p">(</span><span class="n">f</span><span class="p">))</span>
+        <span class="k">return</span> <span class="n">collection</span>
 
-<div class="viewcode-block" id="PipelineFileCollection.filter_by_bool_attributes_or"><a class="viewcode-back" href="../../../aodncore.pipeline.html#aodncore.pipeline.files.PipelineFileCollection.filter_by_bool_attributes_or">[docs]</a>    <span class="k">def</span> <span class="nf">filter_by_bool_attributes_or</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">attributes</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">filter_by_bool_attributes_or</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">attributes</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Return a new :py:class:`PipelineFileCollection` containing only elements where *any* of the named attributes</span>
 <span class="sd">        resolve to True</span>
 
@@ -918,30 +1067,152 @@
         <span class="k">def</span> <span class="nf">any_attributes_true</span><span class="p">(</span><span class="n">pf</span><span class="p">):</span>
             <span class="k">return</span> <span class="nb">any</span><span class="p">(</span><span class="nb">getattr</span><span class="p">(</span><span class="n">pf</span><span class="p">,</span> <span class="n">a</span><span class="p">)</span> <span class="k">for</span> <span class="n">a</span> <span class="ow">in</span> <span class="n">attributes_set</span><span class="p">)</span>
 
-        <span class="n">collection</span> <span class="o">=</span> <span class="n">PipelineFileCollection</span><span class="p">(</span><span class="n">f</span> <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">__s</span> <span class="k">if</span> <span class="n">any_attributes_true</span><span class="p">(</span><span class="n">f</span><span class="p">))</span>
-        <span class="k">return</span> <span class="n">collection</span></div>
+        <span class="n">collection</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="p">(</span><span class="n">f</span> <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_s</span> <span class="k">if</span> <span class="n">any_attributes_true</span><span class="p">(</span><span class="n">f</span><span class="p">))</span>
+        <span class="k">return</span> <span class="n">collection</span>
 
-<div class="viewcode-block" id="PipelineFileCollection.get_attribute_list"><a class="viewcode-back" href="../../../aodncore.pipeline.html#aodncore.pipeline.files.PipelineFileCollection.get_attribute_list">[docs]</a>    <span class="k">def</span> <span class="nf">get_attribute_list</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">attribute</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">get_attribute_list</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">attribute</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Return a :py:class:`list` containing the given attribute from each PipelineFile in the collection</span>
 
 <span class="sd">        :param attribute: the attribute name to retrieve from the objects</span>
 <span class="sd">        :return: :py:class:`list` containing the value of the given attribute for each file in the collection</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="p">[</span><span class="nb">getattr</span><span class="p">(</span><span class="n">f</span><span class="p">,</span> <span class="n">attribute</span><span class="p">)</span> <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">__s</span><span class="p">]</span></div>
+        <span class="k">return</span> <span class="p">[</span><span class="nb">getattr</span><span class="p">(</span><span class="n">f</span><span class="p">,</span> <span class="n">attribute</span><span class="p">)</span> <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_s</span><span class="p">]</span>
 
-<div class="viewcode-block" id="PipelineFileCollection.get_table_data"><a class="viewcode-back" href="../../../aodncore.pipeline.html#aodncore.pipeline.files.PipelineFileCollection.get_table_data">[docs]</a>    <span class="k">def</span> <span class="nf">get_table_data</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">get_table_data</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Return :py:class:`PipelineFile` members in a simple tabular data format suitable for rendering into formatted</span>
 <span class="sd">        tables</span>
 
 <span class="sd">        :return: a :py:class:`tuple` with the first element being a list of columns, and the second being a 2D list of</span>
 <span class="sd">            the data</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">data</span> <span class="o">=</span> <span class="p">[</span><span class="n">OrderedDict</span><span class="p">(</span><span class="n">e</span><span class="p">)</span> <span class="k">for</span> <span class="n">e</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">__s</span><span class="p">]</span>
+        <span class="n">data</span> <span class="o">=</span> <span class="p">[</span><span class="n">OrderedDict</span><span class="p">(</span><span class="n">e</span><span class="p">)</span> <span class="k">for</span> <span class="n">e</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_s</span><span class="p">]</span>
         <span class="k">try</span><span class="p">:</span>
-            <span class="n">columns</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">keys</span><span class="p">()</span>
+            <span class="n">columns</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span>
         <span class="k">except</span> <span class="ne">IndexError</span><span class="p">:</span>
             <span class="n">columns</span> <span class="o">=</span> <span class="p">[]</span>
-        <span class="k">return</span> <span class="n">columns</span><span class="p">,</span> <span class="n">data</span></div>
+        <span class="k">return</span> <span class="n">columns</span><span class="p">,</span> <span class="n">data</span>
+
+    <span class="k">def</span> <span class="nf">validate_unique_attribute_value</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">attribute</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Check that a given value is not already in the collection for the given :py:class:`PipelineFile` attribute,</span>
+<span class="sd">        and raise an exception if it is</span>
+
+<span class="sd">        This is intended for the use case of when an *intended* value is known for a particular attribute, and it is</span>
+<span class="sd">        desirable to check uniqueness before setting it (e.g. when adding new files to the collection).</span>
+
+<span class="sd">        :param attribute: the attribute to check</span>
+<span class="sd">        :param value: the value being tested for uniqueness for the given attribute</span>
+<span class="sd">        :return: None</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">duplicates</span> <span class="o">=</span> <span class="p">[</span><span class="n">f</span> <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_s</span> <span class="k">if</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">f</span><span class="p">,</span> <span class="n">attribute</span><span class="p">)</span> <span class="o">==</span> <span class="n">value</span><span class="p">]</span>
+        <span class="k">if</span> <span class="n">duplicates</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">AttributeValidationError</span><span class="p">(</span>
+                <span class="s2">&quot;</span><span class="si">{attribute}</span><span class="s2"> value &#39;</span><span class="si">{value}</span><span class="s2">&#39; already set for file(s) &#39;</span><span class="si">{duplicates}</span><span class="s2">&#39;&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">attribute</span><span class="o">=</span><span class="n">attribute</span><span class="p">,</span>
+                                                                                            <span class="n">value</span><span class="o">=</span><span class="n">value</span><span class="p">,</span>
+                                                                                            <span class="n">duplicates</span><span class="o">=</span><span class="n">duplicates</span><span class="p">))</span>
+
+    <span class="k">def</span> <span class="nf">validate_attribute_value_matches_regexes</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">attribute</span><span class="p">,</span> <span class="n">include_regexes</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Check that the given :py:class:`PipelineFile` attribute matches at least one of the given regexes for each</span>
+<span class="sd">        file in the collection and raise an exception if any have a non-matched value</span>
+
+<span class="sd">        :param attribute: the attribute to compare</span>
+<span class="sd">        :param include_regexes: list of regexes of which the attribute must match at least one</span>
+<span class="sd">        :return: None</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">validate_regexes</span><span class="p">(</span><span class="n">include_regexes</span><span class="p">)</span>
+        <span class="n">unmatched</span> <span class="o">=</span> <span class="p">{</span><span class="n">f</span><span class="o">.</span><span class="n">name</span><span class="p">:</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">f</span><span class="p">,</span> <span class="n">attribute</span><span class="p">)</span>
+                     <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_s</span>
+                     <span class="k">if</span> <span class="ow">not</span> <span class="n">matches_regexes</span><span class="p">(</span><span class="nb">getattr</span><span class="p">(</span><span class="n">f</span><span class="p">,</span> <span class="n">attribute</span><span class="p">),</span> <span class="n">include_regexes</span><span class="o">=</span><span class="n">include_regexes</span><span class="p">)}</span>
+        <span class="k">if</span> <span class="n">unmatched</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">AttributeValidationError</span><span class="p">(</span>
+                <span class="s2">&quot;invalid &#39;</span><span class="si">{attribute}</span><span class="s2">&#39; values found for files: </span><span class="si">{unmatched}</span><span class="s2">. Must match one of: </span><span class="si">{regexes}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                    <span class="n">attribute</span><span class="o">=</span><span class="n">attribute</span><span class="p">,</span> <span class="n">unmatched</span><span class="o">=</span><span class="n">unmatched</span><span class="p">,</span> <span class="n">regexes</span><span class="o">=</span><span class="n">include_regexes</span><span class="p">))</span>
+
+    <span class="k">def</span> <span class="nf">validate_attribute_uniqueness</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">attribute</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Check that the given :py:class:`PipelineFile` attribute is unique amongst all :py:class:`PipelineFile`</span>
+<span class="sd">        instances currently in the collection, and raise an exception if any duplicates are found</span>
+
+<span class="sd">        This is intended for the use case of a final sanity check of the collection before using it (e.g. before</span>
+<span class="sd">        progressing to the :ref:`publish` step).</span>
+
+<span class="sd">        :param attribute: the attribute to compare</span>
+<span class="sd">        :return: None</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">counter</span> <span class="o">=</span> <span class="n">Counter</span><span class="p">(</span><span class="nb">getattr</span><span class="p">(</span><span class="n">f</span><span class="p">,</span> <span class="n">attribute</span><span class="p">)</span> <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_s</span> <span class="k">if</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">f</span><span class="p">,</span> <span class="n">attribute</span><span class="p">)</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">)</span>
+        <span class="n">duplicate_values</span> <span class="o">=</span> <span class="p">[</span><span class="n">k</span> <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">counter</span><span class="o">.</span><span class="n">items</span><span class="p">()</span> <span class="k">if</span> <span class="n">v</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">]</span>
+        <span class="k">if</span> <span class="n">duplicate_values</span><span class="p">:</span>
+            <span class="n">duplicates</span> <span class="o">=</span> <span class="p">[]</span>
+            <span class="k">for</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">duplicate_values</span><span class="p">:</span>
+                <span class="n">duplicates</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">f</span> <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_s</span> <span class="k">if</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">f</span><span class="p">,</span> <span class="n">attribute</span><span class="p">)</span> <span class="o">==</span> <span class="n">value</span><span class="p">)</span>
+            <span class="k">raise</span> <span class="n">AttributeValidationError</span><span class="p">(</span>
+                <span class="s2">&quot;duplicate attribute &#39;</span><span class="si">{attribute}</span><span class="s2">&#39; found for files &#39;</span><span class="si">{duplicates}</span><span class="s2">&#39;&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">attribute</span><span class="o">=</span><span class="n">attribute</span><span class="p">,</span>
+                                                                                          <span class="n">duplicates</span><span class="o">=</span><span class="n">duplicates</span><span class="p">))</span>
+
+
+<div class="viewcode-block" id="RemotePipelineFileCollection"><a class="viewcode-back" href="../../../aodncore.pipeline.html#aodncore.pipeline.files.RemotePipelineFileCollection">[docs]</a><span class="k">class</span> <span class="nc">RemotePipelineFileCollection</span><span class="p">(</span><span class="n">PipelineFileCollectionBase</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;A PipelineFileCollectionBase subclass to hold a set of RemotePipelineFile instances</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;member_class&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">RemotePipelineFile</span>
+        <span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;member_validator&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">validate_remotepipelinefile_or_string</span>
+        <span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;member_from_string_method&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;get_pipelinefile_from_dest_path&#39;</span>
+        <span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;unique_attributes&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;local_path&#39;</span><span class="p">,</span> <span class="s1">&#39;dest_path&#39;</span><span class="p">}</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="fm">__contains__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">v</span><span class="p">):</span>
+        <span class="n">element</span> <span class="o">=</span> <span class="n">v</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">member_class</span><span class="p">)</span> <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_pipelinefile_from_dest_path</span><span class="p">(</span><span class="n">v</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">element</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_s</span>
+
+<div class="viewcode-block" id="RemotePipelineFileCollection.from_pipelinefilecollection"><a class="viewcode-back" href="../../../aodncore.pipeline.html#aodncore.pipeline.files.RemotePipelineFileCollection.from_pipelinefilecollection">[docs]</a>    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">from_pipelinefilecollection</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">pipelinefilecollection</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">cls</span><span class="p">(</span><span class="n">RemotePipelineFile</span><span class="o">.</span><span class="n">from_pipelinefile</span><span class="p">(</span><span class="n">f</span><span class="p">)</span> <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="n">pipelinefilecollection</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="RemotePipelineFileCollection.download"><a class="viewcode-back" href="../../../aodncore.pipeline.html#aodncore.pipeline.files.RemotePipelineFileCollection.download">[docs]</a>    <span class="k">def</span> <span class="nf">download</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">broker</span><span class="p">,</span> <span class="n">local_path</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Helper method to download the current collection from a given broker to a given local path</span>
+
+<span class="sd">        :param broker: BaseStorageBroker subclass to download from</span>
+<span class="sd">        :param local_path: local path into which files are downloaded</span>
+<span class="sd">        :return: None</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">broker</span><span class="o">.</span><span class="n">download</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">local_path</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="RemotePipelineFileCollection.keys"><a class="viewcode-back" href="../../../aodncore.pipeline.html#aodncore.pipeline.files.RemotePipelineFileCollection.keys">[docs]</a>    <span class="k">def</span> <span class="nf">keys</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="c1"># backwards compatibility for code expecting broker query method to return a dict with keys being &quot;dest_path&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_attribute_list</span><span class="p">(</span><span class="s1">&#39;dest_path&#39;</span><span class="p">)</span></div></div>
+
+
+<div class="viewcode-block" id="PipelineFileCollection"><a class="viewcode-back" href="../../../aodncore.pipeline.html#aodncore.pipeline.files.PipelineFileCollection">[docs]</a><span class="k">class</span> <span class="nc">PipelineFileCollection</span><span class="p">(</span><span class="n">PipelineFileCollectionBase</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;A PipelineFileCollectionBase subclass to hold a set of PipelineFile instances</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;member_class&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">PipelineFile</span>
+        <span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;member_validator&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">validate_pipelinefile_or_string</span>
+        <span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;member_from_string_method&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;get_pipelinefile_from_src_path&#39;</span>
+        <span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;unique_attributes&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;archive_path&#39;</span><span class="p">,</span> <span class="s1">&#39;dest_path&#39;</span><span class="p">}</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="fm">__contains__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">v</span><span class="p">):</span>
+        <span class="n">element</span> <span class="o">=</span> <span class="n">v</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">member_class</span><span class="p">)</span> <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_pipelinefile_from_src_path</span><span class="p">(</span><span class="n">v</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">element</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_s</span>
+
+<div class="viewcode-block" id="PipelineFileCollection.from_remotepipelinefilecollection"><a class="viewcode-back" href="../../../aodncore.pipeline.html#aodncore.pipeline.files.PipelineFileCollection.from_remotepipelinefilecollection">[docs]</a>    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">from_remotepipelinefilecollection</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">remotepipelinefilecollection</span><span class="p">,</span> <span class="n">are_deletions</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">cls</span><span class="p">(</span><span class="n">PipelineFile</span><span class="o">.</span><span class="n">from_remotepipelinefile</span><span class="p">(</span><span class="n">f</span><span class="p">,</span> <span class="n">is_deletion</span><span class="o">=</span><span class="n">are_deletions</span><span class="p">)</span>
+                   <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="n">remotepipelinefilecollection</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="PipelineFileCollection.add"><a class="viewcode-back" href="../../../aodncore.pipeline.html#aodncore.pipeline.files.PipelineFileCollection.add">[docs]</a>    <span class="k">def</span> <span class="nf">add</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pipeline_file</span><span class="p">,</span> <span class="n">deletion</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">overwrite</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">member_validator</span><span class="p">(</span><span class="n">pipeline_file</span><span class="p">)</span>
+        <span class="n">validate_bool</span><span class="p">(</span><span class="n">deletion</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">pipeline_file</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">member_class</span><span class="p">)</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">deletion</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isfile</span><span class="p">(</span><span class="n">pipeline_file</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="n">MissingFileError</span><span class="p">(</span><span class="s2">&quot;file &#39;</span><span class="si">{src}</span><span class="s2">&#39; doesn&#39;t exist&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">src</span><span class="o">=</span><span class="n">pipeline_file</span><span class="p">))</span>
+
+        <span class="k">return</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">pipeline_file</span><span class="p">,</span> <span class="n">overwrite</span><span class="o">=</span><span class="n">overwrite</span><span class="p">,</span> <span class="n">is_deletion</span><span class="o">=</span><span class="n">deletion</span><span class="p">)</span></div>
+
+    <span class="k">def</span> <span class="nf">_set_attribute</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">attribute</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
+        <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_s</span><span class="p">:</span>
+            <span class="nb">setattr</span><span class="p">(</span><span class="n">f</span><span class="p">,</span> <span class="n">attribute</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span>
 
 <div class="viewcode-block" id="PipelineFileCollection.set_archive_paths"><a class="viewcode-back" href="../../../aodncore.pipeline.html#aodncore.pipeline.files.PipelineFileCollection.set_archive_paths">[docs]</a>    <span class="k">def</span> <span class="nf">set_archive_paths</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">archive_path_function</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Set archive_path attributes for each file in the collection</span>
@@ -951,7 +1222,7 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">validate_callable</span><span class="p">(</span><span class="n">archive_path_function</span><span class="p">)</span>
 
-        <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">__s</span><span class="p">:</span>
+        <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_s</span><span class="p">:</span>
             <span class="k">if</span> <span class="n">f</span><span class="o">.</span><span class="n">archive_path</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">f</span><span class="o">.</span><span class="n">should_archive</span><span class="p">:</span>
                 <span class="n">candidate_path</span> <span class="o">=</span> <span class="n">archive_path_function</span><span class="p">(</span><span class="n">f</span><span class="o">.</span><span class="n">src_path</span><span class="p">)</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">validate_unique_attribute_value</span><span class="p">(</span><span class="s1">&#39;archive_path&#39;</span><span class="p">,</span> <span class="n">candidate_path</span><span class="p">)</span>
@@ -964,7 +1235,7 @@
 <span class="sd">        :return: None</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">validate_settable_checktype</span><span class="p">(</span><span class="n">check_type</span><span class="p">)</span>
-        <span class="n">additions</span> <span class="o">=</span> <span class="n">PipelineFileCollection</span><span class="p">(</span><span class="n">f</span> <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">__s</span> <span class="k">if</span> <span class="ow">not</span> <span class="n">f</span><span class="o">.</span><span class="n">is_deletion</span><span class="p">)</span>
+        <span class="n">additions</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="p">(</span><span class="n">f</span> <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_s</span> <span class="k">if</span> <span class="ow">not</span> <span class="n">f</span><span class="o">.</span><span class="n">is_deletion</span><span class="p">)</span>
         <span class="n">additions</span><span class="o">.</span><span class="n">_set_attribute</span><span class="p">(</span><span class="s1">&#39;check_type&#39;</span><span class="p">,</span> <span class="n">check_type</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="PipelineFileCollection.set_dest_paths"><a class="viewcode-back" href="../../../aodncore.pipeline.html#aodncore.pipeline.files.PipelineFileCollection.set_dest_paths">[docs]</a>    <span class="k">def</span> <span class="nf">set_dest_paths</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dest_path_function</span><span class="p">):</span>
@@ -975,7 +1246,7 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">validate_callable</span><span class="p">(</span><span class="n">dest_path_function</span><span class="p">)</span>
 
-        <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">__s</span><span class="p">:</span>
+        <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_s</span><span class="p">:</span>
             <span class="k">if</span> <span class="n">f</span><span class="o">.</span><span class="n">dest_path</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">and</span> <span class="nb">any</span><span class="p">((</span><span class="n">f</span><span class="o">.</span><span class="n">should_store</span><span class="p">,</span> <span class="n">f</span><span class="o">.</span><span class="n">should_harvest</span><span class="p">)):</span>
                 <span class="n">candidate_path</span> <span class="o">=</span> <span class="n">dest_path_function</span><span class="p">(</span><span class="n">f</span><span class="o">.</span><span class="n">src_path</span><span class="p">)</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">validate_unique_attribute_value</span><span class="p">(</span><span class="s1">&#39;dest_path&#39;</span><span class="p">,</span> <span class="n">candidate_path</span><span class="p">)</span>
@@ -1016,7 +1287,7 @@
 <span class="sd">        :param file_update_callback: callback (function)</span>
 <span class="sd">        :return: None</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">__s</span><span class="p">:</span>
+        <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_s</span><span class="p">:</span>
             <span class="n">f</span><span class="o">.</span><span class="n">file_update_callback</span> <span class="o">=</span> <span class="n">file_update_callback</span></div>
 
 <div class="viewcode-block" id="PipelineFileCollection.set_default_check_types"><a class="viewcode-back" href="../../../aodncore.pipeline.html#aodncore.pipeline.files.PipelineFileCollection.set_default_check_types">[docs]</a>    <span class="k">def</span> <span class="nf">set_default_check_types</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">check_params</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
@@ -1033,8 +1304,8 @@
 
         <span class="n">checks</span> <span class="o">=</span> <span class="n">check_params</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;checks&#39;</span><span class="p">,</span> <span class="p">())</span>
 
-        <span class="n">all_additions</span> <span class="o">=</span> <span class="n">PipelineFileCollection</span><span class="p">(</span><span class="n">f</span> <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">__s</span> <span class="k">if</span> <span class="ow">not</span> <span class="n">f</span><span class="o">.</span><span class="n">is_deletion</span><span class="p">)</span>
-        <span class="n">netcdf_additions</span> <span class="o">=</span> <span class="n">PipelineFileCollection</span><span class="p">(</span><span class="n">f</span> <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="n">all_additions</span> <span class="k">if</span> <span class="n">f</span><span class="o">.</span><span class="n">file_type</span> <span class="ow">is</span> <span class="n">FileType</span><span class="o">.</span><span class="n">NETCDF</span><span class="p">)</span>
+        <span class="n">all_additions</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="p">(</span><span class="n">f</span> <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_s</span> <span class="k">if</span> <span class="ow">not</span> <span class="n">f</span><span class="o">.</span><span class="n">is_deletion</span><span class="p">)</span>
+        <span class="n">netcdf_additions</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="p">(</span><span class="n">f</span> <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="n">all_additions</span> <span class="k">if</span> <span class="n">f</span><span class="o">.</span><span class="n">file_type</span> <span class="ow">is</span> <span class="n">FileType</span><span class="o">.</span><span class="n">NETCDF</span><span class="p">)</span>
         <span class="n">non_netcdf_additions</span> <span class="o">=</span> <span class="n">all_additions</span><span class="o">.</span><span class="n">difference</span><span class="p">(</span><span class="n">netcdf_additions</span><span class="p">)</span>
 
         <span class="n">netcdf_check_type</span> <span class="o">=</span> <span class="n">PipelineFileCheckType</span><span class="o">.</span><span class="n">NC_COMPLIANCE_CHECK</span> <span class="k">if</span> <span class="n">checks</span> <span class="k">else</span> <span class="n">PipelineFileCheckType</span><span class="o">.</span><span class="n">FORMAT_CHECK</span>
@@ -1056,68 +1327,19 @@
         <span class="k">if</span> <span class="n">exclude_regexes</span><span class="p">:</span>
             <span class="n">validate_regexes</span><span class="p">(</span><span class="n">exclude_regexes</span><span class="p">)</span>
 
-        <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">__s</span><span class="p">:</span>
+        <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_s</span><span class="p">:</span>
             <span class="k">if</span> <span class="n">matches_regexes</span><span class="p">(</span><span class="n">f</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="n">include_regexes</span><span class="p">,</span> <span class="n">exclude_regexes</span><span class="p">):</span>
-                <span class="n">f</span><span class="o">.</span><span class="n">publish_type</span> <span class="o">=</span> <span class="n">deletion_type</span> <span class="k">if</span> <span class="n">f</span><span class="o">.</span><span class="n">is_deletion</span> <span class="k">else</span> <span class="n">addition_type</span></div>
-
-<div class="viewcode-block" id="PipelineFileCollection.validate_unique_attribute_value"><a class="viewcode-back" href="../../../aodncore.pipeline.html#aodncore.pipeline.files.PipelineFileCollection.validate_unique_attribute_value">[docs]</a>    <span class="k">def</span> <span class="nf">validate_unique_attribute_value</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">attribute</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Check that a given value is not already in the collection for the given :py:class:`PipelineFile` attribute,</span>
-<span class="sd">        and raise an exception if it is</span>
-
-<span class="sd">        This is intended for the use case of when an *intended* value is known for a particular attribute, and it is</span>
-<span class="sd">        desirable to check uniqueness before setting it (e.g. when adding new files to the collection).</span>
-
-<span class="sd">        :param attribute: the attribute to check</span>
-<span class="sd">        :param value: the value being tested for uniqueness for the given attribute</span>
-<span class="sd">        :return: None</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">duplicates</span> <span class="o">=</span> <span class="p">[</span><span class="n">f</span> <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">__s</span> <span class="k">if</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">f</span><span class="p">,</span> <span class="n">attribute</span><span class="p">)</span> <span class="o">==</span> <span class="n">value</span><span class="p">]</span>
-        <span class="k">if</span> <span class="n">duplicates</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="n">AttributeValidationError</span><span class="p">(</span>
-                <span class="s2">&quot;</span><span class="si">{attribute}</span><span class="s2"> value &#39;</span><span class="si">{value}</span><span class="s2">&#39; already set for file(s) &#39;</span><span class="si">{duplicates}</span><span class="s2">&#39;&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">attribute</span><span class="o">=</span><span class="n">attribute</span><span class="p">,</span>
-                                                                                            <span class="n">value</span><span class="o">=</span><span class="n">value</span><span class="p">,</span>
-                                                                                            <span class="n">duplicates</span><span class="o">=</span><span class="n">duplicates</span><span class="p">))</span></div>
-
-<div class="viewcode-block" id="PipelineFileCollection.validate_attribute_value_matches_regexes"><a class="viewcode-back" href="../../../aodncore.pipeline.html#aodncore.pipeline.files.PipelineFileCollection.validate_attribute_value_matches_regexes">[docs]</a>    <span class="k">def</span> <span class="nf">validate_attribute_value_matches_regexes</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">attribute</span><span class="p">,</span> <span class="n">include_regexes</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Check that the given :py:class:`PipelineFile` attribute matches at least one of the given regexes for each</span>
-<span class="sd">        file in the collection and raise an exception if any have a non-matched value</span>
-
-<span class="sd">        :param attribute: the attribute to compare</span>
-<span class="sd">        :param include_regexes: list of regexes of which the attribute must match at least one</span>
-<span class="sd">        :return: None</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">validate_regexes</span><span class="p">(</span><span class="n">include_regexes</span><span class="p">)</span>
-        <span class="n">unmatched</span> <span class="o">=</span> <span class="p">{</span><span class="n">f</span><span class="o">.</span><span class="n">name</span><span class="p">:</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">f</span><span class="p">,</span> <span class="n">attribute</span><span class="p">)</span>
-                     <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">__s</span>
-                     <span class="k">if</span> <span class="ow">not</span> <span class="n">matches_regexes</span><span class="p">(</span><span class="nb">getattr</span><span class="p">(</span><span class="n">f</span><span class="p">,</span> <span class="n">attribute</span><span class="p">),</span> <span class="n">include_regexes</span><span class="o">=</span><span class="n">include_regexes</span><span class="p">)}</span>
-        <span class="k">if</span> <span class="n">unmatched</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="n">AttributeValidationError</span><span class="p">(</span>
-                <span class="s2">&quot;invalid &#39;</span><span class="si">{attribute}</span><span class="s2">&#39; values found for files: </span><span class="si">{unmatched}</span><span class="s2">. Must match one of: </span><span class="si">{regexes}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
-                    <span class="n">attribute</span><span class="o">=</span><span class="n">attribute</span><span class="p">,</span> <span class="n">unmatched</span><span class="o">=</span><span class="n">unmatched</span><span class="p">,</span> <span class="n">regexes</span><span class="o">=</span><span class="n">include_regexes</span><span class="p">))</span></div>
-
-<div class="viewcode-block" id="PipelineFileCollection.validate_attribute_uniqueness"><a class="viewcode-back" href="../../../aodncore.pipeline.html#aodncore.pipeline.files.PipelineFileCollection.validate_attribute_uniqueness">[docs]</a>    <span class="k">def</span> <span class="nf">validate_attribute_uniqueness</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">attribute</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Check that the given :py:class:`PipelineFile` attribute is unique amongst all :py:class:`PipelineFile`</span>
-<span class="sd">        instances currently in the collection, and raise an exception if any duplicates are found</span>
-
-<span class="sd">        This is intended for the use case of a final sanity check of the collection before using it (e.g. before</span>
-<span class="sd">        progressing to the :ref:`publish` step).</span>
-
-<span class="sd">        :param attribute: the attribute to compare</span>
-<span class="sd">        :return: None</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">counter</span> <span class="o">=</span> <span class="n">Counter</span><span class="p">(</span><span class="nb">getattr</span><span class="p">(</span><span class="n">f</span><span class="p">,</span> <span class="n">attribute</span><span class="p">)</span> <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">__s</span> <span class="k">if</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">f</span><span class="p">,</span> <span class="n">attribute</span><span class="p">)</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">)</span>
-        <span class="n">duplicate_values</span> <span class="o">=</span> <span class="p">[</span><span class="n">k</span> <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">counter</span><span class="o">.</span><span class="n">items</span><span class="p">()</span> <span class="k">if</span> <span class="n">v</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">]</span>
-        <span class="k">if</span> <span class="n">duplicate_values</span><span class="p">:</span>
-            <span class="n">duplicates</span> <span class="o">=</span> <span class="p">[]</span>
-            <span class="k">for</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">duplicate_values</span><span class="p">:</span>
-                <span class="n">duplicates</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">f</span> <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">__s</span> <span class="k">if</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">f</span><span class="p">,</span> <span class="n">attribute</span><span class="p">)</span> <span class="o">==</span> <span class="n">value</span><span class="p">)</span>
-            <span class="k">raise</span> <span class="n">AttributeValidationError</span><span class="p">(</span>
-                <span class="s2">&quot;duplicate paths found for files &#39;</span><span class="si">{duplicates}</span><span class="s2">&#39;&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">duplicates</span><span class="o">=</span><span class="n">duplicates</span><span class="p">))</span></div></div>
+                <span class="n">f</span><span class="o">.</span><span class="n">publish_type</span> <span class="o">=</span> <span class="n">deletion_type</span> <span class="k">if</span> <span class="n">f</span><span class="o">.</span><span class="n">is_deletion</span> <span class="k">else</span> <span class="n">addition_type</span></div></div>
 
 
 <span class="n">validate_pipelinefilecollection</span> <span class="o">=</span> <span class="n">validate_type</span><span class="p">(</span><span class="n">PipelineFileCollection</span><span class="p">)</span>
 <span class="n">validate_pipelinefile_or_pipelinefilecollection</span> <span class="o">=</span> <span class="n">validate_type</span><span class="p">((</span><span class="n">PipelineFile</span><span class="p">,</span> <span class="n">PipelineFileCollection</span><span class="p">))</span>
-<span class="n">validate_pipelinefile_or_string</span> <span class="o">=</span> <span class="n">validate_type</span><span class="p">((</span><span class="n">PipelineFile</span><span class="p">,</span> <span class="n">six</span><span class="o">.</span><span class="n">string_types</span><span class="p">))</span>
+<span class="n">validate_pipelinefile_or_string</span> <span class="o">=</span> <span class="n">validate_type</span><span class="p">((</span><span class="n">PipelineFile</span><span class="p">,</span> <span class="nb">str</span><span class="p">))</span>
+
+<span class="n">validate_remotepipelinefilecollection</span> <span class="o">=</span> <span class="n">validate_type</span><span class="p">(</span><span class="n">RemotePipelineFileCollection</span><span class="p">)</span>
+<span class="n">validate_remotepipelinefile_or_remotepipelinefilecollection</span> <span class="o">=</span> <span class="n">validate_type</span><span class="p">((</span><span class="n">RemotePipelineFile</span><span class="p">,</span>
+                                                                             <span class="n">RemotePipelineFileCollection</span><span class="p">))</span>
+<span class="n">validate_remotepipelinefile_or_string</span> <span class="o">=</span> <span class="n">validate_type</span><span class="p">((</span><span class="n">RemotePipelineFile</span><span class="p">,</span> <span class="nb">str</span><span class="p">))</span>
 </pre></div>
 
            </div>
@@ -1152,7 +1374,7 @@
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'../../../',
-            VERSION:'0.21.2',
+            VERSION:'1.0.6',
             LANGUAGE:'None',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
@@ -1163,6 +1385,7 @@
       <script type="text/javascript" src="../../../_static/jquery.js"></script>
       <script type="text/javascript" src="../../../_static/underscore.js"></script>
       <script type="text/javascript" src="../../../_static/doctools.js"></script>
+      <script type="text/javascript" src="../../../_static/language_data.js"></script>
 
   
 

@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>aodncore.util.misc &mdash; aodncore 0.21.2 documentation</title>
+  <title>aodncore.util.misc &mdash; aodncore 1.0.6 documentation</title>
   
 
   
@@ -57,7 +57,7 @@
             
             
               <div class="version">
-                0.21.2
+                1.0.6
               </div>
             
           
@@ -83,7 +83,7 @@
             
               <p class="caption"><span class="caption-text">Quick Start Guide:</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../quickstartdoc.html">Writing a <code class="docutils literal notranslate"><span class="pre">dest_path()</span></code> function</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../quickstartdoc.html">Writing a <code class="xref py py-meth docutils literal notranslate"><span class="pre">dest_path()</span></code> function</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../quickstartdoc.html#overriding-default-file-actions">Overriding default file actions</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../quickstartdoc.html#creating-products-during-the-handler-lifetime">Creating products during the handler lifetime</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../quickstartdoc.html#query-storage">Query Storage</a></li>
@@ -208,15 +208,13 @@
 <span class="kn">import</span> <span class="nn">re</span>
 <span class="kn">import</span> <span class="nn">sys</span>
 <span class="kn">import</span> <span class="nn">types</span>
-<span class="kn">from</span> <span class="nn">collections</span> <span class="k">import</span> <span class="n">Iterable</span><span class="p">,</span> <span class="n">OrderedDict</span><span class="p">,</span> <span class="n">Mapping</span>
+<span class="kn">from</span> <span class="nn">collections</span> <span class="kn">import</span> <span class="n">Iterable</span><span class="p">,</span> <span class="n">OrderedDict</span><span class="p">,</span> <span class="n">Mapping</span>
+<span class="kn">from</span> <span class="nn">io</span> <span class="kn">import</span> <span class="n">StringIO</span>
 
 <span class="kn">import</span> <span class="nn">jinja2</span>
 <span class="kn">import</span> <span class="nn">pkg_resources</span>
-<span class="kn">import</span> <span class="nn">six</span>
-<span class="kn">from</span> <span class="nn">six.moves</span> <span class="k">import</span> <span class="nb">range</span>
-<span class="kn">from</span> <span class="nn">typing</span> <span class="k">import</span> <span class="n">Pattern</span>
 
-<span class="n">StringIO</span> <span class="o">=</span> <span class="n">six</span><span class="o">.</span><span class="n">StringIO</span>
+<span class="n">Pattern</span> <span class="o">=</span> <span class="nb">type</span><span class="p">(</span><span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="s1">&#39;&#39;</span><span class="p">))</span>
 
 <span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span>
     <span class="s1">&#39;discover_entry_points&#39;</span><span class="p">,</span>
@@ -250,6 +248,7 @@
     <span class="s1">&#39;validate_type&#39;</span><span class="p">,</span>
     <span class="s1">&#39;CaptureStdIO&#39;</span><span class="p">,</span>
     <span class="s1">&#39;LoggingContext&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;Pattern&#39;</span><span class="p">,</span>
     <span class="s1">&#39;TemplateRenderer&#39;</span><span class="p">,</span>
     <span class="s1">&#39;WriteOnceOrderedDict&#39;</span>
 <span class="p">]</span>
@@ -261,14 +260,20 @@
 
 <span class="sd">    :param entry_point_group: entry point group name used to find entry points in working set</span>
 <span class="sd">    :param working_set: :py:class:`pkg_resources.WorkingSet` instance</span>
-<span class="sd">    :return: :py:class:`dict` containing each discovered entry point, with keys being the entry point name and values</span>
-<span class="sd">        being a reference to the object referenced by the entry point</span>
+<span class="sd">    :return: :py:class:`tuple` containing two elements, with the first being a :py:class:`dict` containing each</span>
+<span class="sd">        discovered and *successfully loaded* entry point (with keys being the entry point name and values being a</span>
+<span class="sd">        reference to the object referenced by the entry point), and the second tuple element being a :py:class:`list` of</span>
+<span class="sd">        objects which failed to be loaded</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">entry_points</span> <span class="o">=</span> <span class="p">{}</span>
+    <span class="n">failed</span> <span class="o">=</span> <span class="p">[]</span>
     <span class="k">for</span> <span class="n">entry_point</span> <span class="ow">in</span> <span class="n">working_set</span><span class="o">.</span><span class="n">iter_entry_points</span><span class="p">(</span><span class="n">entry_point_group</span><span class="p">):</span>
-        <span class="n">entry_point_object</span> <span class="o">=</span> <span class="n">entry_point</span><span class="o">.</span><span class="n">load</span><span class="p">()</span>
-        <span class="n">entry_points</span><span class="p">[</span><span class="n">entry_point</span><span class="o">.</span><span class="n">name</span><span class="p">]</span> <span class="o">=</span> <span class="n">entry_point_object</span>
-    <span class="k">return</span> <span class="n">entry_points</span></div>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">entry_point_object</span> <span class="o">=</span> <span class="n">entry_point</span><span class="o">.</span><span class="n">load</span><span class="p">()</span>
+            <span class="n">entry_points</span><span class="p">[</span><span class="n">entry_point</span><span class="o">.</span><span class="n">name</span><span class="p">]</span> <span class="o">=</span> <span class="n">entry_point_object</span>
+        <span class="k">except</span> <span class="ne">ImportError</span><span class="p">:</span>
+            <span class="n">failed</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">entry_point</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">entry_points</span><span class="p">,</span> <span class="n">failed</span></div>
 
 
 <div class="viewcode-block" id="ensure_regex"><a class="viewcode-back" href="../../../aodncore.util.html#aodncore.pipeline.common.ensure_regex">[docs]</a><span class="k">def</span> <span class="nf">ensure_regex</span><span class="p">(</span><span class="n">o</span><span class="p">):</span>
@@ -358,7 +363,7 @@
 <span class="sd">    :param o: object to check</span>
 <span class="sd">    :return: True if object is a function, otherwise False</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">return</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">o</span><span class="p">,</span> <span class="n">types</span><span class="o">.</span><span class="n">FunctionType</span><span class="p">)</span></div>
+    <span class="k">return</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">o</span><span class="p">,</span> <span class="p">(</span><span class="n">types</span><span class="o">.</span><span class="n">FunctionType</span><span class="p">,</span> <span class="n">types</span><span class="o">.</span><span class="n">MethodType</span><span class="p">))</span></div>
 
 
 <div class="viewcode-block" id="is_nonstring_iterable"><a class="viewcode-back" href="../../../aodncore.util.html#aodncore.pipeline.common.is_nonstring_iterable">[docs]</a><span class="k">def</span> <span class="nf">is_nonstring_iterable</span><span class="p">(</span><span class="n">sequence</span><span class="p">):</span>
@@ -367,7 +372,7 @@
 <span class="sd">    :param sequence: object to check </span>
 <span class="sd">    :return: True if object is a non-string sub class of :py:class:`Iterable`</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">return</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">sequence</span><span class="p">,</span> <span class="n">Iterable</span><span class="p">)</span> <span class="ow">and</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">sequence</span><span class="p">,</span> <span class="p">(</span><span class="n">six</span><span class="o">.</span><span class="n">string_types</span><span class="p">,</span> <span class="nb">bytes</span><span class="p">,</span> <span class="n">Mapping</span><span class="p">))</span></div>
+    <span class="k">return</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">sequence</span><span class="p">,</span> <span class="n">Iterable</span><span class="p">)</span> <span class="ow">and</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">sequence</span><span class="p">,</span> <span class="p">(</span><span class="nb">str</span><span class="p">,</span> <span class="nb">bytes</span><span class="p">,</span> <span class="n">Mapping</span><span class="p">))</span></div>
 
 
 <div class="viewcode-block" id="is_valid_email_address"><a class="viewcode-back" href="../../../aodncore.util.html#aodncore.pipeline.common.is_valid_email_address">[docs]</a><span class="k">def</span> <span class="nf">is_valid_email_address</span><span class="p">(</span><span class="n">address</span><span class="p">):</span>
@@ -400,7 +405,7 @@
 
     <span class="n">public_attrs</span> <span class="o">=</span> <span class="p">{</span><span class="n">a</span><span class="p">:</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">instance</span><span class="p">,</span> <span class="n">a</span><span class="p">)</span> <span class="k">for</span> <span class="n">a</span> <span class="ow">in</span> <span class="n">all_names</span> <span class="k">if</span> <span class="n">includeattr</span><span class="p">(</span><span class="n">a</span><span class="p">)}</span>
 
-    <span class="k">return</span> <span class="n">six</span><span class="o">.</span><span class="n">iteritems</span><span class="p">(</span><span class="n">public_attrs</span><span class="p">)</span></div>
+    <span class="k">return</span> <span class="nb">iter</span><span class="p">(</span><span class="n">public_attrs</span><span class="o">.</span><span class="n">items</span><span class="p">())</span></div>
 
 
 <div class="viewcode-block" id="matches_regexes"><a class="viewcode-back" href="../../../aodncore.util.html#aodncore.pipeline.common.matches_regexes">[docs]</a><span class="k">def</span> <span class="nf">matches_regexes</span><span class="p">(</span><span class="n">input_string</span><span class="p">,</span> <span class="n">include_regexes</span><span class="p">,</span> <span class="n">exclude_regexes</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
@@ -437,7 +442,7 @@
         <span class="n">master</span> <span class="o">=</span> <span class="p">{}</span>
 
     <span class="k">for</span> <span class="n">current_dict</span> <span class="ow">in</span> <span class="n">args</span><span class="p">:</span>
-        <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">six</span><span class="o">.</span><span class="n">iteritems</span><span class="p">(</span><span class="n">current_dict</span><span class="p">):</span>
+        <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">current_dict</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
             <span class="k">if</span> <span class="n">k</span> <span class="ow">in</span> <span class="n">master</span> <span class="ow">and</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">master</span><span class="p">[</span><span class="n">k</span><span class="p">],</span> <span class="p">(</span><span class="nb">dict</span><span class="p">,</span> <span class="n">OrderedDict</span><span class="p">))</span> <span class="ow">and</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">current_dict</span><span class="p">[</span><span class="n">k</span><span class="p">],</span> <span class="n">Mapping</span><span class="p">):</span>
                 <span class="n">master</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="o">=</span> <span class="n">merge_dicts</span><span class="p">(</span><span class="n">master</span><span class="p">[</span><span class="n">k</span><span class="p">],</span> <span class="n">current_dict</span><span class="p">[</span><span class="n">k</span><span class="p">])</span>
             <span class="k">elif</span> <span class="n">k</span> <span class="ow">in</span> <span class="n">master</span> <span class="ow">and</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">master</span><span class="p">[</span><span class="n">k</span><span class="p">],</span> <span class="nb">list</span><span class="p">)</span> <span class="ow">and</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">current_dict</span><span class="p">[</span><span class="n">k</span><span class="p">],</span> <span class="n">Iterable</span><span class="p">):</span>
@@ -513,7 +518,7 @@
 <span class="n">validate_dict</span> <span class="o">=</span> <span class="n">validate_type</span><span class="p">(</span><span class="nb">dict</span><span class="p">)</span>
 <span class="n">validate_int</span> <span class="o">=</span> <span class="n">validate_type</span><span class="p">(</span><span class="nb">int</span><span class="p">)</span>
 <span class="n">validate_mapping</span> <span class="o">=</span> <span class="n">validate_type</span><span class="p">(</span><span class="n">Mapping</span><span class="p">)</span>
-<span class="n">validate_string</span> <span class="o">=</span> <span class="n">validate_type</span><span class="p">(</span><span class="n">six</span><span class="o">.</span><span class="n">string_types</span><span class="p">)</span>
+<span class="n">validate_string</span> <span class="o">=</span> <span class="n">validate_type</span><span class="p">(</span><span class="nb">str</span><span class="p">)</span>
 
 
 <div class="viewcode-block" id="validate_callable"><a class="viewcode-back" href="../../../aodncore.util.html#aodncore.pipeline.common.validate_callable">[docs]</a><span class="k">def</span> <span class="nf">validate_callable</span><span class="p">(</span><span class="n">o</span><span class="p">):</span>
@@ -582,12 +587,12 @@
 <span class="sd">        Optionally merge stdout and stderr streams into stdout.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">merge_streams</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">merge_streams</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_merge_streams</span> <span class="o">=</span> <span class="n">merge_streams</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">__stdout_lines</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">__stderr_lines</span> <span class="o">=</span> <span class="p">[]</span>
 
-    <span class="k">def</span> <span class="nf">__enter__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__enter__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">old_stdout</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">old_stderr</span> <span class="o">=</span> <span class="n">sys</span><span class="o">.</span><span class="n">stdout</span><span class="p">,</span> <span class="n">sys</span><span class="o">.</span><span class="n">stderr</span>
 
         <span class="n">sys</span><span class="o">.</span><span class="n">stdout</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_stdout_stringio</span> <span class="o">=</span> <span class="n">StringIO</span><span class="p">()</span>
@@ -596,7 +601,7 @@
 
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">__stdout_lines</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">__stderr_lines</span>
 
-    <span class="k">def</span> <span class="nf">__exit__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__exit__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">__stdout_lines</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_stdout_stringio</span><span class="o">.</span><span class="n">getvalue</span><span class="p">()</span><span class="o">.</span><span class="n">splitlines</span><span class="p">())</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_merge_streams</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">__stderr_lines</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_stderr_stringio</span><span class="o">.</span><span class="n">getvalue</span><span class="p">()</span><span class="o">.</span><span class="n">splitlines</span><span class="p">())</span>
@@ -608,14 +613,14 @@
     <span class="sd">&quot;&quot;&quot;Context manager to allow temporary changes to logging configuration within the context of the block</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">logger</span><span class="p">,</span> <span class="n">level</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">format_</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">handler</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">close</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">logger</span><span class="p">,</span> <span class="n">level</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">format_</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">handler</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">close</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">logger</span> <span class="o">=</span> <span class="n">logger</span><span class="o">.</span><span class="n">logger</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">logger</span><span class="p">,</span> <span class="n">logging</span><span class="o">.</span><span class="n">LoggerAdapter</span><span class="p">)</span> <span class="k">else</span> <span class="n">logger</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">level</span> <span class="o">=</span> <span class="n">level</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">format</span> <span class="o">=</span> <span class="n">format_</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">handler</span> <span class="o">=</span> <span class="n">handler</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">close</span> <span class="o">=</span> <span class="n">close</span>
 
-    <span class="k">def</span> <span class="nf">__enter__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__enter__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">level</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">old_level</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">level</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">setLevel</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">level</span><span class="p">)</span>
@@ -628,7 +633,7 @@
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">handler</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">addHandler</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">handler</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">__exit__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">et</span><span class="p">,</span> <span class="n">ev</span><span class="p">,</span> <span class="n">tb</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__exit__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">et</span><span class="p">,</span> <span class="n">ev</span><span class="p">,</span> <span class="n">tb</span><span class="p">):</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">level</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">setLevel</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">old_level</span><span class="p">)</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">format</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
@@ -647,10 +652,10 @@
     <span class="k">def</span> <span class="nf">__readonly__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s1">&#39;updates or deletions not permitted on WriteOnceOrderedDict&#39;</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">__setitem__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__setitem__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
         <span class="k">if</span> <span class="n">key</span> <span class="ow">in</span> <span class="bp">self</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s2">&quot;key &#39;</span><span class="si">{}</span><span class="s2">&#39; has already been set&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">key</span><span class="p">))</span>
-        <span class="nb">super</span><span class="p">(</span><span class="n">WriteOnceOrderedDict</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__setitem__</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__setitem__</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span>
 
     <span class="fm">__delitem__</span> <span class="o">=</span> <span class="n">__readonly__</span>
     <span class="n">clear</span> <span class="o">=</span> <span class="n">__readonly__</span>
@@ -664,8 +669,8 @@
     <span class="sd">&quot;&quot;&quot;Simple template renderer</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">package</span><span class="o">=</span><span class="s1">&#39;aodncore.pipeline&#39;</span><span class="p">,</span> <span class="n">package_path</span><span class="o">=</span><span class="s1">&#39;templates&#39;</span><span class="p">):</span>
-        <span class="nb">super</span><span class="p">(</span><span class="n">TemplateRenderer</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">package</span><span class="o">=</span><span class="s1">&#39;aodncore.pipeline&#39;</span><span class="p">,</span> <span class="n">package_path</span><span class="o">=</span><span class="s1">&#39;templates&#39;</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_package</span> <span class="o">=</span> <span class="n">package</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_loader</span> <span class="o">=</span> <span class="n">jinja2</span><span class="o">.</span><span class="n">PackageLoader</span><span class="p">(</span><span class="n">package</span><span class="p">,</span> <span class="n">package_path</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_env</span> <span class="o">=</span> <span class="n">jinja2</span><span class="o">.</span><span class="n">Environment</span><span class="p">(</span><span class="n">loader</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_loader</span><span class="p">)</span>
@@ -715,7 +720,7 @@
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'../../../',
-            VERSION:'0.21.2',
+            VERSION:'1.0.6',
             LANGUAGE:'None',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
@@ -726,6 +731,7 @@
       <script type="text/javascript" src="../../../_static/jquery.js"></script>
       <script type="text/javascript" src="../../../_static/underscore.js"></script>
       <script type="text/javascript" src="../../../_static/doctools.js"></script>
+      <script type="text/javascript" src="../../../_static/language_data.js"></script>
 
   
 

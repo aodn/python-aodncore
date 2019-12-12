@@ -6,8 +6,8 @@ Subpackages
 
 .. toctree::
 
-    aodncore.pipeline.steps
-    aodncore.pipeline.templates
+   aodncore.pipeline.steps
+   aodncore.pipeline.templates
 
 Submodules
 ----------
@@ -16,127 +16,127 @@ aodncore.pipeline.common module
 -------------------------------
 
 .. automodule:: aodncore.pipeline.common
-    :members:
-    :undoc-members:
-    :show-inheritance:
+   :members:
+   :undoc-members:
+   :show-inheritance:
 
 aodncore.pipeline.config module
 -------------------------------
 
 .. automodule:: aodncore.pipeline.config
-    :members:
-    :undoc-members:
-    :show-inheritance:
+   :members:
+   :undoc-members:
+   :show-inheritance:
 
 aodncore.pipeline.configlib module
 ----------------------------------
 
 .. automodule:: aodncore.pipeline.configlib
-    :members:
-    :undoc-members:
-    :show-inheritance:
+   :members:
+   :undoc-members:
+   :show-inheritance:
 
 aodncore.pipeline.destpath module
 ---------------------------------
 
 .. automodule:: aodncore.pipeline.destpath
-    :members:
-    :undoc-members:
-    :show-inheritance:
+   :members:
+   :undoc-members:
+   :show-inheritance:
 
 aodncore.pipeline.exceptions module
 -----------------------------------
 
 .. automodule:: aodncore.pipeline.exceptions
-    :members:
-    :undoc-members:
-    :show-inheritance:
+   :members:
+   :undoc-members:
+   :show-inheritance:
 
 aodncore.pipeline.fileclassifier module
 ---------------------------------------
 
 .. automodule:: aodncore.pipeline.fileclassifier
-    :members:
-    :undoc-members:
-    :show-inheritance:
+   :members:
+   :undoc-members:
+   :show-inheritance:
 
 aodncore.pipeline.files module
 ------------------------------
 
 .. automodule:: aodncore.pipeline.files
-    :members:
-    :undoc-members:
-    :show-inheritance:
+   :members:
+   :undoc-members:
+   :show-inheritance:
 
 aodncore.pipeline.handlerbase module
 ------------------------------------
 
 .. automodule:: aodncore.pipeline.handlerbase
-    :members:
-    :undoc-members:
-    :show-inheritance:
+   :members:
+   :undoc-members:
+   :show-inheritance:
 
 aodncore.pipeline.log module
 ----------------------------
 
 .. automodule:: aodncore.pipeline.log
-    :members:
-    :undoc-members:
-    :show-inheritance:
+   :members:
+   :undoc-members:
+   :show-inheritance:
 
 aodncore.pipeline.schema module
 -------------------------------
 
 .. automodule:: aodncore.pipeline.schema
-    :members:
-    :undoc-members:
-    :show-inheritance:
+   :members:
+   :undoc-members:
+   :show-inheritance:
 
 aodncore.pipeline.serviceconfig module
 --------------------------------------
 
 .. automodule:: aodncore.pipeline.serviceconfig
-    :members:
-    :undoc-members:
-    :show-inheritance:
+   :members:
+   :undoc-members:
+   :show-inheritance:
 
 aodncore.pipeline.statequery module
 -----------------------------------
 
 .. automodule:: aodncore.pipeline.statequery
-    :members:
-    :undoc-members:
-    :show-inheritance:
+   :members:
+   :undoc-members:
+   :show-inheritance:
 
 aodncore.pipeline.storage module
 --------------------------------
 
 .. automodule:: aodncore.pipeline.storage
-    :members:
-    :undoc-members:
-    :show-inheritance:
+   :members:
+   :undoc-members:
+   :show-inheritance:
 
 aodncore.pipeline.watch module
 ------------------------------
 
 .. automodule:: aodncore.pipeline.watch
-    :members:
-    :undoc-members:
-    :show-inheritance:
+   :members:
+   :undoc-members:
+   :show-inheritance:
 
 aodncore.pipeline.watchservice module
 -------------------------------------
 
 .. automodule:: aodncore.pipeline.watchservice
-    :members:
-    :undoc-members:
-    :show-inheritance:
+   :members:
+   :undoc-members:
+   :show-inheritance:
 
 
 Module contents
 ---------------
 
 .. automodule:: aodncore.pipeline
-    :members:
-    :undoc-members:
-    :show-inheritance:
+   :members:
+   :undoc-members:
+   :show-inheritance:

@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>aodncore.pipeline.log &mdash; aodncore 0.21.2 documentation</title>
+  <title>aodncore.pipeline.log &mdash; aodncore 1.0.6 documentation</title>
   
 
   
@@ -57,7 +57,7 @@
             
             
               <div class="version">
-                0.21.2
+                1.0.6
               </div>
             
           
@@ -83,7 +83,7 @@
             
               <p class="caption"><span class="caption-text">Quick Start Guide:</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../quickstartdoc.html">Writing a <code class="docutils literal notranslate"><span class="pre">dest_path()</span></code> function</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../quickstartdoc.html">Writing a <code class="xref py py-meth docutils literal notranslate"><span class="pre">dest_path()</span></code> function</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../quickstartdoc.html#overriding-default-file-actions">Overriding default file actions</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../quickstartdoc.html#creating-products-during-the-handler-lifetime">Creating products during the handler lifetime</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../quickstartdoc.html#query-storage">Query Storage</a></li>
@@ -205,7 +205,7 @@
 <span class="kn">import</span> <span class="nn">logging</span>
 <span class="kn">import</span> <span class="nn">os</span>
 
-<span class="kn">from</span> <span class="nn">..util</span> <span class="k">import</span> <span class="n">validate_nonstring_iterable</span>
+<span class="kn">from</span> <span class="nn">..util</span> <span class="kn">import</span> <span class="n">validate_nonstring_iterable</span>
 
 <span class="c1"># custom SYSINFO logging level</span>
 <span class="n">SYSINFO</span> <span class="o">=</span> <span class="mi">15</span>
@@ -220,7 +220,7 @@
 
 
 <div class="viewcode-block" id="WorkerLoggingConfigBuilder"><a class="viewcode-back" href="../../../aodncore.pipeline.html#aodncore.pipeline.log.WorkerLoggingConfigBuilder">[docs]</a><span class="k">class</span> <span class="nc">WorkerLoggingConfigBuilder</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
-    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pipeline_config</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pipeline_config</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">pipeline_config</span> <span class="o">=</span> <span class="n">pipeline_config</span>
 
         <span class="n">liblevel</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">pipeline_config</span><span class="p">[</span><span class="s1">&#39;logging&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;liblevel&#39;</span><span class="p">,</span> <span class="s1">&#39;WARN&#39;</span><span class="p">)</span>
@@ -268,13 +268,15 @@
             <span class="s1">&#39;class&#39;</span><span class="p">:</span> <span class="s1">&#39;logging.FileHandler&#39;</span><span class="p">,</span>
             <span class="s1">&#39;formatter&#39;</span><span class="p">:</span> <span class="n">formatter</span><span class="p">,</span>
             <span class="s1">&#39;filename&#39;</span><span class="p">:</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">pipeline_config</span><span class="p">[</span><span class="s1">&#39;logging&#39;</span><span class="p">][</span><span class="s1">&#39;log_root&#39;</span><span class="p">],</span> <span class="s1">&#39;process&#39;</span><span class="p">,</span>
-                                     <span class="s2">&quot;</span><span class="si">{name}</span><span class="s2">.log&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="n">name</span><span class="p">))</span>
+                                     <span class="s2">&quot;</span><span class="si">{name}</span><span class="s2">.log&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="n">name</span><span class="p">)),</span>
+            <span class="s1">&#39;delay&#39;</span><span class="p">:</span> <span class="kc">True</span>
         <span class="p">}</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_dict_config</span><span class="p">[</span><span class="s1">&#39;loggers&#39;</span><span class="p">][</span><span class="n">name</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span>
             <span class="s1">&#39;handlers&#39;</span><span class="p">:</span> <span class="p">[</span><span class="n">handler_name</span><span class="p">],</span>
             <span class="s1">&#39;level&#39;</span><span class="p">:</span> <span class="n">level</span><span class="p">,</span>
             <span class="s1">&#39;propagate&#39;</span><span class="p">:</span> <span class="kc">False</span>
-        <span class="p">}</span></div>
+        <span class="p">}</span>
+        <span class="k">return</span> <span class="bp">self</span></div>
 
 <div class="viewcode-block" id="WorkerLoggingConfigBuilder.add_watches"><a class="viewcode-back" href="../../../aodncore.pipeline.html#aodncore.pipeline.log.WorkerLoggingConfigBuilder.add_watches">[docs]</a>    <span class="k">def</span> <span class="nf">add_watches</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">watches</span><span class="p">):</span>
         <span class="n">validate_nonstring_iterable</span><span class="p">(</span><span class="n">watches</span><span class="p">)</span>
@@ -282,7 +284,7 @@
         <span class="k">for</span> <span class="n">watch</span> <span class="ow">in</span> <span class="n">watches</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">add_watch_config</span><span class="p">(</span><span class="n">watch</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="WorkerLoggingConfigBuilder.get_config"><a class="viewcode-back" href="../../../aodncore.pipeline.html#aodncore.pipeline.log.WorkerLoggingConfigBuilder.get_config">[docs]</a>    <span class="k">def</span> <span class="nf">get_config</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="WorkerLoggingConfigBuilder.build"><a class="viewcode-back" href="../../../aodncore.pipeline.html#aodncore.pipeline.log.WorkerLoggingConfigBuilder.build">[docs]</a>    <span class="k">def</span> <span class="nf">build</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_dict_config</span></div></div>
 
 
@@ -370,7 +372,7 @@
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'../../../',
-            VERSION:'0.21.2',
+            VERSION:'1.0.6',
             LANGUAGE:'None',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
@@ -381,6 +383,7 @@
       <script type="text/javascript" src="../../../_static/jquery.js"></script>
       <script type="text/javascript" src="../../../_static/underscore.js"></script>
       <script type="text/javascript" src="../../../_static/doctools.js"></script>
+      <script type="text/javascript" src="../../../_static/language_data.js"></script>
 
   
 
