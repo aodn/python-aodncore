@@ -1,4 +1,4 @@
-from ..util.wfs import WfsBroker
+from ..util import WfsBroker, DEFAULT_WFS_VERSION
 
 __all__ = [
     'StateQuery'
@@ -9,7 +9,7 @@ class StateQuery(object):
     """Simple state query interface, to provide user friendly access for querying existing Pipeline state
     """
 
-    def __init__(self, storage_broker, wfs_url, wfs_version='1.0.0'):
+    def __init__(self, storage_broker, wfs_url, wfs_version=DEFAULT_WFS_VERSION):
         self._storage_broker = storage_broker
         self._wfs_url = wfs_url
         self._wfs_version = wfs_version
@@ -41,6 +41,14 @@ class StateQuery(object):
         :return: dict containing the query results
         """
         return self._storage_broker.query(query)
+
+    def query_wfs_getfeature_dict(self, **kwargs):
+        """Make a GetFeature request, and return the response in a native dict
+
+        :param kwargs: keyword arguments passed to the underlying WebFeatureService.getfeature method
+        :return: dict containing the parsed GetFeature response
+        """
+        return self._wfs_broker.getfeature_dict(**kwargs)
 
     def query_wfs_urls_for_layer(self, layer, **kwargs):  # pragma: no cover
         """Return an IndexedSet of files for a given layer

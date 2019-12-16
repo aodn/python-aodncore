@@ -8,10 +8,13 @@ from owslib.wfs import WebFeatureService
 from ..util import IndexedSet
 
 __all__ = [
+    'DEFAULT_WFS_VERSION',
     'WfsBroker',
     'get_filter_for_file_url',
     'ogc_filter_to_string'
 ]
+
+DEFAULT_WFS_VERSION = '1.0.0'
 
 
 def ogc_filter_to_string(ogc_filter):
@@ -43,7 +46,7 @@ class WfsBroker(object):
     # "url" property for a given layer. Accordingly, this should be ordered with highest priority name first.
     url_propertyname_candidates = ('file_url', 'url')
 
-    def __init__(self, wfs_url, version='1.0.0'):
+    def __init__(self, wfs_url, version=DEFAULT_WFS_VERSION):
         self._wfs = WebFeatureService(wfs_url, version=version)
 
     @property
