@@ -11,15 +11,18 @@ from .misc import (CaptureStdIO, LoggingContext, Pattern, TemplateRenderer, Writ
                    validate_membership, validate_nonstring_iterable, validate_regex, validate_regexes,
                    validate_relative_path, validate_relative_path_attr, validate_string, validate_type)
 from .process import SystemProcess
+from .wfs import DEFAULT_WFS_VERSION, WfsBroker
 
 __all__ = [
     'CaptureStdIO',
+    'DEFAULT_WFS_VERSION',
     'IndexedSet',
     'LoggingContext',
     'Pattern',
     'SystemProcess',
     'TemplateRenderer',
     'TemporaryDirectory',
+    'WfsBroker',
     'WriteOnceOrderedDict',
     'classproperty',
     'extract_gzip',

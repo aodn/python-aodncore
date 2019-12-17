@@ -20,7 +20,7 @@ from .statequery import StateQuery
 from .steps import (get_check_runner, get_harvester_runner, get_notify_runner, get_resolve_runner, get_store_runner)
 from ..util import (ensure_regex_list, ensure_writeonceordereddict, format_exception,
                     get_file_checksum, iter_public_attributes, lazyproperty, matches_regexes, merge_dicts,
-                    validate_relative_path_attr, TemporaryDirectory)
+                    validate_relative_path_attr, TemporaryDirectory, DEFAULT_WFS_VERSION)
 from ..version import __version__ as _aodncore_version
 
 __all__ = [
@@ -587,7 +587,8 @@ class HandlerBase(object):
         :rtype: :py:class:`StateQuery`
         """
         return StateQuery(storage_broker=self._upload_store_runner.broker,
-                          wfs_url=self.config.pipeline_config['global'].get('wfs_url'))
+                          wfs_url=self.config.pipeline_config['global'].get('wfs_url'),
+                          wfs_version=self.config.pipeline_config['global'].get('wfs_version', DEFAULT_WFS_VERSION))
 
     @property
     def default_addition_publish_type(self):

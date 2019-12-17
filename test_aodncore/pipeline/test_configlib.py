@@ -19,7 +19,8 @@ REFERENCE_PIPELINE_CONFIG = {
         'opendap_root': 'http://opendap.example.com',
         'processing_dir': '/tmp/probably/doesnt/exist/processing',
         'upload_uri': 'file:///tmp/probably/doesnt/exist/upload',
-        "wfs_url": "http://geoserver.example.com/geoserver/wfs",
+        'wfs_url': 'http://geoserver.example.com/geoserver/wfs',
+        'wfs_version': '1.0.0',
         'wip_dir': '/tmp/probably/doesnt/exist/wip',
         'platform_category_vocab_url': '/tmp/probably/doesnt/exist/aodn_aodn-platform-category-vocabulary.rdf',
         'platform_vocab_url': '/tmp/probably/doesnt/exist/aodn_aodn-platform-vocabulary.rdf'

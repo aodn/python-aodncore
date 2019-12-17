@@ -91,6 +91,7 @@ PIPELINE_CONFIG_SCHEMA = {
                 'tmp_dir': {'type': 'string'},
                 'upload_uri': {'type': 'string'},
                 'wfs_url': {'type': 'string'},
+                'wfs_version': {'type': 'string'},
                 'wip_dir': {'type': 'string'},
                 'platform_category_vocab_url': {'type': 'string'},
                 'platform_vocab_url': {'type': 'string'}
