@@ -25,7 +25,8 @@ RUN wget -q https://bootstrap.pypa.io/get-pip.py \
 RUN pip install \
     Cython==0.29 \
     bump2version==0.5.10 \
-    sphinx==2.2.2
+    sphinx==2.2.2 \
+    sphinx_rtd_theme==0.4.3
 
 RUN useradd --create-home --no-log-init --shell /bin/bash --uid $BUILDER_UID builder
 USER builder
