@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Overview: module code &mdash; aodncore 1.0.6 documentation</title>
+  <title>Overview: module code &mdash; aodncore 1.0.11 documentation</title>
   
 
   
@@ -17,33 +17,34 @@
   
 
   
+  <script type="text/javascript" src="../_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script type="text/javascript" src="../_static/jquery.js"></script>
+        <script type="text/javascript" src="../_static/underscore.js"></script>
+        <script type="text/javascript" src="../_static/doctools.js"></script>
+        <script type="text/javascript" src="../_static/language_data.js"></script>
+    
+    <script type="text/javascript" src="../_static/js/theme.js"></script>
 
-  
-  
     
 
   
-
-  
-    <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" /> 
-
-  
-  <script src="../_static/js/modernizr.min.js"></script>
-
 </head>
 
 <body class="wy-body-for-nav">
 
    
   <div class="wy-grid-for-nav">
-
     
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
-        <div class="wy-side-nav-search">
+        <div class="wy-side-nav-search" >
           
 
           
@@ -57,7 +58,7 @@
             
             
               <div class="version">
-                1.0.6
+                1.0.11
               </div>
             
           
@@ -91,25 +92,9 @@
 <p class="caption"><span class="caption-text">User documentation:</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../userdoc.html">Overview</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../userdoc.html#state-machine-handler-steps">State machine / handler steps</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="../userdoc.html#initialise">initialise</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../userdoc.html#resolve">resolve</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../userdoc.html#preprocess">preprocess</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../userdoc.html#check">check</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../userdoc.html#process">process</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../userdoc.html#publish">publish</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../userdoc.html#postprocess">postprocess</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../userdoc.html#notify">notify</a></li>
-</ul>
-</li>
-<li class="toctree-l1"><a class="reference internal" href="../userdoc.html#customising-handler-behaviour">Customising handler behaviour</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="../userdoc.html#methods">Methods</a></li>
-</ul>
-</li>
-<li class="toctree-l1"><a class="reference internal" href="../userdoc.html#attributes">Attributes</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="../userdoc.html#class-parameters">Class parameters</a></li>
-</ul>
-</li>
+<li class="toctree-l1"><a class="reference internal" href="../userdoc.html#state-machine-handler-steps">State machine / handler steps</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../userdoc.html#customising-handler-behaviour">Customising handler behaviour</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../userdoc.html#attributes">Attributes</a></li>
 </ul>
 <p class="caption"><span class="caption-text">Developer documentation:</span></p>
 <ul>
@@ -117,23 +102,7 @@
 </ul>
 <p class="caption"><span class="caption-text">Module contents:</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../modules.html">aodncore</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="../aodncore.html">aodncore package</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="../aodncore.html#subpackages">Subpackages</a><ul>
-<li class="toctree-l4"><a class="reference internal" href="../aodncore.common.html">aodncore.common package</a></li>
-<li class="toctree-l4"><a class="reference internal" href="../aodncore.pipeline.html">aodncore.pipeline package</a></li>
-<li class="toctree-l4"><a class="reference internal" href="../aodncore.testlib.html">aodncore.testlib package</a></li>
-<li class="toctree-l4"><a class="reference internal" href="../aodncore.util.html">aodncore.util package</a></li>
-<li class="toctree-l4"><a class="reference internal" href="../aodncore.vocab.html">aodncore.vocab package</a></li>
-</ul>
-</li>
-<li class="toctree-l3"><a class="reference internal" href="../aodncore.html#submodules">Submodules</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../aodncore.html#module-aodncore.version">aodncore.version module</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../aodncore.html#module-aodncore">Module contents</a></li>
-</ul>
-</li>
-</ul>
-</li>
+<li class="toctree-l1"><a class="reference internal" href="../modules.html">aodncore</a></li>
 </ul>
 
             
@@ -153,7 +122,6 @@
       </nav>
 
 
-      
       <div class="wy-nav-content">
         
         <div class="rst-content">
@@ -196,39 +164,8 @@
            <div itemprop="articleBody">
             
   <h1>All modules for which code is available</h1>
-<ul><li><a href="_sre.html">_sre</a></li>
-<li><a href="aodncore/common/exceptions.html">aodncore.common.exceptions</a></li>
-<li><a href="aodncore/pipeline/common.html">aodncore.pipeline.common</a></li>
-<li><a href="aodncore/pipeline/configlib.html">aodncore.pipeline.configlib</a></li>
-<li><a href="aodncore/pipeline/destpath.html">aodncore.pipeline.destpath</a></li>
-<li><a href="aodncore/pipeline/exceptions.html">aodncore.pipeline.exceptions</a></li>
-<li><a href="aodncore/pipeline/fileclassifier.html">aodncore.pipeline.fileclassifier</a></li>
-<li><a href="aodncore/pipeline/files.html">aodncore.pipeline.files</a></li>
-<li><a href="aodncore/pipeline/handlerbase.html">aodncore.pipeline.handlerbase</a></li>
-<li><a href="aodncore/pipeline/log.html">aodncore.pipeline.log</a></li>
-<li><a href="aodncore/pipeline/schema.html">aodncore.pipeline.schema</a></li>
-<li><a href="aodncore/pipeline/statequery.html">aodncore.pipeline.statequery</a></li>
-<li><a href="aodncore/pipeline/steps/basestep.html">aodncore.pipeline.steps.basestep</a></li>
-<li><a href="aodncore/pipeline/steps/check.html">aodncore.pipeline.steps.check</a></li>
-<li><a href="aodncore/pipeline/steps/harvest.html">aodncore.pipeline.steps.harvest</a></li>
-<li><a href="aodncore/pipeline/steps/notify.html">aodncore.pipeline.steps.notify</a></li>
-<li><a href="aodncore/pipeline/steps/resolve.html">aodncore.pipeline.steps.resolve</a></li>
-<li><a href="aodncore/pipeline/steps/store.html">aodncore.pipeline.steps.store</a></li>
-<li><a href="aodncore/pipeline/storage.html">aodncore.pipeline.storage</a></li>
-<li><a href="aodncore/pipeline/watch.html">aodncore.pipeline.watch</a></li>
-<li><a href="aodncore/testlib/basetest.html">aodncore.testlib.basetest</a></li>
-<li><a href="aodncore/testlib/dummyhandler.html">aodncore.testlib.dummyhandler</a></li>
-<li><a href="aodncore/testlib/handlertest.html">aodncore.testlib.handlertest</a></li>
-<li><a href="aodncore/testlib/testutil.html">aodncore.testlib.testutil</a></li>
-<li><a href="aodncore/util/external/astropy/decorators.html">aodncore.util.external.astropy.decorators</a></li>
-<li><a href="aodncore/util/external/boltons/setutils.html">aodncore.util.external.boltons.setutils</a></li>
-<li><a href="aodncore/util/external/retry/api.html">aodncore.util.external.retry.api</a></li>
-<li><a href="aodncore/util/fileops.html">aodncore.util.fileops</a></li>
-<li><a href="aodncore/util/misc.html">aodncore.util.misc</a></li>
-<li><a href="aodncore/util/process.html">aodncore.util.process</a></li>
-<li><a href="aodncore/util/wfs.html">aodncore.util.wfs</a></li>
+<ul><li><a href="aodncore/common/exceptions.html">aodncore.common.exceptions</a></li>
 <li><a href="aodncore/vocab/platform_code_vocab.html">aodncore.vocab.platform_code_vocab</a></li>
-<li><a href="tempfile.html">tempfile</a></li>
 </ul>
 
            </div>
@@ -241,7 +178,7 @@
 
   <div role="contentinfo">
     <p>
-        &copy; Copyright 2018, AODN.
+        &copy; Copyright 2018, AODN
 
     </p>
   </div>
@@ -258,38 +195,16 @@
   
 
 
-  
-
-    <script type="text/javascript">
-        var DOCUMENTATION_OPTIONS = {
-            URL_ROOT:'../',
-            VERSION:'1.0.6',
-            LANGUAGE:'None',
-            COLLAPSE_INDEX:false,
-            FILE_SUFFIX:'.html',
-            HAS_SOURCE:  true,
-            SOURCELINK_SUFFIX: '.txt'
-        };
-    </script>
-      <script type="text/javascript" src="../_static/jquery.js"></script>
-      <script type="text/javascript" src="../_static/underscore.js"></script>
-      <script type="text/javascript" src="../_static/doctools.js"></script>
-      <script type="text/javascript" src="../_static/language_data.js"></script>
-
-  
-
-  
-  
-    <script type="text/javascript" src="../_static/js/theme.js"></script>
-  
-
   <script type="text/javascript">
       jQuery(function () {
-          
-          SphinxRtdTheme.Navigation.enableSticky();
-          
+          SphinxRtdTheme.Navigation.enable(true);
       });
-  </script> 
+  </script>
+
+  
+  
+    
+   
 
 </body>
 </html>
