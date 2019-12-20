@@ -29,9 +29,6 @@ pipeline {
                     steps {
                         withCredentials([usernamePassword(credentialsId: env.GIT_CREDENTIALS_ID, passwordVariable: 'GIT_PASSWORD', usernameVariable: 'GIT_USERNAME')]) {
                             sh './bumpversion.sh release'
-                            dir('sphinx') {
-                                sh 'make publish'
-                            }
                         }
                     }
                 }
@@ -46,11 +43,27 @@ pipeline {
                         sh 'python setup.py bdist_wheel'
                     }
                 }
+                stage('generate_docs') {
+                    steps {
+                        dir('sphinx') {
+                            sh 'make generate'
+                        }
+                    }
+                }
             }
             post {
                 success {
                     dir('dist/') {
                         archiveArtifacts artifacts: '*.whl', fingerprint: true, onlyIfSuccessful: true
+                    }
+                    script {
+                        if (env.BRANCH_NAME == 'master') {
+                            dir('sphinx') {
+                                withCredentials([usernamePassword(credentialsId: env.GIT_CREDENTIALS_ID, passwordVariable: 'GIT_PASSWORD', usernameVariable: 'GIT_USERNAME')]) {
+                                    sh 'make deploy'
+                                }
+                            }
+                        }
                     }
                 }
             }
