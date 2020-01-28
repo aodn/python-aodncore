@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>aodncore.pipeline package &mdash; aodncore 1.0.13 documentation</title>
+  <title>aodncore.pipeline package &mdash; aodncore 1.0.14 documentation</title>
   
 
   
@@ -60,7 +60,7 @@
             
             
               <div class="version">
-                1.0.13
+                1.0.14
               </div>
             
           
@@ -1726,7 +1726,7 @@ prepended to relative paths in manifest files). The structure of the dict is def
 
 <dl class="attribute">
 <dt id="aodncore.pipeline.handlerbase.HandlerBase.all_transitions">
-<code class="sig-name descname">all_transitions</code><em class="property"> = [{'dest': 'HANDLER_INITIALISED', 'before': '_initialise', 'trigger': '_trigger_initialise', 'source': 'HANDLER_INITIAL'}, {'dest': 'HANDLER_RESOLVED', 'before': '_resolve', 'trigger': '_trigger_resolve', 'source': 'HANDLER_INITIALISED'}, {'dest': 'HANDLER_PREPROCESSED', 'before': 'preprocess', 'trigger': '_trigger_preprocess', 'source': 'HANDLER_RESOLVED'}, {'dest': 'HANDLER_CHECKED', 'before': '_check', 'trigger': '_trigger_check', 'source': 'HANDLER_PREPROCESSED'}, {'dest': 'HANDLER_PROCESSED', 'before': 'process', 'trigger': '_trigger_process', 'source': 'HANDLER_CHECKED'}, {'dest': 'HANDLER_PUBLISHED', 'before': '_publish', 'trigger': '_trigger_publish', 'source': 'HANDLER_PROCESSED'}, {'dest': 'HANDLER_POSTPROCESSED', 'before': 'postprocess', 'trigger': '_trigger_postprocess', 'source': 'HANDLER_PUBLISHED'}, {'dest': 'HANDLER_NOTIFIED_SUCCESS', 'before': '_notify_success', 'trigger': '_trigger_notify_success', 'source': 'HANDLER_POSTPROCESSED'}, {'dest': 'HANDLER_NOTIFIED_ERROR', 'before': '_notify_error', 'trigger': '_trigger_notify_error', 'source': ['HANDLER_INITIAL', 'HANDLER_INITIALISED', 'HANDLER_RESOLVED', 'HANDLER_PREPROCESSED', 'HANDLER_CHECKED', 'HANDLER_PROCESSED', 'HANDLER_PUBLISHED', 'HANDLER_POSTPROCESSED']}, {'dest': 'HANDLER_COMPLETED_SUCCESS', 'before': '_complete_success', 'trigger': '_trigger_complete_success', 'source': 'HANDLER_NOTIFIED_SUCCESS'}, {'dest': 'HANDLER_COMPLETED_ERROR', 'before': '_complete_with_errors', 'trigger': '_trigger_complete_with_errors', 'source': 'HANDLER_NOTIFIED_ERROR'}]</em><a class="headerlink" href="#aodncore.pipeline.handlerbase.HandlerBase.all_transitions" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">all_transitions</code><em class="property"> = [{'before': '_initialise', 'trigger': '_trigger_initialise', 'dest': 'HANDLER_INITIALISED', 'source': 'HANDLER_INITIAL'}, {'before': '_resolve', 'trigger': '_trigger_resolve', 'dest': 'HANDLER_RESOLVED', 'source': 'HANDLER_INITIALISED'}, {'before': 'preprocess', 'trigger': '_trigger_preprocess', 'dest': 'HANDLER_PREPROCESSED', 'source': 'HANDLER_RESOLVED'}, {'before': '_check', 'trigger': '_trigger_check', 'dest': 'HANDLER_CHECKED', 'source': 'HANDLER_PREPROCESSED'}, {'before': 'process', 'trigger': '_trigger_process', 'dest': 'HANDLER_PROCESSED', 'source': 'HANDLER_CHECKED'}, {'before': '_publish', 'trigger': '_trigger_publish', 'dest': 'HANDLER_PUBLISHED', 'source': 'HANDLER_PROCESSED'}, {'before': 'postprocess', 'trigger': '_trigger_postprocess', 'dest': 'HANDLER_POSTPROCESSED', 'source': 'HANDLER_PUBLISHED'}, {'before': '_notify_success', 'trigger': '_trigger_notify_success', 'dest': 'HANDLER_NOTIFIED_SUCCESS', 'source': 'HANDLER_POSTPROCESSED'}, {'before': '_notify_error', 'trigger': '_trigger_notify_error', 'dest': 'HANDLER_NOTIFIED_ERROR', 'source': ['HANDLER_INITIAL', 'HANDLER_INITIALISED', 'HANDLER_RESOLVED', 'HANDLER_PREPROCESSED', 'HANDLER_CHECKED', 'HANDLER_PROCESSED', 'HANDLER_PUBLISHED', 'HANDLER_POSTPROCESSED']}, {'before': '_complete_success', 'trigger': '_trigger_complete_success', 'dest': 'HANDLER_COMPLETED_SUCCESS', 'source': 'HANDLER_NOTIFIED_SUCCESS'}, {'before': '_complete_with_errors', 'trigger': '_trigger_complete_with_errors', 'dest': 'HANDLER_COMPLETED_ERROR', 'source': 'HANDLER_NOTIFIED_ERROR'}]</em><a class="headerlink" href="#aodncore.pipeline.handlerbase.HandlerBase.all_transitions" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="method">
@@ -2021,7 +2021,7 @@ should be created in <code class="xref py py-attr docutils literal notranslate">
 
 <dl class="attribute">
 <dt id="aodncore.pipeline.handlerbase.HandlerBase.ordered_transitions">
-<code class="sig-name descname">ordered_transitions</code><em class="property"> = [{'dest': 'HANDLER_INITIALISED', 'before': '_initialise', 'trigger': '_trigger_initialise', 'source': 'HANDLER_INITIAL'}, {'dest': 'HANDLER_RESOLVED', 'before': '_resolve', 'trigger': '_trigger_resolve', 'source': 'HANDLER_INITIALISED'}, {'dest': 'HANDLER_PREPROCESSED', 'before': 'preprocess', 'trigger': '_trigger_preprocess', 'source': 'HANDLER_RESOLVED'}, {'dest': 'HANDLER_CHECKED', 'before': '_check', 'trigger': '_trigger_check', 'source': 'HANDLER_PREPROCESSED'}, {'dest': 'HANDLER_PROCESSED', 'before': 'process', 'trigger': '_trigger_process', 'source': 'HANDLER_CHECKED'}, {'dest': 'HANDLER_PUBLISHED', 'before': '_publish', 'trigger': '_trigger_publish', 'source': 'HANDLER_PROCESSED'}, {'dest': 'HANDLER_POSTPROCESSED', 'before': 'postprocess', 'trigger': '_trigger_postprocess', 'source': 'HANDLER_PUBLISHED'}]</em><a class="headerlink" href="#aodncore.pipeline.handlerbase.HandlerBase.ordered_transitions" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">ordered_transitions</code><em class="property"> = [{'before': '_initialise', 'trigger': '_trigger_initialise', 'dest': 'HANDLER_INITIALISED', 'source': 'HANDLER_INITIAL'}, {'before': '_resolve', 'trigger': '_trigger_resolve', 'dest': 'HANDLER_RESOLVED', 'source': 'HANDLER_INITIALISED'}, {'before': 'preprocess', 'trigger': '_trigger_preprocess', 'dest': 'HANDLER_PREPROCESSED', 'source': 'HANDLER_RESOLVED'}, {'before': '_check', 'trigger': '_trigger_check', 'dest': 'HANDLER_CHECKED', 'source': 'HANDLER_PREPROCESSED'}, {'before': 'process', 'trigger': '_trigger_process', 'dest': 'HANDLER_PROCESSED', 'source': 'HANDLER_CHECKED'}, {'before': '_publish', 'trigger': '_trigger_publish', 'dest': 'HANDLER_PUBLISHED', 'source': 'HANDLER_PROCESSED'}, {'before': 'postprocess', 'trigger': '_trigger_postprocess', 'dest': 'HANDLER_POSTPROCESSED', 'source': 'HANDLER_PUBLISHED'}]</em><a class="headerlink" href="#aodncore.pipeline.handlerbase.HandlerBase.ordered_transitions" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="attribute">
@@ -2031,7 +2031,7 @@ should be created in <code class="xref py py-attr docutils literal notranslate">
 
 <dl class="attribute">
 <dt id="aodncore.pipeline.handlerbase.HandlerBase.other_transitions">
-<code class="sig-name descname">other_transitions</code><em class="property"> = [{'dest': 'HANDLER_NOTIFIED_SUCCESS', 'before': '_notify_success', 'trigger': '_trigger_notify_success', 'source': 'HANDLER_POSTPROCESSED'}, {'dest': 'HANDLER_NOTIFIED_ERROR', 'before': '_notify_error', 'trigger': '_trigger_notify_error', 'source': ['HANDLER_INITIAL', 'HANDLER_INITIALISED', 'HANDLER_RESOLVED', 'HANDLER_PREPROCESSED', 'HANDLER_CHECKED', 'HANDLER_PROCESSED', 'HANDLER_PUBLISHED', 'HANDLER_POSTPROCESSED']}, {'dest': 'HANDLER_COMPLETED_SUCCESS', 'before': '_complete_success', 'trigger': '_trigger_complete_success', 'source': 'HANDLER_NOTIFIED_SUCCESS'}, {'dest': 'HANDLER_COMPLETED_ERROR', 'before': '_complete_with_errors', 'trigger': '_trigger_complete_with_errors', 'source': 'HANDLER_NOTIFIED_ERROR'}]</em><a class="headerlink" href="#aodncore.pipeline.handlerbase.HandlerBase.other_transitions" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">other_transitions</code><em class="property"> = [{'before': '_notify_success', 'trigger': '_trigger_notify_success', 'dest': 'HANDLER_NOTIFIED_SUCCESS', 'source': 'HANDLER_POSTPROCESSED'}, {'before': '_notify_error', 'trigger': '_trigger_notify_error', 'dest': 'HANDLER_NOTIFIED_ERROR', 'source': ['HANDLER_INITIAL', 'HANDLER_INITIALISED', 'HANDLER_RESOLVED', 'HANDLER_PREPROCESSED', 'HANDLER_CHECKED', 'HANDLER_PROCESSED', 'HANDLER_PUBLISHED', 'HANDLER_POSTPROCESSED']}, {'before': '_complete_success', 'trigger': '_trigger_complete_success', 'dest': 'HANDLER_COMPLETED_SUCCESS', 'source': 'HANDLER_NOTIFIED_SUCCESS'}, {'before': '_complete_with_errors', 'trigger': '_trigger_complete_with_errors', 'dest': 'HANDLER_COMPLETED_ERROR', 'source': 'HANDLER_NOTIFIED_ERROR'}]</em><a class="headerlink" href="#aodncore.pipeline.handlerbase.HandlerBase.other_transitions" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="method">
@@ -2531,33 +2531,33 @@ for debugging.</p>
 <em class="property">class </em><code class="sig-prename descclassname">aodncore.pipeline.watch.</code><code class="sig-name descname">CeleryConfig</code><span class="sig-paren">(</span><em class="sig-param">routes=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/aodncore/pipeline/watch.html#CeleryConfig"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#aodncore.pipeline.watch.CeleryConfig" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <dl class="attribute">
-<dt id="aodncore.pipeline.watch.CeleryConfig.BROKER_TRANSPORT">
-<code class="sig-name descname">BROKER_TRANSPORT</code><em class="property"> = 'amqp'</em><a class="headerlink" href="#aodncore.pipeline.watch.CeleryConfig.BROKER_TRANSPORT" title="Permalink to this definition">¶</a></dt>
+<dt id="aodncore.pipeline.watch.CeleryConfig.accept_content">
+<code class="sig-name descname">accept_content</code><em class="property"> = ['json']</em><a class="headerlink" href="#aodncore.pipeline.watch.CeleryConfig.accept_content" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="attribute">
-<dt id="aodncore.pipeline.watch.CeleryConfig.BROKER_URL">
-<code class="sig-name descname">BROKER_URL</code><em class="property"> = 'amqp://'</em><a class="headerlink" href="#aodncore.pipeline.watch.CeleryConfig.BROKER_URL" title="Permalink to this definition">¶</a></dt>
+<dt id="aodncore.pipeline.watch.CeleryConfig.broker_url">
+<code class="sig-name descname">broker_url</code><em class="property"> = 'amqp://'</em><a class="headerlink" href="#aodncore.pipeline.watch.CeleryConfig.broker_url" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="attribute">
-<dt id="aodncore.pipeline.watch.CeleryConfig.CELERY_ACCEPT_CONTENT">
-<code class="sig-name descname">CELERY_ACCEPT_CONTENT</code><em class="property"> = ['json']</em><a class="headerlink" href="#aodncore.pipeline.watch.CeleryConfig.CELERY_ACCEPT_CONTENT" title="Permalink to this definition">¶</a></dt>
+<dt id="aodncore.pipeline.watch.CeleryConfig.result_serializer">
+<code class="sig-name descname">result_serializer</code><em class="property"> = 'json'</em><a class="headerlink" href="#aodncore.pipeline.watch.CeleryConfig.result_serializer" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="attribute">
-<dt id="aodncore.pipeline.watch.CeleryConfig.CELERY_RESULT_SERIALIZER">
-<code class="sig-name descname">CELERY_RESULT_SERIALIZER</code><em class="property"> = 'json'</em><a class="headerlink" href="#aodncore.pipeline.watch.CeleryConfig.CELERY_RESULT_SERIALIZER" title="Permalink to this definition">¶</a></dt>
+<dt id="aodncore.pipeline.watch.CeleryConfig.task_routes">
+<code class="sig-name descname">task_routes</code><em class="property"> = {}</em><a class="headerlink" href="#aodncore.pipeline.watch.CeleryConfig.task_routes" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="attribute">
-<dt id="aodncore.pipeline.watch.CeleryConfig.CELERY_ROUTES">
-<code class="sig-name descname">CELERY_ROUTES</code><em class="property"> = {}</em><a class="headerlink" href="#aodncore.pipeline.watch.CeleryConfig.CELERY_ROUTES" title="Permalink to this definition">¶</a></dt>
+<dt id="aodncore.pipeline.watch.CeleryConfig.task_serializer">
+<code class="sig-name descname">task_serializer</code><em class="property"> = 'json'</em><a class="headerlink" href="#aodncore.pipeline.watch.CeleryConfig.task_serializer" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="attribute">
-<dt id="aodncore.pipeline.watch.CeleryConfig.CELERY_TASK_SERIALIZER">
-<code class="sig-name descname">CELERY_TASK_SERIALIZER</code><em class="property"> = 'json'</em><a class="headerlink" href="#aodncore.pipeline.watch.CeleryConfig.CELERY_TASK_SERIALIZER" title="Permalink to this definition">¶</a></dt>
+<dt id="aodncore.pipeline.watch.CeleryConfig.worker_max_tasks_per_child">
+<code class="sig-name descname">worker_max_tasks_per_child</code><em class="property"> = 1</em><a class="headerlink" href="#aodncore.pipeline.watch.CeleryConfig.worker_max_tasks_per_child" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 </dd></dl>
@@ -2676,7 +2676,7 @@ ProcessEvent and redefine this method in order to modify its behavior.</p>
 
 <dl class="attribute">
 <dt id="aodncore.pipeline.watch.IncomingFileStateManager.transitions">
-<code class="sig-name descname">transitions</code><em class="property"> = [{'dest': 'FILE_IN_PROCESSING', 'before': ['_pre_processing_checks', '_move_to_processing'], 'trigger': 'move_to_processing', 'source': 'FILE_IN_INCOMING'}, {'dest': 'FILE_IN_ERROR', 'before': ['_run_error_callbacks', '_move_to_error'], 'trigger': 'move_to_error', 'source': 'FILE_IN_PROCESSING'}, {'dest': 'FILE_SUCCESS', 'before': '_run_success_callbacks', 'trigger': 'move_to_success', 'source': 'FILE_IN_PROCESSING', 'after': '_remove_processing_file'}]</em><a class="headerlink" href="#aodncore.pipeline.watch.IncomingFileStateManager.transitions" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">transitions</code><em class="property"> = [{'before': ['_pre_processing_checks', '_move_to_processing'], 'trigger': 'move_to_processing', 'dest': 'FILE_IN_PROCESSING', 'source': 'FILE_IN_INCOMING'}, {'before': ['_run_error_callbacks', '_move_to_error'], 'trigger': 'move_to_error', 'dest': 'FILE_IN_ERROR', 'source': 'FILE_IN_PROCESSING'}, {'after': '_remove_processing_file', 'before': '_run_success_callbacks', 'trigger': 'move_to_success', 'dest': 'FILE_SUCCESS', 'source': 'FILE_IN_PROCESSING'}]</em><a class="headerlink" href="#aodncore.pipeline.watch.IncomingFileStateManager.transitions" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 </dd></dl>
@@ -3039,7 +3039,7 @@ prepended to relative paths in manifest files). The structure of the dict is def
 
 <dl class="attribute">
 <dt id="aodncore.pipeline.HandlerBase.all_transitions">
-<code class="sig-name descname">all_transitions</code><em class="property"> = [{'dest': 'HANDLER_INITIALISED', 'before': '_initialise', 'trigger': '_trigger_initialise', 'source': 'HANDLER_INITIAL'}, {'dest': 'HANDLER_RESOLVED', 'before': '_resolve', 'trigger': '_trigger_resolve', 'source': 'HANDLER_INITIALISED'}, {'dest': 'HANDLER_PREPROCESSED', 'before': 'preprocess', 'trigger': '_trigger_preprocess', 'source': 'HANDLER_RESOLVED'}, {'dest': 'HANDLER_CHECKED', 'before': '_check', 'trigger': '_trigger_check', 'source': 'HANDLER_PREPROCESSED'}, {'dest': 'HANDLER_PROCESSED', 'before': 'process', 'trigger': '_trigger_process', 'source': 'HANDLER_CHECKED'}, {'dest': 'HANDLER_PUBLISHED', 'before': '_publish', 'trigger': '_trigger_publish', 'source': 'HANDLER_PROCESSED'}, {'dest': 'HANDLER_POSTPROCESSED', 'before': 'postprocess', 'trigger': '_trigger_postprocess', 'source': 'HANDLER_PUBLISHED'}, {'dest': 'HANDLER_NOTIFIED_SUCCESS', 'before': '_notify_success', 'trigger': '_trigger_notify_success', 'source': 'HANDLER_POSTPROCESSED'}, {'dest': 'HANDLER_NOTIFIED_ERROR', 'before': '_notify_error', 'trigger': '_trigger_notify_error', 'source': ['HANDLER_INITIAL', 'HANDLER_INITIALISED', 'HANDLER_RESOLVED', 'HANDLER_PREPROCESSED', 'HANDLER_CHECKED', 'HANDLER_PROCESSED', 'HANDLER_PUBLISHED', 'HANDLER_POSTPROCESSED']}, {'dest': 'HANDLER_COMPLETED_SUCCESS', 'before': '_complete_success', 'trigger': '_trigger_complete_success', 'source': 'HANDLER_NOTIFIED_SUCCESS'}, {'dest': 'HANDLER_COMPLETED_ERROR', 'before': '_complete_with_errors', 'trigger': '_trigger_complete_with_errors', 'source': 'HANDLER_NOTIFIED_ERROR'}]</em><a class="headerlink" href="#aodncore.pipeline.HandlerBase.all_transitions" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">all_transitions</code><em class="property"> = [{'before': '_initialise', 'trigger': '_trigger_initialise', 'dest': 'HANDLER_INITIALISED', 'source': 'HANDLER_INITIAL'}, {'before': '_resolve', 'trigger': '_trigger_resolve', 'dest': 'HANDLER_RESOLVED', 'source': 'HANDLER_INITIALISED'}, {'before': 'preprocess', 'trigger': '_trigger_preprocess', 'dest': 'HANDLER_PREPROCESSED', 'source': 'HANDLER_RESOLVED'}, {'before': '_check', 'trigger': '_trigger_check', 'dest': 'HANDLER_CHECKED', 'source': 'HANDLER_PREPROCESSED'}, {'before': 'process', 'trigger': '_trigger_process', 'dest': 'HANDLER_PROCESSED', 'source': 'HANDLER_CHECKED'}, {'before': '_publish', 'trigger': '_trigger_publish', 'dest': 'HANDLER_PUBLISHED', 'source': 'HANDLER_PROCESSED'}, {'before': 'postprocess', 'trigger': '_trigger_postprocess', 'dest': 'HANDLER_POSTPROCESSED', 'source': 'HANDLER_PUBLISHED'}, {'before': '_notify_success', 'trigger': '_trigger_notify_success', 'dest': 'HANDLER_NOTIFIED_SUCCESS', 'source': 'HANDLER_POSTPROCESSED'}, {'before': '_notify_error', 'trigger': '_trigger_notify_error', 'dest': 'HANDLER_NOTIFIED_ERROR', 'source': ['HANDLER_INITIAL', 'HANDLER_INITIALISED', 'HANDLER_RESOLVED', 'HANDLER_PREPROCESSED', 'HANDLER_CHECKED', 'HANDLER_PROCESSED', 'HANDLER_PUBLISHED', 'HANDLER_POSTPROCESSED']}, {'before': '_complete_success', 'trigger': '_trigger_complete_success', 'dest': 'HANDLER_COMPLETED_SUCCESS', 'source': 'HANDLER_NOTIFIED_SUCCESS'}, {'before': '_complete_with_errors', 'trigger': '_trigger_complete_with_errors', 'dest': 'HANDLER_COMPLETED_ERROR', 'source': 'HANDLER_NOTIFIED_ERROR'}]</em><a class="headerlink" href="#aodncore.pipeline.HandlerBase.all_transitions" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="method">
@@ -3334,7 +3334,7 @@ should be created in <code class="xref py py-attr docutils literal notranslate">
 
 <dl class="attribute">
 <dt id="aodncore.pipeline.HandlerBase.ordered_transitions">
-<code class="sig-name descname">ordered_transitions</code><em class="property"> = [{'dest': 'HANDLER_INITIALISED', 'before': '_initialise', 'trigger': '_trigger_initialise', 'source': 'HANDLER_INITIAL'}, {'dest': 'HANDLER_RESOLVED', 'before': '_resolve', 'trigger': '_trigger_resolve', 'source': 'HANDLER_INITIALISED'}, {'dest': 'HANDLER_PREPROCESSED', 'before': 'preprocess', 'trigger': '_trigger_preprocess', 'source': 'HANDLER_RESOLVED'}, {'dest': 'HANDLER_CHECKED', 'before': '_check', 'trigger': '_trigger_check', 'source': 'HANDLER_PREPROCESSED'}, {'dest': 'HANDLER_PROCESSED', 'before': 'process', 'trigger': '_trigger_process', 'source': 'HANDLER_CHECKED'}, {'dest': 'HANDLER_PUBLISHED', 'before': '_publish', 'trigger': '_trigger_publish', 'source': 'HANDLER_PROCESSED'}, {'dest': 'HANDLER_POSTPROCESSED', 'before': 'postprocess', 'trigger': '_trigger_postprocess', 'source': 'HANDLER_PUBLISHED'}]</em><a class="headerlink" href="#aodncore.pipeline.HandlerBase.ordered_transitions" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">ordered_transitions</code><em class="property"> = [{'before': '_initialise', 'trigger': '_trigger_initialise', 'dest': 'HANDLER_INITIALISED', 'source': 'HANDLER_INITIAL'}, {'before': '_resolve', 'trigger': '_trigger_resolve', 'dest': 'HANDLER_RESOLVED', 'source': 'HANDLER_INITIALISED'}, {'before': 'preprocess', 'trigger': '_trigger_preprocess', 'dest': 'HANDLER_PREPROCESSED', 'source': 'HANDLER_RESOLVED'}, {'before': '_check', 'trigger': '_trigger_check', 'dest': 'HANDLER_CHECKED', 'source': 'HANDLER_PREPROCESSED'}, {'before': 'process', 'trigger': '_trigger_process', 'dest': 'HANDLER_PROCESSED', 'source': 'HANDLER_CHECKED'}, {'before': '_publish', 'trigger': '_trigger_publish', 'dest': 'HANDLER_PUBLISHED', 'source': 'HANDLER_PROCESSED'}, {'before': 'postprocess', 'trigger': '_trigger_postprocess', 'dest': 'HANDLER_POSTPROCESSED', 'source': 'HANDLER_PUBLISHED'}]</em><a class="headerlink" href="#aodncore.pipeline.HandlerBase.ordered_transitions" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="attribute">
@@ -3344,7 +3344,7 @@ should be created in <code class="xref py py-attr docutils literal notranslate">
 
 <dl class="attribute">
 <dt id="aodncore.pipeline.HandlerBase.other_transitions">
-<code class="sig-name descname">other_transitions</code><em class="property"> = [{'dest': 'HANDLER_NOTIFIED_SUCCESS', 'before': '_notify_success', 'trigger': '_trigger_notify_success', 'source': 'HANDLER_POSTPROCESSED'}, {'dest': 'HANDLER_NOTIFIED_ERROR', 'before': '_notify_error', 'trigger': '_trigger_notify_error', 'source': ['HANDLER_INITIAL', 'HANDLER_INITIALISED', 'HANDLER_RESOLVED', 'HANDLER_PREPROCESSED', 'HANDLER_CHECKED', 'HANDLER_PROCESSED', 'HANDLER_PUBLISHED', 'HANDLER_POSTPROCESSED']}, {'dest': 'HANDLER_COMPLETED_SUCCESS', 'before': '_complete_success', 'trigger': '_trigger_complete_success', 'source': 'HANDLER_NOTIFIED_SUCCESS'}, {'dest': 'HANDLER_COMPLETED_ERROR', 'before': '_complete_with_errors', 'trigger': '_trigger_complete_with_errors', 'source': 'HANDLER_NOTIFIED_ERROR'}]</em><a class="headerlink" href="#aodncore.pipeline.HandlerBase.other_transitions" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">other_transitions</code><em class="property"> = [{'before': '_notify_success', 'trigger': '_trigger_notify_success', 'dest': 'HANDLER_NOTIFIED_SUCCESS', 'source': 'HANDLER_POSTPROCESSED'}, {'before': '_notify_error', 'trigger': '_trigger_notify_error', 'dest': 'HANDLER_NOTIFIED_ERROR', 'source': ['HANDLER_INITIAL', 'HANDLER_INITIALISED', 'HANDLER_RESOLVED', 'HANDLER_PREPROCESSED', 'HANDLER_CHECKED', 'HANDLER_PROCESSED', 'HANDLER_PUBLISHED', 'HANDLER_POSTPROCESSED']}, {'before': '_complete_success', 'trigger': '_trigger_complete_success', 'dest': 'HANDLER_COMPLETED_SUCCESS', 'source': 'HANDLER_NOTIFIED_SUCCESS'}, {'before': '_complete_with_errors', 'trigger': '_trigger_complete_with_errors', 'dest': 'HANDLER_COMPLETED_ERROR', 'source': 'HANDLER_NOTIFIED_ERROR'}]</em><a class="headerlink" href="#aodncore.pipeline.HandlerBase.other_transitions" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="method">

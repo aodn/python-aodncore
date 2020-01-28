@@ -9,7 +9,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Index &mdash; aodncore 1.0.13 documentation</title>
+  <title>Index &mdash; aodncore 1.0.14 documentation</title>
   
 
   
@@ -59,7 +59,7 @@
             
             
               <div class="version">
-                1.0.13
+                1.0.14
               </div>
             
           
@@ -199,6 +199,8 @@
 <h2 id="A">A</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="aodncore.pipeline.html#aodncore.pipeline.watch.CeleryConfig.accept_content">accept_content (aodncore.pipeline.watch.CeleryConfig attribute)</a>
+</li>
       <li><a href="aodncore.pipeline.html#aodncore.pipeline.files.PipelineFileCollection.add">add() (aodncore.pipeline.files.PipelineFileCollection method)</a>
 
       <ul>
@@ -465,9 +467,7 @@
       </ul></li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="aodncore.pipeline.html#aodncore.pipeline.watch.CeleryConfig.BROKER_TRANSPORT">BROKER_TRANSPORT (aodncore.pipeline.watch.CeleryConfig attribute)</a>
-</li>
-      <li><a href="aodncore.pipeline.html#aodncore.pipeline.watch.CeleryConfig.BROKER_URL">BROKER_URL (aodncore.pipeline.watch.CeleryConfig attribute)</a>
+      <li><a href="aodncore.pipeline.html#aodncore.pipeline.watch.CeleryConfig.broker_url">broker_url (aodncore.pipeline.watch.CeleryConfig attribute)</a>
 </li>
       <li><a href="aodncore.pipeline.html#aodncore.pipeline.log.WorkerLoggingConfigBuilder.build">build() (aodncore.pipeline.log.WorkerLoggingConfigBuilder method)</a>
 </li>
@@ -483,13 +483,7 @@
         <li><a href="aodncore.util.html#aodncore.util.misc.CaptureStdIO">(class in aodncore.util.misc)</a>
 </li>
       </ul></li>
-      <li><a href="aodncore.pipeline.html#aodncore.pipeline.watch.CeleryConfig.CELERY_ACCEPT_CONTENT">CELERY_ACCEPT_CONTENT (aodncore.pipeline.watch.CeleryConfig attribute)</a>
-</li>
       <li><a href="aodncore.pipeline.html#aodncore.pipeline.configlib.LazyConfigManager.celery_application">celery_application() (aodncore.pipeline.configlib.LazyConfigManager property)</a>
-</li>
-      <li><a href="aodncore.pipeline.html#aodncore.pipeline.watch.CeleryConfig.CELERY_RESULT_SERIALIZER">CELERY_RESULT_SERIALIZER (aodncore.pipeline.watch.CeleryConfig attribute)</a>
-</li>
-      <li><a href="aodncore.pipeline.html#aodncore.pipeline.watch.CeleryConfig.CELERY_ROUTES">CELERY_ROUTES (aodncore.pipeline.watch.CeleryConfig attribute)</a>
 </li>
       <li><a href="aodncore.pipeline.html#aodncore.pipeline.configlib.LazyConfigManager.celery_routes">celery_routes() (aodncore.pipeline.configlib.LazyConfigManager property)</a>
 </li>
@@ -505,8 +499,6 @@
         <li><a href="aodncore.pipeline.html#aodncore.pipeline.handlerbase.HandlerBase.celery_task_name">(aodncore.pipeline.handlerbase.HandlerBase property)</a>
 </li>
       </ul></li>
-      <li><a href="aodncore.pipeline.html#aodncore.pipeline.watch.CeleryConfig.CELERY_TASK_SERIALIZER">CELERY_TASK_SERIALIZER (aodncore.pipeline.watch.CeleryConfig attribute)</a>
-</li>
       <li><a href="aodncore.pipeline.html#aodncore.pipeline.watch.CeleryConfig">CeleryConfig (class in aodncore.pipeline.watch)</a>
 </li>
       <li><a href="aodncore.pipeline.html#aodncore.pipeline.watch.CeleryContext">CeleryContext (class in aodncore.pipeline.watch)</a>
@@ -541,10 +533,10 @@
         <li><a href="aodncore.pipeline.html#aodncore.pipeline.common.CheckResult">(class in aodncore.pipeline.common)</a>
 </li>
       </ul></li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="aodncore.pipeline.steps.html#aodncore.pipeline.steps.check.CheckRunnerAdapter">CheckRunnerAdapter (class in aodncore.pipeline.steps.check)</a>
 </li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="aodncore.pipeline.steps.html#aodncore.pipeline.steps.resolve.RsyncManifestResolveRunner.classify_line">classify_line() (aodncore.pipeline.steps.resolve.RsyncManifestResolveRunner class method)</a>
 </li>
       <li><a href="aodncore.util.html#aodncore.util.classproperty">classproperty (class in aodncore.util)</a>
@@ -2053,6 +2045,8 @@
         <li><a href="aodncore.pipeline.html#aodncore.pipeline.handlerbase.HandlerBase.result">(aodncore.pipeline.handlerbase.HandlerBase property)</a>
 </li>
       </ul></li>
+      <li><a href="aodncore.pipeline.html#aodncore.pipeline.watch.CeleryConfig.result_serializer">result_serializer (aodncore.pipeline.watch.CeleryConfig attribute)</a>
+</li>
       <li><a href="aodncore.util.html#aodncore.util.retry_decorator">retry_decorator() (in module aodncore.util)</a>
 </li>
       <li><a href="aodncore.pipeline.html#aodncore.pipeline.storage.S3StorageBroker.retry_kwargs">retry_kwargs (aodncore.pipeline.storage.S3StorageBroker attribute)</a>
@@ -2389,6 +2383,10 @@
   <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="aodncore.pipeline.steps.html#aodncore.pipeline.steps.harvest.TalendHarvesterRunner">TalendHarvesterRunner (class in aodncore.pipeline.steps.harvest)</a>
 </li>
+      <li><a href="aodncore.pipeline.html#aodncore.pipeline.watch.CeleryConfig.task_routes">task_routes (aodncore.pipeline.watch.CeleryConfig attribute)</a>
+</li>
+      <li><a href="aodncore.pipeline.html#aodncore.pipeline.watch.CeleryConfig.task_serializer">task_serializer (aodncore.pipeline.watch.CeleryConfig attribute)</a>
+</li>
       <li><a href="aodncore.testlib.html#aodncore.testlib.basetest.BaseTestCase.tearDown">tearDown() (aodncore.testlib.basetest.BaseTestCase method)</a>
 
       <ul>
@@ -2411,14 +2409,14 @@
         <li><a href="aodncore.testlib.html#aodncore.testlib.BaseTestCase.temp_nc_file">(aodncore.testlib.BaseTestCase property)</a>
 </li>
       </ul></li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="aodncore.util.html#aodncore.util.TemplateRenderer">TemplateRenderer (class in aodncore.util)</a>
 
       <ul>
         <li><a href="aodncore.util.html#aodncore.util.misc.TemplateRenderer">(class in aodncore.util.misc)</a>
 </li>
       </ul></li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="aodncore.util.html#aodncore.util.TemporaryDirectory">TemporaryDirectory (class in aodncore.util)</a>
 
       <ul>
@@ -2745,6 +2743,8 @@
         <li><a href="aodncore.util.html#aodncore.util.wfs.WfsBroker">(class in aodncore.util.wfs)</a>
 </li>
       </ul></li>
+      <li><a href="aodncore.pipeline.html#aodncore.pipeline.watch.CeleryConfig.worker_max_tasks_per_child">worker_max_tasks_per_child (aodncore.pipeline.watch.CeleryConfig attribute)</a>
+</li>
       <li><a href="aodncore.pipeline.html#aodncore.pipeline.log.WorkerLoggingConfigBuilder">WorkerLoggingConfigBuilder (class in aodncore.pipeline.log)</a>
 </li>
       <li><a href="aodncore.util.html#aodncore.util.WriteOnceOrderedDict">WriteOnceOrderedDict (class in aodncore.util)</a>
