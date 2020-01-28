@@ -82,12 +82,12 @@ class TestPipelineWatch(BaseTestCase):
 class TestCeleryConfig(BaseTestCase):
     def test_init(self):
         celeryconfig = CeleryConfig()
-        self.assertDictEqual(celeryconfig.CELERY_ROUTES, {})
+        self.assertDictEqual(celeryconfig.task_routes, {})
 
     def test_init_routes(self):
         routes = {'/some/directory': 'UNITTEST'}
         celeryconfig = CeleryConfig(routes)
-        self.assertIs(celeryconfig.CELERY_ROUTES, routes)
+        self.assertIs(celeryconfig.task_routes, routes)
 
 
 class TestCeleryManager(BaseTestCase):
