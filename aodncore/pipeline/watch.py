@@ -81,16 +81,16 @@ def get_task_name(namespace, function_name):
 
 class CeleryConfig(object):
     # TODO: remove this hardcoding and get values from pipeline_config
-    BROKER_URL = 'amqp://'
-    BROKER_TRANSPORT = 'amqp'
-    CELERY_ACCEPT_CONTENT = ['json']
-    CELERY_TASK_SERIALIZER = 'json'
-    CELERY_RESULT_SERIALIZER = 'json'
+    broker_url = 'amqp://'
+    accept_content = ['json']
+    task_serializer = 'json'
+    result_serializer = 'json'
+    worker_max_tasks_per_child = 1
 
-    CELERY_ROUTES = {}
+    task_routes = {}
 
     def __init__(self, routes=None):
-        self.CELERY_ROUTES = routes or {}
+        self.task_routes = routes or {}
 
 
 def delete_same_name_from_error_store_callback(handler, file_state_manager):
