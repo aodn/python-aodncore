@@ -19,9 +19,7 @@ INSTALL_REQUIRES = [
     'transitions==0.7.1'
 ]
 
-TESTS_REQUIRE = [
-    'httpretty==0.9.7'
-]
+TESTS_REQUIRE = []
 
 EXTRAS_REQUIRE = {
     'testing': TESTS_REQUIRE,
