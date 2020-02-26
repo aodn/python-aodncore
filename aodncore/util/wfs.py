@@ -14,7 +14,7 @@ __all__ = [
     'ogc_filter_to_string'
 ]
 
-DEFAULT_WFS_VERSION = '1.0.0'
+DEFAULT_WFS_VERSION = '1.1.0'
 
 
 def ogc_filter_to_string(ogc_filter):
