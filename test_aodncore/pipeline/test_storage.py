@@ -3,9 +3,9 @@ import errno
 import os
 import re
 import tempfile
-from unittest.mock import MagicMock, mock_open, patch
 from http.client import IncompleteRead
 from ssl import SSLError
+from unittest.mock import MagicMock, mock_open, patch
 from uuid import uuid4
 
 from botocore.exceptions import ClientError
@@ -720,11 +720,30 @@ class TestS3StorageBroker(BaseTestCase):
         s3_storage_broker = S3StorageBroker('imos-data', '')
         result = s3_storage_broker.query('Department_of_Defence/DSTG/slocum_glider/PerthCanyonA20140213/')
 
-        self.assertCountEqual(result.keys(),
-                              [l['Key'] for l in mock_boto3.client().list_objects_v2.return_value['Contents']])
+        expected = RemotePipelineFileCollection([
+            RemotePipelineFile(
+                'Department_of_Defence/DSTG/slocum_glider/PerthCanyonA20140213/DSTO_MD_CEPSTUV_20140213T050333Z_SL085_FV01_timeseries_END-20140312T003551Z.nc',
+                last_modified=datetime.datetime(2016, 4, 27, 2, 30, 9, tzinfo=tzutc()),
+                size=39203028),
+            RemotePipelineFile(
+                'Department_of_Defence/DSTG/slocum_glider/PerthCanyonA20140213/PerthCanyonA20140213.kml',
+                last_modified=datetime.datetime(2016, 4, 27, 2, 30, 10, tzinfo=tzutc()),
+                size=48877),
+            RemotePipelineFile(
+                'Department_of_Defence/DSTG/slocum_glider/PerthCanyonA20140213/PerthCanyonA20140213_CNDC.jpg',
+                last_modified=datetime.datetime(2016, 4, 27, 2, 30, 10, tzinfo=tzutc()),
+                size=104238),
+            RemotePipelineFile(
+                'Department_of_Defence/DSTG/slocum_glider/PerthCanyonA20140213/PerthCanyonA20140213_PSAL.jpg',
+                last_modified=datetime.datetime(2016, 4, 27, 2, 30, 10, tzinfo=tzutc()),
+                size=115044),
+            RemotePipelineFile(
+                'Department_of_Defence/DSTG/slocum_glider/PerthCanyonA20140213/PerthCanyonA20140213_TEMP.jpg',
+                last_modified=datetime.datetime(2016, 4, 27, 2, 30, 9, tzinfo=tzutc()),
+                size=106141)
+        ])
 
-        self.assertTrue(all(isinstance(v['last_modified'], datetime.datetime) for k, v in result.items()))
-        self.assertTrue(all(isinstance(v['size'], int) for k, v in result.items()))
+        self.assertEqual(expected, result)
 
     @patch('aodncore.pipeline.storage.boto3')
     def test_prefix_query(self, mock_boto3):
@@ -763,10 +782,50 @@ class TestS3StorageBroker(BaseTestCase):
         s3_storage_broker = S3StorageBroker('imos-data', '')
         result = s3_storage_broker.query('Department_of_Defence/DSTG/slocum_glider/Perth')
 
-        self.assertCountEqual(result.keys(),
-                              [l['Key'] for l in mock_boto3.client().list_objects_v2.return_value['Contents']])
-        self.assertTrue(all(isinstance(v['last_modified'], datetime.datetime) for k, v in result.items()))
-        self.assertTrue(all(isinstance(v['size'], int) for k, v in result.items()))
+        expected = RemotePipelineFileCollection([
+            RemotePipelineFile(
+                'Department_of_Defence/DSTG/slocum_glider/PerthCanyonA20140213/DSTO_MD_CEPSTUV_20140213T050333Z_SL085_FV01_timeseries_END-20140312T003551Z.nc',
+                last_modified=datetime.datetime(2016, 4, 27, 2, 30, 9, tzinfo=tzutc()),
+                size=39203028),
+            RemotePipelineFile(
+                'Department_of_Defence/DSTG/slocum_glider/PerthCanyonA20140213/PerthCanyonA20140213.kml',
+                last_modified=datetime.datetime(2016, 4, 27, 2, 30, 10, tzinfo=tzutc()),
+                size=48877),
+            RemotePipelineFile(
+                'Department_of_Defence/DSTG/slocum_glider/PerthCanyonA20140213/PerthCanyonA20140213_CNDC.jpg',
+                last_modified=datetime.datetime(2016, 4, 27, 2, 30, 10, tzinfo=tzutc()),
+                size=104238),
+            RemotePipelineFile(
+                'Department_of_Defence/DSTG/slocum_glider/PerthCanyonA20140213/PerthCanyonA20140213_PSAL.jpg',
+                last_modified=datetime.datetime(2016, 4, 27, 2, 30, 10, tzinfo=tzutc()),
+                size=115044),
+            RemotePipelineFile(
+                'Department_of_Defence/DSTG/slocum_glider/PerthCanyonA20140213/PerthCanyonA20140213_TEMP.jpg',
+                last_modified=datetime.datetime(2016, 4, 27, 2, 30, 9, tzinfo=tzutc()),
+                size=106141),
+            RemotePipelineFile(
+                'Department_of_Defence/DSTG/slocum_glider/PerthCanyonB20140213/DSTO_MD_CEPSTUV_20140213T050730Z_SL090_FV01_timeseries_END-20140221T102451Z.nc',
+                last_modified=datetime.datetime(2016, 4, 27, 2, 30, 9, tzinfo=tzutc()),
+                size=11622292),
+            RemotePipelineFile(
+                'Department_of_Defence/DSTG/slocum_glider/PerthCanyonB20140213/PerthCanyonB20140213.kml',
+                last_modified=datetime.datetime(2016, 4, 27, 2, 30, 8, tzinfo=tzutc()),
+                size=21574),
+            RemotePipelineFile(
+                'Department_of_Defence/DSTG/slocum_glider/PerthCanyonB20140213/PerthCanyonB20140213_CNDC.jpg',
+                last_modified=datetime.datetime(2016, 4, 27, 2, 30, 9, tzinfo=tzutc()),
+                size=131749),
+            RemotePipelineFile(
+                'Department_of_Defence/DSTG/slocum_glider/PerthCanyonB20140213/PerthCanyonB20140213_PSAL.jpg',
+                last_modified=datetime.datetime(2016, 4, 27, 2, 30, 10, tzinfo=tzutc()),
+                size=139704),
+            RemotePipelineFile(
+                'Department_of_Defence/DSTG/slocum_glider/PerthCanyonB20140213/PerthCanyonB20140213_TEMP.jpg',
+                last_modified=datetime.datetime(2016, 4, 27, 2, 30, 8, tzinfo=tzutc()),
+                size=132122)
+        ])
+
+        self.assertEqual(expected, result)
 
     @patch('aodncore.pipeline.storage.boto3')
     def test_query_empty(self, mock_boto3):
@@ -776,7 +835,7 @@ class TestS3StorageBroker(BaseTestCase):
         with self.assertNoException():
             result = s3_storage_broker.query('Department_of_Defence/DSTG/slocum_glider/Perth')
 
-        self.assertDictEqual(result, {})
+        self.assertEqual(result, RemotePipelineFileCollection())
 
     @patch('aodncore.pipeline.storage.boto3')
     def test_query_error_client_error(self, mock_boto3):
