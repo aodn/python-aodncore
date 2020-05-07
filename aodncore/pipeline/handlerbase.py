@@ -12,7 +12,7 @@ from .configlib import validate_lazyconfigmanager
 from .destpath import get_path_function
 from .exceptions import (PipelineProcessingError, HandlerAlreadyRunError, InvalidConfigError, InvalidInputFileError,
                          InvalidFileFormatError, MissingConfigParameterError, UnmatchedFilesError)
-from .files import PipelineFile, PipelineFileCollection
+from .files import PipelineFile, PipelineFileCollection, ensure_remotepipelinefilecollection
 from .log import SYSINFO, get_pipeline_logger
 from .schema import (validate_check_params, validate_custom_params, validate_harvest_params, validate_notify_params,
                      validate_resolve_params)
@@ -1021,6 +1021,20 @@ class HandlerBase(object):
     #
     # "public" methods
     #
+
+    def download_remotepipelinefilecollection(self, remotepipelinefilecollection, local_path=None):
+        """Helper method to download a RemotePipelineFileCollection or RemotePipelineFile using the handler's internal
+            storage broker
+
+        :param remotepipelinefilecollection: RemotePipelineFileCollection to download
+        :param local_path: local path where files will be downloaded. Defaults to the handler's :attr:`temp_dir` value.
+        :return: None
+        """
+        remotepipelinefilecollection = ensure_remotepipelinefilecollection(remotepipelinefilecollection)
+        if local_path is None:
+            local_path = self.temp_dir
+
+        remotepipelinefilecollection.download(self._upload_store_runner.broker, local_path)
 
     def run(self):
         """The entry point to the handler instance. Executes the automatic state machine transitions, and populates the
