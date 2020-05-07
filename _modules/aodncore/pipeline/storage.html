@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>aodncore.pipeline.storage &mdash; aodncore 1.0.16 documentation</title>
+  <title>aodncore.pipeline.storage &mdash; aodncore 1.1.1 documentation</title>
   
 
   
@@ -58,7 +58,7 @@
             
             
               <div class="version">
-                1.0.16
+                1.1.1
               </div>
             
           
@@ -520,8 +520,11 @@
     <span class="k">def</span> <span class="nf">_run_query</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">query</span><span class="p">):</span>
         <span class="n">full_query</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">prefix</span><span class="p">,</span> <span class="n">query</span><span class="p">)</span>
         <span class="n">raw_result</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">s3_client</span><span class="o">.</span><span class="n">list_objects_v2</span><span class="p">(</span><span class="n">Bucket</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">bucket</span><span class="p">,</span> <span class="n">Prefix</span><span class="o">=</span><span class="n">full_query</span><span class="p">)</span>
-        <span class="n">result</span> <span class="o">=</span> <span class="p">{</span><span class="n">k</span><span class="p">[</span><span class="s1">&#39;Key&#39;</span><span class="p">]:</span> <span class="p">{</span><span class="s1">&#39;last_modified&#39;</span><span class="p">:</span> <span class="n">k</span><span class="p">[</span><span class="s1">&#39;LastModified&#39;</span><span class="p">],</span> <span class="s1">&#39;size&#39;</span><span class="p">:</span> <span class="n">k</span><span class="p">[</span><span class="s1">&#39;Size&#39;</span><span class="p">]}</span>
-                  <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="n">raw_result</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;Contents&#39;</span><span class="p">,</span> <span class="p">[])}</span>
+        <span class="n">result</span> <span class="o">=</span> <span class="n">RemotePipelineFileCollection</span><span class="p">(</span><span class="n">RemotePipelineFile</span><span class="p">(</span><span class="n">k</span><span class="p">[</span><span class="s1">&#39;Key&#39;</span><span class="p">],</span>
+                                                                 <span class="n">name</span><span class="o">=</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">basename</span><span class="p">(</span><span class="n">k</span><span class="p">[</span><span class="s1">&#39;Key&#39;</span><span class="p">]),</span>
+                                                                 <span class="n">last_modified</span><span class="o">=</span><span class="n">k</span><span class="p">[</span><span class="s1">&#39;LastModified&#39;</span><span class="p">],</span>
+                                                                 <span class="n">size</span><span class="o">=</span><span class="n">k</span><span class="p">[</span><span class="s1">&#39;Size&#39;</span><span class="p">])</span>
+                                              <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="n">raw_result</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;Contents&#39;</span><span class="p">,</span> <span class="p">[]))</span>
         <span class="k">return</span> <span class="n">result</span>
 
     <span class="nd">@retry_decorator</span><span class="p">(</span><span class="o">**</span><span class="n">retry_kwargs</span><span class="p">)</span>

@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>aodncore.pipeline.handlerbase &mdash; aodncore 1.0.16 documentation</title>
+  <title>aodncore.pipeline.handlerbase &mdash; aodncore 1.1.1 documentation</title>
   
 
   
@@ -58,7 +58,7 @@
             
             
               <div class="version">
-                1.0.16
+                1.1.1
               </div>
             
           
@@ -180,7 +180,7 @@
 <span class="kn">from</span> <span class="nn">.destpath</span> <span class="kn">import</span> <span class="n">get_path_function</span>
 <span class="kn">from</span> <span class="nn">.exceptions</span> <span class="kn">import</span> <span class="p">(</span><span class="n">PipelineProcessingError</span><span class="p">,</span> <span class="n">HandlerAlreadyRunError</span><span class="p">,</span> <span class="n">InvalidConfigError</span><span class="p">,</span> <span class="n">InvalidInputFileError</span><span class="p">,</span>
                          <span class="n">InvalidFileFormatError</span><span class="p">,</span> <span class="n">MissingConfigParameterError</span><span class="p">,</span> <span class="n">UnmatchedFilesError</span><span class="p">)</span>
-<span class="kn">from</span> <span class="nn">.files</span> <span class="kn">import</span> <span class="n">PipelineFile</span><span class="p">,</span> <span class="n">PipelineFileCollection</span>
+<span class="kn">from</span> <span class="nn">.files</span> <span class="kn">import</span> <span class="n">PipelineFile</span><span class="p">,</span> <span class="n">PipelineFileCollection</span><span class="p">,</span> <span class="n">ensure_remotepipelinefilecollection</span>
 <span class="kn">from</span> <span class="nn">.log</span> <span class="kn">import</span> <span class="n">SYSINFO</span><span class="p">,</span> <span class="n">get_pipeline_logger</span>
 <span class="kn">from</span> <span class="nn">.schema</span> <span class="kn">import</span> <span class="p">(</span><span class="n">validate_check_params</span><span class="p">,</span> <span class="n">validate_custom_params</span><span class="p">,</span> <span class="n">validate_harvest_params</span><span class="p">,</span> <span class="n">validate_notify_params</span><span class="p">,</span>
                      <span class="n">validate_resolve_params</span><span class="p">)</span>
@@ -1189,6 +1189,20 @@
     <span class="c1">#</span>
     <span class="c1"># &quot;public&quot; methods</span>
     <span class="c1">#</span>
+
+<div class="viewcode-block" id="HandlerBase.download_remotepipelinefilecollection"><a class="viewcode-back" href="../../../aodncore.pipeline.html#aodncore.pipeline.handlerbase.HandlerBase.download_remotepipelinefilecollection">[docs]</a>    <span class="k">def</span> <span class="nf">download_remotepipelinefilecollection</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">remotepipelinefilecollection</span><span class="p">,</span> <span class="n">local_path</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Helper method to download a RemotePipelineFileCollection or RemotePipelineFile using the handler&#39;s internal</span>
+<span class="sd">            storage broker</span>
+
+<span class="sd">        :param remotepipelinefilecollection: RemotePipelineFileCollection to download</span>
+<span class="sd">        :param local_path: local path where files will be downloaded. Defaults to the handler&#39;s :attr:`temp_dir` value.</span>
+<span class="sd">        :return: None</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">remotepipelinefilecollection</span> <span class="o">=</span> <span class="n">ensure_remotepipelinefilecollection</span><span class="p">(</span><span class="n">remotepipelinefilecollection</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">local_path</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">local_path</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">temp_dir</span>
+
+        <span class="n">remotepipelinefilecollection</span><span class="o">.</span><span class="n">download</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_upload_store_runner</span><span class="o">.</span><span class="n">broker</span><span class="p">,</span> <span class="n">local_path</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="HandlerBase.run"><a class="viewcode-back" href="../../../aodncore.pipeline.html#aodncore.pipeline.handlerbase.HandlerBase.run">[docs]</a>    <span class="k">def</span> <span class="nf">run</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;The entry point to the handler instance. Executes the automatic state machine transitions, and populates the</span>
