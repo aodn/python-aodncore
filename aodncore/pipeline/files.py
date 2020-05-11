@@ -984,7 +984,7 @@ class RemotePipelineFileCollection(PipelineFileCollectionBase):
         :return: None
         """
         warnings.warn("This method will be removed in a future version. From a pipeline handler, you should use "
-                      "`self.state_query.download_remotepipelinefilecollection` instead.", DeprecationWarning)
+                      "`self.state_query.download` instead.", DeprecationWarning)
         broker.download(self, local_path)
 
     def keys(self):
