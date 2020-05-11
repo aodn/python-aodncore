@@ -208,29 +208,31 @@ class PipelineFile(PipelineFileBase):
     :type late_deletion: :py:class:`bool`
     :param file_update_callback: optional callback to call when a file property is updated
     :type file_update_callback: :py:class:`callable`
+    :param check_type: check type assigned to the file
+    :type check_type: PipelineFileCheckType
+    :param publish_type: publish type assigned to the file
+    :type publish_type: PipelineFilePublishType
     """
     __slots__ = ['_archive_path', '_file_update_callback', '_check_type', '_is_deletion', '_late_deletion',
                  '_publish_type', '_should_archive', '_should_harvest', '_should_store', '_should_undo', '_is_checked',
                  '_is_archived', '_is_harvested', '_is_overwrite', '_is_stored', '_is_harvest_undone',
                  '_is_upload_undone', '_check_result', '_mime_type']
 
-    def __init__(self, local_path, name=None, archive_path=None, dest_path=None, is_deletion=False, late_deletion=False,
-                 file_update_callback=None):
+    def __init__(self, local_path, name=None, archive_path=None, dest_path=None, is_deletion=False,
+                 late_deletion=False, file_update_callback=None, check_type=None, publish_type=None):
         super().__init__(local_path, dest_path)
 
-        self._name = name if name is not None else os.path.basename(local_path)
-
+        # general file attributes, set from parameters
         self._archive_path = archive_path
-
-        self._file_update_callback = None
-        if file_update_callback is not None:
-            self.file_update_callback = file_update_callback
-
-        # processing flags - these express the *intended actions* for the file
-        self._check_type = PipelineFileCheckType.UNSET
         self._is_deletion = is_deletion
         self._late_deletion = late_deletion
-        self._publish_type = PipelineFilePublishType.UNSET
+        self._name = name if name is not None else os.path.basename(local_path)
+
+        # general file attributes, *not* set from parameters
+        self._check_result = None
+        self._mime_type = None
+
+        # processing flags - these express the *intended actions* for the file
         self._should_archive = False
         self._should_harvest = False
         self._should_store = False
@@ -245,8 +247,20 @@ class PipelineFile(PipelineFileBase):
         self._is_harvest_undone = False
         self._is_upload_undone = False
 
-        self._check_result = None
-        self._mime_type = None
+        # attributes which must be assigned by the property setter for validation. The backing variable is intentionally
+        # initialised to a safe default, before the setter is called if the calling code has supplied a value for the
+        # corresponding parameters
+        self._file_update_callback = None
+        if file_update_callback is not None:
+            self.file_update_callback = file_update_callback
+
+        self._check_type = PipelineFileCheckType.UNSET
+        if check_type is not None:
+            self.check_type = check_type
+
+        self._publish_type = PipelineFilePublishType.UNSET
+        if publish_type is not None:
+            self.publish_type = publish_type
 
     @classmethod
     def from_remotepipelinefile(cls, remotepipelinefile, is_deletion=False):
