@@ -91,6 +91,9 @@ class TestPipelineFile(BaseTestCase):
         self.pipelinefile.check_type = test_value
         self.assertIs(self.pipelinefile.check_type, test_value)
 
+        pf = PipelineFile(GOOD_NC, check_type=PipelineFileCheckType.NC_COMPLIANCE_CHECK)
+        self.assertIs(pf.check_type, PipelineFileCheckType.NC_COMPLIANCE_CHECK)
+
         with self.assertRaises(ValueError):
             self.pipelinefile.check_type = 'invalid'
 
@@ -111,6 +114,9 @@ class TestPipelineFile(BaseTestCase):
         test_value = PipelineFilePublishType.HARVEST_ARCHIVE_UPLOAD
         self.pipelinefile.publish_type = test_value
         self.assertIs(self.pipelinefile.publish_type, test_value)
+
+        pf = PipelineFile(GOOD_NC, publish_type=PipelineFilePublishType.ARCHIVE_ONLY)
+        self.assertIs(pf.publish_type, PipelineFilePublishType.ARCHIVE_ONLY)
 
         with self.assertRaises(TypeError):
             self.pipelinefile.publish_type = 'invalid'
