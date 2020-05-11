@@ -1,6 +1,7 @@
 import abc
 import mimetypes
 import os
+import warnings
 from collections import Counter, MutableSet, OrderedDict
 
 from .common import (FileType, PipelineFilePublishType, PipelineFileCheckType, validate_addition_publishtype,
@@ -982,6 +983,8 @@ class RemotePipelineFileCollection(PipelineFileCollectionBase):
         :param local_path: local path into which files are downloaded
         :return: None
         """
+        warnings.warn("This method will be removed in a future version. From a pipeline handler, you should use "
+                      "`self.state_query.download_remotepipelinefilecollection` instead.", DeprecationWarning)
         broker.download(self, local_path)
 
     def keys(self):
