@@ -1022,6 +1022,16 @@ class HandlerBase(object):
     # "public" methods
     #
 
+    def add_pipelinefile(self, pipeline_file):
+        """Helper method to add a PipelineFile to the handler's file_collection, with the handler instance's
+            file_update_callback method assigned
+
+        :param pipeline_file: PipelineFile object
+        :return: None
+        """
+        self.file_collection.add(pipeline_file)
+        pipeline_file.file_update_callback = self._file_update_callback
+
     def run(self):
         """The entry point to the handler instance. Executes the automatic state machine transitions, and populates the
             :attr:`result` attribute to signal success or failure of the handler instance.

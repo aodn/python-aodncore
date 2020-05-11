@@ -413,3 +413,19 @@ class TestDummyHandler(HandlerTestCase):
     def test_state_query(self, mock_webfeatureservice):
         handler = self.handler_class(self.temp_nc_file)
         self.assertIsInstance(handler.state_query, StateQuery)
+
+    def test_add_pipelinefile(self):
+        pf = PipelineFile(self.temp_nc_file)
+        handler = self.handler_class(self.temp_nc_file)
+
+        def _preprocess(self_):
+            self_.add_pipelinefile(pf)
+
+        handler.preprocess = partial(_preprocess, self_=handler)
+        handler.run()
+
+        self.assertEqual(handler._file_update_callback, pf.file_update_callback)
+        self.assertIn(pf, handler.file_collection)
+
+        with self.assertRaises(TypeError):
+            handler.add_pipelinefile(1)
