@@ -5,14 +5,13 @@ from unittest.mock import patch
 
 from jsonschema import ValidationError
 
-from aodncore.pipeline import (PipelineFile, PipelineFileCheckType, PipelineFilePublishType, RemotePipelineFile,
-                               RemotePipelineFileCollection, HandlerResult)
+from aodncore.pipeline import PipelineFile, PipelineFileCheckType, PipelineFilePublishType, HandlerResult
 from aodncore.pipeline.exceptions import (AttributeValidationError, ComplianceCheckFailedError, HandlerAlreadyRunError,
                                           InvalidCheckSuiteError, InvalidInputFileError, InvalidFileFormatError,
                                           InvalidRecipientError, UnmatchedFilesError)
 from aodncore.pipeline.statequery import StateQuery
 from aodncore.pipeline.steps import NotifyList
-from aodncore.testlib import DummyHandler, HandlerTestCase, NullStorageBroker, dest_path_testing, get_nonexistent_path
+from aodncore.testlib import DummyHandler, HandlerTestCase, dest_path_testing, get_nonexistent_path
 from aodncore.util import WriteOnceOrderedDict
 from test_aodncore import TESTDATA_DIR
 
@@ -403,7 +402,8 @@ class TestDummyHandler(HandlerTestCase):
         handler = self.run_handler(self.temp_nc_file)
         self.assertEqual(handler.opendap_root, 'http://opendap.example.com')
 
-    def test_state_query(self):
+    @patch('aodncore.util.wfs.WebFeatureService')
+    def test_state_query(self, mock_webfeatureservice):
         handler = self.handler_class(self.temp_nc_file)
         self.assertIsInstance(handler.state_query, StateQuery)
 
@@ -411,37 +411,3 @@ class TestDummyHandler(HandlerTestCase):
         handler = self.handler_class(self.temp_nc_file)
         self.assertIsInstance(handler.platform_vocab_helper.platform_type_uris_by_category(), dict)
         self.assertEqual(handler.platform_vocab_helper.platform_altlabels_per_preflabel('Vessel')['9VUU'], 'Anro Asia')
-
-    def test_download_remotepipelinefilecollection_collection(self):
-        local_path = os.path.join(self.temp_dir, 'local_download_path')
-        broker = NullStorageBroker('')
-
-        remote_collection = RemotePipelineFileCollection([
-            RemotePipelineFile('dest/path/1.nc', name='1.nc'),
-            RemotePipelineFile('dest/path/2.nc', name='2.nc')
-        ])
-
-        handler = self.handler_class(self.temp_nc_file)
-        handler._upload_store_runner.broker = broker
-
-        handler.download_remotepipelinefilecollection(remote_collection, local_path)
-        local_paths = remote_collection.get_attribute_list('local_path')
-        expected = [os.path.join(local_path, rf.dest_path) for rf in remote_collection]
-
-        broker.assert_download_call_count(1)
-        self.assertCountEqual(local_paths, expected)
-
-    def test_download_remotepipelinefilecollection_file(self):
-        local_path = os.path.join(self.temp_dir, 'local_download_path')
-        broker = NullStorageBroker('')
-
-        remote_file = RemotePipelineFile('dest/path/1.nc', name='1.nc')
-
-        handler = self.handler_class(self.temp_nc_file)
-        handler._upload_store_runner.broker = broker
-
-        handler.download_remotepipelinefilecollection(remote_file, local_path)
-        expected = os.path.join(local_path, remote_file.dest_path)
-
-        broker.assert_download_call_count(1)
-        self.assertEqual(remote_file.local_path, expected)

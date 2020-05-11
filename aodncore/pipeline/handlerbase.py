@@ -12,7 +12,7 @@ from .configlib import validate_lazyconfigmanager
 from .destpath import get_path_function
 from .exceptions import (PipelineProcessingError, HandlerAlreadyRunError, InvalidConfigError, InvalidInputFileError,
                          InvalidFileFormatError, MissingConfigParameterError, UnmatchedFilesError)
-from .files import PipelineFile, PipelineFileCollection, ensure_remotepipelinefilecollection
+from .files import PipelineFile, PipelineFileCollection
 from .log import SYSINFO, get_pipeline_logger
 from .schema import (validate_check_params, validate_custom_params, validate_harvest_params, validate_notify_params,
                      validate_resolve_params)
@@ -20,7 +20,7 @@ from .statequery import StateQuery
 from .steps import (get_check_runner, get_harvester_runner, get_notify_runner, get_resolve_runner, get_store_runner)
 from ..util import (ensure_regex_list, ensure_writeonceordereddict, format_exception,
                     get_file_checksum, iter_public_attributes, lazyproperty, matches_regexes, merge_dicts,
-                    validate_relative_path_attr, TemporaryDirectory, DEFAULT_WFS_VERSION)
+                    validate_relative_path_attr, TemporaryDirectory, WfsBroker, DEFAULT_WFS_VERSION)
 from ..version import __version__ as _aodncore_version
 
 __all__ = [
@@ -586,9 +586,9 @@ class HandlerBase(object):
         :return: StateQuery instance
         :rtype: :py:class:`StateQuery`
         """
-        return StateQuery(storage_broker=self._upload_store_runner.broker,
-                          wfs_url=self.config.pipeline_config['global'].get('wfs_url'),
-                          wfs_version=self.config.pipeline_config['global'].get('wfs_version', DEFAULT_WFS_VERSION))
+        wfs_broker = WfsBroker(self.config.pipeline_config['global'].get('wfs_url'),
+                               version=self.config.pipeline_config['global'].get('wfs_version', DEFAULT_WFS_VERSION))
+        return StateQuery(storage_broker=self._upload_store_runner.broker, wfs_broker=wfs_broker)
 
     @property
     def default_addition_publish_type(self):
@@ -1021,20 +1021,6 @@ class HandlerBase(object):
     #
     # "public" methods
     #
-
-    def download_remotepipelinefilecollection(self, remotepipelinefilecollection, local_path=None):
-        """Helper method to download a RemotePipelineFileCollection or RemotePipelineFile using the handler's internal
-            storage broker
-
-        :param remotepipelinefilecollection: RemotePipelineFileCollection to download
-        :param local_path: local path where files will be downloaded. Defaults to the handler's :attr:`temp_dir` value.
-        :return: None
-        """
-        remotepipelinefilecollection = ensure_remotepipelinefilecollection(remotepipelinefilecollection)
-        if local_path is None:
-            local_path = self.temp_dir
-
-        remotepipelinefilecollection.download(self._upload_store_runner.broker, local_path)
 
     def run(self):
         """The entry point to the handler instance. Executes the automatic state machine transitions, and populates the

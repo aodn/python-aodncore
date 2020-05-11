@@ -1,4 +1,4 @@
-from ..util import WfsBroker, DEFAULT_WFS_VERSION
+from .files import RemotePipelineFileCollection
 
 __all__ = [
     'StateQuery'
@@ -9,22 +9,9 @@ class StateQuery(object):
     """Simple state query interface, to provide user friendly access for querying existing Pipeline state
     """
 
-    def __init__(self, storage_broker, wfs_url, wfs_version=DEFAULT_WFS_VERSION):
+    def __init__(self, storage_broker, wfs_broker):
         self._storage_broker = storage_broker
-        self._wfs_url = wfs_url
-        self._wfs_version = wfs_version
-
-        self._wfs_broker_object = None
-
-    @property
-    def _wfs_broker(self):
-        if not self._wfs_url:
-            raise AttributeError('WFS querying unavailable: no wfs_url configured?')
-
-        # lazy instantiation of broker to avoid any WFS activity unless a handler explicitly calls it
-        if self._wfs_broker_object is None:
-            self._wfs_broker_object = WfsBroker(self._wfs_url, version=self._wfs_version)
-        return self._wfs_broker_object
+        self._wfs_broker = wfs_broker
 
     @property
     def wfs(self):
@@ -55,9 +42,9 @@ class StateQuery(object):
 
         :param layer: layer name supplied to GetFeature typename parameter
         :param kwargs: keyword arguments passed to underlying broker method
-        :return: list of files for the layer
+        :return: RemotePipelineFileCollection containing list of files for the layer
         """
-        return self._wfs_broker.query_urls_for_layer(layer, **kwargs)
+        return RemotePipelineFileCollection(self._wfs_broker.query_urls_for_layer(layer, **kwargs))
 
     def query_wfs_url_exists(self, layer, name):  # pragma: no cover
         """Returns a bool representing whether a given 'file_url' is present in a layer
@@ -67,3 +54,13 @@ class StateQuery(object):
         :return: list of files for the layer
         """
         return self._wfs_broker.query_url_exists_for_layer(layer, name)
+
+    def download(self, remotepipelinefilecollection, local_path):
+        """Helper method to download a RemotePipelineFileCollection or RemotePipelineFile using the handler's internal
+            storage broker
+
+        :param remotepipelinefilecollection: RemotePipelineFileCollection to download
+        :param local_path: local path where files will be downloaded. Defaults to the handler's :attr:`temp_dir` value.
+        :return: None
+        """
+        self._storage_broker.download(remotepipelinefilecollection, local_path)
