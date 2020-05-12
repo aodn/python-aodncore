@@ -9,10 +9,10 @@ from .common import (FileType, PipelineFilePublishType, PipelineFileCheckType, v
                      validate_settable_checktype)
 from .exceptions import AttributeValidationError, DuplicatePipelineFileError, MissingFileError
 from .schema import validate_check_params
-from ..util import (IndexedSet, ensure_regex_list, format_exception, get_file_checksum, iter_public_attributes,
-                    matches_regexes, rm_f, slice_sequence, validate_bool, validate_callable, validate_int,
-                    validate_mapping, validate_nonstring_iterable, validate_regexes, validate_relative_path_attr,
-                    validate_string, validate_type)
+from ..util import (IndexedSet, classproperty, ensure_regex_list, format_exception, get_file_checksum,
+                    iter_public_attributes, matches_regexes, rm_f, slice_sequence, validate_bool, validate_callable,
+                    validate_int, validate_mapping, validate_nonstring_iterable, validate_regexes,
+                    validate_relative_path_attr, validate_string, validate_type)
 
 __all__ = [
     'PipelineFileCollection',
@@ -577,7 +577,7 @@ class PipelineFile(PipelineFileBase):
                                       message="{properties}".format(properties=log_output))
 
 
-class PipelineFileCollectionBase(MutableSet):
+class PipelineFileCollectionBase(MutableSet, metaclass=abc.ABCMeta):
     """A collection base class which implements the MutableSet abstract base class to allow clean set operations, but
     limited to containing only :py:class:`PipelineFile` or :py:class:`RemotePipelineFile`elements and providing specific
     functionality for handling a collection of them (e.g. filtering, generating tabular data, etc.)
@@ -587,18 +587,12 @@ class PipelineFileCollectionBase(MutableSet):
     :param validate_unique: :py:class:`bool` passed to the `add` method
     :type data: :py:class:`PipelineFile`, :py:class:`RemotePipelineFile`, :py:class:`str`, :py:class:`Iterable`
     """
-    __slots__ = ['_s', 'member_class', 'member_validator', 'member_from_string_method', 'unique_attributes']
+    __slots__ = ['_s']
 
-    def __init__(self, data=None, validate_unique=True, member_class=PipelineFile, member_validator=None,
-                 member_from_string_method=None, unique_attributes=()):
+    def __init__(self, data=None, validate_unique=True):
         super().__init__()
 
         self._s = IndexedSet()
-
-        self.member_class = member_class
-        self.member_validator = member_validator or validate_pipelinefile_or_string
-        self.member_from_string_method = getattr(self, member_from_string_method) or self.get_pipelinefile_from_src_path
-        self.unique_attributes = unique_attributes
 
         if data is not None:
             if isinstance(data, (self.member_class, str)):
@@ -606,11 +600,32 @@ class PipelineFileCollectionBase(MutableSet):
             for f in data:
                 self.add(f, validate_unique=validate_unique)
 
+    @property
+    @abc.abstractmethod
+    def member_class(cls):
+        raise NotImplementedError
+
+    @property
+    @abc.abstractmethod
+    def member_from_string_method(self):
+        raise NotImplementedError
+
+    @property
+    @abc.abstractmethod
+    def member_validator(cls):
+        raise NotImplementedError
+
+    @property
+    @abc.abstractmethod
+    def unique_attributes(cls):
+        raise NotImplementedError
+
     def __bool__(self):
         return bool(self._s)
 
     def __contains__(self, v):
-        return v in self._s
+        element = v if isinstance(v, self.member_class) else self.member_from_string_method(v)
+        return element in self._s
 
     def __getitem__(self, index):
         result = self._s[index]
@@ -971,20 +986,27 @@ class PipelineFileCollectionBase(MutableSet):
                                                                                           duplicates=duplicates))
 
 
+validate_remotepipelinefile_or_string = validate_type((RemotePipelineFile, str))
+
+
 class RemotePipelineFileCollection(PipelineFileCollectionBase):
     """A PipelineFileCollectionBase subclass to hold a set of RemotePipelineFile instances
     """
+    @classproperty
+    def member_class(cls):
+        return RemotePipelineFile
 
-    def __init__(self, *args, **kwargs):
-        kwargs['member_class'] = RemotePipelineFile
-        kwargs['member_validator'] = validate_remotepipelinefile_or_string
-        kwargs['member_from_string_method'] = 'get_pipelinefile_from_dest_path'
-        kwargs['unique_attributes'] = {'local_path', 'dest_path'}
-        super().__init__(*args, **kwargs)
+    @classproperty
+    def member_validator(cls):
+        return validate_remotepipelinefile_or_string
 
-    def __contains__(self, v):
-        element = v if isinstance(v, self.member_class) else self.get_pipelinefile_from_dest_path(v)
-        return element in self._s
+    @property
+    def member_from_string_method(self):
+        return self.get_pipelinefile_from_dest_path
+
+    @classproperty
+    def unique_attributes(cls):
+        return 'local_path', 'dest_path'
 
     @classmethod
     def from_pipelinefilecollection(cls, pipelinefilecollection):
@@ -1006,20 +1028,27 @@ class RemotePipelineFileCollection(PipelineFileCollectionBase):
         return self.get_attribute_list('dest_path')
 
 
+validate_pipelinefile_or_string = validate_type((PipelineFile, str))
+
+
 class PipelineFileCollection(PipelineFileCollectionBase):
     """A PipelineFileCollectionBase subclass to hold a set of PipelineFile instances
     """
+    @classproperty
+    def member_class(cls):
+        return PipelineFile
 
-    def __init__(self, *args, **kwargs):
-        kwargs['member_class'] = PipelineFile
-        kwargs['member_validator'] = validate_pipelinefile_or_string
-        kwargs['member_from_string_method'] = 'get_pipelinefile_from_src_path'
-        kwargs['unique_attributes'] = {'archive_path', 'dest_path'}
-        super().__init__(*args, **kwargs)
+    @classproperty
+    def member_validator(cls):
+        return validate_pipelinefile_or_string
 
-    def __contains__(self, v):
-        element = v if isinstance(v, self.member_class) else self.get_pipelinefile_from_src_path(v)
-        return element in self._s
+    @property
+    def member_from_string_method(self):
+        return self.get_pipelinefile_from_src_path
+
+    @classproperty
+    def unique_attributes(cls):
+        return 'archive_path', 'dest_path'
 
     @classmethod
     def from_remotepipelinefilecollection(cls, remotepipelinefilecollection, are_deletions=False):
@@ -1159,9 +1188,9 @@ class PipelineFileCollection(PipelineFileCollectionBase):
 
 validate_pipelinefilecollection = validate_type(PipelineFileCollection)
 validate_pipelinefile_or_pipelinefilecollection = validate_type((PipelineFile, PipelineFileCollection))
-validate_pipelinefile_or_string = validate_type((PipelineFile, str))
+
 
 validate_remotepipelinefilecollection = validate_type(RemotePipelineFileCollection)
 validate_remotepipelinefile_or_remotepipelinefilecollection = validate_type((RemotePipelineFile,
                                                                              RemotePipelineFileCollection))
-validate_remotepipelinefile_or_string = validate_type((RemotePipelineFile, str))
+
