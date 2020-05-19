@@ -263,15 +263,24 @@ class PipelineFile(PipelineFileBase):
             self.publish_type = publish_type
 
     @classmethod
-    def from_remotepipelinefile(cls, remotepipelinefile, is_deletion=False):
+    def from_remotepipelinefile(cls, remotepipelinefile, name=None, is_deletion=False, late_deletion=False,
+                                file_update_callback=None, check_type=None, publish_type=None):
         """Construct a PipelineFile instance from an existing RemotePipelineFile instance
 
         :param remotepipelinefile: RemotePipelineFile instance used to instantiate a PipelineFile instance
-        :param is_deletion: is_deletion flag passed directly to __init__
+        :param name: name flag passed to __init__ (defaults to remotepipelinefile.name)
+        :param is_deletion: is_deletion flag passed to __init__
+        :param late_deletion: late_deletion flag passed to __init__
+        :param file_update_callback: file_update_callback flag passed to __init__
+        :param check_type: check_type flag passed to __init__
+        :param publish_type: publish_type flag passed to __init__
         :return: PipelineFile instance
         """
+        name = name or remotepipelinefile.name
+
         return cls(local_path=remotepipelinefile.local_path, dest_path=remotepipelinefile.dest_path,
-                   name=remotepipelinefile.name, is_deletion=is_deletion)
+                   name=name, is_deletion=is_deletion, late_deletion=late_deletion,
+                   file_update_callback=file_update_callback, check_type=check_type, publish_type=publish_type)
 
     def _key(self):
         return self.name, self.local_path, self.file_checksum
