@@ -58,15 +58,16 @@ class WfsBroker(object):
         """
         return self._wfs
 
-    def getfeature_dict(self, **kwargs):
+    def getfeature_dict(self, ogc_filter=None, **kwargs):
         """Make a GetFeature request, and return the response in a native dict
 
+        :param ogc_filter: OGC filter expression. If omitted, all features are returned.
         :param kwargs: keyword arguments passed to the underlying WebFeatureService.getfeature method
         :return: dict containing the parsed GetFeature response
         """
+        if ogc_filter:
+            kwargs['filter'] = ogc_filter_to_string(ogc_filter)
         kwargs.pop('outputFormat', None)
-        if 'filter' in kwargs:
-            kwargs['filter'] = ogc_filter_to_string(kwargs['filter'])
         response = self.wfs.getfeature(outputFormat='json', **kwargs)
         response_body = response.getvalue()
         try:
@@ -104,10 +105,7 @@ class WfsBroker(object):
             'propertyname': url_property_name
         }
 
-        if ogc_filter:
-            getfeature_kwargs['filter'] = ogc_filter
-
-        parsed_response = self.getfeature_dict(**getfeature_kwargs)
+        parsed_response = self.getfeature_dict(ogc_filter=ogc_filter, **getfeature_kwargs)
         file_urls = IndexedSet(f['properties'][url_property_name] for f in parsed_response['features'])
         return file_urls
 
