@@ -10,31 +10,33 @@ from ..util import IndexedSet
 __all__ = [
     'DEFAULT_WFS_VERSION',
     'WfsBroker',
-    'get_filter_for_file_url',
+    'get_ogc_expression_for_file_url',
     'ogc_filter_to_string'
 ]
 
 DEFAULT_WFS_VERSION = '1.1.0'
 
 
-def ogc_filter_to_string(ogc_filter):
-    """Convert an OGC filter object into it's XML string representation
+def ogc_filter_to_string(ogc_expression):
+    """Convert an OGCExpression object into it's XML string representation. If parameter is a `str` object, it is
+        returned unchanged
 
-    :param ogc_filter: OGC filter object
-    :return: XML string
+    :param ogc_expression: OGCExpression object
+    :return: XML string representation of the input object
     """
-    return etree.tostring(ogc_filter.toXML()).decode('utf-8')
+    if isinstance(ogc_expression, str):
+        return ogc_expression
+    return etree.tostring(ogc_expression.toXML(), encoding='unicode')
 
 
-def get_filter_for_file_url(file_url, property_name='url'):
-    """Return OGC filter XML to query for a single file_url
+def get_ogc_expression_for_file_url(file_url, property_name='url'):
+    """Return OGCExpression to query for a single file_url
 
     :param file_url: URL string
     :param property_name: URL property name to filter on
-    :return: OGC XML filter string
+    :return: OGCExpression which may be used to query the given URL value
     """
-    file_url_filter = PropertyIsEqualTo(propertyname=property_name, literal=file_url)
-    return ogc_filter_to_string(file_url_filter)
+    return PropertyIsEqualTo(propertyname=property_name, literal=file_url)
 
 
 class WfsBroker(object):
@@ -57,14 +59,23 @@ class WfsBroker(object):
         """
         return self._wfs
 
-    def getfeature_dict(self, **kwargs):
-        """Make a GetFeature request, and return the response in a native dict
+    def getfeature_dict(self, ogc_expression=None, **kwargs):
+        """Make a GetFeature request, and return the response in a native dict.
 
+        :param ogc_expression: OgcExpression used to filter the returned features. If omitted, returns all features.
         :param kwargs: keyword arguments passed to the underlying WebFeatureService.getfeature method
         :return: dict containing the parsed GetFeature response
         """
-        kwargs.pop('outputFormat', None)
-        response = self.wfs.getfeature(outputFormat='json', **kwargs)
+        getfeature_kwargs = kwargs.copy()
+
+        # convert expression to XML string representation as required by underlying WFS API
+        if ogc_expression:
+            getfeature_kwargs['filter'] = ogc_filter_to_string(ogc_expression)
+
+        # force the output format to JSON, as other formats don't make sense in the context of parsing into a dict
+        getfeature_kwargs['outputFormat'] = 'json'
+
+        response = self.wfs.getfeature(**getfeature_kwargs)
         response_body = response.getvalue()
         try:
             return json.loads(response_body, object_pairs_hook=OrderedDict)
@@ -84,11 +95,11 @@ class WfsBroker(object):
         else:  # pragma: no cover
             raise RuntimeError('unable to determine URL property name!')
 
-    def query_urls(self, layer, ogc_filter=None, url_property_name=None):
+    def query_urls(self, layer, ogc_expression=None, url_property_name=None):
         """Return an IndexedSet of files for a given layer
 
         :param layer: layer name supplied to GetFeature typename parameter
-        :param ogc_filter: XML string represenation of an OGC filter expression. If omitted, all URLs are returned.
+        :param ogc_expression: OgcExpression used to filter the returned features. If omitted, all URLs are returned.
         :param url_property_name: property name for file URL. If omitted, property name is determined from layer schema
         :return: list of files for the layer
         """
@@ -101,8 +112,8 @@ class WfsBroker(object):
             'propertyname': url_property_name
         }
 
-        if ogc_filter:
-            getfeature_kwargs['filter'] = ogc_filter
+        if ogc_expression:
+            getfeature_kwargs['ogc_expression'] = ogc_expression
 
         parsed_response = self.getfeature_dict(**getfeature_kwargs)
         file_urls = IndexedSet(f['properties'][url_property_name] for f in parsed_response['features'])
@@ -116,6 +127,6 @@ class WfsBroker(object):
         :return: list of files for the layer
         """
         url_property_name = self.get_url_property_name(layer)
-        ogc_filter = get_filter_for_file_url(name, property_name=url_property_name)
-        file_urls = self.query_urls(layer, ogc_filter=ogc_filter, url_property_name=url_property_name)
+        ogc_expression = get_ogc_expression_for_file_url(name, property_name=url_property_name)
+        file_urls = self.query_urls(layer, ogc_expression=ogc_expression, url_property_name=url_property_name)
         return name in file_urls
