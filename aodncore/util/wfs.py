@@ -71,7 +71,7 @@ class WfsBroker(object):
         finally:
             response.close()
 
-    def get_url_property_name_for_layer(self, layer):
+    def get_url_property_name(self, layer):
         """Get the URL property name for a given layer
 
         :param layer: schema dict as returned by WebFeatureService.get_schema
@@ -84,7 +84,7 @@ class WfsBroker(object):
         else:  # pragma: no cover
             raise RuntimeError('unable to determine URL property name!')
 
-    def query_urls_for_layer(self, layer, ogc_filter=None, url_property_name=None):
+    def query_urls(self, layer, ogc_filter=None, url_property_name=None):
         """Return an IndexedSet of files for a given layer
 
         :param layer: layer name supplied to GetFeature typename parameter
@@ -94,7 +94,7 @@ class WfsBroker(object):
         """
 
         if url_property_name is None:
-            url_property_name = self.get_url_property_name_for_layer(layer)
+            url_property_name = self.get_url_property_name(layer)
 
         getfeature_kwargs = {
             'typename': [layer],
@@ -108,14 +108,14 @@ class WfsBroker(object):
         file_urls = IndexedSet(f['properties'][url_property_name] for f in parsed_response['features'])
         return file_urls
 
-    def query_url_exists_for_layer(self, layer, name):
+    def query_url_exists(self, layer, name):
         """Returns a bool representing whether a given 'file_url' is present in a layer
 
         :param layer: layer name supplied to GetFeature typename parameter
         :param name: 'file_url' inserted into OGC filter, and supplied to GetFeature filter parameter
         :return: list of files for the layer
         """
-        url_property_name = self.get_url_property_name_for_layer(layer)
+        url_property_name = self.get_url_property_name(layer)
         ogc_filter = get_filter_for_file_url(name, property_name=url_property_name)
-        file_urls = self.query_urls_for_layer(layer, ogc_filter=ogc_filter, url_property_name=url_property_name)
+        file_urls = self.query_urls(layer, ogc_filter=ogc_filter, url_property_name=url_property_name)
         return name in file_urls

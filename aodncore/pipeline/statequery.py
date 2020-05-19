@@ -1,3 +1,5 @@
+import warnings
+
 from .files import RemotePipelineFileCollection
 
 __all__ = [
@@ -37,14 +39,20 @@ class StateQuery(object):
         """
         return self._wfs_broker.getfeature_dict(**kwargs)
 
-    def query_wfs_urls_for_layer(self, layer, **kwargs):  # pragma: no cover
-        """Return an IndexedSet of files for a given layer
+    def query_wfs_urls(self, layer, **kwargs):  # pragma: no cover
+        """Return a RemotePipelineFileCollection containing all files for a given layer
 
         :param layer: layer name supplied to GetFeature typename parameter
         :param kwargs: keyword arguments passed to underlying broker method
         :return: RemotePipelineFileCollection containing list of files for the layer
         """
-        return RemotePipelineFileCollection(self._wfs_broker.query_urls_for_layer(layer, **kwargs))
+        return RemotePipelineFileCollection(self._wfs_broker.query_urls(layer, **kwargs))
+
+    def query_wfs_urls_for_layer(self, layer, **kwargs):
+        warnings.warn("This method will be removed in a future version. You should use "
+                      "`self.state_query.query_wfs_urls` instead.", DeprecationWarning)
+
+        return self.query_wfs_urls(layer, **kwargs)
 
     def query_wfs_url_exists(self, layer, name):  # pragma: no cover
         """Returns a bool representing whether a given 'file_url' is present in a layer
@@ -53,7 +61,7 @@ class StateQuery(object):
         :param name: 'file_url' inserted into OGC filter, and supplied to GetFeature filter parameter
         :return: list of files for the layer
         """
-        return self._wfs_broker.query_url_exists_for_layer(layer, name)
+        return self._wfs_broker.query_url_exists(layer, name)
 
     def download(self, remotepipelinefilecollection, local_path):
         """Helper method to download a RemotePipelineFileCollection or RemotePipelineFile using the handler's internal

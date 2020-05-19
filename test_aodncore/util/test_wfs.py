@@ -44,7 +44,7 @@ class TestWfsBroker(BaseTestCase):
                          'IMOS/ANMN/NRS/NRSYON/Velocity/IMOS_ANMN-NRS_AETVZ_20110413T025900Z_NRSYON_FV01_NRSYON-1104-Workhorse-ADCP-27_END-20111014T222900Z_C-20150306T004801Z.nc')
 
     def test_get_url_property_name_for_layer(self):
-        propertyname = self.broker.get_url_property_name_for_layer('anmn_velocity_timeseries_map')
+        propertyname = self.broker.get_url_property_name('anmn_velocity_timeseries_map')
         self.assertEqual('file_url', propertyname)
 
     def test_get_url_property_name_for_layer_not_found(self):
@@ -52,20 +52,20 @@ class TestWfsBroker(BaseTestCase):
         self.broker.url_propertyname_candidates = ('nonexistent_property', 'another_nonexistent_property')
 
         with self.assertRaises(RuntimeError):
-            _ = self.broker.get_url_property_name_for_layer('anmn_velocity_timeseries_map')
+            _ = self.broker.get_url_property_name('anmn_velocity_timeseries_map')
 
     def test_query_files_for_layer(self):
-        files_for_layer = self.broker.query_urls_for_layer('anmn_velocity_timeseries_map')
+        files_for_layer = self.broker.query_urls('anmn_velocity_timeseries_map')
         self.assertIsInstance(files_for_layer, IndexedSet)
 
     def test_query_file_exists_for_layer_true(self):
         file_to_check = 'IMOS/ANMN/QLD/GBROTE/Velocity/IMOS_ANMN-QLD_AETVZ_20140408T102930Z_GBROTE_FV01_GBROTE-1404-AWAC-13_END-20141022T052930Z_C-20150215T063708Z.nc'
 
-        file_exists = self.broker.query_url_exists_for_layer(layer='anmn_velocity_timeseries_map', name=file_to_check)
+        file_exists = self.broker.query_url_exists(layer='anmn_velocity_timeseries_map', name=file_to_check)
         self.assertTrue(file_exists)
 
     def test_query_file_exists_for_layer_false(self):
         file_to_check = "IMOS/ANMN/QLD/GBROTE/Velocity/FILE_THAT_ISNT_IN_RESULTS.nc"
 
-        file_exists = self.broker.query_url_exists_for_layer(layer='anmn_velocity_timeseries_map', name=file_to_check)
+        file_exists = self.broker.query_url_exists(layer='anmn_velocity_timeseries_map', name=file_to_check)
         self.assertFalse(file_exists)
