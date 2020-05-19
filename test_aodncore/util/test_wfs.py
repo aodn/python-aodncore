@@ -3,6 +3,7 @@ import os
 from unittest.mock import patch
 
 from owslib.etree import etree
+from owslib.fes import PropertyIsEqualTo
 
 from aodncore.testlib import BaseTestCase
 from aodncore.util import IndexedSet
@@ -13,14 +14,11 @@ from test_aodncore import TESTDATA_DIR
 class TestPipelineWfs(BaseTestCase):
     def test_get_filter_for_file_url(self):
         file_url = 'IMOS/test/file/url'
-        xml_filter = get_filter_for_file_url(file_url, property_name='file_url')
+        ogc_filter = get_filter_for_file_url(file_url, property_name='file_url')
 
-        root = etree.fromstring(xml_filter)
-        property_name = root.findtext('ogc:PropertyName', namespaces=root.nsmap)
-        literal = root.findtext('ogc:Literal', namespaces=root.nsmap)
-
-        self.assertEqual(property_name, 'file_url')
-        self.assertEqual(literal, file_url)
+        self.assertIsInstance(ogc_filter, PropertyIsEqualTo)
+        self.assertEqual(ogc_filter.propertyname, 'file_url')
+        self.assertEqual(ogc_filter.literal, file_url)
 
 
 class TestWfsBroker(BaseTestCase):

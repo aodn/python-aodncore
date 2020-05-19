@@ -2,7 +2,7 @@ import json
 from collections import OrderedDict
 
 from owslib.etree import etree
-from owslib.fes import PropertyIsEqualTo
+from owslib.fes import PropertyIsEqualTo, OgcExpression
 from owslib.wfs import WebFeatureService
 
 from ..util import IndexedSet
@@ -18,23 +18,24 @@ DEFAULT_WFS_VERSION = '1.1.0'
 
 
 def ogc_filter_to_string(ogc_filter):
-    """Convert an OGC filter object into it's XML string representation
+    """Convert an OGC filter object into its XML string representation
 
-    :param ogc_filter: OGC filter object
+    :param ogc_filter: OGC filter object (or XML representation)
     :return: XML string
     """
-    return etree.tostring(ogc_filter.toXML()).decode('utf-8')
-
+    if isinstance(ogc_filter, OgcExpression):
+        return etree.tostring(ogc_filter.toXML()).decode('utf-8')
+    else:
+        return ogc_filter
 
 def get_filter_for_file_url(file_url, property_name='url'):
     """Return OGC filter XML to query for a single file_url
 
     :param file_url: URL string
     :param property_name: URL property name to filter on
-    :return: OGC XML filter string
+    :return: OGC filter expression
     """
-    file_url_filter = PropertyIsEqualTo(propertyname=property_name, literal=file_url)
-    return ogc_filter_to_string(file_url_filter)
+    return PropertyIsEqualTo(propertyname=property_name, literal=file_url)
 
 
 class WfsBroker(object):
@@ -64,6 +65,8 @@ class WfsBroker(object):
         :return: dict containing the parsed GetFeature response
         """
         kwargs.pop('outputFormat', None)
+        if 'filter' in kwargs:
+            kwargs['filter'] = ogc_filter_to_string(kwargs['filter'])
         response = self.wfs.getfeature(outputFormat='json', **kwargs)
         response_body = response.getvalue()
         try:
@@ -88,7 +91,7 @@ class WfsBroker(object):
         """Return an IndexedSet of files for a given layer
 
         :param layer: layer name supplied to GetFeature typename parameter
-        :param ogc_filter: XML string represenation of an OGC filter expression. If omitted, all URLs are returned.
+        :param ogc_filter: OGC filter expression. If omitted, all URLs are returned.
         :param url_property_name: property name for file URL. If omitted, property name is determined from layer schema
         :return: list of files for the layer
         """
