@@ -5,7 +5,7 @@ from owslib.etree import etree
 from owslib.fes import PropertyIsEqualTo
 from owslib.wfs import WebFeatureService
 
-from ..util import IndexedSet
+from ..util import IndexedSet, lazyproperty
 
 __all__ = [
     'DEFAULT_WFS_VERSION',
@@ -49,15 +49,20 @@ class WfsBroker(object):
     url_propertyname_candidates = ('file_url', 'url')
 
     def __init__(self, wfs_url, version=DEFAULT_WFS_VERSION):
-        self._wfs = WebFeatureService(wfs_url, version=version)
+        self._wfs_url = wfs_url
+        self._wfs_version = version
 
-    @property
+    @lazyproperty
     def wfs(self):
         """Read-only property to access the instantiated WebFeatureService object directly
 
+        Note: lazily initialised because instantiating a WebFeatureService causes HTTP traffic, which is only
+        desirable if subsequent WFS requests are actually going to be made (which isn't always the case when
+        instantiating this broker class)
+
         :return: WebFeatureService instance
         """
-        return self._wfs
+        return WebFeatureService(self._wfs_url, version=self._wfs_version)
 
     def getfeature_dict(self, ogc_expression=None, **kwargs):
         """Make a GetFeature request, and return the response in a native dict.
