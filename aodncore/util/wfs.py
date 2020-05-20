@@ -1,4 +1,5 @@
 import json
+import warnings
 from collections import OrderedDict
 
 from owslib.etree import etree
@@ -123,6 +124,12 @@ class WfsBroker(object):
         parsed_response = self.getfeature_dict(**getfeature_kwargs)
         file_urls = IndexedSet(f['properties'][url_property_name] for f in parsed_response['features'])
         return file_urls
+
+    def query_urls_for_layer(self, layer, ogc_expression=None, url_property_name=None):
+        warnings.warn("This method will be removed in a future version. From a pipeline handler, you should use "
+                      "`WfsBroker.query_urls` instead.", DeprecationWarning)
+
+        return self.query_urls(layer, ogc_expression=ogc_expression, url_property_name=url_property_name)
 
     def query_url_exists(self, layer, name):
         """Returns a bool representing whether a given 'file_url' is present in a layer
