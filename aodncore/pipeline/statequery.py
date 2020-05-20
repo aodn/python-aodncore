@@ -42,8 +42,8 @@ class StateQuery(object):
         return RemotePipelineFileCollection(self._wfs_broker.query_urls(layer, **kwargs))
 
     def query_wfs_urls_for_layer(self, layer, **kwargs):  # pragma: no cover
-        warnings.warn("This method will be removed in a future version. You should use "
-                      "`self.state_query.query_wfs_urls` instead.", DeprecationWarning)
+        warnings.warn("This method will be removed in a future version. Please update code to use "
+                      "`query_wfs_urls` instead.", DeprecationWarning)
         return self._wfs_broker.query_urls(layer, **kwargs)
 
     def query_wfs_url_exists(self, layer, name):  # pragma: no cover

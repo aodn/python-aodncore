@@ -126,8 +126,8 @@ class WfsBroker(object):
         return file_urls
 
     def query_urls_for_layer(self, layer, ogc_expression=None, url_property_name=None):
-        warnings.warn("This method will be removed in a future version. From a pipeline handler, you should use "
-                      "`WfsBroker.query_urls` instead.", DeprecationWarning)
+        warnings.warn("This method will be removed in a future version. Please update code to use "
+                      "`query_urls` instead.", DeprecationWarning)
 
         return self.query_urls(layer, ogc_expression=ogc_expression, url_property_name=url_property_name)
 

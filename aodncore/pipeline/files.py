@@ -1028,8 +1028,8 @@ class RemotePipelineFileCollection(PipelineFileCollectionBase):
         :param local_path: local path into which files are downloaded
         :return: None
         """
-        warnings.warn("This method will be removed in a future version. From a pipeline handler, you should use "
-                      "`self.state_query.download` instead.", DeprecationWarning)
+        warnings.warn("This method will be removed in a future version. Please update code to use  "
+                      "`StateQuery.download` instead.", DeprecationWarning)
         broker.download(self, local_path)
 
     def keys(self):
