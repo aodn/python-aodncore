@@ -91,8 +91,9 @@ class CheckRunnerAdapter(BaseCheckRunner):
             self._logger.sysinfo("get_child_check_runner -> {check_runner}".format(check_runner=check_runner))
             check_runner.run(check_list)
 
-        failed_files = PipelineFileCollection(f for f in pipeline_files
-                                              if f.check_type in check_types and not f.check_result.compliant)
+        failed_files = PipelineFileCollection((f for f in pipeline_files
+                                              if f.check_type in check_types and not f.check_result.compliant),
+                                              validate_unique=False)
 
         for f in failed_files:
             self._logger.error(u"log for failed file '{name}'{sep}{log}".format(name=f.name, sep=os.linesep,
