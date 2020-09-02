@@ -236,6 +236,10 @@ class PipelineFilePublishType(Enum):
         self._is_store_type = is_store_type
         self._is_harvest_type = is_harvest_type
 
+    @classmethod
+    def get_type_from_name(cls, name):
+        return next((t for t in cls if name == t.name), cls.UNSET)
+
     @property
     def is_addition_type(self):
         return self._is_addition_type
