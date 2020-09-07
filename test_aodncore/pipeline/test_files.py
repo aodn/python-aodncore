@@ -332,6 +332,23 @@ class TestPipelineFileCollection(BaseTestCase):
         with self.assertRaises(AttributeValidationError):
             self.collection.add(p2)
 
+    def test_add_duplicate_dest_path_without_validation(self):
+        p1 = PipelineFile(GOOD_NC)
+        p1.publish_type = PipelineFilePublishType.UPLOAD_ONLY
+        p1.dest_path = 'FIXED_DEST_PATH'
+        self.collection.add(p1)
+
+        p2 = PipelineFile(BAD_NC)
+        p2.publish_type = PipelineFilePublishType.UPLOAD_ONLY
+        p2.dest_path = 'FIXED_DEST_PATH'
+
+        self.collection.add(p2, validate_unique=False)
+
+        self.assertSetEqual({p1, p2}, self.collection)
+
+        with self.assertNoException():
+            _ = PipelineFileCollection((f for f in self.collection), validate_unique=False)
+
     def test_add_duplicate_archive_path(self):
         p1 = PipelineFile(GOOD_NC)
         p1.publish_type = PipelineFilePublishType.ARCHIVE_ONLY
@@ -344,6 +361,23 @@ class TestPipelineFileCollection(BaseTestCase):
 
         with self.assertRaises(AttributeValidationError):
             self.collection.add(p2)
+
+    def test_add_duplicate_archive_path_without_validation(self):
+        p1 = PipelineFile(GOOD_NC)
+        p1.publish_type = PipelineFilePublishType.ARCHIVE_ONLY
+        p1.archive_path = 'FIXED_ARCHIVE_PATH'
+        self.collection.add(p1)
+
+        p2 = PipelineFile(BAD_NC)
+        p2.publish_type = PipelineFilePublishType.ARCHIVE_ONLY
+        p2.archive_path = 'FIXED_ARCHIVE_PATH'
+
+        self.collection.add(p2, validate_unique=False)
+
+        self.assertSetEqual({p1, p2}, self.collection)
+
+        with self.assertNoException():
+            _ = PipelineFileCollection((f for f in self.collection), validate_unique=False)
 
     def test_set_dest_paths_duplicate(self):
         def dest_path_static(src_path):

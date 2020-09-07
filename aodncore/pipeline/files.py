@@ -569,12 +569,13 @@ class PipelineFileCollectionBase(MutableSet):
 
     :param data: data to add during initialisation of the collection, either a single :py:class:`PipelineFile` or file
         path, or an :py:class:`Iterable` whose elements are :py:class:`PipelineFile` instances or file paths
+    :param validate_unique: :py:class:`bool` passed to the `add` method
     :type data: :py:class:`PipelineFile`, :py:class:`RemotePipelineFile`, :py:class:`str`, :py:class:`Iterable`
     """
     __slots__ = ['_s', 'member_class', 'member_validator', 'member_from_string_method', 'unique_attributes']
 
-    def __init__(self, data=None, member_class=PipelineFile, member_validator=None, member_from_string_method=None,
-                 unique_attributes=()):
+    def __init__(self, data=None, validate_unique=True, member_class=PipelineFile, member_validator=None,
+                 member_from_string_method=None, unique_attributes=()):
         super().__init__()
 
         self._s = IndexedSet()
@@ -588,7 +589,7 @@ class PipelineFileCollectionBase(MutableSet):
             if isinstance(data, (self.member_class, str)):
                 data = [data]
             for f in data:
-                self.add(f)
+                self.add(f, validate_unique=validate_unique)
 
     def __bool__(self):
         return bool(self._s)
@@ -609,12 +610,13 @@ class PipelineFileCollectionBase(MutableSet):
     def __repr__(self):  # pragma: no cover
         return "{name}({repr})".format(name=self.__class__.__name__, repr=repr(list(self._s)))
 
-    def add(self, pipeline_file, overwrite=False, **kwargs):
+    def add(self, pipeline_file, overwrite=False, validate_unique=True, **kwargs):
         """Add a file to the collection
 
         :param pipeline_file: :py:class:`PipelineFile` or file path
         :param kwargs: :py:class:`dict` additional keywords passed to to PipelineFileBase __init__ method
         :param overwrite: :py:class:`bool` which, if True, will overwrite an existing matching file in the collection
+        :param validate_unique: :py:class:`bool` which, if True, will validate unique attributes when adding the file
         :return: :py:class:`bool` which indicates whether the file was successfully added
         """
         self.member_validator(pipeline_file)
@@ -633,10 +635,11 @@ class PipelineFileCollectionBase(MutableSet):
             self._s.discard(fileobj)
             result = True
 
-        for attribute in self.unique_attributes:
-            value = getattr(fileobj, attribute)
-            if value is not None:
-                self.validate_unique_attribute_value(attribute, value)
+        if validate_unique:
+            for attribute in self.unique_attributes:
+                value = getattr(fileobj, attribute)
+                if value is not None:
+                    self.validate_unique_attribute_value(attribute, value)
 
         self._s.add(fileobj)
         return result
@@ -675,20 +678,21 @@ class PipelineFileCollectionBase(MutableSet):
             raise TypeError('invalid sequence, all elements must be PipelineFile objects')
         return self.__class__(self._s.union(sequence))
 
-    def update(self, sequence, overwrite=False):
+    def update(self, sequence, overwrite=False, validate_unique=True):
         """Add the elements of an existing :py:class:`Sequence` to this collection
 
         :param sequence: :py:class:`Sequence` containing :py:class:`PipelineFile` or file path elements to be added to
             the collection
         :param overwrite: :param overwrite: :py:class:`bool` which, if True, will overwrite any existing matching files
             in the collection
+        :param validate_unique: :py:class:`bool` which, if True, will validate unique attributes when adding the files
         :return: :py:class:`bool` which indicates whether any files were successfully added
         """
         validate_nonstring_iterable(sequence)
 
         results = []
         for item in sequence:
-            results.append(self.add(item, overwrite=overwrite))
+            results.append(self.add(item, overwrite=overwrite, validate_unique=validate_unique))
         return any(results)
 
     def get_pipelinefile_from_dest_path(self, dest_path):
@@ -729,7 +733,7 @@ class PipelineFileCollectionBase(MutableSet):
         :return: :py:class:`PipelineFileCollection` containing only :py:class:`PipelineFile` instances with the given
             attribute matching the given value
         """
-        collection = self.__class__(f for f in self._s if getattr(f, attribute) is value)
+        collection = self.__class__((f for f in self._s if getattr(f, attribute) is value), validate_unique=False)
         return collection
 
     def filter_by_attribute_id_not(self, attribute, value):
@@ -741,7 +745,7 @@ class PipelineFileCollectionBase(MutableSet):
         :return: :py:class:`PipelineFileCollection` containing only :py:class:`PipelineFile` instances with the given
             attribute not matching the given value
         """
-        collection = self.__class__(f for f in self._s if getattr(f, attribute) is not value)
+        collection = self.__class__((f for f in self._s if getattr(f, attribute) is not value), validate_unique=False)
         return collection
 
     def filter_by_attribute_value(self, attribute, value):
@@ -753,7 +757,7 @@ class PipelineFileCollectionBase(MutableSet):
         :return: :py:class:`PipelineFileCollection` containing only :py:class:`PipelineFile`instances with the given
             attribute matching the given value
         """
-        collection = self.__class__(f for f in self._s if getattr(f, attribute) == value)
+        collection = self.__class__((f for f in self._s if getattr(f, attribute) == value), validate_unique=False)
         return collection
 
     def filter_by_attribute_regexes(self, attribute, regexes):
@@ -767,7 +771,9 @@ class PipelineFileCollectionBase(MutableSet):
         """
         regexes = ensure_regex_list(regexes)
         collection = self.__class__(
-            f for f in self._s if matches_regexes(getattr(f, attribute), include_regexes=regexes))
+            (f for f in self._s if matches_regexes(getattr(f, attribute), include_regexes=regexes)),
+            validate_unique=False
+        )
         return collection
 
     # add method alias for backwards compatibility
@@ -781,7 +787,7 @@ class PipelineFileCollectionBase(MutableSet):
         :return: :py:class:`PipelineFileCollection` containing only :py:class:`PipelineFile` instances with a True value
             for the given attribute
         """
-        collection = self.__class__(f for f in self._s if getattr(f, attribute))
+        collection = self.__class__((f for f in self._s if getattr(f, attribute)), validate_unique=False)
         return collection
 
     def filter_by_bool_attribute_not(self, attribute):
@@ -792,7 +798,7 @@ class PipelineFileCollectionBase(MutableSet):
         :return: :py:class:`PipelineFileCollection` containing only :py:class:`PipelineFile` instances with a False
             value for the given attribute
         """
-        collection = self.__class__(f for f in self._s if not getattr(f, attribute))
+        collection = self.__class__((f for f in self._s if not getattr(f, attribute)), validate_unique=False)
         return collection
 
     def filter_by_bool_attributes_and(self, *attributes):
@@ -808,7 +814,7 @@ class PipelineFileCollectionBase(MutableSet):
         def all_attributes_true(pf):
             return all(getattr(pf, a) for a in attributes_set)
 
-        collection = self.__class__(f for f in self._s if all_attributes_true(f))
+        collection = self.__class__((f for f in self._s if all_attributes_true(f)), validate_unique=False)
         return collection
 
     def filter_by_bool_attributes_and_not(self, true_attributes, false_attributes):
@@ -835,7 +841,9 @@ class PipelineFileCollectionBase(MutableSet):
             return not any(getattr(pf, a) for a in false_attributes_set)
 
         collection = self.__class__(
-            f for f in self._s if check_true_attributes(f) and check_false_attributes(f))
+            (f for f in self._s if check_true_attributes(f) and check_false_attributes(f)),
+            validate_unique=False
+        )
         return collection
 
     def filter_by_bool_attributes_not(self, *attributes):
@@ -851,7 +859,7 @@ class PipelineFileCollectionBase(MutableSet):
         def no_attributes_true(pf):
             return not any(getattr(pf, a) for a in attributes_set)
 
-        collection = self.__class__(f for f in self._s if no_attributes_true(f))
+        collection = self.__class__((f for f in self._s if no_attributes_true(f)), validate_unique=False)
         return collection
 
     def filter_by_bool_attributes_or(self, *attributes):
@@ -867,7 +875,7 @@ class PipelineFileCollectionBase(MutableSet):
         def any_attributes_true(pf):
             return any(getattr(pf, a) for a in attributes_set)
 
-        collection = self.__class__(f for f in self._s if any_attributes_true(f))
+        collection = self.__class__((f for f in self._s if any_attributes_true(f)), validate_unique=False)
         return collection
 
     def get_attribute_list(self, attribute):
@@ -1001,14 +1009,14 @@ class PipelineFileCollection(PipelineFileCollectionBase):
         return cls(PipelineFile.from_remotepipelinefile(f, is_deletion=are_deletions)
                    for f in remotepipelinefilecollection)
 
-    def add(self, pipeline_file, deletion=False, overwrite=False):
+    def add(self, pipeline_file, deletion=False, overwrite=False, validate_unique=True):
         self.member_validator(pipeline_file)
         validate_bool(deletion)
 
         if not isinstance(pipeline_file, self.member_class) and not deletion and not os.path.isfile(pipeline_file):
             raise MissingFileError("file '{src}' doesn't exist".format(src=pipeline_file))
 
-        return super().add(pipeline_file, overwrite=overwrite, is_deletion=deletion)
+        return super().add(pipeline_file, overwrite=overwrite, validate_unique=validate_unique, is_deletion=deletion)
 
     def _set_attribute(self, attribute, value):
         for f in self._s:
