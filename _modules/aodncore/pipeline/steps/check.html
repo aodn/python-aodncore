@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>aodncore.pipeline.steps.check &mdash; aodncore 1.1.4 documentation</title>
+  <title>aodncore.pipeline.steps.check &mdash; aodncore 1.1.5 documentation</title>
   
 
   
@@ -58,7 +58,7 @@
             
             
               <div class="version">
-                1.1.4
+                1.1.5
               </div>
             
           
@@ -259,8 +259,9 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">_logger</span><span class="o">.</span><span class="n">sysinfo</span><span class="p">(</span><span class="s2">&quot;get_child_check_runner -&gt; </span><span class="si">{check_runner}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">check_runner</span><span class="o">=</span><span class="n">check_runner</span><span class="p">))</span>
             <span class="n">check_runner</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">check_list</span><span class="p">)</span>
 
-        <span class="n">failed_files</span> <span class="o">=</span> <span class="n">PipelineFileCollection</span><span class="p">(</span><span class="n">f</span> <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="n">pipeline_files</span>
-                                              <span class="k">if</span> <span class="n">f</span><span class="o">.</span><span class="n">check_type</span> <span class="ow">in</span> <span class="n">check_types</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">f</span><span class="o">.</span><span class="n">check_result</span><span class="o">.</span><span class="n">compliant</span><span class="p">)</span>
+        <span class="n">failed_files</span> <span class="o">=</span> <span class="n">PipelineFileCollection</span><span class="p">((</span><span class="n">f</span> <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="n">pipeline_files</span>
+                                              <span class="k">if</span> <span class="n">f</span><span class="o">.</span><span class="n">check_type</span> <span class="ow">in</span> <span class="n">check_types</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">f</span><span class="o">.</span><span class="n">check_result</span><span class="o">.</span><span class="n">compliant</span><span class="p">),</span>
+                                              <span class="n">validate_unique</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
 
         <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="n">failed_files</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="sa">u</span><span class="s2">&quot;log for failed file &#39;</span><span class="si">{name}</span><span class="s2">&#39;</span><span class="si">{sep}{log}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="n">f</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="n">sep</span><span class="o">=</span><span class="n">os</span><span class="o">.</span><span class="n">linesep</span><span class="p">,</span>
