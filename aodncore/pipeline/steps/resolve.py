@@ -206,18 +206,25 @@ class MapManifestResolveRunner(BaseManifestResolveRunner):
         /path/to/source/file2,destination/path/for/upload2
 
     """
-    PATH_SPLIT_CHAR = ','
+    schema = tableschema.Schema({'fields': [
+        {
+            'name': 'local_path',
+            'type': 'string',
+            'constraints': {'required': 'true'}
+        },
+        {
+            'name': 'dest_path',
+            'type': 'string',
+            'constraints': {'required': 'true'}
+        }
+    ]})
 
     def run(self):
-        with open(self.input_file, 'r') as f:
-            for line_newline in f:
-                line = line_newline.rstrip(os.linesep)
-                src, dest_path = line.split(self.PATH_SPLIT_CHAR, 1)
-
-                abs_path = self.get_abs_path(src)
-                fileobj = PipelineFile(abs_path, dest_path=dest_path)
-
-                self._collection.add(fileobj)
+        table = tableschema.Table(self.input_file, headers=self.schema.field_names, schema=self.schema, format='csv')
+        for local_path, dest_path in table.iter(exc_handler=self._exc_handler):
+            abs_path = self.get_abs_path(local_path)
+            pipeline_file = PipelineFile(abs_path, dest_path=dest_path)
+            self._collection.add(pipeline_file)
 
         return self._collection
 
