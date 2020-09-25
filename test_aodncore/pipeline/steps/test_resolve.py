@@ -1,9 +1,10 @@
 import os
 from uuid import uuid4
 
+from aodncore.pipeline import PipelineFilePublishType
 from aodncore.pipeline.exceptions import DuplicatePipelineFileError, InvalidFileFormatError
-from aodncore.pipeline.steps.resolve import (get_resolve_runner, DirManifestResolveRunner, GzipFileResolveRunner,
-                                             JsonManifestResolveRunner, MapManifestResolveRunner,
+from aodncore.pipeline.steps.resolve import (get_resolve_runner, DeleteManifestResolveRunner, DirManifestResolveRunner,
+                                             GzipFileResolveRunner, JsonManifestResolveRunner, MapManifestResolveRunner,
                                              RsyncManifestResolveRunner, SimpleManifestResolveRunner,
                                              SingleFileResolveRunner, ZipFileResolveRunner)
 from aodncore.testlib import BaseTestCase
@@ -26,6 +27,9 @@ MAP_MANIFEST = os.path.join(TESTDATA_DIR, 'test.map_manifest')
 RSYNC_MANIFEST = os.path.join(TESTDATA_DIR, 'test.rsync_manifest')
 RSYNC_MANIFEST_DUPLICATE = os.path.join(TESTDATA_DIR, 'test_duplicate.rsync_manifest')
 SIMPLE_MANIFEST = os.path.join(TESTDATA_DIR, 'test.manifest')
+DELETE_MANIFEST = os.path.join(TESTDATA_DIR, 'test.delete_manifest')
+DELETE_MANIFEST_INVALID = os.path.join(TESTDATA_DIR, 'test_invalid.delete_manifest')
+DELETE_MANIFEST_NOTDELETION= os.path.join(TESTDATA_DIR, 'test_not_deletion.delete_manifest')
 
 
 class MockConfig(object):
@@ -53,6 +57,10 @@ class TestPipelineStepsResolve(BaseTestCase):
         simple_manifest_resolve_runner = get_resolve_runner(SIMPLE_MANIFEST, self.temp_dir, MOCK_CONFIG,
                                                             self.test_logger)
         self.assertIsInstance(simple_manifest_resolve_runner, SimpleManifestResolveRunner)
+
+        delete_manifest_resolve_runner = get_resolve_runner(DELETE_MANIFEST, self.temp_dir, MOCK_CONFIG,
+                                                            self.test_logger)
+        self.assertIsInstance(delete_manifest_resolve_runner, DeleteManifestResolveRunner)
 
         nc_resolve_runner = get_resolve_runner(GOOD_NC, self.temp_dir, MOCK_CONFIG, self.test_logger)
         self.assertIsInstance(nc_resolve_runner, SingleFileResolveRunner)
@@ -145,6 +153,38 @@ class TestSimpleManifestResolveRunner(BaseTestCase):
 
         self.assertEqual(collection[0].src_path, os.path.join(MOCK_CONFIG.pipeline_config['global']['wip_dir'],
                                                               os.path.basename(TEST_MANIFEST_NC)))
+
+
+class TestDeleteManifestResolveRunner(BaseTestCase):
+    def test_delete_manifest_resolve_runner(self):
+        delete_manifest_resolve_runner = DeleteManifestResolveRunner(DELETE_MANIFEST, self.temp_dir, MOCK_CONFIG,
+                                                                     self.test_logger)
+        collection = delete_manifest_resolve_runner.run()
+
+        self.assertEqual(collection[0].dest_path, 'UNITTEST/NOT/A/REAL/PATH')
+        self.assertTrue(collection[0].is_deletion)
+        self.assertIs(collection[0].publish_type, PipelineFilePublishType.DELETE_ONLY)
+
+        self.assertEqual(collection[1].dest_path, 'UNITTEST/NOT/A/REAL/PATH/EITHER')
+        self.assertTrue(collection[1].is_deletion)
+        self.assertIs(collection[1].publish_type, PipelineFilePublishType.DELETE_UNHARVEST)
+
+        self.assertEqual(collection[2].dest_path, 'UNITTEST/NOT/A/REAL/PATH/EITHER/AGAIN')
+        self.assertTrue(collection[2].is_deletion)
+        self.assertIs(collection[2].publish_type, PipelineFilePublishType.UNHARVEST_ONLY)
+
+    def test_invalid_delete_manifest_resolve_runner(self):
+        delete_manifest_resolve_runner = DeleteManifestResolveRunner(DELETE_MANIFEST_INVALID, self.temp_dir,
+                                                                     MOCK_CONFIG, self.test_logger)
+        with self.assertRaisesRegex(InvalidFileFormatError,
+                                    r"One or more rows contained an invalid publish_type\..*Invalid lines are: \[\(1, 'INVALID_PUBLISH_TYPE'\)\]"):
+            _ = delete_manifest_resolve_runner.run()
+
+    def test_not_deletion_delete_manifest_resolve_runner(self):
+        delete_manifest_resolve_runner = DeleteManifestResolveRunner(DELETE_MANIFEST_NOTDELETION, self.temp_dir,
+                                                                     MOCK_CONFIG, self.test_logger)
+        with self.assertRaisesRegex(InvalidFileFormatError, r"One or more rows contained an invalid publish_type\..*Invalid lines are: \[\(2, 'HARVEST_UPLOAD'\)\]"):
+            _ = delete_manifest_resolve_runner.run()
 
 
 class TestSingleFileResolveRunner(BaseTestCase):

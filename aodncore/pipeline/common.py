@@ -142,6 +142,7 @@ class FileType(Enum):
     MAP_MANIFEST = (('.map_manifest',), 'text/plain', is_nonempty_file)
     RSYNC_MANIFEST = (('.rsync_manifest',), 'text/plain', is_nonempty_file)
     SIMPLE_MANIFEST = (('.manifest',), 'text/plain', is_nonempty_file)
+    DELETE_MANIFEST = (('.delete_manifest',), 'text/plain', is_nonempty_file)
 
     def __init__(self, extensions, mime_type, validator):
         self.extensions = extensions

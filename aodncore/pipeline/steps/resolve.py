@@ -21,20 +21,23 @@ import abc
 import json
 import os
 import re
+from collections import namedtuple
 from enum import Enum
 from io import open
 
+import tableschema
 from jsonschema.exceptions import ValidationError
 
 from .basestep import BaseStepRunner
-from ..common import FileType
+from ..common import FileType, PipelineFilePublishType
 from ..exceptions import InvalidFileFormatError
-from ..files import PipelineFile, PipelineFileCollection
+from ..files import PipelineFile, PipelineFileCollection, RemotePipelineFile
 from ..schema import validate_json_manifest
 from ...util import extract_gzip, extract_zip, list_regular_files, is_gzip_file, is_zip_file, safe_copy_file
 
 __all__ = [
     'get_resolve_runner',
+    'DeleteManifestResolveRunner',
     'DirManifestResolveRunner',
     'GzipFileResolveRunner',
     'JsonManifestResolveRunner',
@@ -62,6 +65,8 @@ def get_resolve_runner(input_file, output_dir, config, logger, resolve_params=No
         return ZipFileResolveRunner(input_file, output_dir, config, logger)
     elif file_type is FileType.SIMPLE_MANIFEST:
         return SimpleManifestResolveRunner(input_file, output_dir, config, logger, resolve_params)
+    elif file_type is FileType.DELETE_MANIFEST:
+        return DeleteManifestResolveRunner(input_file, output_dir, config, logger, resolve_params)
     elif file_type is FileType.JSON_MANIFEST:
         return JsonManifestResolveRunner(input_file, output_dir, config, logger, resolve_params)
     elif file_type is FileType.MAP_MANIFEST:
@@ -122,6 +127,9 @@ class ZipFileResolveRunner(BaseResolveRunner):
         return self._collection
 
 
+TableRowErrorDetails = namedtuple('TableRowError', ('exc', 'row_number', 'row_data', 'error_data'))
+
+
 # noinspection PyAbstractClass
 class BaseManifestResolveRunner(BaseResolveRunner):
     def __init__(self, input_file, output_dir, config, logger, resolve_params=None):
@@ -132,6 +140,11 @@ class BaseManifestResolveRunner(BaseResolveRunner):
 
         relative_path_root = resolve_params.get('relative_path_root', self._config.pipeline_config['global']['wip_dir'])
         self.relative_path_root = relative_path_root
+
+        self.errors = []
+
+    def _exc_handler(self, exc, row_number=None, row_data=None, error_data=None):
+        self.errors.append(TableRowErrorDetails(exc, row_number, row_data, error_data))
 
     def get_abs_path(self, path):
         return path if os.path.isabs(path) else os.path.join(self.relative_path_root, path)
@@ -314,6 +327,52 @@ class SimpleManifestResolveRunner(BaseManifestResolveRunner):
                 line = line_newline.rstrip(os.linesep)
                 abs_path = self.get_abs_path(line)
                 self._collection.add(abs_path)
+
+        return self._collection
+
+
+class DeleteManifestResolveRunner(BaseManifestResolveRunner):
+    """Handles a delete manifest file which only contains a list of source files, and a valid "deletion publish type"
+        string, as defined by the PipelineFilePublishType enum
+
+    File format must be as follows::
+
+        destination/path/for/delete1,DELETE_PUBLISH_TYPE
+        destination/path/for/delete2,DELETE_PUBLISH_TYPE
+
+    """
+    _deletion_publish_types = [t.name for t in PipelineFilePublishType.all_deletion_types]
+    schema = tableschema.Schema({'fields': [
+        {
+            'name': 'dest_path',
+            'type': 'string',
+            'constraints': {'required': 'true'}
+        },
+        {
+            'name': 'publish_type_str',
+            'type': 'string',
+            'constraints': {'required': 'true', 'enum': _deletion_publish_types}
+        }
+    ]})
+
+    def run(self):
+        table = tableschema.Table(self.input_file, headers=self.schema.field_names, schema=self.schema, format='csv')
+        for dest_path, publish_type_str in table.iter(exc_handler=self._exc_handler):
+            # continue processing lines after a cast failure, so that all errors can be reported at the end
+            if isinstance(publish_type_str, tableschema.FailedCast):
+                continue
+
+            remote_file = RemotePipelineFile(dest_path)
+            pipeline_file = PipelineFile.from_remotepipelinefile(remote_file, is_deletion=True)
+            pipeline_file.publish_type = PipelineFilePublishType.get_type_from_name(publish_type_str)
+            self._collection.add(pipeline_file)
+
+        if self.errors:
+            error_rows = [(f.row_number, f.error_data['publish_type_str']) for f in self.errors]
+            raise InvalidFileFormatError("One or more rows contained an invalid publish_type. "
+                                         "publish_type must be one of {deletion_publish_types}. Invalid lines are: "
+                                         "{error_rows}".format(deletion_publish_types=self._deletion_publish_types,
+                                                               error_rows=error_rows))
 
         return self._collection
 
