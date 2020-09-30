@@ -127,9 +127,6 @@ class ZipFileResolveRunner(BaseResolveRunner):
         return self._collection
 
 
-TableRowErrorDetails = namedtuple('TableRowError', ('exc', 'row_number', 'row_data', 'error_data'))
-
-
 # noinspection PyAbstractClass
 class BaseManifestResolveRunner(BaseResolveRunner):
     def __init__(self, input_file, output_dir, config, logger, resolve_params=None):
@@ -140,11 +137,6 @@ class BaseManifestResolveRunner(BaseResolveRunner):
 
         relative_path_root = resolve_params.get('relative_path_root', self._config.pipeline_config['global']['wip_dir'])
         self.relative_path_root = relative_path_root
-
-        self.errors = []
-
-    def _exc_handler(self, exc, row_number=None, row_data=None, error_data=None):
-        self.errors.append(TableRowErrorDetails(exc, row_number, row_data, error_data))
 
     def get_abs_path(self, path):
         return path if os.path.isabs(path) else os.path.join(self.relative_path_root, path)
@@ -195,7 +187,73 @@ class JsonManifestResolveRunner(BaseManifestResolveRunner):
         return self._collection
 
 
-class MapManifestResolveRunner(BaseManifestResolveRunner):
+# define a namedtuple for storing a more human readable structure for the tableschema exception handler
+TableRowErrorDetails = namedtuple('TableRowErrorDetails', ('exc', 'row_number', 'row_data', 'error_data'))
+
+
+# noinspection PyAbstractClass
+class BaseCsvManifestResolveRunner(BaseManifestResolveRunner):
+    """Base class for handling a CSV manifest file. Unlike other resolve runners, this creates :py:class:`PipelineFile`
+    objects to add to the collection rather than allowing the collection to generate theobjects.
+
+    Subclasses must implement a 'schema' property which describes and validates the CSV fields, and a `_row_handler`
+    method which creates a PipelineFile object from the parsed row (which is implementation specific)
+
+    """
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+
+        self.errors = []
+
+    @property
+    @abc.abstractmethod
+    def schema(self):
+        """Defines the tableschema schema describing the input file
+        :returns: tableschema.Schema instance
+        """
+        pass
+
+    @abc.abstractmethod
+    def _row_handler(self, row):
+        """Translates a parsed row into a PipelineFile object to add to the collection
+        :returns: PipelineFile instance
+        """
+        pass
+
+    def _exc_handler(self, exc, row_number=None, row_data=None, error_data=None):
+        self.errors.append(TableRowErrorDetails(exc, row_number, row_data, error_data))
+
+    @staticmethod
+    def _format_error(error):
+        return "{args}: {errors}".format(args=','.join(str(e) for e in error.exc.args),
+                                         errors=','.join(str(e) for e in error.exc.errors))
+
+    def _handle_errors(self):
+        error_details = [self._format_error(e) for e in self.errors]
+        raise InvalidFileFormatError(error_details)
+
+    def _table_iterator(self):
+        table = tableschema.Table(self.input_file, headers=self.schema.field_names, schema=self.schema, format='csv')
+        return (r for r in table.iter(exc_handler=self._exc_handler))
+
+    def run(self):
+        for row in self._table_iterator():
+            if self.errors:
+                # continue iterating to detect *all* errors in the file, but don't waste resources building the
+                # PipelineFileCollection
+                continue
+            else:
+                pipeline_file = self._row_handler(row)
+                self._collection.add(pipeline_file)
+
+        if self.errors:
+            self._handle_errors()
+
+        return self._collection
+
+
+class MapManifestResolveRunner(BaseCsvManifestResolveRunner):
     """Handles a manifest file with a pre-determined destination path. Unlike other resolve runners, this creates
     :py:class:`PipelineFile` objects to add to the collection rather than allowing the collection to generate the
     objects.
@@ -206,27 +264,81 @@ class MapManifestResolveRunner(BaseManifestResolveRunner):
         /path/to/source/file2,destination/path/for/upload2
 
     """
-    schema = tableschema.Schema({'fields': [
-        {
-            'name': 'local_path',
-            'type': 'string',
-            'constraints': {'required': 'true'}
-        },
-        {
-            'name': 'dest_path',
-            'type': 'string',
-            'constraints': {'required': 'true'}
-        }
-    ]})
 
-    def run(self):
-        table = tableschema.Table(self.input_file, headers=self.schema.field_names, schema=self.schema, format='csv')
-        for local_path, dest_path in table.iter(exc_handler=self._exc_handler):
-            abs_path = self.get_abs_path(local_path)
-            pipeline_file = PipelineFile(abs_path, dest_path=dest_path)
-            self._collection.add(pipeline_file)
+    @property
+    def schema(self):
+        return tableschema.Schema({
+            'fields': [
+                {
+                    'name': 'local_path',
+                    'type': 'string',
+                    'constraints': {
+                        'required': True,
+                        'unique': True
+                    }
+                },
+                {
+                    'name': 'dest_path',
+                    'type': 'string',
+                    'constraints': {
+                        'required': True,
+                        'unique': True
+                    }
+                }
+            ]},
+            strict=True
+        )
 
-        return self._collection
+    def _row_handler(self, row):
+        local_path, dest_path = row
+        abs_path = self.get_abs_path(local_path)
+        pipeline_file = PipelineFile(abs_path, dest_path=dest_path)
+        return pipeline_file
+
+
+class DeleteManifestResolveRunner(BaseCsvManifestResolveRunner):
+    """Handles a delete manifest file which only contains a list of source files, and optionally a valid
+        "deletion publish type" string, as defined by the PipelineFilePublishType enum. If delete_publish_type is
+        omitted, the value will remain UNSET, and the handler will assume responsibility for setting the appropriate
+        type
+
+    File format must be as follows::
+
+        destination/path/for/delete1,DELETE_PUBLISH_TYPE
+        destination/path/for/delete2,DELETE_PUBLISH_TYPE
+
+    """
+
+    @property
+    def schema(self):
+        return tableschema.Schema({
+            'fields': [
+                {
+                    'name': 'dest_path',
+                    'type': 'string',
+                    'constraints': {
+                        'required': True,
+                        'unique': True
+                    }
+                },
+                {
+                    'name': 'delete_publish_type',
+                    'type': 'string',
+                    'constraints': {
+                        'enum': [t.name for t in PipelineFilePublishType.all_deletion_types]
+                    }
+                }
+            ]},
+            strict=True
+        )
+
+    def _row_handler(self, row):
+        dest_path, delete_publish_type = row
+        remote_file = RemotePipelineFile(dest_path)
+        pipeline_file = PipelineFile.from_remotepipelinefile(remote_file, is_deletion=True)
+        if delete_publish_type:
+            pipeline_file.publish_type = PipelineFilePublishType.get_type_from_name(delete_publish_type)
+        return pipeline_file
 
 
 class RsyncLineType(Enum):
@@ -334,52 +446,6 @@ class SimpleManifestResolveRunner(BaseManifestResolveRunner):
                 line = line_newline.rstrip(os.linesep)
                 abs_path = self.get_abs_path(line)
                 self._collection.add(abs_path)
-
-        return self._collection
-
-
-class DeleteManifestResolveRunner(BaseManifestResolveRunner):
-    """Handles a delete manifest file which only contains a list of source files, and a valid "deletion publish type"
-        string, as defined by the PipelineFilePublishType enum
-
-    File format must be as follows::
-
-        destination/path/for/delete1,DELETE_PUBLISH_TYPE
-        destination/path/for/delete2,DELETE_PUBLISH_TYPE
-
-    """
-    _deletion_publish_types = [t.name for t in PipelineFilePublishType.all_deletion_types]
-    schema = tableschema.Schema({'fields': [
-        {
-            'name': 'dest_path',
-            'type': 'string',
-            'constraints': {'required': 'true'}
-        },
-        {
-            'name': 'publish_type_str',
-            'type': 'string',
-            'constraints': {'required': 'true', 'enum': _deletion_publish_types}
-        }
-    ]})
-
-    def run(self):
-        table = tableschema.Table(self.input_file, headers=self.schema.field_names, schema=self.schema, format='csv')
-        for dest_path, publish_type_str in table.iter(exc_handler=self._exc_handler):
-            # continue processing lines after a cast failure, so that all errors can be reported at the end
-            if isinstance(publish_type_str, tableschema.FailedCast):
-                continue
-
-            remote_file = RemotePipelineFile(dest_path)
-            pipeline_file = PipelineFile.from_remotepipelinefile(remote_file, is_deletion=True)
-            pipeline_file.publish_type = PipelineFilePublishType.get_type_from_name(publish_type_str)
-            self._collection.add(pipeline_file)
-
-        if self.errors:
-            error_rows = [(f.row_number, f.error_data['publish_type_str']) for f in self.errors]
-            raise InvalidFileFormatError("One or more rows contained an invalid publish_type. "
-                                         "publish_type must be one of {deletion_publish_types}. Invalid lines are: "
-                                         "{error_rows}".format(deletion_publish_types=self._deletion_publish_types,
-                                                               error_rows=error_rows))
 
         return self._collection
 
