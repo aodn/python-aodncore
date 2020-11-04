@@ -22,20 +22,26 @@ class TestUtilProcess(BaseTestCase):
         echo_text = str(uuid.uuid4())
         process = SystemProcess([ECHO_CMD, echo_text])
         process.execute()
-        self.assertEqual(echo_text, process.stdout_text.decode('utf-8').rstrip())
+        self.assertEqual(echo_text, process.stdout_text.rstrip())
 
     def test_shell_execute(self):
         echo_text = str(uuid.uuid4())
         process = SystemProcess(''.join([ECHO_CMD, ' ', echo_text]), shell=True)
         process.execute()
-        self.assertEqual(echo_text, process.stdout_text.decode('utf-8').rstrip())
+        self.assertEqual(echo_text, process.stdout_text.rstrip())
 
     def test_execute_with_stdin(self):
         stdin_text = str(uuid.uuid4())
         process = SystemProcess([CAT_CMD])
-        process.stdin_text = stdin_text.encode('utf-8')
+        process.stdin_text = stdin_text
         process.execute()
-        self.assertEqual(stdin_text, process.stdout_text.decode('utf-8'))
+        self.assertEqual(stdin_text, process.stdout_text.rstrip())
+
+    def test_execute_multiline_text_output(self):
+        echo_text = 'line1\nline2'
+        process = SystemProcess([ECHO_CMD, echo_text])
+        process.execute()
+        self.assertEqual(echo_text, process.stdout_text.rstrip())
 
     def test_execute_with_env(self):
         envname = str(uuid.uuid4())
@@ -43,7 +49,7 @@ class TestUtilProcess(BaseTestCase):
         env = {envname: envvalue}
         process = SystemProcess([PRINTENV_CMD, envname], env=env)
         process.execute()
-        self.assertEqual(envvalue, process.stdout_text.decode('utf-8').rstrip())
+        self.assertEqual(envvalue, process.stdout_text.rstrip())
 
     def test_empty_command(self):
         with self.assertRaisesRegex(SystemCommandFailedError,
