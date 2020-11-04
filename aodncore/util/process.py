@@ -63,7 +63,7 @@ class SystemProcess(object):
 
         try:
             proc = subprocess.Popen(self.command, stdin=self.stdin, stdout=self.stdout, stderr=subprocess.STDOUT,
-                                    shell=self.shell, env=self.env)
+                                    shell=self.shell, env=self.env, universal_newlines=True)
         except OSError as e:
             raise SystemCommandFailedError(
                 "system command failed to execute. {e}".format(e=format_exception(e)))
