@@ -320,24 +320,15 @@ class DeleteManifestResolveRunner(BaseCsvManifestResolveRunner):
                         'required': True,
                         'unique': True
                     }
-                },
-                {
-                    'name': 'delete_publish_type',
-                    'type': 'string',
-                    'constraints': {
-                        'enum': [t.name for t in PipelineFilePublishType.all_deletion_types]
-                    }
                 }
             ]},
             strict=True
         )
 
     def _row_handler(self, row):
-        dest_path, delete_publish_type = row
+        dest_path, = row
         remote_file = RemotePipelineFile(dest_path)
         pipeline_file = PipelineFile.from_remotepipelinefile(remote_file, is_deletion=True)
-        if delete_publish_type:
-            pipeline_file.publish_type = PipelineFilePublishType.get_type_from_name(delete_publish_type)
         return pipeline_file
 
 

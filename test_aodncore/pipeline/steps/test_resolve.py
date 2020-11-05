@@ -32,8 +32,6 @@ SIMPLE_MANIFEST = os.path.join(TESTDATA_DIR, 'test.manifest')
 DELETE_MANIFEST = os.path.join(TESTDATA_DIR, 'test.delete_manifest')
 DELETE_MANIFEST_DUPLICATE = os.path.join(TESTDATA_DIR, 'test_duplicate.delete_manifest')
 DELETE_MANIFEST_INVALID = os.path.join(TESTDATA_DIR, 'test_invalid.delete_manifest')
-DELETE_MANIFEST_NOTDELETION = os.path.join(TESTDATA_DIR, 'test_not_deletion.delete_manifest')
-DELETE_MANIFEST_UNSETPUBLISHTYPE = os.path.join(TESTDATA_DIR, 'test_unset_publishtype.delete_manifest')
 
 
 class MockConfig(object):
@@ -189,15 +187,15 @@ class TestDeleteManifestResolveRunner(BaseTestCase):
 
         self.assertEqual(collection[0].dest_path, 'UNITTEST/NOT/A/REAL/PATH')
         self.assertTrue(collection[0].is_deletion)
-        self.assertIs(collection[0].publish_type, PipelineFilePublishType.DELETE_ONLY)
+        self.assertIs(collection[0].publish_type, PipelineFilePublishType.UNSET)
 
         self.assertEqual(collection[1].dest_path, 'UNITTEST/NOT/A/REAL/PATH/EITHER')
         self.assertTrue(collection[1].is_deletion)
-        self.assertIs(collection[1].publish_type, PipelineFilePublishType.DELETE_UNHARVEST)
+        self.assertIs(collection[1].publish_type, PipelineFilePublishType.UNSET)
 
         self.assertEqual(collection[2].dest_path, 'UNITTEST/NOT/A/REAL/PATH/EITHER/AGAIN')
         self.assertTrue(collection[2].is_deletion)
-        self.assertIs(collection[2].publish_type, PipelineFilePublishType.UNHARVEST_ONLY)
+        self.assertIs(collection[2].publish_type, PipelineFilePublishType.UNSET)
 
     def test_duplicate_delete_manifest_resolve_runner(self):
         delete_manifest_resolve_runner = DeleteManifestResolveRunner(DELETE_MANIFEST_DUPLICATE, self.temp_dir,
@@ -210,28 +208,8 @@ class TestDeleteManifestResolveRunner(BaseTestCase):
         delete_manifest_resolve_runner = DeleteManifestResolveRunner(DELETE_MANIFEST_INVALID, self.temp_dir,
                                                                      MOCK_CONFIG, self.test_logger)
         with self.assertRaisesRegex(InvalidFileFormatError,
-                                    r'There are 1 cast errors \(see exception.errors\) for row "1".*'):
+                                    r'[\'Row length 2 doesn\'t match fields count 1 for row "2": \', \'Row length 2 doesn\'t match fields count 1 for row "3": \']'):
             _ = delete_manifest_resolve_runner.run()
-
-    def test_not_deletion_delete_manifest_resolve_runner(self):
-        delete_manifest_resolve_runner = DeleteManifestResolveRunner(DELETE_MANIFEST_NOTDELETION, self.temp_dir,
-                                                                     MOCK_CONFIG, self.test_logger)
-        with self.assertRaisesRegex(InvalidFileFormatError,
-                                    r'There are 1 cast errors \(see exception.errors\) for row "2".*'):
-            _ = delete_manifest_resolve_runner.run()
-
-    def test_unset_publishtype_delete_manifest_resolve_runner(self):
-        delete_manifest_resolve_runner = DeleteManifestResolveRunner(DELETE_MANIFEST_UNSETPUBLISHTYPE, self.temp_dir,
-                                                                     MOCK_CONFIG, self.test_logger)
-
-        collection = delete_manifest_resolve_runner.run()
-
-        actual_publishtypes = collection.get_attribute_list('publish_type')
-        expected_publishtypes = [PipelineFilePublishType.DELETE_ONLY,
-                                 PipelineFilePublishType.UNSET,
-                                 PipelineFilePublishType.UNHARVEST_ONLY]
-
-        self.assertEqual(expected_publishtypes, actual_publishtypes)
 
 
 class TestSingleFileResolveRunner(BaseTestCase):
