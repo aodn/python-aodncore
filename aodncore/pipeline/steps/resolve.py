@@ -21,20 +21,23 @@ import abc
 import json
 import os
 import re
+from collections import namedtuple
 from enum import Enum
 from io import open
 
+import tableschema
 from jsonschema.exceptions import ValidationError
 
 from .basestep import BaseStepRunner
-from ..common import FileType
+from ..common import FileType, PipelineFilePublishType
 from ..exceptions import InvalidFileFormatError
-from ..files import PipelineFile, PipelineFileCollection
+from ..files import PipelineFile, PipelineFileCollection, RemotePipelineFile
 from ..schema import validate_json_manifest
 from ...util import extract_gzip, extract_zip, list_regular_files, is_gzip_file, is_zip_file, safe_copy_file
 
 __all__ = [
     'get_resolve_runner',
+    'DeleteManifestResolveRunner',
     'DirManifestResolveRunner',
     'GzipFileResolveRunner',
     'JsonManifestResolveRunner',
@@ -62,6 +65,8 @@ def get_resolve_runner(input_file, output_dir, config, logger, resolve_params=No
         return ZipFileResolveRunner(input_file, output_dir, config, logger)
     elif file_type is FileType.SIMPLE_MANIFEST:
         return SimpleManifestResolveRunner(input_file, output_dir, config, logger, resolve_params)
+    elif file_type is FileType.DELETE_MANIFEST:
+        return DeleteManifestResolveRunner(input_file, output_dir, config, logger, resolve_params)
     elif file_type is FileType.JSON_MANIFEST:
         return JsonManifestResolveRunner(input_file, output_dir, config, logger, resolve_params)
     elif file_type is FileType.MAP_MANIFEST:
@@ -182,7 +187,73 @@ class JsonManifestResolveRunner(BaseManifestResolveRunner):
         return self._collection
 
 
-class MapManifestResolveRunner(BaseManifestResolveRunner):
+# define a namedtuple for storing a more human readable structure for the tableschema exception handler
+TableRowErrorDetails = namedtuple('TableRowErrorDetails', ('exc', 'row_number', 'row_data', 'error_data'))
+
+
+# noinspection PyAbstractClass
+class BaseCsvManifestResolveRunner(BaseManifestResolveRunner):
+    """Base class for handling a CSV manifest file. Unlike other resolve runners, this creates :py:class:`PipelineFile`
+    objects to add to the collection rather than allowing the collection to generate theobjects.
+
+    Subclasses must implement a 'schema' property which describes and validates the CSV fields, and a `_row_handler`
+    method which creates a PipelineFile object from the parsed row (which is implementation specific)
+
+    """
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+
+        self.errors = []
+
+    @property
+    @abc.abstractmethod
+    def schema(self):
+        """Defines the tableschema schema describing the input file
+        :returns: tableschema.Schema instance
+        """
+        pass
+
+    @abc.abstractmethod
+    def _row_handler(self, row):
+        """Translates a parsed row into a PipelineFile object to add to the collection
+        :returns: PipelineFile instance
+        """
+        pass
+
+    def _exc_handler(self, exc, row_number=None, row_data=None, error_data=None):
+        self.errors.append(TableRowErrorDetails(exc, row_number, row_data, error_data))
+
+    @staticmethod
+    def _format_error(error):
+        return "{args}: {errors}".format(args=','.join(str(e) for e in error.exc.args),
+                                         errors=','.join(str(e) for e in error.exc.errors))
+
+    def _handle_errors(self):
+        error_details = [self._format_error(e) for e in self.errors]
+        raise InvalidFileFormatError(error_details)
+
+    def _table_iterator(self):
+        table = tableschema.Table(self.input_file, headers=self.schema.field_names, schema=self.schema, format='csv')
+        return (r for r in table.iter(exc_handler=self._exc_handler))
+
+    def run(self):
+        for row in self._table_iterator():
+            if self.errors:
+                # continue iterating to detect *all* errors in the file, but don't waste resources building the
+                # PipelineFileCollection
+                continue
+            else:
+                pipeline_file = self._row_handler(row)
+                self._collection.add(pipeline_file)
+
+        if self.errors:
+            self._handle_errors()
+
+        return self._collection
+
+
+class MapManifestResolveRunner(BaseCsvManifestResolveRunner):
     """Handles a manifest file with a pre-determined destination path. Unlike other resolve runners, this creates
     :py:class:`PipelineFile` objects to add to the collection rather than allowing the collection to generate the
     objects.
@@ -193,20 +264,72 @@ class MapManifestResolveRunner(BaseManifestResolveRunner):
         /path/to/source/file2,destination/path/for/upload2
 
     """
-    PATH_SPLIT_CHAR = ','
 
-    def run(self):
-        with open(self.input_file, 'r') as f:
-            for line_newline in f:
-                line = line_newline.rstrip(os.linesep)
-                src, dest_path = line.split(self.PATH_SPLIT_CHAR, 1)
+    @property
+    def schema(self):
+        return tableschema.Schema({
+            'fields': [
+                {
+                    'name': 'local_path',
+                    'type': 'string',
+                    'constraints': {
+                        'required': True,
+                        'unique': True
+                    }
+                },
+                {
+                    'name': 'dest_path',
+                    'type': 'string',
+                    'constraints': {
+                        'required': True,
+                        'unique': True
+                    }
+                }
+            ]},
+            strict=True
+        )
 
-                abs_path = self.get_abs_path(src)
-                fileobj = PipelineFile(abs_path, dest_path=dest_path)
+    def _row_handler(self, row):
+        local_path, dest_path = row
+        abs_path = self.get_abs_path(local_path)
+        pipeline_file = PipelineFile(abs_path, dest_path=dest_path)
+        return pipeline_file
 
-                self._collection.add(fileobj)
 
-        return self._collection
+class DeleteManifestResolveRunner(BaseCsvManifestResolveRunner):
+    """Handles a delete manifest file which only contains a list of source files, and optionally a valid
+        "deletion publish type" string, as defined by the PipelineFilePublishType enum. If delete_publish_type is
+        omitted, the value will remain UNSET, and the handler will assume responsibility for setting the appropriate
+        type
+
+    File format must be as follows::
+
+        destination/path/for/delete1,DELETE_PUBLISH_TYPE
+        destination/path/for/delete2,DELETE_PUBLISH_TYPE
+
+    """
+
+    @property
+    def schema(self):
+        return tableschema.Schema({
+            'fields': [
+                {
+                    'name': 'dest_path',
+                    'type': 'string',
+                    'constraints': {
+                        'required': True,
+                        'unique': True
+                    }
+                }
+            ]},
+            strict=True
+        )
+
+    def _row_handler(self, row):
+        dest_path, = row
+        remote_file = RemotePipelineFile(dest_path)
+        pipeline_file = PipelineFile.from_remotepipelinefile(remote_file, is_deletion=True)
+        return pipeline_file
 
 
 class RsyncLineType(Enum):

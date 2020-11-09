@@ -1,9 +1,10 @@
 import os
 from uuid import uuid4
 
+from aodncore.pipeline import PipelineFilePublishType
 from aodncore.pipeline.exceptions import DuplicatePipelineFileError, InvalidFileFormatError
-from aodncore.pipeline.steps.resolve import (get_resolve_runner, DirManifestResolveRunner, GzipFileResolveRunner,
-                                             JsonManifestResolveRunner, MapManifestResolveRunner,
+from aodncore.pipeline.steps.resolve import (get_resolve_runner, DeleteManifestResolveRunner, DirManifestResolveRunner,
+                                             GzipFileResolveRunner, JsonManifestResolveRunner, MapManifestResolveRunner,
                                              RsyncManifestResolveRunner, SimpleManifestResolveRunner,
                                              SingleFileResolveRunner, ZipFileResolveRunner)
 from aodncore.testlib import BaseTestCase
@@ -23,9 +24,14 @@ TEST_DIR_MANIFEST_NC = os.path.join(TESTDATA_DIR, 'layer1', 'layer2', 'test_mani
 DIR_MANIFEST = os.path.join(TESTDATA_DIR, 'test.dir_manifest')
 JSON_MANIFEST = os.path.join(TESTDATA_DIR, 'test.json_manifest')
 MAP_MANIFEST = os.path.join(TESTDATA_DIR, 'test.map_manifest')
+MAP_MANIFEST_MISSINGFIELD = os.path.join(TESTDATA_DIR, 'test_missing_field.map_manifest')
+MAP_MANIFEST_DUPLICATEFIELD = os.path.join(TESTDATA_DIR, 'test_duplicate_field.map_manifest')
 RSYNC_MANIFEST = os.path.join(TESTDATA_DIR, 'test.rsync_manifest')
 RSYNC_MANIFEST_DUPLICATE = os.path.join(TESTDATA_DIR, 'test_duplicate.rsync_manifest')
 SIMPLE_MANIFEST = os.path.join(TESTDATA_DIR, 'test.manifest')
+DELETE_MANIFEST = os.path.join(TESTDATA_DIR, 'test.delete_manifest')
+DELETE_MANIFEST_DUPLICATE = os.path.join(TESTDATA_DIR, 'test_duplicate.delete_manifest')
+DELETE_MANIFEST_INVALID = os.path.join(TESTDATA_DIR, 'test_invalid.delete_manifest')
 
 
 class MockConfig(object):
@@ -53,6 +59,10 @@ class TestPipelineStepsResolve(BaseTestCase):
         simple_manifest_resolve_runner = get_resolve_runner(SIMPLE_MANIFEST, self.temp_dir, MOCK_CONFIG,
                                                             self.test_logger)
         self.assertIsInstance(simple_manifest_resolve_runner, SimpleManifestResolveRunner)
+
+        delete_manifest_resolve_runner = get_resolve_runner(DELETE_MANIFEST, self.temp_dir, MOCK_CONFIG,
+                                                            self.test_logger)
+        self.assertIsInstance(delete_manifest_resolve_runner, DeleteManifestResolveRunner)
 
         nc_resolve_runner = get_resolve_runner(GOOD_NC, self.temp_dir, MOCK_CONFIG, self.test_logger)
         self.assertIsInstance(nc_resolve_runner, SingleFileResolveRunner)
@@ -106,12 +116,31 @@ class TestMapManifestResolveRunner(BaseTestCase):
     def test_map_manifest_resolve_runner(self):
         map_manifest_resolve_runner = MapManifestResolveRunner(MAP_MANIFEST, self.temp_dir, MOCK_CONFIG,
                                                                self.test_logger)
+
+        self.assertTrue(map_manifest_resolve_runner.schema.valid)
+
         collection = map_manifest_resolve_runner.run()
 
         self.assertEqual(collection[0].src_path, os.path.join(MOCK_CONFIG.pipeline_config['global']['wip_dir'],
                                                               os.path.basename(TEST_MANIFEST_NC)))
 
         self.assertEqual(collection[0].dest_path, 'UNITTEST/NOT/A/REAL/PATH')
+
+    def test_missing_field_map_manifest_resolve_runner(self):
+        map_manifest_resolve_runner = MapManifestResolveRunner(MAP_MANIFEST_MISSINGFIELD, self.temp_dir, MOCK_CONFIG,
+                                                               self.test_logger)
+        with self.assertRaisesRegex(InvalidFileFormatError,
+                                    r'There are 1 cast errors \(see exception.errors\) for row "2": Field "dest_path" has constraint "required" which is not satisfied for value "None".*'
+                                    r'There are 1 cast errors \(see exception.errors\) for row "3": Field "local_path" has constraint "required" which is not satisfied for value "None"'):
+            _ = map_manifest_resolve_runner.run()
+
+    def test_duplicate_field_map_manifest_resolve_runner(self):
+        map_manifest_resolve_runner = MapManifestResolveRunner(MAP_MANIFEST_DUPLICATEFIELD, self.temp_dir, MOCK_CONFIG,
+                                                               self.test_logger)
+        with self.assertRaisesRegex(InvalidFileFormatError,
+                                    r'[\'Field\(s\) "dest_path" duplicates in row "2" for values (\'UNITTEST/NOT/A/REAL/PATH\',): '
+                                    r'\', \'Field\(s\) "local_path" duplicates in row "3" for values (\'good.nc\',): \']'):
+            _ = map_manifest_resolve_runner.run()
 
 
 class TestRsyncManifestResolveRunner(BaseTestCase):
@@ -145,6 +174,42 @@ class TestSimpleManifestResolveRunner(BaseTestCase):
 
         self.assertEqual(collection[0].src_path, os.path.join(MOCK_CONFIG.pipeline_config['global']['wip_dir'],
                                                               os.path.basename(TEST_MANIFEST_NC)))
+
+
+class TestDeleteManifestResolveRunner(BaseTestCase):
+    def test_delete_manifest_resolve_runner(self):
+        delete_manifest_resolve_runner = DeleteManifestResolveRunner(DELETE_MANIFEST, self.temp_dir, MOCK_CONFIG,
+                                                                     self.test_logger)
+
+        self.assertTrue(delete_manifest_resolve_runner.schema.valid)
+
+        collection = delete_manifest_resolve_runner.run()
+
+        self.assertEqual(collection[0].dest_path, 'UNITTEST/NOT/A/REAL/PATH')
+        self.assertTrue(collection[0].is_deletion)
+        self.assertIs(collection[0].publish_type, PipelineFilePublishType.UNSET)
+
+        self.assertEqual(collection[1].dest_path, 'UNITTEST/NOT/A/REAL/PATH/EITHER')
+        self.assertTrue(collection[1].is_deletion)
+        self.assertIs(collection[1].publish_type, PipelineFilePublishType.UNSET)
+
+        self.assertEqual(collection[2].dest_path, 'UNITTEST/NOT/A/REAL/PATH/EITHER/AGAIN')
+        self.assertTrue(collection[2].is_deletion)
+        self.assertIs(collection[2].publish_type, PipelineFilePublishType.UNSET)
+
+    def test_duplicate_delete_manifest_resolve_runner(self):
+        delete_manifest_resolve_runner = DeleteManifestResolveRunner(DELETE_MANIFEST_DUPLICATE, self.temp_dir,
+                                                                     MOCK_CONFIG, self.test_logger)
+        with self.assertRaisesRegex(InvalidFileFormatError,
+                                    r'Field\(s\) "dest_path" duplicates in row "3".*Field\(s\) "dest_path" duplicates in row "5"'):
+            _ = delete_manifest_resolve_runner.run()
+
+    def test_invalid_delete_manifest_resolve_runner(self):
+        delete_manifest_resolve_runner = DeleteManifestResolveRunner(DELETE_MANIFEST_INVALID, self.temp_dir,
+                                                                     MOCK_CONFIG, self.test_logger)
+        with self.assertRaisesRegex(InvalidFileFormatError,
+                                    r'[\'Row length 2 doesn\'t match fields count 1 for row "2": \', \'Row length 2 doesn\'t match fields count 1 for row "3": \']'):
+            _ = delete_manifest_resolve_runner.run()
 
 
 class TestSingleFileResolveRunner(BaseTestCase):

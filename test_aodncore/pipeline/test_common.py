@@ -1,6 +1,6 @@
 import uuid
 
-from aodncore.pipeline.common import FileType
+from aodncore.pipeline.common import FileType, PipelineFilePublishType
 from aodncore.testlib import BaseTestCase
 
 
@@ -52,3 +52,16 @@ class TestFileType(BaseTestCase):
 
         self.assertFalse(FileType.NETCDF.is_image_type)
         self.assertFalse(FileType.UNKNOWN.is_image_type)
+
+
+class TestPipelineFilePublishType(BaseTestCase):
+    def setUp(self):
+        super().setUp()
+
+    def test_get_type_from_name(self):
+        harvest_upload = PipelineFilePublishType.get_type_from_name('HARVEST_UPLOAD')
+        self.assertIs(harvest_upload, PipelineFilePublishType.HARVEST_UPLOAD)
+
+    def test_get_type_from_name_invalid(self):
+        invalid = PipelineFilePublishType.get_type_from_name('INVALID_PUBLISH_TYPE')
+        self.assertIs(invalid, PipelineFilePublishType.UNSET)

@@ -139,9 +139,10 @@ class FileType(Enum):
     NETCDF = (('.nc',), 'application/octet-stream', is_netcdf_file)
     DIR_MANIFEST = (('.dir_manifest',), 'text/plain', is_nonempty_file)
     JSON_MANIFEST = (('.json_manifest',), 'application/json', is_json_file)
-    MAP_MANIFEST = (('.map_manifest',), 'text/plain', is_nonempty_file)
+    MAP_MANIFEST = (('.map_manifest',), 'text/csv', is_nonempty_file)
     RSYNC_MANIFEST = (('.rsync_manifest',), 'text/plain', is_nonempty_file)
     SIMPLE_MANIFEST = (('.manifest',), 'text/plain', is_nonempty_file)
+    DELETE_MANIFEST = (('.delete_manifest',), 'text/csv', is_nonempty_file)
 
     def __init__(self, extensions, mime_type, validator):
         self.extensions = extensions
@@ -235,6 +236,10 @@ class PipelineFilePublishType(Enum):
         self._is_archive_type = is_archive_type
         self._is_store_type = is_store_type
         self._is_harvest_type = is_harvest_type
+
+    @classmethod
+    def get_type_from_name(cls, name):
+        return next((t for t in cls if name == t.name), cls.UNSET)
 
     @property
     def is_addition_type(self):
