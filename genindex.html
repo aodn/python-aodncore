@@ -9,7 +9,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Index &mdash; aodncore 1.1.6 documentation</title>
+  <title>Index &mdash; aodncore 1.1.7 documentation</title>
   
 
   
@@ -59,7 +59,7 @@
             
             
               <div class="version">
-                1.1.6
+                1.1.7
               </div>
             
           
@@ -617,6 +617,12 @@
         <li><a href="aodncore.testlib.html#aodncore.testlib.testutil.NullStorageBroker.delete">(aodncore.testlib.testutil.NullStorageBroker method)</a>
 </li>
       </ul></li>
+      <li><a href="aodncore.pipeline.html#aodncore.pipeline.common.FileType.DELETE_MANIFEST">DELETE_MANIFEST (aodncore.pipeline.common.FileType attribute)</a>
+
+      <ul>
+        <li><a href="aodncore.pipeline.html#aodncore.pipeline.FileType.DELETE_MANIFEST">(aodncore.pipeline.FileType attribute)</a>
+</li>
+      </ul></li>
       <li><a href="aodncore.pipeline.html#aodncore.pipeline.common.PipelineFilePublishType.DELETE_ONLY">DELETE_ONLY (aodncore.pipeline.common.PipelineFilePublishType attribute)</a>
 
       <ul>
@@ -631,6 +637,8 @@
         <li><a href="aodncore.pipeline.html#aodncore.pipeline.PipelineFilePublishType.DELETE_UNHARVEST">(aodncore.pipeline.PipelineFilePublishType attribute)</a>
 </li>
       </ul></li>
+      <li><a href="aodncore.pipeline.steps.html#aodncore.pipeline.steps.resolve.DeleteManifestResolveRunner">DeleteManifestResolveRunner (class in aodncore.pipeline.steps.resolve)</a>
+</li>
       <li><a href="aodncore.util.html#aodncore.util.classproperty.deleter">deleter() (aodncore.util.classproperty method)</a>
 </li>
       <li><a href="aodncore.pipeline.html#aodncore.pipeline.files.PipelineFile.dest_path">dest_path() (aodncore.pipeline.files.PipelineFile property)</a>
@@ -1037,14 +1045,14 @@
       </ul></li>
       <li><a href="aodncore.pipeline.html#aodncore.pipeline.storage.get_storage_broker">get_storage_broker() (in module aodncore.pipeline.storage)</a>
 </li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="aodncore.pipeline.steps.html#aodncore.pipeline.steps.get_store_runner">get_store_runner() (in module aodncore.pipeline.steps)</a>
 
       <ul>
         <li><a href="aodncore.pipeline.steps.html#aodncore.pipeline.steps.store.get_store_runner">(in module aodncore.pipeline.steps.store)</a>
 </li>
       </ul></li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="aodncore.pipeline.html#aodncore.pipeline.watch.get_task_name">get_task_name() (in module aodncore.pipeline.watch)</a>
 </li>
       <li><a href="aodncore.testlib.html#aodncore.testlib.get_test_config">get_test_config() (in module aodncore.testlib)</a>
@@ -1062,7 +1070,11 @@
       <li><a href="aodncore.pipeline.html#aodncore.pipeline.common.FileType.get_type_from_name">get_type_from_name (aodncore.pipeline.common.FileType attribute)</a>
 
       <ul>
+        <li><a href="aodncore.pipeline.html#aodncore.pipeline.common.PipelineFilePublishType.get_type_from_name">(aodncore.pipeline.common.PipelineFilePublishType attribute)</a>
+</li>
         <li><a href="aodncore.pipeline.html#aodncore.pipeline.FileType.get_type_from_name">(aodncore.pipeline.FileType attribute)</a>
+</li>
+        <li><a href="aodncore.pipeline.html#aodncore.pipeline.PipelineFilePublishType.get_type_from_name">(aodncore.pipeline.PipelineFilePublishType attribute)</a>
 </li>
       </ul></li>
       <li><a href="aodncore.pipeline.html#aodncore.pipeline.common.NotificationRecipientType.get_type_from_protocol">get_type_from_protocol (aodncore.pipeline.common.NotificationRecipientType attribute)</a>
@@ -1781,8 +1793,6 @@
 <h2 id="P">P</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="aodncore.pipeline.steps.html#aodncore.pipeline.steps.resolve.MapManifestResolveRunner.PATH_SPLIT_CHAR">PATH_SPLIT_CHAR (aodncore.pipeline.steps.resolve.MapManifestResolveRunner attribute)</a>
-</li>
       <li><a href="aodncore.util.html#aodncore.util.Pattern">Pattern (in module aodncore.util)</a>
 
       <ul>
@@ -2158,8 +2168,6 @@
 </li>
         <li><a href="aodncore.pipeline.steps.html#aodncore.pipeline.steps.resolve.JsonManifestResolveRunner.run">(aodncore.pipeline.steps.resolve.JsonManifestResolveRunner method)</a>
 </li>
-        <li><a href="aodncore.pipeline.steps.html#aodncore.pipeline.steps.resolve.MapManifestResolveRunner.run">(aodncore.pipeline.steps.resolve.MapManifestResolveRunner method)</a>
-</li>
         <li><a href="aodncore.pipeline.steps.html#aodncore.pipeline.steps.resolve.RsyncManifestResolveRunner.run">(aodncore.pipeline.steps.resolve.RsyncManifestResolveRunner method)</a>
 </li>
         <li><a href="aodncore.pipeline.steps.html#aodncore.pipeline.steps.resolve.SimpleManifestResolveRunner.run">(aodncore.pipeline.steps.resolve.SimpleManifestResolveRunner method)</a>
@@ -2207,6 +2215,12 @@
 
       <ul>
         <li><a href="aodncore.util.html#aodncore.util.fileops.safe_move_file">(in module aodncore.util.fileops)</a>
+</li>
+      </ul></li>
+      <li><a href="aodncore.pipeline.steps.html#aodncore.pipeline.steps.resolve.DeleteManifestResolveRunner.schema">schema() (aodncore.pipeline.steps.resolve.DeleteManifestResolveRunner property)</a>
+
+      <ul>
+        <li><a href="aodncore.pipeline.steps.html#aodncore.pipeline.steps.resolve.MapManifestResolveRunner.schema">(aodncore.pipeline.steps.resolve.MapManifestResolveRunner property)</a>
 </li>
       </ul></li>
       <li><a href="aodncore.pipeline.html#aodncore.pipeline.files.PipelineFileCollection.set_archive_paths">set_archive_paths() (aodncore.pipeline.files.PipelineFileCollection method)</a>
@@ -2309,10 +2323,10 @@
 </li>
       <li><a href="aodncore.pipeline.html#aodncore.pipeline.storage.sftp_path_exists">sftp_path_exists() (in module aodncore.pipeline.storage)</a>
 </li>
-      <li><a href="aodncore.pipeline.html#aodncore.pipeline.storage.SftpStorageBroker">SftpStorageBroker (class in aodncore.pipeline.storage)</a>
-</li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="aodncore.pipeline.html#aodncore.pipeline.storage.SftpStorageBroker">SftpStorageBroker (class in aodncore.pipeline.storage)</a>
+</li>
       <li><a href="aodncore.pipeline.html#aodncore.pipeline.files.PipelineFile.should_archive">should_archive() (aodncore.pipeline.files.PipelineFile property)</a>
 
       <ul>

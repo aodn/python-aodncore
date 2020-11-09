@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>aodncore.pipeline.steps package &mdash; aodncore 1.1.6 documentation</title>
+  <title>aodncore.pipeline.steps package &mdash; aodncore 1.1.7 documentation</title>
   
 
   
@@ -60,7 +60,7 @@
             
             
               <div class="version">
-                1.1.6
+                1.1.7
               </div>
             
           
@@ -820,6 +820,30 @@ collection may then be processed in a generic way.</p>
 </dd></dl>
 
 <dl class="class">
+<dt id="aodncore.pipeline.steps.resolve.DeleteManifestResolveRunner">
+<em class="property">class </em><code class="sig-prename descclassname">aodncore.pipeline.steps.resolve.</code><code class="sig-name descname">DeleteManifestResolveRunner</code><span class="sig-paren">(</span><em class="sig-param">*args</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/aodncore/pipeline/steps/resolve.html#DeleteManifestResolveRunner"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#aodncore.pipeline.steps.resolve.DeleteManifestResolveRunner" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">aodncore.pipeline.steps.resolve.BaseCsvManifestResolveRunner</span></code></p>
+<dl class="simple">
+<dt>Handles a delete manifest file which only contains a list of source files, and optionally a valid</dt><dd><p>“deletion publish type” string, as defined by the PipelineFilePublishType enum. If delete_publish_type is
+omitted, the value will remain UNSET, and the handler will assume responsibility for setting the appropriate
+type</p>
+</dd>
+</dl>
+<p>File format must be as follows:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">destination</span><span class="o">/</span><span class="n">path</span><span class="o">/</span><span class="k">for</span><span class="o">/</span><span class="n">delete1</span><span class="p">,</span><span class="n">DELETE_PUBLISH_TYPE</span>
+<span class="n">destination</span><span class="o">/</span><span class="n">path</span><span class="o">/</span><span class="k">for</span><span class="o">/</span><span class="n">delete2</span><span class="p">,</span><span class="n">DELETE_PUBLISH_TYPE</span>
+</pre></div>
+</div>
+<dl class="method">
+<dt id="aodncore.pipeline.steps.resolve.DeleteManifestResolveRunner.schema">
+<em class="property">property </em><code class="sig-name descname">schema</code><a class="headerlink" href="#aodncore.pipeline.steps.resolve.DeleteManifestResolveRunner.schema" title="Permalink to this definition">¶</a></dt>
+<dd><p>Defines the tableschema schema describing the input file
+:returns: tableschema.Schema instance</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
 <dt id="aodncore.pipeline.steps.resolve.DirManifestResolveRunner">
 <em class="property">class </em><code class="sig-prename descclassname">aodncore.pipeline.steps.resolve.</code><code class="sig-name descname">DirManifestResolveRunner</code><span class="sig-paren">(</span><em class="sig-param">input_file</em>, <em class="sig-param">output_dir</em>, <em class="sig-param">config</em>, <em class="sig-param">logger</em>, <em class="sig-param">resolve_params=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/aodncore/pipeline/steps/resolve.html#DirManifestResolveRunner"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#aodncore.pipeline.steps.resolve.DirManifestResolveRunner" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">aodncore.pipeline.steps.resolve.BaseManifestResolveRunner</span></code></p>
@@ -884,8 +908,8 @@ attribute may be one of the following types:</p>
 
 <dl class="class">
 <dt id="aodncore.pipeline.steps.resolve.MapManifestResolveRunner">
-<em class="property">class </em><code class="sig-prename descclassname">aodncore.pipeline.steps.resolve.</code><code class="sig-name descname">MapManifestResolveRunner</code><span class="sig-paren">(</span><em class="sig-param">input_file</em>, <em class="sig-param">output_dir</em>, <em class="sig-param">config</em>, <em class="sig-param">logger</em>, <em class="sig-param">resolve_params=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/aodncore/pipeline/steps/resolve.html#MapManifestResolveRunner"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#aodncore.pipeline.steps.resolve.MapManifestResolveRunner" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">aodncore.pipeline.steps.resolve.BaseManifestResolveRunner</span></code></p>
+<em class="property">class </em><code class="sig-prename descclassname">aodncore.pipeline.steps.resolve.</code><code class="sig-name descname">MapManifestResolveRunner</code><span class="sig-paren">(</span><em class="sig-param">*args</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/aodncore/pipeline/steps/resolve.html#MapManifestResolveRunner"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#aodncore.pipeline.steps.resolve.MapManifestResolveRunner" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">aodncore.pipeline.steps.resolve.BaseCsvManifestResolveRunner</span></code></p>
 <p>Handles a manifest file with a pre-determined destination path. Unlike other resolve runners, this creates
 <code class="xref py py-class docutils literal notranslate"><span class="pre">PipelineFile</span></code> objects to add to the collection rather than allowing the collection to generate the
 objects.</p>
@@ -894,15 +918,12 @@ objects.</p>
 <span class="o">/</span><span class="n">path</span><span class="o">/</span><span class="n">to</span><span class="o">/</span><span class="n">source</span><span class="o">/</span><span class="n">file2</span><span class="p">,</span><span class="n">destination</span><span class="o">/</span><span class="n">path</span><span class="o">/</span><span class="k">for</span><span class="o">/</span><span class="n">upload2</span>
 </pre></div>
 </div>
-<dl class="attribute">
-<dt id="aodncore.pipeline.steps.resolve.MapManifestResolveRunner.PATH_SPLIT_CHAR">
-<code class="sig-name descname">PATH_SPLIT_CHAR</code><em class="property"> = ','</em><a class="headerlink" href="#aodncore.pipeline.steps.resolve.MapManifestResolveRunner.PATH_SPLIT_CHAR" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
 <dl class="method">
-<dt id="aodncore.pipeline.steps.resolve.MapManifestResolveRunner.run">
-<code class="sig-name descname">run</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/aodncore/pipeline/steps/resolve.html#MapManifestResolveRunner.run"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#aodncore.pipeline.steps.resolve.MapManifestResolveRunner.run" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dt id="aodncore.pipeline.steps.resolve.MapManifestResolveRunner.schema">
+<em class="property">property </em><code class="sig-name descname">schema</code><a class="headerlink" href="#aodncore.pipeline.steps.resolve.MapManifestResolveRunner.schema" title="Permalink to this definition">¶</a></dt>
+<dd><p>Defines the tableschema schema describing the input file
+:returns: tableschema.Schema instance</p>
+</dd></dl>
 
 </dd></dl>
 

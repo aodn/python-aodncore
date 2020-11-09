@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>aodncore.pipeline.common &mdash; aodncore 1.1.6 documentation</title>
+  <title>aodncore.pipeline.common &mdash; aodncore 1.1.7 documentation</title>
   
 
   
@@ -58,7 +58,7 @@
             
             
               <div class="version">
-                1.1.6
+                1.1.7
               </div>
             
           
@@ -307,9 +307,10 @@
     <span class="n">NETCDF</span> <span class="o">=</span> <span class="p">((</span><span class="s1">&#39;.nc&#39;</span><span class="p">,),</span> <span class="s1">&#39;application/octet-stream&#39;</span><span class="p">,</span> <span class="n">is_netcdf_file</span><span class="p">)</span>
     <span class="n">DIR_MANIFEST</span> <span class="o">=</span> <span class="p">((</span><span class="s1">&#39;.dir_manifest&#39;</span><span class="p">,),</span> <span class="s1">&#39;text/plain&#39;</span><span class="p">,</span> <span class="n">is_nonempty_file</span><span class="p">)</span>
     <span class="n">JSON_MANIFEST</span> <span class="o">=</span> <span class="p">((</span><span class="s1">&#39;.json_manifest&#39;</span><span class="p">,),</span> <span class="s1">&#39;application/json&#39;</span><span class="p">,</span> <span class="n">is_json_file</span><span class="p">)</span>
-    <span class="n">MAP_MANIFEST</span> <span class="o">=</span> <span class="p">((</span><span class="s1">&#39;.map_manifest&#39;</span><span class="p">,),</span> <span class="s1">&#39;text/plain&#39;</span><span class="p">,</span> <span class="n">is_nonempty_file</span><span class="p">)</span>
+    <span class="n">MAP_MANIFEST</span> <span class="o">=</span> <span class="p">((</span><span class="s1">&#39;.map_manifest&#39;</span><span class="p">,),</span> <span class="s1">&#39;text/csv&#39;</span><span class="p">,</span> <span class="n">is_nonempty_file</span><span class="p">)</span>
     <span class="n">RSYNC_MANIFEST</span> <span class="o">=</span> <span class="p">((</span><span class="s1">&#39;.rsync_manifest&#39;</span><span class="p">,),</span> <span class="s1">&#39;text/plain&#39;</span><span class="p">,</span> <span class="n">is_nonempty_file</span><span class="p">)</span>
     <span class="n">SIMPLE_MANIFEST</span> <span class="o">=</span> <span class="p">((</span><span class="s1">&#39;.manifest&#39;</span><span class="p">,),</span> <span class="s1">&#39;text/plain&#39;</span><span class="p">,</span> <span class="n">is_nonempty_file</span><span class="p">)</span>
+    <span class="n">DELETE_MANIFEST</span> <span class="o">=</span> <span class="p">((</span><span class="s1">&#39;.delete_manifest&#39;</span><span class="p">,),</span> <span class="s1">&#39;text/csv&#39;</span><span class="p">,</span> <span class="n">is_nonempty_file</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">extensions</span><span class="p">,</span> <span class="n">mime_type</span><span class="p">,</span> <span class="n">validator</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">extensions</span> <span class="o">=</span> <span class="n">extensions</span>
@@ -403,6 +404,10 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">_is_archive_type</span> <span class="o">=</span> <span class="n">is_archive_type</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_is_store_type</span> <span class="o">=</span> <span class="n">is_store_type</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_is_harvest_type</span> <span class="o">=</span> <span class="n">is_harvest_type</span>
+
+<div class="viewcode-block" id="PipelineFilePublishType.get_type_from_name"><a class="viewcode-back" href="../../../aodncore.pipeline.html#aodncore.pipeline.common.PipelineFilePublishType.get_type_from_name">[docs]</a>    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">get_type_from_name</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">name</span><span class="p">):</span>
+        <span class="k">return</span> <span class="nb">next</span><span class="p">((</span><span class="n">t</span> <span class="k">for</span> <span class="n">t</span> <span class="ow">in</span> <span class="bp">cls</span> <span class="k">if</span> <span class="n">name</span> <span class="o">==</span> <span class="n">t</span><span class="o">.</span><span class="n">name</span><span class="p">),</span> <span class="bp">cls</span><span class="o">.</span><span class="n">UNSET</span><span class="p">)</span></div>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">is_addition_type</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
