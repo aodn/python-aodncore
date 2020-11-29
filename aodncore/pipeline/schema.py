@@ -117,6 +117,7 @@ PIPELINE_CONFIG_SCHEMA = {
                 'from': {'type': 'string'},
                 'subject': {'type': 'string'},
                 'smtp_server': {'type': 'string'},
+                'smtp_port': {'type': 'integer'},
                 'smtp_user': {'type': 'string'},
                 'smtp_pass': {'type': 'string'}
             },
