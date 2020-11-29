@@ -186,6 +186,8 @@ class TestConfig(BaseTestCase):
         pipeline_conf_file = os.path.join(CONF_ROOT, 'pipeline.conf')
         config = load_pipeline_config(pipeline_conf_file)
         self.assertDictEqual(REFERENCE_PIPELINE_CONFIG, config)
+        with self.assertNoException():
+            validate_pipeline_config(config)
 
         nonexistent_config_file = get_nonexistent_path()
         with self.assertRaises(InvalidConfigError):
