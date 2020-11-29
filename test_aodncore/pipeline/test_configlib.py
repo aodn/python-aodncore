@@ -6,6 +6,7 @@ from celery import Celery
 
 from aodncore.pipeline.configlib import load_pipeline_config, load_trigger_config, load_watch_config
 from aodncore.pipeline.exceptions import InvalidConfigError
+from aodncore.pipeline.schema import validate_pipeline_config
 from aodncore.testlib import BaseTestCase, conf, get_nonexistent_path
 
 CONF_ROOT = os.path.dirname(inspect.getfile(conf))
@@ -35,6 +36,7 @@ REFERENCE_PIPELINE_CONFIG = {
         'from': 'info@aodn.org.au',
         'subject': 'aodn-pipeline unit testing',
         'smtp_server': '028fbd24-a700-40af-95c9-155c3b023a64',
+        'smtp_port': 587,
         'smtp_user': 'ACCESS_KEY',
         'smtp_pass': 'SECRET_KEY'
     },
@@ -184,6 +186,8 @@ class TestConfig(BaseTestCase):
         pipeline_conf_file = os.path.join(CONF_ROOT, 'pipeline.conf')
         config = load_pipeline_config(pipeline_conf_file)
         self.assertDictEqual(REFERENCE_PIPELINE_CONFIG, config)
+        with self.assertNoException():
+            validate_pipeline_config(config)
 
         nonexistent_config_file = get_nonexistent_path()
         with self.assertRaises(InvalidConfigError):
