@@ -227,6 +227,9 @@ def load_runtime_patched_pipeline_config_file(config_file, rel_path, temp_dir):
     pipeline_config['global'][
         'platform_category_vocab_url'] = "file://{vocab_dir}/aodn_aodn-platform-category-vocabulary.rdf".format(
         vocab_dir=TESTLIB_VOCAB_DIR)
+    pipeline_config['global'][
+        'xbt_line_vocab_url'] = "file://{vocab_dir}/aodn_aodn-xbt-line-vocabulary.rdf".format(
+        vocab_dir=TESTLIB_VOCAB_DIR)
 
     # reload the JSON object with non-updatable keys
     return json.loads(json.dumps(pipeline_config), object_pairs_hook=WriteOnceOrderedDict)

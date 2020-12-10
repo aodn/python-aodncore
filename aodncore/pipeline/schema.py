@@ -94,7 +94,8 @@ PIPELINE_CONFIG_SCHEMA = {
                 'wfs_version': {'type': 'string'},
                 'wip_dir': {'type': 'string'},
                 'platform_category_vocab_url': {'type': 'string'},
-                'platform_vocab_url': {'type': 'string'}
+                'platform_vocab_url': {'type': 'string'},
+                'xbt_line_vocab_url': {'type': 'string'}
             },
             'required': ['admin_recipients', 'archive_uri', 'error_uri', 'processing_dir', 'upload_uri', 'wip_dir'],
             'additionalProperties': False
