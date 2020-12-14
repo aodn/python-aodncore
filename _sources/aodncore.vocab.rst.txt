@@ -12,6 +12,14 @@ aodncore.vocab.platform\_code\_vocab module
    :undoc-members:
    :show-inheritance:
 
+aodncore.vocab.xbt\_line\_vocab module
+--------------------------------------
+
+.. automodule:: aodncore.vocab.xbt_line_vocab
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
 
 Module contents
 ---------------
