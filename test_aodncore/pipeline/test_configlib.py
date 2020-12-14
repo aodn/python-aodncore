@@ -24,8 +24,10 @@ REFERENCE_PIPELINE_CONFIG = {
         'wfs_version': '1.1.0',
         'wip_dir': '/tmp/probably/doesnt/exist/wip',
         'platform_category_vocab_url': '/tmp/probably/doesnt/exist/aodn_aodn-platform-category-vocabulary.rdf',
-        'platform_vocab_url': '/tmp/probably/doesnt/exist/aodn_aodn-platform-vocabulary.rdf'
-    },
+        'platform_vocab_url': '/tmp/probably/doesnt/exist/aodn_aodn-platform-vocabulary.rdf',
+        'xbt_line_vocab_url': '/tmp/probably/doesnt/exist/aodn_aodn-xbt-line-vocabulary.rdf'
+
+},
     'logging': {
         'level': 'SYSINFO',
         'pipeline_format': '%(asctime)s %(levelname)s %(name)s[%(celery_task_id)s] %(message)s',
