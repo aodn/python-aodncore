@@ -61,8 +61,12 @@ class TestPipelineStepsResolve(BaseTestCase):
         self.assertIsInstance(simple_manifest_resolve_runner, SimpleManifestResolveRunner)
 
         delete_manifest_resolve_runner = get_resolve_runner(DELETE_MANIFEST, self.temp_dir, MOCK_CONFIG,
-                                                            self.test_logger)
+                                                            self.test_logger, {'allow_delete_manifests': True})
         self.assertIsInstance(delete_manifest_resolve_runner, DeleteManifestResolveRunner)
+
+        # delete manifests will not be resolved unless 'allow_delete_manifests' is present in resolve_params
+        with self.assertRaises(InvalidFileFormatError):
+            _ = get_resolve_runner(DELETE_MANIFEST, self.temp_dir, MOCK_CONFIG, self.test_logger)
 
         nc_resolve_runner = get_resolve_runner(GOOD_NC, self.temp_dir, MOCK_CONFIG, self.test_logger)
         self.assertIsInstance(nc_resolve_runner, SingleFileResolveRunner)

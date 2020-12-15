@@ -26,6 +26,7 @@ NOT_NETCDF_NC_FILE = os.path.join(TESTDATA_DIR, 'not_a_netcdf_file.nc')
 MAP_MANIFEST = os.path.join(TESTDATA_DIR, 'test.map_manifest')
 RSYNC_MANIFEST = os.path.join(TESTDATA_DIR, 'test.rsync_manifest')
 SIMPLE_MANIFEST = os.path.join(TESTDATA_DIR, 'test.manifest')
+DELETE_MANIFEST = os.path.join(TESTDATA_DIR, 'test.delete_manifest')
 
 
 class TestDummyHandler(HandlerTestCase):
@@ -118,6 +119,12 @@ class TestDummyHandler(HandlerTestCase):
     def test_invalid_resolve_params(self):
         self.run_handler_with_exception(ValidationError, GOOD_NC, resolve_params={'relative_path_root': 0})
         self.run_handler_with_exception(ValidationError, GOOD_NC, resolve_params={'invalid_param': 'value'})
+
+    def test_allow_delete_manifests(self):
+        self.run_handler_with_exception(InvalidFileFormatError, DELETE_MANIFEST)
+        self.run_handler_with_exception(InvalidFileFormatError, DELETE_MANIFEST,
+                                        resolve_params={'allow_delete_manifests': False})
+        self.run_handler(DELETE_MANIFEST, resolve_params={'allow_delete_manifests': True})
 
     def test_nonexistent_file(self):
         nonexistent_file = get_nonexistent_path()
