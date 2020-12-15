@@ -1,4 +1,4 @@
-from aodncore.pipeline import HandlerBase, PipelineFileCheckType, PipelineFilePublishType
+from aodncore.pipeline import HandlerBase, PipelineFileCheckType, PipelineFileCollection, PipelineFilePublishType
 from aodncore.vocab import PlatformVocabHelper
 
 
@@ -51,8 +51,11 @@ class DummyHandler(HandlerBase):
         :return: None
         """
         self.logger.info("Running preprocess from child class")
-        if len(self.file_collection) > 1:
-            self.file_collection[1].check_type = PipelineFileCheckType.NO_ACTION
+        (
+            PipelineFileCollection(f for f in self.file_collection if f.publish_type.is_addition_type)[1:]
+                .filter_by_attribute_id('check_type', PipelineFileCheckType.UNSET)
+                .set_check_types(PipelineFileCheckType.NO_ACTION)
+        )
 
     def process(self):
         """Here you can run code that needs to run *after* the compliance checker step but *before* the publishing step.
