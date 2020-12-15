@@ -29,7 +29,8 @@ EXTRAS_REQUIRE = {
 PACKAGE_DATA = {
     'aodncore': [
         'pipeline/templates/*.j2',
-        'testlib/conf/*.conf'
+        'testlib/conf/*.conf',
+        'testlib/vocab/*.rdf'
     ]
 }
 
