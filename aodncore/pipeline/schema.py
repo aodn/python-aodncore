@@ -177,7 +177,8 @@ PIPELINE_CONFIG_SCHEMA = {
 RESOLVE_PARAMS_SCHEMA = {
     'type': 'object',
     'properties': {
-        'relative_path_root': {'type': 'string'},
+        'allow_delete_manifests': {'type': 'boolean'},
+        'relative_path_root': {'type': 'string'}
     },
     'additionalProperties': False
 }

@@ -66,7 +66,10 @@ def get_resolve_runner(input_file, output_dir, config, logger, resolve_params=No
     elif file_type is FileType.SIMPLE_MANIFEST:
         return SimpleManifestResolveRunner(input_file, output_dir, config, logger, resolve_params)
     elif file_type is FileType.DELETE_MANIFEST:
-        return DeleteManifestResolveRunner(input_file, output_dir, config, logger, resolve_params)
+        delete_manifests_allowed = resolve_params.get('allow_delete_manifests', False) if resolve_params else False
+        if delete_manifests_allowed:
+            return DeleteManifestResolveRunner(input_file, output_dir, config, logger, resolve_params)
+        raise InvalidFileFormatError('delete_manifests are not enabled for this pipeline')
     elif file_type is FileType.JSON_MANIFEST:
         return JsonManifestResolveRunner(input_file, output_dir, config, logger, resolve_params)
     elif file_type is FileType.MAP_MANIFEST:
