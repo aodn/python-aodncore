@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>aodncore.testlib.dummyhandler &mdash; aodncore 1.1.10 documentation</title>
+  <title>aodncore.testlib.dummyhandler &mdash; aodncore 1.1.11 documentation</title>
   
 
   
@@ -58,7 +58,7 @@
             
             
               <div class="version">
-                1.1.10
+                1.1.11
               </div>
             
           
@@ -166,7 +166,7 @@
            <div itemprop="articleBody">
             
   <h1>Source code for aodncore.testlib.dummyhandler</h1><div class="highlight"><pre>
-<span></span><span class="kn">from</span> <span class="nn">aodncore.pipeline</span> <span class="kn">import</span> <span class="n">HandlerBase</span><span class="p">,</span> <span class="n">PipelineFileCheckType</span><span class="p">,</span> <span class="n">PipelineFilePublishType</span>
+<span></span><span class="kn">from</span> <span class="nn">aodncore.pipeline</span> <span class="kn">import</span> <span class="n">HandlerBase</span><span class="p">,</span> <span class="n">PipelineFileCheckType</span><span class="p">,</span> <span class="n">PipelineFileCollection</span><span class="p">,</span> <span class="n">PipelineFilePublishType</span>
 <span class="kn">from</span> <span class="nn">aodncore.vocab</span> <span class="kn">import</span> <span class="n">PlatformVocabHelper</span>
 
 
@@ -219,8 +219,11 @@
 <span class="sd">        :return: None</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Running preprocess from child class&quot;</span><span class="p">)</span>
-        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">file_collection</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">file_collection</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">check_type</span> <span class="o">=</span> <span class="n">PipelineFileCheckType</span><span class="o">.</span><span class="n">NO_ACTION</span></div>
+        <span class="p">(</span>
+            <span class="n">PipelineFileCollection</span><span class="p">(</span><span class="n">f</span> <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">file_collection</span> <span class="k">if</span> <span class="n">f</span><span class="o">.</span><span class="n">publish_type</span><span class="o">.</span><span class="n">is_addition_type</span><span class="p">)[</span><span class="mi">1</span><span class="p">:]</span>
+                <span class="o">.</span><span class="n">filter_by_attribute_id</span><span class="p">(</span><span class="s1">&#39;check_type&#39;</span><span class="p">,</span> <span class="n">PipelineFileCheckType</span><span class="o">.</span><span class="n">UNSET</span><span class="p">)</span>
+                <span class="o">.</span><span class="n">set_check_types</span><span class="p">(</span><span class="n">PipelineFileCheckType</span><span class="o">.</span><span class="n">NO_ACTION</span><span class="p">)</span>
+        <span class="p">)</span></div>
 
 <div class="viewcode-block" id="DummyHandler.process"><a class="viewcode-back" href="../../../aodncore.testlib.html#aodncore.testlib.dummyhandler.DummyHandler.process">[docs]</a>    <span class="k">def</span> <span class="nf">process</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Here you can run code that needs to run *after* the compliance checker step but *before* the publishing step.</span>
