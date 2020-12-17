@@ -31,9 +31,9 @@ def get_notification_data():
 
 class TestPipelineStepsNotify(BaseTestCase):
     def test_get_check_runner(self):
-        with self.assertRaises(ValueError):
+        with self.assertRaises(TypeError):
             _ = get_child_notify_runner(1, None, None, self.test_logger)
-        with self.assertRaises(ValueError):
+        with self.assertRaises(TypeError):
             _ = get_child_notify_runner('str', None, None, self.test_logger)
 
         email_runner = get_child_notify_runner(NotificationRecipientType.EMAIL, None, None, self.test_logger)
