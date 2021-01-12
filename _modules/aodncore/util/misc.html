@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>aodncore.util.misc &mdash; aodncore 1.1.12 documentation</title>
+  <title>aodncore.util.misc &mdash; aodncore 1.1.13 documentation</title>
   
 
   
@@ -58,7 +58,7 @@
             
             
               <div class="version">
-                1.1.12
+                1.1.13
               </div>
             
           
@@ -177,6 +177,7 @@
 <span class="kn">import</span> <span class="nn">sys</span>
 <span class="kn">import</span> <span class="nn">types</span>
 <span class="kn">from</span> <span class="nn">collections</span> <span class="kn">import</span> <span class="n">Iterable</span><span class="p">,</span> <span class="n">OrderedDict</span><span class="p">,</span> <span class="n">Mapping</span>
+<span class="kn">from</span> <span class="nn">enum</span> <span class="kn">import</span> <span class="n">Enum</span><span class="p">,</span> <span class="n">EnumMeta</span>
 <span class="kn">from</span> <span class="nn">io</span> <span class="kn">import</span> <span class="n">StringIO</span>
 
 <span class="kn">import</span> <span class="nn">jinja2</span>
@@ -462,6 +463,15 @@
 
 <div class="viewcode-block" id="validate_membership"><a class="viewcode-back" href="../../../aodncore.util.html#aodncore.pipeline.common.validate_membership">[docs]</a><span class="k">def</span> <span class="nf">validate_membership</span><span class="p">(</span><span class="n">c</span><span class="p">):</span>
     <span class="k">def</span> <span class="nf">validate_membership_func</span><span class="p">(</span><span class="n">o</span><span class="p">):</span>
+        <span class="c1"># Compatibility fix for Python &lt;3.8.</span>
+        <span class="c1"># Python 3.8 raises a TypeError when testing for non-Enum objects, so this causes this function to also raise</span>
+        <span class="c1"># a TypeError in earlier Python 3 versions. This can be removed when Python 3.8 becomes the minimum required</span>
+        <span class="c1"># version.</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">c</span><span class="p">,</span> <span class="p">(</span><span class="n">EnumMeta</span><span class="p">,</span> <span class="n">Enum</span><span class="p">))</span> <span class="ow">and</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">o</span><span class="p">,</span> <span class="p">(</span><span class="n">EnumMeta</span><span class="p">,</span> <span class="n">Enum</span><span class="p">)):</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span>
+                <span class="s2">&quot;unsupported operand type(s) for &#39;in&#39;: &#39;</span><span class="si">%s</span><span class="s2">&#39; and &#39;</span><span class="si">%s</span><span class="s2">&#39;&quot;</span> <span class="o">%</span> <span class="p">(</span>
+                    <span class="nb">type</span><span class="p">(</span><span class="n">o</span><span class="p">)</span><span class="o">.</span><span class="vm">__qualname__</span><span class="p">,</span> <span class="n">c</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__qualname__</span><span class="p">))</span>
+
         <span class="k">if</span> <span class="n">o</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">c</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;value &#39;</span><span class="si">{o}</span><span class="s2">&#39; must be a member of &#39;</span><span class="si">{c}</span><span class="s2">&#39;&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">o</span><span class="o">=</span><span class="n">o</span><span class="p">,</span> <span class="n">c</span><span class="o">=</span><span class="n">c</span><span class="p">))</span>
 
