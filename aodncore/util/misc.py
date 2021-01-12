@@ -9,6 +9,7 @@ import re
 import sys
 import types
 from collections import Iterable, OrderedDict, Mapping
+from enum import Enum, EnumMeta
 from io import StringIO
 
 import jinja2
@@ -294,6 +295,15 @@ def str_to_list(string_, delimiter=',', strip_method='strip', include_empty=Fals
 
 def validate_membership(c):
     def validate_membership_func(o):
+        # Compatibility fix for Python <3.8.
+        # Python 3.8 raises a TypeError when testing for non-Enum objects, so this causes this function to also raise
+        # a TypeError in earlier Python 3 versions. This can be removed when Python 3.8 becomes the minimum required
+        # version.
+        if isinstance(c, (EnumMeta, Enum)) and not isinstance(o, (EnumMeta, Enum)):
+            raise TypeError(
+                "unsupported operand type(s) for 'in': '%s' and '%s'" % (
+                    type(o).__qualname__, c.__class__.__qualname__))
+
         if o not in c:
             raise ValueError("value '{o}' must be a member of '{c}'".format(o=o, c=c))
 

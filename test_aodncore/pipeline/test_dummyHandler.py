@@ -394,7 +394,7 @@ class TestDummyHandler(HandlerTestCase):
         handler.default_addition_publish_type = PipelineFilePublishType.NO_ACTION
         self.assertIs(handler.default_addition_publish_type, PipelineFilePublishType.NO_ACTION)
 
-        with self.assertRaises(ValueError):
+        with self.assertRaises(TypeError):
             handler.default_addition_publish_type = 'invalid'
 
     def test_property_default_deletion_publish_type(self):
@@ -403,7 +403,7 @@ class TestDummyHandler(HandlerTestCase):
         handler.default_deletion_publish_type = PipelineFilePublishType.NO_ACTION
         self.assertIs(handler.default_deletion_publish_type, PipelineFilePublishType.NO_ACTION)
 
-        with self.assertRaises(ValueError):
+        with self.assertRaises(TypeError):
             handler.default_deletion_publish_type = 'invalid'
 
     def test_opendap_root(self):

@@ -112,7 +112,7 @@ class TestPipelineFile(BaseTestCase):
         self.pipelinefile.publish_type = test_value
         self.assertIs(self.pipelinefile.publish_type, test_value)
 
-        with self.assertRaises(ValueError):
+        with self.assertRaises(TypeError):
             self.pipelinefile.publish_type = 'invalid'
 
         with self.assertRaises(ValueError):
@@ -918,7 +918,7 @@ class TestPipelineFileCollection(BaseTestCase):
         self.collection.set_publish_types(PipelineFilePublishType.DELETE_UNHARVEST)
         self.assertTrue(all(f.publish_type is PipelineFilePublishType.DELETE_UNHARVEST for f in self.collection))
 
-        with self.assertRaises(ValueError):
+        with self.assertRaises(TypeError):
             self.collection.set_publish_types('invalid_type')
 
     @patch("aodncore.pipeline.files.get_file_checksum")

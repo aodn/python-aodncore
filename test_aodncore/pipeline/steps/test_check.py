@@ -16,9 +16,9 @@ WARNING_NC = os.path.join(TESTDATA_DIR, 'test_manifest.nc')
 
 class TestPipelineStepsCheck(BaseTestCase):
     def test_get_check_runner(self):
-        with self.assertRaises(ValueError):
+        with self.assertRaises(TypeError):
             _ = get_child_check_runner(1, None, self.test_logger, None)
-        with self.assertRaises(ValueError):
+        with self.assertRaises(TypeError):
             _ = get_child_check_runner('str', None, self.test_logger, None)
 
         with self.assertRaises(InvalidCheckTypeError):
