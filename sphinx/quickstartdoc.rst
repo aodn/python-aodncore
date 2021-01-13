@@ -1,15 +1,40 @@
-Writing a :meth:`dest_path` function
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Writing a :meth:`dest_path` and/or :meth:`archive_path` function
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 The 'dest_path' (destination path) function is responsible for generating the path 'key' at
 which a file will be published. This key is used by both the harvesting process and the upload
-process, and is one of the most important elements of a handler.
+process, and is one of the most important elements of a handler. Similarly, the 'archive_path' function is responsible
+for the path used if the file is flagged for archiving. See https://aodn.github.io/python-aodncore/aodncore.pipeline.html#aodncore.pipeline.common.PipelineFilePublishType for further details about publishing files.
 
 * Writing a :meth:`dest_path` function with an unmodified filename::
 
     import os
 
     class MyHandler(HandlerBase):
+        def dest_path(self, file_path):
+            basename = os.path.basename(file_path)
+            return os.path.join('IMOS/MYFACILITY', basename)
+
+* Writing a :meth:`dest_path` function with a modified filename::
+
+    import os
+
+    class MyHandler(HandlerBase):
+        def dest_path(self, file_path):
+            basename = os.path.basename(file_path)
+            dest_filename = "IMOS_filename_01_XX_{basename}".format(basename=basename)
+            return os.path.join('IMOS/MYFACILITY', dest_filename)
+
+* Writing :meth:`dest_path` and :meth:`archive_path` functions with an unmodified filename:
+
+    import os
+
+    class MyHandler(HandlerBase):
+        def archive_path(self, file_path):
+            basename = os.path.basename(file_path)
+            archive_filename = "IMOS_{basename}".format(basename=basename)
+            return os.path.join('IMOS/MYFACILITY/ARCHIVE_LOCATION/', archive_filename)
+
         def dest_path(self, file_path):
             basename = os.path.basename(file_path)
             dest_filename = "IMOS_filename_01_XX_{basename}".format(basename=basename)
@@ -43,8 +68,9 @@ process, and is one of the most important elements of a handler.
     handler = MyHandler('/path/to/input/file', dest_path_function=dest_path_external)
 
 .. note:: Decoupling the :meth:`dest_path` function from the handler means the same handler class
-    can be used for multiple pipelines and act as a generic handler where calculating the destination
-    path is the only point of difference between them, to save duplicating code.
+    can be used for multiple pipelines and act as a generic handler, where calculating the destination
+    path is the only point of difference between them, to encourage code re-use and minimise the numer of handlers which
+    need to be written.
 
 Overriding default file actions
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -121,12 +147,9 @@ Query the existing pipeline storage for files matching a string::
             if file_to_check in results:
                 pass
 
-            # iterate over the results
-            for filename, metadata in results.iteritems():
-                print(filename)
-                print(metadata)
+            # iterate over the results (which is expressed as a RemotePipelineFileCollection, containing RemotePipelineFile objects)
+            for remote_file in results:
+                print("{rf.dest_path} {rf.size}".format(rf=remote_file))
 
-    Department_of_Defence/DSTG/slocum_glider/PerthCanyonB20140213/PerthCanyonB20140213.kml
-    {'last_modified': datetime.datetime(2016, 4, 27, 2, 30, 8, tzinfo=tzutc()), 'size': 21574}
-    Department_of_Defence/DSTG/slocum_glider/PerthCanyonB20140213/PerthCanyonB20140213_TEMP.jpg
-    {'last_modified': datetime.datetime(2016, 4, 27, 2, 30, 8, tzinfo=tzutc()), 'size': 132122}
+    Department_of_Defence/DSTG/slocum_glider/PerthCanyonB20140213/PerthCanyonB20140213.kml 21574
+    Department_of_Defence/DSTG/slocum_glider/PerthCanyonB20140213/PerthCanyonB20140213_TEMP.jpg 132122
