@@ -1064,14 +1064,15 @@ class PipelineFileCollection(PipelineFileCollectionBase):
         return cls(PipelineFile.from_remotepipelinefile(f, is_deletion=are_deletions)
                    for f in remotepipelinefilecollection)
 
-    def add(self, pipeline_file, deletion=False, overwrite=False, validate_unique=True):
+    def add(self, pipeline_file, deletion=False, overwrite=False, validate_unique=True, **kwargs):
         self.member_validator(pipeline_file)
         validate_bool(deletion)
 
         if not isinstance(pipeline_file, self.member_class) and not deletion and not os.path.isfile(pipeline_file):
             raise MissingFileError("file '{src}' doesn't exist".format(src=pipeline_file))
 
-        return super().add(pipeline_file, overwrite=overwrite, validate_unique=validate_unique, is_deletion=deletion)
+        return super().add(pipeline_file, overwrite=overwrite, validate_unique=validate_unique, is_deletion=deletion,
+                           **kwargs)
 
     def _set_attribute(self, attribute, value):
         for f in self._s:

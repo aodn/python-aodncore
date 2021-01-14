@@ -414,18 +414,38 @@ class TestDummyHandler(HandlerTestCase):
         handler = self.handler_class(self.temp_nc_file)
         self.assertIsInstance(handler.state_query, StateQuery)
 
-    def test_add_pipelinefile(self):
+    def test_add_to_collection_object(self):
         pf = PipelineFile(self.temp_nc_file)
-        handler = self.handler_class(self.temp_nc_file)
+        handler = self.handler_class(GOOD_NC)
 
         def _preprocess(self_):
-            self_.add_pipelinefile(pf)
+            self_.add_to_collection(pf)
 
         handler.preprocess = partial(_preprocess, self_=handler)
         handler.run()
 
-        self.assertEqual(handler._file_update_callback, pf.file_update_callback)
+        self.assertTrue(all(pf.file_update_callback == handler._file_update_callback for pf in handler.file_collection))
         self.assertIn(pf, handler.file_collection)
 
         with self.assertRaises(TypeError):
-            handler.add_pipelinefile(1)
+            handler.add_to_collection(1)
+
+    def test_add_to_collection_string(self):
+        handler = self.handler_class(GOOD_NC)
+
+        def _preprocess(self_):
+            self_.add_to_collection(self.temp_nc_file,
+                                    dest_path='UNITTEST/DEST/PATH',
+                                    publish_type=PipelineFilePublishType.ARCHIVE_ONLY,
+                                    check_type=PipelineFileCheckType.NC_COMPLIANCE_CHECK)
+
+        handler.preprocess = partial(_preprocess, self_=handler)
+        handler.run()
+
+        self.assertTrue(all(pf.file_update_callback == handler._file_update_callback for pf in handler.file_collection))
+        self.assertIn(self.temp_nc_file, handler.file_collection)
+
+        added_file = handler.file_collection.filter_by_attribute_value('local_path', self.temp_nc_file)[0]
+        self.assertEqual(added_file.dest_path, 'UNITTEST/DEST/PATH')
+        self.assertIs(added_file.publish_type, PipelineFilePublishType.ARCHIVE_ONLY)
+        self.assertIs(added_file.check_type, PipelineFileCheckType.NC_COMPLIANCE_CHECK)

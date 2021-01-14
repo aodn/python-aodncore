@@ -1022,15 +1022,21 @@ class HandlerBase(object):
     # "public" methods
     #
 
-    def add_pipelinefile(self, pipeline_file):
-        """Helper method to add a PipelineFile to the handler's file_collection, with the handler instance's
-            file_update_callback method assigned
+    def add_to_collection(self, pipeline_file, **kwargs):
+        """Helper method to add a PipelineFile object or path to the handler's file_collection, with the handler
+        instance's file_update_callback method assigned
 
-        :param pipeline_file: PipelineFile object
+            Note: as this is a wrapper to the PipelineFileCollection.add method, kwargs are *only* applied when
+            pipeline_file is a path (string). When adding an existing PipelineFile object, the object is added "as-is",
+            and attributes must be set explicitly on the object.
+
+        :param pipeline_file: :py:class:`PipelineFile` or file path
+        :param kwargs: keyword arguments passed through to the PipelineFileCollection.add method
         :return: None
         """
-        self.file_collection.add(pipeline_file)
-        pipeline_file.file_update_callback = self._file_update_callback
+        if isinstance(pipeline_file, PipelineFile):
+            pipeline_file.file_update_callback = self._file_update_callback
+        self.file_collection.add(pipeline_file, file_update_callback=self._file_update_callback, **kwargs)
 
     def run(self):
         """The entry point to the handler instance. Executes the automatic state machine transitions, and populates the
