@@ -33,7 +33,8 @@ class StateQuery(object):
         return self._wfs_broker.getfeature_dict(**kwargs)
 
     def query_wfs_files(self, layer, **kwargs):  # pragma: no cover
-        """Return a RemotePipelineFileCollection containing all files for a given layer
+        """Return a RemotePipelineFileCollection containing all files for a given layer, 
+        or files matching the filter specified in the kwarg `ogc_expression` (of type OgcExpression)
 
         :param layer: layer name supplied to GetFeature typename parameter
         :param kwargs: keyword arguments passed to underlying broker method
