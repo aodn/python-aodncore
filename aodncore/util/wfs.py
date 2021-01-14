@@ -101,7 +101,7 @@ class WfsBroker(object):
         else:  # pragma: no cover
             raise RuntimeError('unable to determine URL property name!')
 
-    def query_urls(self, layer, ogc_expression=None, url_property_name=None):
+    def query_files(self, layer, ogc_expression=None, url_property_name=None):
         """Return an IndexedSet of files for a given layer
 
         :param layer: layer name supplied to GetFeature typename parameter
@@ -129,9 +129,9 @@ class WfsBroker(object):
         warnings.warn("This method will be removed in a future version. Please update code to use "
                       "`query_urls` instead.", DeprecationWarning)
 
-        return self.query_urls(layer, ogc_expression=ogc_expression, url_property_name=url_property_name)
+        return self.query_files(layer, ogc_expression=ogc_expression, url_property_name=url_property_name)
 
-    def query_url_exists(self, layer, name):
+    def query_file_exists(self, layer, name):
         """Returns a bool representing whether a given 'file_url' is present in a layer
 
         :param layer: layer name supplied to GetFeature typename parameter
@@ -140,5 +140,5 @@ class WfsBroker(object):
         """
         url_property_name = self.get_url_property_name(layer)
         ogc_expression = get_ogc_expression_for_file_url(name, property_name=url_property_name)
-        file_urls = self.query_urls(layer, ogc_expression=ogc_expression, url_property_name=url_property_name)
+        file_urls = self.query_files(layer, ogc_expression=ogc_expression, url_property_name=url_property_name)
         return name in file_urls

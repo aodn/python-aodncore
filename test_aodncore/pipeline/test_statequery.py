@@ -32,14 +32,14 @@ class TestStateQuery(BaseTestCase):
             _ = state_query.wfs
 
         with self.assertRaises(AttributeError):
-            _ = state_query.query_wfs_urls('')
+            _ = state_query.query_wfs_files('')
 
         with self.assertRaises(AttributeError):
-            _ = state_query.query_wfs_url_exists('', '')
+            _ = state_query.query_wfs_file_exists('', '')
 
     def test_wfs(self):
         state_query = StateQuery(storage_broker=self.storage_broker, wfs_broker=self.wfs_broker)
-        response = state_query.query_wfs_urls('anmn_velocity_timeseries_map')
+        response = state_query.query_wfs_files('anmn_velocity_timeseries_map')
 
         expected = RemotePipelineFileCollection([
             RemotePipelineFile(

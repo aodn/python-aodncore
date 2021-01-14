@@ -74,7 +74,7 @@ class TestWfsBroker(BaseTestCase):
         with open(os.path.join(TESTDATA_DIR, 'wfs/GetFeature.json')) as f:
             self.broker.wfs.getfeature().getvalue.return_value = f.read()
 
-        files_for_layer = self.broker.query_urls('anmn_velocity_timeseries_map')
+        files_for_layer = self.broker.query_files('anmn_velocity_timeseries_map')
         self.assertIsInstance(files_for_layer, IndexedSet)
 
     def test_query_file_exists_for_layer_true(self):
@@ -83,7 +83,7 @@ class TestWfsBroker(BaseTestCase):
 
         file_to_check = 'IMOS/ANMN/QLD/GBROTE/Velocity/IMOS_ANMN-QLD_AETVZ_20140408T102930Z_GBROTE_FV01_GBROTE-1404-AWAC-13_END-20141022T052930Z_C-20150215T063708Z.nc'
 
-        file_exists = self.broker.query_url_exists(layer='anmn_velocity_timeseries_map', name=file_to_check)
+        file_exists = self.broker.query_file_exists(layer='anmn_velocity_timeseries_map', name=file_to_check)
         self.assertTrue(file_exists)
 
     def test_query_file_exists_for_layer_false(self):
@@ -92,5 +92,5 @@ class TestWfsBroker(BaseTestCase):
 
         file_to_check = "IMOS/ANMN/QLD/GBROTE/Velocity/FILE_THAT_ISNT_IN_RESULTS.nc"
 
-        file_exists = self.broker.query_url_exists(layer='anmn_velocity_timeseries_map', name=file_to_check)
+        file_exists = self.broker.query_file_exists(layer='anmn_velocity_timeseries_map', name=file_to_check)
         self.assertFalse(file_exists)
