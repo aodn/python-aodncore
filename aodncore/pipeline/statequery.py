@@ -61,7 +61,7 @@ class StateQuery(object):
         """Helper method to download a RemotePipelineFileCollection or RemotePipelineFile
 
         :param remotepipelinefilecollection: RemotePipelineFileCollection to download
-        :param local_path: local path where files will be downloaded. Defaults to the handler's :attr:`temp_dir` value.
+        :param local_path: local path where files will be downloaded.
         :return: None
         """
         self._storage_broker.download(remotepipelinefilecollection, local_path)
