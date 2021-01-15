@@ -27,7 +27,6 @@ __all__ = [
 GLOBAL_TEST_BASE = os.path.dirname(os.path.dirname(__file__))
 
 TESTLIB_CONF_DIR = os.path.join(os.path.dirname(__file__), 'conf')
-TESTLIB_VOCAB_DIR = os.path.join(os.path.dirname(__file__), 'vocab')
 
 
 class NullStorageBroker(BaseStorageBroker):
@@ -221,15 +220,6 @@ def load_runtime_patched_pipeline_config_file(config_file, rel_path, temp_dir):
     pipeline_config['logging']['log_root'] = tempfile.mkdtemp(prefix='temp_log_root', dir=temp_dir)
     pipeline_config['mail']['smtp_server'] = str(uuid.uuid4())
     pipeline_config['watch']['incoming_dir'] = tempfile.mkdtemp(prefix='temp_incoming_dir', dir=temp_dir)
-
-    pipeline_config['global']['platform_vocab_url'] = "file://{vocab_dir}/aodn_aodn-platform-vocabulary.rdf".format(
-        vocab_dir=TESTLIB_VOCAB_DIR)
-    pipeline_config['global'][
-        'platform_category_vocab_url'] = "file://{vocab_dir}/aodn_aodn-platform-category-vocabulary.rdf".format(
-        vocab_dir=TESTLIB_VOCAB_DIR)
-    pipeline_config['global'][
-        'xbt_line_vocab_url'] = "file://{vocab_dir}/aodn_aodn-xbt-line-vocabulary.rdf".format(
-        vocab_dir=TESTLIB_VOCAB_DIR)
 
     # reload the JSON object with non-updatable keys
     return json.loads(json.dumps(pipeline_config), object_pairs_hook=WriteOnceOrderedDict)

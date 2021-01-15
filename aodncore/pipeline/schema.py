@@ -92,10 +92,7 @@ PIPELINE_CONFIG_SCHEMA = {
                 'upload_uri': {'type': 'string'},
                 'wfs_url': {'type': 'string'},
                 'wfs_version': {'type': 'string'},
-                'wip_dir': {'type': 'string'},
-                'platform_category_vocab_url': {'type': 'string'},
-                'platform_vocab_url': {'type': 'string'},
-                'xbt_line_vocab_url': {'type': 'string'}
+                'wip_dir': {'type': 'string'}
             },
             'required': ['admin_recipients', 'archive_uri', 'error_uri', 'processing_dir', 'upload_uri', 'wip_dir'],
             'additionalProperties': False

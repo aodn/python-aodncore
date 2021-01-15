@@ -22,12 +22,9 @@ REFERENCE_PIPELINE_CONFIG = {
         'upload_uri': 'file:///tmp/probably/doesnt/exist/upload',
         'wfs_url': 'http://geoserver.example.com/geoserver/wfs',
         'wfs_version': '1.1.0',
-        'wip_dir': '/tmp/probably/doesnt/exist/wip',
-        'platform_category_vocab_url': '/tmp/probably/doesnt/exist/aodn_aodn-platform-category-vocabulary.rdf',
-        'platform_vocab_url': '/tmp/probably/doesnt/exist/aodn_aodn-platform-vocabulary.rdf',
-        'xbt_line_vocab_url': '/tmp/probably/doesnt/exist/aodn_aodn-xbt-line-vocabulary.rdf'
+        'wip_dir': '/tmp/probably/doesnt/exist/wip'
 
-},
+    },
     'logging': {
         'level': 'SYSINFO',
         'pipeline_format': '%(asctime)s %(levelname)s %(name)s[%(celery_task_id)s] %(message)s',
