@@ -36,7 +36,10 @@ PACKAGE_DATA = {
 
 PACKAGE_EXCLUDES = ['test_aodncore.*', 'test_aodncore']
 PACKAGE_NAME = 'aodncore'
-PACKAGE_SCRIPTS = ['aodncore/bin/drawmachine.py', 'aodncore/pipeline/watchservice.py']
+PACKAGE_SCRIPTS = [
+    'aodncore/bin/drawmachine.py',
+    'aodncore/bin/configvalidate.py',
+    'aodncore/pipeline/watchservice.py']
 
 setup(
     name=PACKAGE_NAME,
