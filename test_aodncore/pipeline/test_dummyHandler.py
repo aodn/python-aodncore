@@ -414,11 +414,6 @@ class TestDummyHandler(HandlerTestCase):
         handler = self.handler_class(self.temp_nc_file)
         self.assertIsInstance(handler.state_query, StateQuery)
 
-    def test_platform_vocab_helper(self):
-        handler = self.handler_class(self.temp_nc_file)
-        self.assertIsInstance(handler.platform_vocab_helper.platform_type_uris_by_category(), dict)
-        self.assertEqual(handler.platform_vocab_helper.platform_altlabels_per_preflabel('Vessel')['9VUU'], 'Anro Asia')
-
     def test_download_remotepipelinefilecollection_collection(self):
         local_path = os.path.join(self.temp_dir, 'local_download_path')
         broker = NullStorageBroker('')

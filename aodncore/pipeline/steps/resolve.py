@@ -21,6 +21,7 @@ import abc
 import json
 import os
 import re
+import warnings
 from collections import namedtuple
 from enum import Enum
 from io import open
@@ -454,6 +455,11 @@ class DirManifestResolveRunner(BaseManifestResolveRunner):
         /path/to/source/dir1
 
     """
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        warnings.warn("This FileType ('.dir_manifest') will be removed in a future version. Please update code to use "
+                      "a pre-generated simple manifest ('.manifest') instead.", DeprecationWarning)
 
     def run(self):
         with open(self.input_file, 'r') as f:
