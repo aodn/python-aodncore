@@ -2,4 +2,4 @@
 Updated automatically by the build server
 """
 
-__version__ = '1.1.14'
+__version__ = '1.2.0'

@@ -420,7 +420,7 @@ class RsyncManifestResolveRunner(BaseManifestResolveRunner):
                 if record.type is RsyncLineType.FILE_ADD:
                     self._collection.add(abs_path)
                 elif record.type is RsyncLineType.FILE_DELETE:
-                    self._collection.add(abs_path, deletion=True)
+                    self._collection.add(abs_path, is_deletion=True)
 
         return self._collection
 
