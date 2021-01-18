@@ -7,7 +7,6 @@ Subpackages
 .. toctree::
 
    aodncore.testlib.conf
-   aodncore.testlib.vocab
 
 Submodules
 ----------

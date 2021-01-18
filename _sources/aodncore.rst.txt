@@ -10,7 +10,6 @@ Subpackages
    aodncore.pipeline
    aodncore.testlib
    aodncore.util
-   aodncore.vocab
 
 Submodules
 ----------

@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>aodncore.testlib.dummyhandler &mdash; aodncore 1.1.13 documentation</title>
+  <title>aodncore.testlib.dummyhandler &mdash; aodncore 1.1.14 documentation</title>
   
 
   
@@ -58,7 +58,7 @@
             
             
               <div class="version">
-                1.1.13
+                1.1.14
               </div>
             
           
@@ -167,7 +167,6 @@
             
   <h1>Source code for aodncore.testlib.dummyhandler</h1><div class="highlight"><pre>
 <span></span><span class="kn">from</span> <span class="nn">aodncore.pipeline</span> <span class="kn">import</span> <span class="n">HandlerBase</span><span class="p">,</span> <span class="n">PipelineFileCheckType</span><span class="p">,</span> <span class="n">PipelineFileCollection</span><span class="p">,</span> <span class="n">PipelineFilePublishType</span>
-<span class="kn">from</span> <span class="nn">aodncore.vocab</span> <span class="kn">import</span> <span class="n">PlatformVocabHelper</span>
 
 
 <div class="viewcode-block" id="DummyHandler"><a class="viewcode-back" href="../../../aodncore.testlib.html#aodncore.testlib.dummyhandler.DummyHandler">[docs]</a><span class="k">class</span> <span class="nc">DummyHandler</span><span class="p">(</span><span class="n">HandlerBase</span><span class="p">):</span>
@@ -198,8 +197,6 @@
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">default_addition_publish_type</span> <span class="o">=</span> <span class="n">PipelineFilePublishType</span><span class="o">.</span><span class="n">HARVEST_ARCHIVE_UPLOAD</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">opendap_root</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">pipeline_config</span><span class="p">[</span><span class="s1">&#39;global&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;opendap_root&#39;</span><span class="p">)</span>
-
-        <span class="bp">self</span><span class="o">.</span><span class="n">platform_vocab_helper</span> <span class="o">=</span> <span class="n">PlatformVocabHelper</span><span class="o">.</span><span class="n">from_config</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="p">)</span>
 
 <div class="viewcode-block" id="DummyHandler.dest_path"><a class="viewcode-back" href="../../../aodncore.testlib.html#aodncore.testlib.dummyhandler.DummyHandler.dest_path">[docs]</a>    <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">dest_path</span><span class="p">(</span><span class="n">filename</span><span class="p">):</span>

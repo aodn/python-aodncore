@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>aodncore.testlib.testutil &mdash; aodncore 1.1.13 documentation</title>
+  <title>aodncore.testlib.testutil &mdash; aodncore 1.1.14 documentation</title>
   
 
   
@@ -58,7 +58,7 @@
             
             
               <div class="version">
-                1.1.13
+                1.1.14
               </div>
             
           
@@ -195,7 +195,6 @@
 <span class="n">GLOBAL_TEST_BASE</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="vm">__file__</span><span class="p">))</span>
 
 <span class="n">TESTLIB_CONF_DIR</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="vm">__file__</span><span class="p">),</span> <span class="s1">&#39;conf&#39;</span><span class="p">)</span>
-<span class="n">TESTLIB_VOCAB_DIR</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="vm">__file__</span><span class="p">),</span> <span class="s1">&#39;vocab&#39;</span><span class="p">)</span>
 
 
 <div class="viewcode-block" id="NullStorageBroker"><a class="viewcode-back" href="../../../aodncore.testlib.html#aodncore.testlib.testutil.NullStorageBroker">[docs]</a><span class="k">class</span> <span class="nc">NullStorageBroker</span><span class="p">(</span><span class="n">BaseStorageBroker</span><span class="p">):</span>
@@ -389,15 +388,6 @@
     <span class="n">pipeline_config</span><span class="p">[</span><span class="s1">&#39;logging&#39;</span><span class="p">][</span><span class="s1">&#39;log_root&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">tempfile</span><span class="o">.</span><span class="n">mkdtemp</span><span class="p">(</span><span class="n">prefix</span><span class="o">=</span><span class="s1">&#39;temp_log_root&#39;</span><span class="p">,</span> <span class="nb">dir</span><span class="o">=</span><span class="n">temp_dir</span><span class="p">)</span>
     <span class="n">pipeline_config</span><span class="p">[</span><span class="s1">&#39;mail&#39;</span><span class="p">][</span><span class="s1">&#39;smtp_server&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">uuid</span><span class="o">.</span><span class="n">uuid4</span><span class="p">())</span>
     <span class="n">pipeline_config</span><span class="p">[</span><span class="s1">&#39;watch&#39;</span><span class="p">][</span><span class="s1">&#39;incoming_dir&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">tempfile</span><span class="o">.</span><span class="n">mkdtemp</span><span class="p">(</span><span class="n">prefix</span><span class="o">=</span><span class="s1">&#39;temp_incoming_dir&#39;</span><span class="p">,</span> <span class="nb">dir</span><span class="o">=</span><span class="n">temp_dir</span><span class="p">)</span>
-
-    <span class="n">pipeline_config</span><span class="p">[</span><span class="s1">&#39;global&#39;</span><span class="p">][</span><span class="s1">&#39;platform_vocab_url&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;file://</span><span class="si">{vocab_dir}</span><span class="s2">/aodn_aodn-platform-vocabulary.rdf&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
-        <span class="n">vocab_dir</span><span class="o">=</span><span class="n">TESTLIB_VOCAB_DIR</span><span class="p">)</span>
-    <span class="n">pipeline_config</span><span class="p">[</span><span class="s1">&#39;global&#39;</span><span class="p">][</span>
-        <span class="s1">&#39;platform_category_vocab_url&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;file://</span><span class="si">{vocab_dir}</span><span class="s2">/aodn_aodn-platform-category-vocabulary.rdf&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
-        <span class="n">vocab_dir</span><span class="o">=</span><span class="n">TESTLIB_VOCAB_DIR</span><span class="p">)</span>
-    <span class="n">pipeline_config</span><span class="p">[</span><span class="s1">&#39;global&#39;</span><span class="p">][</span>
-        <span class="s1">&#39;xbt_line_vocab_url&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;file://</span><span class="si">{vocab_dir}</span><span class="s2">/aodn_aodn-xbt-line-vocabulary.rdf&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
-        <span class="n">vocab_dir</span><span class="o">=</span><span class="n">TESTLIB_VOCAB_DIR</span><span class="p">)</span>
 
     <span class="c1"># reload the JSON object with non-updatable keys</span>
     <span class="k">return</span> <span class="n">json</span><span class="o">.</span><span class="n">loads</span><span class="p">(</span><span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">pipeline_config</span><span class="p">),</span> <span class="n">object_pairs_hook</span><span class="o">=</span><span class="n">WriteOnceOrderedDict</span><span class="p">)</span></div>
