@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>aodncore.pipeline.handlerbase &mdash; aodncore 1.1.14 documentation</title>
+  <title>aodncore.pipeline.handlerbase &mdash; aodncore 1.2.1 documentation</title>
   
 
   
@@ -58,7 +58,7 @@
             
             
               <div class="version">
-                1.1.14
+                1.2.1
               </div>
             
           
@@ -180,7 +180,7 @@
 <span class="kn">from</span> <span class="nn">.destpath</span> <span class="kn">import</span> <span class="n">get_path_function</span>
 <span class="kn">from</span> <span class="nn">.exceptions</span> <span class="kn">import</span> <span class="p">(</span><span class="n">PipelineProcessingError</span><span class="p">,</span> <span class="n">HandlerAlreadyRunError</span><span class="p">,</span> <span class="n">InvalidConfigError</span><span class="p">,</span> <span class="n">InvalidInputFileError</span><span class="p">,</span>
                          <span class="n">InvalidFileFormatError</span><span class="p">,</span> <span class="n">MissingConfigParameterError</span><span class="p">,</span> <span class="n">UnmatchedFilesError</span><span class="p">)</span>
-<span class="kn">from</span> <span class="nn">.files</span> <span class="kn">import</span> <span class="n">PipelineFile</span><span class="p">,</span> <span class="n">PipelineFileCollection</span><span class="p">,</span> <span class="n">ensure_remotepipelinefilecollection</span>
+<span class="kn">from</span> <span class="nn">.files</span> <span class="kn">import</span> <span class="n">PipelineFile</span><span class="p">,</span> <span class="n">PipelineFileCollection</span>
 <span class="kn">from</span> <span class="nn">.log</span> <span class="kn">import</span> <span class="n">SYSINFO</span><span class="p">,</span> <span class="n">get_pipeline_logger</span>
 <span class="kn">from</span> <span class="nn">.schema</span> <span class="kn">import</span> <span class="p">(</span><span class="n">validate_check_params</span><span class="p">,</span> <span class="n">validate_custom_params</span><span class="p">,</span> <span class="n">validate_harvest_params</span><span class="p">,</span> <span class="n">validate_notify_params</span><span class="p">,</span>
                      <span class="n">validate_resolve_params</span><span class="p">)</span>
@@ -188,7 +188,7 @@
 <span class="kn">from</span> <span class="nn">.steps</span> <span class="kn">import</span> <span class="p">(</span><span class="n">get_check_runner</span><span class="p">,</span> <span class="n">get_harvester_runner</span><span class="p">,</span> <span class="n">get_notify_runner</span><span class="p">,</span> <span class="n">get_resolve_runner</span><span class="p">,</span> <span class="n">get_store_runner</span><span class="p">)</span>
 <span class="kn">from</span> <span class="nn">..util</span> <span class="kn">import</span> <span class="p">(</span><span class="n">ensure_regex_list</span><span class="p">,</span> <span class="n">ensure_writeonceordereddict</span><span class="p">,</span> <span class="n">format_exception</span><span class="p">,</span>
                     <span class="n">get_file_checksum</span><span class="p">,</span> <span class="n">iter_public_attributes</span><span class="p">,</span> <span class="n">lazyproperty</span><span class="p">,</span> <span class="n">matches_regexes</span><span class="p">,</span> <span class="n">merge_dicts</span><span class="p">,</span>
-                    <span class="n">validate_relative_path_attr</span><span class="p">,</span> <span class="n">TemporaryDirectory</span><span class="p">,</span> <span class="n">DEFAULT_WFS_VERSION</span><span class="p">)</span>
+                    <span class="n">validate_relative_path_attr</span><span class="p">,</span> <span class="n">TemporaryDirectory</span><span class="p">,</span> <span class="n">WfsBroker</span><span class="p">,</span> <span class="n">DEFAULT_WFS_VERSION</span><span class="p">)</span>
 <span class="kn">from</span> <span class="nn">..version</span> <span class="kn">import</span> <span class="n">__version__</span> <span class="k">as</span> <span class="n">_aodncore_version</span>
 
 <span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span>
@@ -754,9 +754,9 @@
 <span class="sd">        :return: StateQuery instance</span>
 <span class="sd">        :rtype: :py:class:`StateQuery`</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="n">StateQuery</span><span class="p">(</span><span class="n">storage_broker</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_upload_store_runner</span><span class="o">.</span><span class="n">broker</span><span class="p">,</span>
-                          <span class="n">wfs_url</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">pipeline_config</span><span class="p">[</span><span class="s1">&#39;global&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;wfs_url&#39;</span><span class="p">),</span>
-                          <span class="n">wfs_version</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">pipeline_config</span><span class="p">[</span><span class="s1">&#39;global&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;wfs_version&#39;</span><span class="p">,</span> <span class="n">DEFAULT_WFS_VERSION</span><span class="p">))</span>
+        <span class="n">wfs_broker</span> <span class="o">=</span> <span class="n">WfsBroker</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">pipeline_config</span><span class="p">[</span><span class="s1">&#39;global&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;wfs_url&#39;</span><span class="p">),</span>
+                               <span class="n">version</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">pipeline_config</span><span class="p">[</span><span class="s1">&#39;global&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;wfs_version&#39;</span><span class="p">,</span> <span class="n">DEFAULT_WFS_VERSION</span><span class="p">))</span>
+        <span class="k">return</span> <span class="n">StateQuery</span><span class="p">(</span><span class="n">storage_broker</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_upload_store_runner</span><span class="o">.</span><span class="n">broker</span><span class="p">,</span> <span class="n">wfs_broker</span><span class="o">=</span><span class="n">wfs_broker</span><span class="p">)</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">default_addition_publish_type</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
@@ -1190,19 +1190,21 @@
     <span class="c1"># &quot;public&quot; methods</span>
     <span class="c1">#</span>
 
-<div class="viewcode-block" id="HandlerBase.download_remotepipelinefilecollection"><a class="viewcode-back" href="../../../aodncore.pipeline.html#aodncore.pipeline.handlerbase.HandlerBase.download_remotepipelinefilecollection">[docs]</a>    <span class="k">def</span> <span class="nf">download_remotepipelinefilecollection</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">remotepipelinefilecollection</span><span class="p">,</span> <span class="n">local_path</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Helper method to download a RemotePipelineFileCollection or RemotePipelineFile using the handler&#39;s internal</span>
-<span class="sd">            storage broker</span>
+<div class="viewcode-block" id="HandlerBase.add_to_collection"><a class="viewcode-back" href="../../../aodncore.pipeline.html#aodncore.pipeline.handlerbase.HandlerBase.add_to_collection">[docs]</a>    <span class="k">def</span> <span class="nf">add_to_collection</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pipeline_file</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Helper method to add a PipelineFile object or path to the handler&#39;s file_collection, with the handler</span>
+<span class="sd">        instance&#39;s file_update_callback method assigned</span>
 
-<span class="sd">        :param remotepipelinefilecollection: RemotePipelineFileCollection to download</span>
-<span class="sd">        :param local_path: local path where files will be downloaded. Defaults to the handler&#39;s :attr:`temp_dir` value.</span>
+<span class="sd">            Note: as this is a wrapper to the PipelineFileCollection.add method, kwargs are *only* applied when</span>
+<span class="sd">            pipeline_file is a path (string). When adding an existing PipelineFile object, the object is added &quot;as-is&quot;,</span>
+<span class="sd">            and attributes must be set explicitly on the object.</span>
+
+<span class="sd">        :param pipeline_file: :py:class:`PipelineFile` or file path</span>
+<span class="sd">        :param kwargs: keyword arguments passed through to the PipelineFileCollection.add method</span>
 <span class="sd">        :return: None</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">remotepipelinefilecollection</span> <span class="o">=</span> <span class="n">ensure_remotepipelinefilecollection</span><span class="p">(</span><span class="n">remotepipelinefilecollection</span><span class="p">)</span>
-        <span class="k">if</span> <span class="n">local_path</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="n">local_path</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">temp_dir</span>
-
-        <span class="n">remotepipelinefilecollection</span><span class="o">.</span><span class="n">download</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_upload_store_runner</span><span class="o">.</span><span class="n">broker</span><span class="p">,</span> <span class="n">local_path</span><span class="p">)</span></div>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">pipeline_file</span><span class="p">,</span> <span class="n">PipelineFile</span><span class="p">):</span>
+            <span class="n">pipeline_file</span><span class="o">.</span><span class="n">file_update_callback</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_file_update_callback</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">file_collection</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">pipeline_file</span><span class="p">,</span> <span class="n">file_update_callback</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_file_update_callback</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="HandlerBase.run"><a class="viewcode-back" href="../../../aodncore.pipeline.html#aodncore.pipeline.handlerbase.HandlerBase.run">[docs]</a>    <span class="k">def</span> <span class="nf">run</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;The entry point to the handler instance. Executes the automatic state machine transitions, and populates the</span>

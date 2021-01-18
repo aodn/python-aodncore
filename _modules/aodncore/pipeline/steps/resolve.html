@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>aodncore.pipeline.steps.resolve &mdash; aodncore 1.1.14 documentation</title>
+  <title>aodncore.pipeline.steps.resolve &mdash; aodncore 1.2.1 documentation</title>
   
 
   
@@ -58,7 +58,7 @@
             
             
               <div class="version">
-                1.1.14
+                1.2.1
               </div>
             
           
@@ -588,7 +588,7 @@
                 <span class="k">if</span> <span class="n">record</span><span class="o">.</span><span class="n">type</span> <span class="ow">is</span> <span class="n">RsyncLineType</span><span class="o">.</span><span class="n">FILE_ADD</span><span class="p">:</span>
                     <span class="bp">self</span><span class="o">.</span><span class="n">_collection</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">abs_path</span><span class="p">)</span>
                 <span class="k">elif</span> <span class="n">record</span><span class="o">.</span><span class="n">type</span> <span class="ow">is</span> <span class="n">RsyncLineType</span><span class="o">.</span><span class="n">FILE_DELETE</span><span class="p">:</span>
-                    <span class="bp">self</span><span class="o">.</span><span class="n">_collection</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">abs_path</span><span class="p">,</span> <span class="n">deletion</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">_collection</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">abs_path</span><span class="p">,</span> <span class="n">is_deletion</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_collection</span></div></div>
 

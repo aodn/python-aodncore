@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>aodncore.util package &mdash; aodncore 1.1.14 documentation</title>
+  <title>aodncore.util package &mdash; aodncore 1.2.1 documentation</title>
   
 
   
@@ -59,7 +59,7 @@
             
             
               <div class="version">
-                1.1.14
+                1.2.1
               </div>
             
           
@@ -997,8 +997,8 @@ Optionally merge stdout and stderr streams into stdout.</p>
 <p>Simple higher level interface to a WebFeatureService instance, to provide common helper methods and standardise
 response handling around JSON</p>
 <dl class="method">
-<dt id="aodncore.util.wfs.WfsBroker.get_url_property_name_for_layer">
-<code class="sig-name descname">get_url_property_name_for_layer</code><span class="sig-paren">(</span><em class="sig-param">layer</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/aodncore/util/wfs.html#WfsBroker.get_url_property_name_for_layer"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#aodncore.util.wfs.WfsBroker.get_url_property_name_for_layer" title="Permalink to this definition">¶</a></dt>
+<dt id="aodncore.util.wfs.WfsBroker.get_url_property_name">
+<code class="sig-name descname">get_url_property_name</code><span class="sig-paren">(</span><em class="sig-param">layer</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/aodncore/util/wfs.html#WfsBroker.get_url_property_name"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#aodncore.util.wfs.WfsBroker.get_url_property_name" title="Permalink to this definition">¶</a></dt>
 <dd><p>Get the URL property name for a given layer</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -1012,11 +1012,14 @@ response handling around JSON</p>
 
 <dl class="method">
 <dt id="aodncore.util.wfs.WfsBroker.getfeature_dict">
-<code class="sig-name descname">getfeature_dict</code><span class="sig-paren">(</span><em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/aodncore/util/wfs.html#WfsBroker.getfeature_dict"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#aodncore.util.wfs.WfsBroker.getfeature_dict" title="Permalink to this definition">¶</a></dt>
-<dd><p>Make a GetFeature request, and return the response in a native dict</p>
+<code class="sig-name descname">getfeature_dict</code><span class="sig-paren">(</span><em class="sig-param">ogc_expression=None</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/aodncore/util/wfs.html#WfsBroker.getfeature_dict"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#aodncore.util.wfs.WfsBroker.getfeature_dict" title="Permalink to this definition">¶</a></dt>
+<dd><p>Make a GetFeature request, and return the response in a native dict.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>kwargs</strong> – keyword arguments passed to the underlying WebFeatureService.getfeature method</p>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>ogc_expression</strong> – OgcExpression used to filter the returned features. If omitted, returns all features.</p></li>
+<li><p><strong>kwargs</strong> – keyword arguments passed to the underlying WebFeatureService.getfeature method</p></li>
+</ul>
 </dd>
 <dt class="field-even">Returns</dt>
 <dd class="field-even"><p>dict containing the parsed GetFeature response</p>
@@ -1025,8 +1028,8 @@ response handling around JSON</p>
 </dd></dl>
 
 <dl class="method">
-<dt id="aodncore.util.wfs.WfsBroker.query_url_exists_for_layer">
-<code class="sig-name descname">query_url_exists_for_layer</code><span class="sig-paren">(</span><em class="sig-param">layer</em>, <em class="sig-param">name</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/aodncore/util/wfs.html#WfsBroker.query_url_exists_for_layer"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#aodncore.util.wfs.WfsBroker.query_url_exists_for_layer" title="Permalink to this definition">¶</a></dt>
+<dt id="aodncore.util.wfs.WfsBroker.query_file_exists">
+<code class="sig-name descname">query_file_exists</code><span class="sig-paren">(</span><em class="sig-param">layer</em>, <em class="sig-param">name</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/aodncore/util/wfs.html#WfsBroker.query_file_exists"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#aodncore.util.wfs.WfsBroker.query_file_exists" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns a bool representing whether a given ‘file_url’ is present in a layer</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -1042,14 +1045,14 @@ response handling around JSON</p>
 </dd></dl>
 
 <dl class="method">
-<dt id="aodncore.util.wfs.WfsBroker.query_urls_for_layer">
-<code class="sig-name descname">query_urls_for_layer</code><span class="sig-paren">(</span><em class="sig-param">layer</em>, <em class="sig-param">ogc_filter=None</em>, <em class="sig-param">url_property_name=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/aodncore/util/wfs.html#WfsBroker.query_urls_for_layer"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#aodncore.util.wfs.WfsBroker.query_urls_for_layer" title="Permalink to this definition">¶</a></dt>
+<dt id="aodncore.util.wfs.WfsBroker.query_files">
+<code class="sig-name descname">query_files</code><span class="sig-paren">(</span><em class="sig-param">layer</em>, <em class="sig-param">ogc_expression=None</em>, <em class="sig-param">url_property_name=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/aodncore/util/wfs.html#WfsBroker.query_files"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#aodncore.util.wfs.WfsBroker.query_files" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return an IndexedSet of files for a given layer</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>layer</strong> – layer name supplied to GetFeature typename parameter</p></li>
-<li><p><strong>ogc_filter</strong> – XML string represenation of an OGC filter expression. If omitted, all URLs are returned.</p></li>
+<li><p><strong>ogc_expression</strong> – OgcExpression used to filter the returned features. If omitted, all URLs are returned.</p></li>
 <li><p><strong>url_property_name</strong> – property name for file URL. If omitted, property name is determined from layer schema</p></li>
 </ul>
 </dd>
@@ -1058,6 +1061,11 @@ response handling around JSON</p>
 </dd>
 </dl>
 </dd></dl>
+
+<dl class="method">
+<dt id="aodncore.util.wfs.WfsBroker.query_urls_for_layer">
+<code class="sig-name descname">query_urls_for_layer</code><span class="sig-paren">(</span><em class="sig-param">layer</em>, <em class="sig-param">ogc_expression=None</em>, <em class="sig-param">url_property_name=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/aodncore/util/wfs.html#WfsBroker.query_urls_for_layer"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#aodncore.util.wfs.WfsBroker.query_urls_for_layer" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
 
 <dl class="attribute">
 <dt id="aodncore.util.wfs.WfsBroker.url_propertyname_candidates">
@@ -1068,6 +1076,9 @@ response handling around JSON</p>
 <dt id="aodncore.util.wfs.WfsBroker.wfs">
 <em class="property">property </em><code class="sig-name descname">wfs</code><a class="headerlink" href="#aodncore.util.wfs.WfsBroker.wfs" title="Permalink to this definition">¶</a></dt>
 <dd><p>Read-only property to access the instantiated WebFeatureService object directly</p>
+<p>Note: lazily initialised because instantiating a WebFeatureService causes HTTP traffic, which is only
+desirable if subsequent WFS requests are actually going to be made (which isn’t always the case when
+instantiating this broker class)</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns</dt>
 <dd class="field-odd"><p>WebFeatureService instance</p>
@@ -1078,9 +1089,9 @@ response handling around JSON</p>
 </dd></dl>
 
 <dl class="function">
-<dt id="aodncore.util.wfs.get_filter_for_file_url">
-<code class="sig-prename descclassname">aodncore.util.wfs.</code><code class="sig-name descname">get_filter_for_file_url</code><span class="sig-paren">(</span><em class="sig-param">file_url</em>, <em class="sig-param">property_name='url'</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/aodncore/util/wfs.html#get_filter_for_file_url"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#aodncore.util.wfs.get_filter_for_file_url" title="Permalink to this definition">¶</a></dt>
-<dd><p>Return OGC filter XML to query for a single file_url</p>
+<dt id="aodncore.util.wfs.get_ogc_expression_for_file_url">
+<code class="sig-prename descclassname">aodncore.util.wfs.</code><code class="sig-name descname">get_ogc_expression_for_file_url</code><span class="sig-paren">(</span><em class="sig-param">file_url</em>, <em class="sig-param">property_name='url'</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/aodncore/util/wfs.html#get_ogc_expression_for_file_url"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#aodncore.util.wfs.get_ogc_expression_for_file_url" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return OGCExpression to query for a single file_url</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
@@ -1089,21 +1100,24 @@ response handling around JSON</p>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
-<dd class="field-even"><p>OGC XML filter string</p>
+<dd class="field-even"><p>OGCExpression which may be used to query the given URL value</p>
 </dd>
 </dl>
 </dd></dl>
 
 <dl class="function">
 <dt id="aodncore.util.wfs.ogc_filter_to_string">
-<code class="sig-prename descclassname">aodncore.util.wfs.</code><code class="sig-name descname">ogc_filter_to_string</code><span class="sig-paren">(</span><em class="sig-param">ogc_filter</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/aodncore/util/wfs.html#ogc_filter_to_string"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#aodncore.util.wfs.ogc_filter_to_string" title="Permalink to this definition">¶</a></dt>
-<dd><p>Convert an OGC filter object into it’s XML string representation</p>
+<code class="sig-prename descclassname">aodncore.util.wfs.</code><code class="sig-name descname">ogc_filter_to_string</code><span class="sig-paren">(</span><em class="sig-param">ogc_expression</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/aodncore/util/wfs.html#ogc_filter_to_string"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#aodncore.util.wfs.ogc_filter_to_string" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="simple">
+<dt>Convert an OGCExpression object into it’s XML string representation. If parameter is a <cite>str</cite> object, it is</dt><dd><p>returned unchanged</p>
+</dd>
+</dl>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>ogc_filter</strong> – OGC filter object</p>
+<dd class="field-odd"><p><strong>ogc_expression</strong> – OGCExpression object</p>
 </dd>
 <dt class="field-even">Returns</dt>
-<dd class="field-even"><p>XML string</p>
+<dd class="field-even"><p>XML string representation of the input object</p>
 </dd>
 </dl>
 </dd></dl>
@@ -1376,8 +1390,8 @@ in it are removed.</p>
 <p>Simple higher level interface to a WebFeatureService instance, to provide common helper methods and standardise
 response handling around JSON</p>
 <dl class="method">
-<dt id="aodncore.util.WfsBroker.get_url_property_name_for_layer">
-<code class="sig-name descname">get_url_property_name_for_layer</code><span class="sig-paren">(</span><em class="sig-param">layer</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/aodncore/util/wfs.html#WfsBroker.get_url_property_name_for_layer"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#aodncore.util.WfsBroker.get_url_property_name_for_layer" title="Permalink to this definition">¶</a></dt>
+<dt id="aodncore.util.WfsBroker.get_url_property_name">
+<code class="sig-name descname">get_url_property_name</code><span class="sig-paren">(</span><em class="sig-param">layer</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/aodncore/util/wfs.html#WfsBroker.get_url_property_name"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#aodncore.util.WfsBroker.get_url_property_name" title="Permalink to this definition">¶</a></dt>
 <dd><p>Get the URL property name for a given layer</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -1391,11 +1405,14 @@ response handling around JSON</p>
 
 <dl class="method">
 <dt id="aodncore.util.WfsBroker.getfeature_dict">
-<code class="sig-name descname">getfeature_dict</code><span class="sig-paren">(</span><em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/aodncore/util/wfs.html#WfsBroker.getfeature_dict"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#aodncore.util.WfsBroker.getfeature_dict" title="Permalink to this definition">¶</a></dt>
-<dd><p>Make a GetFeature request, and return the response in a native dict</p>
+<code class="sig-name descname">getfeature_dict</code><span class="sig-paren">(</span><em class="sig-param">ogc_expression=None</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/aodncore/util/wfs.html#WfsBroker.getfeature_dict"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#aodncore.util.WfsBroker.getfeature_dict" title="Permalink to this definition">¶</a></dt>
+<dd><p>Make a GetFeature request, and return the response in a native dict.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>kwargs</strong> – keyword arguments passed to the underlying WebFeatureService.getfeature method</p>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>ogc_expression</strong> – OgcExpression used to filter the returned features. If omitted, returns all features.</p></li>
+<li><p><strong>kwargs</strong> – keyword arguments passed to the underlying WebFeatureService.getfeature method</p></li>
+</ul>
 </dd>
 <dt class="field-even">Returns</dt>
 <dd class="field-even"><p>dict containing the parsed GetFeature response</p>
@@ -1404,8 +1421,8 @@ response handling around JSON</p>
 </dd></dl>
 
 <dl class="method">
-<dt id="aodncore.util.WfsBroker.query_url_exists_for_layer">
-<code class="sig-name descname">query_url_exists_for_layer</code><span class="sig-paren">(</span><em class="sig-param">layer</em>, <em class="sig-param">name</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/aodncore/util/wfs.html#WfsBroker.query_url_exists_for_layer"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#aodncore.util.WfsBroker.query_url_exists_for_layer" title="Permalink to this definition">¶</a></dt>
+<dt id="aodncore.util.WfsBroker.query_file_exists">
+<code class="sig-name descname">query_file_exists</code><span class="sig-paren">(</span><em class="sig-param">layer</em>, <em class="sig-param">name</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/aodncore/util/wfs.html#WfsBroker.query_file_exists"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#aodncore.util.WfsBroker.query_file_exists" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns a bool representing whether a given ‘file_url’ is present in a layer</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -1421,14 +1438,14 @@ response handling around JSON</p>
 </dd></dl>
 
 <dl class="method">
-<dt id="aodncore.util.WfsBroker.query_urls_for_layer">
-<code class="sig-name descname">query_urls_for_layer</code><span class="sig-paren">(</span><em class="sig-param">layer</em>, <em class="sig-param">ogc_filter=None</em>, <em class="sig-param">url_property_name=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/aodncore/util/wfs.html#WfsBroker.query_urls_for_layer"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#aodncore.util.WfsBroker.query_urls_for_layer" title="Permalink to this definition">¶</a></dt>
+<dt id="aodncore.util.WfsBroker.query_files">
+<code class="sig-name descname">query_files</code><span class="sig-paren">(</span><em class="sig-param">layer</em>, <em class="sig-param">ogc_expression=None</em>, <em class="sig-param">url_property_name=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/aodncore/util/wfs.html#WfsBroker.query_files"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#aodncore.util.WfsBroker.query_files" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return an IndexedSet of files for a given layer</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>layer</strong> – layer name supplied to GetFeature typename parameter</p></li>
-<li><p><strong>ogc_filter</strong> – XML string represenation of an OGC filter expression. If omitted, all URLs are returned.</p></li>
+<li><p><strong>ogc_expression</strong> – OgcExpression used to filter the returned features. If omitted, all URLs are returned.</p></li>
 <li><p><strong>url_property_name</strong> – property name for file URL. If omitted, property name is determined from layer schema</p></li>
 </ul>
 </dd>
@@ -1437,6 +1454,11 @@ response handling around JSON</p>
 </dd>
 </dl>
 </dd></dl>
+
+<dl class="method">
+<dt id="aodncore.util.WfsBroker.query_urls_for_layer">
+<code class="sig-name descname">query_urls_for_layer</code><span class="sig-paren">(</span><em class="sig-param">layer</em>, <em class="sig-param">ogc_expression=None</em>, <em class="sig-param">url_property_name=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/aodncore/util/wfs.html#WfsBroker.query_urls_for_layer"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#aodncore.util.WfsBroker.query_urls_for_layer" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
 
 <dl class="attribute">
 <dt id="aodncore.util.WfsBroker.url_propertyname_candidates">
@@ -1447,6 +1469,9 @@ response handling around JSON</p>
 <dt id="aodncore.util.WfsBroker.wfs">
 <em class="property">property </em><code class="sig-name descname">wfs</code><a class="headerlink" href="#aodncore.util.WfsBroker.wfs" title="Permalink to this definition">¶</a></dt>
 <dd><p>Read-only property to access the instantiated WebFeatureService object directly</p>
+<p>Note: lazily initialised because instantiating a WebFeatureService causes HTTP traffic, which is only
+desirable if subsequent WFS requests are actually going to be made (which isn’t always the case when
+instantiating this broker class)</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns</dt>
 <dd class="field-odd"><p>WebFeatureService instance</p>
