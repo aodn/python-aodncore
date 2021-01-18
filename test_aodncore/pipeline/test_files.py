@@ -48,8 +48,25 @@ class TestPipelineFile(BaseTestCase):
         self.remotepipelinefile = RemotePipelineFile(GOOD_NC + '.dest', local_path=GOOD_NC, name='remotepipelinefile')
 
     def test_from_remotepipelinefile(self):
-        expected = PipelineFile(GOOD_NC, dest_path=GOOD_NC + '.dest', name='remotepipelinefile')
-        actual = PipelineFile.from_remotepipelinefile(self.remotepipelinefile)
+        expected = PipelineFile(GOOD_NC, dest_path=GOOD_NC + '.dest', name='remotepipelinefile', is_deletion=False,
+                                late_deletion=True, file_update_callback=lambda **kwargs: None,
+                                check_type=PipelineFileCheckType.NONEMPTY_CHECK,
+                                publish_type=PipelineFilePublishType.ARCHIVE_ONLY)
+
+        actual = PipelineFile.from_remotepipelinefile(self.remotepipelinefile, is_deletion=False, late_deletion=True,
+                                                      file_update_callback=lambda **kwargs: None,
+                                                      check_type=PipelineFileCheckType.NONEMPTY_CHECK,
+                                                      publish_type=PipelineFilePublishType.ARCHIVE_ONLY)
+
+        self.assertEqual(expected, actual)
+
+    def test_from_remotepipelinefile_deletion(self):
+        expected = PipelineFile(GOOD_NC, dest_path=GOOD_NC + '.dest', is_deletion=True, late_deletion=True,
+                                file_update_callback=lambda **kwargs: None)
+
+        actual = PipelineFile.from_remotepipelinefile(self.remotepipelinefile, name='good.nc', is_deletion=True,
+                                                      late_deletion=True, file_update_callback=lambda **kwargs: None)
+
         self.assertEqual(expected, actual)
 
     def test_compliance_check(self):
@@ -91,6 +108,9 @@ class TestPipelineFile(BaseTestCase):
         self.pipelinefile.check_type = test_value
         self.assertIs(self.pipelinefile.check_type, test_value)
 
+        pf = PipelineFile(GOOD_NC, check_type=PipelineFileCheckType.NC_COMPLIANCE_CHECK)
+        self.assertIs(pf.check_type, PipelineFileCheckType.NC_COMPLIANCE_CHECK)
+
         with self.assertRaises(ValueError):
             self.pipelinefile.check_type = 'invalid'
 
@@ -111,6 +131,9 @@ class TestPipelineFile(BaseTestCase):
         test_value = PipelineFilePublishType.HARVEST_ARCHIVE_UPLOAD
         self.pipelinefile.publish_type = test_value
         self.assertIs(self.pipelinefile.publish_type, test_value)
+
+        pf = PipelineFile(GOOD_NC, publish_type=PipelineFilePublishType.ARCHIVE_ONLY)
+        self.assertIs(pf.publish_type, PipelineFilePublishType.ARCHIVE_ONLY)
 
         with self.assertRaises(TypeError):
             self.pipelinefile.publish_type = 'invalid'

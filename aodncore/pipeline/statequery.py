@@ -1,4 +1,6 @@
-from ..util import WfsBroker, DEFAULT_WFS_VERSION
+import warnings
+
+from .files import RemotePipelineFileCollection
 
 __all__ = [
     'StateQuery'
@@ -9,23 +11,11 @@ class StateQuery(object):
     """Simple state query interface, to provide user friendly access for querying existing Pipeline state
     """
 
-    def __init__(self, storage_broker, wfs_url, wfs_version=DEFAULT_WFS_VERSION):
+    def __init__(self, storage_broker, wfs_broker):
         self._storage_broker = storage_broker
-        self._wfs_url = wfs_url
-        self._wfs_version = wfs_version
+        self._wfs_broker = wfs_broker
 
-        self._wfs_broker_object = None
-
-    @property
-    def _wfs_broker(self):
-        if not self._wfs_url:
-            raise AttributeError('WFS querying unavailable: no wfs_url configured?')
-
-        # lazy instantiation of broker to avoid any WFS activity unless a handler explicitly calls it
-        if self._wfs_broker_object is None:
-            self._wfs_broker_object = WfsBroker(self._wfs_url, version=self._wfs_version)
-        return self._wfs_broker_object
-
+    # WFS methods
     @property
     def wfs(self):
         """Read-only property to access the instantiated WebFeatureService object
@@ -33,14 +23,6 @@ class StateQuery(object):
         :return: WebFeatureService instance
         """
         return self._wfs_broker.wfs
-
-    def query_storage(self, query):  # pragma: no cover
-        """Query the storage backend and return existing files matching the given query
-
-        :param query: S3-style prefix for filtering query results
-        :return: dict containing the query results
-        """
-        return self._storage_broker.query(query)
 
     def query_wfs_getfeature_dict(self, **kwargs):
         """Make a GetFeature request, and return the response in a native dict
@@ -50,20 +32,44 @@ class StateQuery(object):
         """
         return self._wfs_broker.getfeature_dict(**kwargs)
 
-    def query_wfs_urls_for_layer(self, layer, **kwargs):  # pragma: no cover
-        """Return an IndexedSet of files for a given layer
+    def query_wfs_files(self, layer, **kwargs):  # pragma: no cover
+        """Return a RemotePipelineFileCollection containing all files for a given layer, 
+        or files matching the filter specified in the kwarg `ogc_expression` (of type OgcExpression)
 
         :param layer: layer name supplied to GetFeature typename parameter
         :param kwargs: keyword arguments passed to underlying broker method
-        :return: list of files for the layer
+        :return: RemotePipelineFileCollection containing list of files for the layer
         """
-        return self._wfs_broker.query_urls_for_layer(layer, **kwargs)
+        return RemotePipelineFileCollection(self._wfs_broker.query_files(layer, **kwargs))
 
-    def query_wfs_url_exists(self, layer, name):  # pragma: no cover
+    def query_wfs_urls_for_layer(self, layer, **kwargs):  # pragma: no cover
+        warnings.warn("This method will be removed in a future version. Please update code to use "
+                      "`query_wfs_urls` instead.", DeprecationWarning)
+        return self._wfs_broker.query_files(layer, **kwargs)
+
+    def query_wfs_file_exists(self, layer, name):  # pragma: no cover
         """Returns a bool representing whether a given 'file_url' is present in a layer
 
         :param layer: layer name supplied to GetFeature typename parameter
         :param name: 'file_url' inserted into OGC filter, and supplied to GetFeature filter parameter
         :return: list of files for the layer
         """
-        return self._wfs_broker.query_url_exists_for_layer(layer, name)
+        return self._wfs_broker.query_file_exists(layer, name)
+
+    # Storage methods
+    def download(self, remotepipelinefilecollection, local_path):
+        """Helper method to download a RemotePipelineFileCollection or RemotePipelineFile
+
+        :param remotepipelinefilecollection: RemotePipelineFileCollection to download
+        :param local_path: local path where files will be downloaded.
+        :return: None
+        """
+        self._storage_broker.download(remotepipelinefilecollection, local_path)
+
+    def query_storage(self, query):  # pragma: no cover
+        """Query the storage backend and return existing files matching the given query
+
+        :param query: S3-style prefix for filtering query results
+        :return: dict containing the query results
+        """
+        return self._storage_broker.query(query)

@@ -5,14 +5,13 @@ from unittest.mock import patch
 
 from jsonschema import ValidationError
 
-from aodncore.pipeline import (PipelineFile, PipelineFileCheckType, PipelineFilePublishType, RemotePipelineFile,
-                               RemotePipelineFileCollection, HandlerResult)
+from aodncore.pipeline import PipelineFile, PipelineFileCheckType, PipelineFilePublishType, HandlerResult
 from aodncore.pipeline.exceptions import (AttributeValidationError, ComplianceCheckFailedError, HandlerAlreadyRunError,
                                           InvalidCheckSuiteError, InvalidInputFileError, InvalidFileFormatError,
                                           InvalidRecipientError, UnmatchedFilesError)
 from aodncore.pipeline.statequery import StateQuery
 from aodncore.pipeline.steps import NotifyList
-from aodncore.testlib import DummyHandler, HandlerTestCase, NullStorageBroker, dest_path_testing, get_nonexistent_path
+from aodncore.testlib import DummyHandler, HandlerTestCase, dest_path_testing, get_nonexistent_path
 from aodncore.util import WriteOnceOrderedDict
 from test_aodncore import TESTDATA_DIR
 
@@ -410,40 +409,43 @@ class TestDummyHandler(HandlerTestCase):
         handler = self.run_handler(self.temp_nc_file)
         self.assertEqual(handler.opendap_root, 'http://opendap.example.com')
 
-    def test_state_query(self):
+    @patch('aodncore.util.wfs.WebFeatureService')
+    def test_state_query(self, mock_webfeatureservice):
         handler = self.handler_class(self.temp_nc_file)
         self.assertIsInstance(handler.state_query, StateQuery)
 
-    def test_download_remotepipelinefilecollection_collection(self):
-        local_path = os.path.join(self.temp_dir, 'local_download_path')
-        broker = NullStorageBroker('')
+    def test_add_to_collection_object(self):
+        pf = PipelineFile(self.temp_nc_file)
+        handler = self.handler_class(GOOD_NC)
 
-        remote_collection = RemotePipelineFileCollection([
-            RemotePipelineFile('dest/path/1.nc', name='1.nc'),
-            RemotePipelineFile('dest/path/2.nc', name='2.nc')
-        ])
+        def _preprocess(self_):
+            self_.add_to_collection(pf)
 
-        handler = self.handler_class(self.temp_nc_file)
-        handler._upload_store_runner.broker = broker
+        handler.preprocess = partial(_preprocess, self_=handler)
+        handler.run()
 
-        handler.download_remotepipelinefilecollection(remote_collection, local_path)
-        local_paths = remote_collection.get_attribute_list('local_path')
-        expected = [os.path.join(local_path, rf.dest_path) for rf in remote_collection]
+        self.assertTrue(all(pf.file_update_callback == handler._file_update_callback for pf in handler.file_collection))
+        self.assertIn(pf, handler.file_collection)
 
-        broker.assert_download_call_count(1)
-        self.assertCountEqual(local_paths, expected)
+        with self.assertRaises(TypeError):
+            handler.add_to_collection(1)
 
-    def test_download_remotepipelinefilecollection_file(self):
-        local_path = os.path.join(self.temp_dir, 'local_download_path')
-        broker = NullStorageBroker('')
+    def test_add_to_collection_string(self):
+        handler = self.handler_class(GOOD_NC)
 
-        remote_file = RemotePipelineFile('dest/path/1.nc', name='1.nc')
+        def _preprocess(self_):
+            self_.add_to_collection(self.temp_nc_file,
+                                    dest_path='UNITTEST/DEST/PATH',
+                                    publish_type=PipelineFilePublishType.ARCHIVE_ONLY,
+                                    check_type=PipelineFileCheckType.NC_COMPLIANCE_CHECK)
 
-        handler = self.handler_class(self.temp_nc_file)
-        handler._upload_store_runner.broker = broker
+        handler.preprocess = partial(_preprocess, self_=handler)
+        handler.run()
 
-        handler.download_remotepipelinefilecollection(remote_file, local_path)
-        expected = os.path.join(local_path, remote_file.dest_path)
+        self.assertTrue(all(pf.file_update_callback == handler._file_update_callback for pf in handler.file_collection))
+        self.assertIn(self.temp_nc_file, handler.file_collection)
 
-        broker.assert_download_call_count(1)
-        self.assertEqual(remote_file.local_path, expected)
+        added_file = handler.file_collection.filter_by_attribute_value('local_path', self.temp_nc_file)[0]
+        self.assertEqual(added_file.dest_path, 'UNITTEST/DEST/PATH')
+        self.assertIs(added_file.publish_type, PipelineFilePublishType.ARCHIVE_ONLY)
+        self.assertIs(added_file.check_type, PipelineFileCheckType.NC_COMPLIANCE_CHECK)

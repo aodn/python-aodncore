@@ -1,6 +1,7 @@
 import abc
 import mimetypes
 import os
+import warnings
 from collections import Counter, MutableSet, OrderedDict
 
 from .common import (FileType, PipelineFilePublishType, PipelineFileCheckType, validate_addition_publishtype,
@@ -8,10 +9,10 @@ from .common import (FileType, PipelineFilePublishType, PipelineFileCheckType, v
                      validate_settable_checktype)
 from .exceptions import AttributeValidationError, DuplicatePipelineFileError, MissingFileError
 from .schema import validate_check_params
-from ..util import (IndexedSet, ensure_regex_list, format_exception, get_file_checksum, iter_public_attributes,
-                    matches_regexes, rm_f, slice_sequence, validate_bool, validate_callable, validate_int,
-                    validate_mapping, validate_nonstring_iterable, validate_regexes, validate_relative_path_attr,
-                    validate_string, validate_type)
+from ..util import (IndexedSet, classproperty, ensure_regex_list, format_exception, get_file_checksum,
+                    iter_public_attributes, matches_regexes, rm_f, slice_sequence, validate_bool, validate_callable,
+                    validate_int, validate_mapping, validate_nonstring_iterable, validate_regexes,
+                    validate_relative_path_attr, validate_string, validate_type)
 
 __all__ = [
     'PipelineFileCollection',
@@ -207,29 +208,31 @@ class PipelineFile(PipelineFileBase):
     :type late_deletion: :py:class:`bool`
     :param file_update_callback: optional callback to call when a file property is updated
     :type file_update_callback: :py:class:`callable`
+    :param check_type: check type assigned to the file
+    :type check_type: PipelineFileCheckType
+    :param publish_type: publish type assigned to the file
+    :type publish_type: PipelineFilePublishType
     """
     __slots__ = ['_archive_path', '_file_update_callback', '_check_type', '_is_deletion', '_late_deletion',
                  '_publish_type', '_should_archive', '_should_harvest', '_should_store', '_should_undo', '_is_checked',
                  '_is_archived', '_is_harvested', '_is_overwrite', '_is_stored', '_is_harvest_undone',
                  '_is_upload_undone', '_check_result', '_mime_type']
 
-    def __init__(self, local_path, name=None, archive_path=None, dest_path=None, is_deletion=False, late_deletion=False,
-                 file_update_callback=None):
+    def __init__(self, local_path, name=None, archive_path=None, dest_path=None, is_deletion=False,
+                 late_deletion=False, file_update_callback=None, check_type=None, publish_type=None):
         super().__init__(local_path, dest_path)
 
-        self._name = name if name is not None else os.path.basename(local_path)
-
+        # general file attributes, set from parameters
         self._archive_path = archive_path
-
-        self._file_update_callback = None
-        if file_update_callback is not None:
-            self.file_update_callback = file_update_callback
-
-        # processing flags - these express the *intended actions* for the file
-        self._check_type = PipelineFileCheckType.UNSET
         self._is_deletion = is_deletion
         self._late_deletion = late_deletion
-        self._publish_type = PipelineFilePublishType.UNSET
+        self._name = name if name is not None else os.path.basename(local_path)
+
+        # general file attributes, *not* set from parameters
+        self._check_result = None
+        self._mime_type = None
+
+        # processing flags - these express the *intended actions* for the file
         self._should_archive = False
         self._should_harvest = False
         self._should_store = False
@@ -244,19 +247,40 @@ class PipelineFile(PipelineFileBase):
         self._is_harvest_undone = False
         self._is_upload_undone = False
 
-        self._check_result = None
-        self._mime_type = None
+        # attributes which must be assigned by the property setter for validation. The backing variable is intentionally
+        # initialised to a safe default, before the setter is called if the calling code has supplied a value for the
+        # corresponding parameters
+        self._file_update_callback = None
+        if file_update_callback is not None:
+            self.file_update_callback = file_update_callback
+
+        self._check_type = PipelineFileCheckType.UNSET
+        if check_type is not None:
+            self.check_type = check_type
+
+        self._publish_type = PipelineFilePublishType.UNSET
+        if publish_type is not None:
+            self.publish_type = publish_type
 
     @classmethod
-    def from_remotepipelinefile(cls, remotepipelinefile, is_deletion=False):
+    def from_remotepipelinefile(cls, remotepipelinefile, name=None, is_deletion=False, late_deletion=False,
+                                file_update_callback=None, check_type=None, publish_type=None):
         """Construct a PipelineFile instance from an existing RemotePipelineFile instance
 
         :param remotepipelinefile: RemotePipelineFile instance used to instantiate a PipelineFile instance
-        :param is_deletion: is_deletion flag passed directly to __init__
+        :param name: name flag passed to __init__ (defaults to remotepipelinefile.name)
+        :param is_deletion: is_deletion flag passed to __init__
+        :param late_deletion: late_deletion flag passed to __init__
+        :param file_update_callback: file_update_callback flag passed to __init__
+        :param check_type: check_type flag passed to __init__
+        :param publish_type: publish_type flag passed to __init__
         :return: PipelineFile instance
         """
+        name = name or remotepipelinefile.name
+
         return cls(local_path=remotepipelinefile.local_path, dest_path=remotepipelinefile.dest_path,
-                   name=remotepipelinefile.name, is_deletion=is_deletion)
+                   name=name, is_deletion=is_deletion, late_deletion=late_deletion,
+                   file_update_callback=file_update_callback, check_type=check_type, publish_type=publish_type)
 
     def _key(self):
         return self.name, self.local_path, self.file_checksum
@@ -562,7 +586,7 @@ class PipelineFile(PipelineFileBase):
                                       message="{properties}".format(properties=log_output))
 
 
-class PipelineFileCollectionBase(MutableSet):
+class PipelineFileCollectionBase(MutableSet, metaclass=abc.ABCMeta):
     """A collection base class which implements the MutableSet abstract base class to allow clean set operations, but
     limited to containing only :py:class:`PipelineFile` or :py:class:`RemotePipelineFile`elements and providing specific
     functionality for handling a collection of them (e.g. filtering, generating tabular data, etc.)
@@ -572,18 +596,12 @@ class PipelineFileCollectionBase(MutableSet):
     :param validate_unique: :py:class:`bool` passed to the `add` method
     :type data: :py:class:`PipelineFile`, :py:class:`RemotePipelineFile`, :py:class:`str`, :py:class:`Iterable`
     """
-    __slots__ = ['_s', 'member_class', 'member_validator', 'member_from_string_method', 'unique_attributes']
+    __slots__ = ['_s']
 
-    def __init__(self, data=None, validate_unique=True, member_class=PipelineFile, member_validator=None,
-                 member_from_string_method=None, unique_attributes=()):
+    def __init__(self, data=None, validate_unique=True):
         super().__init__()
 
         self._s = IndexedSet()
-
-        self.member_class = member_class
-        self.member_validator = member_validator or validate_pipelinefile_or_string
-        self.member_from_string_method = getattr(self, member_from_string_method) or self.get_pipelinefile_from_src_path
-        self.unique_attributes = unique_attributes
 
         if data is not None:
             if isinstance(data, (self.member_class, str)):
@@ -591,11 +609,32 @@ class PipelineFileCollectionBase(MutableSet):
             for f in data:
                 self.add(f, validate_unique=validate_unique)
 
+    @property
+    @abc.abstractmethod
+    def member_class(cls):
+        raise NotImplementedError
+
+    @property
+    @abc.abstractmethod
+    def member_from_string_method(self):
+        raise NotImplementedError
+
+    @property
+    @abc.abstractmethod
+    def member_validator(cls):
+        raise NotImplementedError
+
+    @property
+    @abc.abstractmethod
+    def unique_attributes(cls):
+        raise NotImplementedError
+
     def __bool__(self):
         return bool(self._s)
 
     def __contains__(self, v):
-        return v in self._s
+        element = v if isinstance(v, self.member_class) else self.member_from_string_method(v)
+        return element in self._s
 
     def __getitem__(self, index):
         result = self._s[index]
@@ -956,20 +995,27 @@ class PipelineFileCollectionBase(MutableSet):
                                                                                           duplicates=duplicates))
 
 
+validate_remotepipelinefile_or_string = validate_type((RemotePipelineFile, str))
+
+
 class RemotePipelineFileCollection(PipelineFileCollectionBase):
     """A PipelineFileCollectionBase subclass to hold a set of RemotePipelineFile instances
     """
+    @classproperty
+    def member_class(cls):
+        return RemotePipelineFile
 
-    def __init__(self, *args, **kwargs):
-        kwargs['member_class'] = RemotePipelineFile
-        kwargs['member_validator'] = validate_remotepipelinefile_or_string
-        kwargs['member_from_string_method'] = 'get_pipelinefile_from_dest_path'
-        kwargs['unique_attributes'] = {'local_path', 'dest_path'}
-        super().__init__(*args, **kwargs)
+    @classproperty
+    def member_validator(cls):
+        return validate_remotepipelinefile_or_string
 
-    def __contains__(self, v):
-        element = v if isinstance(v, self.member_class) else self.get_pipelinefile_from_dest_path(v)
-        return element in self._s
+    @property
+    def member_from_string_method(self):
+        return self.get_pipelinefile_from_dest_path
+
+    @classproperty
+    def unique_attributes(cls):
+        return 'local_path', 'dest_path'
 
     @classmethod
     def from_pipelinefilecollection(cls, pipelinefilecollection):
@@ -982,6 +1028,8 @@ class RemotePipelineFileCollection(PipelineFileCollectionBase):
         :param local_path: local path into which files are downloaded
         :return: None
         """
+        warnings.warn("This method will be removed in a future version. Please update code to use  "
+                      "`StateQuery.download` instead.", DeprecationWarning)
         broker.download(self, local_path)
 
     def keys(self):
@@ -989,34 +1037,42 @@ class RemotePipelineFileCollection(PipelineFileCollectionBase):
         return self.get_attribute_list('dest_path')
 
 
+validate_pipelinefile_or_string = validate_type((PipelineFile, str))
+
+
 class PipelineFileCollection(PipelineFileCollectionBase):
     """A PipelineFileCollectionBase subclass to hold a set of PipelineFile instances
     """
+    @classproperty
+    def member_class(cls):
+        return PipelineFile
 
-    def __init__(self, *args, **kwargs):
-        kwargs['member_class'] = PipelineFile
-        kwargs['member_validator'] = validate_pipelinefile_or_string
-        kwargs['member_from_string_method'] = 'get_pipelinefile_from_src_path'
-        kwargs['unique_attributes'] = {'archive_path', 'dest_path'}
-        super().__init__(*args, **kwargs)
+    @classproperty
+    def member_validator(cls):
+        return validate_pipelinefile_or_string
 
-    def __contains__(self, v):
-        element = v if isinstance(v, self.member_class) else self.get_pipelinefile_from_src_path(v)
-        return element in self._s
+    @property
+    def member_from_string_method(self):
+        return self.get_pipelinefile_from_src_path
+
+    @classproperty
+    def unique_attributes(cls):
+        return 'archive_path', 'dest_path'
 
     @classmethod
     def from_remotepipelinefilecollection(cls, remotepipelinefilecollection, are_deletions=False):
         return cls(PipelineFile.from_remotepipelinefile(f, is_deletion=are_deletions)
                    for f in remotepipelinefilecollection)
 
-    def add(self, pipeline_file, deletion=False, overwrite=False, validate_unique=True):
+    def add(self, pipeline_file, is_deletion=False, overwrite=False, validate_unique=True, **kwargs):
         self.member_validator(pipeline_file)
-        validate_bool(deletion)
+        validate_bool(is_deletion)
 
-        if not isinstance(pipeline_file, self.member_class) and not deletion and not os.path.isfile(pipeline_file):
+        if not isinstance(pipeline_file, self.member_class) and not is_deletion and not os.path.isfile(pipeline_file):
             raise MissingFileError("file '{src}' doesn't exist".format(src=pipeline_file))
 
-        return super().add(pipeline_file, overwrite=overwrite, validate_unique=validate_unique, is_deletion=deletion)
+        return super().add(pipeline_file, overwrite=overwrite, validate_unique=validate_unique, is_deletion=is_deletion,
+                           **kwargs)
 
     def _set_attribute(self, attribute, value):
         for f in self._s:
@@ -1142,9 +1198,9 @@ class PipelineFileCollection(PipelineFileCollectionBase):
 
 validate_pipelinefilecollection = validate_type(PipelineFileCollection)
 validate_pipelinefile_or_pipelinefilecollection = validate_type((PipelineFile, PipelineFileCollection))
-validate_pipelinefile_or_string = validate_type((PipelineFile, str))
+
 
 validate_remotepipelinefilecollection = validate_type(RemotePipelineFileCollection)
 validate_remotepipelinefile_or_remotepipelinefilecollection = validate_type((RemotePipelineFile,
                                                                              RemotePipelineFileCollection))
-validate_remotepipelinefile_or_string = validate_type((RemotePipelineFile, str))
+
