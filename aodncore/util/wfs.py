@@ -68,7 +68,7 @@ class WfsBroker(object):
     def getfeature_dict(self, layer, ogc_expression=None, **kwargs):
         """Make a GetFeature request, and return the response in a native dict.
 
-        :param layer:
+        :param layer: layer name supplied to GetFeature typename parameter
         :param ogc_expression: OgcExpression used to filter the returned features. If omitted, returns all features.
         :param kwargs: keyword arguments passed to the underlying WebFeatureService.getfeature method
         :return: dict containing the parsed GetFeature response
