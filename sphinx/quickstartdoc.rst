@@ -120,11 +120,17 @@ Creating products during the handler lifetime
             with open(product_path, 'w') as f:
                 f.write('some file contents' + os.linesep)
 
-            # create a PipelineFile to represent the product file, set it's 'publish type'
-            # attribute and add it to the handler's file collection
+            # add the path to the handler's file collection, with keyword arguments being used to construct the
+            # PipelineFile
+            self.add_to_collection(product_path, publish_type=PipelineFilePublishType.UPLOAD_ONLY)
+
+            # or for more advanced/specific use cases, you can also manually construct a PipelineFile to represent
+            # the product file, set the desired attributes and add it to the handler's file collection
             product = PipelineFile(product_path)
             product.publish_type = PipelineFilePublishType.UPLOAD_ONLY
-            self.collection.add(product)
+            self.add_to_collection(product)
+
+
 
 Query Storage
 ~~~~~~~~~~~~~
