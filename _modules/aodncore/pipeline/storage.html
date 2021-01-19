@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>aodncore.pipeline.storage &mdash; aodncore 1.2.2 documentation</title>
+  <title>aodncore.pipeline.storage &mdash; aodncore 1.2.3 documentation</title>
   
 
   
@@ -58,7 +58,7 @@
             
             
               <div class="version">
-                1.2.2
+                1.2.3
               </div>
             
           
@@ -182,7 +182,7 @@
 <span class="kn">from</span> <span class="nn">.exceptions</span> <span class="kn">import</span> <span class="n">AttributeNotSetError</span><span class="p">,</span> <span class="n">InvalidStoreUrlError</span><span class="p">,</span> <span class="n">StorageBrokerError</span>
 <span class="kn">from</span> <span class="nn">.files</span> <span class="kn">import</span> <span class="p">(</span><span class="n">ensure_pipelinefilecollection</span><span class="p">,</span> <span class="n">ensure_remotepipelinefilecollection</span><span class="p">,</span> <span class="n">PipelineFileCollection</span><span class="p">,</span>
                     <span class="n">RemotePipelineFile</span><span class="p">,</span> <span class="n">RemotePipelineFileCollection</span><span class="p">)</span>
-<span class="kn">from</span> <span class="nn">..util</span> <span class="kn">import</span> <span class="p">(</span><span class="n">ensure_regex_list</span><span class="p">,</span> <span class="n">format_exception</span><span class="p">,</span> <span class="n">mkdir_p</span><span class="p">,</span> <span class="n">retry_decorator</span><span class="p">,</span> <span class="n">rm_f</span><span class="p">,</span>
+<span class="kn">from</span> <span class="nn">..util</span> <span class="kn">import</span> <span class="p">(</span><span class="n">ensure_regex_list</span><span class="p">,</span> <span class="n">filesystem_sort_key</span><span class="p">,</span> <span class="n">format_exception</span><span class="p">,</span> <span class="n">mkdir_p</span><span class="p">,</span> <span class="n">retry_decorator</span><span class="p">,</span> <span class="n">rm_f</span><span class="p">,</span>
                     <span class="n">safe_copy_file</span><span class="p">,</span> <span class="n">validate_relative_path</span><span class="p">,</span> <span class="n">validate_type</span><span class="p">)</span>
 
 <span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span>
@@ -440,6 +440,9 @@
         <span class="k">def</span> <span class="nf">_find_prefix</span><span class="p">(</span><span class="n">path</span><span class="p">):</span>
             <span class="n">parent_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="n">path</span><span class="p">)</span>
             <span class="k">for</span> <span class="n">root</span><span class="p">,</span> <span class="n">dirs</span><span class="p">,</span> <span class="n">files</span> <span class="ow">in</span> <span class="n">os</span><span class="o">.</span><span class="n">walk</span><span class="p">(</span><span class="n">parent_path</span><span class="p">):</span>
+                <span class="n">dirs</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">dirs</span><span class="p">,</span> <span class="n">key</span><span class="o">=</span><span class="n">filesystem_sort_key</span><span class="p">)</span>
+                <span class="n">files</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">files</span><span class="p">,</span> <span class="n">key</span><span class="o">=</span><span class="n">filesystem_sort_key</span><span class="p">)</span>
+
                 <span class="k">for</span> <span class="n">name</span> <span class="ow">in</span> <span class="n">files</span><span class="p">:</span>
                     <span class="n">fullpath</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">root</span><span class="p">,</span> <span class="n">name</span><span class="p">)</span>
                     <span class="k">if</span> <span class="n">fullpath</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="n">full_query</span><span class="p">)</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">islink</span><span class="p">(</span><span class="n">fullpath</span><span class="p">):</span>
@@ -516,16 +519,22 @@
             <span class="k">raise</span> <span class="n">InvalidStoreUrlError</span><span class="p">(</span>
                 <span class="s2">&quot;unable to access S3 bucket &#39;</span><span class="si">{0}</span><span class="s2">&#39;: </span><span class="si">{1}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">bucket</span><span class="p">,</span> <span class="n">format_exception</span><span class="p">(</span><span class="n">e</span><span class="p">)))</span>
 
+<div class="viewcode-block" id="S3StorageBroker.result_to_remote_pipelinefile_collection"><a class="viewcode-back" href="../../../aodncore.pipeline.html#aodncore.pipeline.storage.S3StorageBroker.result_to_remote_pipelinefile_collection">[docs]</a>    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">result_to_remote_pipelinefile_collection</span><span class="p">(</span><span class="n">result</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">RemotePipelineFileCollection</span><span class="p">([</span>
+            <span class="n">RemotePipelineFile</span><span class="p">(</span><span class="n">k</span><span class="p">[</span><span class="s1">&#39;Key&#39;</span><span class="p">],</span>
+                               <span class="n">name</span><span class="o">=</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">basename</span><span class="p">(</span><span class="n">k</span><span class="p">[</span><span class="s1">&#39;Key&#39;</span><span class="p">]),</span>
+                               <span class="n">last_modified</span><span class="o">=</span><span class="n">k</span><span class="p">[</span><span class="s1">&#39;LastModified&#39;</span><span class="p">],</span>
+                               <span class="n">size</span><span class="o">=</span><span class="n">k</span><span class="p">[</span><span class="s1">&#39;Size&#39;</span><span class="p">])</span>
+            <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="n">result</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;Contents&#39;</span><span class="p">,</span> <span class="p">[])</span>
+        <span class="p">])</span></div>
+
     <span class="nd">@retry_decorator</span><span class="p">(</span><span class="o">**</span><span class="n">retry_kwargs</span><span class="p">)</span>
     <span class="k">def</span> <span class="nf">_run_query</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">query</span><span class="p">):</span>
         <span class="n">full_query</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">prefix</span><span class="p">,</span> <span class="n">query</span><span class="p">)</span>
         <span class="n">raw_result</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">s3_client</span><span class="o">.</span><span class="n">list_objects_v2</span><span class="p">(</span><span class="n">Bucket</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">bucket</span><span class="p">,</span> <span class="n">Prefix</span><span class="o">=</span><span class="n">full_query</span><span class="p">)</span>
-        <span class="n">result</span> <span class="o">=</span> <span class="n">RemotePipelineFileCollection</span><span class="p">(</span><span class="n">RemotePipelineFile</span><span class="p">(</span><span class="n">k</span><span class="p">[</span><span class="s1">&#39;Key&#39;</span><span class="p">],</span>
-                                                                 <span class="n">name</span><span class="o">=</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">basename</span><span class="p">(</span><span class="n">k</span><span class="p">[</span><span class="s1">&#39;Key&#39;</span><span class="p">]),</span>
-                                                                 <span class="n">last_modified</span><span class="o">=</span><span class="n">k</span><span class="p">[</span><span class="s1">&#39;LastModified&#39;</span><span class="p">],</span>
-                                                                 <span class="n">size</span><span class="o">=</span><span class="n">k</span><span class="p">[</span><span class="s1">&#39;Size&#39;</span><span class="p">])</span>
-                                              <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="n">raw_result</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;Contents&#39;</span><span class="p">,</span> <span class="p">[]))</span>
-        <span class="k">return</span> <span class="n">result</span>
+        <span class="n">collection</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">result_to_remote_pipelinefile_collection</span><span class="p">(</span><span class="n">raw_result</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">collection</span>
 
     <span class="nd">@retry_decorator</span><span class="p">(</span><span class="o">**</span><span class="n">retry_kwargs</span><span class="p">)</span>
     <span class="k">def</span> <span class="nf">_download_file</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">remote_pipeline_file</span><span class="p">):</span>
