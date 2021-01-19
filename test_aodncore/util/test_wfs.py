@@ -37,7 +37,7 @@ class TestWfsBroker(BaseTestCase):
         with open(os.path.join(TESTDATA_DIR, 'wfs/GetFeature.json')) as f:
             self.broker.wfs.getfeature().getvalue.return_value = f.read()
 
-        response = self.broker.getfeature_dict(typename='anmn_velocity_timeseries_map', propertyname='file_url')
+        response = self.broker.getfeature_dict('anmn_velocity_timeseries_map', propertyname='file_url')
 
         self.assertEqual(len(response['features']), 2)
         self.assertEqual(response['features'][0]['properties']['file_url'],
@@ -52,7 +52,7 @@ class TestWfsBroker(BaseTestCase):
         ogc_filter = PropertyIsEqualTo(propertyname='file_url',
                                        literal='IMOS/ANMN/QLD/GBROTE/Velocity/IMOS_ANMN-QLD_AETVZ_20140408T102930Z_GBROTE_FV01_GBROTE-1404-AWAC-13_END-20141022T052930Z_C-20150215T063708Z.nc')
 
-        response = self.broker.getfeature_dict(typename='anmn_velocity_timeseries_map', propertyname='file_url',
+        response = self.broker.getfeature_dict('anmn_velocity_timeseries_map', propertyname='file_url',
                                                filter=ogc_filter)
 
         self.assertEqual(len(response['features']), 1)
