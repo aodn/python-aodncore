@@ -24,13 +24,21 @@ class StateQuery(object):
         """
         return self._wfs_broker.wfs
 
-    def query_wfs_getfeature_dict(self, **kwargs):
+    def query_wfs_getfeature_dict(self, layer=None, **kwargs):
         """Make a GetFeature request, and return the response in a native dict
 
+        :param layer: layer name supplied to GetFeature typename parameter
         :param kwargs: keyword arguments passed to the underlying WebFeatureService.getfeature method
         :return: dict containing the parsed GetFeature response
         """
-        return self._wfs_broker.getfeature_dict(**kwargs)
+        # TODO: once aodndata code uses the layer parameter, this deprecation can be removed, and the parameter
+        #       converted into a mandatory positional argument
+        if not layer:
+            warnings.warn("This method signature will be updated to require a layer positional argument in a future"
+                          "version. Please update code to use `query_wfs_getfeature_dict(layer, **kwargs)` signature"
+                          "instead.", DeprecationWarning)
+            layer = kwargs.pop('typename')
+        return self._wfs_broker.getfeature_dict(layer, **kwargs)
 
     def query_wfs_files(self, layer, **kwargs):  # pragma: no cover
         """Return a RemotePipelineFileCollection containing all files for a given layer, 

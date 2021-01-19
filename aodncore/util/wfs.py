@@ -65,9 +65,10 @@ class WfsBroker(object):
         """
         return WebFeatureService(self._wfs_url, version=self._wfs_version)
 
-    def getfeature_dict(self, ogc_expression=None, **kwargs):
+    def getfeature_dict(self, layer, ogc_expression=None, **kwargs):
         """Make a GetFeature request, and return the response in a native dict.
 
+        :param layer: layer name supplied to GetFeature typename parameter
         :param ogc_expression: OgcExpression used to filter the returned features. If omitted, returns all features.
         :param kwargs: keyword arguments passed to the underlying WebFeatureService.getfeature method
         :return: dict containing the parsed GetFeature response
@@ -80,6 +81,8 @@ class WfsBroker(object):
 
         # force the output format to JSON, as other formats don't make sense in the context of parsing into a dict
         getfeature_kwargs['outputFormat'] = 'json'
+
+        getfeature_kwargs['typename'] = layer
 
         response = self.wfs.getfeature(**getfeature_kwargs)
         response_body = response.getvalue()
@@ -114,14 +117,13 @@ class WfsBroker(object):
             url_property_name = self.get_url_property_name(layer)
 
         getfeature_kwargs = {
-            'typename': [layer],
             'propertyname': url_property_name
         }
 
         if ogc_expression:
             getfeature_kwargs['ogc_expression'] = ogc_expression
 
-        parsed_response = self.getfeature_dict(**getfeature_kwargs)
+        parsed_response = self.getfeature_dict(layer, **getfeature_kwargs)
         file_urls = IndexedSet(f['properties'][url_property_name] for f in parsed_response['features'])
         return file_urls
 
