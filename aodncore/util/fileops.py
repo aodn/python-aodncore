@@ -17,12 +17,11 @@ from tempfile import TemporaryFile
 import magic
 import netCDF4
 
-locale.setlocale(locale.LC_ALL, 'C')
-
 __all__ = [
     'TemporaryDirectory',
     'extract_gzip',
     'extract_zip',
+    'filesystem_sort_key',
     'get_file_checksum',
     'is_dir_writable',
     'is_file_writable',
@@ -45,6 +44,10 @@ __all__ = [
     'validate_dir_writable',
     'validate_file_writable'
 ]
+
+# allow for consistent sorting of filesystem directory listings
+locale.setlocale(locale.LC_ALL, 'C')
+filesystem_sort_key = cmp_to_key(locale.strcoll)
 
 
 class _TemporaryDirectory(object):
@@ -221,7 +224,7 @@ def is_zip_file(filepath):
     return zipfile.is_zipfile(filepath)
 
 
-def list_regular_files(path, recursive=False, sort_key=cmp_to_key(locale.strcoll)):
+def list_regular_files(path, recursive=False, sort_key=filesystem_sort_key):
     """List all regular files in a given directory, returning the absolute path
 
     :param sort_key: callable used to sort directory listings

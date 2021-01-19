@@ -331,7 +331,7 @@ class TestLocalFileStorageBroker(BaseTestCase):
         for f in self.test_broker.download_iterator(remote_collection, local_path=local_path):
             actual = list(list_regular_files(local_path, recursive=True))
             expected = [f.local_path]
-            self.assertCountEqual(actual, expected)
+            self.assertEqual(actual, expected)
 
     @patch('aodncore.pipeline.storage.rm_f')
     def test_delete_collection(self, mock_rm_f):
@@ -384,7 +384,7 @@ class TestLocalFileStorageBroker(BaseTestCase):
             RemotePipelineFile('subdirectory/targetfile.ico')
         ])
 
-        self.assertCountEqual(expected, all_files)
+        self.assertEqual(expected, all_files)
 
         self.test_broker.delete_regexes([r'^subdirectory/targetfile\.(ico|nc)$'])
 
@@ -395,7 +395,7 @@ class TestLocalFileStorageBroker(BaseTestCase):
             RemotePipelineFile('subdirectory/targetfile.png')
         ])
 
-        self.assertCountEqual(expected_remaining, remaining_files)
+        self.assertEqual(expected_remaining, remaining_files)
 
     def test_delete_regexes_with_allow_match_all(self):
         all_files = self.test_broker.query()
@@ -406,31 +406,31 @@ class TestLocalFileStorageBroker(BaseTestCase):
             RemotePipelineFile('subdirectory/targetfile.png'),
             RemotePipelineFile('subdirectory/targetfile.ico')
         ])
-        self.assertCountEqual(expected, all_files)
+        self.assertEqual(expected, all_files)
 
         self.test_broker.delete_regexes([r'.*'], allow_match_all=True)
 
         remaining_files = self.test_broker.query()
-        self.assertCountEqual(remaining_files, RemotePipelineFileCollection())
+        self.assertEqual(remaining_files, RemotePipelineFileCollection())
 
     def test_directory_query(self):
         with TemporaryDirectory() as d:
             subdir = os.path.join(d, 'subdir')
             os.mkdir(subdir)
-            _, temp_file1 = tempfile.mkstemp(suffix='.txt', prefix='qwerty', dir=subdir)
-            _, temp_file2 = tempfile.mkstemp(suffix='.txt', prefix='qwerty', dir=subdir)
-            _, temp_file3 = tempfile.mkstemp(suffix='.txt', prefix='qwerty', dir=subdir)
+            _, temp_file1 = tempfile.mkstemp(suffix='.txt', prefix='qwertyB', dir=subdir)
+            _, temp_file2 = tempfile.mkstemp(suffix='.txt', prefix='qwertyA', dir=subdir)
+            _, temp_file3 = tempfile.mkstemp(suffix='.txt', prefix='qwertyC', dir=subdir)
 
             file_storage_broker = LocalFileStorageBroker(d)
             result = file_storage_broker.query('subdir/')
 
         expected = RemotePipelineFileCollection([
-            RemotePipelineFile(os.path.relpath(temp_file1, d)),
             RemotePipelineFile(os.path.relpath(temp_file2, d)),
+            RemotePipelineFile(os.path.relpath(temp_file1, d)),
             RemotePipelineFile(os.path.relpath(temp_file3, d))
         ])
 
-        self.assertCountEqual(expected, result)
+        self.assertEqual(expected.get_attribute_list('name'), result.get_attribute_list('name'))
         self.assertTrue(all(isinstance(v.last_modified, datetime.datetime) for v in result))
         self.assertTrue(all(isinstance(v.size, int) for v in result))
 
@@ -438,20 +438,39 @@ class TestLocalFileStorageBroker(BaseTestCase):
         with TemporaryDirectory() as d:
             subdir = os.path.join(d, 'subdir')
             os.mkdir(subdir)
-            _, temp_file1 = tempfile.mkstemp(suffix='.txt', prefix='qwerty', dir=subdir)
-            _, temp_file2 = tempfile.mkstemp(suffix='.txt', prefix='qwerty', dir=subdir)
-            _, temp_file3 = tempfile.mkstemp(suffix='.txt', prefix='asdfgh', dir=subdir)
-            _, temp_file4 = tempfile.mkstemp(suffix='.txt', prefix='asdfgh', dir=subdir)
+
+            words = ['Übergabe',
+                     'Ostfriesland',
+                     'Äpfel',
+                     'Unterführung',
+                     'Apfel',
+                     'Österreich',
+                     'qwertyC',
+                     'QwertyB',
+                     'qwertyA']
+            for word in words:
+                path = os.path.join(subdir, word)
+                with open(path, 'w'):
+                    pass
 
             file_storage_broker = LocalFileStorageBroker(d)
-            result = file_storage_broker.query('subdir/qwerty')
+            result = file_storage_broker.query()
 
+        # replicates the S3 listing ordering, as described at:
+        # https://docs.aws.amazon.com/AmazonS3/latest/dev/ListingKeysUsingAPIs.html
         expected = RemotePipelineFileCollection([
-            RemotePipelineFile(os.path.relpath(temp_file1, d)),
-            RemotePipelineFile(os.path.relpath(temp_file2, d))
+            RemotePipelineFile(os.path.relpath('Apfel', d)),
+            RemotePipelineFile(os.path.relpath('Ostfriesland', d)),
+            RemotePipelineFile(os.path.relpath('QwertyB', d)),
+            RemotePipelineFile(os.path.relpath('Unterführung', d)),
+            RemotePipelineFile(os.path.relpath('qwertyA', d)),
+            RemotePipelineFile(os.path.relpath('qwertyC', d)),
+            RemotePipelineFile(os.path.relpath('Äpfel', d)),
+            RemotePipelineFile(os.path.relpath('Österreich', d)),
+            RemotePipelineFile(os.path.relpath('Übergabe', d))
         ])
 
-        self.assertCountEqual(result, expected)
+        self.assertEqual(expected.get_attribute_list('name'), result.get_attribute_list('name'))
         self.assertTrue(all(isinstance(f.last_modified, datetime.datetime) for f in result))
         self.assertTrue(all(isinstance(f.size, int) for f in result))
 
@@ -722,25 +741,30 @@ class TestS3StorageBroker(BaseTestCase):
 
         expected = RemotePipelineFileCollection([
             RemotePipelineFile(
-                'Department_of_Defence/DSTG/slocum_glider/PerthCanyonA20140213/DSTO_MD_CEPSTUV_20140213T050333Z_SL085_FV01_timeseries_END-20140312T003551Z.nc',
-                last_modified=datetime.datetime(2016, 4, 27, 2, 30, 9, tzinfo=tzutc()),
-                size=39203028),
+                dest_path='Department_of_Defence/DSTG/slocum_glider/PerthCanyonA20140213/DSTO_MD_CEPSTUV_20140213T050333Z_SL085_FV01_timeseries_END-20140312T003551Z.nc',
+                name='DSTO_MD_CEPSTUV_20140213T050333Z_SL085_FV01_timeseries_END-20140312T003551Z.nc',
+                size=39203028,
+                last_modified=datetime.datetime(2016, 4, 27, 2, 30, 9, tzinfo=tzutc())),
             RemotePipelineFile(
-                'Department_of_Defence/DSTG/slocum_glider/PerthCanyonA20140213/PerthCanyonA20140213.kml',
-                last_modified=datetime.datetime(2016, 4, 27, 2, 30, 10, tzinfo=tzutc()),
-                size=48877),
+                dest_path='Department_of_Defence/DSTG/slocum_glider/PerthCanyonA20140213/PerthCanyonA20140213.kml',
+                name='PerthCanyonA20140213.kml',
+                size=48877,
+                last_modified=datetime.datetime(2016, 4, 27, 2, 30, 9, tzinfo=tzutc())),
             RemotePipelineFile(
-                'Department_of_Defence/DSTG/slocum_glider/PerthCanyonA20140213/PerthCanyonA20140213_CNDC.jpg',
-                last_modified=datetime.datetime(2016, 4, 27, 2, 30, 10, tzinfo=tzutc()),
-                size=104238),
+                dest_path='Department_of_Defence/DSTG/slocum_glider/PerthCanyonA20140213/PerthCanyonA20140213_CNDC.jpg',
+                name='PerthCanyonA20140213_CNDC.jpg',
+                size=104238,
+                last_modified=datetime.datetime(2016, 4, 27, 2, 30, 10, tzinfo=tzutc())),
             RemotePipelineFile(
-                'Department_of_Defence/DSTG/slocum_glider/PerthCanyonA20140213/PerthCanyonA20140213_PSAL.jpg',
-                last_modified=datetime.datetime(2016, 4, 27, 2, 30, 10, tzinfo=tzutc()),
-                size=115044),
+                dest_path='Department_of_Defence/DSTG/slocum_glider/PerthCanyonA20140213/PerthCanyonA20140213_PSAL.jpg',
+                name='PerthCanyonA20140213_PSAL.jpg',
+                size=115044,
+                last_modified=datetime.datetime(2016, 4, 27, 2, 30, 10, tzinfo=tzutc())),
             RemotePipelineFile(
-                'Department_of_Defence/DSTG/slocum_glider/PerthCanyonA20140213/PerthCanyonA20140213_TEMP.jpg',
-                last_modified=datetime.datetime(2016, 4, 27, 2, 30, 9, tzinfo=tzutc()),
-                size=106141)
+                dest_path='Department_of_Defence/DSTG/slocum_glider/PerthCanyonA20140213/PerthCanyonA20140213_TEMP.jpg',
+                name='PerthCanyonA20140213_TEMP.jpg',
+                size=106141,
+                last_modified=datetime.datetime(2016, 4, 27, 2, 30, 10, tzinfo=tzutc()))
         ])
 
         self.assertEqual(expected, result)
@@ -779,7 +803,7 @@ class TestS3StorageBroker(BaseTestCase):
              u'Key': 'Department_of_Defence/DSTG/slocum_glider/PerthCanyonB20140213/PerthCanyonB20140213_TEMP.jpg',
              u'Size': 132122}]}
 
-        s3_storage_broker = S3StorageBroker('imos-data', '')
+        s3_storage_broker = S3StorageBroker('', '')
         result = s3_storage_broker.query('Department_of_Defence/DSTG/slocum_glider/Perth')
 
         expected = RemotePipelineFileCollection([
@@ -831,9 +855,9 @@ class TestS3StorageBroker(BaseTestCase):
     def test_query_empty(self, mock_boto3):
         mock_boto3.client().list_objects_v2.return_value = {}
 
-        s3_storage_broker = S3StorageBroker('imos-data', '')
+        s3_storage_broker = S3StorageBroker('', '')
         with self.assertNoException():
-            result = s3_storage_broker.query('Department_of_Defence/DSTG/slocum_glider/Perth')
+            result = s3_storage_broker.query('UNITTEST/')
 
         self.assertEqual(result, RemotePipelineFileCollection())
 

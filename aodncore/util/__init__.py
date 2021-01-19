@@ -1,8 +1,9 @@
 from .external import retry_decorator, IndexedSet, classproperty, lazyproperty
-from .fileops import (TemporaryDirectory, extract_gzip, extract_zip, get_file_checksum, is_dir_writable, is_gzip_file,
-                      is_jpeg_file, is_json_file, is_netcdf_file, is_nonempty_file, is_pdf_file, is_png_file,
-                      is_tiff_file, is_zip_file, list_regular_files, mkdir_p, rm_f, rm_r, rm_rf, safe_copy_file,
-                      safe_move_file, validate_dir_writable, validate_file_writable)
+from .fileops import (TemporaryDirectory, extract_gzip, extract_zip, filesystem_sort_key, get_file_checksum,
+                      is_dir_writable, is_gzip_file,
+                      is_jpeg_file, is_json_file, is_netcdf_file, is_nonempty_file, is_pdf_file, is_png_file, is_tiff_file, is_zip_file,
+                      list_regular_files, mkdir_p, rm_f, rm_r, rm_rf, rm_rf, safe_copy_file, safe_move_file,
+                      validate_dir_writable, validate_file_writable)
 from .misc import (CaptureStdIO, LoggingContext, Pattern, TemplateRenderer, WriteOnceOrderedDict, discover_entry_points,
                    ensure_regex, ensure_regex_list, ensure_writeonceordereddict, format_exception,
                    get_pattern_subgroups_from_string, is_function, is_nonstring_iterable, is_valid_email_address,
@@ -32,6 +33,7 @@ __all__ = [
     'ensure_regex_list',
     'ensure_writeonceordereddict',
     'get_pattern_subgroups_from_string',
+    'filesystem_sort_key',
     'format_exception',
     'get_file_checksum',
     'is_dir_writable',

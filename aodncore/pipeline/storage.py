@@ -14,7 +14,7 @@ from paramiko import SSHClient, AutoAddPolicy
 from .exceptions import AttributeNotSetError, InvalidStoreUrlError, StorageBrokerError
 from .files import (ensure_pipelinefilecollection, ensure_remotepipelinefilecollection, PipelineFileCollection,
                     RemotePipelineFile, RemotePipelineFileCollection)
-from ..util import (ensure_regex_list, format_exception, mkdir_p, retry_decorator, rm_f,
+from ..util import (ensure_regex_list, filesystem_sort_key, format_exception, mkdir_p, retry_decorator, rm_f,
                     safe_copy_file, validate_relative_path, validate_type)
 
 __all__ = [
@@ -272,6 +272,9 @@ class LocalFileStorageBroker(BaseStorageBroker):
         def _find_prefix(path):
             parent_path = os.path.dirname(path)
             for root, dirs, files in os.walk(parent_path):
+                dirs = sorted(dirs, key=filesystem_sort_key)
+                files = sorted(files, key=filesystem_sort_key)
+
                 for name in files:
                     fullpath = os.path.join(root, name)
                     if fullpath.startswith(full_query) and not os.path.islink(fullpath):
@@ -348,16 +351,22 @@ class S3StorageBroker(BaseStorageBroker):
             raise InvalidStoreUrlError(
                 "unable to access S3 bucket '{0}': {1}".format(self.bucket, format_exception(e)))
 
+    @staticmethod
+    def result_to_remote_pipelinefile_collection(result):
+        return RemotePipelineFileCollection([
+            RemotePipelineFile(k['Key'],
+                               name=os.path.basename(k['Key']),
+                               last_modified=k['LastModified'],
+                               size=k['Size'])
+            for k in result.get('Contents', [])
+        ])
+
     @retry_decorator(**retry_kwargs)
     def _run_query(self, query):
         full_query = os.path.join(self.prefix, query)
         raw_result = self.s3_client.list_objects_v2(Bucket=self.bucket, Prefix=full_query)
-        result = RemotePipelineFileCollection(RemotePipelineFile(k['Key'],
-                                                                 name=os.path.basename(k['Key']),
-                                                                 last_modified=k['LastModified'],
-                                                                 size=k['Size'])
-                                              for k in raw_result.get('Contents', []))
-        return result
+        collection = self.result_to_remote_pipelinefile_collection(raw_result)
+        return collection
 
     @retry_decorator(**retry_kwargs)
     def _download_file(self, remote_pipeline_file):
