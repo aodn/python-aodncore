@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>aodncore.pipeline package &mdash; aodncore 1.2.1 documentation</title>
+  <title>aodncore.pipeline package &mdash; aodncore 1.2.2 documentation</title>
   
 
   
@@ -60,7 +60,7 @@
             
             
               <div class="version">
-                1.2.1
+                1.2.2
               </div>
             
           
@@ -1228,7 +1228,7 @@ on the file, and the actions that <em>were</em> performed on the file</p>
 <li><p><strong>is_deletion</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code>) – flag designating whether this is a deletion</p></li>
 <li><p><strong>late_deletion</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code>) – flag to indicate that this file should be deleted <em>after</em> additions are performed (note: ignored if <cite>is_deletion=False</cite>)</p></li>
 <li><p><strong>file_update_callback</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">callable</span></code>) – optional callback to call when a file property is updated</p></li>
-<li><p><strong>check_type</strong> (<a class="reference internal" href="#aodncore.pipeline.common.PipelineFileCheckType" title="aodncore.pipeline.common.PipelineFileCheckType"><em>PipelineFileCheckType</em></a>) – check type assigned to the file</p></li>
+<li><p><strong>check_type</strong> (<a class="reference internal" href="#aodncore.pipeline.PipelineFileCheckType" title="aodncore.pipeline.PipelineFileCheckType"><em>PipelineFileCheckType</em></a>) – check type assigned to the file</p></li>
 <li><p><strong>publish_type</strong> (<a class="reference internal" href="#aodncore.pipeline.common.PipelineFilePublishType" title="aodncore.pipeline.common.PipelineFilePublishType"><em>PipelineFilePublishType</em></a>) – publish type assigned to the file</p></li>
 </ul>
 </dd>
@@ -2413,11 +2413,14 @@ or files matching the filter specified in the kwarg <cite>ogc_expression</cite> 
 
 <dl class="method">
 <dt id="aodncore.pipeline.statequery.StateQuery.query_wfs_getfeature_dict">
-<code class="sig-name descname">query_wfs_getfeature_dict</code><span class="sig-paren">(</span><em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/aodncore/pipeline/statequery.html#StateQuery.query_wfs_getfeature_dict"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#aodncore.pipeline.statequery.StateQuery.query_wfs_getfeature_dict" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">query_wfs_getfeature_dict</code><span class="sig-paren">(</span><em class="sig-param">layer=None</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/aodncore/pipeline/statequery.html#StateQuery.query_wfs_getfeature_dict"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#aodncore.pipeline.statequery.StateQuery.query_wfs_getfeature_dict" title="Permalink to this definition">¶</a></dt>
 <dd><p>Make a GetFeature request, and return the response in a native dict</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>kwargs</strong> – keyword arguments passed to the underlying WebFeatureService.getfeature method</p>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>layer</strong> – layer name supplied to GetFeature typename parameter</p></li>
+<li><p><strong>kwargs</strong> – keyword arguments passed to the underlying WebFeatureService.getfeature method</p></li>
+</ul>
 </dd>
 <dt class="field-even">Returns</dt>
 <dd class="field-even"><p>dict containing the parsed GetFeature response</p>
@@ -2741,7 +2744,7 @@ ProcessEvent and redefine this method in order to modify its behavior.</p>
 
 <dl class="attribute">
 <dt id="aodncore.pipeline.watch.IncomingFileStateManager.transitions">
-<code class="sig-name descname">transitions</code><em class="property"> = [{'dest': 'FILE_IN_PROCESSING', 'before': ['_pre_processing_checks', '_move_to_processing'], 'trigger': 'move_to_processing', 'source': 'FILE_IN_INCOMING'}, {'dest': 'FILE_IN_ERROR', 'before': ['_run_error_callbacks', '_move_to_error'], 'trigger': 'move_to_error', 'source': 'FILE_IN_PROCESSING'}, {'dest': 'FILE_SUCCESS', 'before': '_run_success_callbacks', 'trigger': 'move_to_success', 'source': 'FILE_IN_PROCESSING', 'after': '_remove_processing_file'}]</em><a class="headerlink" href="#aodncore.pipeline.watch.IncomingFileStateManager.transitions" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">transitions</code><em class="property"> = [{'dest': 'FILE_IN_PROCESSING', 'before': ['_pre_processing_checks', '_move_to_processing'], 'trigger': 'move_to_processing', 'source': 'FILE_IN_INCOMING'}, {'dest': 'FILE_IN_ERROR', 'before': ['_run_error_callbacks', '_move_to_error'], 'trigger': 'move_to_error', 'source': 'FILE_IN_PROCESSING'}, {'dest': 'FILE_SUCCESS', 'after': '_remove_processing_file', 'before': '_run_success_callbacks', 'trigger': 'move_to_success', 'source': 'FILE_IN_PROCESSING'}]</em><a class="headerlink" href="#aodncore.pipeline.watch.IncomingFileStateManager.transitions" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 </dd></dl>
@@ -3661,7 +3664,7 @@ on the file, and the actions that <em>were</em> performed on the file</p>
 <li><p><strong>is_deletion</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code>) – flag designating whether this is a deletion</p></li>
 <li><p><strong>late_deletion</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code>) – flag to indicate that this file should be deleted <em>after</em> additions are performed (note: ignored if <cite>is_deletion=False</cite>)</p></li>
 <li><p><strong>file_update_callback</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">callable</span></code>) – optional callback to call when a file property is updated</p></li>
-<li><p><strong>check_type</strong> (<a class="reference internal" href="#aodncore.pipeline.common.PipelineFileCheckType" title="aodncore.pipeline.common.PipelineFileCheckType"><em>PipelineFileCheckType</em></a>) – check type assigned to the file</p></li>
+<li><p><strong>check_type</strong> (<a class="reference internal" href="#aodncore.pipeline.PipelineFileCheckType" title="aodncore.pipeline.PipelineFileCheckType"><em>PipelineFileCheckType</em></a>) – check type assigned to the file</p></li>
 <li><p><strong>publish_type</strong> (<a class="reference internal" href="#aodncore.pipeline.common.PipelineFilePublishType" title="aodncore.pipeline.common.PipelineFilePublishType"><em>PipelineFilePublishType</em></a>) – publish type assigned to the file</p></li>
 </ul>
 </dd>

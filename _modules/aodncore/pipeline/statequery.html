@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>aodncore.pipeline.statequery &mdash; aodncore 1.2.1 documentation</title>
+  <title>aodncore.pipeline.statequery &mdash; aodncore 1.2.2 documentation</title>
   
 
   
@@ -58,7 +58,7 @@
             
             
               <div class="version">
-                1.2.1
+                1.2.2
               </div>
             
           
@@ -192,13 +192,21 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_wfs_broker</span><span class="o">.</span><span class="n">wfs</span>
 
-<div class="viewcode-block" id="StateQuery.query_wfs_getfeature_dict"><a class="viewcode-back" href="../../../aodncore.pipeline.html#aodncore.pipeline.statequery.StateQuery.query_wfs_getfeature_dict">[docs]</a>    <span class="k">def</span> <span class="nf">query_wfs_getfeature_dict</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<div class="viewcode-block" id="StateQuery.query_wfs_getfeature_dict"><a class="viewcode-back" href="../../../aodncore.pipeline.html#aodncore.pipeline.statequery.StateQuery.query_wfs_getfeature_dict">[docs]</a>    <span class="k">def</span> <span class="nf">query_wfs_getfeature_dict</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">layer</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Make a GetFeature request, and return the response in a native dict</span>
 
+<span class="sd">        :param layer: layer name supplied to GetFeature typename parameter</span>
 <span class="sd">        :param kwargs: keyword arguments passed to the underlying WebFeatureService.getfeature method</span>
 <span class="sd">        :return: dict containing the parsed GetFeature response</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_wfs_broker</span><span class="o">.</span><span class="n">getfeature_dict</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
+        <span class="c1"># TODO: once aodndata code uses the layer parameter, this deprecation can be removed, and the parameter</span>
+        <span class="c1">#       converted into a mandatory positional argument</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">layer</span><span class="p">:</span>
+            <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="s2">&quot;This method signature will be updated to require a layer positional argument in a future&quot;</span>
+                          <span class="s2">&quot;version. Please update code to use `query_wfs_getfeature_dict(layer, **kwargs)` signature&quot;</span>
+                          <span class="s2">&quot;instead.&quot;</span><span class="p">,</span> <span class="ne">DeprecationWarning</span><span class="p">)</span>
+            <span class="n">layer</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s1">&#39;typename&#39;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_wfs_broker</span><span class="o">.</span><span class="n">getfeature_dict</span><span class="p">(</span><span class="n">layer</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="StateQuery.query_wfs_files"><a class="viewcode-back" href="../../../aodncore.pipeline.html#aodncore.pipeline.statequery.StateQuery.query_wfs_files">[docs]</a>    <span class="k">def</span> <span class="nf">query_wfs_files</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">layer</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>  <span class="c1"># pragma: no cover</span>
         <span class="sd">&quot;&quot;&quot;Return a RemotePipelineFileCollection containing all files for a given layer, </span>

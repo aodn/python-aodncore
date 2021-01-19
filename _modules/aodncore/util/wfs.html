@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>aodncore.util.wfs &mdash; aodncore 1.2.1 documentation</title>
+  <title>aodncore.util.wfs &mdash; aodncore 1.2.2 documentation</title>
   
 
   
@@ -58,7 +58,7 @@
             
             
               <div class="version">
-                1.2.1
+                1.2.2
               </div>
             
           
@@ -233,9 +233,10 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="n">WebFeatureService</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_wfs_url</span><span class="p">,</span> <span class="n">version</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_wfs_version</span><span class="p">)</span>
 
-<div class="viewcode-block" id="WfsBroker.getfeature_dict"><a class="viewcode-back" href="../../../aodncore.util.html#aodncore.util.wfs.WfsBroker.getfeature_dict">[docs]</a>    <span class="k">def</span> <span class="nf">getfeature_dict</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ogc_expression</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<div class="viewcode-block" id="WfsBroker.getfeature_dict"><a class="viewcode-back" href="../../../aodncore.util.html#aodncore.util.wfs.WfsBroker.getfeature_dict">[docs]</a>    <span class="k">def</span> <span class="nf">getfeature_dict</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">layer</span><span class="p">,</span> <span class="n">ogc_expression</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Make a GetFeature request, and return the response in a native dict.</span>
 
+<span class="sd">        :param layer: layer name supplied to GetFeature typename parameter</span>
 <span class="sd">        :param ogc_expression: OgcExpression used to filter the returned features. If omitted, returns all features.</span>
 <span class="sd">        :param kwargs: keyword arguments passed to the underlying WebFeatureService.getfeature method</span>
 <span class="sd">        :return: dict containing the parsed GetFeature response</span>
@@ -248,6 +249,8 @@
 
         <span class="c1"># force the output format to JSON, as other formats don&#39;t make sense in the context of parsing into a dict</span>
         <span class="n">getfeature_kwargs</span><span class="p">[</span><span class="s1">&#39;outputFormat&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;json&#39;</span>
+
+        <span class="n">getfeature_kwargs</span><span class="p">[</span><span class="s1">&#39;typename&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">layer</span>
 
         <span class="n">response</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">wfs</span><span class="o">.</span><span class="n">getfeature</span><span class="p">(</span><span class="o">**</span><span class="n">getfeature_kwargs</span><span class="p">)</span>
         <span class="n">response_body</span> <span class="o">=</span> <span class="n">response</span><span class="o">.</span><span class="n">getvalue</span><span class="p">()</span>
@@ -282,14 +285,13 @@
             <span class="n">url_property_name</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_url_property_name</span><span class="p">(</span><span class="n">layer</span><span class="p">)</span>
 
         <span class="n">getfeature_kwargs</span> <span class="o">=</span> <span class="p">{</span>
-            <span class="s1">&#39;typename&#39;</span><span class="p">:</span> <span class="p">[</span><span class="n">layer</span><span class="p">],</span>
             <span class="s1">&#39;propertyname&#39;</span><span class="p">:</span> <span class="n">url_property_name</span>
         <span class="p">}</span>
 
         <span class="k">if</span> <span class="n">ogc_expression</span><span class="p">:</span>
             <span class="n">getfeature_kwargs</span><span class="p">[</span><span class="s1">&#39;ogc_expression&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">ogc_expression</span>
 
-        <span class="n">parsed_response</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">getfeature_dict</span><span class="p">(</span><span class="o">**</span><span class="n">getfeature_kwargs</span><span class="p">)</span>
+        <span class="n">parsed_response</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">getfeature_dict</span><span class="p">(</span><span class="n">layer</span><span class="p">,</span> <span class="o">**</span><span class="n">getfeature_kwargs</span><span class="p">)</span>
         <span class="n">file_urls</span> <span class="o">=</span> <span class="n">IndexedSet</span><span class="p">(</span><span class="n">f</span><span class="p">[</span><span class="s1">&#39;properties&#39;</span><span class="p">][</span><span class="n">url_property_name</span><span class="p">]</span> <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="n">parsed_response</span><span class="p">[</span><span class="s1">&#39;features&#39;</span><span class="p">])</span>
         <span class="k">return</span> <span class="n">file_urls</span></div>
 

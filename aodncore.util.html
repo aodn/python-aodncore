@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>aodncore.util package &mdash; aodncore 1.2.1 documentation</title>
+  <title>aodncore.util package &mdash; aodncore 1.2.2 documentation</title>
   
 
   
@@ -59,7 +59,7 @@
             
             
               <div class="version">
-                1.2.1
+                1.2.2
               </div>
             
           
@@ -1012,11 +1012,12 @@ response handling around JSON</p>
 
 <dl class="method">
 <dt id="aodncore.util.wfs.WfsBroker.getfeature_dict">
-<code class="sig-name descname">getfeature_dict</code><span class="sig-paren">(</span><em class="sig-param">ogc_expression=None</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/aodncore/util/wfs.html#WfsBroker.getfeature_dict"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#aodncore.util.wfs.WfsBroker.getfeature_dict" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">getfeature_dict</code><span class="sig-paren">(</span><em class="sig-param">layer</em>, <em class="sig-param">ogc_expression=None</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/aodncore/util/wfs.html#WfsBroker.getfeature_dict"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#aodncore.util.wfs.WfsBroker.getfeature_dict" title="Permalink to this definition">¶</a></dt>
 <dd><p>Make a GetFeature request, and return the response in a native dict.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
+<li><p><strong>layer</strong> – layer name supplied to GetFeature typename parameter</p></li>
 <li><p><strong>ogc_expression</strong> – OgcExpression used to filter the returned features. If omitted, returns all features.</p></li>
 <li><p><strong>kwargs</strong> – keyword arguments passed to the underlying WebFeatureService.getfeature method</p></li>
 </ul>
@@ -1405,11 +1406,12 @@ response handling around JSON</p>
 
 <dl class="method">
 <dt id="aodncore.util.WfsBroker.getfeature_dict">
-<code class="sig-name descname">getfeature_dict</code><span class="sig-paren">(</span><em class="sig-param">ogc_expression=None</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/aodncore/util/wfs.html#WfsBroker.getfeature_dict"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#aodncore.util.WfsBroker.getfeature_dict" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">getfeature_dict</code><span class="sig-paren">(</span><em class="sig-param">layer</em>, <em class="sig-param">ogc_expression=None</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/aodncore/util/wfs.html#WfsBroker.getfeature_dict"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#aodncore.util.WfsBroker.getfeature_dict" title="Permalink to this definition">¶</a></dt>
 <dd><p>Make a GetFeature request, and return the response in a native dict.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
+<li><p><strong>layer</strong> – layer name supplied to GetFeature typename parameter</p></li>
 <li><p><strong>ogc_expression</strong> – OgcExpression used to filter the returned features. If omitted, returns all features.</p></li>
 <li><p><strong>kwargs</strong> – keyword arguments passed to the underlying WebFeatureService.getfeature method</p></li>
 </ul>
