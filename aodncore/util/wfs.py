@@ -138,7 +138,7 @@ class WfsBroker(object):
 
         :param layer: layer name supplied to GetFeature typename parameter
         :param name: 'file_url' inserted into OGC filter, and supplied to GetFeature filter parameter
-        :return: list of files for the layer
+        :return: whether the given file is present in the layer
         """
         url_property_name = self.get_url_property_name(layer)
         ogc_expression = get_ogc_expression_for_file_url(name, property_name=url_property_name)

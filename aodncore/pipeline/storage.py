@@ -232,7 +232,7 @@ class BaseStorageBroker(object, metaclass=abc.ABCMeta):
         query *including* partial file names.
 
         :param query: S3 prefix style string (if omitted, will search with a blank prefix)
-        :return: a dict with keys being the matching objects, and values being a metadata dict for the object
+        :return: RemotePipelineFileCollection of files matching the prefix
         """
         try:
             return self._run_query(query)

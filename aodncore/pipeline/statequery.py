@@ -60,7 +60,7 @@ class StateQuery(object):
 
         :param layer: layer name supplied to GetFeature typename parameter
         :param name: 'file_url' inserted into OGC filter, and supplied to GetFeature filter parameter
-        :return: list of files for the layer
+        :return: whether the given file is present in the layer
         """
         return self._wfs_broker.query_file_exists(layer, name)
 
@@ -78,6 +78,6 @@ class StateQuery(object):
         """Query the storage backend and return existing files matching the given query
 
         :param query: S3-style prefix for filtering query results
-        :return: dict containing the query results
+        :return: RemotePipelineFileCollection of files matching the prefix
         """
         return self._storage_broker.query(query)
