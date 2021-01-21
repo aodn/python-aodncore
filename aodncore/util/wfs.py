@@ -129,7 +129,7 @@ class WfsBroker(object):
 
     def query_urls_for_layer(self, layer, ogc_expression=None, url_property_name=None):
         warnings.warn("This method will be removed in a future version. Please update code to use "
-                      "`query_urls` instead.", DeprecationWarning)
+                      "`query_files` instead.", DeprecationWarning)
 
         return self.query_files(layer, ogc_expression=ogc_expression, url_property_name=url_property_name)
 

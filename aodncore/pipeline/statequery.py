@@ -52,7 +52,7 @@ class StateQuery(object):
 
     def query_wfs_urls_for_layer(self, layer, **kwargs):  # pragma: no cover
         warnings.warn("This method will be removed in a future version. Please update code to use "
-                      "`query_wfs_urls` instead.", DeprecationWarning)
+                      "`query_wfs_files` instead.", DeprecationWarning)
         return self._wfs_broker.query_files(layer, **kwargs)
 
     def query_wfs_file_exists(self, layer, name):  # pragma: no cover
