@@ -42,8 +42,8 @@ def ensure_remotepipelinefilecollection(o):
     """Function to accept either a single RemotePipelineFile OR a RemotePipelineFileCollection and ensure that a
     RemotePipelineFileCollection object is returned in either case
 
-    :param o: PipelineFile or PipelineFileCollection object
-    :return: PipelineFileCollection object
+    :param o: RemotePipelineFile or RemotePipelineFileCollection object
+    :return: RemotePipelineFileCollection object
     """
     validate_remotepipelinefile_or_remotepipelinefilecollection(o)
     return o if isinstance(o, RemotePipelineFileCollection) else RemotePipelineFileCollection(o)
