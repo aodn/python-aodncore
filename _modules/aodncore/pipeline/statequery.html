@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>aodncore.pipeline.statequery &mdash; aodncore 1.2.3 documentation</title>
+  <title>aodncore.pipeline.statequery &mdash; aodncore 1.2.4 documentation</title>
   
 
   
@@ -58,7 +58,7 @@
             
             
               <div class="version">
-                1.2.3
+                1.2.4
               </div>
             
           
@@ -220,7 +220,7 @@
 
 <div class="viewcode-block" id="StateQuery.query_wfs_urls_for_layer"><a class="viewcode-back" href="../../../aodncore.pipeline.html#aodncore.pipeline.statequery.StateQuery.query_wfs_urls_for_layer">[docs]</a>    <span class="k">def</span> <span class="nf">query_wfs_urls_for_layer</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">layer</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>  <span class="c1"># pragma: no cover</span>
         <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="s2">&quot;This method will be removed in a future version. Please update code to use &quot;</span>
-                      <span class="s2">&quot;`query_wfs_urls` instead.&quot;</span><span class="p">,</span> <span class="ne">DeprecationWarning</span><span class="p">)</span>
+                      <span class="s2">&quot;`query_wfs_files` instead.&quot;</span><span class="p">,</span> <span class="ne">DeprecationWarning</span><span class="p">)</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_wfs_broker</span><span class="o">.</span><span class="n">query_files</span><span class="p">(</span><span class="n">layer</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="StateQuery.query_wfs_file_exists"><a class="viewcode-back" href="../../../aodncore.pipeline.html#aodncore.pipeline.statequery.StateQuery.query_wfs_file_exists">[docs]</a>    <span class="k">def</span> <span class="nf">query_wfs_file_exists</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">layer</span><span class="p">,</span> <span class="n">name</span><span class="p">):</span>  <span class="c1"># pragma: no cover</span>
@@ -228,7 +228,7 @@
 
 <span class="sd">        :param layer: layer name supplied to GetFeature typename parameter</span>
 <span class="sd">        :param name: &#39;file_url&#39; inserted into OGC filter, and supplied to GetFeature filter parameter</span>
-<span class="sd">        :return: list of files for the layer</span>
+<span class="sd">        :return: whether the given file is present in the layer</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_wfs_broker</span><span class="o">.</span><span class="n">query_file_exists</span><span class="p">(</span><span class="n">layer</span><span class="p">,</span> <span class="n">name</span><span class="p">)</span></div>
 
@@ -246,7 +246,7 @@
         <span class="sd">&quot;&quot;&quot;Query the storage backend and return existing files matching the given query</span>
 
 <span class="sd">        :param query: S3-style prefix for filtering query results</span>
-<span class="sd">        :return: dict containing the query results</span>
+<span class="sd">        :return: RemotePipelineFileCollection of files matching the prefix</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_storage_broker</span><span class="o">.</span><span class="n">query</span><span class="p">(</span><span class="n">query</span><span class="p">)</span></div></div>
 </pre></div>

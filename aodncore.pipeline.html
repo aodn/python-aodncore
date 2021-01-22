@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>aodncore.pipeline package &mdash; aodncore 1.2.3 documentation</title>
+  <title>aodncore.pipeline package &mdash; aodncore 1.2.4 documentation</title>
   
 
   
@@ -60,7 +60,7 @@
             
             
               <div class="version">
-                1.2.3
+                1.2.4
               </div>
             
           
@@ -1580,10 +1580,10 @@ PipelineFileCollection object is returned in either case</p>
 RemotePipelineFileCollection object is returned in either case</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>o</strong> – PipelineFile or PipelineFileCollection object</p>
+<dd class="field-odd"><p><strong>o</strong> – RemotePipelineFile or RemotePipelineFileCollection object</p>
 </dd>
 <dt class="field-even">Returns</dt>
-<dd class="field-even"><p>PipelineFileCollection object</p>
+<dd class="field-even"><p>RemotePipelineFileCollection object</p>
 </dd>
 </dl>
 </dd></dl>
@@ -2371,7 +2371,7 @@ pipeline, and also the helper functions necessary to validate an object against 
 <dd class="field-odd"><p><strong>query</strong> – S3-style prefix for filtering query results</p>
 </dd>
 <dt class="field-even">Returns</dt>
-<dd class="field-even"><p>dict containing the query results</p>
+<dd class="field-even"><p>RemotePipelineFileCollection of files matching the prefix</p>
 </dd>
 </dl>
 </dd></dl>
@@ -2388,7 +2388,7 @@ pipeline, and also the helper functions necessary to validate an object against 
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
-<dd class="field-even"><p>list of files for the layer</p>
+<dd class="field-even"><p>whether the given file is present in the layer</p>
 </dd>
 </dl>
 </dd></dl>
@@ -2749,7 +2749,7 @@ ProcessEvent and redefine this method in order to modify its behavior.</p>
 
 <dl class="attribute">
 <dt id="aodncore.pipeline.watch.IncomingFileStateManager.transitions">
-<code class="sig-name descname">transitions</code><em class="property"> = [{'before': ['_pre_processing_checks', '_move_to_processing'], 'dest': 'FILE_IN_PROCESSING', 'source': 'FILE_IN_INCOMING', 'trigger': 'move_to_processing'}, {'before': ['_run_error_callbacks', '_move_to_error'], 'dest': 'FILE_IN_ERROR', 'source': 'FILE_IN_PROCESSING', 'trigger': 'move_to_error'}, {'before': '_run_success_callbacks', 'dest': 'FILE_SUCCESS', 'source': 'FILE_IN_PROCESSING', 'trigger': 'move_to_success', 'after': '_remove_processing_file'}]</em><a class="headerlink" href="#aodncore.pipeline.watch.IncomingFileStateManager.transitions" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">transitions</code><em class="property"> = [{'before': ['_pre_processing_checks', '_move_to_processing'], 'dest': 'FILE_IN_PROCESSING', 'source': 'FILE_IN_INCOMING', 'trigger': 'move_to_processing'}, {'before': ['_run_error_callbacks', '_move_to_error'], 'dest': 'FILE_IN_ERROR', 'source': 'FILE_IN_PROCESSING', 'trigger': 'move_to_error'}, {'before': '_run_success_callbacks', 'after': '_remove_processing_file', 'dest': 'FILE_SUCCESS', 'source': 'FILE_IN_PROCESSING', 'trigger': 'move_to_success'}]</em><a class="headerlink" href="#aodncore.pipeline.watch.IncomingFileStateManager.transitions" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 </dd></dl>

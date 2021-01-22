@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>aodncore.pipeline.files &mdash; aodncore 1.2.3 documentation</title>
+  <title>aodncore.pipeline.files &mdash; aodncore 1.2.4 documentation</title>
   
 
   
@@ -58,7 +58,7 @@
             
             
               <div class="version">
-                1.2.3
+                1.2.4
               </div>
             
           
@@ -210,8 +210,8 @@
     <span class="sd">&quot;&quot;&quot;Function to accept either a single RemotePipelineFile OR a RemotePipelineFileCollection and ensure that a</span>
 <span class="sd">    RemotePipelineFileCollection object is returned in either case</span>
 
-<span class="sd">    :param o: PipelineFile or PipelineFileCollection object</span>
-<span class="sd">    :return: PipelineFileCollection object</span>
+<span class="sd">    :param o: RemotePipelineFile or RemotePipelineFileCollection object</span>
+<span class="sd">    :return: RemotePipelineFileCollection object</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">validate_remotepipelinefile_or_remotepipelinefilecollection</span><span class="p">(</span><span class="n">o</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">o</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">o</span><span class="p">,</span> <span class="n">RemotePipelineFileCollection</span><span class="p">)</span> <span class="k">else</span> <span class="n">RemotePipelineFileCollection</span><span class="p">(</span><span class="n">o</span><span class="p">)</span></div>
