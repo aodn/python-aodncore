@@ -12,6 +12,7 @@ INSTALL_REQUIRES = [
     'compliance-checker==4.1.1',
     'jsonschema>=2.6.0',
     'paramiko>=2.6.0',
+    'psycopg2>=2.8.6',
     'python-magic>=0.4.15',
     'tableschema>=1.19.4',
     'transitions>=0.7.1'
