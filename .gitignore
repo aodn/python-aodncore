@@ -96,6 +96,7 @@ ENV/
 .idea/modules.xml
 .idea/vcs.xml
 .idea/python-aodncore.iml
+.idea/inspectionProfiles/profiles_settings.xml
 
 # Sensitive or high-churn files:
 .idea/**/dataSources/

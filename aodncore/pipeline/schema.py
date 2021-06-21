@@ -22,7 +22,8 @@ CHECK_PARAMS_SCHEMA = {
         'criteria': {'type': 'string'},
         'skip_checks': {'type': 'array', 'items': {'type': 'string'}},
         'output_format': {'type': 'string'},
-        'verbosity': {'type': 'integer'}
+        'verbosity': {'type': 'integer'},
+        'id': {'type': 'string'}
     },
     'additionalProperties': False
 }
@@ -35,7 +36,18 @@ HARVEST_PARAMS_SCHEMA = {
     'type': 'object',
     'properties': {
         'slice_size': {'type': 'integer'},
-        'undo_previous_slices': {'type': 'boolean'}
+        'undo_previous_slices': {'type': 'boolean'},
+        'id': {'type': 'string'},
+        'db_object': {
+            'type': 'object',
+            'properties': {
+                'name': {'type': 'string'},
+                'type': {'type': 'string'},
+                'dependencies': {'type': 'array'},
+            },
+            'required': ['name', 'type'],
+            'additionalProperties': False
+        },
     },
     'additionalProperties': False
 }
