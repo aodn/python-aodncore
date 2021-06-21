@@ -29,7 +29,9 @@ __all__ = [
     'NotificationFailedError',
     'StorageBrokerError',
     'UnmappedFilesError',
-    'UnmatchedFilesError'
+    'UnmatchedFilesError',
+    'InvalidSQLConnectionError',
+    'InvalidSQLTransactionError',
 ]
 
 
@@ -145,4 +147,12 @@ class UnmappedFilesError(PipelineSystemError):
 
 
 class UnmatchedFilesError(PipelineSystemError):
+    pass
+
+
+class InvalidSQLConnectionError(PipelineSystemError):
+    pass
+
+
+class InvalidSQLTransactionError(PipelineSystemError):
     pass
