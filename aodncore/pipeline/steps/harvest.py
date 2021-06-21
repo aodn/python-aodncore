@@ -443,30 +443,6 @@ class CsvHarvestRunner(BaseHarvesterRunner):
         self.logger = self._logger
         self.pipeline_files = None
 
-    def get_schema_base_path(self):
-        """Convenience function to return public-schema base path for pipeline"""
-        # TODO: replace with environment variable, eg. public_schema = os.environ['PUBLIC_SCHEMA_BASE_PATH']
-        public_schema = '/usr/local/harvester/'
-        # TODO: add exception for directory not found
-        return os.path.join(public_schema, self.params['job_id'])
-
-    def get_db_config(self):
-        """Function to return database connection object for """
-        # TODO: replace with environment variable, eg. harvest_config = os.environ['HARVEST_CONFIG_BASE_PATH']
-        harvest_config = '/usr/local/harvester/'
-        fn = os.path.join(harvest_config, self.params['job_id'], 'database.json')
-        # TODO: add exceptions for file not found and jsonschema validation error
-        with open(fn) as json_file:
-            return json.load(json_file)
-
-    def build_runsheet(self, obj):
-        pf = next((pf for pf in self.pipeline_files if Path(pf.local_path).stem.lower() == obj['name'].lower()
-                   or Path(pf.local_path).stem.lower() in [i.lower() for i in obj.get('dependencies', [])]), None)
-        if pf:
-            if obj['name'].lower() == Path(pf.local_path).stem.lower():
-                obj['local_path'] = pf.local_path
-            return obj
-
     def run(self, pipeline_files):
         """The entry point to the generic csv harvester
 
@@ -506,6 +482,31 @@ class CsvHarvestRunner(BaseHarvesterRunner):
             self.storage_broker.upload(pipeline_files=files_to_upload)
 
         # possible location of update GeoNetwork extents function call
+        pipeline_files.set_bool_attribute('is_harvested', True)
+
+    def get_schema_base_path(self):
+        """Convenience function to return public-schema base path for pipeline"""
+        # TODO: replace with environment variable, eg. public_schema = os.environ['PUBLIC_SCHEMA_BASE_PATH']
+        public_schema = '/usr/local/harvester/'
+        # TODO: add exception for directory not found
+        return os.path.join(public_schema, self.params['job_id'])
+
+    def get_db_config(self):
+        """Function to return database connection object for """
+        # TODO: replace with environment variable, eg. harvest_config = os.environ['HARVEST_CONFIG_BASE_PATH']
+        harvest_config = '/usr/local/harvester/'
+        fn = os.path.join(harvest_config, self.params['job_id'], 'database.json')
+        # TODO: add exceptions for file not found and jsonschema validation error
+        with open(fn) as json_file:
+            return json.load(json_file)
+
+    def build_runsheet(self, obj):
+        pf = next((pf for pf in self.pipeline_files if Path(pf.local_path).stem.lower() == obj['name'].lower()
+                   or Path(pf.local_path).stem.lower() in [i.lower() for i in obj.get('dependencies', [])]), None)
+        if pf:
+            if obj['name'].lower() == Path(pf.local_path).stem.lower():
+                obj['local_path'] = pf.local_path
+            return obj
 
 
 validate_triggerevent = validate_type(TriggerEvent)
