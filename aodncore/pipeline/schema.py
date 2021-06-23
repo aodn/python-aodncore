@@ -23,7 +23,7 @@ CHECK_PARAMS_SCHEMA = {
         'skip_checks': {'type': 'array', 'items': {'type': 'string'}},
         'output_format': {'type': 'string'},
         'verbosity': {'type': 'integer'},
-        'id': {'type': 'string'}
+        'job_id': {'type': 'string'}
     },
     'additionalProperties': False
 }
@@ -37,8 +37,8 @@ HARVEST_PARAMS_SCHEMA = {
     'properties': {
         'slice_size': {'type': 'integer'},
         'undo_previous_slices': {'type': 'boolean'},
-        'id': {'type': 'string'},
-        'db_object': {
+        'job_id': {'type': 'string'},
+        'db_objects': {
             'type': 'object',
             'properties': {
                 'name': {'type': 'string'},
