@@ -463,7 +463,7 @@ class CsvHarvestRunner(BaseHarvesterRunner):
             # placeholder - compare schema versions
             # if no change to schemas, go with the defined ingest_type, otherwise use the replace (drop and recreate)
             if conn.compare_schemas:
-                proc = self.process.get(self.params['ingest_type'])
+                proc = self.process.get(self.params['ingest_type'], 'replace')
             else:
                 proc = self.process['replace']
 
@@ -487,9 +487,9 @@ class CsvHarvestRunner(BaseHarvesterRunner):
     def get_schema_base_path(self):
         """Convenience function to return public-schema base path for pipeline"""
         # TODO: replace with environment variable, eg. public_schema = os.environ['PUBLIC_SCHEMA_BASE_PATH']
-        public_schema = '/usr/local/harvester/'
+        public_schema = '/vagrant/src/puclic-schema/'
         # TODO: add exception for directory not found
-        return os.path.join(public_schema, self.params['job_id'])
+        return os.path.join(public_schema, 'imos_{}_db'.format(self.params['job_id'].lower()))
 
     def get_db_config(self):
         """Function to return database connection object for """

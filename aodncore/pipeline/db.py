@@ -5,7 +5,7 @@ import yaml
 import psycopg2
 from psycopg2 import sql
 
-from .exceptions import InvalidSQLConnectionError, InvalidSQLTransactionError
+from .exceptions import InvalidSQLConnectionError, InvalidSQLTransactionError, InvalidConfigError
 
 db_field_translate = {
     'integer': 'int',
@@ -22,8 +22,6 @@ class DatabaseInteractions(object):
     # private methods
 
     def __init__(self, config, schema_base_path, logger):
-        self._errors = False
-        self._error_messages = []
         self._conn = None
         self._cur = None
         self.config = config
@@ -123,6 +121,5 @@ class DatabaseInteractions(object):
                                          for col in schema['schema']['fields']))
                     self.__exec('CREATE TABLE {} ({})'.format(schema['name'], columns))
                 except yaml.YAMLError as exc:
-                    self._error_messages.append(exc)
-                    self._errors = True
+                    raise InvalidConfigError(exc)
 
