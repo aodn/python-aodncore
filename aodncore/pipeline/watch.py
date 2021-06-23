@@ -282,9 +282,6 @@ class CeleryContext(object):
                                                                                available_handler_names=available_handler_names))
 
             params = items.get('params', {})
-            for param, attrs in params.items():
-                if param in ['harvest_params', 'check_params']:
-                    attrs['job_id'] = pipeline_name
             success_exit_policies = ExitPolicy.from_names(items.get('success_exit_policies', []))
             error_exit_policies = ExitPolicy.from_names(items.get('error_exit_policies', []))
 

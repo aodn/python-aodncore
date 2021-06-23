@@ -17,6 +17,14 @@ db_field_translate = {
 }
 
 
+def get_nested_object(obj, name):
+    """Convenience function to return a nested object by name if it exists
+
+    """
+    # TODO: this could live in common and also be made available to the check step
+    return obj.get(name, obj)
+
+
 class DatabaseInteractions(object):
 
     # private methods
@@ -64,10 +72,11 @@ class DatabaseInteractions(object):
             raise InvalidSQLTransactionError(error)
 
     def __find_file(self, regex):
-        sdir = os.scandir(self.schema_base_path)
+        sdir = [os.path.join(path, f) for f in files
+                for path, current_directory, files in os.walk(self.schema_base_path)]
         p = re.compile(regex, re.IGNORECASE)
         for f in sdir:
-            m = p.match(f.path)
+            m = p.match(f)
             if m:
                 return m.group()
         return None
@@ -115,10 +124,12 @@ class DatabaseInteractions(object):
             self._logger.info("Creating {type} {name}".format(**step))
             with open(fn) as stream:
                 try:
-                    schema = yaml.safe_load(stream)
-                    # need to add details for primary key (and other constraints?)
-                    columns = ", ".join(('{}  {}'.format(col['name'], db_field_translate[col['type']] or col['type'])
-                                         for col in schema['schema']['fields']))
+                    schema = get_nested_object(yaml.safe_load(stream), 'schema')
+                    columns = []
+                    for f in schema['fields']:
+                        f['pk'] = 'PRIMARY KEY' if f['name'] in schema.get('primaryKey', []) else ''
+                        f['type'] = db_field_translate[f['type']] or f['type']
+                        columns.append('{name} {type} {pk}'.format(**f))
                     self.__exec('CREATE TABLE {} ({})'.format(schema['name'], columns))
                 except yaml.YAMLError as exc:
                     raise InvalidConfigError(exc)
