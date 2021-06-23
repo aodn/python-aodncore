@@ -481,22 +481,20 @@ class CsvHarvestRunner(BaseHarvesterRunner):
         if files_to_upload:
             self.storage_broker.upload(pipeline_files=files_to_upload)
 
-        # possible location of update GeoNetwork extents function call
+        # TODO: possible location of update GeoNetwork extents function call
         pipeline_files.set_bool_attribute('is_harvested', True)
 
     def get_schema_base_path(self):
         """Convenience function to return public-schema base path for pipeline"""
-        # TODO: replace with environment variable, eg. public_schema = os.environ['PUBLIC_SCHEMA_BASE_PATH']
-        public_schema = '/vagrant/src/puclic-schema/'
-        # TODO: add exception for directory not found
-        return os.path.join(public_schema, 'imos_{}_db'.format(self.params['job_id'].lower()))
+        # TODO: replace with environment variable, eg. public_schema = os.environ['SCHEMA_BASE_PATH']
+        schema_definitions = '/vagrant/src/schema-definitions/'
+        return os.path.join(schema_definitions, 'imos_{}_db'.format(self.params['job_id'].lower()))
 
     def get_db_config(self):
         """Function to return database connection object for """
         # TODO: replace with environment variable, eg. harvest_config = os.environ['HARVEST_CONFIG_BASE_PATH']
         harvest_config = '/usr/local/harvester/'
-        fn = os.path.join(harvest_config, self.params['job_id'], 'database.json')
-        # TODO: add exceptions for file not found and jsonschema validation error
+        fn = os.path.join(harvest_config, self.params['db_schema'], 'database.json')
         with open(fn) as json_file:
             return json.load(json_file)
 
