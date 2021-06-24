@@ -72,10 +72,13 @@ class DatabaseInteractions(object):
             raise InvalidSQLTransactionError(error)
 
     def __find_file(self, regex):
-        sdir = [os.path.join(path, f) for f in files
-                for path, current_directory, files in os.walk(self.schema_base_path)]
+        # TODO: this is a bit clunky - could be made a bit more pythonic with the help of a generator
+        src = []
+        for path, current_directory, files in os.walk(self.schema_base_path):
+            for f in files:
+                src.append(os.path.join(path, f))
         p = re.compile(regex, re.IGNORECASE)
-        for f in sdir:
+        for f in src:
             m = p.match(f)
             if m:
                 return m.group()
@@ -88,6 +91,7 @@ class DatabaseInteractions(object):
 
         :return: boolean - True if schemas match, else False
         """
+        self._logger.info("Compare schema not yet implemented...")
         return True
 
     def truncate_table(self, step):
@@ -106,7 +110,7 @@ class DatabaseInteractions(object):
     def load_data_from_csv(self, step):
         fn = step.get('local_path', '')
         if fn:
-            with open(fn) as f:
+            with open(fn, encoding="utf-8") as f:
                 headers = next(csv.reader(f))
                 stmt = "COPY {} ({}) FROM STDIN WITH HEADER CSV".format(step['name'], ", ".join(headers))
                 self.__exec_copy(stmt, f)
@@ -130,7 +134,7 @@ class DatabaseInteractions(object):
                         f['pk'] = 'PRIMARY KEY' if f['name'] in schema.get('primaryKey', []) else ''
                         f['type'] = db_field_translate[f['type']] or f['type']
                         columns.append('{name} {type} {pk}'.format(**f))
-                    self.__exec('CREATE TABLE {} ({})'.format(schema['name'], columns))
+                    self.__exec('CREATE TABLE {} ({})'.format(step['name'], ','.join(columns)))
                 except yaml.YAMLError as exc:
                     raise InvalidConfigError(exc)
 
