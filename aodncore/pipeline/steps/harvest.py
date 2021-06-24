@@ -52,7 +52,7 @@ def get_harvester_runner(harvester_name, store_runner, harvest_params, tmp_base_
 
     if harvester_name == 'talend':
         return TalendHarvesterRunner(store_runner, harvest_params, tmp_base_dir, config, logger)
-    elif harvester_name == 'wsd':
+    elif harvester_name == 'csv':
         return CsvHarvestRunner(store_runner, harvest_params, config, logger)
     else:
         raise InvalidHarvesterError("invalid harvester '{name}'".format(name=harvester_name))

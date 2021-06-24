@@ -112,6 +112,7 @@ class DatabaseInteractions(object):
         if fn:
             with open(fn, encoding="utf-8") as f:
                 headers = next(csv.reader(f))
+                self._logger.info("Loding data from {}".format(fn))
                 stmt = "COPY {} ({}) FROM STDIN WITH HEADER CSV".format(step['name'], ", ".join(headers))
                 self.__exec_copy(stmt, f)
 
