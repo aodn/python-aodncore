@@ -410,9 +410,9 @@ class TalendHarvesterRunner(BaseHarvesterRunner):
 
 
 class CsvHarvestRunner(BaseHarvesterRunner):
-    # preliminary order of steps for each harvest_params.db_object by ingest_type
-    # may need a way of differentiating between DDL and DML sql
-    # ie. execute_sql_file to create db object vs execute_sql_file for inserts and updates
+    """:py:class:`BaseHarvesterRunner` implementation to load csv pipeline files to the database
+    """
+
     process = {
         "replace": [
             "drop_object",
@@ -463,13 +463,14 @@ class CsvHarvestRunner(BaseHarvesterRunner):
             # placeholder - compare schema versions
             # if no change to schemas, go with the defined ingest_type, otherwise use the replace (drop and recreate)
             if conn.compare_schemas:
-                proc = self.process.get(self.params['ingest_type'], 'replace')
+                proc = self.process[self.params.get('ingest_type', 'replace')]
             else:
                 proc = self.process['replace']
 
             if proc:
                 for step in runsheet:
-                    self._logger.info('Executing {} steps for {}'.format(self.params['ingest_type'], step['name']))
+                    self._logger.info('Executing {} steps for {}'.format(self.params.get('ingest_type', 'replace'),
+                                                                         step['name']))
 
                     for task in proc:
                         getattr(conn, task)(step)
@@ -488,7 +489,7 @@ class CsvHarvestRunner(BaseHarvesterRunner):
         """Convenience function to return public-schema base path for pipeline"""
         # TODO: replace with environment variable, eg. public_schema = os.environ['SCHEMA_BASE_PATH']
         schema_definitions = '/vagrant/src/schema-definitions/'
-        return os.path.join(schema_definitions, 'imos_{}_db'.format(self.params['job_id'].lower()))
+        return os.path.join(schema_definitions)
 
     def get_db_config(self):
         """Function to return database connection object for """

@@ -36,19 +36,26 @@ HARVEST_PARAMS_SCHEMA = {
     'properties': {
         'slice_size': {'type': 'integer'},
         'undo_previous_slices': {'type': 'boolean'},
+        'ingest_type': {'type': 'string'},
         'db_schema': {'type': 'string'},
         'db_objects': {
+            'type': 'array',
+            'items': {'$ref': '#/definitions/db_object'},
+        },
+    },
+    'additionalProperties': False,
+    'definitions': {
+        'db_object': {
             'type': 'object',
             'properties': {
                 'name': {'type': 'string'},
                 'type': {'type': 'string'},
-                'dependencies': {'type': 'array'}
+                'dependencies': {'type': 'array', 'items': {'type': 'string'}}
             },
             'required': ['name', 'type'],
             'additionalProperties': False
-        },
-    },
-    'additionalProperties': False
+        }
+    }
 }
 
 LOGGING_CONFIG_SCHEMA = {
