@@ -1,0 +1,15 @@
+{
+    "db_schema": "not_a_real_schema",
+    "ingest_type": "replace",
+    "db_objects": [
+        {
+            "name": "test_table",
+            "type": "table"
+        },
+        {
+            "name": "test_view",
+            "type": "materialized view",
+            "dependencies": ["test_table"]
+        }
+    ]
+}
