@@ -1,0 +1,24 @@
+notfields:
+  - name: SAMPLE
+    type: integer
+  - name: TAXON_NAME
+    type: string
+  - name: TAXON_GROUP
+    type: string
+  - name: TAXON_GRP01
+    type: string
+  - name: GENUS
+    type: string
+  - name: SPECIES
+    type: string
+  - name: SPCODE
+    type: integer
+  - name: ZOOP_ABUNDANCE_M3
+    type: number
+primaryKey:
+  - SAMPLE
+  - TAXON_NAME
+missingValues:
+  - ''
+  - (null)
+version: 0.1.0
