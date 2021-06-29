@@ -17,7 +17,7 @@ from tempfile import NamedTemporaryFile
 from pathlib import Path
 
 from .basestep import BaseStepRunner
-from ..exceptions import InvalidHarvesterError, UnmappedFilesError, MissingConfigParameterError
+from ..exceptions import InvalidHarvesterError, UnmappedFilesError, MissingConfigParameterError, InvalidConfigError
 from ..files import PipelineFileCollection, validate_pipelinefilecollection
 from ...util import (LoggingContext, SystemProcess, TemporaryDirectory, merge_dicts, mkdir_p, validate_string,
                      validate_type)
@@ -410,27 +410,7 @@ class TalendHarvesterRunner(BaseHarvesterRunner):
 
 
 class CsvHarvestRunner(BaseHarvesterRunner):
-    """:py:class:`BaseHarvesterRunner` implementation to load csv pipeline files to the database
-    """
-
-    process = {
-        "replace": [
-            "drop_object",
-            "create_table_from_yaml_file",
-            "load_data_from_csv",
-            "execute_sql_file",
-        ],
-        "truncate": [
-            "truncate_table",
-            "load_data_from_csv",
-            "refresh_materialized_view",
-        ],
-        "append": [
-            "load_data_from_csv",
-            "refresh_materialized_view",
-        ],
-
-    }
+    """:py:class:`BaseHarvesterRunner` implementation to load csv pipeline files to the database."""
 
     def __init__(self, storage_broker, harvest_params, config, logger):
         super().__init__(config, logger)
@@ -458,25 +438,14 @@ class CsvHarvestRunner(BaseHarvesterRunner):
             raise MissingConfigParameterError('Generic CSV Harvester requires that the '
                                               'harvest_params["db_objects"] attribute be set')
 
-        with DatabaseInteractions(config=self.get_db_config(), schema_base_path=self.get_schema_base_path(),
+        with DatabaseInteractions(config=self.get_db_config(),
+                                  schema_base_path=self._config.pipeline_config['harvester']['schema_base_dir'],
                                   logger=self.logger) as conn:
-            # placeholder - compare schema versions
-            # if no change to schemas, go with the defined ingest_type, otherwise use the replace (drop and recreate)
-            if conn.compare_schemas:
-                proc = self.process[self.params.get('ingest_type', 'replace')]
-            else:
-                proc = self.process['replace']
-
-            if proc:
-                for step in runsheet:
-                    self._logger.info('Executing {} steps for {}'.format(self.params.get('ingest_type', 'replace'),
-                                                                         step['name']))
-
-                    for task in proc:
-                        getattr(conn, task)(step)
-            else:
-                self._logger.error('No implementation for {} ingest_type'.format(self.params['ingest_type']))
-                raise
+            process = self.get_process_sequence(conn)
+            for step in runsheet:
+                self._logger.info('Executing steps for {}'.format(step['name']))
+                for task in process:
+                    getattr(conn, task)(step)
 
         files_to_upload = pipeline_files.filter_by_bool_attribute('pending_store_addition')
         if files_to_upload:
@@ -485,21 +454,54 @@ class CsvHarvestRunner(BaseHarvesterRunner):
         # TODO: possible location of update GeoNetwork extents function call
         pipeline_files.set_bool_attribute('is_harvested', True)
 
-    def get_schema_base_path(self):
-        """Convenience function to return public-schema base path for pipeline"""
-        # TODO: replace with environment variable, eg. public_schema = os.environ['SCHEMA_BASE_PATH']
-        schema_definitions = '/vagrant/src/schema-definitions/'
-        return os.path.join(schema_definitions)
-
     def get_db_config(self):
-        """Function to return database connection object for """
-        # TODO: replace with environment variable, eg. harvest_config = os.environ['HARVEST_CONFIG_BASE_PATH']
-        harvest_config = '/usr/local/harvester/'
+        """Function to return database connection object for schema
+
+        :return: dict containing database connection parameters.
+        """
+        harvest_config = self._config.pipeline_config['harvester']['config_dir']
         fn = os.path.join(harvest_config, self.params['db_schema'], 'database.json')
         with open(fn) as json_file:
             return json.load(json_file)
 
+    def get_process_sequence(self, conn):
+        """Function to return the database transaction process sequence based in ingest_type.
+
+        :param conn: instance of DatabaseInteractions().
+        :return: dict containing process sequence.
+        """
+        processes = {
+            "replace": [
+                "drop_object",
+                "create_table_from_yaml_file",
+                "load_data_from_csv",
+                "execute_sql_file",
+            ],
+            "truncate": [
+                "truncate_table",
+                "load_data_from_csv",
+                "refresh_materialized_view",
+            ],
+            "append": [
+                "load_data_from_csv",
+                "refresh_materialized_view",
+            ],
+        }
+        # compare_schemas not yet implemented
+        ingest_type = self.params.get('ingest_type', 'replace') if conn.compare_schemas() else 'replace'
+        process = processes.get(ingest_type)
+        if process:
+            self._logger.info("Using process sequence `{}`".format(ingest_type))
+            return processes[ingest_type]
+        else:
+            raise InvalidConfigError('No implementation for {} ingest_type'.format(ingest_type))
+
     def build_runsheet(self, obj):
+        """Function to generate a runsheet for the harvest process.
+
+        :return: dict containing one pipeline runsheet item
+            (if the item is not matched on the current pipeline instance, then nothing will be returned).
+        """
         pf = next((pf for pf in self.pipeline_files if Path(pf.local_path).stem.lower() == obj['name'].lower()
                    or Path(pf.local_path).stem.lower() in [i.lower() for i in obj.get('dependencies', [])]), None)
         if pf:
