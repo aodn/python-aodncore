@@ -158,6 +158,15 @@ PIPELINE_CONFIG_SCHEMA = {
             'required': ['talend_log_dir'],
             'additionalProperties': False
         },
+        'harvester': {
+            'type': 'object',
+            'properties': {
+                'config_dir': {'type': 'string'},
+                'schema_base_dir': {'type': 'string'}
+            },
+            'required': ['config_dir', 'schema_base_dir'],
+            'additionalProperties': False
+        },
         'templating': {
             'type': 'object',
             'properties': {
