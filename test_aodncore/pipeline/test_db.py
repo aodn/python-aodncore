@@ -70,8 +70,8 @@ class TestDatabaseInteractions(BaseTestCase):
         self.params = parse_dsn(self.pg.get_connection_url().replace('+psycopg2', ''))
         with psycopg2.connect(**self.params) as conn:
             cur = conn.cursor()
-            cur.execute(f"CREATE SCHEMA {db_config['user']} AUTHORIZATION {db_config['user']}")
-        self.params['options'] = f"-c search_path={db_config['user']}"
+            cur.execute("CREATE SCHEMA {user} AUTHORIZATION {user}".format(**db_config))
+        self.params['options'] = "-c search_path={user}".format(**db_config)
 
     def tearDown(self):
         # Stop the postgresql container
@@ -83,4 +83,4 @@ class TestDatabaseInteractions(BaseTestCase):
             cursor = conn.cursor()
             cursor.execute('SHOW search_path')
             schema = cursor.fetchone()
-            self.assertIn('test', schema)
+            self.assertIn(db_config['user'], schema)
