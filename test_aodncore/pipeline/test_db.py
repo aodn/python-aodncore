@@ -1,10 +1,9 @@
 import yaml
 import os
 import pathlib as pl
-import unittest
 import psycopg2
 from psycopg2.extensions import parse_dsn
-from testcontainers.postgres import PostgresContainer  # pip install testcontainers[postgresql]
+from testcontainers.postgres import PostgresContainer
 from aodncore.pipeline.db import get_tableschema_descriptor, get_recursive_filenames, DatabaseInteractions
 from aodncore.testlib import BaseTestCase
 from test_aodncore import TESTDATA_DIR
