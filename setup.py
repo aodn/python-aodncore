@@ -20,7 +20,8 @@ INSTALL_REQUIRES = [
 ]
 
 TESTS_REQUIRE = [
-    'pytest'
+    'pytest',
+    'testcontainers[postgresql]'
 ]
 
 EXTRAS_REQUIRE = {
