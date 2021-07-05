@@ -7,6 +7,7 @@ ENTRY_POINTS = {
 }
 
 INSTALL_REQUIRES = [
+    'numpy>=1.18.5',
     'boto3>=1.9.156',
     'celery>=4.3.0',
     'compliance-checker==4.1.1',
