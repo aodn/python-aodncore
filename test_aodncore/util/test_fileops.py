@@ -9,8 +9,8 @@ from tempfile import mkdtemp, mkstemp
 
 from aodncore.testlib import BaseTestCase, get_nonexistent_path
 from aodncore.util import (extract_gzip, extract_zip, is_gzip_file, is_jpeg_file, is_netcdf_file, is_pdf_file,
-                           is_png_file, is_tiff_file, is_zip_file, list_regular_files, mkdir_p, rm_f, rm_r, rm_rf,
-                           safe_copy_file, safe_move_file, get_file_checksum, TemporaryDirectory)
+                           is_png_file, is_tiff_file, is_zip_file, list_regular_files, find_file, mkdir_p, rm_f, rm_r,
+                           rm_rf, safe_copy_file, safe_move_file, get_file_checksum, TemporaryDirectory)
 from aodncore.util.misc import format_exception
 
 from test_aodncore import TESTDATA_DIR
@@ -176,6 +176,15 @@ class TestUtilFileOps(BaseTestCase):
 
         dir_entries_unicode = list(list_regular_files(self.temp_dir, recursive=True))
         self.assertListEqual(dir_entries_unicode, reference_list)
+
+    def test_find_file_valid(self):
+        true_file = os.path.join(TESTDATA_DIR, 'test.frictionless.resource.yaml')
+        match_file = find_file(TESTDATA_DIR, '(.*)frictionless\\.resource(.*)\\.yaml')
+        self.assertEqual(true_file, match_file)
+
+    def test_find_file_invalid(self):
+        match_file = find_file(TESTDATA_DIR, '(.*)not\\.a\\.real\\.regex(.*)\\.yaml')
+        self.assertIsNone(match_file)
 
     def test_mkdir_p(self):
         temp_dir = os.path.join(self.temp_dir, 'a', 'b', 'c', 'd', 'e')

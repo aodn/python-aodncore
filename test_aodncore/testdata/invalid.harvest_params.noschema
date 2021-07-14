@@ -1,13 +1,8 @@
 {
-    "db_schema": "conn",
     "ingest_type": "replace",
     "db_objects": [
         {
             "name": "test_table",
-            "type": "table"
-        },
-        {
-            "name": "not_a_table",
             "type": "table"
         },
         {

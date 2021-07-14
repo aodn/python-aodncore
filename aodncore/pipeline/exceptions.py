@@ -26,6 +26,7 @@ __all__ = [
     'InvalidStoreUrlError',
     'MissingConfigParameterError',
     'MissingFileError',
+    'MissingConfigFileError',
     'NotificationFailedError',
     'StorageBrokerError',
     'UnmappedFilesError',
@@ -132,6 +133,10 @@ class MissingConfigParameterError(PipelineSystemError):
 
 
 class MissingFileError(PipelineSystemError):
+    pass
+
+
+class MissingConfigFileError(PipelineSystemError):
     pass
 
 

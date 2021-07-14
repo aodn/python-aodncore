@@ -17,7 +17,8 @@ from tempfile import NamedTemporaryFile
 from pathlib import Path
 
 from .basestep import BaseStepRunner
-from ..exceptions import InvalidHarvesterError, UnmappedFilesError, MissingConfigParameterError, InvalidConfigError
+from ..exceptions import (InvalidHarvesterError, UnmappedFilesError, MissingConfigParameterError, InvalidConfigError,
+                          MissingConfigFileError)
 from ..files import PipelineFileCollection, validate_pipelinefilecollection
 from ...util import (LoggingContext, SystemProcess, TemporaryDirectory, merge_dicts, mkdir_p, validate_string,
                      validate_type)
@@ -30,7 +31,7 @@ __all__ = [
     'get_harvester_runner',
     'HarvesterMap',
     'TalendHarvesterRunner',
-    'CsvHarvestRunner',
+    'CsvHarvesterRunner',
     'TriggerEvent',
     'validate_harvestermap',
     'validate_harvester_mapping',
@@ -53,7 +54,7 @@ def get_harvester_runner(harvester_name, store_runner, harvest_params, tmp_base_
     if harvester_name == 'talend':
         return TalendHarvesterRunner(store_runner, harvest_params, tmp_base_dir, config, logger)
     elif harvester_name == 'csv':
-        return CsvHarvestRunner(store_runner, harvest_params, config, logger)
+        return CsvHarvesterRunner(store_runner, harvest_params, config, logger)
     else:
         raise InvalidHarvesterError("invalid harvester '{name}'".format(name=harvester_name))
 
@@ -409,7 +410,7 @@ class TalendHarvesterRunner(BaseHarvesterRunner):
                     self.storage_broker.upload(pipeline_files=files_to_upload)
 
 
-class CsvHarvestRunner(BaseHarvesterRunner):
+class CsvHarvesterRunner(BaseHarvesterRunner):
     """:py:class:`BaseHarvesterRunner` implementation to load csv pipeline files to the database."""
 
     def __init__(self, storage_broker, harvest_params, config, logger):
@@ -461,8 +462,11 @@ class CsvHarvestRunner(BaseHarvesterRunner):
         """
         harvest_config = self._config.pipeline_config['harvester']['config_dir']
         fn = os.path.join(harvest_config, self.params['db_schema'], 'database.json')
-        with open(fn) as json_file:
-            return json.load(json_file)
+        try:
+            with open(fn) as json_file:
+                return json.load(json_file)
+        except FileNotFoundError as e:
+            raise MissingConfigFileError(e)
 
     def get_process_sequence(self, conn):
         """Function to return the database transaction process sequence based in ingest_type.

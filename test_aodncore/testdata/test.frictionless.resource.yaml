@@ -1,8 +1,8 @@
 encoding: utf-8
 format: csv
 hashing: md5
-name: bgc_zoop_raw
-path: schemas/BGC_Zoop_Raw.csv
+name: frictionless
+path: frictionless.csv
 profile: tabular-schemas-resource
 schema:
   fields:

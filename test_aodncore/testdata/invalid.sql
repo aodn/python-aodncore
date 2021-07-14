@@ -1,0 +1,1 @@
+select 1 from not_a_table

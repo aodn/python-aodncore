@@ -1,9 +1,8 @@
 from .external import retry_decorator, IndexedSet, classproperty, lazyproperty
 from .fileops import (TemporaryDirectory, extract_gzip, extract_zip, filesystem_sort_key, get_file_checksum,
-                      is_dir_writable, is_gzip_file,
-                      is_jpeg_file, is_json_file, is_netcdf_file, is_nonempty_file, is_pdf_file, is_png_file, is_tiff_file, is_zip_file,
-                      list_regular_files, mkdir_p, rm_f, rm_r, rm_rf, rm_rf, safe_copy_file, safe_move_file,
-                      validate_dir_writable, validate_file_writable)
+                      is_dir_writable, is_gzip_file, is_jpeg_file, is_json_file, is_netcdf_file, is_nonempty_file,
+                      is_pdf_file, is_png_file, is_tiff_file, is_zip_file, list_regular_files, find_file, mkdir_p, rm_f,
+                      rm_r, rm_rf, rm_rf, safe_copy_file, safe_move_file, validate_dir_writable, validate_file_writable)
 from .misc import (CaptureStdIO, LoggingContext, Pattern, TemplateRenderer, WriteOnceOrderedDict, discover_entry_points,
                    ensure_regex, ensure_regex_list, ensure_writeonceordereddict, format_exception,
                    get_pattern_subgroups_from_string, is_function, is_nonstring_iterable, is_valid_email_address,
@@ -13,6 +12,7 @@ from .misc import (CaptureStdIO, LoggingContext, Pattern, TemplateRenderer, Writ
                    validate_relative_path, validate_relative_path_attr, validate_string, validate_type)
 from .process import SystemProcess
 from .wfs import DEFAULT_WFS_VERSION, WfsBroker
+from .ff import get_field_type, get_tableschema_descriptor
 
 __all__ = [
     'CaptureStdIO',
@@ -54,6 +54,7 @@ __all__ = [
     'matches_regexes',
     'merge_dicts',
     'list_regular_files',
+    'find_file',
     'mkdir_p',
     'retry_decorator',
     'rm_f',
@@ -79,4 +80,6 @@ __all__ = [
     'validate_relative_path_attr',
     'validate_string',
     'validate_type',
+    'get_field_type',
+    'get_tableschema_descriptor'
 ]
