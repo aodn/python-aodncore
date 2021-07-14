@@ -1,44 +1,14 @@
-import os
-import re
 import csv
 import yaml
 import psycopg2
 from psycopg2 import sql
-from tableschema import Schema
 
-from .exceptions import InvalidSQLConnectionError, InvalidSQLTransactionError, InvalidConfigError, InvalidSchemaError
+from .exceptions import InvalidSQLConnectionError, InvalidSQLTransactionError, InvalidConfigError, MissingFileError
+from ..util import find_file, get_field_type, get_tableschema_descriptor
 
-
-def get_tableschema_descriptor(obj, name):
-    """Convenience function to return a valid tableschema definition.
-
-    :param obj: A dict that is either the desired object or the parent of the desired object
-    :param name: A string containing name of the nested object (eg. 'schema')
-    :return: A valid tableschema definition
-    """
-    # TODO: this could live in common and also be made available to the check step.
-    s = Schema(obj.get(name, obj))
-    if not s.valid:
-        raise InvalidSchemaError('Schema definition does not meet the tableschema standard')
-    else:
-        return s.descriptor
-
-
-def get_recursive_filenames(base_path):
-    """Generator function to yield filenames for files nested within the specified base file path.
-
-    Example usage:
-        for file in iter(get_recursive_filenames('path/to/base/directory'):
-            print(file)
-
-    :param base_path: A string representing the base path to walk for filenames
-    :return: A string representing the full path to a single file
-    """
-    # TODO: this could live in common and also be made available to the check step.
-    # TODO: should probably raise an error if the base_path doesn't exist
-    for path, current_directory, files in os.walk(base_path):
-        for f in files:
-            yield os.path.join(path, f)
+__all__ = [
+    'DatabaseInteractions'
+]
 
 
 class DatabaseInteractions(object):
@@ -56,11 +26,13 @@ class DatabaseInteractions(object):
         self.config = config
         self._logger = logger
         self.schema_base_path = schema_base_path
+        self.status = 'initiated'
 
     def __enter__(self):
         # Call database connection method and then create a cursor
         self._conn = self.__connect()
         self._cur = self._conn.cursor()
+        self.status = 'connected'
         return self
 
     def __exit__(self, exc_type, exc_val, exc_tb):
@@ -69,9 +41,11 @@ class DatabaseInteractions(object):
         if exc_type:
             self._logger.info("Rolling back changes")
             self._conn.rollback()
+            self.status = 'rolled_back'
         else:
             self._logger.info("Committing changes")
             self._conn.commit()
+            self.status = 'committed'
         self._cur.close()
         self._conn.close()
 
@@ -111,38 +85,6 @@ class DatabaseInteractions(object):
         except Exception as error:
             raise InvalidSQLTransactionError(error)
 
-    def __find_file(self, regex):
-        """Find a file in a recursive directory based on a match string.
-
-        This purpose of this method is to identify a specific file, so only the first match will be returned.
-
-        :param regex: A string containing a regular expression used to identify the file.
-        :return: A string containing the full path to the matched file.
-        """
-        p = re.compile(regex, re.IGNORECASE)
-        for f in iter(get_recursive_filenames(self.schema_base_path)):
-            m = p.match(f)
-            if m:
-                return m.group()
-        return None
-
-    def __get_field_type(self, field):
-        """Find a field by name in translation table and return associated field type.
-
-        :param field: A string containing the tableschema definition field type.
-        :return: A string containing the associated postgresql field type if different
-            - otherwise the passed in field param.
-        """
-        translations = {
-            'integer': 'int',
-            'string': 'varchar',
-            'any': 'varchar',
-            'number': 'numeric',
-            'datetime': 'timestamp',
-            'date': 'date'
-        }
-        return translations[field] or field
-
     # public methods
 
     def compare_schemas(self):
@@ -172,8 +114,8 @@ class DatabaseInteractions(object):
         - step.type is the type of database object - the database transaction will only be performed
             if type = 'materialized view'
         """
-        if step['type'] == 'materialized_view':
-            self.__exec("REFRESH MATERIALIZED_VIEW {}".format(step['name']))
+        if step['type'] == 'materialized view':
+            self.__exec("REFRESH MATERIALIZED VIEW {}".format(step['name']))
 
     def drop_object(self, step):
         """Drop the specified database object.
@@ -201,11 +143,14 @@ class DatabaseInteractions(object):
         """
         fn = step.get('local_path', '')
         if fn:
-            with open(fn, encoding="utf-8") as f:
-                headers = next(csv.reader(f))
-                self._logger.info("Loding data from {}".format(fn))
-                stmt = "COPY {} ({}) FROM STDIN WITH HEADER CSV".format(step['name'], ", ".join(headers))
-                self.__exec_copy(stmt, f)
+            try:
+                with open(fn, encoding="utf-8") as f:
+                    headers = next(csv.reader(f))
+                    self._logger.info("Loding data from {}".format(fn))
+                    stmt = "COPY {} ({}) FROM STDIN WITH HEADER CSV".format(step['name'], ", ".join(headers))
+                    self.__exec_copy(stmt, f)
+            except FileNotFoundError as e:
+                raise MissingFileError(e)
 
     def execute_sql_file(self, step):
         """Function to read an SQL file prior to executing against the database.
@@ -213,7 +158,7 @@ class DatabaseInteractions(object):
         :param step: A dict containing 'name' (at least) key
         - step.name is the name used as part of the match regular expression
         """
-        fn = self.__find_file('(.*){}(.*).sql'.format(step['name']))
+        fn = find_file(self.schema_base_path, '(.*){}(.*).sql'.format(step['name']))
         if fn:
             self._logger.info("Executing additional sql from {}".format(fn))
             with open(fn) as stream:
@@ -226,18 +171,24 @@ class DatabaseInteractions(object):
         - step.name is the name used as part of the match regular expression
         - step.type is the type of database object. Type should always be table in this context
         """
-        fn = self.__find_file('(.*){}(.*).yaml'.format(step['name']))
-        if fn:
+        fn = find_file(self.schema_base_path, '(.*){}(.*).yaml'.format(step['name']))
+        if fn and step['type'] == 'table':
             self._logger.info("Creating {type} {name}".format(**step))
-            with open(fn) as stream:
-                try:
-                    schema = get_tableschema_descriptor(yaml.safe_load(stream), 'schema')
-                    columns = []
-                    for f in schema['fields']:
-                        f['pk'] = 'PRIMARY KEY' if f['name'] in schema.get('primaryKey', []) else ''
-                        f['type'] = self.__get_field_type(f['type'])
-                        columns.append('{name} {type} {pk}'.format(**f))
-                    self.__exec('CREATE TABLE {} ({})'.format(step['name'], ','.join(columns)))
-                except yaml.YAMLError as exc:
-                    raise InvalidConfigError(exc)
+            try:
+                with open(fn) as stream:
+                    try:
+                        schema = get_tableschema_descriptor(yaml.safe_load(stream), 'schema')
+                        columns = []
+                        for f in schema['fields']:
+                            # f['pk'] = 'PRIMARY KEY' if f['name'] in schema.get('primaryKey', []) else ''
+                            f['type'] = get_field_type(f['type'])
+                            # columns.append('{name} {type} {pk}'.format(**f))
+                            columns.append('{name} {type}'.format(**f))
+                        if schema.get('primaryKey'):
+                            columns.append("PRIMARY KEY ({})".format(','.join(schema.get('primaryKey'))))
+                        self.__exec('CREATE TABLE {} ({})'.format(step['name'], ','.join(columns)))
+                    except yaml.YAMLError as exc:
+                        raise InvalidConfigError(exc)
+            except FileNotFoundError as e:
+                raise MissingFileError(e)
 

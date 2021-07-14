@@ -36,7 +36,7 @@ HARVEST_PARAMS_SCHEMA = {
     'properties': {
         'slice_size': {'type': 'integer'},
         'undo_previous_slices': {'type': 'boolean'},
-        'ingest_type': {'type': 'string'},
+        'ingest_type': {'type': 'string', 'enum': ['replace', 'truncate', 'append']},
         'db_schema': {'type': 'string'},
         'db_objects': {
             'type': 'array',
@@ -55,6 +55,10 @@ HARVEST_PARAMS_SCHEMA = {
             'required': ['name', 'type'],
             'additionalProperties': False
         }
+    },
+    'dependencies': {
+        'db_schema': ['db_objects'],
+        'db_objects': ['db_schema']
     }
 }
 
@@ -188,6 +192,7 @@ PIPELINE_CONFIG_SCHEMA = {
             'additionalProperties': False
         }
     },
+    # TODO: add 'harvester' to the required list - once it has been added to the chef build
     'required': ['global', 'logging', 'mail', 'talend', 'templating', 'watch'],
     'additionalProperties': False,
     'definitions': {
