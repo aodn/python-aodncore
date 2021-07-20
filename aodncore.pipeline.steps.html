@@ -5,10 +5,11 @@
 <!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
 <head>
   <meta charset="utf-8">
-  
+  <meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>aodncore.pipeline.steps package &mdash; aodncore 1.2.8 documentation</title>
+  <title>aodncore.pipeline.steps package &mdash; aodncore 1.2.9 documentation</title>
   
 
   
@@ -60,7 +61,7 @@
             
             
               <div class="version">
-                1.2.8
+                1.2.9
               </div>
             
           
@@ -84,25 +85,25 @@
               
             
             
-              <p class="caption"><span class="caption-text">Quick Start Guide:</span></p>
+              <p><span class="caption-text">Quick Start Guide:</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="quickstartdoc.html">Writing a <code class="xref py py-meth docutils literal notranslate"><span class="pre">dest_path()</span></code> function</a></li>
 <li class="toctree-l1"><a class="reference internal" href="quickstartdoc.html#overriding-default-file-actions">Overriding default file actions</a></li>
 <li class="toctree-l1"><a class="reference internal" href="quickstartdoc.html#creating-products-during-the-handler-lifetime">Creating products during the handler lifetime</a></li>
 <li class="toctree-l1"><a class="reference internal" href="quickstartdoc.html#query-storage">Query Storage</a></li>
 </ul>
-<p class="caption"><span class="caption-text">User documentation:</span></p>
+<p><span class="caption-text">User documentation:</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="userdoc.html">Overview</a></li>
 <li class="toctree-l1"><a class="reference internal" href="userdoc.html#state-machine-handler-steps">State machine / handler steps</a></li>
 <li class="toctree-l1"><a class="reference internal" href="userdoc.html#customising-handler-behaviour">Customising handler behaviour</a></li>
 <li class="toctree-l1"><a class="reference internal" href="userdoc.html#attributes">Attributes</a></li>
 </ul>
-<p class="caption"><span class="caption-text">Developer documentation:</span></p>
+<p><span class="caption-text">Developer documentation:</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="developerdoc.html">Overview</a></li>
 </ul>
-<p class="caption"><span class="caption-text">Module contents:</span></p>
+<p><span class="caption-text">Module contents:</span></p>
 <ul class="current">
 <li class="toctree-l1 current"><a class="reference internal" href="modules.html">aodncore</a><ul class="current">
 <li class="toctree-l2 current"><a class="reference internal" href="aodncore.html">aodncore package</a><ul class="current">
@@ -190,12 +191,12 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <div class="section" id="aodncore-pipeline-steps-package">
+  <section id="aodncore-pipeline-steps-package">
 <h1>aodncore.pipeline.steps package<a class="headerlink" href="#aodncore-pipeline-steps-package" title="Permalink to this headline">¶</a></h1>
-<div class="section" id="submodules">
+<section id="submodules">
 <h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this headline">¶</a></h2>
-</div>
-<div class="section" id="module-aodncore.pipeline.steps.basestep">
+</section>
+<section id="module-aodncore.pipeline.steps.basestep">
 <span id="aodncore-pipeline-steps-basestep-module"></span><h2>aodncore.pipeline.steps.basestep module<a class="headerlink" href="#module-aodncore.pipeline.steps.basestep" title="Permalink to this headline">¶</a></h2>
 <p>This module provides a common base class for step runner classes in for all steps (which in turn have a common base
 class for each step, inheriting from this one)</p>
@@ -206,8 +207,8 @@ class for each step, inheriting from this one)</p>
 <p>Common parent class of all “step runner” child classes</p>
 </dd></dl>
 
-</div>
-<div class="section" id="module-aodncore.pipeline.steps.check">
+</section>
+<section id="module-aodncore.pipeline.steps.check">
 <span id="aodncore-pipeline-steps-check-module"></span><h2>aodncore.pipeline.steps.check module<a class="headerlink" href="#module-aodncore.pipeline.steps.check" title="Permalink to this headline">¶</a></h2>
 <p>This module provides the step runner classes for the <a class="reference internal" href="userdoc.html#check"><span class="std std-ref">check</span></a> step.</p>
 <p>Checking is performed by a <code class="xref py py-class docutils literal notranslate"><span class="pre">BaseCheckRunner</span></code> class, which is used to determine whether a file conforms to a
@@ -282,8 +283,8 @@ testing whether the file conforms to some arbitrary criteria.</p>
 
 </dd></dl>
 
-</div>
-<div class="section" id="module-aodncore.pipeline.steps.harvest">
+</section>
+<section id="module-aodncore.pipeline.steps.harvest">
 <span id="aodncore-pipeline-steps-harvest-module"></span><h2>aodncore.pipeline.steps.harvest module<a class="headerlink" href="#module-aodncore.pipeline.steps.harvest" title="Permalink to this headline">¶</a></h2>
 <p>This module provides the step runner classes for the “harvest” step, which is a sub-step of the <a class="reference internal" href="userdoc.html#publish"><span class="std std-ref">publish</span></a> step.</p>
 <p>Harvesting is performed by a <code class="xref py py-class docutils literal notranslate"><span class="pre">BaseHarvesterRunner</span></code> class.</p>
@@ -542,8 +543,8 @@ given <a class="reference internal" href="#aodncore.pipeline.steps.harvest.Harve
 <code class="sig-prename descclassname">aodncore.pipeline.steps.harvest.</code><code class="sig-name descname">validate_triggerevent</code><span class="sig-paren">(</span><em class="sig-param">o</em><span class="sig-paren">)</span><a class="headerlink" href="#aodncore.pipeline.steps.harvest.validate_triggerevent" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
-</div>
-<div class="section" id="module-aodncore.pipeline.steps.notify">
+</section>
+<section id="module-aodncore.pipeline.steps.notify">
 <span id="aodncore-pipeline-steps-notify-module"></span><h2>aodncore.pipeline.steps.notify module<a class="headerlink" href="#module-aodncore.pipeline.steps.notify" title="Permalink to this headline">¶</a></h2>
 <p>This module provides the step runner classes for the <a class="reference internal" href="userdoc.html#notify"><span class="std std-ref">notify</span></a> step.</p>
 <p>Notification is performed by a <code class="xref py py-class docutils literal notranslate"><span class="pre">BaseNotifyRunner</span></code> class, which interacts with an endpoint representing a
@@ -780,8 +781,8 @@ string</p>
 
 </dd></dl>
 
-</div>
-<div class="section" id="module-aodncore.pipeline.steps.resolve">
+</section>
+<section id="module-aodncore.pipeline.steps.resolve">
 <span id="aodncore-pipeline-steps-resolve-module"></span><h2>aodncore.pipeline.steps.resolve module<a class="headerlink" href="#module-aodncore.pipeline.steps.resolve" title="Permalink to this headline">¶</a></h2>
 <p>This module provides the step runner classes for the <a class="reference internal" href="userdoc.html#resolve"><span class="std std-ref">resolve</span></a> step.</p>
 <p>Resolution is performed by a <code class="xref py py-class docutils literal notranslate"><span class="pre">BaseResolveRunner</span></code> class, which is responsible for resolving an input file into
@@ -1023,8 +1024,8 @@ classified as follows (text in square brackets not in actual files):</p>
 
 </dd></dl>
 
-</div>
-<div class="section" id="module-aodncore.pipeline.steps.store">
+</section>
+<section id="module-aodncore.pipeline.steps.store">
 <span id="aodncore-pipeline-steps-store-module"></span><h2>aodncore.pipeline.steps.store module<a class="headerlink" href="#module-aodncore.pipeline.steps.store" title="Permalink to this headline">¶</a></h2>
 <p>This module provides the step runner class for the “store” step, which is a sub-step of the <a class="reference internal" href="userdoc.html#publish"><span class="std std-ref">publish</span></a> step.</p>
 <p>The step runner delegates the low level storage operations to an internal <code class="xref py py-class docutils literal notranslate"><span class="pre">BaseStorageBroker</span></code> instance, and so
@@ -1110,8 +1111,8 @@ similar to the other handler steps.</p>
 
 </dd></dl>
 
-</div>
-<div class="section" id="module-aodncore.pipeline.steps">
+</section>
+<section id="module-aodncore.pipeline.steps">
 <span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-aodncore.pipeline.steps" title="Permalink to this headline">¶</a></h2>
 <dl class="class">
 <dt id="aodncore.pipeline.steps.NotifyList">
@@ -1373,8 +1374,8 @@ string</p>
 </dl>
 </dd></dl>
 
-</div>
-</div>
+</section>
+</section>
 
 
            </div>

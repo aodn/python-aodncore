@@ -5,10 +5,11 @@
 <!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
 <head>
   <meta charset="utf-8">
-  
+  <meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Overview &mdash; aodncore 1.2.8 documentation</title>
+  <title>Overview &mdash; aodncore 1.2.9 documentation</title>
   
 
   
@@ -60,7 +61,7 @@
             
             
               <div class="version">
-                1.2.8
+                1.2.9
               </div>
             
           
@@ -84,14 +85,14 @@
               
             
             
-              <p class="caption"><span class="caption-text">Quick Start Guide:</span></p>
+              <p><span class="caption-text">Quick Start Guide:</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="quickstartdoc.html">Writing a <code class="xref py py-meth docutils literal notranslate"><span class="pre">dest_path()</span></code> function</a></li>
 <li class="toctree-l1"><a class="reference internal" href="quickstartdoc.html#overriding-default-file-actions">Overriding default file actions</a></li>
 <li class="toctree-l1"><a class="reference internal" href="quickstartdoc.html#creating-products-during-the-handler-lifetime">Creating products during the handler lifetime</a></li>
 <li class="toctree-l1"><a class="reference internal" href="quickstartdoc.html#query-storage">Query Storage</a></li>
 </ul>
-<p class="caption"><span class="caption-text">User documentation:</span></p>
+<p><span class="caption-text">User documentation:</span></p>
 <ul class="current">
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Overview</a></li>
 <li class="toctree-l1"><a class="reference internal" href="#state-machine-handler-steps">State machine / handler steps</a><ul>
@@ -114,11 +115,11 @@
 </ul>
 </li>
 </ul>
-<p class="caption"><span class="caption-text">Developer documentation:</span></p>
+<p><span class="caption-text">Developer documentation:</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="developerdoc.html">Overview</a></li>
 </ul>
-<p class="caption"><span class="caption-text">Module contents:</span></p>
+<p><span class="caption-text">Module contents:</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="modules.html">aodncore</a></li>
 </ul>
@@ -185,14 +186,14 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <div class="section" id="overview">
+  <section id="overview">
 <h1>Overview<a class="headerlink" href="#overview" title="Permalink to this headline">¶</a></h1>
 <p>The <code class="docutils literal notranslate"><span class="pre">aodncore.pipeline</span></code> package provides the base class for each pipeline handler,
 <a class="reference internal" href="aodncore.pipeline.html#aodncore.pipeline.HandlerBase" title="aodncore.pipeline.HandlerBase"><code class="xref py py-class docutils literal notranslate"><span class="pre">aodncore.pipeline.HandlerBase</span></code></a>. This is the starting point for any new handler development, as
 it contains all of the core functionality of each handler, which is then available to the child class via class
 inheritance.</p>
-</div>
-<div class="section" id="state-machine-handler-steps">
+</section>
+<section id="state-machine-handler-steps">
 <h1>State machine / handler steps<a class="headerlink" href="#state-machine-handler-steps" title="Permalink to this headline">¶</a></h1>
 <p>In order to provide consistency and structure to the handler, the pipeline is broken into a series of ordered “steps”,
 with each performing a distinct function in the processing of the input file. The “machine” defines a series of states,
@@ -205,7 +206,7 @@ it can automatically assume with a 100% guarantee that the <code class="docutils
 <code class="docutils literal notranslate"><span class="pre">process</span></code> step have all been run in that order with no errors, allowing it to focus purely on the core concern of the
 step; publishing files, and nothing more.</p>
 <p>The ordered steps are as follows:</p>
-<div class="section" id="initialise">
+<section id="initialise">
 <h2>initialise<a class="headerlink" href="#initialise" title="Permalink to this headline">¶</a></h2>
 <p>Responsible for general setup of handler class and performing initial sanity checking of the input file and parameters</p>
 <ol class="arabic simple">
@@ -213,8 +214,8 @@ step; publishing files, and nothing more.</p>
 <li><p>validation of input file (e.g. the file exists, is accessible, is of an allowed type etc.)</p></li>
 <li><p>setup temporary directories</p></li>
 </ol>
-</div>
-<div class="section" id="resolve">
+</section>
+<section id="resolve">
 <h2>resolve<a class="headerlink" href="#resolve" title="Permalink to this headline">¶</a></h2>
 <p>Responsible for preparing the central file collection of the handler instance, including handling input files which
 represent multiple files (e.g. ZIP and manifest files). The file collection is used to hold the processing state of all
@@ -234,12 +235,12 @@ creating an entry in the handlers “file_collection” attribute, which is a sp
 </li>
 <li><p>update files to be included/excluded from processing based on regex filter (if defined in parameter)</p></li>
 </ol>
-</div>
-<div class="section" id="preprocess">
+</section>
+<section id="preprocess">
 <h2>preprocess<a class="headerlink" href="#preprocess" title="Permalink to this headline">¶</a></h2>
 <p>Special override method (see below for details)</p>
-</div>
-<div class="section" id="check">
+</section>
+<section id="check">
 <h2>check<a class="headerlink" href="#check" title="Permalink to this headline">¶</a></h2>
 <p>Responsible for checking the validity and/or compliance of files in the collection.</p>
 <ol class="arabic simple">
@@ -252,12 +253,12 @@ creating an entry in the handlers “file_collection” attribute, which is a sp
 </ol>
 </li>
 </ol>
-</div>
-<div class="section" id="process">
+</section>
+<section id="process">
 <h2>process<a class="headerlink" href="#process" title="Permalink to this headline">¶</a></h2>
 <p>Special override method (see below for details)</p>
-</div>
-<div class="section" id="publish">
+</section>
+<section id="publish">
 <h2>publish<a class="headerlink" href="#publish" title="Permalink to this headline">¶</a></h2>
 <p>Responsible for publishing the file to external repositories. This is a composite step, and will perform the following
 actions only on files in the collection which have been flagged for that action (as determined by the publish_type
@@ -271,23 +272,23 @@ attribute of the files).</p>
 <p class="admonition-title">Note</p>
 <p>upload/delete operations are collectively referred to in the handler and supporting code as “store” operations</p>
 </div>
-</div>
-<div class="section" id="postprocess">
+</section>
+<section id="postprocess">
 <h2>postprocess<a class="headerlink" href="#postprocess" title="Permalink to this headline">¶</a></h2>
 <p>Special override method (see below for details)</p>
-</div>
-<div class="section" id="notify">
+</section>
+<section id="notify">
 <h2>notify<a class="headerlink" href="#notify" title="Permalink to this headline">¶</a></h2>
 <p>Responsible for notifying the uploader and/or the pipeline ‘owner’ of the result of the handler attempt.</p>
 <ol class="arabic simple">
 <li><p>determine the recipients, based on notification parameters and handler result</p></li>
 <li><p>send notifications</p></li>
 </ol>
-</div>
-</div>
-<div class="section" id="customising-handler-behaviour">
+</section>
+</section>
+<section id="customising-handler-behaviour">
 <h1>Customising handler behaviour<a class="headerlink" href="#customising-handler-behaviour" title="Permalink to this headline">¶</a></h1>
-<div class="section" id="methods">
+<section id="methods">
 <h2>Methods<a class="headerlink" href="#methods" title="Permalink to this headline">¶</a></h2>
 <p>The methods in the HandlerBase (and therefore any subclasses inheriting from it) can be separated into two categories:</p>
 <p><em>Internal / non-public methods</em></p>
@@ -307,14 +308,14 @@ handler author with the ability to call code in order to modify the behaviour of
 optional whether the subclass implements these.</p>
 <p>The only difference between these methods is <em>when</em> they are called by the handler state machine. Refer to the above
 section for further details about where they appear in the steps order.</p>
-</div>
-</div>
-<div class="section" id="attributes">
+</section>
+</section>
+<section id="attributes">
 <h1>Attributes<a class="headerlink" href="#attributes" title="Permalink to this headline">¶</a></h1>
 <p>A handler instance contains a number of attributes which control or modify the behaviour of the handler. The attributes
 are typically set from the <strong>params</strong> key of the watch configuration, or from the <code class="docutils literal notranslate"><span class="pre">__init__</span></code> method of a handler
 subclass (e.g. when writing tests).</p>
-<div class="section" id="class-parameters">
+<section id="class-parameters">
 <h2>Class parameters<a class="headerlink" href="#class-parameters" title="Permalink to this headline">¶</a></h2>
 <p>The following class parameters are also assigned to attributes of the same name, as a convenience.</p>
 <p>For example, a handler instantiated with any of these class parameters may also access them from the class instance as
@@ -342,8 +343,8 @@ follows:</p>
 <span class="o">/</span><span class="n">original</span><span class="o">/</span><span class="n">incoming</span><span class="o">/</span><span class="n">path</span><span class="o">/</span><span class="n">file</span><span class="o">.</span><span class="n">nc</span>
 </pre></div>
 </div>
-</div>
-</div>
+</section>
+</section>
 
 
            </div>
