@@ -557,6 +557,7 @@ class TestTalendHarvesterRunner(BaseTestCase):
 
 GOOD_CSV = os.path.join(TESTDATA_DIR, 'conn', 'test_table.csv')
 
+
 def get_csv_harvest_collection(with_store=False, already_stored=False):
     pf_good = PipelineFile(GOOD_CSV)
 
@@ -573,6 +574,7 @@ def get_csv_harvest_collection(with_store=False, already_stored=False):
         pipeline_file.publish_type = publish_type
 
     return collection
+
 
 GOOD_HARVEST_PARAMS = os.path.join(TESTDATA_DIR, 'test.harvest_params')
 BAD_HARVEST_PARAMS = os.path.join(TESTDATA_DIR, 'invalid.harvest_params.nodbobjects')
