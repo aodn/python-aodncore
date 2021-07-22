@@ -184,6 +184,7 @@ class PipelineFileCheckType(Enum):
     NONEMPTY_CHECK = 2
     FORMAT_CHECK = 3
     NC_COMPLIANCE_CHECK = 4
+    TABLE_SCHEMA_CHECK = 5
 
     # noinspection PyMethodParameters,PyTypeChecker
     @classproperty

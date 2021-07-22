@@ -10,14 +10,20 @@ The most common use of this step is to test for compliance using the IOOS Compli
 import abc
 import itertools
 import os
+# from collections import namedtuple
+# import json
+
+import tableschema
+import yaml
 
 from compliance_checker.runner import ComplianceChecker, CheckSuite
 
 from .basestep import BaseStepRunner
 from ..common import CheckResult, PipelineFileCheckType, validate_checktype
-from ..exceptions import ComplianceCheckFailedError, InvalidCheckSuiteError, InvalidCheckTypeError
+from ..exceptions import ComplianceCheckFailedError, InvalidCheckSuiteError, InvalidCheckTypeError, MissingFileError
 from ..files import PipelineFileCollection
-from ...util import format_exception, is_netcdf_file, is_nonempty_file, CaptureStdIO
+from ...util import (format_exception, is_netcdf_file, is_nonempty_file, CaptureStdIO, find_file,
+                     get_tableschema_descriptor)
 
 __all__ = [
     'get_check_runner',
@@ -25,7 +31,8 @@ __all__ = [
     'CheckRunnerAdapter',
     'ComplianceCheckerCheckRunner',
     'FormatCheckRunner',
-    'NonEmptyCheckRunner'
+    'NonEmptyCheckRunner',
+    'TableSchemaCheckRunner'
 ]
 
 
@@ -50,6 +57,8 @@ def get_child_check_runner(check_type, config, logger, check_params=None):
         return FormatCheckRunner(config, logger)
     elif check_type is PipelineFileCheckType.NONEMPTY_CHECK:
         return NonEmptyCheckRunner(config, logger)
+    elif check_type is PipelineFileCheckType.TABLE_SCHEMA_CHECK:
+        return TableSchemaCheckRunner(config, logger)
     else:
         raise InvalidCheckTypeError("invalid check type '{check_type}'".format(check_type=check_type))
 
@@ -211,3 +220,53 @@ class NonEmptyCheckRunner(BaseCheckRunner):
             compliant = is_nonempty_file(pipeline_file.src_path)
             compliance_log = () if compliant else ('empty file',)
             pipeline_file.check_result = CheckResult(compliant, compliance_log)
+
+
+class TableSchemaCheckRunner(BaseCheckRunner):
+    def __init__(self, config, logger):
+        super().__init__(config, logger)
+        self.compliance_log = []
+        self.compliant = True
+        self.schema_base_path = self._config.pipeline_config['harvester']['schema_base_dir']
+
+    def _dict_to_str(self, _dict):
+        _str = ''
+        for k, v in _dict.items():
+            _str += ' {}: {},'.format(k, v)
+        return _str[:-1]
+
+    def _exc_handler(self, exc, row_number=None, row_data=None, error_data=None):
+        error = "Exception: {}\nRow Data: {}\nError Data: {}\n".format(str(exc),
+                                                                         self._dict_to_str(row_data),
+                                                                         self._dict_to_str(error_data))
+        self.compliance_log.append(error)
+
+    def _iter_table(self, table):
+        for r in table.iter(exc_handler=self._exc_handler):
+            return r
+
+    def _reset_compliance(self):
+        self.compliance_log = []
+        self.compliant = True
+
+    def validate(self, path):
+        self._reset_compliance()
+        search_string = os.path.splitext(os.path.basename(path))[0]
+        fn = find_file(self.schema_base_path, '(.*){}(.*).yaml'.format(search_string))
+        if fn:
+            with open(fn) as stream:
+                schema = get_tableschema_descriptor(yaml.safe_load(stream), 'schema')
+                table = tableschema.Table(path, schema)
+                _ = [r for r in table.iter(exc_handler=self._exc_handler)]
+            if len(self.compliance_log) > 0:
+                self.compliant = False
+        else:
+            error = 'No schema file found for {}'.format(path)
+            raise MissingFileError(error)
+
+    def run(self, pipeline_files):
+        for pipeline_file in pipeline_files:
+            self._logger.info(
+                "checking that '{pipeline_file.src_path}' is valid".format(pipeline_file=pipeline_file))
+            self.validate(pipeline_file.src_path)
+            pipeline_file.check_result = CheckResult(self.compliant, self.compliance_log)
