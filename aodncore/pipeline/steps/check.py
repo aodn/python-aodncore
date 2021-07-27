@@ -237,8 +237,8 @@ class TableSchemaCheckRunner(BaseCheckRunner):
 
     def _exc_handler(self, exc, row_number=None, row_data=None, error_data=None):
         error = "Exception: {}\nRow Data: {}\nError Data: {}\n".format(str(exc),
-                                                                         self._dict_to_str(row_data),
-                                                                         self._dict_to_str(error_data))
+                                                                       self._dict_to_str(row_data),
+                                                                       self._dict_to_str(error_data))
         self.compliance_log.append(error)
 
     def _iter_table(self, table):
