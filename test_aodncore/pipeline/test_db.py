@@ -10,6 +10,7 @@ from aodncore.pipeline.exceptions import InvalidSQLConnectionError, InvalidSQLTr
 
 db_config = {"dbname": "harvest", "user": "test", "password": "test"}
 GOOD_TABLE_DEFN = {"name": "frictionless", "type": "table"}
+STRING_PK_DEFN = {"name": "string_pk", "type": "table"}
 GOOD_VIEW_DEFN = {"name": "frictionless_mv", "type": "materialized view"}
 BAD_SQL = {"name": "invalid", "type": "table"}
 SAMPLE_DATA = os.path.join(TESTDATA_DIR, "test.sample_data.csv")
@@ -251,3 +252,9 @@ class TestDatabaseInteractions(BaseTestCase):
         cond = {'table_schema': self.params['user'], 'table_name': GOOD_TABLE_DEFN['name']}
         count = self.get_table_count('information_schema.tables', cond)
         self.assertEqual(0, count)
+
+    def test_create_table_from_yaml_file_string_pk(self):
+        # If no file exists we just want the function to exit
+        with self.assertNoException():
+            with DatabaseInteractions(config=self.params, schema_base_path=TESTDATA_DIR, logger=self.test_logger) as db:
+                db.create_table_from_yaml_file(STRING_PK_DEFN)

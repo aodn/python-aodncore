@@ -4,7 +4,7 @@ import psycopg2
 from psycopg2 import sql
 
 from .exceptions import InvalidSQLConnectionError, InvalidSQLTransactionError, InvalidConfigError, MissingFileError
-from ..util import find_file, get_field_type, get_tableschema_descriptor
+from ..util import find_file, get_field_type, get_tableschema_descriptor, is_nonstring_iterable
 
 __all__ = [
     'DatabaseInteractions'
@@ -180,12 +180,12 @@ class DatabaseInteractions(object):
                         schema = get_tableschema_descriptor(yaml.safe_load(stream), 'schema')
                         columns = []
                         for f in schema['fields']:
-                            # f['pk'] = 'PRIMARY KEY' if f['name'] in schema.get('primaryKey', []) else ''
                             f['type'] = get_field_type(f['type'])
-                            # columns.append('{name} {type} {pk}'.format(**f))
                             columns.append('{name} {type}'.format(**f))
-                        if schema.get('primaryKey'):
-                            columns.append("PRIMARY KEY ({})".format(','.join(schema.get('primaryKey'))))
+                        pk = schema.get('primaryKey')
+                        if pk:
+                            pk = pk if is_nonstring_iterable(pk) else [pk]
+                            columns.append("PRIMARY KEY ({})".format(','.join(pk)))
                         self.__exec('CREATE TABLE {} ({})'.format(step['name'], ','.join(columns)))
                     except yaml.YAMLError as exc:
                         raise InvalidConfigError(exc)
