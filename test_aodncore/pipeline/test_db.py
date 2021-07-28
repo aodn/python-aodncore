@@ -254,7 +254,12 @@ class TestDatabaseInteractions(BaseTestCase):
         self.assertEqual(0, count)
 
     def test_create_table_from_yaml_file_string_pk(self):
-        # If no file exists we just want the function to exit
+        self.drop_table(STRING_PK_DEFN['name'])
         with self.assertNoException():
             with DatabaseInteractions(config=self.params, schema_base_path=TESTDATA_DIR, logger=self.test_logger) as db:
                 db.create_table_from_yaml_file(STRING_PK_DEFN)
+
+        # Check table exists
+        cond = {'table_schema': self.params['user'], 'table_name': STRING_PK_DEFN['name']}
+        count = self.get_table_count('information_schema.tables', cond)
+        self.assertEqual(1, count)
