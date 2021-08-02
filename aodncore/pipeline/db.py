@@ -156,9 +156,7 @@ class DatabaseInteractions(object):
         if fn:
             try:
                 with open(fn, encoding="utf-8") as f:
-                    # headers = next(csv.reader(f))
                     self._logger.info("Loading data from {}".format(fn))
-                    # stmt = "COPY {} ({}) FROM STDIN WITH HEADER CSV".format(step['name'], ", ".join(["{}".format(h) for h in headers]))
                     stmt = "COPY {} FROM STDIN WITH HEADER CSV".format(step['name'])
                     self.__exec_copy(stmt, f)
             except FileNotFoundError as e:
@@ -197,7 +195,7 @@ class DatabaseInteractions(object):
                         pk = schema.get('primaryKey')
                         if pk:
                             pk = pk if is_nonstring_iterable(pk) else [pk]
-                            columns.append("PRIMARY KEY ({})".format(','.join(pk)))
+                            columns.append("PRIMARY KEY ({})".format(','.join(['"{}"'.format(key) for key in pk])))
                         self.__exec('CREATE TABLE {} ({})'.format(step['name'], ','.join(columns)))
                     except yaml.YAMLError as exc:
                         raise InvalidConfigError(exc)
