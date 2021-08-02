@@ -8,8 +8,8 @@ from .misc import (CaptureStdIO, LoggingContext, Pattern, TemplateRenderer, Writ
                    get_pattern_subgroups_from_string, is_function, is_nonstring_iterable, is_valid_email_address,
                    iter_public_attributes, matches_regexes, merge_dicts, slice_sequence, str_to_list, validate_bool,
                    validate_callable, validate_dict, validate_int, validate_mapping, validate_mandatory_elements,
-                   validate_membership, validate_nonstring_iterable, validate_regex, validate_regexes,
-                   validate_relative_path, validate_relative_path_attr, validate_string, validate_type)
+                   validate_membership, validate_nonstring_iterable, validate_regex, validate_regexes, list_not_empty,
+                   validate_relative_path, validate_relative_path_attr, validate_string, validate_type, generate_id)
 from .process import SystemProcess
 from .wfs import DEFAULT_WFS_VERSION, WfsBroker
 from .ff import get_field_type, get_tableschema_descriptor
@@ -32,6 +32,7 @@ __all__ = [
     'ensure_regex',
     'ensure_regex_list',
     'ensure_writeonceordereddict',
+    'generate_id',
     'get_pattern_subgroups_from_string',
     'filesystem_sort_key',
     'format_exception',
@@ -64,6 +65,7 @@ __all__ = [
     'safe_move_file',
     'slice_sequence',
     'str_to_list',
+    'list_not_empty',
     'validate_bool',
     'validate_callable',
     'validate_dict',

@@ -42,6 +42,10 @@ HARVEST_PARAMS_SCHEMA = {
             'type': 'array',
             'items': {'$ref': '#/definitions/db_object'},
         },
+        'metadata_updates': {
+            'type': 'array',
+            'items': {'$ref': '#/definitions/metadata_update'},
+        },
     },
     'additionalProperties': False,
     'definitions': {
@@ -54,11 +58,48 @@ HARVEST_PARAMS_SCHEMA = {
             },
             'required': ['name', 'type'],
             'additionalProperties': False
+        },
+        'metadata_update': {
+            'type': 'object',
+            'properties': {
+                'uuid': {'type': 'string'},
+                'spatial': {
+                    'type': 'object',
+                    'properties': {
+                        'table': {'type': 'string'},
+                        'column': {'type': 'string'},
+                        'resolution': {'type': 'integer'}
+                    },
+                    'required': ['table', 'column', 'resolution'],
+                    'additionalProperties': False
+                },
+                'temporal': {
+                    'type': 'object',
+                    'properties': {
+                        'table': {'type': 'string'},
+                        'column': {'type': 'string'}
+                    },
+                    'required': ['table', 'column'],
+                    'additionalProperties': False
+                },
+                'vertical': {
+                    'type': 'object',
+                    'properties': {
+                        'table': {'type': 'string'},
+                        'column': {'type': 'string'}
+                    },
+                    'required': ['table', 'column'],
+                    'additionalProperties': False
+                },
+            },
+            'required': ['uuid'],
+            'additionalProperties': False
         }
     },
     'dependencies': {
         'db_schema': ['db_objects'],
-        'db_objects': ['db_schema']
+        'db_objects': ['db_schema'],
+        'metadata_updates': ['db_schema', 'db_objects']
     }
 }
 

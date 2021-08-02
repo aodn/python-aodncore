@@ -34,6 +34,8 @@ __all__ = [
     'InvalidSchemaError',
     'InvalidSQLConnectionError',
     'InvalidSQLTransactionError',
+    'GeonetworkConnectionError',
+    'GeonetworkRequestError'
 ]
 
 
@@ -165,4 +167,12 @@ class InvalidSQLConnectionError(PipelineSystemError):
 
 
 class InvalidSQLTransactionError(PipelineSystemError):
+    pass
+
+
+class GeonetworkConnectionError(PipelineSystemError):
+    pass
+
+
+class GeonetworkRequestError(PipelineSystemError):
     pass

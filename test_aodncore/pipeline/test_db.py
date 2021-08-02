@@ -3,6 +3,7 @@ import os.path
 import psycopg2
 from psycopg2.extensions import parse_dsn
 from testcontainers.postgres import PostgresContainer
+
 from aodncore.pipeline.db import DatabaseInteractions
 from aodncore.testlib import BaseTestCase
 from test_aodncore import TESTDATA_DIR
@@ -16,6 +17,7 @@ BAD_SQL = {"name": "invalid", "type": "table"}
 SAMPLE_DATA = os.path.join(TESTDATA_DIR, "test.sample_data.csv")
 GOOD_CSV = {"name": "sample_data", "type": "table", "local_path": SAMPLE_DATA}
 NO_DATA = {"name": "no_data", "type": "table", "local_path": 'not/a/real/file'}
+EXTENT_COLUMNS = (("station_name", "varchar"), ("survey_datetime", "timestamp"), ("sample_depth", "numeric"))
 
 
 class TestDatabaseInteractions(BaseTestCase):
@@ -45,13 +47,17 @@ class TestDatabaseInteractions(BaseTestCase):
         cls.conn.close()
         cls.pg.stop()
 
-    def create_sample_table(self, table_name, with_data=True):
-        with open(SAMPLE_DATA) as fn:
-            self.cursor.execute('DROP TABLE IF EXISTS {}'.format(table_name))
-            self.cursor.execute('CREATE TABLE {} (id int, value varchar)'.format(table_name))
-            if with_data:
-                self.cursor.copy_expert('COPY {} FROM STDIN WITH HEADER CSV'.format(table_name), fn)
-            self.conn.commit()
+    def create_sample_table(self, table_name, with_data=True, data_file=None, cols=None):
+        cols = cols or [('id', 'int'), ('value', 'varchar')]
+        self.cursor.execute('DROP TABLE IF EXISTS {}'.format(table_name))
+        self.cursor.execute('CREATE TABLE {} ({})'.format(table_name,
+                                                          ', '.join(['{} {}'.format(c[0], c[1]) for c in cols])
+                                                          ))
+        if with_data:
+            with open(data_file or SAMPLE_DATA) as fn:
+                self.cursor.copy_expert('COPY {} ({}) FROM STDIN WITH HEADER CSV'.format(
+                    table_name, ','.join([c[0] for c in cols])), fn)
+        self.conn.commit()
 
     def create_materialized_view(self, base_name):
         self.create_sample_table(base_name)
@@ -263,3 +269,35 @@ class TestDatabaseInteractions(BaseTestCase):
         cond = {'table_schema': self.params['user'], 'table_name': STRING_PK_DEFN['name']}
         count = self.get_table_count('information_schema.tables', cond)
         self.assertEqual(1, count)
+
+    def test_get_temporal_extent(self):
+        expected = {'min_value': '2008-10-19T11:10:00', 'max_value': '2021-03-11T09:03:00'}
+        self.create_sample_table(
+            table_name='extent_data',
+            cols=EXTENT_COLUMNS,
+            data_file=os.path.join(TESTDATA_DIR, 'test.extent_data.csv')
+        )
+        with self.assertNoException():
+            with DatabaseInteractions(config=self.params, schema_base_path=TESTDATA_DIR, logger=self.test_logger) as db:
+                actual = db.get_temporal_extent('extent_data', 'survey_datetime')
+
+        self.assertEqual(expected['min_value'], actual['min_value'])
+        self.assertEqual(expected['max_value'], actual['max_value'])
+
+        self.drop_table('extent_data')
+
+    def test_get_vertical_extent(self):
+        expected = {'min_value': 0, 'max_value': 107}
+        self.create_sample_table(
+            table_name='extent_data',
+            cols=EXTENT_COLUMNS,
+            data_file=os.path.join(TESTDATA_DIR, 'test.extent_data.csv')
+        )
+        with self.assertNoException():
+            with DatabaseInteractions(config=self.params, schema_base_path=TESTDATA_DIR, logger=self.test_logger) as db:
+                actual = db.get_vertical_extent('extent_data', 'sample_depth')
+
+        self.assertEqual(expected['min_value'], actual['min_value'])
+        self.assertEqual(expected['max_value'], actual['max_value'])
+
+        self.drop_table('extent_data')

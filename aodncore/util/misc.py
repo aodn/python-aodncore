@@ -11,6 +11,9 @@ import types
 from collections import Iterable, OrderedDict, Mapping
 from enum import Enum, EnumMeta
 from io import StringIO
+import uuid
+import random
+import string
 
 import jinja2
 import pkg_resources
@@ -23,6 +26,7 @@ __all__ = [
     'ensure_regex_list',
     'ensure_writeonceordereddict',
     'format_exception',
+    'generate_id',
     'get_pattern_subgroups_from_string',
     'get_regex_subgroups_from_string',
     'is_nonstring_iterable',
@@ -33,6 +37,7 @@ __all__ = [
     'merge_dicts',
     'slice_sequence',
     'str_to_list',
+    'list_not_empty',
     'validate_bool',
     'validate_callable',
     'validate_dict',
@@ -138,6 +143,14 @@ def format_exception(exception):
     :return: string
     """
     return "{cls}: {message}".format(cls=exception.__class__.__name__, message=exception)
+
+
+def generate_id():
+    """Generate a unique id starting with non-numeric character
+
+    :return: unique id
+    """
+    return random.choice(string.ascii_lowercase) + str(uuid.uuid4().hex)
 
 
 def get_regex_subgroups_from_string(string, regex):
@@ -291,6 +304,15 @@ def str_to_list(string_, delimiter=',', strip_method='strip', include_empty=Fals
                 yield stripped
 
     return [e for e in _process(string_)]
+
+
+def list_not_empty(_list):
+    """Flag a list containing not None values
+    :return: boolean - True if list contains any non-None values, otherwise False
+    """
+    if len(_list) == 0:
+        return False
+    return any(item is not None for item in _list)
 
 
 def validate_membership(c):

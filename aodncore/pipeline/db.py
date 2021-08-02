@@ -1,7 +1,7 @@
 import csv
-import yaml
 import psycopg2
-from psycopg2 import sql
+from psycopg2 import sql, extras
+import yaml
 
 from .exceptions import InvalidSQLConnectionError, InvalidSQLTransactionError, InvalidConfigError, MissingFileError
 from ..util import find_file, get_field_type, get_tableschema_descriptor, is_nonstring_iterable
@@ -61,15 +61,26 @@ class DatabaseInteractions(object):
             raise InvalidSQLConnectionError(error)
 
     def __exec(self, statement):
-        """Execute an SQL statement using the instance cursor.
+        """Execute an SQL transaction using the instance cursor.
 
         :param statement: A string containing an SQL statement or multiple statements separated by semi-colons.
-        :return: None - currently this method does not return the result set, so it can't be used for querying the
-        database.  It may be best to use a separate query method for that use case as the result set can be managed
-        prior to returning
         """
         try:
             self._cur.execute(sql.SQL(statement))
+        except Exception as error:
+            raise InvalidSQLTransactionError(error)
+
+    def __query(self, statement, many=False):
+        """Execute an SQL statement using the instance cursor.
+
+        :param statement: A string containing an SQL statement or multiple statements separated by semi-colons.
+        :param many: Boolean value indicating whether to return 1 or many records.
+        :return: A Dict of one record (the first) if many is False, otherwise a List of Dicts containing all records
+        """
+        dict_cur = self._conn.cursor(cursor_factory=extras.DictCursor)
+        try:
+            dict_cur.execute(sql.SQL(statement))
+            return dict_cur.fetchall() if many else dict_cur.fetchone()
         except Exception as error:
             raise InvalidSQLTransactionError(error)
 
@@ -145,9 +156,10 @@ class DatabaseInteractions(object):
         if fn:
             try:
                 with open(fn, encoding="utf-8") as f:
-                    headers = next(csv.reader(f))
-                    self._logger.info("Loding data from {}".format(fn))
-                    stmt = "COPY {} ({}) FROM STDIN WITH HEADER CSV".format(step['name'], ", ".join(headers))
+                    # headers = next(csv.reader(f))
+                    self._logger.info("Loading data from {}".format(fn))
+                    # stmt = "COPY {} ({}) FROM STDIN WITH HEADER CSV".format(step['name'], ", ".join(["{}".format(h) for h in headers]))
+                    stmt = "COPY {} FROM STDIN WITH HEADER CSV".format(step['name'])
                     self.__exec_copy(stmt, f)
             except FileNotFoundError as e:
                 raise MissingFileError(e)
@@ -180,8 +192,8 @@ class DatabaseInteractions(object):
                         schema = get_tableschema_descriptor(yaml.safe_load(stream), 'schema')
                         columns = []
                         for f in schema['fields']:
-                            f['type'] = get_field_type(f['type'])
-                            columns.append('{name} {type}'.format(**f))
+                            f['type'] = 'geometry(Geometry,4326)' if f['name'] == 'geom' else get_field_type(f['type'])
+                            columns.append('"{name}" {type}'.format(**f))
                         pk = schema.get('primaryKey')
                         if pk:
                             pk = pk if is_nonstring_iterable(pk) else [pk]
@@ -192,3 +204,55 @@ class DatabaseInteractions(object):
             except FileNotFoundError as e:
                 raise MissingFileError(e)
 
+    def get_spatial_extent(self, db_schema, table, column, resolution):
+        """Function to retrieve spatial data from the database.
+
+        :param db_schema: string containing name of schema
+        :param table: string containing name of table
+        :param column: string containing name of column
+        :param resolution: int as resolution of polygons
+        """
+        self._logger.info("Retrieving spatial extent")
+        query = "SELECT BoundingPolygonAsGml3('{schema}','{table}','{column}',{resolution})".format(
+            schema=db_schema,
+            table=table,
+            column=column,
+            resolution=resolution
+        )
+        return self.__query(query)
+
+    def get_temporal_extent(self, table, column):
+        """Function to retrieve temporal data from the database.
+
+        :param table: string containing name of table
+        :param column: string containing name of column
+        """
+        self._logger.info("Retrieving temporal extent")
+        query = """
+            SELECT 
+                TO_CHAR(timezone('UTC'::text, MIN("{column}")), 'YYYY-MM-DDThh:mm:ss') as min_value,
+                TO_CHAR(timezone('UTC'::text, MAX("{column}")), 'YYYY-MM-DDThh:mm:ss') as max_value
+            FROM {table}
+        """.format(
+            table=table,
+            column=column
+        )
+        return self.__query(query)
+
+    def get_vertical_extent(self, table, column):
+        """Function to retrieve vertical data from the database.
+
+        :param table: string containing name of table
+        :param column: string containing name of column
+        """
+        self._logger.info("Retrieving vertical extent")
+        query = """
+            SELECT
+                MIN("{column}") as "min_value",
+                MAX("{column}") as "max_value"
+            FROM {table}
+        """.format(
+            table=table,
+            column=column
+        )
+        return self.__query(query)

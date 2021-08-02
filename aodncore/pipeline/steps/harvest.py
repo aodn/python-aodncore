@@ -20,9 +20,10 @@ from .basestep import BaseStepRunner
 from ..exceptions import (InvalidHarvesterError, UnmappedFilesError, MissingConfigParameterError, InvalidConfigError,
                           MissingConfigFileError)
 from ..files import PipelineFileCollection, validate_pipelinefilecollection
+from ..geonetwork import Geonetwork, GeonetworkMetadataHandler
+from ..db import DatabaseInteractions
 from ...util import (LoggingContext, SystemProcess, TemporaryDirectory, merge_dicts, mkdir_p, validate_string,
                      validate_type)
-from ..db import DatabaseInteractions
 
 __all__ = [
     'create_input_file_list',
@@ -439,7 +440,7 @@ class CsvHarvesterRunner(BaseHarvesterRunner):
             raise MissingConfigParameterError('Generic CSV Harvester requires that the '
                                               'harvest_params["db_objects"] attribute be set')
 
-        with DatabaseInteractions(config=self.get_db_config(),
+        with DatabaseInteractions(config=self.get_config_file('database.json'),
                                   schema_base_path=self._config.pipeline_config['harvester']['schema_base_dir'],
                                   logger=self.logger) as conn:
             process = self.get_process_sequence(conn)
@@ -452,16 +453,32 @@ class CsvHarvesterRunner(BaseHarvesterRunner):
         if files_to_upload:
             self.storage_broker.upload(pipeline_files=files_to_upload)
 
-        # TODO: possible location of update GeoNetwork extents function call
+        metadata = self.params.get('metadata_updates')
+        if metadata and len(metadata) > 0:
+            gn_config = self.get_config_file('metadata.json')
+            gn = Geonetwork(
+                base_url=gn_config['metadata_url'],
+                username=gn_config['metadata_username'],
+                password=gn_config['metadata_password']
+            )
+            with DatabaseInteractions(config=self.get_config_file('database.json'),
+                                      schema_base_path=self._config.pipeline_config['harvester']['schema_base_dir'],
+                                      logger=self.logger) as conn:
+                for m in metadata:
+                    if 'spatial' in m:
+                        m['spatial']['db_schema'] = self.params['db_schema']
+                    handler = GeonetworkMetadataHandler(conn, gn, m, self.logger)
+                    handler.run()
+
         pipeline_files.set_bool_attribute('is_harvested', True)
 
-    def get_db_config(self):
+    def get_config_file(self, filename):
         """Function to return database connection object for schema
 
         :return: dict containing database connection parameters.
         """
         harvest_config = self._config.pipeline_config['harvester']['config_dir']
-        fn = os.path.join(harvest_config, self.params['db_schema'], 'database.json')
+        fn = os.path.join(harvest_config, self.params['db_schema'], filename)
         try:
             with open(fn) as json_file:
                 return json.load(json_file)

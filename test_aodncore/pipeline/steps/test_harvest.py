@@ -618,13 +618,13 @@ class TestCsvHarvesterRunner(BaseTestCase):
         harvester_runner = CsvHarvesterRunner(self.uploader, {'db_schema': 'conn'}, dummy_config(),
                                               self.test_logger)
         with self.assertNoException():
-            self.assertIsNotNone(harvester_runner.get_db_config())
+            self.assertIsNotNone(harvester_runner.get_config_file('database.json'))
 
     def test_get_db_config_invalid(self):
         harvester_runner = CsvHarvesterRunner(self.uploader, {'db_schema': 'not_a_real_schema'}, dummy_config(),
                                               self.test_logger)
         with self.assertRaises(MissingConfigFileError):
-            harvester_runner.get_db_config()
+            harvester_runner.get_config_file('database.json')
 
     @patch('aodncore.pipeline.steps.harvest.DatabaseInteractions')
     def test_get_process_sequence(self, mock_db):
