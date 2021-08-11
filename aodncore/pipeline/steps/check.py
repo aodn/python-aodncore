@@ -241,10 +241,6 @@ class TableSchemaCheckRunner(BaseCheckRunner):
                                                                        self._dict_to_str(error_data))
         self.compliance_log.append(error)
 
-    def _iter_table(self, table):
-        for r in table.iter(exc_handler=self._exc_handler):
-            return r
-
     def _reset_compliance(self):
         self.compliance_log = []
         self.compliant = True
@@ -260,9 +256,6 @@ class TableSchemaCheckRunner(BaseCheckRunner):
                 _ = [r for r in table.iter(exc_handler=self._exc_handler)]
             if len(self.compliance_log) > 0:
                 self.compliant = False
-        else:
-            error = 'No schema file found for {}'.format(path)
-            raise MissingFileError(error)
 
     def run(self, pipeline_files):
         for pipeline_file in pipeline_files:

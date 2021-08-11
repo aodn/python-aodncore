@@ -270,6 +270,10 @@ class TestDatabaseInteractions(BaseTestCase):
         count = self.get_table_count('information_schema.tables', cond)
         self.assertEqual(1, count)
 
+    def test_get_spatial_extent(self):
+        # TODO: this test could be added in future migration to a Docker image with postgres/postgis database?
+        pass
+
     def test_get_temporal_extent(self):
         expected = {'min_value': '2008-10-19T11:10:00', 'max_value': '2021-03-11T09:03:00'}
         self.create_sample_table(
@@ -301,3 +305,8 @@ class TestDatabaseInteractions(BaseTestCase):
         self.assertEqual(expected['max_value'], actual['max_value'])
 
         self.drop_table('extent_data')
+
+    def test_query_exception(self):
+        with self.assertRaises(InvalidSQLTransactionError):
+            with DatabaseInteractions(config=self.params, schema_base_path=TESTDATA_DIR, logger=self.test_logger) as db:
+                db.get_vertical_extent('not_a_table', 'not_a_column')

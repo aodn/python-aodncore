@@ -141,9 +141,9 @@ class GeonetworkMetadataHandler(object):
         self.spatial = metadata.get('spatial')
         self.temporal = metadata.get('temporal')
         self.vertical = metadata.get('vertical')
-        self.spatial_data = None
-        self.vertical_data = None
-        self.temporal_data = None
+        self.spatial_data = {}
+        self.vertical_data = {}
+        self.temporal_data = {}
         self.xml_text = None
 
     def get_namespace_dict(self):
@@ -169,13 +169,13 @@ class GeonetworkMetadataHandler(object):
             'elems': [
                 {
                     # geographic extent
-                    'display': self.spatial_data,
+                    'display': bool(self.spatial_data),
                     'tag': ['gex:geographicElement', 'gex:EX_BoundingPolygon', 'gex:polygon'],
                     'value': self.spatial_data.get('boundingpolygonasgml3')
                 },
                 {
                     # vertical extent
-                    'display': self.vertical_data,
+                    'display': bool(self.vertical_data),
                     'tag': ['gex:verticalElement', 'gex:EX_VerticalExtent'],
                     'elems': [
                         {
@@ -190,7 +190,7 @@ class GeonetworkMetadataHandler(object):
                 },
                 {
                     # temporal extent
-                    'display': self.temporal_data,
+                    'display': bool(self.temporal_data),
                     'tag': ['gex:temporalElement', 'gex:EX_TemporalExtent', 'gex:extent', 'gml:TimePeriod'],
                     'attr': {'gml:id': generate_id()},
                     'elems': [

@@ -37,6 +37,10 @@ class TestPipelineStepsCheck(BaseTestCase):
         ne_runner = get_child_check_runner(PipelineFileCheckType.NONEMPTY_CHECK, None, self.test_logger, None)
         self.assertIsInstance(ne_runner, NonEmptyCheckRunner)
 
+        ts_runner = get_child_check_runner(PipelineFileCheckType.TABLE_SCHEMA_CHECK, dummy_config(), self.test_logger,
+                                           None)
+        self.assertIsInstance(ts_runner, TableSchemaCheckRunner)
+
 
 class TestComplianceCheckerRunner(BaseTestCase):
     def setUp(self):

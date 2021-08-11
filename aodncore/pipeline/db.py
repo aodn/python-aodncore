@@ -56,7 +56,8 @@ class DatabaseInteractions(object):
         """
         params = self.config
         try:
-            return psycopg2.connect(**params)
+            # use ssl if it is enabled on the server
+            return psycopg2.connect(sslmode='prefer', **params)
         except Exception as error:
             raise InvalidSQLConnectionError(error)
 
@@ -184,23 +185,17 @@ class DatabaseInteractions(object):
         fn = find_file(self.schema_base_path, '(.*){}(.*).yaml'.format(step['name']))
         if fn and step['type'] == 'table':
             self._logger.info("Creating {type} {name}".format(**step))
-            try:
-                with open(fn) as stream:
-                    try:
-                        schema = get_tableschema_descriptor(yaml.safe_load(stream), 'schema')
-                        columns = []
-                        for f in schema['fields']:
-                            f['type'] = 'geometry(Geometry,4326)' if f['name'] == 'geom' else get_field_type(f['type'])
-                            columns.append('"{name}" {type}'.format(**f))
-                        pk = schema.get('primaryKey')
-                        if pk:
-                            pk = pk if is_nonstring_iterable(pk) else [pk]
-                            columns.append("PRIMARY KEY ({})".format(','.join(['"{}"'.format(key) for key in pk])))
-                        self.__exec('CREATE TABLE {} ({})'.format(step['name'], ','.join(columns)))
-                    except yaml.YAMLError as exc:
-                        raise InvalidConfigError(exc)
-            except FileNotFoundError as e:
-                raise MissingFileError(e)
+            with open(fn) as stream:
+                schema = get_tableschema_descriptor(yaml.safe_load(stream), 'schema')
+                columns = []
+                for f in schema['fields']:
+                    f['type'] = 'geometry(Geometry,4326)' if f['name'] == 'geom' else get_field_type(f['type'])
+                    columns.append('"{name}" {type}'.format(**f))
+                pk = schema.get('primaryKey')
+                if pk:
+                    pk = pk if is_nonstring_iterable(pk) else [pk]
+                    columns.append("PRIMARY KEY ({})".format(','.join(['"{}"'.format(key) for key in pk])))
+                self.__exec('CREATE TABLE {} ({})'.format(step['name'], ','.join(columns)))
 
     def get_spatial_extent(self, db_schema, table, column, resolution):
         """Function to retrieve spatial data from the database.

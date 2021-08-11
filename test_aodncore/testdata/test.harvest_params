@@ -15,5 +15,13 @@
             "type": "materialized view",
             "dependencies": ["test_table"]
         }
+    ],
+    "metadata_updates": [
+        {
+        "uuid": "123456",
+        "spatial": {"table": "not_a_table", "column": "NOT_A_COLUMN", "resolution": 3},
+        "temporal": {"table": "not_a_table", "column": "NOT_A_COLUMN"},
+        "vertical": {"table": "not_a_table", "column": "NOT_A_COLUMN"}
+        }
     ]
 }
