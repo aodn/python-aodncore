@@ -195,12 +195,12 @@ class DatabaseInteractions(object):
                 schema = get_tableschema_descriptor(yaml.safe_load(stream), 'schema')
                 columns = []
                 for f in schema['fields']:
-                    f['type'] = 'geometry(Geometry,4326)' if f['name'] == 'geom' else get_field_type(f['type'])
-                    columns.append('"{name}" {type}'.format(**f))
+                    f['type'] = get_field_type(f['type'])
+                    columns.append('{name} {type}'.format(**f))
                 pk = schema.get('primaryKey')
                 if pk:
                     pk = pk if is_nonstring_iterable(pk) else [pk]
-                    columns.append("PRIMARY KEY ({})".format(','.join(['"{}"'.format(key) for key in pk])))
+                    columns.append("PRIMARY KEY ({})".format(','.join(pk)))
                 self.__exec('CREATE TABLE {} ({})'.format(step['name'], ','.join(columns)))
 
     def get_spatial_extent(self, db_schema, table, column, resolution):
