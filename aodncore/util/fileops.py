@@ -265,9 +265,9 @@ def find_file(base_path, regex):
     """
     p = re.compile(regex, re.IGNORECASE)
     for f in iter(list_regular_files(base_path, True)):
-        m = p.match(f)
+        m = p.match(os.path.basename(f))
         if m:
-            return m.group()
+            return f
     return None
 
 

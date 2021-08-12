@@ -13,7 +13,7 @@ EMPTY_NC = os.path.join(TESTDATA_DIR, 'empty.nc')
 GOOD_NC = os.path.join(TESTDATA_DIR, 'good.nc')
 WARNING_NC = os.path.join(TESTDATA_DIR, 'test_manifest.nc')
 
-GOOD_CSV = os.path.join(TESTDATA_DIR, 'test.frictionless.csv')
+GOOD_CSV = os.path.join(TESTDATA_DIR, 'test_frictionless.csv')
 BAD_CSV = os.path.join(TESTDATA_DIR, 'invalid.schemadata.csv')
 
 

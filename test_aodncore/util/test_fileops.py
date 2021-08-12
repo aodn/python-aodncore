@@ -178,7 +178,7 @@ class TestUtilFileOps(BaseTestCase):
         self.assertListEqual(dir_entries_unicode, reference_list)
 
     def test_find_file_valid(self):
-        true_file = os.path.join(TESTDATA_DIR, 'test.frictionless.resource.yaml')
+        true_file = os.path.join(TESTDATA_DIR, 'test_frictionless.resource.yaml')
         match_file = find_file(TESTDATA_DIR, '(.*)frictionless\\.resource(.*)\\.yaml')
         self.assertEqual(true_file, match_file)
 

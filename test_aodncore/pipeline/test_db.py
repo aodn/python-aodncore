@@ -10,9 +10,10 @@ from test_aodncore import TESTDATA_DIR
 from aodncore.pipeline.exceptions import InvalidSQLConnectionError, InvalidSQLTransactionError, MissingFileError
 
 db_config = {"dbname": "harvest", "user": "test", "password": "test"}
-GOOD_TABLE_DEFN = {"name": "frictionless", "type": "table"}
-STRING_PK_DEFN = {"name": "string_pk", "type": "table"}
-GOOD_VIEW_DEFN = {"name": "frictionless_mv", "type": "materialized view"}
+GOOD_TABLE_DEFN = {"name": "test_frictionless", "type": "table"}
+YML_TABLE_DEFN = {"name": "test_yml", "type": "table"}
+STRING_PK_DEFN = {"name": "test_string_pk", "type": "table"}
+GOOD_VIEW_DEFN = {"name": "test_frictionless_mv", "type": "materialized view"}
 BAD_SQL = {"name": "invalid", "type": "table"}
 SAMPLE_DATA = os.path.join(TESTDATA_DIR, "test.sample_data.csv")
 GOOD_CSV = {"name": "sample_data", "type": "table", "local_path": SAMPLE_DATA}
@@ -228,17 +229,26 @@ class TestDatabaseInteractions(BaseTestCase):
 
     def test_create_table_from_yaml_file(self):
         self.drop_table(GOOD_TABLE_DEFN['name'])
+        self.drop_table(YML_TABLE_DEFN['name'])
         with self.assertNoException():
             with DatabaseInteractions(config=self.params, schema_base_path=TESTDATA_DIR, logger=self.test_logger) as db:
                 db.create_table_from_yaml_file(GOOD_TABLE_DEFN)
+                db.create_table_from_yaml_file(YML_TABLE_DEFN)
 
-        # Check table exists
+        # Check tables exist
         cond = {'table_schema': self.params['user'], 'table_name': GOOD_TABLE_DEFN['name']}
         count = self.get_table_count('information_schema.tables', cond)
         self.assertEqual(1, count)
 
-        # Check table is not populated
+        cond = {'table_schema': self.params['user'], 'table_name': YML_TABLE_DEFN['name']}
+        count = self.get_table_count('information_schema.tables', cond)
+        self.assertEqual(1, count)
+
+        # Check tables are not populated
         recs = self.get_table_count(GOOD_TABLE_DEFN['name'])
+        self.assertEqual(recs, 0)
+
+        recs = self.get_table_count(YML_TABLE_DEFN['name'])
         self.assertEqual(recs, 0)
 
     def test_create_table_from_yaml_file_no_file(self):

@@ -9,8 +9,8 @@ from aodncore.pipeline.exceptions import InvalidSchemaError
 
 from test_aodncore import TESTDATA_DIR
 
-GOOD_SCHEMA_FILE = os.path.join(TESTDATA_DIR, 'test.frictionless.schema.yaml')
-GOOD_RESOURCE_FILE = os.path.join(TESTDATA_DIR, 'test.frictionless.resource.yaml')
+GOOD_SCHEMA_FILE = os.path.join(TESTDATA_DIR, 'test_frictionless.schema.yaml')
+GOOD_RESOURCE_FILE = os.path.join(TESTDATA_DIR, 'test_frictionless.resource.yaml')
 BAD_SCHEMA_FILE = os.path.join(TESTDATA_DIR, 'invalid.frictionless.schema')
 BAD_RESOURCE_FILE = os.path.join(TESTDATA_DIR, 'invalid.frictionless.resource')
 

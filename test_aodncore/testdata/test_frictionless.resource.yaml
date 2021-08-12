@@ -1,8 +1,8 @@
 encoding: utf-8
 format: csv
 hashing: md5
-name: frictionless
-path: frictionless.csv
+name: test_frictionless
+path: test_frictionless.csv
 profile: tabular-schemas-resource
 schema:
   fields:

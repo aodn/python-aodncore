@@ -68,6 +68,8 @@ class DatabaseInteractions(object):
         """
         try:
             self._cur.execute(sql.SQL(statement))
+            self._logger.sysinfo(self._cur.query)
+            self._logger.sysinfo(self._cur.statusmessage)
         except Exception as error:
             raise InvalidSQLTransactionError(error)
 
@@ -81,6 +83,8 @@ class DatabaseInteractions(object):
         dict_cur = self._conn.cursor(cursor_factory=extras.DictCursor)
         try:
             dict_cur.execute(sql.SQL(statement))
+            self._logger.sysinfo(dict_cur.query)
+            self._logger.sysinfo(dict_cur.statusmessage)
             return dict_cur.fetchall() if many else dict_cur.fetchone()
         except Exception as error:
             raise InvalidSQLTransactionError(error)
@@ -94,6 +98,7 @@ class DatabaseInteractions(object):
         """
         try:
             self._cur.copy_expert(sql.SQL(statement), file)
+            self._logger.sysinfo(self._cur.query)
         except Exception as error:
             raise InvalidSQLTransactionError(error)
 
@@ -169,7 +174,8 @@ class DatabaseInteractions(object):
         :param step: A dict containing 'name' (at least) key
         - step.name is the name used as part of the match regular expression
         """
-        fn = find_file(self.schema_base_path, '(.*){}(.*).sql'.format(step['name']))
+        fn = find_file(self.schema_base_path, r'{name}(\..*)?\.sql'.format(name=step['name']))
+        print(fn)
         if fn:
             self._logger.info("Executing additional sql from {}".format(fn))
             with open(fn) as stream:
@@ -182,7 +188,7 @@ class DatabaseInteractions(object):
         - step.name is the name used as part of the match regular expression
         - step.type is the type of database object. Type should always be table in this context
         """
-        fn = find_file(self.schema_base_path, '(.*){}(.*).yaml'.format(step['name']))
+        fn = find_file(self.schema_base_path, r'{name}(\..*)?\.(?:yml|yaml)'.format(name=step['name']))
         if fn and step['type'] == 'table':
             self._logger.info("Creating {type} {name}".format(**step))
             with open(fn) as stream:
