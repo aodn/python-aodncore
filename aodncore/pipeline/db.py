@@ -175,9 +175,8 @@ class DatabaseInteractions(object):
         - step.name is the name used as part of the match regular expression
         """
         fn = find_file(self.schema_base_path, r'{name}(\..*)?\.sql'.format(name=step['name']))
-        print(fn)
         if fn:
-            self._logger.info("Executing additional sql from {}".format(fn))
+            self._logger.info("Executing sql from {}".format(fn))
             with open(fn) as stream:
                 self.__exec(stream.read())
 
@@ -190,7 +189,7 @@ class DatabaseInteractions(object):
         """
         fn = find_file(self.schema_base_path, r'{name}(\..*)?\.(?:yml|yaml)'.format(name=step['name']))
         if fn and step['type'] == 'table':
-            self._logger.info("Creating {type} {name}".format(**step))
+            self._logger.info("Creating {type} {name} from {fn}".format(fn=fn, **step))
             with open(fn) as stream:
                 schema = get_tableschema_descriptor(yaml.safe_load(stream), 'schema')
                 columns = []
