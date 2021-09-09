@@ -1,18 +1,18 @@
 from .external import retry_decorator, IndexedSet, classproperty, lazyproperty
 from .fileops import (TemporaryDirectory, extract_gzip, extract_zip, filesystem_sort_key, get_file_checksum,
-                      is_dir_writable, is_gzip_file,
-                      is_jpeg_file, is_json_file, is_netcdf_file, is_nonempty_file, is_pdf_file, is_png_file, is_tiff_file, is_zip_file,
-                      list_regular_files, mkdir_p, rm_f, rm_r, rm_rf, rm_rf, safe_copy_file, safe_move_file,
-                      validate_dir_writable, validate_file_writable)
+                      is_dir_writable, is_gzip_file, is_jpeg_file, is_json_file, is_netcdf_file, is_nonempty_file,
+                      is_pdf_file, is_png_file, is_tiff_file, is_zip_file, list_regular_files, find_file, mkdir_p, rm_f,
+                      rm_r, rm_rf, rm_rf, safe_copy_file, safe_move_file, validate_dir_writable, validate_file_writable)
 from .misc import (CaptureStdIO, LoggingContext, Pattern, TemplateRenderer, WriteOnceOrderedDict, discover_entry_points,
                    ensure_regex, ensure_regex_list, ensure_writeonceordereddict, format_exception,
                    get_pattern_subgroups_from_string, is_function, is_nonstring_iterable, is_valid_email_address,
                    iter_public_attributes, matches_regexes, merge_dicts, slice_sequence, str_to_list, validate_bool,
                    validate_callable, validate_dict, validate_int, validate_mapping, validate_mandatory_elements,
-                   validate_membership, validate_nonstring_iterable, validate_regex, validate_regexes,
-                   validate_relative_path, validate_relative_path_attr, validate_string, validate_type)
+                   validate_membership, validate_nonstring_iterable, validate_regex, validate_regexes, list_not_empty,
+                   validate_relative_path, validate_relative_path_attr, validate_string, validate_type, generate_id)
 from .process import SystemProcess
 from .wfs import DEFAULT_WFS_VERSION, WfsBroker
+from .ff import get_field_type, get_tableschema_descriptor
 
 __all__ = [
     'CaptureStdIO',
@@ -32,6 +32,7 @@ __all__ = [
     'ensure_regex',
     'ensure_regex_list',
     'ensure_writeonceordereddict',
+    'generate_id',
     'get_pattern_subgroups_from_string',
     'filesystem_sort_key',
     'format_exception',
@@ -54,6 +55,7 @@ __all__ = [
     'matches_regexes',
     'merge_dicts',
     'list_regular_files',
+    'find_file',
     'mkdir_p',
     'retry_decorator',
     'rm_f',
@@ -63,6 +65,7 @@ __all__ = [
     'safe_move_file',
     'slice_sequence',
     'str_to_list',
+    'list_not_empty',
     'validate_bool',
     'validate_callable',
     'validate_dict',
@@ -79,4 +82,6 @@ __all__ = [
     'validate_relative_path_attr',
     'validate_string',
     'validate_type',
+    'get_field_type',
+    'get_tableschema_descriptor'
 ]

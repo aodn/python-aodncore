@@ -26,10 +26,16 @@ __all__ = [
     'InvalidStoreUrlError',
     'MissingConfigParameterError',
     'MissingFileError',
+    'MissingConfigFileError',
     'NotificationFailedError',
     'StorageBrokerError',
     'UnmappedFilesError',
-    'UnmatchedFilesError'
+    'UnmatchedFilesError',
+    'InvalidSchemaError',
+    'InvalidSQLConnectionError',
+    'InvalidSQLTransactionError',
+    'GeonetworkConnectionError',
+    'GeonetworkRequestError'
 ]
 
 
@@ -132,6 +138,10 @@ class MissingFileError(PipelineSystemError):
     pass
 
 
+class MissingConfigFileError(PipelineSystemError):
+    pass
+
+
 class NotificationFailedError(PipelineSystemError):
     pass
 
@@ -145,4 +155,24 @@ class UnmappedFilesError(PipelineSystemError):
 
 
 class UnmatchedFilesError(PipelineSystemError):
+    pass
+
+
+class InvalidSchemaError(PipelineSystemError):
+    pass
+
+
+class InvalidSQLConnectionError(PipelineSystemError):
+    pass
+
+
+class InvalidSQLTransactionError(PipelineSystemError):
+    pass
+
+
+class GeonetworkConnectionError(PipelineSystemError):
+    pass
+
+
+class GeonetworkRequestError(PipelineSystemError):
     pass

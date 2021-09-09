@@ -7,6 +7,7 @@ import hashlib
 import json
 import locale
 import os
+import re
 import shutil
 import tempfile
 import zipfile
@@ -35,6 +36,7 @@ __all__ = [
     'is_tiff_file',
     'is_zip_file',
     'list_regular_files',
+    'find_file',
     'mkdir_p',
     'rm_f',
     'rm_r',
@@ -250,6 +252,23 @@ def list_regular_files(path, recursive=False, sort_key=filesystem_sort_key):
 
     inner_func = recursive_list if recursive else nonrecursive_list
     return inner_func(path)
+
+
+def find_file(base_path, regex):
+    """Find a file in a directory (recursively) based on a match string.
+
+    This purpose of this method is to identify a specific file, so only the first match will be returned.
+
+    :param base_path: A string containing the base directory in which to recursively search.
+    :param regex: A string containing a regular expression used to identify the file.
+    :return: A string containing the full path to the matched file.
+    """
+    p = re.compile(regex, re.IGNORECASE)
+    for f in iter(list_regular_files(base_path, True)):
+        m = p.match(os.path.basename(f))
+        if m:
+            return f
+    return None
 
 
 def mkdir_p(path, mode=0o755):

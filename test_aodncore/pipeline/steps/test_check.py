@@ -4,7 +4,7 @@ from tempfile import mkstemp
 from aodncore.pipeline import CheckResult, PipelineFile, PipelineFileCheckType, PipelineFileCollection
 from aodncore.pipeline.exceptions import InvalidCheckTypeError, InvalidCheckSuiteError
 from aodncore.pipeline.steps.check import (get_child_check_runner, ComplianceCheckerCheckRunner, FormatCheckRunner,
-                                           NonEmptyCheckRunner)
+                                           NonEmptyCheckRunner, TableSchemaCheckRunner)
 from aodncore.testlib import BaseTestCase
 from test_aodncore import TESTDATA_DIR
 
@@ -12,6 +12,9 @@ BAD_NC = os.path.join(TESTDATA_DIR, 'bad.nc')
 EMPTY_NC = os.path.join(TESTDATA_DIR, 'empty.nc')
 GOOD_NC = os.path.join(TESTDATA_DIR, 'good.nc')
 WARNING_NC = os.path.join(TESTDATA_DIR, 'test_manifest.nc')
+
+GOOD_CSV = os.path.join(TESTDATA_DIR, 'test_frictionless.csv')
+BAD_CSV = os.path.join(TESTDATA_DIR, 'invalid.schemadata.csv')
 
 
 class TestPipelineStepsCheck(BaseTestCase):
@@ -33,6 +36,10 @@ class TestPipelineStepsCheck(BaseTestCase):
 
         ne_runner = get_child_check_runner(PipelineFileCheckType.NONEMPTY_CHECK, None, self.test_logger, None)
         self.assertIsInstance(ne_runner, NonEmptyCheckRunner)
+
+        ts_runner = get_child_check_runner(PipelineFileCheckType.TABLE_SCHEMA_CHECK, dummy_config(), self.test_logger,
+                                           None)
+        self.assertIsInstance(ts_runner, TableSchemaCheckRunner)
 
 
 class TestComplianceCheckerRunner(BaseTestCase):
@@ -163,6 +170,44 @@ class TestNonEmptyCheckRunner(BaseTestCase):
         check_result = empty_file.check_result
 
         self.assertIsInstance(check_result, CheckResult)
+        self.assertFalse(check_result.compliant)
+        self.assertFalse(check_result.errors)
+        self.assertNotEqual(check_result.log, [])
+
+
+class dummy_config(object):
+    def __init__(self):
+        self.pipeline_config = {
+                'harvester': {
+                    "config_dir": TESTDATA_DIR,
+                    "schema_base_dir": TESTDATA_DIR
+                }
+            }
+
+
+class TestTableSchemaCheckRunner(BaseTestCase):
+    def setUp(self):
+        super().setUp()
+        self.ts_runner = TableSchemaCheckRunner(dummy_config(), self.test_logger)
+
+    def test_valid_file(self):
+        ts_file = PipelineFile(GOOD_CSV)
+        collection = PipelineFileCollection(ts_file)
+        self.ts_runner.run(collection)
+
+        check_result = ts_file.check_result
+
+        self.assertTrue(check_result.compliant)
+        self.assertFalse(check_result.errors)
+        self.assertSequenceEqual(check_result.log, [])
+
+    def test_invalid_file(self):
+        ts_file = PipelineFile(BAD_CSV)
+        collection = PipelineFileCollection(ts_file)
+        self.ts_runner.run(collection)
+
+        check_result = ts_file.check_result
+
         self.assertFalse(check_result.compliant)
         self.assertFalse(check_result.errors)
         self.assertNotEqual(check_result.log, [])

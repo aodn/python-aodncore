@@ -1,0 +1,27 @@
+{
+    "db_schema": "conn",
+    "ingest_type": "replace",
+    "db_objects": [
+        {
+            "name": "test_table",
+            "type": "table"
+        },
+        {
+            "name": "not_a_table",
+            "type": "table"
+        },
+        {
+            "name": "test_view",
+            "type": "materialized view",
+            "dependencies": ["test_table"]
+        }
+    ],
+    "metadata_updates": [
+        {
+        "uuid": "123456",
+        "spatial": {"table": "not_a_table", "column": "NOT_A_COLUMN", "resolution": 3},
+        "temporal": {"table": "not_a_table", "column": "NOT_A_COLUMN"},
+        "vertical": {"table": "not_a_table", "column": "NOT_A_COLUMN"}
+        }
+    ]
+}

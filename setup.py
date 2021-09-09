@@ -14,11 +14,14 @@ INSTALL_REQUIRES = [
     'paramiko>=2.6.0',
     'python-magic>=0.4.15',
     'tableschema>=1.19.4',
-    'transitions>=0.7.1'
+    'transitions>=0.7.1',
+    'psycopg2-binary==2.8.6',
+    'PyYAML==5.3.1'
 ]
 
 TESTS_REQUIRE = [
-    'pytest'
+    'pytest',
+    'testcontainers[postgresql]'
 ]
 
 EXTRAS_REQUIRE = {

@@ -1,0 +1,32 @@
+encoding: utf-8
+format: csv
+hashing: md5
+name: test_frictionless
+path: test_frictionless.csv
+profile: tabular-schemas-resource
+schema:
+  fields:
+    - name: SAMPLE
+      type: integer
+    - name: TAXON_NAME
+      type: string
+    - name: TAXON_GROUP
+      type: string
+    - name: TAXON_GRP01
+      type: string
+    - name: GENUS
+      type: string
+    - name: SPECIES
+      type: string
+    - name: SPCODE
+      type: integer
+    - name: ZOOP_ABUNDANCE_M3
+      type: number
+  primaryKey:
+    - SAMPLE
+    - TAXON_NAME
+  missingValues:
+    - ''
+    - (null)
+  version: 0.1.0
+scheme: file

@@ -45,6 +45,10 @@ REFERENCE_PIPELINE_CONFIG = {
         "module_versions_group": "pipeline.module_versions"
     },
     'talend': {'talend_log_dir': '/tmp/probs/doesnt/exist/process'},
+    "harvester": {
+        "config_dir": "tmp/probably/doesnt/exist/harvester/",
+        "schema_base_dir": "tmp/probably/doesnt/exist/schema-definitions/"
+    },
     'templating': {
         'template_package': 'aodncore.pipeline',
         'html_notification_template': 'notify.html.j2',
