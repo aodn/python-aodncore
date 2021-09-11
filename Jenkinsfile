@@ -7,8 +7,8 @@ pipeline {
         stage('container') {
             agent {
                 dockerfile {
-                    args '-v ${HOME}/bin:${HOME}/bin'
-                    additionalBuildArgs '--build-arg BUILDER_UID=$(id -u)'
+                    args '-v ${HOME}/bin:${HOME}/bin -v /var/run/docker.sock:/var/run/docker.sock'
+                    additionalBuildArgs '--build-arg BUILDER_UID=$(id -u) --build-arg DOCKER_GID=$(stat -c %g /var/run/docker.sock)'
                 }
             }
             stages {
@@ -35,7 +35,9 @@ pipeline {
                 stage('test') {
                     steps {
                         sh 'pip install --user -r test_requirements.txt'
+                        sh 'newgrp docker'
                         sh 'pytest'
+                        sh 'newgrp builder'
                     }
                 }
                 stage('package') {

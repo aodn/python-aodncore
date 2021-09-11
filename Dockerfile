@@ -1,6 +1,7 @@
 FROM ubuntu:16.04
 
 ARG BUILDER_UID=9999
+ARG DOCKER_GID=9999
 
 ENV LC_ALL C.UTF-8
 ENV LANG C.UTF-8
@@ -28,6 +29,9 @@ RUN pip install \
     sphinx==2.2.2 \
     sphinx_rtd_theme==0.4.3
 
-RUN useradd --create-home --no-log-init --shell /bin/bash --uid $BUILDER_UID builder
+RUN useradd --create-home --no-log-init --shell /bin/bash --uid $BUILDER_UID builder \
+    && groupmod -g $DOCKER_GID docker \
+    && usermod -aG docker builder \
+
 USER builder
 WORKDIR /home/builder
