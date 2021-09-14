@@ -234,7 +234,7 @@ PIPELINE_CONFIG_SCHEMA = {
         }
     },
     # TODO: add 'harvester' to the required list - once it has been added to the chef build
-    'required': ['global', 'logging', 'mail', 'talend', 'templating', 'watch'],
+    'required': ['global', 'logging', 'mail', 'talend', 'templating', 'watch', 'harvester'],
     'additionalProperties': False,
     'definitions': {
         'loggingLevel': {
