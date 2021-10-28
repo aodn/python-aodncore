@@ -15,6 +15,7 @@ WARNING_NC = os.path.join(TESTDATA_DIR, 'test_manifest.nc')
 
 GOOD_CSV = os.path.join(TESTDATA_DIR, 'test_frictionless.csv')
 BAD_CSV = os.path.join(TESTDATA_DIR, 'invalid.schemadata.csv')
+UNMATCHED_CSV = os.path.join(TESTDATA_DIR, 'test_frictionless_no_resource.csv')
 
 
 class TestPipelineStepsCheck(BaseTestCase):
@@ -203,6 +204,17 @@ class TestTableSchemaCheckRunner(BaseTestCase):
 
     def test_invalid_file(self):
         ts_file = PipelineFile(BAD_CSV)
+        collection = PipelineFileCollection(ts_file)
+        self.ts_runner.run(collection)
+
+        check_result = ts_file.check_result
+
+        self.assertFalse(check_result.compliant)
+        self.assertFalse(check_result.errors)
+        self.assertNotEqual(check_result.log, [])
+
+    def test_missing_schema_file(self):
+        ts_file = PipelineFile(UNMATCHED_CSV)
         collection = PipelineFileCollection(ts_file)
         self.ts_runner.run(collection)
 

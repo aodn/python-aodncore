@@ -256,6 +256,10 @@ class TableSchemaCheckRunner(BaseCheckRunner):
                 _ = [r for r in table.iter(exc_handler=self._exc_handler)]
             if len(self.compliance_log) > 0:
                 self.compliant = False
+        else:
+            self.compliance_log = ("could not find schema definition matching: {search_string}".format(
+                    search_string=search_string),)
+            self.compliant = False
 
     def run(self, pipeline_files):
         for pipeline_file in pipeline_files:
