@@ -4,7 +4,8 @@ from unittest.mock import patch
 from aodncore.common import SystemCommandFailedError
 from aodncore.pipeline import PipelineFile, PipelineFileCollection, PipelineFilePublishType
 from aodncore.pipeline.exceptions import InvalidHarvesterError, UnmappedFilesError, InvalidConfigError, \
-    MissingConfigFileError, MissingConfigParameterError, UnexpectedCsvFilesError
+    MissingConfigFileError, MissingConfigParameterError, UnexpectedCsvFilesError, GeonetworkConnectionError, \
+    InvalidSQLConnectionError
 from aodncore.pipeline.steps.harvest import (get_harvester_runner, HarvesterMap, TalendHarvesterRunner, TriggerEvent,
                                              validate_harvester_mapping, CsvHarvesterRunner)
 from aodncore.pipeline.steps.store import StoreRunner
@@ -699,7 +700,6 @@ class TestCsvHarvesterRunner(BaseTestCase):
         with self.assertRaises(UnexpectedCsvFilesError):
             harvester_runner.run(collection)
 
-
     @patch('aodncore.pipeline.steps.harvest.DatabaseInteractions')
     def test_harvest_upload(self, mock_db):
         mock_db.return_value.compare_schemas.return_value = True
@@ -710,4 +710,23 @@ class TestCsvHarvesterRunner(BaseTestCase):
         collection = get_csv_harvest_collection(with_store=True)
         harvester_runner = CsvHarvesterRunner(self.uploader, hp, dummy_config(), self.test_logger)
         harvester_runner.run(collection)
+        harvester_runner.storage_broker.assert_upload_call_count(1)
+
+    @patch('aodncore.pipeline.steps.harvest.GeonetworkMetadataHandler', side_effect=GeonetworkConnectionError())
+    @patch('aodncore.pipeline.steps.harvest.Geonetwork')
+    @patch('aodncore.pipeline.steps.harvest.DatabaseInteractions')
+    def test_geonetwork_catch_exception(self, mock_db, mock_gn, mock_mh):
+        mock_db.return_value.compare_schemas.return_value = True
+
+        with open(GOOD_HARVEST_PARAMS) as f:
+            hp = json.load(f)
+        collection = get_csv_harvest_collection(with_store=True)
+        harvester_runner = CsvHarvesterRunner(self.uploader, hp, dummy_config(), self.test_logger)
+
+        with self.assertNoException():
+            harvester_runner.run(collection)
+
+        self.assertTrue(mock_db.called)
+        self.assertTrue(mock_gn.called)
+        self.assertTrue(mock_mh.called)
         harvester_runner.storage_broker.assert_upload_call_count(1)

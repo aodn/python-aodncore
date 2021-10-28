@@ -3,7 +3,7 @@ import psycopg2
 from psycopg2 import sql, extras
 import yaml
 
-from .exceptions import InvalidSQLConnectionError, InvalidSQLTransactionError, InvalidConfigError, MissingFileError
+from .exceptions import InvalidSQLConnectionError, InvalidSQLTransactionError, MissingFileError
 from ..util import find_file, get_field_type, get_tableschema_descriptor, is_nonstring_iterable
 
 __all__ = [
