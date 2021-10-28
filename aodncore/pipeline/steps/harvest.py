@@ -18,7 +18,7 @@ from pathlib import Path
 
 from .basestep import BaseStepRunner
 from ..exceptions import (InvalidHarvesterError, UnmappedFilesError, MissingConfigParameterError, InvalidConfigError,
-                          MissingConfigFileError)
+                          MissingConfigFileError, UnexpectedCsvFilesError)
 from ..files import PipelineFileCollection, validate_pipelinefilecollection
 from ..geonetwork import Geonetwork, GeonetworkMetadataHandler
 from ..db import DatabaseInteractions
@@ -436,6 +436,12 @@ class CsvHarvesterRunner(BaseHarvesterRunner):
         objs = self.params.get('db_objects')
         if objs:
             runsheet = (x for x in map(self.build_runsheet, objs) if x)
+            missing_files = list(filter(lambda x:
+                                        True if x.local_path not in [d.get('local_path') for d in runsheet]
+                                        else False, pipeline_files))
+            if len(missing_files) > 0:
+                raise UnexpectedCsvFilesError('No db_objects match these pipeline files: {}'.format(
+                    [os.path.basename(m.local_path) for m in missing_files]))
         else:
             raise MissingConfigParameterError('Generic CSV Harvester requires that the '
                                               'harvest_params["db_objects"] attribute be set')
