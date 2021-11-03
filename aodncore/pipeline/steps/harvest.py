@@ -436,7 +436,7 @@ class CsvHarvesterRunner(BaseHarvesterRunner):
         self.pipeline_files = pipeline_files
         objs = self.params.get('db_objects')
         if objs:
-            runsheet = (x for x in map(self.build_runsheet, objs) if x)
+            runsheet = [x for x in map(self.build_runsheet, objs) if x]
             missing_files = list(filter(lambda x:
                                         True if x.local_path not in [d.get('local_path') for d in runsheet]
                                         else False, pipeline_files))

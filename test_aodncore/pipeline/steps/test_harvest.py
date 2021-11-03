@@ -556,12 +556,16 @@ class TestTalendHarvesterRunner(BaseTestCase):
 
 
 GOOD_CSV = os.path.join(TESTDATA_DIR, 'conn', 'test_table.csv')
+ANOTHER_CSV = os.path.join(TESTDATA_DIR, 'conn', 'another_table.csv')
 
 
-def get_csv_harvest_collection(with_store=False, already_stored=False):
-    pf_good = PipelineFile(GOOD_CSV)
+def get_csv_harvest_collection(with_store=False, already_stored=False, additional_files=None):
+    pfc = [PipelineFile(GOOD_CSV)]
+    if additional_files and isinstance(additional_files, list):
+        for f in additional_files:
+            pfc.append(PipelineFile(f))
 
-    collection = PipelineFileCollection([pf_good])
+    collection = PipelineFileCollection(pfc)
 
     if with_store:
         publish_type = PipelineFilePublishType.HARVEST_UPLOAD
@@ -694,11 +698,24 @@ class TestCsvHarvesterRunner(BaseTestCase):
 
         with open(INCOMPLETE_HARVEST_PARAMS) as f:
             hp = json.load(f)
-        collection = get_csv_harvest_collection()
+        collection = get_csv_harvest_collection(additional_files=[ANOTHER_CSV])
         harvester_runner = CsvHarvesterRunner(self.uploader, hp, dummy_config(), self.test_logger)
 
         with self.assertRaises(UnexpectedCsvFilesError):
             harvester_runner.run(collection)
+
+    @patch('aodncore.pipeline.steps.harvest.DatabaseInteractions')
+    def test_run_harvester_expected_pipeline_files(self, mock_db):
+        mock_db.return_value.compare_schemas.return_value = True
+
+        with open(GOOD_HARVEST_PARAMS) as f:
+            hp = json.load(f)
+        collection = get_csv_harvest_collection(additional_files=[ANOTHER_CSV])
+        harvester_runner = CsvHarvesterRunner(self.uploader, hp, dummy_config(), self.test_logger)
+
+        with self.assertNoException():
+            harvester_runner.run(collection)
+
 
     @patch('aodncore.pipeline.steps.harvest.DatabaseInteractions')
     def test_harvest_upload(self, mock_db):
