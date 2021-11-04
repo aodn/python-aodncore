@@ -4,7 +4,8 @@ from unittest.mock import patch
 from aodncore.common import SystemCommandFailedError
 from aodncore.pipeline import PipelineFile, PipelineFileCollection, PipelineFilePublishType
 from aodncore.pipeline.exceptions import InvalidHarvesterError, UnmappedFilesError, InvalidConfigError, \
-    MissingConfigFileError, MissingConfigParameterError
+    MissingConfigFileError, MissingConfigParameterError, UnexpectedCsvFilesError, GeonetworkConnectionError, \
+    InvalidSQLConnectionError
 from aodncore.pipeline.steps.harvest import (get_harvester_runner, HarvesterMap, TalendHarvesterRunner, TriggerEvent,
                                              validate_harvester_mapping, CsvHarvesterRunner)
 from aodncore.pipeline.steps.store import StoreRunner
@@ -555,12 +556,16 @@ class TestTalendHarvesterRunner(BaseTestCase):
 
 
 GOOD_CSV = os.path.join(TESTDATA_DIR, 'conn', 'test_table.csv')
+ANOTHER_CSV = os.path.join(TESTDATA_DIR, 'conn', 'another_table.csv')
 
 
-def get_csv_harvest_collection(with_store=False, already_stored=False):
-    pf_good = PipelineFile(GOOD_CSV)
+def get_csv_harvest_collection(with_store=False, already_stored=False, additional_files=None):
+    pfc = [PipelineFile(GOOD_CSV)]
+    if additional_files and isinstance(additional_files, list):
+        for f in additional_files:
+            pfc.append(PipelineFile(f))
 
-    collection = PipelineFileCollection([pf_good])
+    collection = PipelineFileCollection(pfc)
 
     if with_store:
         publish_type = PipelineFilePublishType.HARVEST_UPLOAD
@@ -577,6 +582,7 @@ def get_csv_harvest_collection(with_store=False, already_stored=False):
 
 GOOD_HARVEST_PARAMS = os.path.join(TESTDATA_DIR, 'test.harvest_params')
 BAD_HARVEST_PARAMS = os.path.join(TESTDATA_DIR, 'invalid.harvest_params.nodbobjects')
+INCOMPLETE_HARVEST_PARAMS = os.path.join(TESTDATA_DIR, 'test.harvest_params_incomplete')
 
 
 class dummy_config(object):
@@ -636,7 +642,8 @@ class TestCsvHarvesterRunner(BaseTestCase):
     @patch('aodncore.pipeline.steps.harvest.DatabaseInteractions')
     def test_get_process_sequence_invalid(self, mock_db):
         mock_db.return_value.compare_schemas.return_value = True
-        harvester_runner = CsvHarvesterRunner(self.uploader, {'ingest_type': 'bad_value'}, self.config, self.test_logger)
+        harvester_runner = CsvHarvesterRunner(
+            self.uploader, {'ingest_type': 'bad_value'}, self.config, self.test_logger)
 
         with self.assertRaises(InvalidConfigError):
             harvester_runner.get_process_sequence(mock_db)
@@ -686,6 +693,31 @@ class TestCsvHarvesterRunner(BaseTestCase):
             harvester_runner.run(collection)
 
     @patch('aodncore.pipeline.steps.harvest.DatabaseInteractions')
+    def test_run_harvester_unexpected_pipeline_files(self, mock_db):
+        mock_db.return_value.compare_schemas.return_value = True
+
+        with open(INCOMPLETE_HARVEST_PARAMS) as f:
+            hp = json.load(f)
+        collection = get_csv_harvest_collection(additional_files=[ANOTHER_CSV])
+        harvester_runner = CsvHarvesterRunner(self.uploader, hp, dummy_config(), self.test_logger)
+
+        with self.assertRaises(UnexpectedCsvFilesError):
+            harvester_runner.run(collection)
+
+    @patch('aodncore.pipeline.steps.harvest.DatabaseInteractions')
+    def test_run_harvester_expected_pipeline_files(self, mock_db):
+        mock_db.return_value.compare_schemas.return_value = True
+
+        with open(GOOD_HARVEST_PARAMS) as f:
+            hp = json.load(f)
+        collection = get_csv_harvest_collection(additional_files=[ANOTHER_CSV])
+        harvester_runner = CsvHarvesterRunner(self.uploader, hp, dummy_config(), self.test_logger)
+
+        with self.assertNoException():
+            harvester_runner.run(collection)
+
+
+    @patch('aodncore.pipeline.steps.harvest.DatabaseInteractions')
     def test_harvest_upload(self, mock_db):
         mock_db.return_value.compare_schemas.return_value = True
 
@@ -695,4 +727,23 @@ class TestCsvHarvesterRunner(BaseTestCase):
         collection = get_csv_harvest_collection(with_store=True)
         harvester_runner = CsvHarvesterRunner(self.uploader, hp, dummy_config(), self.test_logger)
         harvester_runner.run(collection)
+        harvester_runner.storage_broker.assert_upload_call_count(1)
+
+    @patch('aodncore.pipeline.steps.harvest.GeonetworkMetadataHandler', side_effect=GeonetworkConnectionError())
+    @patch('aodncore.pipeline.steps.harvest.Geonetwork')
+    @patch('aodncore.pipeline.steps.harvest.DatabaseInteractions')
+    def test_geonetwork_catch_exception(self, mock_db, mock_gn, mock_mh):
+        mock_db.return_value.compare_schemas.return_value = True
+
+        with open(GOOD_HARVEST_PARAMS) as f:
+            hp = json.load(f)
+        collection = get_csv_harvest_collection(with_store=True)
+        harvester_runner = CsvHarvesterRunner(self.uploader, hp, dummy_config(), self.test_logger)
+
+        with self.assertNoException():
+            harvester_runner.run(collection)
+
+        self.assertTrue(mock_db.called)
+        self.assertTrue(mock_gn.called)
+        self.assertTrue(mock_mh.called)
         harvester_runner.storage_broker.assert_upload_call_count(1)

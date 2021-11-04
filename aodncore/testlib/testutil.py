@@ -198,12 +198,13 @@ def make_zip(temp_dir, file_list):
     return zip_file
 
 
-def load_runtime_patched_pipeline_config_file(config_file, rel_path, temp_dir):
+def load_runtime_patched_pipeline_config_file(config_file, rel_path, temp_dir, additional_patch=None):
     """Load and update pipeline config file with dynamic runtime values (e.g. temp directories)
 
     :param config_file: Pipeline config file to load, patch and return
-    :param rel_path:
+    :param rel_path: Path for wip_dir
     :param temp_dir: temporary directory used to update values
+    :param additional_patch: any additional pipeline config items to patch
     :return: ConfigParser object patched with runtime test values
     """
 
@@ -220,6 +221,9 @@ def load_runtime_patched_pipeline_config_file(config_file, rel_path, temp_dir):
     pipeline_config['logging']['log_root'] = tempfile.mkdtemp(prefix='temp_log_root', dir=temp_dir)
     pipeline_config['mail']['smtp_server'] = str(uuid.uuid4())
     pipeline_config['watch']['incoming_dir'] = tempfile.mkdtemp(prefix='temp_incoming_dir', dir=temp_dir)
+
+    if additional_patch:
+        pipeline_config.update(additional_patch)
 
     # reload the JSON object with non-updatable keys
     return json.loads(json.dumps(pipeline_config), object_pairs_hook=WriteOnceOrderedDict)
