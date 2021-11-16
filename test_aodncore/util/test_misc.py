@@ -10,7 +10,7 @@ from aodncore.util import (ensure_regex, ensure_regex_list, ensure_writeonceorde
                            merge_dicts, slice_sequence, str_to_list, validate_callable, validate_mandatory_elements,
                            validate_membership, validate_nonstring_iterable, validate_regex, validate_regexes,
                            validate_relative_path, validate_relative_path_attr, validate_type, CaptureStdIO, Pattern,
-                           WriteOnceOrderedDict)
+                           WriteOnceOrderedDict, generate_id, list_not_empty)
 
 TEST_ROOT = os.path.join(os.path.dirname(__file__))
 
@@ -481,3 +481,18 @@ class TestUtilMisc(BaseTestCase):
 
         with self.assertNoException():
             validate_mandatory_elements(subset, superset)
+
+    def test_generate_id(self):
+        with self.assertNoException():
+            _uuid = generate_id()
+
+        self.assertTrue(_uuid.isalnum())
+        self.assertTrue(_uuid[:1].isalpha())
+        self.assertEqual(33, len(_uuid))
+        self.assertTrue(_uuid.islower())
+
+    def test_list_not_empty(self):
+        self.assertTrue(list_not_empty(['a', 'b', 'c']))
+        self.assertTrue(list_not_empty(['a', None, 'c']))
+        self.assertFalse(list_not_empty([]))
+        self.assertFalse(list_not_empty([None, None, None]))

@@ -11,12 +11,18 @@ import abc
 import itertools
 import os
 import re
+import json
 from collections import OrderedDict
 from tempfile import NamedTemporaryFile
+from pathlib import Path
 
 from .basestep import BaseStepRunner
-from ..exceptions import InvalidHarvesterError, UnmappedFilesError
+from ..exceptions import (InvalidHarvesterError, UnmappedFilesError, MissingConfigParameterError, InvalidConfigError,
+                          MissingConfigFileError, UnexpectedCsvFilesError, InvalidSQLConnectionError,
+                          InvalidSQLTransactionError)
 from ..files import PipelineFileCollection, validate_pipelinefilecollection
+from ..geonetwork import Geonetwork, GeonetworkMetadataHandler
+from ..db import DatabaseInteractions
 from ...util import (LoggingContext, SystemProcess, TemporaryDirectory, merge_dicts, mkdir_p, validate_string,
                      validate_type)
 
@@ -27,6 +33,7 @@ __all__ = [
     'get_harvester_runner',
     'HarvesterMap',
     'TalendHarvesterRunner',
+    'CsvHarvesterRunner',
     'TriggerEvent',
     'validate_harvestermap',
     'validate_harvester_mapping',
@@ -48,6 +55,8 @@ def get_harvester_runner(harvester_name, store_runner, harvest_params, tmp_base_
 
     if harvester_name == 'talend':
         return TalendHarvesterRunner(store_runner, harvest_params, tmp_base_dir, config, logger)
+    elif harvester_name == 'csv':
+        return CsvHarvesterRunner(store_runner, harvest_params, config, logger)
     else:
         raise InvalidHarvesterError("invalid harvester '{name}'".format(name=harvester_name))
 
@@ -401,6 +410,137 @@ class TalendHarvesterRunner(BaseHarvesterRunner):
                 files_to_upload = event.matched_files.filter_by_bool_attribute('pending_store_addition')
                 if files_to_upload:
                     self.storage_broker.upload(pipeline_files=files_to_upload)
+
+
+class CsvHarvesterRunner(BaseHarvesterRunner):
+    """:py:class:`BaseHarvesterRunner` implementation to load csv pipeline files to the database."""
+
+    def __init__(self, storage_broker, harvest_params, config, logger):
+        super().__init__(config, logger)
+        if harvest_params is None:
+            harvest_params = {}
+
+        self.params = harvest_params
+        self.storage_broker = storage_broker
+        self.config = self._config
+        self.logger = self._logger
+        self.pipeline_files = None
+
+    def run(self, pipeline_files):
+        """The entry point to the generic csv harvester
+
+        :return: None
+        """
+        validate_pipelinefilecollection(pipeline_files)
+
+        self.pipeline_files = pipeline_files
+        objs = self.params.get('db_objects')
+        if objs:
+            runsheet = [x for x in map(self.build_runsheet, objs) if x]
+            missing_files = list(filter(lambda x:
+                                        True if x.local_path not in [d.get('local_path') for d in runsheet]
+                                        else False, pipeline_files))
+            if len(missing_files) > 0:
+                raise UnexpectedCsvFilesError('No db_objects match these pipeline files: {}'.format(
+                    [os.path.basename(m.local_path) for m in missing_files]))
+        else:
+            raise MissingConfigParameterError('Generic CSV Harvester requires that the '
+                                              'harvest_params["db_objects"] attribute be set')
+
+        with DatabaseInteractions(config=self.get_config_file('database.json'),
+                                  schema_base_path=self._config.pipeline_config['harvester']['schema_base_dir'],
+                                  logger=self.logger) as conn:
+            process = self.get_process_sequence(conn)
+            for step in runsheet:
+                self._logger.info('Executing steps for {}'.format(step['name']))
+                for task in process:
+                    getattr(conn, task)(step)
+
+        files_to_upload = pipeline_files.filter_by_bool_attribute('pending_store_addition')
+        if files_to_upload:
+            self.storage_broker.upload(pipeline_files=files_to_upload)
+
+        pipeline_files.set_bool_attribute('is_harvested', True)
+
+        metadata = self.params.get('metadata_updates')
+        if metadata and len(metadata) > 0:
+            try:
+                gn_config = self.get_config_file('metadata.json')
+                gn = Geonetwork(
+                    base_url=gn_config['metadata_url'],
+                    username=gn_config['metadata_username'],
+                    password=gn_config['metadata_password']
+                )
+                with DatabaseInteractions(config=self.get_config_file('database.json'),
+                                          schema_base_path=self._config.pipeline_config['harvester']['schema_base_dir'],
+                                          logger=self.logger) as conn:
+                    for m in metadata:
+                        if 'spatial' in m:
+                            m['spatial']['db_schema'] = self.params['db_schema']
+                        handler = GeonetworkMetadataHandler(conn, gn, m, self.logger)
+                        handler.run()
+            except (InvalidSQLConnectionError, InvalidSQLTransactionError):
+                raise
+            except Exception as e:
+                self._logger.warning(e)
+
+    def get_config_file(self, filename):
+        """Function to return database connection object for schema
+
+        :return: dict containing database connection parameters.
+        """
+        harvest_config = self._config.pipeline_config['harvester']['config_dir']
+        fn = os.path.join(harvest_config, self.params['db_schema'], filename)
+        try:
+            with open(fn) as json_file:
+                return json.load(json_file)
+        except FileNotFoundError as e:
+            raise MissingConfigFileError(e)
+
+    def get_process_sequence(self, conn):
+        """Function to return the database transaction process sequence based in ingest_type.
+
+        :param conn: instance of DatabaseInteractions().
+        :return: dict containing process sequence.
+        """
+        processes = {
+            "replace": [
+                "drop_object",
+                "create_table_from_yaml_file",
+                "load_data_from_csv",
+                "execute_sql_file",
+            ],
+            "truncate": [
+                "truncate_table",
+                "load_data_from_csv",
+                "refresh_materialized_view",
+            ],
+            "append": [
+                "load_data_from_csv",
+                "refresh_materialized_view",
+            ],
+        }
+        # compare_schemas not yet implemented
+        ingest_type = self.params.get('ingest_type', 'replace') if conn.compare_schemas() else 'replace'
+        process = processes.get(ingest_type)
+        if process:
+            self._logger.info("Using process sequence `{}`".format(ingest_type))
+            return processes[ingest_type]
+        else:
+            raise InvalidConfigError('No implementation for {} ingest_type'.format(ingest_type))
+
+    def build_runsheet(self, obj):
+        """Function to generate a runsheet for the harvest process.
+
+        :return: dict containing one pipeline runsheet item
+            (if the item is not matched on the current pipeline instance, then nothing will be returned).
+        """
+        pf = next((pf for pf in self.pipeline_files if Path(pf.local_path).stem.lower() == obj['name'].lower()
+                   or Path(pf.local_path).stem.lower() in [i.lower() for i in obj.get('dependencies', [])]), None)
+        if pf:
+            if obj['name'].lower() == Path(pf.local_path).stem.lower():
+                obj['local_path'] = pf.local_path
+            return obj
 
 
 validate_triggerevent = validate_type(TriggerEvent)

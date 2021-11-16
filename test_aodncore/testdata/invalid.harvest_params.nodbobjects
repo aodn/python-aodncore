@@ -1,0 +1,4 @@
+{
+    "db_schema": "not_a_real_schema",
+    "ingest_type": "replace"
+}

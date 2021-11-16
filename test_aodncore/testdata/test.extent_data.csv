@@ -1,0 +1,5606 @@
+station_name,survey_datetime,sample_depth
+Darwin,2011-06-27 13:48,0
+Darwin,2011-06-27 13:48,10
+Darwin,2011-06-27 13:48,14
+Darwin,2011-10-05 09:31,0
+Darwin,2011-10-05 09:31,10
+Darwin,2011-10-05 09:31,20
+Darwin,2012-01-15 07:00,0
+Darwin,2012-01-15 07:00,10
+Darwin,2012-01-15 07:00,20
+Darwin,2012-01-15 09:05,0
+Darwin,2012-01-15 09:05,10
+Darwin,2012-01-15 09:05,22
+Darwin,2012-01-15 13:05,0
+Darwin,2012-01-15 13:05,10
+Darwin,2012-01-15 13:05,20
+Darwin,2012-01-15 15:10,0
+Darwin,2012-01-15 15:10,10
+Darwin,2012-01-15 15:10,20
+Darwin,2012-04-17 09:42,0
+Darwin,2012-04-17 09:42,10
+Darwin,2012-04-17 09:42,20
+Darwin,2012-07-30 02:00,0
+Darwin,2012-07-30 02:00,10
+Darwin,2012-07-30 02:00,20
+Darwin,2012-07-30 05:00,0
+Darwin,2012-07-30 05:00,10
+Darwin,2012-07-30 05:00,20
+Darwin,2012-07-30 08:00,0
+Darwin,2012-07-30 08:00,10
+Darwin,2012-07-30 08:00,20
+Darwin,2012-07-30 11:00,0
+Darwin,2012-07-30 11:00,10
+Darwin,2012-07-30 11:00,20
+Darwin,2012-10-30 07:51,0
+Darwin,2012-10-30 07:51,10
+Darwin,2012-10-30 07:51,20
+Darwin,2012-12-09 02:00,0
+Darwin,2012-12-09 02:00,10
+Darwin,2012-12-09 02:00,20
+Darwin,2012-12-09 05:30,0
+Darwin,2012-12-09 05:30,10
+Darwin,2012-12-09 05:30,20
+Darwin,2012-12-09 09:00,0
+Darwin,2012-12-09 09:00,10
+Darwin,2012-12-09 09:00,20
+Darwin,2012-12-09 12:30,0
+Darwin,2012-12-09 12:30,10
+Darwin,2012-12-09 12:30,20
+Darwin,2013-04-05 09:40,0
+Darwin,2013-04-05 09:40,10
+Darwin,2013-04-05 09:40,20
+Darwin,2013-06-17 17:30,0
+Darwin,2013-06-17 17:30,10
+Darwin,2013-06-17 17:30,23.8
+Darwin,2013-06-17 21:00,0
+Darwin,2013-06-17 21:00,10
+Darwin,2013-06-17 21:00,23
+Darwin,2013-06-18 00:30,0
+Darwin,2013-06-18 00:30,10
+Darwin,2013-06-18 00:30,20
+Darwin,2013-06-18 04:00,0
+Darwin,2013-06-18 04:00,10
+Darwin,2013-06-18 04:00,21
+Darwin,2013-09-16 11:26,0
+Darwin,2013-09-16 11:26,10
+Darwin,2013-09-16 11:26,20
+Darwin,2014-01-18 05:20,0
+Darwin,2014-01-18 05:20,10
+Darwin,2014-01-18 05:20,22
+Darwin,2014-01-18 07:00,0
+Darwin,2014-01-18 07:00,10
+Darwin,2014-01-18 07:00,23
+Darwin,2014-01-18 10:00,0
+Darwin,2014-01-18 10:00,10
+Darwin,2014-01-18 10:00,21
+Darwin,2014-01-18 13:00,0
+Darwin,2014-01-18 13:00,10
+Darwin,2014-01-18 13:00,18
+Darwin,2014-04-04 08:03,0
+Darwin,2014-04-04 08:03,10
+Darwin,2014-04-04 08:03,25
+Darwin,2014-07-03 09:08,0
+Darwin,2014-07-03 09:08,10
+Darwin,2014-07-03 09:08,25
+Darwin,2014-09-06 10:00,0
+Darwin,2014-09-06 10:00,10
+Darwin,2014-09-06 10:00,24
+Darwin,2014-09-06 13:00,0
+Darwin,2014-09-06 13:00,10
+Darwin,2014-09-06 13:00,24
+Darwin,2014-09-06 16:00,0
+Darwin,2014-09-06 16:00,10
+Darwin,2014-09-06 16:00,24
+Darwin,2014-09-06 19:00,0
+Darwin,2014-09-06 19:00,10
+Darwin,2014-09-06 19:00,24
+Darwin,2014-12-01 07:18,0
+Darwin,2014-12-01 07:18,10
+Darwin,2014-12-01 07:18,20
+Darwin,2015-02-03 07:00,0
+Darwin,2015-02-03 07:00,10
+Darwin,2015-02-03 07:00,20
+Darwin,2015-02-03 10:00,0
+Darwin,2015-02-03 10:00,10
+Darwin,2015-02-03 10:00,20
+Darwin,2015-02-03 13:00,0
+Darwin,2015-02-03 13:00,10
+Darwin,2015-02-03 13:00,20
+Darwin,2015-02-03 16:00,0
+Darwin,2015-02-03 16:00,10
+Darwin,2015-02-03 16:00,20
+Darwin,2015-03-17 08:35,0
+Darwin,2015-03-17 08:35,10
+Darwin,2015-03-17 08:35,15
+Darwin,2015-05-06 08:24,0
+Darwin,2015-05-06 08:24,10
+Darwin,2015-05-06 08:24,17
+Darwin,2015-08-04 05:02,0
+Darwin,2015-08-04 05:02,10
+Darwin,2015-08-04 05:02,15
+Darwin,2015-08-04 08:00,0
+Darwin,2015-08-04 08:00,10
+Darwin,2015-08-04 08:00,21
+Darwin,2015-08-04 11:00,0
+Darwin,2015-08-04 11:00,10
+Darwin,2015-08-04 11:00,19
+Darwin,2015-08-04 14:00,0
+Darwin,2015-08-04 14:00,10
+Darwin,2015-08-04 14:00,16
+Darwin,2015-11-18 08:16,0
+Darwin,2015-11-18 08:16,10
+Darwin,2015-11-18 08:16,19
+Darwin,2016-02-02 07:00,0
+Darwin,2016-02-02 07:00,10
+Darwin,2016-02-02 07:00,16
+Darwin,2016-02-02 10:00,0
+Darwin,2016-02-02 10:00,10
+Darwin,2016-02-02 10:00,18
+Darwin,2016-02-02 13:00,0
+Darwin,2016-02-02 13:00,10
+Darwin,2016-02-02 13:00,17
+Darwin,2016-02-02 16:00,0
+Darwin,2016-02-02 16:00,10
+Darwin,2016-02-02 16:00,17
+Darwin,2016-05-31 07:50,0
+Darwin,2016-05-31 07:50,10
+Darwin,2016-05-31 07:50,15
+Darwin,2016-07-24 08:00,0
+Darwin,2016-07-24 08:00,10
+Darwin,2016-07-24 08:00,20
+Darwin,2016-07-24 11:01,0
+Darwin,2016-07-24 11:01,10
+Darwin,2016-07-24 11:01,21
+Darwin,2016-07-24 14:00,0
+Darwin,2016-07-24 14:00,10
+Darwin,2016-07-24 14:00,18
+Darwin,2016-07-24 17:00,0
+Darwin,2016-07-24 17:00,10
+Darwin,2016-07-24 17:00,18
+Darwin,2016-11-08 08:11,0
+Darwin,2016-11-08 08:11,10
+Darwin,2016-11-08 08:11,15
+Darwin,2017-02-03 07:00,0
+Darwin,2017-02-03 07:00,6
+Darwin,2017-02-03 07:00,10
+Darwin,2017-02-03 07:00,19.5
+Darwin,2017-02-03 10:00,0
+Darwin,2017-02-03 10:00,10
+Darwin,2017-02-03 10:00,18.5
+Darwin,2017-02-03 13:00,0
+Darwin,2017-02-03 13:00,10
+Darwin,2017-02-03 13:00,19.5
+Darwin,2017-02-03 16:00,0
+Darwin,2017-02-03 16:00,10
+Darwin,2017-02-03 16:00,18
+Darwin,2017-05-17 08:47,0
+Darwin,2017-05-17 08:47,10
+Darwin,2017-05-17 08:47,17
+Darwin,2017-07-15 07:00,0
+Darwin,2017-07-15 07:00,10
+Darwin,2017-07-15 07:00,17
+Darwin,2017-07-15 10:00,0
+Darwin,2017-07-15 10:00,10
+Darwin,2017-07-15 10:00,19
+Darwin,2017-07-15 13:00,0
+Darwin,2017-07-15 13:00,10
+Darwin,2017-07-15 13:00,17
+Darwin,2017-07-15 16:00,0
+Darwin,2017-07-15 16:00,10
+Darwin,2017-07-15 16:00,15
+Darwin,2017-10-10 07:57,0
+Darwin,2017-10-10 07:57,10
+Darwin,2017-10-10 07:57,17
+Darwin,2018-02-09 07:00,0
+Darwin,2018-02-09 07:00,10
+Darwin,2018-02-09 07:00,17
+Darwin,2018-02-09 07:00,18
+Darwin,2018-02-09 10:00,0
+Darwin,2018-02-09 10:00,10
+Darwin,2018-02-09 10:00,19
+Darwin,2018-02-09 13:00,0
+Darwin,2018-02-09 13:00,10
+Darwin,2018-02-09 13:00,19
+Darwin,2018-02-09 16:00,0
+Darwin,2018-02-09 16:00,10
+Darwin,2018-02-09 16:00,18
+Darwin,2018-05-10 07:02,0
+Darwin,2018-05-10 07:02,10
+Darwin,2018-05-10 07:02,17
+Darwin,2018-07-31 07:03,0
+Darwin,2018-07-31 07:03,10
+Darwin,2018-07-31 07:03,22
+Darwin,2018-07-31 10:00,0
+Darwin,2018-07-31 10:00,10
+Darwin,2018-07-31 10:00,20
+Darwin,2018-07-31 13:00,0
+Darwin,2018-07-31 13:00,10
+Darwin,2018-07-31 13:00,16
+Darwin,2018-07-31 16:00,0
+Darwin,2018-07-31 16:00,10
+Darwin,2018-07-31 16:00,16
+Darwin,2018-10-31 08:26,0
+Darwin,2018-10-31 08:26,10
+Darwin,2018-10-31 08:26,15
+Darwin,2019-02-14 07:00,0
+Darwin,2019-02-14 07:00,10
+Darwin,2019-02-14 07:00,17.2
+Darwin,2019-02-14 10:00,0
+Darwin,2019-02-14 10:00,10
+Darwin,2019-02-14 10:00,19.5
+Darwin,2019-02-14 13:00,0
+Darwin,2019-02-14 13:00,10
+Darwin,2019-02-14 13:00,19
+Darwin,2019-02-14 16:00,0
+Darwin,2019-02-14 16:00,10
+Darwin,2019-02-14 16:00,17
+Darwin,2019-05-30 08:39,0
+Darwin,2019-05-30 08:39,10
+Darwin,2019-05-30 08:39,14
+Darwin,2019-07-23 07:00,0
+Darwin,2019-07-23 07:00,10
+Darwin,2019-07-23 07:00,18
+Darwin,2019-07-23 10:00,0
+Darwin,2019-07-23 10:00,10
+Darwin,2019-07-23 10:00,20
+Darwin,2019-07-23 13:00,0
+Darwin,2019-07-23 13:00,10
+Darwin,2019-07-23 13:00,18
+Darwin,2019-07-23 16:00,0
+Darwin,2019-07-23 16:00,10
+Darwin,2019-07-23 16:00,16
+Darwin,2019-11-06 07:38,0
+Darwin,2019-11-06 07:38,10
+Darwin,2019-11-06 07:38,15.5
+Darwin,2020-02-04 07:00,0
+Darwin,2020-02-04 07:00,10
+Darwin,2020-02-04 07:00,16.5
+Darwin,2020-02-04 10:00,0
+Darwin,2020-02-04 10:00,10
+Darwin,2020-02-04 10:00,17
+Darwin,2020-02-04 13:00,0
+Darwin,2020-02-04 13:00,10
+Darwin,2020-02-04 13:00,18
+Darwin,2020-02-04 16:01,0
+Darwin,2020-02-04 16:01,10
+Darwin,2020-02-04 16:01,18
+Darwin,2020-05-12 08:20,0
+Darwin,2020-05-12 08:20,10
+Darwin,2020-05-12 08:20,17
+Darwin,2020-08-11 08:25,0
+Darwin,2020-08-11 08:25,10
+Darwin,2020-08-11 08:25,16
+Darwin,2020-09-22 07:00,0
+Darwin,2020-09-22 07:00,10
+Darwin,2020-09-22 07:00,20
+Darwin,2020-09-22 10:00,0
+Darwin,2020-09-22 10:00,10
+Darwin,2020-09-22 10:00,20
+Darwin,2020-09-22 13:00,0
+Darwin,2020-09-22 13:00,10
+Darwin,2020-09-22 13:00,17
+Darwin,2020-09-22 16:00,0
+Darwin,2020-09-22 16:00,10
+Darwin,2020-09-22 16:00,15
+Darwin,2020-11-24 07:23,0
+Darwin,2020-11-24 07:23,10
+Darwin,2020-11-24 07:23,14
+Esperance,2009-05-12 12:10,0
+Esperance,2009-05-12 12:10,10
+Esperance,2009-05-12 12:10,20
+Esperance,2009-05-12 12:10,30
+Esperance,2009-05-12 12:10,40
+Esperance,2009-05-12 12:10,48
+Esperance,2009-06-23 09:20,0
+Esperance,2009-06-23 09:20,10
+Esperance,2009-06-23 09:20,20
+Esperance,2009-06-23 09:20,30
+Esperance,2009-06-23 09:20,40
+Esperance,2009-06-23 09:20,48
+Esperance,2009-09-17 09:40,0
+Esperance,2009-09-17 09:40,10
+Esperance,2009-09-17 09:40,20
+Esperance,2009-09-17 09:40,30
+Esperance,2009-09-17 09:40,40
+Esperance,2009-09-17 09:40,48
+Esperance,2009-12-16 09:45,0
+Esperance,2009-12-16 09:45,10
+Esperance,2009-12-16 09:45,20
+Esperance,2009-12-16 09:45,30
+Esperance,2009-12-16 09:45,40
+Esperance,2009-12-16 09:45,48
+Esperance,2010-03-22 09:40,0
+Esperance,2010-03-22 09:40,10
+Esperance,2010-03-22 09:40,20
+Esperance,2010-03-22 09:40,30
+Esperance,2010-03-22 09:40,40
+Esperance,2010-03-22 09:40,48
+Esperance,2010-06-29 10:05,0
+Esperance,2010-06-29 10:05,10
+Esperance,2010-06-29 10:05,20
+Esperance,2010-06-29 10:05,30
+Esperance,2010-06-29 10:05,40
+Esperance,2010-06-29 10:05,48
+Esperance,2010-10-13 08:15,0
+Esperance,2010-10-13 08:15,10
+Esperance,2010-10-13 08:15,20
+Esperance,2010-10-13 08:15,30
+Esperance,2010-10-13 08:15,40
+Esperance,2010-10-13 08:15,48
+Esperance,2011-01-20 08:50,0
+Esperance,2011-01-20 08:50,10
+Esperance,2011-01-20 08:50,20
+Esperance,2011-01-20 08:50,30
+Esperance,2011-01-20 08:50,40
+Esperance,2011-01-20 08:50,50
+Esperance,2011-05-12 10:10,0
+Esperance,2011-05-12 10:10,10
+Esperance,2011-05-12 10:10,20
+Esperance,2011-05-12 10:10,30
+Esperance,2011-05-12 10:10,40
+Esperance,2011-05-12 10:10,50
+Esperance,2011-08-18 10:20,0
+Esperance,2011-08-18 10:20,10
+Esperance,2011-08-18 10:20,20
+Esperance,2011-08-18 10:20,30
+Esperance,2011-08-18 10:20,40
+Esperance,2011-08-18 10:20,50
+Esperance,2011-11-30 14:38,0
+Esperance,2011-11-30 14:38,10
+Esperance,2011-11-30 14:38,20
+Esperance,2011-11-30 14:38,30
+Esperance,2011-11-30 14:38,40
+Esperance,2011-11-30 14:38,50
+Esperance,2012-02-29 10:00,0
+Esperance,2012-02-29 10:00,10
+Esperance,2012-02-29 10:00,20
+Esperance,2012-02-29 10:00,30
+Esperance,2012-02-29 10:00,40
+Esperance,2012-02-29 10:00,50
+Esperance,2012-06-12 09:24,0
+Esperance,2012-06-12 09:24,10
+Esperance,2012-06-12 09:24,20
+Esperance,2012-06-12 09:24,30
+Esperance,2012-06-12 09:24,40
+Esperance,2012-06-12 09:24,50
+Esperance,2012-09-10 12:51,0
+Esperance,2012-09-10 12:51,10
+Esperance,2012-09-10 12:51,20
+Esperance,2012-09-10 12:51,30
+Esperance,2012-09-10 12:51,40
+Esperance,2012-09-10 12:51,50
+Esperance,2012-12-12 09:10,0
+Esperance,2012-12-12 09:10,10
+Esperance,2012-12-12 09:10,20
+Esperance,2012-12-12 09:10,30
+Esperance,2012-12-12 09:10,40
+Esperance,2012-12-12 09:10,50
+Esperance,2013-03-14 09:24,0
+Esperance,2013-03-14 09:24,10
+Esperance,2013-03-14 09:24,20
+Esperance,2013-03-14 09:24,30
+Esperance,2013-03-14 09:24,40
+Esperance,2013-03-14 09:24,50
+Esperance,2013-07-25 09:57,0
+Esperance,2013-07-25 09:57,10
+Esperance,2013-07-25 09:57,20
+Esperance,2013-07-25 09:57,30
+Esperance,2013-07-25 09:57,40
+Esperance,2013-07-25 09:57,50
+Kangaroo Island,2008-10-19 11:15,0
+Kangaroo Island,2008-10-19 11:15,10
+Kangaroo Island,2008-10-19 11:15,20
+Kangaroo Island,2008-10-19 11:15,30
+Kangaroo Island,2008-10-19 11:15,50
+Kangaroo Island,2008-10-19 11:15,75
+Kangaroo Island,2008-10-19 11:15,105
+Kangaroo Island,2008-11-11 07:00,0
+Kangaroo Island,2008-11-11 07:00,10
+Kangaroo Island,2008-11-11 07:00,30
+Kangaroo Island,2008-11-11 07:00,50
+Kangaroo Island,2008-11-11 07:00,75
+Kangaroo Island,2008-11-11 07:00,100
+Kangaroo Island,2008-12-12 06:45,0
+Kangaroo Island,2008-12-12 06:45,10
+Kangaroo Island,2008-12-12 06:45,20
+Kangaroo Island,2008-12-12 06:45,30
+Kangaroo Island,2008-12-12 06:45,40
+Kangaroo Island,2008-12-12 06:45,50
+Kangaroo Island,2008-12-12 06:45,75
+Kangaroo Island,2008-12-12 06:45,100
+Kangaroo Island,2009-01-15 08:00,0
+Kangaroo Island,2009-01-15 08:00,10
+Kangaroo Island,2009-01-15 08:00,30
+Kangaroo Island,2009-01-15 08:00,50
+Kangaroo Island,2009-01-15 08:00,75
+Kangaroo Island,2009-01-15 08:00,105
+Kangaroo Island,2009-02-05 14:05,0
+Kangaroo Island,2009-02-05 14:05,10
+Kangaroo Island,2009-02-05 14:05,20
+Kangaroo Island,2009-02-05 14:05,30
+Kangaroo Island,2009-02-05 14:05,40
+Kangaroo Island,2009-02-05 14:05,50
+Kangaroo Island,2009-02-05 14:05,75
+Kangaroo Island,2009-02-05 14:05,100
+Kangaroo Island,2009-06-02 08:00,0
+Kangaroo Island,2009-06-02 08:00,10
+Kangaroo Island,2009-06-02 08:00,20
+Kangaroo Island,2009-06-02 08:00,30
+Kangaroo Island,2009-06-02 08:00,40
+Kangaroo Island,2009-06-02 08:00,50
+Kangaroo Island,2009-06-02 08:00,60
+Kangaroo Island,2009-06-02 08:00,75
+Kangaroo Island,2009-06-02 08:00,90
+Kangaroo Island,2009-06-02 08:00,105
+Kangaroo Island,2009-10-08 06:00,0
+Kangaroo Island,2009-10-08 06:00,10
+Kangaroo Island,2009-10-08 06:00,20
+Kangaroo Island,2009-10-08 06:00,30
+Kangaroo Island,2009-10-08 06:00,40
+Kangaroo Island,2009-10-08 06:00,50
+Kangaroo Island,2009-10-08 06:00,60
+Kangaroo Island,2009-10-08 06:00,75
+Kangaroo Island,2009-10-08 06:00,90
+Kangaroo Island,2009-10-08 06:00,105
+Kangaroo Island,2009-11-16 08:30,0
+Kangaroo Island,2009-11-16 08:30,10
+Kangaroo Island,2009-11-16 08:30,20
+Kangaroo Island,2009-11-16 08:30,30
+Kangaroo Island,2009-11-16 08:30,40
+Kangaroo Island,2009-11-16 08:30,50
+Kangaroo Island,2009-11-16 08:30,60
+Kangaroo Island,2009-11-16 08:30,75
+Kangaroo Island,2009-11-16 08:30,90
+Kangaroo Island,2009-11-16 08:30,105
+Kangaroo Island,2009-12-16 07:15,0
+Kangaroo Island,2009-12-16 07:15,10
+Kangaroo Island,2009-12-16 07:15,20
+Kangaroo Island,2009-12-16 07:15,30
+Kangaroo Island,2009-12-16 07:15,40
+Kangaroo Island,2009-12-16 07:15,50
+Kangaroo Island,2009-12-16 07:15,60
+Kangaroo Island,2009-12-16 07:15,75
+Kangaroo Island,2009-12-16 07:15,90
+Kangaroo Island,2009-12-16 07:15,105
+Kangaroo Island,2010-01-13 07:00,0
+Kangaroo Island,2010-01-13 07:00,10
+Kangaroo Island,2010-01-13 07:00,20
+Kangaroo Island,2010-01-13 07:00,30
+Kangaroo Island,2010-01-13 07:00,40
+Kangaroo Island,2010-01-13 07:00,50
+Kangaroo Island,2010-01-13 07:00,60
+Kangaroo Island,2010-01-13 07:00,75
+Kangaroo Island,2010-01-13 07:00,90
+Kangaroo Island,2010-01-13 07:00,105
+Kangaroo Island,2010-02-16 06:30,0
+Kangaroo Island,2010-02-16 06:30,10
+Kangaroo Island,2010-02-16 06:30,20
+Kangaroo Island,2010-02-16 06:30,30
+Kangaroo Island,2010-02-16 06:30,40
+Kangaroo Island,2010-02-16 06:30,50
+Kangaroo Island,2010-02-16 06:30,60
+Kangaroo Island,2010-02-16 06:30,75
+Kangaroo Island,2010-02-16 06:30,90
+Kangaroo Island,2010-02-16 06:30,105
+Kangaroo Island,2010-03-16 06:00,0
+Kangaroo Island,2010-03-16 06:00,10
+Kangaroo Island,2010-03-16 06:00,20
+Kangaroo Island,2010-03-16 06:00,30
+Kangaroo Island,2010-03-16 06:00,40
+Kangaroo Island,2010-03-16 06:00,50
+Kangaroo Island,2010-03-16 06:00,60
+Kangaroo Island,2010-03-16 06:00,75
+Kangaroo Island,2010-03-16 06:00,90
+Kangaroo Island,2010-03-16 06:00,105
+Kangaroo Island,2010-04-20 07:00,0
+Kangaroo Island,2010-04-20 07:00,10
+Kangaroo Island,2010-04-20 07:00,20
+Kangaroo Island,2010-04-20 07:00,30
+Kangaroo Island,2010-04-20 07:00,40
+Kangaroo Island,2010-04-20 07:00,50
+Kangaroo Island,2010-04-20 07:00,60
+Kangaroo Island,2010-04-20 07:00,75
+Kangaroo Island,2010-04-20 07:00,90
+Kangaroo Island,2010-04-20 07:00,105
+Kangaroo Island,2010-07-22 07:00,0
+Kangaroo Island,2010-07-22 07:00,10
+Kangaroo Island,2010-07-22 07:00,20
+Kangaroo Island,2010-07-22 07:00,30
+Kangaroo Island,2010-07-22 07:00,40
+Kangaroo Island,2010-07-22 07:00,50
+Kangaroo Island,2010-07-22 07:00,60
+Kangaroo Island,2010-07-22 07:00,75
+Kangaroo Island,2010-07-22 07:00,90
+Kangaroo Island,2010-07-22 07:00,105
+Kangaroo Island,2010-11-21 05:00,0
+Kangaroo Island,2010-11-21 05:00,10
+Kangaroo Island,2010-11-21 05:00,20
+Kangaroo Island,2010-11-21 05:00,30
+Kangaroo Island,2010-11-21 05:00,40
+Kangaroo Island,2010-11-21 05:00,50
+Kangaroo Island,2010-11-21 05:00,90
+Kangaroo Island,2010-12-14 08:30,0
+Kangaroo Island,2010-12-14 08:30,10
+Kangaroo Island,2010-12-14 08:30,20
+Kangaroo Island,2010-12-14 08:30,30
+Kangaroo Island,2010-12-14 08:30,40
+Kangaroo Island,2010-12-14 08:30,50
+Kangaroo Island,2010-12-14 08:30,60
+Kangaroo Island,2010-12-14 08:30,75
+Kangaroo Island,2010-12-14 08:30,105
+Kangaroo Island,2011-01-24 07:40,0
+Kangaroo Island,2011-01-24 07:40,10
+Kangaroo Island,2011-01-24 07:40,20
+Kangaroo Island,2011-01-24 07:40,30
+Kangaroo Island,2011-01-24 07:40,40
+Kangaroo Island,2011-01-24 07:40,50
+Kangaroo Island,2011-01-24 07:40,60
+Kangaroo Island,2011-01-24 07:40,75
+Kangaroo Island,2011-01-24 07:40,90
+Kangaroo Island,2011-02-23 10:30,0
+Kangaroo Island,2011-02-23 10:30,10
+Kangaroo Island,2011-02-23 10:30,20
+Kangaroo Island,2011-02-23 10:30,30
+Kangaroo Island,2011-02-23 10:30,40
+Kangaroo Island,2011-02-23 10:30,50
+Kangaroo Island,2011-02-23 10:30,60
+Kangaroo Island,2011-02-23 10:30,75
+Kangaroo Island,2011-02-23 10:30,90
+Kangaroo Island,2011-03-20 09:40,0
+Kangaroo Island,2011-03-20 09:40,10
+Kangaroo Island,2011-03-20 09:40,20
+Kangaroo Island,2011-03-20 09:40,30
+Kangaroo Island,2011-03-20 09:40,40
+Kangaroo Island,2011-03-20 09:40,50
+Kangaroo Island,2011-03-20 09:40,60
+Kangaroo Island,2011-03-20 09:40,75
+Kangaroo Island,2011-03-20 09:40,90
+Kangaroo Island,2011-04-28 07:35,0
+Kangaroo Island,2011-04-28 07:35,10
+Kangaroo Island,2011-04-28 07:35,20
+Kangaroo Island,2011-04-28 07:35,30
+Kangaroo Island,2011-04-28 07:35,40
+Kangaroo Island,2011-04-28 07:35,50
+Kangaroo Island,2011-04-28 07:35,60
+Kangaroo Island,2011-04-28 07:35,75
+Kangaroo Island,2011-04-28 07:35,90
+Kangaroo Island,2011-04-28 07:35,105
+Kangaroo Island,2011-07-19 09:00,0
+Kangaroo Island,2011-07-19 09:00,10
+Kangaroo Island,2011-07-19 09:00,20
+Kangaroo Island,2011-07-19 09:00,30
+Kangaroo Island,2011-07-19 09:00,40
+Kangaroo Island,2011-07-19 09:00,50
+Kangaroo Island,2011-07-19 09:00,75
+Kangaroo Island,2011-07-19 09:00,90
+Kangaroo Island,2011-07-19 09:00,105
+Kangaroo Island,2011-10-26 14:40,0
+Kangaroo Island,2011-10-26 14:40,10
+Kangaroo Island,2011-10-26 14:40,20
+Kangaroo Island,2011-10-26 14:40,30
+Kangaroo Island,2011-10-26 14:40,40
+Kangaroo Island,2011-10-26 14:40,50
+Kangaroo Island,2011-10-26 14:40,75
+Kangaroo Island,2011-10-26 14:40,90
+Kangaroo Island,2011-10-26 14:40,100
+Kangaroo Island,2011-10-26 14:40,107
+Kangaroo Island,2011-11-15 11:30,0
+Kangaroo Island,2011-11-15 11:30,10
+Kangaroo Island,2011-11-15 11:30,20
+Kangaroo Island,2011-11-15 11:30,30
+Kangaroo Island,2011-11-15 11:30,40
+Kangaroo Island,2011-11-15 11:30,50
+Kangaroo Island,2011-11-15 11:30,75
+Kangaroo Island,2011-11-15 11:30,90
+Kangaroo Island,2011-12-20 09:30,0
+Kangaroo Island,2011-12-20 09:30,10
+Kangaroo Island,2011-12-20 09:30,20
+Kangaroo Island,2011-12-20 09:30,30
+Kangaroo Island,2011-12-20 09:30,40
+Kangaroo Island,2011-12-20 09:30,50
+Kangaroo Island,2011-12-20 09:30,75
+Kangaroo Island,2011-12-20 09:30,90
+Kangaroo Island,2011-12-20 09:30,100
+Kangaroo Island,2012-01-17 07:00,0
+Kangaroo Island,2012-01-17 07:00,10
+Kangaroo Island,2012-01-17 07:00,20
+Kangaroo Island,2012-01-17 07:00,30
+Kangaroo Island,2012-01-17 07:00,40
+Kangaroo Island,2012-01-17 07:00,50
+Kangaroo Island,2012-01-17 07:00,75
+Kangaroo Island,2012-01-17 07:00,90
+Kangaroo Island,2012-01-17 07:00,100
+Kangaroo Island,2012-02-15 11:50,0
+Kangaroo Island,2012-02-15 11:50,10
+Kangaroo Island,2012-02-15 11:50,20
+Kangaroo Island,2012-02-15 11:50,30
+Kangaroo Island,2012-02-15 11:50,40
+Kangaroo Island,2012-02-15 11:50,50
+Kangaroo Island,2012-02-15 11:50,75
+Kangaroo Island,2012-02-15 11:50,90
+Kangaroo Island,2012-02-15 11:50,100
+Kangaroo Island,2012-04-15 10:42,0
+Kangaroo Island,2012-04-15 10:42,10
+Kangaroo Island,2012-04-15 10:42,20
+Kangaroo Island,2012-04-15 10:42,30
+Kangaroo Island,2012-04-15 10:42,40
+Kangaroo Island,2012-04-15 10:42,50
+Kangaroo Island,2012-04-15 10:42,75
+Kangaroo Island,2012-04-15 10:42,90
+Kangaroo Island,2012-04-15 10:42,100
+Kangaroo Island,2013-02-21 07:20,0
+Kangaroo Island,2013-02-21 07:20,10
+Kangaroo Island,2013-02-21 07:20,20
+Kangaroo Island,2013-02-21 07:20,30
+Kangaroo Island,2013-02-21 07:20,40
+Kangaroo Island,2013-02-21 07:20,50
+Kangaroo Island,2013-02-21 07:20,75
+Kangaroo Island,2013-02-21 07:20,100
+Kangaroo Island,2013-04-23 13:16,0
+Kangaroo Island,2013-04-23 13:16,10
+Kangaroo Island,2013-04-23 13:16,20
+Kangaroo Island,2013-04-23 13:16,30
+Kangaroo Island,2013-04-23 13:16,40
+Kangaroo Island,2013-04-23 13:16,50
+Kangaroo Island,2013-04-23 13:16,75
+Kangaroo Island,2013-04-23 13:16,100
+Kangaroo Island,2013-05-07 07:55,0
+Kangaroo Island,2013-05-07 07:55,10
+Kangaroo Island,2013-05-07 07:55,20
+Kangaroo Island,2013-05-07 07:55,30
+Kangaroo Island,2013-05-07 07:55,40
+Kangaroo Island,2013-05-07 07:55,50
+Kangaroo Island,2013-05-07 07:55,75
+Kangaroo Island,2013-05-07 07:55,100
+Kangaroo Island,2013-08-28 08:55,0
+Kangaroo Island,2013-08-28 08:55,10
+Kangaroo Island,2013-08-28 08:55,20
+Kangaroo Island,2013-08-28 08:55,30
+Kangaroo Island,2013-08-28 08:55,40
+Kangaroo Island,2013-08-28 08:55,50
+Kangaroo Island,2013-08-28 08:55,75
+Kangaroo Island,2013-08-28 08:55,100
+Kangaroo Island,2014-01-22 15:15,0
+Kangaroo Island,2014-01-22 15:15,10
+Kangaroo Island,2014-01-22 15:15,20
+Kangaroo Island,2014-01-22 15:15,30
+Kangaroo Island,2014-01-22 15:15,40
+Kangaroo Island,2014-01-22 15:15,50
+Kangaroo Island,2014-01-22 15:15,75
+Kangaroo Island,2014-01-22 15:15,100
+Kangaroo Island,2014-03-13 14:00,0
+Kangaroo Island,2014-03-13 14:00,10
+Kangaroo Island,2014-03-13 14:00,20
+Kangaroo Island,2014-03-13 14:00,30
+Kangaroo Island,2014-03-13 14:00,40
+Kangaroo Island,2014-03-13 14:00,50
+Kangaroo Island,2014-03-13 14:00,75
+Kangaroo Island,2014-03-13 14:00,100
+Kangaroo Island,2014-05-07 13:45,0
+Kangaroo Island,2014-05-07 13:45,10
+Kangaroo Island,2014-05-07 13:45,20
+Kangaroo Island,2014-05-07 13:45,30
+Kangaroo Island,2014-05-07 13:45,40
+Kangaroo Island,2014-05-07 13:45,50
+Kangaroo Island,2014-05-07 13:45,75
+Kangaroo Island,2014-05-07 13:45,100
+Kangaroo Island,2014-07-13 16:13,0
+Kangaroo Island,2014-07-13 16:13,10
+Kangaroo Island,2014-07-13 16:13,20
+Kangaroo Island,2014-07-13 16:13,30
+Kangaroo Island,2014-07-13 16:13,40
+Kangaroo Island,2014-07-13 16:13,50
+Kangaroo Island,2014-07-13 16:13,75
+Kangaroo Island,2014-07-13 16:13,100
+Kangaroo Island,2014-10-29 11:00,0
+Kangaroo Island,2014-10-29 11:00,10
+Kangaroo Island,2014-10-29 11:00,20
+Kangaroo Island,2014-10-29 11:00,30
+Kangaroo Island,2014-10-29 11:00,40
+Kangaroo Island,2014-10-29 11:00,50
+Kangaroo Island,2014-10-29 11:00,75
+Kangaroo Island,2014-10-29 11:00,100
+Kangaroo Island,2014-12-02 06:05,0
+Kangaroo Island,2014-12-02 06:05,10
+Kangaroo Island,2014-12-02 06:05,20
+Kangaroo Island,2014-12-02 06:05,30
+Kangaroo Island,2014-12-02 06:05,40
+Kangaroo Island,2014-12-02 06:05,50
+Kangaroo Island,2014-12-02 06:05,75
+Kangaroo Island,2014-12-02 06:05,100
+Kangaroo Island,2015-02-25 08:55,0
+Kangaroo Island,2015-02-25 08:55,10
+Kangaroo Island,2015-02-25 08:55,20
+Kangaroo Island,2015-02-25 08:55,30
+Kangaroo Island,2015-02-25 08:55,40
+Kangaroo Island,2015-02-25 08:55,50
+Kangaroo Island,2015-02-25 08:55,75
+Kangaroo Island,2015-02-25 08:55,100
+Kangaroo Island,2015-04-09 07:11,0
+Kangaroo Island,2015-04-09 07:11,10
+Kangaroo Island,2015-04-09 07:11,20
+Kangaroo Island,2015-04-09 07:11,30
+Kangaroo Island,2015-04-09 07:11,40
+Kangaroo Island,2015-04-09 07:11,50
+Kangaroo Island,2015-04-09 07:11,75
+Kangaroo Island,2015-04-09 07:11,100
+Kangaroo Island,2015-06-30 07:35,0
+Kangaroo Island,2015-06-30 07:35,10
+Kangaroo Island,2015-06-30 07:35,20
+Kangaroo Island,2015-06-30 07:35,30
+Kangaroo Island,2015-06-30 07:35,40
+Kangaroo Island,2015-06-30 07:35,50
+Kangaroo Island,2015-06-30 07:35,75
+Kangaroo Island,2015-06-30 07:35,100
+Kangaroo Island,2015-09-09 12:50,0
+Kangaroo Island,2015-09-09 12:50,10
+Kangaroo Island,2015-09-09 12:50,20
+Kangaroo Island,2015-09-09 12:50,30
+Kangaroo Island,2015-09-09 12:50,40
+Kangaroo Island,2015-09-09 12:50,50
+Kangaroo Island,2015-09-09 12:50,75
+Kangaroo Island,2015-09-09 12:50,100
+Kangaroo Island,2015-11-17 09:50,0
+Kangaroo Island,2015-11-17 09:50,10
+Kangaroo Island,2015-11-17 09:50,20
+Kangaroo Island,2015-11-17 09:50,30
+Kangaroo Island,2015-11-17 09:50,40
+Kangaroo Island,2015-11-17 09:50,50
+Kangaroo Island,2015-11-17 09:50,75
+Kangaroo Island,2015-11-17 09:50,100
+Kangaroo Island,2016-02-24 07:55,0
+Kangaroo Island,2016-02-24 07:55,10
+Kangaroo Island,2016-02-24 07:55,20
+Kangaroo Island,2016-02-24 07:55,30
+Kangaroo Island,2016-02-24 07:55,40
+Kangaroo Island,2016-02-24 07:55,50
+Kangaroo Island,2016-02-24 07:55,75
+Kangaroo Island,2016-02-24 07:55,100
+Kangaroo Island,2016-05-26 07:35,0
+Kangaroo Island,2016-05-26 07:35,10
+Kangaroo Island,2016-05-26 07:35,20
+Kangaroo Island,2016-05-26 07:35,30
+Kangaroo Island,2016-05-26 07:35,40
+Kangaroo Island,2016-05-26 07:35,50
+Kangaroo Island,2016-05-26 07:35,75
+Kangaroo Island,2016-05-26 07:35,100
+Kangaroo Island,2016-09-15 11:18,0
+Kangaroo Island,2016-09-15 11:18,10
+Kangaroo Island,2016-09-15 11:18,20
+Kangaroo Island,2016-09-15 11:18,30
+Kangaroo Island,2016-09-15 11:18,40
+Kangaroo Island,2016-09-15 11:18,50
+Kangaroo Island,2016-09-15 11:18,75
+Kangaroo Island,2016-09-15 11:18,100
+Kangaroo Island,2016-11-18 12:45,0
+Kangaroo Island,2016-11-18 12:45,10
+Kangaroo Island,2016-11-18 12:45,20
+Kangaroo Island,2016-11-18 12:45,30
+Kangaroo Island,2016-11-18 12:45,40
+Kangaroo Island,2016-11-18 12:45,50
+Kangaroo Island,2016-11-18 12:45,75
+Kangaroo Island,2016-11-18 12:45,100
+Kangaroo Island,2017-03-15 12:27,0
+Kangaroo Island,2017-03-15 12:27,10
+Kangaroo Island,2017-03-15 12:27,20
+Kangaroo Island,2017-03-15 12:27,30
+Kangaroo Island,2017-03-15 12:27,40
+Kangaroo Island,2017-03-15 12:27,50
+Kangaroo Island,2017-03-15 12:27,75
+Kangaroo Island,2017-03-15 12:27,100
+Kangaroo Island,2017-05-18 11:15,0
+Kangaroo Island,2017-05-18 11:15,10
+Kangaroo Island,2017-05-18 11:15,20
+Kangaroo Island,2017-05-18 11:15,30
+Kangaroo Island,2017-05-18 11:15,40
+Kangaroo Island,2017-05-18 11:15,50
+Kangaroo Island,2017-05-18 11:15,75
+Kangaroo Island,2017-05-18 11:15,100
+Kangaroo Island,2017-09-08 15:00,0
+Kangaroo Island,2017-09-08 15:00,10
+Kangaroo Island,2017-09-08 15:00,20
+Kangaroo Island,2017-09-08 15:00,30
+Kangaroo Island,2017-09-08 15:00,40
+Kangaroo Island,2017-09-08 15:00,50
+Kangaroo Island,2017-09-08 15:00,75
+Kangaroo Island,2017-09-08 15:00,100
+Kangaroo Island,2017-11-29 14:50,0
+Kangaroo Island,2017-11-29 14:50,10
+Kangaroo Island,2017-11-29 14:50,20
+Kangaroo Island,2017-11-29 14:50,30
+Kangaroo Island,2017-11-29 14:50,40
+Kangaroo Island,2017-11-29 14:50,50
+Kangaroo Island,2017-11-29 14:50,75
+Kangaroo Island,2017-11-29 14:50,100
+Kangaroo Island,2018-03-07 12:20,0
+Kangaroo Island,2018-03-07 12:20,10
+Kangaroo Island,2018-03-07 12:20,20
+Kangaroo Island,2018-03-07 12:20,30
+Kangaroo Island,2018-03-07 12:20,40
+Kangaroo Island,2018-03-07 12:20,50
+Kangaroo Island,2018-03-07 12:20,75
+Kangaroo Island,2018-03-07 12:20,100
+Kangaroo Island,2018-05-16 08:15,0
+Kangaroo Island,2018-05-16 08:15,10
+Kangaroo Island,2018-05-16 08:15,20
+Kangaroo Island,2018-05-16 08:15,30
+Kangaroo Island,2018-05-16 08:15,40
+Kangaroo Island,2018-05-16 08:15,50
+Kangaroo Island,2018-05-16 08:15,75
+Kangaroo Island,2018-05-16 08:15,100
+Kangaroo Island,2018-08-21 08:00,0
+Kangaroo Island,2018-08-21 08:00,10
+Kangaroo Island,2018-08-21 08:00,20
+Kangaroo Island,2018-08-21 08:00,30
+Kangaroo Island,2018-08-21 08:00,40
+Kangaroo Island,2018-08-21 08:00,50
+Kangaroo Island,2018-08-21 08:00,75
+Kangaroo Island,2018-08-21 08:00,100
+Kangaroo Island,2018-12-04 15:39,0
+Kangaroo Island,2018-12-04 15:39,10
+Kangaroo Island,2018-12-04 15:39,20
+Kangaroo Island,2018-12-04 15:39,30
+Kangaroo Island,2018-12-04 15:39,40
+Kangaroo Island,2018-12-04 15:39,50
+Kangaroo Island,2018-12-04 15:39,75
+Kangaroo Island,2018-12-04 15:39,100
+Kangaroo Island,2019-03-20 13:40,0
+Kangaroo Island,2019-03-20 13:40,10
+Kangaroo Island,2019-03-20 13:40,20
+Kangaroo Island,2019-03-20 13:40,30
+Kangaroo Island,2019-03-20 13:40,40
+Kangaroo Island,2019-03-20 13:40,50
+Kangaroo Island,2019-03-20 13:40,75
+Kangaroo Island,2019-03-20 13:40,100
+Kangaroo Island,2019-05-14 15:35,0
+Kangaroo Island,2019-05-14 15:35,10
+Kangaroo Island,2019-05-14 15:35,20
+Kangaroo Island,2019-05-14 15:35,30
+Kangaroo Island,2019-05-14 15:35,40
+Kangaroo Island,2019-05-14 15:35,50
+Kangaroo Island,2019-05-14 15:35,75
+Kangaroo Island,2019-05-14 15:35,100
+Kangaroo Island,2019-09-10 07:50,0
+Kangaroo Island,2019-09-10 07:50,10
+Kangaroo Island,2019-09-10 07:50,20
+Kangaroo Island,2019-09-10 07:50,30
+Kangaroo Island,2019-09-10 07:50,40
+Kangaroo Island,2019-09-10 07:50,50
+Kangaroo Island,2019-09-10 07:50,75
+Kangaroo Island,2019-09-10 07:50,100
+Kangaroo Island,2019-11-27 14:25,0
+Kangaroo Island,2019-11-27 14:25,10
+Kangaroo Island,2019-11-27 14:25,20
+Kangaroo Island,2019-11-27 14:25,30
+Kangaroo Island,2019-11-27 14:25,40
+Kangaroo Island,2019-11-27 14:25,50
+Kangaroo Island,2019-11-27 14:25,75
+Kangaroo Island,2019-11-27 14:25,100
+Kangaroo Island,2020-02-04 14:25,0
+Kangaroo Island,2020-02-04 14:25,10
+Kangaroo Island,2020-02-04 14:25,20
+Kangaroo Island,2020-02-04 14:25,30
+Kangaroo Island,2020-02-04 14:25,40
+Kangaroo Island,2020-02-04 14:25,50
+Kangaroo Island,2020-02-04 14:25,75
+Kangaroo Island,2020-02-04 14:25,100
+Kangaroo Island,2020-05-28 08:30,0
+Kangaroo Island,2020-05-28 08:30,10
+Kangaroo Island,2020-05-28 08:30,20
+Kangaroo Island,2020-05-28 08:30,30
+Kangaroo Island,2020-05-28 08:30,40
+Kangaroo Island,2020-05-28 08:30,50
+Kangaroo Island,2020-05-28 08:30,75
+Kangaroo Island,2020-05-28 08:30,100
+Kangaroo Island,2020-11-24 06:55,0
+Kangaroo Island,2020-11-24 06:55,10
+Kangaroo Island,2020-11-24 06:55,20
+Kangaroo Island,2020-11-24 06:55,30
+Kangaroo Island,2020-11-24 06:55,40
+Kangaroo Island,2020-11-24 06:55,50
+Kangaroo Island,2020-11-24 06:55,75
+Kangaroo Island,2020-11-24 06:55,100
+Kangaroo Island,2021-02-03 06:55,0
+Kangaroo Island,2021-02-03 06:55,10
+Kangaroo Island,2021-02-03 06:55,20
+Kangaroo Island,2021-02-03 06:55,30
+Kangaroo Island,2021-02-03 06:55,40
+Kangaroo Island,2021-02-03 06:55,50
+Kangaroo Island,2021-02-03 06:55,75
+Kangaroo Island,2021-02-03 06:55,100
+Maria Island,2009-04-21 11:45,0
+Maria Island,2009-04-21 11:45,10
+Maria Island,2009-04-21 11:45,20
+Maria Island,2009-04-21 11:45,30
+Maria Island,2009-04-21 11:45,40
+Maria Island,2009-04-21 11:45,50
+Maria Island,2009-04-21 11:45,60
+Maria Island,2009-04-21 11:45,75
+Maria Island,2009-04-21 11:45,80
+Maria Island,2009-05-06 11:20,0
+Maria Island,2009-05-06 11:20,10
+Maria Island,2009-05-06 11:20,20
+Maria Island,2009-05-06 11:20,30
+Maria Island,2009-05-06 11:20,40
+Maria Island,2009-05-06 11:20,50
+Maria Island,2009-05-06 11:20,60
+Maria Island,2009-05-06 11:20,75
+Maria Island,2009-05-06 11:20,80
+Maria Island,2009-06-01 11:20,0
+Maria Island,2009-06-01 11:20,10
+Maria Island,2009-06-01 11:20,20
+Maria Island,2009-06-01 11:20,30
+Maria Island,2009-06-01 11:20,40
+Maria Island,2009-06-01 11:20,50
+Maria Island,2009-06-01 11:20,60
+Maria Island,2009-06-01 11:20,75
+Maria Island,2009-06-01 11:20,80
+Maria Island,2009-07-16 11:36,0
+Maria Island,2009-07-16 11:36,10
+Maria Island,2009-07-16 11:36,20
+Maria Island,2009-07-16 11:36,30
+Maria Island,2009-07-16 11:36,40
+Maria Island,2009-07-16 11:36,50
+Maria Island,2009-07-16 11:36,60
+Maria Island,2009-07-16 11:36,75
+Maria Island,2009-07-16 11:36,80
+Maria Island,2009-08-20 11:30,0
+Maria Island,2009-08-20 11:30,10
+Maria Island,2009-08-20 11:30,20
+Maria Island,2009-08-20 11:30,30
+Maria Island,2009-08-20 11:30,40
+Maria Island,2009-08-20 11:30,50
+Maria Island,2009-08-20 11:30,60
+Maria Island,2009-08-20 11:30,75
+Maria Island,2009-08-20 11:30,80
+Maria Island,2009-09-07 11:25,0
+Maria Island,2009-09-07 11:25,10
+Maria Island,2009-09-07 11:25,20
+Maria Island,2009-09-07 11:25,25
+Maria Island,2009-09-07 11:25,30
+Maria Island,2009-09-07 11:25,40
+Maria Island,2009-09-07 11:25,50
+Maria Island,2009-09-07 11:25,60
+Maria Island,2009-09-07 11:25,75
+Maria Island,2009-09-07 11:25,80
+Maria Island,2009-10-13 11:00,0
+Maria Island,2009-10-13 11:00,10
+Maria Island,2009-10-13 11:00,20
+Maria Island,2009-10-13 11:00,30
+Maria Island,2009-10-13 11:00,40
+Maria Island,2009-10-13 11:00,50
+Maria Island,2009-10-13 11:00,60
+Maria Island,2009-10-13 11:00,75
+Maria Island,2009-10-13 11:00,80
+Maria Island,2009-11-11 11:30,0
+Maria Island,2009-11-11 11:30,10
+Maria Island,2009-11-11 11:30,20
+Maria Island,2009-11-11 11:30,30
+Maria Island,2009-11-11 11:30,40
+Maria Island,2009-11-11 11:30,50
+Maria Island,2009-11-11 11:30,60
+Maria Island,2009-11-11 11:30,75
+Maria Island,2009-11-11 11:30,80
+Maria Island,2009-12-07 11:10,0
+Maria Island,2009-12-07 11:10,10
+Maria Island,2009-12-07 11:10,20
+Maria Island,2009-12-07 11:10,30
+Maria Island,2009-12-07 11:10,40
+Maria Island,2009-12-07 11:10,50
+Maria Island,2009-12-07 11:10,60
+Maria Island,2009-12-07 11:10,75
+Maria Island,2009-12-07 11:10,80
+Maria Island,2010-01-21 10:50,0
+Maria Island,2010-01-21 10:50,10
+Maria Island,2010-01-21 10:50,20
+Maria Island,2010-01-21 10:50,30
+Maria Island,2010-01-21 10:50,40
+Maria Island,2010-01-21 10:50,50
+Maria Island,2010-01-21 10:50,60
+Maria Island,2010-01-21 10:50,75
+Maria Island,2010-01-21 10:50,80
+Maria Island,2010-03-30 11:40,0
+Maria Island,2010-03-30 11:40,10
+Maria Island,2010-03-30 11:40,20
+Maria Island,2010-03-30 11:40,30
+Maria Island,2010-03-30 11:40,40
+Maria Island,2010-03-30 11:40,50
+Maria Island,2010-03-30 11:40,60
+Maria Island,2010-03-30 11:40,75
+Maria Island,2010-03-30 11:40,84
+Maria Island,2010-05-05 11:30,0
+Maria Island,2010-05-05 11:30,10
+Maria Island,2010-05-05 11:30,20
+Maria Island,2010-05-05 11:30,30
+Maria Island,2010-05-05 11:30,40
+Maria Island,2010-05-05 11:30,50
+Maria Island,2010-05-05 11:30,60
+Maria Island,2010-05-05 11:30,75
+Maria Island,2010-05-05 11:30,80
+Maria Island,2010-05-27 11:30,0
+Maria Island,2010-05-27 11:30,10
+Maria Island,2010-05-27 11:30,20
+Maria Island,2010-05-27 11:30,30
+Maria Island,2010-05-27 11:30,40
+Maria Island,2010-05-27 11:30,50
+Maria Island,2010-05-27 11:30,60
+Maria Island,2010-05-27 11:30,75
+Maria Island,2010-05-27 11:30,80
+Maria Island,2010-06-15 11:10,0
+Maria Island,2010-06-15 11:10,10
+Maria Island,2010-06-15 11:10,20
+Maria Island,2010-06-15 11:10,30
+Maria Island,2010-06-15 11:10,40
+Maria Island,2010-06-15 11:10,50
+Maria Island,2010-06-15 11:10,60
+Maria Island,2010-06-15 11:10,75
+Maria Island,2010-06-15 11:10,80
+Maria Island,2010-07-22 11:10,0
+Maria Island,2010-07-22 11:10,10
+Maria Island,2010-07-22 11:10,20
+Maria Island,2010-07-22 11:10,30
+Maria Island,2010-07-22 11:10,40
+Maria Island,2010-07-22 11:10,50
+Maria Island,2010-07-22 11:10,60
+Maria Island,2010-07-22 11:10,75
+Maria Island,2010-07-22 11:10,80
+Maria Island,2010-10-01 12:40,0
+Maria Island,2010-10-01 12:40,10
+Maria Island,2010-10-01 12:40,20
+Maria Island,2010-10-01 12:40,30
+Maria Island,2010-10-01 12:40,40
+Maria Island,2010-10-01 12:40,50
+Maria Island,2010-10-01 12:40,60
+Maria Island,2010-10-01 12:40,75
+Maria Island,2010-10-01 12:40,80
+Maria Island,2010-10-27 12:50,0
+Maria Island,2010-10-27 12:50,10
+Maria Island,2010-10-27 12:50,20
+Maria Island,2010-10-27 12:50,30
+Maria Island,2010-10-27 12:50,40
+Maria Island,2010-10-27 12:50,50
+Maria Island,2010-10-27 12:50,60
+Maria Island,2010-10-27 12:50,75
+Maria Island,2010-10-27 12:50,80
+Maria Island,2010-12-14 11:05,0
+Maria Island,2010-12-14 11:05,10
+Maria Island,2010-12-14 11:05,20
+Maria Island,2010-12-14 11:05,30
+Maria Island,2010-12-14 11:05,40
+Maria Island,2010-12-14 11:05,50
+Maria Island,2010-12-14 11:05,60
+Maria Island,2010-12-14 11:05,75
+Maria Island,2010-12-14 11:05,80
+Maria Island,2011-01-19 10:30,0
+Maria Island,2011-01-19 10:30,10
+Maria Island,2011-01-19 10:30,20
+Maria Island,2011-01-19 10:30,30
+Maria Island,2011-01-19 10:30,40
+Maria Island,2011-01-19 10:30,50
+Maria Island,2011-01-19 10:30,60
+Maria Island,2011-01-19 10:30,75
+Maria Island,2011-01-19 10:30,82
+Maria Island,2011-02-23 11:15,0
+Maria Island,2011-02-23 11:15,10
+Maria Island,2011-02-23 11:15,20
+Maria Island,2011-02-23 11:15,30
+Maria Island,2011-02-23 11:15,40
+Maria Island,2011-02-23 11:15,50
+Maria Island,2011-02-23 11:15,60
+Maria Island,2011-02-23 11:15,75
+Maria Island,2011-02-23 11:15,82
+Maria Island,2011-03-29 10:30,0
+Maria Island,2011-03-29 10:30,10
+Maria Island,2011-03-29 10:30,20
+Maria Island,2011-03-29 10:30,30
+Maria Island,2011-03-29 10:30,40
+Maria Island,2011-03-29 10:30,50
+Maria Island,2011-03-29 10:30,60
+Maria Island,2011-03-29 10:30,75
+Maria Island,2011-03-29 10:30,82
+Maria Island,2011-04-07 10:30,0
+Maria Island,2011-04-07 10:30,10
+Maria Island,2011-04-07 10:30,20
+Maria Island,2011-04-07 10:30,30
+Maria Island,2011-04-07 10:30,40
+Maria Island,2011-04-07 10:30,50
+Maria Island,2011-04-07 10:30,60
+Maria Island,2011-04-07 10:30,75
+Maria Island,2011-04-07 10:30,82
+Maria Island,2011-05-31 11:38,0
+Maria Island,2011-05-31 11:38,10
+Maria Island,2011-05-31 11:38,20
+Maria Island,2011-05-31 11:38,30
+Maria Island,2011-05-31 11:38,40
+Maria Island,2011-05-31 11:38,50
+Maria Island,2011-05-31 11:38,60
+Maria Island,2011-05-31 11:38,75
+Maria Island,2011-05-31 11:38,82
+Maria Island,2011-07-25 12:15,0
+Maria Island,2011-07-25 12:15,10
+Maria Island,2011-07-25 12:15,20
+Maria Island,2011-07-25 12:15,30
+Maria Island,2011-07-25 12:15,40
+Maria Island,2011-07-25 12:15,50
+Maria Island,2011-07-25 12:15,60
+Maria Island,2011-07-25 12:15,75
+Maria Island,2011-07-25 12:15,85
+Maria Island,2011-08-12 10:55,0
+Maria Island,2011-08-12 10:55,10
+Maria Island,2011-08-12 10:55,20
+Maria Island,2011-08-12 10:55,30
+Maria Island,2011-08-12 10:55,40
+Maria Island,2011-08-12 10:55,50
+Maria Island,2011-08-12 10:55,60
+Maria Island,2011-08-12 10:55,75
+Maria Island,2011-08-12 10:55,85
+Maria Island,2011-10-05 12:24,0
+Maria Island,2011-10-05 12:24,10
+Maria Island,2011-10-05 12:24,20
+Maria Island,2011-10-05 12:24,30
+Maria Island,2011-10-05 12:24,40
+Maria Island,2011-10-05 12:24,50
+Maria Island,2011-10-05 12:24,60
+Maria Island,2011-10-05 12:24,75
+Maria Island,2011-10-05 12:24,85
+Maria Island,2011-10-26 11:00,0
+Maria Island,2011-10-26 11:00,10
+Maria Island,2011-10-26 11:00,20
+Maria Island,2011-10-26 11:00,30
+Maria Island,2011-10-26 11:00,40
+Maria Island,2011-10-26 11:00,50
+Maria Island,2011-10-26 11:00,60
+Maria Island,2011-10-26 11:00,75
+Maria Island,2011-10-26 11:00,82
+Maria Island,2011-12-15 10:35,0
+Maria Island,2011-12-15 10:35,10
+Maria Island,2011-12-15 10:35,20
+Maria Island,2011-12-15 10:35,30
+Maria Island,2011-12-15 10:35,40
+Maria Island,2011-12-15 10:35,50
+Maria Island,2011-12-15 10:35,60
+Maria Island,2011-12-15 10:35,75
+Maria Island,2011-12-15 10:35,82
+Maria Island,2012-01-19 12:00,0
+Maria Island,2012-01-19 12:00,10
+Maria Island,2012-01-19 12:00,20
+Maria Island,2012-01-19 12:00,30
+Maria Island,2012-01-19 12:00,40
+Maria Island,2012-01-19 12:00,50
+Maria Island,2012-01-19 12:00,60
+Maria Island,2012-01-19 12:00,75
+Maria Island,2012-01-19 12:00,82
+Maria Island,2012-02-22 11:00,0
+Maria Island,2012-02-22 11:00,10
+Maria Island,2012-02-22 11:00,20
+Maria Island,2012-02-22 11:00,30
+Maria Island,2012-02-22 11:00,40
+Maria Island,2012-02-22 11:00,50
+Maria Island,2012-02-22 11:00,60
+Maria Island,2012-02-22 11:00,75
+Maria Island,2012-02-22 11:00,82
+Maria Island,2012-03-27 10:40,0
+Maria Island,2012-03-27 10:40,10
+Maria Island,2012-03-27 10:40,20
+Maria Island,2012-03-27 10:40,30
+Maria Island,2012-03-27 10:40,40
+Maria Island,2012-03-27 10:40,50
+Maria Island,2012-03-27 10:40,60
+Maria Island,2012-03-27 10:40,75
+Maria Island,2012-03-27 10:40,82
+Maria Island,2012-04-12 10:45,0
+Maria Island,2012-04-12 10:45,10
+Maria Island,2012-04-12 10:45,20
+Maria Island,2012-04-12 10:45,30
+Maria Island,2012-04-12 10:45,40
+Maria Island,2012-04-12 10:45,50
+Maria Island,2012-04-12 10:45,60
+Maria Island,2012-04-12 10:45,75
+Maria Island,2012-04-12 10:45,82
+Maria Island,2012-05-24 11:30,0
+Maria Island,2012-05-24 11:30,10
+Maria Island,2012-05-24 11:30,20
+Maria Island,2012-05-24 11:30,30
+Maria Island,2012-05-24 11:30,40
+Maria Island,2012-05-24 11:30,50
+Maria Island,2012-05-24 11:30,60
+Maria Island,2012-05-24 11:30,75
+Maria Island,2012-05-24 11:30,82
+Maria Island,2012-06-21 11:00,0
+Maria Island,2012-06-21 11:00,10
+Maria Island,2012-06-21 11:00,20
+Maria Island,2012-06-21 11:00,30
+Maria Island,2012-06-21 11:00,40
+Maria Island,2012-06-21 11:00,50
+Maria Island,2012-06-21 11:00,60
+Maria Island,2012-06-21 11:00,75
+Maria Island,2012-06-21 11:00,82
+Maria Island,2012-07-24 10:50,0
+Maria Island,2012-07-24 10:50,10
+Maria Island,2012-07-24 10:50,20
+Maria Island,2012-07-24 10:50,30
+Maria Island,2012-07-24 10:50,40
+Maria Island,2012-07-24 10:50,50
+Maria Island,2012-07-24 10:50,60
+Maria Island,2012-07-24 10:50,75
+Maria Island,2012-07-24 10:50,82
+Maria Island,2012-08-20 11:15,0
+Maria Island,2012-08-20 11:15,10
+Maria Island,2012-08-20 11:15,20
+Maria Island,2012-08-20 11:15,30
+Maria Island,2012-08-20 11:15,40
+Maria Island,2012-08-20 11:15,50
+Maria Island,2012-08-20 11:15,60
+Maria Island,2012-08-20 11:15,75
+Maria Island,2012-08-20 11:15,82
+Maria Island,2012-10-02 10:15,0
+Maria Island,2012-10-02 10:15,10
+Maria Island,2012-10-02 10:15,20
+Maria Island,2012-10-02 10:15,30
+Maria Island,2012-10-02 10:15,40
+Maria Island,2012-10-02 10:15,50
+Maria Island,2012-10-02 10:15,60
+Maria Island,2012-10-02 10:15,75
+Maria Island,2012-10-02 10:15,82
+Maria Island,2012-10-18 10:52,0
+Maria Island,2012-10-18 10:52,10
+Maria Island,2012-10-18 10:52,20
+Maria Island,2012-10-18 10:52,30
+Maria Island,2012-10-18 10:52,40
+Maria Island,2012-10-18 10:52,50
+Maria Island,2012-10-18 10:52,60
+Maria Island,2012-10-18 10:52,75
+Maria Island,2012-10-18 10:52,85
+Maria Island,2012-11-13 10:45,0
+Maria Island,2012-11-13 10:45,10
+Maria Island,2012-11-13 10:45,20
+Maria Island,2012-11-13 10:45,30
+Maria Island,2012-11-13 10:45,40
+Maria Island,2012-11-13 10:45,50
+Maria Island,2012-11-13 10:45,60
+Maria Island,2012-11-13 10:45,75
+Maria Island,2012-11-13 10:45,82
+Maria Island,2013-01-30 10:33,0
+Maria Island,2013-01-30 10:33,10
+Maria Island,2013-01-30 10:33,20
+Maria Island,2013-01-30 10:33,30
+Maria Island,2013-01-30 10:33,40
+Maria Island,2013-01-30 10:33,50
+Maria Island,2013-01-30 10:33,60
+Maria Island,2013-01-30 10:33,75
+Maria Island,2013-01-30 10:33,82
+Maria Island,2013-02-14 11:00,0
+Maria Island,2013-02-14 11:00,10
+Maria Island,2013-02-14 11:00,20
+Maria Island,2013-02-14 11:00,30
+Maria Island,2013-02-14 11:00,40
+Maria Island,2013-02-14 11:00,50
+Maria Island,2013-02-14 11:00,60
+Maria Island,2013-02-14 11:00,75
+Maria Island,2013-02-14 11:00,82
+Maria Island,2013-03-14 10:00,0
+Maria Island,2013-03-14 10:00,10
+Maria Island,2013-03-14 10:00,20
+Maria Island,2013-03-14 10:00,30
+Maria Island,2013-03-14 10:00,40
+Maria Island,2013-03-14 10:00,50
+Maria Island,2013-03-14 10:00,60
+Maria Island,2013-03-14 10:00,75
+Maria Island,2013-03-14 10:00,85
+Maria Island,2013-04-24 10:50,0
+Maria Island,2013-04-24 10:50,10
+Maria Island,2013-04-24 10:50,20
+Maria Island,2013-04-24 10:50,30
+Maria Island,2013-04-24 10:50,40
+Maria Island,2013-04-24 10:50,50
+Maria Island,2013-04-24 10:50,60
+Maria Island,2013-04-24 10:50,75
+Maria Island,2013-04-24 10:50,82
+Maria Island,2013-05-28 10:56,0
+Maria Island,2013-05-28 10:56,10
+Maria Island,2013-05-28 10:56,20
+Maria Island,2013-05-28 10:56,30
+Maria Island,2013-05-28 10:56,40
+Maria Island,2013-05-28 10:56,50
+Maria Island,2013-05-28 10:56,60
+Maria Island,2013-05-28 10:56,75
+Maria Island,2013-05-28 10:56,82
+Maria Island,2013-06-11 11:55,0
+Maria Island,2013-06-11 11:55,10
+Maria Island,2013-06-11 11:55,20
+Maria Island,2013-06-11 11:55,30
+Maria Island,2013-06-11 11:55,40
+Maria Island,2013-06-11 11:55,50
+Maria Island,2013-06-11 11:55,60
+Maria Island,2013-06-11 11:55,75
+Maria Island,2013-06-11 11:55,82
+Maria Island,2013-08-07 11:30,0
+Maria Island,2013-08-07 11:30,10
+Maria Island,2013-08-07 11:30,20
+Maria Island,2013-08-07 11:30,30
+Maria Island,2013-08-07 11:30,40
+Maria Island,2013-08-07 11:30,50
+Maria Island,2013-08-07 11:30,60
+Maria Island,2013-08-07 11:30,75
+Maria Island,2013-08-07 11:30,85
+Maria Island,2013-08-21 11:21,0
+Maria Island,2013-08-21 11:21,10
+Maria Island,2013-08-21 11:21,20
+Maria Island,2013-08-21 11:21,30
+Maria Island,2013-08-21 11:21,40
+Maria Island,2013-08-21 11:21,50
+Maria Island,2013-08-21 11:21,60
+Maria Island,2013-08-21 11:21,75
+Maria Island,2013-08-21 11:21,85
+Maria Island,2013-09-24 11:40,0
+Maria Island,2013-09-24 11:40,10
+Maria Island,2013-09-24 11:40,20
+Maria Island,2013-09-24 11:40,30
+Maria Island,2013-09-24 11:40,40
+Maria Island,2013-09-24 11:40,50
+Maria Island,2013-09-24 11:40,60
+Maria Island,2013-09-24 11:40,75
+Maria Island,2013-09-24 11:40,85
+Maria Island,2013-11-18 10:50,0
+Maria Island,2013-11-18 10:50,10
+Maria Island,2013-11-18 10:50,20
+Maria Island,2013-11-18 10:50,30
+Maria Island,2013-11-18 10:50,40
+Maria Island,2013-11-18 10:50,50
+Maria Island,2013-11-18 10:50,60
+Maria Island,2013-11-18 10:50,75
+Maria Island,2013-11-18 10:50,82
+Maria Island,2013-12-17 11:05,0
+Maria Island,2013-12-17 11:05,10
+Maria Island,2013-12-17 11:05,20
+Maria Island,2013-12-17 11:05,30
+Maria Island,2013-12-17 11:05,40
+Maria Island,2013-12-17 11:05,50
+Maria Island,2013-12-17 11:05,60
+Maria Island,2013-12-17 11:05,75
+Maria Island,2013-12-17 11:05,82
+Maria Island,2014-02-05 11:05,0
+Maria Island,2014-02-05 11:05,10
+Maria Island,2014-02-05 11:05,20
+Maria Island,2014-02-05 11:05,30
+Maria Island,2014-02-05 11:05,40
+Maria Island,2014-02-05 11:05,50
+Maria Island,2014-02-05 11:05,60
+Maria Island,2014-02-05 11:05,75
+Maria Island,2014-02-05 11:05,82
+Maria Island,2014-03-19 10:55,0
+Maria Island,2014-03-19 10:55,10
+Maria Island,2014-03-19 10:55,20
+Maria Island,2014-03-19 10:55,30
+Maria Island,2014-03-19 10:55,40
+Maria Island,2014-03-19 10:55,50
+Maria Island,2014-03-19 10:55,60
+Maria Island,2014-03-19 10:55,75
+Maria Island,2014-03-19 10:55,85
+Maria Island,2014-04-08 11:03,0
+Maria Island,2014-04-08 11:03,10
+Maria Island,2014-04-08 11:03,20
+Maria Island,2014-04-08 11:03,30
+Maria Island,2014-04-08 11:03,40
+Maria Island,2014-04-08 11:03,50
+Maria Island,2014-04-08 11:03,60
+Maria Island,2014-04-08 11:03,75
+Maria Island,2014-04-08 11:03,85
+Maria Island,2014-05-16 10:20,0
+Maria Island,2014-05-16 10:20,10
+Maria Island,2014-05-16 10:20,20
+Maria Island,2014-05-16 10:20,30
+Maria Island,2014-05-16 10:20,40
+Maria Island,2014-05-16 10:20,50
+Maria Island,2014-05-16 10:20,60
+Maria Island,2014-05-16 10:20,75
+Maria Island,2014-05-16 10:20,85
+Maria Island,2014-06-19 11:30,0
+Maria Island,2014-06-19 11:30,10
+Maria Island,2014-06-19 11:30,20
+Maria Island,2014-06-19 11:30,30
+Maria Island,2014-06-19 11:30,40
+Maria Island,2014-06-19 11:30,50
+Maria Island,2014-06-19 11:30,60
+Maria Island,2014-06-19 11:30,75
+Maria Island,2014-06-19 11:30,85
+Maria Island,2014-07-03 11:30,0
+Maria Island,2014-07-03 11:30,10
+Maria Island,2014-07-03 11:30,20
+Maria Island,2014-07-03 11:30,30
+Maria Island,2014-07-03 11:30,40
+Maria Island,2014-07-03 11:30,50
+Maria Island,2014-07-03 11:30,60
+Maria Island,2014-07-03 11:30,75
+Maria Island,2014-07-03 11:30,85
+Maria Island,2014-08-07 12:00,0
+Maria Island,2014-08-07 12:00,10
+Maria Island,2014-08-07 12:00,20
+Maria Island,2014-08-07 12:00,30
+Maria Island,2014-08-07 12:00,40
+Maria Island,2014-08-07 12:00,50
+Maria Island,2014-08-07 12:00,60
+Maria Island,2014-08-07 12:00,75
+Maria Island,2014-08-07 12:00,85
+Maria Island,2014-08-21 11:50,0
+Maria Island,2014-08-21 11:50,10
+Maria Island,2014-08-21 11:50,20
+Maria Island,2014-08-21 11:50,30
+Maria Island,2014-08-21 11:50,40
+Maria Island,2014-08-21 11:50,50
+Maria Island,2014-08-21 11:50,60
+Maria Island,2014-08-21 11:50,75
+Maria Island,2014-08-21 11:50,85
+Maria Island,2014-09-16 09:20,0
+Maria Island,2014-09-16 09:20,10
+Maria Island,2014-09-16 09:20,20
+Maria Island,2014-09-16 09:20,30
+Maria Island,2014-09-16 09:20,40
+Maria Island,2014-09-16 09:20,50
+Maria Island,2014-09-16 09:20,60
+Maria Island,2014-09-16 09:20,75
+Maria Island,2014-09-16 09:20,85
+Maria Island,2014-10-30 09:27,0
+Maria Island,2014-10-30 09:27,10
+Maria Island,2014-10-30 09:27,20
+Maria Island,2014-10-30 09:27,30
+Maria Island,2014-10-30 09:27,40
+Maria Island,2014-10-30 09:27,50
+Maria Island,2014-10-30 09:27,60
+Maria Island,2014-10-30 09:27,75
+Maria Island,2014-10-30 09:27,85
+Maria Island,2014-11-28 09:30,0
+Maria Island,2014-11-28 09:30,10
+Maria Island,2014-11-28 09:30,20
+Maria Island,2014-11-28 09:30,30
+Maria Island,2014-11-28 09:30,40
+Maria Island,2014-11-28 09:30,50
+Maria Island,2014-11-28 09:30,60
+Maria Island,2014-11-28 09:30,75
+Maria Island,2014-11-28 09:30,85
+Maria Island,2014-12-09 10:05,0
+Maria Island,2014-12-09 10:05,10
+Maria Island,2014-12-09 10:05,20
+Maria Island,2014-12-09 10:05,30
+Maria Island,2014-12-09 10:05,40
+Maria Island,2014-12-09 10:05,50
+Maria Island,2014-12-09 10:05,60
+Maria Island,2014-12-09 10:05,75
+Maria Island,2014-12-09 10:05,85
+Maria Island,2015-02-25 10:20,0
+Maria Island,2015-02-25 10:20,10
+Maria Island,2015-02-25 10:20,20
+Maria Island,2015-02-25 10:20,30
+Maria Island,2015-02-25 10:20,40
+Maria Island,2015-02-25 10:20,50
+Maria Island,2015-02-25 10:20,60
+Maria Island,2015-02-25 10:20,75
+Maria Island,2015-02-25 10:20,85
+Maria Island,2015-03-13 09:33,0
+Maria Island,2015-03-13 09:33,10
+Maria Island,2015-03-13 09:33,20
+Maria Island,2015-03-13 09:33,30
+Maria Island,2015-03-13 09:33,40
+Maria Island,2015-03-13 09:33,50
+Maria Island,2015-03-13 09:33,60
+Maria Island,2015-03-13 09:33,75
+Maria Island,2015-03-13 09:33,85
+Maria Island,2015-04-21 10:50,0
+Maria Island,2015-04-21 10:50,10
+Maria Island,2015-04-21 10:50,20
+Maria Island,2015-04-21 10:50,30
+Maria Island,2015-04-21 10:50,40
+Maria Island,2015-04-21 10:50,50
+Maria Island,2015-04-21 10:50,60
+Maria Island,2015-04-21 10:50,75
+Maria Island,2015-04-21 10:50,85
+Maria Island,2015-05-26 10:35,0
+Maria Island,2015-05-26 10:35,10
+Maria Island,2015-05-26 10:35,20
+Maria Island,2015-05-26 10:35,30
+Maria Island,2015-05-26 10:35,40
+Maria Island,2015-05-26 10:35,50
+Maria Island,2015-05-26 10:35,60
+Maria Island,2015-05-26 10:35,75
+Maria Island,2015-05-26 10:35,85
+Maria Island,2015-07-23 10:45,0
+Maria Island,2015-07-23 10:45,10
+Maria Island,2015-07-23 10:45,20
+Maria Island,2015-07-23 10:45,30
+Maria Island,2015-07-23 10:45,40
+Maria Island,2015-07-23 10:45,50
+Maria Island,2015-07-23 10:45,60
+Maria Island,2015-07-23 10:45,75
+Maria Island,2015-07-23 10:45,85
+Maria Island,2015-08-12 09:35,0
+Maria Island,2015-08-12 09:35,10
+Maria Island,2015-08-12 09:35,20
+Maria Island,2015-08-12 09:35,30
+Maria Island,2015-08-12 09:35,40
+Maria Island,2015-08-12 09:35,50
+Maria Island,2015-08-12 09:35,60
+Maria Island,2015-08-12 09:35,75
+Maria Island,2015-08-12 09:35,85
+Maria Island,2015-10-01 11:05,0
+Maria Island,2015-10-01 11:05,10
+Maria Island,2015-10-01 11:05,20
+Maria Island,2015-10-01 11:05,30
+Maria Island,2015-10-01 11:05,40
+Maria Island,2015-10-01 11:05,50
+Maria Island,2015-10-01 11:05,60
+Maria Island,2015-10-01 11:05,75
+Maria Island,2015-10-01 11:05,85
+Maria Island,2015-11-19 10:45,0
+Maria Island,2015-11-19 10:45,10
+Maria Island,2015-11-19 10:45,20
+Maria Island,2015-11-19 10:45,30
+Maria Island,2015-11-19 10:45,40
+Maria Island,2015-11-19 10:45,50
+Maria Island,2015-11-19 10:45,60
+Maria Island,2015-11-19 10:45,75
+Maria Island,2015-11-19 10:45,85
+Maria Island,2015-12-17 09:35,0
+Maria Island,2015-12-17 09:35,10
+Maria Island,2015-12-17 09:35,20
+Maria Island,2015-12-17 09:35,30
+Maria Island,2015-12-17 09:35,40
+Maria Island,2015-12-17 09:35,50
+Maria Island,2015-12-17 09:35,60
+Maria Island,2015-12-17 09:35,75
+Maria Island,2015-12-17 09:35,85
+Maria Island,2016-02-10 10:45,0
+Maria Island,2016-02-10 10:45,10
+Maria Island,2016-02-10 10:45,20
+Maria Island,2016-02-10 10:45,30
+Maria Island,2016-02-10 10:45,40
+Maria Island,2016-02-10 10:45,50
+Maria Island,2016-02-10 10:45,60
+Maria Island,2016-02-10 10:45,75
+Maria Island,2016-02-10 10:45,85
+Maria Island,2016-03-04 10:15,0
+Maria Island,2016-03-04 10:15,10
+Maria Island,2016-03-04 10:15,20
+Maria Island,2016-03-04 10:15,30
+Maria Island,2016-03-04 10:15,40
+Maria Island,2016-03-04 10:15,50
+Maria Island,2016-03-04 10:15,60
+Maria Island,2016-03-04 10:15,75
+Maria Island,2016-03-04 10:15,85
+Maria Island,2016-03-22 10:11,0
+Maria Island,2016-03-22 10:11,10
+Maria Island,2016-03-22 10:11,20
+Maria Island,2016-03-22 10:11,30
+Maria Island,2016-03-22 10:11,40
+Maria Island,2016-03-22 10:11,50
+Maria Island,2016-03-22 10:11,60
+Maria Island,2016-03-22 10:11,75
+Maria Island,2016-03-22 10:11,85
+Maria Island,2016-04-28 10:47,0
+Maria Island,2016-04-28 10:47,10
+Maria Island,2016-04-28 10:47,20
+Maria Island,2016-04-28 10:47,30
+Maria Island,2016-04-28 10:47,40
+Maria Island,2016-04-28 10:47,50
+Maria Island,2016-04-28 10:47,60
+Maria Island,2016-04-28 10:47,75
+Maria Island,2016-04-28 10:47,85
+Maria Island,2016-05-31 09:45,0
+Maria Island,2016-05-31 09:45,10
+Maria Island,2016-05-31 09:45,20
+Maria Island,2016-05-31 09:45,30
+Maria Island,2016-05-31 09:45,40
+Maria Island,2016-05-31 09:45,50
+Maria Island,2016-05-31 09:45,60
+Maria Island,2016-05-31 09:45,75
+Maria Island,2016-05-31 09:45,85
+Maria Island,2016-07-01 09:30,0
+Maria Island,2016-07-01 09:30,10
+Maria Island,2016-07-01 09:30,20
+Maria Island,2016-07-01 09:30,30
+Maria Island,2016-07-01 09:30,40
+Maria Island,2016-07-01 09:30,50
+Maria Island,2016-07-01 09:30,60
+Maria Island,2016-07-01 09:30,75
+Maria Island,2016-07-01 09:30,85
+Maria Island,2016-07-21 09:30,0
+Maria Island,2016-07-21 09:30,10
+Maria Island,2016-07-21 09:30,20
+Maria Island,2016-07-21 09:30,30
+Maria Island,2016-07-21 09:30,40
+Maria Island,2016-07-21 09:30,50
+Maria Island,2016-07-21 09:30,60
+Maria Island,2016-07-21 09:30,75
+Maria Island,2016-07-21 09:30,85
+Maria Island,2016-08-31 10:26,0
+Maria Island,2016-08-31 10:26,10
+Maria Island,2016-08-31 10:26,20
+Maria Island,2016-08-31 10:26,30
+Maria Island,2016-08-31 10:26,40
+Maria Island,2016-08-31 10:26,50
+Maria Island,2016-08-31 10:26,60
+Maria Island,2016-08-31 10:26,75
+Maria Island,2016-08-31 10:26,85
+Maria Island,2016-09-27 10:10,0
+Maria Island,2016-09-27 10:10,10
+Maria Island,2016-09-27 10:10,20
+Maria Island,2016-09-27 10:10,30
+Maria Island,2016-09-27 10:10,40
+Maria Island,2016-09-27 10:10,50
+Maria Island,2016-09-27 10:10,60
+Maria Island,2016-09-27 10:10,75
+Maria Island,2016-09-27 10:10,85
+Maria Island,2016-11-18 09:10,0
+Maria Island,2016-11-18 09:10,10
+Maria Island,2016-11-18 09:10,20
+Maria Island,2016-11-18 09:10,30
+Maria Island,2016-11-18 09:10,40
+Maria Island,2016-11-18 09:10,50
+Maria Island,2016-11-18 09:10,60
+Maria Island,2016-11-18 09:10,75
+Maria Island,2016-11-18 09:10,85
+Maria Island,2017-01-05 09:45,0
+Maria Island,2017-01-05 09:45,10
+Maria Island,2017-01-05 09:45,20
+Maria Island,2017-01-05 09:45,30
+Maria Island,2017-01-05 09:45,40
+Maria Island,2017-01-05 09:45,50
+Maria Island,2017-01-05 09:45,60
+Maria Island,2017-01-05 09:45,75
+Maria Island,2017-01-05 09:45,85
+Maria Island,2017-02-24 08:50,0
+Maria Island,2017-02-24 08:50,10
+Maria Island,2017-02-24 08:50,20
+Maria Island,2017-02-24 08:50,30
+Maria Island,2017-02-24 08:50,40
+Maria Island,2017-02-24 08:50,50
+Maria Island,2017-02-24 08:50,60
+Maria Island,2017-02-24 08:50,75
+Maria Island,2017-02-24 08:50,85
+Maria Island,2017-03-24 09:30,0
+Maria Island,2017-03-24 09:30,10
+Maria Island,2017-03-24 09:30,20
+Maria Island,2017-03-24 09:30,30
+Maria Island,2017-03-24 09:30,40
+Maria Island,2017-03-24 09:30,50
+Maria Island,2017-03-24 09:30,60
+Maria Island,2017-03-24 09:30,75
+Maria Island,2017-03-24 09:30,85
+Maria Island,2017-04-12 10:15,0
+Maria Island,2017-04-12 10:15,10
+Maria Island,2017-04-12 10:15,20
+Maria Island,2017-04-12 10:15,30
+Maria Island,2017-04-12 10:15,40
+Maria Island,2017-04-12 10:15,50
+Maria Island,2017-04-12 10:15,60
+Maria Island,2017-04-12 10:15,75
+Maria Island,2017-04-12 10:15,85
+Maria Island,2017-06-02 09:00,0
+Maria Island,2017-06-02 09:00,10
+Maria Island,2017-06-02 09:00,20
+Maria Island,2017-06-02 09:00,30
+Maria Island,2017-06-02 09:00,40
+Maria Island,2017-06-02 09:00,50
+Maria Island,2017-06-02 09:00,60
+Maria Island,2017-06-02 09:00,75
+Maria Island,2017-06-02 09:00,85
+Maria Island,2017-06-27 09:25,0
+Maria Island,2017-06-27 09:25,10
+Maria Island,2017-06-27 09:25,20
+Maria Island,2017-06-27 09:25,30
+Maria Island,2017-06-27 09:25,40
+Maria Island,2017-06-27 09:25,50
+Maria Island,2017-06-27 09:25,60
+Maria Island,2017-06-27 09:25,75
+Maria Island,2017-06-27 09:25,85
+Maria Island,2017-08-01 10:01,0
+Maria Island,2017-08-01 10:01,10
+Maria Island,2017-08-01 10:01,20
+Maria Island,2017-08-01 10:01,30
+Maria Island,2017-08-01 10:01,40
+Maria Island,2017-08-01 10:01,50
+Maria Island,2017-08-01 10:01,60
+Maria Island,2017-08-01 10:01,75
+Maria Island,2017-08-01 10:01,85
+Maria Island,2017-09-22 09:15,0
+Maria Island,2017-09-22 09:15,10
+Maria Island,2017-09-22 09:15,20
+Maria Island,2017-09-22 09:15,30
+Maria Island,2017-09-22 09:15,40
+Maria Island,2017-09-22 09:15,50
+Maria Island,2017-09-22 09:15,60
+Maria Island,2017-09-22 09:15,75
+Maria Island,2017-09-22 09:15,85
+Maria Island,2017-10-16 09:50,0
+Maria Island,2017-10-16 09:50,10
+Maria Island,2017-10-16 09:50,20
+Maria Island,2017-10-16 09:50,30
+Maria Island,2017-10-16 09:50,40
+Maria Island,2017-10-16 09:50,50
+Maria Island,2017-10-16 09:50,60
+Maria Island,2017-10-16 09:50,75
+Maria Island,2017-10-16 09:50,85
+Maria Island,2017-11-24 09:50,0
+Maria Island,2017-11-24 09:50,10
+Maria Island,2017-11-24 09:50,20
+Maria Island,2017-11-24 09:50,30
+Maria Island,2017-11-24 09:50,40
+Maria Island,2017-11-24 09:50,50
+Maria Island,2017-11-24 09:50,60
+Maria Island,2017-11-24 09:50,75
+Maria Island,2017-11-24 09:50,85
+Maria Island,2017-12-18 09:40,0
+Maria Island,2017-12-18 09:40,10
+Maria Island,2017-12-18 09:40,20
+Maria Island,2017-12-18 09:40,30
+Maria Island,2017-12-18 09:40,40
+Maria Island,2017-12-18 09:40,50
+Maria Island,2017-12-18 09:40,60
+Maria Island,2017-12-18 09:40,75
+Maria Island,2017-12-18 09:40,85
+Maria Island,2018-01-17 10:30,0
+Maria Island,2018-01-17 10:30,10
+Maria Island,2018-01-17 10:30,20
+Maria Island,2018-01-17 10:30,30
+Maria Island,2018-01-17 10:30,40
+Maria Island,2018-01-17 10:30,50
+Maria Island,2018-01-17 10:30,60
+Maria Island,2018-01-17 10:30,75
+Maria Island,2018-01-17 10:30,85
+Maria Island,2018-03-02 09:30,0
+Maria Island,2018-03-02 09:30,10
+Maria Island,2018-03-02 09:30,20
+Maria Island,2018-03-02 09:30,30
+Maria Island,2018-03-02 09:30,40
+Maria Island,2018-03-02 09:30,50
+Maria Island,2018-03-02 09:30,60
+Maria Island,2018-03-02 09:30,75
+Maria Island,2018-03-02 09:30,85
+Maria Island,2018-03-16 08:45,0
+Maria Island,2018-03-16 08:45,10
+Maria Island,2018-03-16 08:45,20
+Maria Island,2018-03-16 08:45,30
+Maria Island,2018-03-16 08:45,40
+Maria Island,2018-03-16 08:45,50
+Maria Island,2018-03-16 08:45,60
+Maria Island,2018-03-16 08:45,75
+Maria Island,2018-03-16 08:45,85
+Maria Island,2018-04-19 09:30,0
+Maria Island,2018-04-19 09:30,10
+Maria Island,2018-04-19 09:30,20
+Maria Island,2018-04-19 09:30,30
+Maria Island,2018-04-19 09:30,40
+Maria Island,2018-04-19 09:30,50
+Maria Island,2018-04-19 09:30,60
+Maria Island,2018-04-19 09:30,75
+Maria Island,2018-04-19 09:30,85
+Maria Island,2018-06-06 09:30,0
+Maria Island,2018-06-06 09:30,10
+Maria Island,2018-06-06 09:30,20
+Maria Island,2018-06-06 09:30,30
+Maria Island,2018-06-06 09:30,40
+Maria Island,2018-06-06 09:30,50
+Maria Island,2018-06-06 09:30,60
+Maria Island,2018-06-06 09:30,75
+Maria Island,2018-06-06 09:30,85
+Maria Island,2018-06-28 09:00,0
+Maria Island,2018-06-28 09:00,10
+Maria Island,2018-06-28 09:00,20
+Maria Island,2018-06-28 09:00,30
+Maria Island,2018-06-28 09:00,40
+Maria Island,2018-06-28 09:00,50
+Maria Island,2018-06-28 09:00,60
+Maria Island,2018-06-28 09:00,75
+Maria Island,2018-06-28 09:00,85
+Maria Island,2018-07-12 08:40,0
+Maria Island,2018-07-12 08:40,10
+Maria Island,2018-07-12 08:40,20
+Maria Island,2018-07-12 08:40,30
+Maria Island,2018-07-12 08:40,40
+Maria Island,2018-07-12 08:40,50
+Maria Island,2018-07-12 08:40,60
+Maria Island,2018-07-12 08:40,75
+Maria Island,2018-07-12 08:40,85
+Maria Island,2018-09-20 09:50,0
+Maria Island,2018-09-20 09:50,10
+Maria Island,2018-09-20 09:50,20
+Maria Island,2018-09-20 09:50,30
+Maria Island,2018-09-20 09:50,40
+Maria Island,2018-09-20 09:50,50
+Maria Island,2018-09-20 09:50,60
+Maria Island,2018-09-20 09:50,75
+Maria Island,2018-09-20 09:50,85
+Maria Island,2018-10-19 08:45,0
+Maria Island,2018-10-19 08:45,10
+Maria Island,2018-10-19 08:45,20
+Maria Island,2018-10-19 08:45,30
+Maria Island,2018-10-19 08:45,40
+Maria Island,2018-10-19 08:45,50
+Maria Island,2018-10-19 08:45,60
+Maria Island,2018-10-19 08:45,75
+Maria Island,2018-10-19 08:45,85
+Maria Island,2018-12-05 09:10,0
+Maria Island,2018-12-05 09:10,10
+Maria Island,2018-12-05 09:10,10
+Maria Island,2018-12-05 09:10,20
+Maria Island,2018-12-05 09:10,30
+Maria Island,2018-12-05 09:10,40
+Maria Island,2018-12-05 09:10,50
+Maria Island,2018-12-05 09:10,60
+Maria Island,2018-12-05 09:10,75
+Maria Island,2018-12-05 09:10,85
+Maria Island,2019-01-07 08:50,0
+Maria Island,2019-01-07 08:50,10
+Maria Island,2019-01-07 08:50,20
+Maria Island,2019-01-07 08:50,30
+Maria Island,2019-01-07 08:50,40
+Maria Island,2019-01-07 08:50,50
+Maria Island,2019-01-07 08:50,60
+Maria Island,2019-01-07 08:50,75
+Maria Island,2019-01-07 08:50,85
+Maria Island,2019-03-21 09:35,0
+Maria Island,2019-03-21 09:35,10
+Maria Island,2019-03-21 09:35,20
+Maria Island,2019-03-21 09:35,30
+Maria Island,2019-03-21 09:35,40
+Maria Island,2019-03-21 09:35,50
+Maria Island,2019-03-21 09:35,60
+Maria Island,2019-03-21 09:35,75
+Maria Island,2019-03-21 09:35,85
+Maria Island,2019-05-01 09:47,0
+Maria Island,2019-05-01 09:47,10
+Maria Island,2019-05-01 09:47,20
+Maria Island,2019-05-01 09:47,30
+Maria Island,2019-05-01 09:47,40
+Maria Island,2019-05-01 09:47,50
+Maria Island,2019-05-01 09:47,60
+Maria Island,2019-05-01 09:47,75
+Maria Island,2019-05-01 09:47,85
+Maria Island,2019-06-24 10:10,0
+Maria Island,2019-06-24 10:10,10
+Maria Island,2019-06-24 10:10,20
+Maria Island,2019-06-24 10:10,30
+Maria Island,2019-06-24 10:10,40
+Maria Island,2019-06-24 10:10,50
+Maria Island,2019-06-24 10:10,60
+Maria Island,2019-06-24 10:10,75
+Maria Island,2019-06-24 10:10,85
+Maria Island,2019-07-31 10:20,0
+Maria Island,2019-07-31 10:20,10
+Maria Island,2019-07-31 10:20,20
+Maria Island,2019-07-31 10:20,30
+Maria Island,2019-07-31 10:20,40
+Maria Island,2019-07-31 10:20,50
+Maria Island,2019-07-31 10:20,60
+Maria Island,2019-07-31 10:20,75
+Maria Island,2019-07-31 10:20,85
+Maria Island,2019-08-29 09:20,0
+Maria Island,2019-08-29 09:20,10
+Maria Island,2019-08-29 09:20,20
+Maria Island,2019-08-29 09:20,30
+Maria Island,2019-08-29 09:20,40
+Maria Island,2019-08-29 09:20,50
+Maria Island,2019-08-29 09:20,60
+Maria Island,2019-08-29 09:20,75
+Maria Island,2019-08-29 09:20,85
+Maria Island,2019-09-25 10:03,0
+Maria Island,2019-09-25 10:03,10
+Maria Island,2019-09-25 10:03,20
+Maria Island,2019-09-25 10:03,30
+Maria Island,2019-09-25 10:03,40
+Maria Island,2019-09-25 10:03,50
+Maria Island,2019-09-25 10:03,60
+Maria Island,2019-09-25 10:03,75
+Maria Island,2019-09-25 10:03,85
+Maria Island,2019-10-16 09:40,0
+Maria Island,2019-10-16 09:40,10
+Maria Island,2019-10-16 09:40,20
+Maria Island,2019-10-16 09:40,30
+Maria Island,2019-10-16 09:40,40
+Maria Island,2019-10-16 09:40,50
+Maria Island,2019-10-16 09:40,60
+Maria Island,2019-10-16 09:40,75
+Maria Island,2019-10-16 09:40,85
+Maria Island,2019-11-22 09:23,0
+Maria Island,2019-11-22 09:23,10
+Maria Island,2019-11-22 09:23,20
+Maria Island,2019-11-22 09:23,30
+Maria Island,2019-11-22 09:23,40
+Maria Island,2019-11-22 09:23,50
+Maria Island,2019-11-22 09:23,60
+Maria Island,2019-11-22 09:23,75
+Maria Island,2019-11-22 09:23,85
+Maria Island,2019-12-11 09:30,0
+Maria Island,2019-12-11 09:30,10
+Maria Island,2019-12-11 09:30,20
+Maria Island,2019-12-11 09:30,30
+Maria Island,2019-12-11 09:30,40
+Maria Island,2019-12-11 09:30,50
+Maria Island,2019-12-11 09:30,60
+Maria Island,2019-12-11 09:30,75
+Maria Island,2019-12-11 09:30,85
+Maria Island,2020-01-07 09:45,0
+Maria Island,2020-01-07 09:45,10
+Maria Island,2020-01-07 09:45,20
+Maria Island,2020-01-07 09:45,30
+Maria Island,2020-01-07 09:45,40
+Maria Island,2020-01-07 09:45,50
+Maria Island,2020-01-07 09:45,60
+Maria Island,2020-01-07 09:45,75
+Maria Island,2020-01-07 09:45,85
+Maria Island,2020-02-24 10:30,0
+Maria Island,2020-02-24 10:30,10
+Maria Island,2020-02-24 10:30,20
+Maria Island,2020-02-24 10:30,30
+Maria Island,2020-02-24 10:30,40
+Maria Island,2020-02-24 10:30,50
+Maria Island,2020-02-24 10:30,60
+Maria Island,2020-02-24 10:30,75
+Maria Island,2020-02-24 10:30,85
+Maria Island,2020-05-26 10:10,0
+Maria Island,2020-05-26 10:10,10
+Maria Island,2020-05-26 10:10,20
+Maria Island,2020-05-26 10:10,30
+Maria Island,2020-05-26 10:10,40
+Maria Island,2020-05-26 10:10,50
+Maria Island,2020-05-26 10:10,60
+Maria Island,2020-05-26 10:10,75
+Maria Island,2020-05-26 10:10,85
+Maria Island,2020-06-29 09:45,0
+Maria Island,2020-06-29 09:45,10
+Maria Island,2020-06-29 09:45,20
+Maria Island,2020-06-29 09:45,30
+Maria Island,2020-06-29 09:45,40
+Maria Island,2020-06-29 09:45,50
+Maria Island,2020-06-29 09:45,60
+Maria Island,2020-06-29 09:45,75
+Maria Island,2020-06-29 09:45,85
+Maria Island,2020-08-10 10:05,0
+Maria Island,2020-08-10 10:05,10
+Maria Island,2020-08-10 10:05,20
+Maria Island,2020-08-10 10:05,30
+Maria Island,2020-08-10 10:05,40
+Maria Island,2020-08-10 10:05,50
+Maria Island,2020-08-10 10:05,60
+Maria Island,2020-08-10 10:05,75
+Maria Island,2020-08-10 10:05,85
+Maria Island,2020-09-10 09:00,0
+Maria Island,2020-09-10 09:00,10
+Maria Island,2020-09-10 09:00,20
+Maria Island,2020-09-10 09:00,30
+Maria Island,2020-09-10 09:00,40
+Maria Island,2020-09-10 09:00,50
+Maria Island,2020-09-10 09:00,60
+Maria Island,2020-09-10 09:00,75
+Maria Island,2020-09-10 09:00,85
+Maria Island,2020-09-29 09:00,0
+Maria Island,2020-09-29 09:00,10
+Maria Island,2020-09-29 09:00,20
+Maria Island,2020-09-29 09:00,30
+Maria Island,2020-09-29 09:00,40
+Maria Island,2020-09-29 09:00,50
+Maria Island,2020-09-29 09:00,60
+Maria Island,2020-09-29 09:00,75
+Maria Island,2020-09-29 09:00,85
+Maria Island,2020-10-21 10:10,0
+Maria Island,2020-10-21 10:10,10
+Maria Island,2020-10-21 10:10,20
+Maria Island,2020-10-21 10:10,30
+Maria Island,2020-10-21 10:10,40
+Maria Island,2020-10-21 10:10,50
+Maria Island,2020-10-21 10:10,60
+Maria Island,2020-10-21 10:10,75
+Maria Island,2020-10-21 10:10,85
+Maria Island,2020-11-19 09:45,0
+Maria Island,2020-11-19 09:45,10
+Maria Island,2020-11-19 09:45,20
+Maria Island,2020-11-19 09:45,30
+Maria Island,2020-11-19 09:45,40
+Maria Island,2020-11-19 09:45,50
+Maria Island,2020-11-19 09:45,60
+Maria Island,2020-11-19 09:45,75
+Maria Island,2020-11-19 09:45,85
+Maria Island,2021-01-07 09:54,0
+Maria Island,2021-01-07 09:54,10
+Maria Island,2021-01-07 09:54,20
+Maria Island,2021-01-07 09:54,30
+Maria Island,2021-01-07 09:54,40
+Maria Island,2021-01-07 09:54,50
+Maria Island,2021-01-07 09:54,60
+Maria Island,2021-01-07 09:54,75
+Maria Island,2021-01-07 09:54,85
+Maria Island,2021-02-16 09:50,0
+Maria Island,2021-02-16 09:50,10
+Maria Island,2021-02-16 09:50,20
+Maria Island,2021-02-16 09:50,30
+Maria Island,2021-02-16 09:50,40
+Maria Island,2021-02-16 09:50,50
+Maria Island,2021-02-16 09:50,60
+Maria Island,2021-02-16 09:50,75
+Maria Island,2021-02-16 09:50,85
+Ningaloo,2010-11-08 15:00,0
+Ningaloo,2010-11-08 15:00,10
+Ningaloo,2010-11-08 15:00,20
+Ningaloo,2010-11-08 15:00,30
+Ningaloo,2010-11-08 15:00,40
+Ningaloo,2010-11-08 15:00,50
+Ningaloo,2011-02-09 10:15,0
+Ningaloo,2011-02-09 10:15,10
+Ningaloo,2011-02-09 10:15,20
+Ningaloo,2011-02-09 10:15,30
+Ningaloo,2011-02-09 10:15,40
+Ningaloo,2011-02-09 10:15,50
+Ningaloo,2011-05-01 08:24,0
+Ningaloo,2011-05-01 08:24,10
+Ningaloo,2011-05-01 08:24,20
+Ningaloo,2011-05-01 08:24,30
+Ningaloo,2011-05-01 08:24,40
+Ningaloo,2011-05-01 08:24,50
+Ningaloo,2011-07-06 11:04,0
+Ningaloo,2011-07-06 11:04,10
+Ningaloo,2011-07-06 11:04,20
+Ningaloo,2011-07-06 11:04,30
+Ningaloo,2011-07-06 11:04,40
+Ningaloo,2011-07-06 11:04,50
+Ningaloo,2011-11-07 10:00,0
+Ningaloo,2011-11-07 10:00,10
+Ningaloo,2011-11-07 10:00,20
+Ningaloo,2011-11-07 10:00,30
+Ningaloo,2011-11-07 10:00,40
+Ningaloo,2011-11-07 10:00,50
+Ningaloo,2012-02-26 09:54,0
+Ningaloo,2012-02-26 09:54,10
+Ningaloo,2012-02-26 09:54,20
+Ningaloo,2012-02-26 09:54,30
+Ningaloo,2012-02-26 09:54,40
+Ningaloo,2012-02-26 09:54,50
+Ningaloo,2012-05-09 10:50,0
+Ningaloo,2012-05-09 10:50,10
+Ningaloo,2012-05-09 10:50,20
+Ningaloo,2012-05-09 10:50,30
+Ningaloo,2012-05-09 10:50,40
+Ningaloo,2012-05-09 10:50,50
+Ningaloo,2012-08-27 08:05,0
+Ningaloo,2012-08-27 08:05,10
+Ningaloo,2012-08-27 08:05,20
+Ningaloo,2012-08-27 08:05,30
+Ningaloo,2012-08-27 08:05,40
+Ningaloo,2012-08-27 08:05,50
+Ningaloo,2012-11-07 12:00,0
+Ningaloo,2012-11-07 12:00,10
+Ningaloo,2012-11-07 12:00,20
+Ningaloo,2012-11-07 12:00,30
+Ningaloo,2012-11-07 12:00,40
+Ningaloo,2012-11-07 12:00,50
+Ningaloo,2013-02-09 09:22,0
+Ningaloo,2013-02-09 09:22,10
+Ningaloo,2013-02-09 09:22,20
+Ningaloo,2013-02-09 09:22,30
+Ningaloo,2013-02-09 09:22,40
+Ningaloo,2013-02-09 09:22,50
+Ningaloo,2013-05-09 10:20,0
+Ningaloo,2013-05-09 10:20,10
+Ningaloo,2013-05-09 10:20,20
+Ningaloo,2013-05-09 10:20,30
+Ningaloo,2013-05-09 10:20,40
+Ningaloo,2013-05-09 10:20,50
+Ningaloo,2013-08-06 14:03,0
+Ningaloo,2013-08-06 14:03,10
+Ningaloo,2013-08-06 14:03,20
+Ningaloo,2013-08-06 14:03,30
+Ningaloo,2013-08-06 14:03,40
+Ningaloo,2013-08-06 14:03,50
+North Stradbroke,2009-09-17 08:30,0
+North Stradbroke,2009-09-17 08:30,10
+North Stradbroke,2009-09-17 08:30,20
+North Stradbroke,2009-09-17 08:30,30
+North Stradbroke,2009-09-17 08:30,40
+North Stradbroke,2009-09-17 08:30,50
+North Stradbroke,2009-09-17 08:30,57
+North Stradbroke,2009-10-07 09:07,0
+North Stradbroke,2009-10-07 09:07,10
+North Stradbroke,2009-10-07 09:07,20
+North Stradbroke,2009-10-07 09:07,30
+North Stradbroke,2009-10-07 09:07,40
+North Stradbroke,2009-10-07 09:07,50
+North Stradbroke,2009-10-07 09:07,57
+North Stradbroke,2009-10-15 10:10,0
+North Stradbroke,2009-10-15 10:10,10
+North Stradbroke,2009-10-15 10:10,20
+North Stradbroke,2009-10-15 10:10,30
+North Stradbroke,2009-10-15 10:10,40
+North Stradbroke,2009-10-15 10:10,50
+North Stradbroke,2009-10-15 10:10,57
+North Stradbroke,2009-10-22 09:20,0
+North Stradbroke,2009-10-22 09:20,10
+North Stradbroke,2009-10-22 09:20,20
+North Stradbroke,2009-10-22 09:20,30
+North Stradbroke,2009-10-22 09:20,40
+North Stradbroke,2009-10-22 09:20,50
+North Stradbroke,2009-10-22 09:20,57
+North Stradbroke,2009-11-02 09:02,0
+North Stradbroke,2009-11-02 09:02,10
+North Stradbroke,2009-11-02 09:02,20
+North Stradbroke,2009-11-02 09:02,30
+North Stradbroke,2009-11-02 09:02,40
+North Stradbroke,2009-11-02 09:02,50
+North Stradbroke,2009-11-02 09:02,57
+North Stradbroke,2009-11-16 08:20,0
+North Stradbroke,2009-11-16 08:20,10
+North Stradbroke,2009-11-16 08:20,20
+North Stradbroke,2009-11-16 08:20,30
+North Stradbroke,2009-11-16 08:20,40
+North Stradbroke,2009-11-16 08:20,50
+North Stradbroke,2009-11-16 08:20,57
+North Stradbroke,2009-12-16 09:00,0
+North Stradbroke,2009-12-16 09:00,10
+North Stradbroke,2009-12-16 09:00,20
+North Stradbroke,2009-12-16 09:00,30
+North Stradbroke,2009-12-16 09:00,40
+North Stradbroke,2009-12-16 09:00,50
+North Stradbroke,2009-12-16 09:00,57
+North Stradbroke,2010-01-22 09:50,0
+North Stradbroke,2010-01-22 09:50,10
+North Stradbroke,2010-01-22 09:50,20
+North Stradbroke,2010-01-22 09:50,30
+North Stradbroke,2010-01-22 09:50,40
+North Stradbroke,2010-01-22 09:50,50
+North Stradbroke,2010-01-22 09:50,57
+North Stradbroke,2010-02-15 09:30,0
+North Stradbroke,2010-02-15 09:30,10
+North Stradbroke,2010-02-15 09:30,20
+North Stradbroke,2010-02-15 09:30,30
+North Stradbroke,2010-02-15 09:30,40
+North Stradbroke,2010-02-15 09:30,50
+North Stradbroke,2010-02-15 09:30,57
+North Stradbroke,2010-03-23 09:15,0
+North Stradbroke,2010-03-23 09:15,10
+North Stradbroke,2010-03-23 09:15,20
+North Stradbroke,2010-03-23 09:15,30
+North Stradbroke,2010-03-23 09:15,40
+North Stradbroke,2010-03-23 09:15,50
+North Stradbroke,2010-03-23 09:15,57
+North Stradbroke,2010-04-12 08:35,0
+North Stradbroke,2010-04-12 08:35,10
+North Stradbroke,2010-04-12 08:35,20
+North Stradbroke,2010-04-12 08:35,30
+North Stradbroke,2010-04-12 08:35,40
+North Stradbroke,2010-04-12 08:35,50
+North Stradbroke,2010-04-12 08:35,57
+North Stradbroke,2010-05-21 08:21,0
+North Stradbroke,2010-05-21 08:21,10
+North Stradbroke,2010-05-21 08:21,20
+North Stradbroke,2010-05-21 08:21,30
+North Stradbroke,2010-05-21 08:21,40
+North Stradbroke,2010-05-21 08:21,50
+North Stradbroke,2010-05-21 08:21,57
+North Stradbroke,2010-06-18 12:30,0
+North Stradbroke,2010-06-18 12:30,10
+North Stradbroke,2010-06-18 12:30,20
+North Stradbroke,2010-06-18 12:30,30
+North Stradbroke,2010-06-18 12:30,40
+North Stradbroke,2010-06-18 12:30,50
+North Stradbroke,2010-06-18 12:30,57
+North Stradbroke,2010-07-12 08:45,0
+North Stradbroke,2010-07-12 08:45,10
+North Stradbroke,2010-07-12 08:45,20
+North Stradbroke,2010-07-12 08:45,30
+North Stradbroke,2010-07-12 08:45,40
+North Stradbroke,2010-07-12 08:45,50
+North Stradbroke,2010-07-12 08:45,57
+North Stradbroke,2010-08-18 08:25,0
+North Stradbroke,2010-08-18 08:25,10
+North Stradbroke,2010-08-18 08:25,20
+North Stradbroke,2010-08-18 08:25,30
+North Stradbroke,2010-08-18 08:25,40
+North Stradbroke,2010-08-18 08:25,50
+North Stradbroke,2010-08-18 08:25,57
+North Stradbroke,2010-09-16 12:45,0
+North Stradbroke,2010-09-16 12:45,10
+North Stradbroke,2010-09-16 12:45,20
+North Stradbroke,2010-09-16 12:45,30
+North Stradbroke,2010-09-16 12:45,40
+North Stradbroke,2010-09-16 12:45,50
+North Stradbroke,2010-09-16 12:45,57
+North Stradbroke,2010-10-18 10:00,0
+North Stradbroke,2010-10-18 10:00,10
+North Stradbroke,2010-10-18 10:00,20
+North Stradbroke,2010-10-18 10:00,30
+North Stradbroke,2010-10-18 10:00,40
+North Stradbroke,2010-10-18 10:00,50
+North Stradbroke,2010-10-18 10:00,57
+North Stradbroke,2010-11-16 09:30,0
+North Stradbroke,2010-11-16 09:30,10
+North Stradbroke,2010-11-16 09:30,20
+North Stradbroke,2010-11-16 09:30,30
+North Stradbroke,2010-11-16 09:30,40
+North Stradbroke,2010-11-16 09:30,50
+North Stradbroke,2010-11-16 09:30,57
+North Stradbroke,2010-12-16 08:30,0
+North Stradbroke,2010-12-16 08:30,10
+North Stradbroke,2010-12-16 08:30,20
+North Stradbroke,2010-12-16 08:30,30
+North Stradbroke,2010-12-16 08:30,40
+North Stradbroke,2010-12-16 08:30,50
+North Stradbroke,2010-12-16 08:30,57
+North Stradbroke,2011-01-19 10:00,0
+North Stradbroke,2011-01-19 10:00,10
+North Stradbroke,2011-01-19 10:00,20
+North Stradbroke,2011-01-19 10:00,30
+North Stradbroke,2011-01-19 10:00,40
+North Stradbroke,2011-01-19 10:00,50
+North Stradbroke,2011-01-19 10:00,57
+North Stradbroke,2011-02-21 09:40,0
+North Stradbroke,2011-02-21 09:40,10
+North Stradbroke,2011-02-21 09:40,20
+North Stradbroke,2011-02-21 09:40,30
+North Stradbroke,2011-02-21 09:40,40
+North Stradbroke,2011-02-21 09:40,50
+North Stradbroke,2011-02-21 09:40,57
+North Stradbroke,2011-03-23 10:20,0
+North Stradbroke,2011-03-23 10:20,10
+North Stradbroke,2011-03-23 10:20,20
+North Stradbroke,2011-03-23 10:20,30
+North Stradbroke,2011-03-23 10:20,40
+North Stradbroke,2011-03-23 10:20,50
+North Stradbroke,2011-03-23 10:20,57
+North Stradbroke,2011-04-13 09:25,0
+North Stradbroke,2011-04-13 09:25,10
+North Stradbroke,2011-04-13 09:25,20
+North Stradbroke,2011-04-13 09:25,30
+North Stradbroke,2011-04-13 09:25,40
+North Stradbroke,2011-04-13 09:25,50
+North Stradbroke,2011-04-13 09:25,57
+North Stradbroke,2011-06-06 10:00,0
+North Stradbroke,2011-06-06 10:00,10
+North Stradbroke,2011-06-06 10:00,20
+North Stradbroke,2011-06-06 10:00,30
+North Stradbroke,2011-06-06 10:00,40
+North Stradbroke,2011-06-06 10:00,50
+North Stradbroke,2011-06-06 10:00,57
+North Stradbroke,2011-06-23 10:25,0
+North Stradbroke,2011-06-23 10:25,10
+North Stradbroke,2011-06-23 10:25,20
+North Stradbroke,2011-06-23 10:25,30
+North Stradbroke,2011-06-23 10:25,40
+North Stradbroke,2011-06-23 10:25,50
+North Stradbroke,2011-06-23 10:25,57
+North Stradbroke,2011-07-28 09:30,0
+North Stradbroke,2011-07-28 09:30,10
+North Stradbroke,2011-07-28 09:30,20
+North Stradbroke,2011-07-28 09:30,30
+North Stradbroke,2011-07-28 09:30,40
+North Stradbroke,2011-07-28 09:30,50
+North Stradbroke,2011-07-28 09:30,57
+North Stradbroke,2011-08-16 10:00,0
+North Stradbroke,2011-08-16 10:00,10
+North Stradbroke,2011-08-16 10:00,20
+North Stradbroke,2011-08-16 10:00,30
+North Stradbroke,2011-08-16 10:00,40
+North Stradbroke,2011-08-16 10:00,50
+North Stradbroke,2011-08-16 10:00,57
+North Stradbroke,2011-09-15 11:10,0
+North Stradbroke,2011-09-15 11:10,10
+North Stradbroke,2011-09-15 11:10,20
+North Stradbroke,2011-09-15 11:10,30
+North Stradbroke,2011-09-15 11:10,40
+North Stradbroke,2011-09-15 11:10,50
+North Stradbroke,2011-09-15 11:10,57
+North Stradbroke,2011-10-13 10:30,0
+North Stradbroke,2011-10-13 10:30,10
+North Stradbroke,2011-10-13 10:30,20
+North Stradbroke,2011-10-13 10:30,30
+North Stradbroke,2011-10-13 10:30,40
+North Stradbroke,2011-10-13 10:30,50
+North Stradbroke,2011-10-13 10:30,57
+North Stradbroke,2011-11-16 10:00,0
+North Stradbroke,2011-11-16 10:00,10
+North Stradbroke,2011-11-16 10:00,20
+North Stradbroke,2011-11-16 10:00,30
+North Stradbroke,2011-11-16 10:00,40
+North Stradbroke,2011-11-16 10:00,50
+North Stradbroke,2011-11-16 10:00,57
+North Stradbroke,2011-12-21 09:15,0
+North Stradbroke,2011-12-21 09:15,10
+North Stradbroke,2011-12-21 09:15,20
+North Stradbroke,2011-12-21 09:15,30
+North Stradbroke,2011-12-21 09:15,40
+North Stradbroke,2011-12-21 09:15,50
+North Stradbroke,2011-12-21 09:15,57
+North Stradbroke,2012-02-14 08:00,0
+North Stradbroke,2012-02-14 08:00,10
+North Stradbroke,2012-02-14 08:00,20
+North Stradbroke,2012-02-14 08:00,30
+North Stradbroke,2012-02-14 08:00,40
+North Stradbroke,2012-02-14 08:00,50
+North Stradbroke,2012-02-14 08:00,57
+North Stradbroke,2012-03-01 09:45,0
+North Stradbroke,2012-03-01 09:45,10
+North Stradbroke,2012-03-01 09:45,20
+North Stradbroke,2012-03-01 09:45,30
+North Stradbroke,2012-03-01 09:45,40
+North Stradbroke,2012-03-01 09:45,50
+North Stradbroke,2012-03-01 09:45,57
+North Stradbroke,2012-05-11 10:05,0
+North Stradbroke,2012-05-11 10:05,10
+North Stradbroke,2012-05-11 10:05,20
+North Stradbroke,2012-05-11 10:05,30
+North Stradbroke,2012-05-11 10:05,40
+North Stradbroke,2012-05-11 10:05,50
+North Stradbroke,2012-05-11 10:05,57
+North Stradbroke,2012-06-20 10:20,0
+North Stradbroke,2012-06-20 10:20,10
+North Stradbroke,2012-06-20 10:20,20
+North Stradbroke,2012-06-20 10:20,30
+North Stradbroke,2012-06-20 10:20,40
+North Stradbroke,2012-06-20 10:20,50
+North Stradbroke,2012-06-20 10:20,57
+North Stradbroke,2012-08-06 10:15,0
+North Stradbroke,2012-08-06 10:15,10
+North Stradbroke,2012-08-06 10:15,20
+North Stradbroke,2012-08-06 10:15,30
+North Stradbroke,2012-08-06 10:15,40
+North Stradbroke,2012-08-06 10:15,50
+North Stradbroke,2012-08-06 10:15,57
+North Stradbroke,2012-08-21 10:15,0
+North Stradbroke,2012-08-21 10:15,10
+North Stradbroke,2012-08-21 10:15,20
+North Stradbroke,2012-08-21 10:15,30
+North Stradbroke,2012-08-21 10:15,40
+North Stradbroke,2012-08-21 10:15,50
+North Stradbroke,2012-08-21 10:15,57
+North Stradbroke,2012-09-12 10:20,0
+North Stradbroke,2012-09-12 10:20,10
+North Stradbroke,2012-09-12 10:20,20
+North Stradbroke,2012-09-12 10:20,30
+North Stradbroke,2012-09-12 10:20,40
+North Stradbroke,2012-09-12 10:20,50
+North Stradbroke,2012-09-12 10:20,57
+North Stradbroke,2012-10-17 10:20,0
+North Stradbroke,2012-10-17 10:20,10
+North Stradbroke,2012-10-17 10:20,20
+North Stradbroke,2012-10-17 10:20,30
+North Stradbroke,2012-10-17 10:20,40
+North Stradbroke,2012-10-17 10:20,50
+North Stradbroke,2012-10-17 10:20,57
+North Stradbroke,2012-11-14 10:45,0
+North Stradbroke,2012-11-14 10:45,10
+North Stradbroke,2012-11-14 10:45,20
+North Stradbroke,2012-11-14 10:45,30
+North Stradbroke,2012-11-14 10:45,40
+North Stradbroke,2012-11-14 10:45,50
+North Stradbroke,2012-11-14 10:45,57
+North Stradbroke,2013-01-11 10:40,0
+North Stradbroke,2013-01-11 10:40,10
+North Stradbroke,2013-01-11 10:40,20
+North Stradbroke,2013-01-11 10:40,30
+North Stradbroke,2013-01-11 10:40,40
+North Stradbroke,2013-01-11 10:40,50
+North Stradbroke,2013-01-11 10:40,57
+North Stradbroke,2013-01-23 10:15,0
+North Stradbroke,2013-01-23 10:15,10
+North Stradbroke,2013-01-23 10:15,20
+North Stradbroke,2013-01-23 10:15,30
+North Stradbroke,2013-01-23 10:15,40
+North Stradbroke,2013-01-23 10:15,50
+North Stradbroke,2013-01-23 10:15,57
+North Stradbroke,2013-03-26 11:10,0
+North Stradbroke,2013-03-26 11:10,10
+North Stradbroke,2013-03-26 11:10,20
+North Stradbroke,2013-03-26 11:10,30
+North Stradbroke,2013-03-26 11:10,40
+North Stradbroke,2013-03-26 11:10,50
+North Stradbroke,2013-03-26 11:10,57
+North Stradbroke,2013-04-18 10:05,0
+North Stradbroke,2013-04-18 10:05,10
+North Stradbroke,2013-04-18 10:05,20
+North Stradbroke,2013-04-18 10:05,30
+North Stradbroke,2013-04-18 10:05,40
+North Stradbroke,2013-04-18 10:05,50
+North Stradbroke,2013-04-18 10:05,57
+North Stradbroke,2013-05-20 10:05,0
+North Stradbroke,2013-05-20 10:05,10
+North Stradbroke,2013-05-20 10:05,20
+North Stradbroke,2013-05-20 10:05,30
+North Stradbroke,2013-05-20 10:05,40
+North Stradbroke,2013-05-20 10:05,50
+North Stradbroke,2013-05-20 10:05,57
+North Stradbroke,2013-07-07 09:40,0
+North Stradbroke,2013-07-07 09:40,10
+North Stradbroke,2013-07-07 09:40,20
+North Stradbroke,2013-07-07 09:40,30
+North Stradbroke,2013-07-07 09:40,40
+North Stradbroke,2013-07-07 09:40,50
+North Stradbroke,2013-07-07 09:40,57
+North Stradbroke,2013-08-06 10:15,0
+North Stradbroke,2013-08-06 10:15,10
+North Stradbroke,2013-08-06 10:15,20
+North Stradbroke,2013-08-06 10:15,30
+North Stradbroke,2013-08-06 10:15,40
+North Stradbroke,2013-08-06 10:15,50
+North Stradbroke,2013-08-06 10:15,57
+North Stradbroke,2013-08-19 10:10,0
+North Stradbroke,2013-08-19 10:10,10
+North Stradbroke,2013-08-19 10:10,20
+North Stradbroke,2013-08-19 10:10,30
+North Stradbroke,2013-08-19 10:10,40
+North Stradbroke,2013-08-19 10:10,50
+North Stradbroke,2013-08-19 10:10,57
+North Stradbroke,2013-09-13 10:25,0
+North Stradbroke,2013-09-13 10:25,10
+North Stradbroke,2013-09-13 10:25,20
+North Stradbroke,2013-09-13 10:25,30
+North Stradbroke,2013-09-13 10:25,40
+North Stradbroke,2013-09-13 10:25,50
+North Stradbroke,2013-09-13 10:25,57
+North Stradbroke,2013-10-16 10:40,0
+North Stradbroke,2013-10-16 10:40,10
+North Stradbroke,2013-10-16 10:40,20
+North Stradbroke,2013-10-16 10:40,30
+North Stradbroke,2013-10-16 10:40,40
+North Stradbroke,2013-10-16 10:40,50
+North Stradbroke,2013-10-16 10:40,57
+North Stradbroke,2013-11-22 09:55,0
+North Stradbroke,2013-11-22 09:55,10
+North Stradbroke,2013-11-22 09:55,20
+North Stradbroke,2013-11-22 09:55,30
+North Stradbroke,2013-11-22 09:55,40
+North Stradbroke,2013-11-22 09:55,50
+North Stradbroke,2013-11-22 09:55,57
+North Stradbroke,2013-12-12 10:20,0
+North Stradbroke,2013-12-12 10:20,10
+North Stradbroke,2013-12-12 10:20,20
+North Stradbroke,2013-12-12 10:20,30
+North Stradbroke,2013-12-12 10:20,40
+North Stradbroke,2013-12-12 10:20,50
+North Stradbroke,2013-12-12 10:20,57
+North Stradbroke,2014-02-13 10:20,0
+North Stradbroke,2014-02-13 10:20,10
+North Stradbroke,2014-02-13 10:20,20
+North Stradbroke,2014-02-13 10:20,30
+North Stradbroke,2014-02-13 10:20,40
+North Stradbroke,2014-02-13 10:20,50
+North Stradbroke,2014-02-13 10:20,57
+North Stradbroke,2014-03-06 10:15,0
+North Stradbroke,2014-03-06 10:15,10
+North Stradbroke,2014-03-06 10:15,20
+North Stradbroke,2014-03-06 10:15,30
+North Stradbroke,2014-03-06 10:15,40
+North Stradbroke,2014-03-06 10:15,50
+North Stradbroke,2014-03-06 10:15,57
+North Stradbroke,2014-04-04 10:45,0
+North Stradbroke,2014-04-04 10:45,10
+North Stradbroke,2014-04-04 10:45,20
+North Stradbroke,2014-04-04 10:45,30
+North Stradbroke,2014-04-04 10:45,40
+North Stradbroke,2014-04-04 10:45,50
+North Stradbroke,2014-04-04 10:45,57
+North Stradbroke,2014-05-07 10:25,0
+North Stradbroke,2014-05-07 10:25,10
+North Stradbroke,2014-05-07 10:25,20
+North Stradbroke,2014-05-07 10:25,30
+North Stradbroke,2014-05-07 10:25,40
+North Stradbroke,2014-05-07 10:25,50
+North Stradbroke,2014-05-07 10:25,57
+North Stradbroke,2014-06-23 10:20,0
+North Stradbroke,2014-06-23 10:20,10
+North Stradbroke,2014-06-23 10:20,20
+North Stradbroke,2014-06-23 10:20,30
+North Stradbroke,2014-06-23 10:20,40
+North Stradbroke,2014-06-23 10:20,50
+North Stradbroke,2014-06-23 10:20,57
+North Stradbroke,2014-07-25 10:35,0
+North Stradbroke,2014-07-25 10:35,10
+North Stradbroke,2014-07-25 10:35,20
+North Stradbroke,2014-07-25 10:35,30
+North Stradbroke,2014-07-25 10:35,40
+North Stradbroke,2014-07-25 10:35,50
+North Stradbroke,2014-07-25 10:35,57
+North Stradbroke,2014-09-01 10:10,0
+North Stradbroke,2014-09-01 10:10,10
+North Stradbroke,2014-09-01 10:10,20
+North Stradbroke,2014-09-01 10:10,30
+North Stradbroke,2014-09-01 10:10,40
+North Stradbroke,2014-09-01 10:10,50
+North Stradbroke,2014-09-01 10:10,57
+North Stradbroke,2014-09-17 10:30,0
+North Stradbroke,2014-09-17 10:30,10
+North Stradbroke,2014-09-17 10:30,20
+North Stradbroke,2014-09-17 10:30,30
+North Stradbroke,2014-09-17 10:30,40
+North Stradbroke,2014-09-17 10:30,50
+North Stradbroke,2014-09-17 10:30,57
+North Stradbroke,2014-10-20 10:45,0
+North Stradbroke,2014-10-20 10:45,10
+North Stradbroke,2014-10-20 10:45,20
+North Stradbroke,2014-10-20 10:45,30
+North Stradbroke,2014-10-20 10:45,40
+North Stradbroke,2014-10-20 10:45,50
+North Stradbroke,2014-10-20 10:45,57
+North Stradbroke,2014-11-07 10:35,0
+North Stradbroke,2014-11-07 10:35,10
+North Stradbroke,2014-11-07 10:35,20
+North Stradbroke,2014-11-07 10:35,30
+North Stradbroke,2014-11-07 10:35,40
+North Stradbroke,2014-11-07 10:35,50
+North Stradbroke,2014-11-07 10:35,57
+North Stradbroke,2014-12-23 10:35,0
+North Stradbroke,2014-12-23 10:35,10
+North Stradbroke,2014-12-23 10:35,20
+North Stradbroke,2014-12-23 10:35,30
+North Stradbroke,2014-12-23 10:35,40
+North Stradbroke,2014-12-23 10:35,50
+North Stradbroke,2014-12-23 10:35,57
+North Stradbroke,2015-01-19 10:35,0
+North Stradbroke,2015-01-19 10:35,10
+North Stradbroke,2015-01-19 10:35,20
+North Stradbroke,2015-01-19 10:35,30
+North Stradbroke,2015-01-19 10:35,40
+North Stradbroke,2015-01-19 10:35,50
+North Stradbroke,2015-01-19 10:35,57
+North Stradbroke,2015-03-04 10:30,0
+North Stradbroke,2015-03-04 10:30,10
+North Stradbroke,2015-03-04 10:30,20
+North Stradbroke,2015-03-04 10:30,30
+North Stradbroke,2015-03-04 10:30,40
+North Stradbroke,2015-03-04 10:30,50
+North Stradbroke,2015-03-04 10:30,57
+North Stradbroke,2015-03-23 11:40,0
+North Stradbroke,2015-03-23 11:40,10
+North Stradbroke,2015-03-23 11:40,20
+North Stradbroke,2015-03-23 11:40,30
+North Stradbroke,2015-03-23 11:40,40
+North Stradbroke,2015-03-23 11:40,50
+North Stradbroke,2015-03-23 11:40,57
+North Stradbroke,2015-05-12 10:15,0
+North Stradbroke,2015-05-12 10:15,10
+North Stradbroke,2015-05-12 10:15,20
+North Stradbroke,2015-05-12 10:15,30
+North Stradbroke,2015-05-12 10:15,40
+North Stradbroke,2015-05-12 10:15,50
+North Stradbroke,2015-05-12 10:15,57
+North Stradbroke,2015-05-28 10:15,0
+North Stradbroke,2015-05-28 10:15,10
+North Stradbroke,2015-05-28 10:15,20
+North Stradbroke,2015-05-28 10:15,30
+North Stradbroke,2015-05-28 10:15,40
+North Stradbroke,2015-05-28 10:15,50
+North Stradbroke,2015-05-28 10:15,57
+North Stradbroke,2015-06-24 10:30,0
+North Stradbroke,2015-06-24 10:30,10
+North Stradbroke,2015-06-24 10:30,20
+North Stradbroke,2015-06-24 10:30,30
+North Stradbroke,2015-06-24 10:30,40
+North Stradbroke,2015-06-24 10:30,50
+North Stradbroke,2015-06-24 10:30,57
+North Stradbroke,2015-07-31 10:15,0
+North Stradbroke,2015-07-31 10:15,10
+North Stradbroke,2015-07-31 10:15,20
+North Stradbroke,2015-07-31 10:15,30
+North Stradbroke,2015-07-31 10:15,40
+North Stradbroke,2015-07-31 10:15,50
+North Stradbroke,2015-07-31 10:15,57
+North Stradbroke,2015-08-17 10:30,0
+North Stradbroke,2015-08-17 10:30,10
+North Stradbroke,2015-08-17 10:30,20
+North Stradbroke,2015-08-17 10:30,30
+North Stradbroke,2015-08-17 10:30,40
+North Stradbroke,2015-08-17 10:30,50
+North Stradbroke,2015-08-17 10:30,57
+North Stradbroke,2015-09-07 10:40,0
+North Stradbroke,2015-09-07 10:40,10
+North Stradbroke,2015-09-07 10:40,20
+North Stradbroke,2015-09-07 10:40,30
+North Stradbroke,2015-09-07 10:40,40
+North Stradbroke,2015-09-07 10:40,50
+North Stradbroke,2015-09-07 10:40,57
+North Stradbroke,2015-10-27 10:50,0
+North Stradbroke,2015-10-27 10:50,10
+North Stradbroke,2015-10-27 10:50,20
+North Stradbroke,2015-10-27 10:50,30
+North Stradbroke,2015-10-27 10:50,40
+North Stradbroke,2015-10-27 10:50,50
+North Stradbroke,2015-10-27 10:50,57
+North Stradbroke,2015-11-19 10:24,0
+North Stradbroke,2015-11-19 10:24,10
+North Stradbroke,2015-11-19 10:24,20
+North Stradbroke,2015-11-19 10:24,30
+North Stradbroke,2015-11-19 10:24,40
+North Stradbroke,2015-11-19 10:24,50
+North Stradbroke,2015-11-19 10:24,57
+North Stradbroke,2015-12-16 10:30,0
+North Stradbroke,2015-12-16 10:30,10
+North Stradbroke,2015-12-16 10:30,20
+North Stradbroke,2015-12-16 10:30,30
+North Stradbroke,2015-12-16 10:30,40
+North Stradbroke,2015-12-16 10:30,50
+North Stradbroke,2015-12-16 10:30,57
+North Stradbroke,2016-01-20 10:30,0
+North Stradbroke,2016-01-20 10:30,10
+North Stradbroke,2016-01-20 10:30,20
+North Stradbroke,2016-01-20 10:30,30
+North Stradbroke,2016-01-20 10:30,40
+North Stradbroke,2016-01-20 10:30,50
+North Stradbroke,2016-01-20 10:30,57
+North Stradbroke,2016-03-18 10:30,0
+North Stradbroke,2016-03-18 10:30,10
+North Stradbroke,2016-03-18 10:30,20
+North Stradbroke,2016-03-18 10:30,30
+North Stradbroke,2016-03-18 10:30,40
+North Stradbroke,2016-03-18 10:30,50
+North Stradbroke,2016-03-18 10:30,57
+North Stradbroke,2016-04-12 10:45,0
+North Stradbroke,2016-04-12 10:45,10
+North Stradbroke,2016-04-12 10:45,20
+North Stradbroke,2016-04-12 10:45,30
+North Stradbroke,2016-04-12 10:45,40
+North Stradbroke,2016-04-12 10:45,50
+North Stradbroke,2016-04-12 10:45,57
+North Stradbroke,2016-05-17 10:30,0
+North Stradbroke,2016-05-17 10:30,10
+North Stradbroke,2016-05-17 10:30,20
+North Stradbroke,2016-05-17 10:30,30
+North Stradbroke,2016-05-17 10:30,40
+North Stradbroke,2016-05-17 10:30,50
+North Stradbroke,2016-05-17 10:30,57
+North Stradbroke,2016-06-23 10:30,0
+North Stradbroke,2016-06-23 10:30,10
+North Stradbroke,2016-06-23 10:30,20
+North Stradbroke,2016-06-23 10:30,30
+North Stradbroke,2016-06-23 10:30,40
+North Stradbroke,2016-06-23 10:30,50
+North Stradbroke,2016-06-23 10:30,57
+North Stradbroke,2016-07-20 10:30,0
+North Stradbroke,2016-07-20 10:30,10
+North Stradbroke,2016-07-20 10:30,20
+North Stradbroke,2016-07-20 10:30,30
+North Stradbroke,2016-07-20 10:30,40
+North Stradbroke,2016-07-20 10:30,50
+North Stradbroke,2016-07-20 10:30,57
+North Stradbroke,2016-08-22 10:50,0
+North Stradbroke,2016-08-22 10:50,10
+North Stradbroke,2016-08-22 10:50,20
+North Stradbroke,2016-08-22 10:50,30
+North Stradbroke,2016-08-22 10:50,40
+North Stradbroke,2016-08-22 10:50,50
+North Stradbroke,2016-08-22 10:50,57
+North Stradbroke,2016-09-20 10:15,0
+North Stradbroke,2016-09-20 10:15,10
+North Stradbroke,2016-09-20 10:15,20
+North Stradbroke,2016-09-20 10:15,30
+North Stradbroke,2016-09-20 10:15,40
+North Stradbroke,2016-09-20 10:15,50
+North Stradbroke,2016-09-20 10:15,57
+North Stradbroke,2016-10-20 09:40,0
+North Stradbroke,2016-10-20 09:40,10
+North Stradbroke,2016-10-20 09:40,20
+North Stradbroke,2016-10-20 09:40,30
+North Stradbroke,2016-10-20 09:40,40
+North Stradbroke,2016-10-20 09:40,50
+North Stradbroke,2016-10-20 09:40,57
+North Stradbroke,2016-11-16 10:15,0
+North Stradbroke,2016-11-16 10:15,10
+North Stradbroke,2016-11-16 10:15,20
+North Stradbroke,2016-11-16 10:15,30
+North Stradbroke,2016-11-16 10:15,40
+North Stradbroke,2016-11-16 10:15,50
+North Stradbroke,2016-11-16 10:15,57
+North Stradbroke,2016-12-15 10:15,0
+North Stradbroke,2016-12-15 10:15,10
+North Stradbroke,2016-12-15 10:15,20
+North Stradbroke,2016-12-15 10:15,30
+North Stradbroke,2016-12-15 10:15,40
+North Stradbroke,2016-12-15 10:15,50
+North Stradbroke,2016-12-15 10:15,57
+North Stradbroke,2017-01-17 10:30,0
+North Stradbroke,2017-01-17 10:30,10
+North Stradbroke,2017-01-17 10:30,20
+North Stradbroke,2017-01-17 10:30,30
+North Stradbroke,2017-01-17 10:30,40
+North Stradbroke,2017-01-17 10:30,50
+North Stradbroke,2017-01-17 10:30,57
+North Stradbroke,2017-02-17 10:30,0
+North Stradbroke,2017-02-17 10:30,10
+North Stradbroke,2017-02-17 10:30,20
+North Stradbroke,2017-02-17 10:30,30
+North Stradbroke,2017-02-17 10:30,40
+North Stradbroke,2017-02-17 10:30,50
+North Stradbroke,2017-02-17 10:30,57
+North Stradbroke,2017-04-24 11:00,0
+North Stradbroke,2017-04-24 11:00,10
+North Stradbroke,2017-04-24 11:00,20
+North Stradbroke,2017-04-24 11:00,30
+North Stradbroke,2017-04-24 11:00,40
+North Stradbroke,2017-04-24 11:00,50
+North Stradbroke,2017-04-24 11:00,57
+North Stradbroke,2017-05-16 10:20,0
+North Stradbroke,2017-05-16 10:20,10
+North Stradbroke,2017-05-16 10:20,20
+North Stradbroke,2017-05-16 10:20,30
+North Stradbroke,2017-05-16 10:20,40
+North Stradbroke,2017-05-16 10:20,50
+North Stradbroke,2017-05-16 10:20,57
+North Stradbroke,2017-06-27 10:20,0
+North Stradbroke,2017-06-27 10:20,10
+North Stradbroke,2017-06-27 10:20,20
+North Stradbroke,2017-06-27 10:20,30
+North Stradbroke,2017-06-27 10:20,40
+North Stradbroke,2017-06-27 10:20,50
+North Stradbroke,2017-06-27 10:20,57
+North Stradbroke,2017-07-17 11:05,0
+North Stradbroke,2017-07-17 11:05,10
+North Stradbroke,2017-07-17 11:05,20
+North Stradbroke,2017-07-17 11:05,30
+North Stradbroke,2017-07-17 11:05,40
+North Stradbroke,2017-07-17 11:05,50
+North Stradbroke,2017-07-17 11:05,57
+North Stradbroke,2017-08-29 11:50,0
+North Stradbroke,2017-08-29 11:50,10
+North Stradbroke,2017-08-29 11:50,20
+North Stradbroke,2017-08-29 11:50,30
+North Stradbroke,2017-08-29 11:50,40
+North Stradbroke,2017-08-29 11:50,50
+North Stradbroke,2017-08-29 11:50,57
+North Stradbroke,2017-09-27 10:40,0
+North Stradbroke,2017-09-27 10:40,10
+North Stradbroke,2017-09-27 10:40,20
+North Stradbroke,2017-09-27 10:40,30
+North Stradbroke,2017-09-27 10:40,40
+North Stradbroke,2017-09-27 10:40,50
+North Stradbroke,2017-09-27 10:40,57
+North Stradbroke,2017-10-23 10:25,0
+North Stradbroke,2017-10-23 10:25,10
+North Stradbroke,2017-10-23 10:25,20
+North Stradbroke,2017-10-23 10:25,30
+North Stradbroke,2017-10-23 10:25,40
+North Stradbroke,2017-10-23 10:25,50
+North Stradbroke,2017-10-23 10:25,57
+North Stradbroke,2017-11-16 10:30,0
+North Stradbroke,2017-11-16 10:30,10
+North Stradbroke,2017-11-16 10:30,20
+North Stradbroke,2017-11-16 10:30,30
+North Stradbroke,2017-11-16 10:30,40
+North Stradbroke,2017-11-16 10:30,50
+North Stradbroke,2017-11-16 10:30,57
+North Stradbroke,2017-12-19 10:45,0
+North Stradbroke,2017-12-19 10:45,10
+North Stradbroke,2017-12-19 10:45,20
+North Stradbroke,2017-12-19 10:45,30
+North Stradbroke,2017-12-19 10:45,40
+North Stradbroke,2017-12-19 10:45,50
+North Stradbroke,2017-12-19 10:45,57
+North Stradbroke,2018-01-23 10:20,0
+North Stradbroke,2018-01-23 10:20,10
+North Stradbroke,2018-01-23 10:20,20
+North Stradbroke,2018-01-23 10:20,30
+North Stradbroke,2018-01-23 10:20,40
+North Stradbroke,2018-01-23 10:20,50
+North Stradbroke,2018-01-23 10:20,57
+North Stradbroke,2018-03-02 10:25,0
+North Stradbroke,2018-03-02 10:25,10
+North Stradbroke,2018-03-02 10:25,20
+North Stradbroke,2018-03-02 10:25,30
+North Stradbroke,2018-03-02 10:25,40
+North Stradbroke,2018-03-02 10:25,50
+North Stradbroke,2018-03-02 10:25,57
+North Stradbroke,2018-03-20 10:40,0
+North Stradbroke,2018-03-20 10:40,10
+North Stradbroke,2018-03-20 10:40,20
+North Stradbroke,2018-03-20 10:40,30
+North Stradbroke,2018-03-20 10:40,40
+North Stradbroke,2018-03-20 10:40,50
+North Stradbroke,2018-03-20 10:40,57
+North Stradbroke,2018-04-17 10:15,0
+North Stradbroke,2018-04-17 10:15,10
+North Stradbroke,2018-04-17 10:15,20
+North Stradbroke,2018-04-17 10:15,30
+North Stradbroke,2018-04-17 10:15,40
+North Stradbroke,2018-04-17 10:15,50
+North Stradbroke,2018-04-17 10:15,57
+North Stradbroke,2018-05-30 10:20,0
+North Stradbroke,2018-05-30 10:20,10
+North Stradbroke,2018-05-30 10:20,20
+North Stradbroke,2018-05-30 10:20,30
+North Stradbroke,2018-05-30 10:20,40
+North Stradbroke,2018-05-30 10:20,50
+North Stradbroke,2018-05-30 10:20,57
+North Stradbroke,2018-07-18 10:20,0
+North Stradbroke,2018-07-18 10:20,10
+North Stradbroke,2018-07-18 10:20,20
+North Stradbroke,2018-07-18 10:20,30
+North Stradbroke,2018-07-18 10:20,40
+North Stradbroke,2018-07-18 10:20,50
+North Stradbroke,2018-07-18 10:20,57
+North Stradbroke,2018-08-17 10:20,0
+North Stradbroke,2018-08-17 10:20,10
+North Stradbroke,2018-08-17 10:20,20
+North Stradbroke,2018-08-17 10:20,30
+North Stradbroke,2018-08-17 10:20,40
+North Stradbroke,2018-08-17 10:20,50
+North Stradbroke,2018-08-17 10:20,57
+North Stradbroke,2018-09-13 10:20,0
+North Stradbroke,2018-09-13 10:20,10
+North Stradbroke,2018-09-13 10:20,20
+North Stradbroke,2018-09-13 10:20,30
+North Stradbroke,2018-09-13 10:20,40
+North Stradbroke,2018-09-13 10:20,50
+North Stradbroke,2018-09-13 10:20,57
+North Stradbroke,2018-10-23 10:30,0
+North Stradbroke,2018-10-23 10:30,10
+North Stradbroke,2018-10-23 10:30,20
+North Stradbroke,2018-10-23 10:30,30
+North Stradbroke,2018-10-23 10:30,40
+North Stradbroke,2018-10-23 10:30,50
+North Stradbroke,2018-10-23 10:30,57
+North Stradbroke,2018-11-15 10:40,0
+North Stradbroke,2018-11-15 10:40,10
+North Stradbroke,2018-11-15 10:40,20
+North Stradbroke,2018-11-15 10:40,30
+North Stradbroke,2018-11-15 10:40,40
+North Stradbroke,2018-11-15 10:40,50
+North Stradbroke,2018-11-15 10:40,57
+North Stradbroke,2019-01-18 10:40,0
+North Stradbroke,2019-01-18 10:40,10
+North Stradbroke,2019-01-18 10:40,20
+North Stradbroke,2019-01-18 10:40,30
+North Stradbroke,2019-01-18 10:40,40
+North Stradbroke,2019-01-18 10:40,50
+North Stradbroke,2019-01-18 10:40,57
+North Stradbroke,2019-03-22 10:50,0
+North Stradbroke,2019-03-22 10:50,10
+North Stradbroke,2019-03-22 10:50,20
+North Stradbroke,2019-03-22 10:50,30
+North Stradbroke,2019-03-22 10:50,40
+North Stradbroke,2019-03-22 10:50,50
+North Stradbroke,2019-03-22 10:50,57
+North Stradbroke,2019-04-16 10:10,0
+North Stradbroke,2019-04-16 10:10,10
+North Stradbroke,2019-04-16 10:10,20
+North Stradbroke,2019-04-16 10:10,30
+North Stradbroke,2019-04-16 10:10,40
+North Stradbroke,2019-04-16 10:10,50
+North Stradbroke,2019-04-16 10:10,57
+North Stradbroke,2019-05-27 10:15,0
+North Stradbroke,2019-05-27 10:15,10
+North Stradbroke,2019-05-27 10:15,20
+North Stradbroke,2019-05-27 10:15,30
+North Stradbroke,2019-05-27 10:15,40
+North Stradbroke,2019-05-27 10:15,50
+North Stradbroke,2019-05-27 10:15,57
+North Stradbroke,2019-06-18 10:00,0
+North Stradbroke,2019-06-18 10:00,10
+North Stradbroke,2019-06-18 10:00,20
+North Stradbroke,2019-06-18 10:00,30
+North Stradbroke,2019-06-18 10:00,40
+North Stradbroke,2019-06-18 10:00,50
+North Stradbroke,2019-06-18 10:00,57
+North Stradbroke,2019-07-23 10:20,0
+North Stradbroke,2019-07-23 10:20,10
+North Stradbroke,2019-07-23 10:20,20
+North Stradbroke,2019-07-23 10:20,30
+North Stradbroke,2019-07-23 10:20,40
+North Stradbroke,2019-07-23 10:20,50
+North Stradbroke,2019-07-23 10:20,57
+North Stradbroke,2019-08-21 10:40,0
+North Stradbroke,2019-08-21 10:40,10
+North Stradbroke,2019-08-21 10:40,20
+North Stradbroke,2019-08-21 10:40,30
+North Stradbroke,2019-08-21 10:40,40
+North Stradbroke,2019-08-21 10:40,50
+North Stradbroke,2019-08-21 10:40,57
+North Stradbroke,2019-09-16 10:20,0
+North Stradbroke,2019-09-16 10:20,10
+North Stradbroke,2019-09-16 10:20,20
+North Stradbroke,2019-09-16 10:20,30
+North Stradbroke,2019-09-16 10:20,40
+North Stradbroke,2019-09-16 10:20,50
+North Stradbroke,2019-09-16 10:20,57
+North Stradbroke,2019-10-24 10:20,0
+North Stradbroke,2019-10-24 10:20,10
+North Stradbroke,2019-10-24 10:20,20
+North Stradbroke,2019-10-24 10:20,30
+North Stradbroke,2019-10-24 10:20,40
+North Stradbroke,2019-10-24 10:20,50
+North Stradbroke,2019-10-24 10:20,57
+North Stradbroke,2019-12-20 10:20,0
+North Stradbroke,2019-12-20 10:20,10
+North Stradbroke,2019-12-20 10:20,20
+North Stradbroke,2019-12-20 10:20,30
+North Stradbroke,2019-12-20 10:20,40
+North Stradbroke,2019-12-20 10:20,50
+North Stradbroke,2019-12-20 10:20,57
+North Stradbroke,2020-01-22 10:35,0
+North Stradbroke,2020-01-22 10:35,10
+North Stradbroke,2020-01-22 10:35,20
+North Stradbroke,2020-01-22 10:35,30
+North Stradbroke,2020-01-22 10:35,40
+North Stradbroke,2020-01-22 10:35,50
+North Stradbroke,2020-01-22 10:35,57
+North Stradbroke,2020-02-28 10:30,0
+North Stradbroke,2020-02-28 10:30,10
+North Stradbroke,2020-02-28 10:30,20
+North Stradbroke,2020-02-28 10:30,30
+North Stradbroke,2020-02-28 10:30,40
+North Stradbroke,2020-02-28 10:30,50
+North Stradbroke,2020-02-28 10:30,57
+North Stradbroke,2020-05-28 11:00,0
+North Stradbroke,2020-05-28 11:00,10
+North Stradbroke,2020-05-28 11:00,20
+North Stradbroke,2020-05-28 11:00,30
+North Stradbroke,2020-05-28 11:00,40
+North Stradbroke,2020-05-28 11:00,50
+North Stradbroke,2020-05-28 11:00,57
+North Stradbroke,2020-06-25 10:35,0
+North Stradbroke,2020-06-25 10:35,10
+North Stradbroke,2020-06-25 10:35,20
+North Stradbroke,2020-06-25 10:35,30
+North Stradbroke,2020-06-25 10:35,40
+North Stradbroke,2020-06-25 10:35,50
+North Stradbroke,2020-06-25 10:35,57
+North Stradbroke,2020-07-20 10:30,0
+North Stradbroke,2020-07-20 10:30,10
+North Stradbroke,2020-07-20 10:30,20
+North Stradbroke,2020-07-20 10:30,30
+North Stradbroke,2020-07-20 10:30,40
+North Stradbroke,2020-07-20 10:30,50
+North Stradbroke,2020-07-20 10:30,57
+North Stradbroke,2020-08-18 09:50,0
+North Stradbroke,2020-08-18 09:50,10
+North Stradbroke,2020-08-18 09:50,20
+North Stradbroke,2020-08-18 09:50,30
+North Stradbroke,2020-08-18 09:50,40
+North Stradbroke,2020-08-18 09:50,50
+North Stradbroke,2020-08-18 09:50,57
+North Stradbroke,2020-09-17 10:20,0
+North Stradbroke,2020-09-17 10:20,10
+North Stradbroke,2020-09-17 10:20,20
+North Stradbroke,2020-09-17 10:20,30
+North Stradbroke,2020-09-17 10:20,40
+North Stradbroke,2020-09-17 10:20,50
+North Stradbroke,2020-09-17 10:20,57
+North Stradbroke,2020-10-22 10:05,0
+North Stradbroke,2020-10-22 10:05,10
+North Stradbroke,2020-10-22 10:05,20
+North Stradbroke,2020-10-22 10:05,30
+North Stradbroke,2020-10-22 10:05,30
+North Stradbroke,2020-10-22 10:05,40
+North Stradbroke,2020-10-22 10:05,50
+North Stradbroke,2020-10-22 10:05,57
+North Stradbroke,2020-11-16 10:10,0
+North Stradbroke,2020-11-16 10:10,0
+North Stradbroke,2020-11-16 10:10,10
+North Stradbroke,2020-11-16 10:10,10
+North Stradbroke,2020-11-16 10:10,20
+North Stradbroke,2020-11-16 10:10,20
+North Stradbroke,2020-11-16 10:10,30
+North Stradbroke,2020-11-16 10:10,30
+North Stradbroke,2020-11-16 10:10,40
+North Stradbroke,2020-11-16 10:10,50
+North Stradbroke,2020-11-16 10:10,50
+North Stradbroke,2020-11-16 10:10,57
+North Stradbroke,2020-11-16 10:10,57
+North Stradbroke,2020-12-21 10:30,0
+North Stradbroke,2020-12-21 10:30,0
+North Stradbroke,2020-12-21 10:30,0
+North Stradbroke,2020-12-21 10:30,10
+North Stradbroke,2020-12-21 10:30,10
+North Stradbroke,2020-12-21 10:30,10
+North Stradbroke,2020-12-21 10:30,10
+North Stradbroke,2020-12-21 10:30,20
+North Stradbroke,2020-12-21 10:30,20
+North Stradbroke,2020-12-21 10:30,30
+North Stradbroke,2020-12-21 10:30,30
+North Stradbroke,2020-12-21 10:30,40
+North Stradbroke,2020-12-21 10:30,40
+North Stradbroke,2020-12-21 10:30,50
+North Stradbroke,2020-12-21 10:30,50
+North Stradbroke,2020-12-21 10:30,57
+North Stradbroke,2020-12-21 10:30,57
+North Stradbroke,2021-01-19 11:00,0
+North Stradbroke,2021-01-19 11:00,0
+North Stradbroke,2021-01-19 11:00,10
+North Stradbroke,2021-01-19 11:00,10
+North Stradbroke,2021-01-19 11:00,20
+North Stradbroke,2021-01-19 11:00,20
+North Stradbroke,2021-01-19 11:00,30
+North Stradbroke,2021-01-19 11:00,30
+North Stradbroke,2021-01-19 11:00,40
+North Stradbroke,2021-01-19 11:00,40
+North Stradbroke,2021-01-19 11:00,50
+North Stradbroke,2021-01-19 11:00,50
+North Stradbroke,2021-01-19 11:00,57
+North Stradbroke,2021-01-19 11:00,57
+North Stradbroke,2021-02-26 10:40,0
+North Stradbroke,2021-02-26 10:40,10
+North Stradbroke,2021-02-26 10:40,20
+North Stradbroke,2021-02-26 10:40,30
+North Stradbroke,2021-02-26 10:40,40
+North Stradbroke,2021-02-26 10:40,50
+North Stradbroke,2021-02-26 10:40,57
+Port Hacking,2009-02-24 09:27,0
+Port Hacking,2009-02-24 09:27,10
+Port Hacking,2009-02-24 09:27,20
+Port Hacking,2009-02-24 09:27,25
+Port Hacking,2009-02-24 09:27,30
+Port Hacking,2009-02-24 09:27,40
+Port Hacking,2009-02-24 09:27,50
+Port Hacking,2009-02-24 09:27,60
+Port Hacking,2009-02-24 09:27,75
+Port Hacking,2009-02-24 09:27,100
+Port Hacking,2009-03-19 09:39,0
+Port Hacking,2009-03-19 09:39,10
+Port Hacking,2009-03-19 09:39,20
+Port Hacking,2009-03-19 09:39,25
+Port Hacking,2009-03-19 09:39,30
+Port Hacking,2009-03-19 09:39,40
+Port Hacking,2009-03-19 09:39,50
+Port Hacking,2009-03-19 09:39,60
+Port Hacking,2009-03-19 09:39,75
+Port Hacking,2009-03-19 09:39,100
+Port Hacking,2009-04-23 09:38,0
+Port Hacking,2009-04-23 09:38,10
+Port Hacking,2009-04-23 09:38,20
+Port Hacking,2009-04-23 09:38,25
+Port Hacking,2009-04-23 09:38,30
+Port Hacking,2009-04-23 09:38,40
+Port Hacking,2009-04-23 09:38,50
+Port Hacking,2009-04-23 09:38,60
+Port Hacking,2009-04-23 09:38,75
+Port Hacking,2009-04-23 09:38,100
+Port Hacking,2009-05-19 09:25,0
+Port Hacking,2009-05-19 09:25,10
+Port Hacking,2009-05-19 09:25,20
+Port Hacking,2009-05-19 09:25,25
+Port Hacking,2009-05-19 09:25,30
+Port Hacking,2009-05-19 09:25,40
+Port Hacking,2009-05-19 09:25,50
+Port Hacking,2009-05-19 09:25,60
+Port Hacking,2009-05-19 09:25,75
+Port Hacking,2009-05-19 09:25,100
+Port Hacking,2009-06-24 09:10,0
+Port Hacking,2009-06-24 09:10,10
+Port Hacking,2009-06-24 09:10,20
+Port Hacking,2009-06-24 09:10,25
+Port Hacking,2009-06-24 09:10,30
+Port Hacking,2009-06-24 09:10,40
+Port Hacking,2009-06-24 09:10,50
+Port Hacking,2009-06-24 09:10,60
+Port Hacking,2009-06-24 09:10,75
+Port Hacking,2009-06-24 09:10,100
+Port Hacking,2009-07-15 09:15,0
+Port Hacking,2009-07-15 09:15,10
+Port Hacking,2009-07-15 09:15,20
+Port Hacking,2009-07-15 09:15,25
+Port Hacking,2009-07-15 09:15,30
+Port Hacking,2009-07-15 09:15,40
+Port Hacking,2009-07-15 09:15,50
+Port Hacking,2009-07-15 09:15,60
+Port Hacking,2009-07-15 09:15,75
+Port Hacking,2009-07-15 09:15,100
+Port Hacking,2009-08-20 09:19,0
+Port Hacking,2009-08-20 09:19,10
+Port Hacking,2009-08-20 09:19,20
+Port Hacking,2009-08-20 09:19,25
+Port Hacking,2009-08-20 09:19,30
+Port Hacking,2009-08-20 09:19,40
+Port Hacking,2009-08-20 09:19,50
+Port Hacking,2009-08-20 09:19,60
+Port Hacking,2009-08-20 09:19,75
+Port Hacking,2009-08-20 09:19,100
+Port Hacking,2009-09-21 09:17,0
+Port Hacking,2009-09-21 09:17,10
+Port Hacking,2009-09-21 09:17,20
+Port Hacking,2009-09-21 09:17,25
+Port Hacking,2009-09-21 09:17,30
+Port Hacking,2009-09-21 09:17,40
+Port Hacking,2009-09-21 09:17,50
+Port Hacking,2009-09-21 09:17,60
+Port Hacking,2009-09-21 09:17,75
+Port Hacking,2009-09-21 09:17,100
+Port Hacking,2009-09-25 08:45,0
+Port Hacking,2009-09-25 08:45,10
+Port Hacking,2009-09-25 08:45,20
+Port Hacking,2009-09-25 08:45,25
+Port Hacking,2009-09-25 08:45,30
+Port Hacking,2009-09-25 08:45,40
+Port Hacking,2009-09-25 08:45,50
+Port Hacking,2009-09-25 08:45,60
+Port Hacking,2009-09-25 08:45,75
+Port Hacking,2009-09-25 08:45,100
+Port Hacking,2009-10-12 09:28,0
+Port Hacking,2009-10-12 09:28,10
+Port Hacking,2009-10-12 09:28,20
+Port Hacking,2009-10-12 09:28,25
+Port Hacking,2009-10-12 09:28,30
+Port Hacking,2009-10-12 09:28,40
+Port Hacking,2009-10-12 09:28,50
+Port Hacking,2009-10-12 09:28,60
+Port Hacking,2009-10-12 09:28,75
+Port Hacking,2009-10-12 09:28,100
+Port Hacking,2009-10-19 09:55,0
+Port Hacking,2009-10-19 09:55,10
+Port Hacking,2009-10-19 09:55,20
+Port Hacking,2009-10-19 09:55,25
+Port Hacking,2009-10-19 09:55,30
+Port Hacking,2009-10-19 09:55,40
+Port Hacking,2009-10-19 09:55,50
+Port Hacking,2009-10-19 09:55,60
+Port Hacking,2009-10-19 09:55,75
+Port Hacking,2009-10-19 09:55,100
+Port Hacking,2009-11-11 09:45,0
+Port Hacking,2009-11-11 09:45,10
+Port Hacking,2009-11-11 09:45,20
+Port Hacking,2009-11-11 09:45,25
+Port Hacking,2009-11-11 09:45,30
+Port Hacking,2009-11-11 09:45,40
+Port Hacking,2009-11-11 09:45,50
+Port Hacking,2009-11-11 09:45,60
+Port Hacking,2009-11-11 09:45,75
+Port Hacking,2009-11-11 09:45,100
+Port Hacking,2009-12-07 09:14,0
+Port Hacking,2009-12-07 09:14,10
+Port Hacking,2009-12-07 09:14,20
+Port Hacking,2009-12-07 09:14,25
+Port Hacking,2009-12-07 09:14,30
+Port Hacking,2009-12-07 09:14,40
+Port Hacking,2009-12-07 09:14,50
+Port Hacking,2009-12-07 09:14,60
+Port Hacking,2009-12-07 09:14,75
+Port Hacking,2009-12-07 09:14,100
+Port Hacking,2010-01-20 09:20,0
+Port Hacking,2010-01-20 09:20,10
+Port Hacking,2010-01-20 09:20,20
+Port Hacking,2010-01-20 09:20,25
+Port Hacking,2010-01-20 09:20,30
+Port Hacking,2010-01-20 09:20,40
+Port Hacking,2010-01-20 09:20,50
+Port Hacking,2010-01-20 09:20,60
+Port Hacking,2010-01-20 09:20,75
+Port Hacking,2010-01-20 09:20,100
+Port Hacking,2010-02-19 09:05,0
+Port Hacking,2010-02-19 09:05,10
+Port Hacking,2010-02-19 09:05,20
+Port Hacking,2010-02-19 09:05,25
+Port Hacking,2010-02-19 09:05,30
+Port Hacking,2010-02-19 09:05,40
+Port Hacking,2010-02-19 09:05,50
+Port Hacking,2010-02-19 09:05,60
+Port Hacking,2010-02-19 09:05,75
+Port Hacking,2010-02-19 09:05,100
+Port Hacking,2010-03-17 09:05,0
+Port Hacking,2010-03-17 09:05,10
+Port Hacking,2010-03-17 09:05,20
+Port Hacking,2010-03-17 09:05,25
+Port Hacking,2010-03-17 09:05,30
+Port Hacking,2010-03-17 09:05,40
+Port Hacking,2010-03-17 09:05,50
+Port Hacking,2010-03-17 09:05,60
+Port Hacking,2010-03-17 09:05,75
+Port Hacking,2010-03-17 09:05,100
+Port Hacking,2010-04-14 09:18,0
+Port Hacking,2010-04-14 09:18,10
+Port Hacking,2010-04-14 09:18,20
+Port Hacking,2010-04-14 09:18,25
+Port Hacking,2010-04-14 09:18,30
+Port Hacking,2010-04-14 09:18,40
+Port Hacking,2010-04-14 09:18,50
+Port Hacking,2010-04-14 09:18,60
+Port Hacking,2010-04-14 09:18,75
+Port Hacking,2010-04-14 09:18,100
+Port Hacking,2010-05-11 09:13,0
+Port Hacking,2010-05-11 09:13,10
+Port Hacking,2010-05-11 09:13,20
+Port Hacking,2010-05-11 09:13,25
+Port Hacking,2010-05-11 09:13,30
+Port Hacking,2010-05-11 09:13,40
+Port Hacking,2010-05-11 09:13,50
+Port Hacking,2010-05-11 09:13,60
+Port Hacking,2010-05-11 09:13,75
+Port Hacking,2010-05-11 09:13,100
+Port Hacking,2010-06-09 10:53,0
+Port Hacking,2010-06-09 10:53,10
+Port Hacking,2010-06-09 10:53,20
+Port Hacking,2010-06-09 10:53,25
+Port Hacking,2010-06-09 10:53,30
+Port Hacking,2010-06-09 10:53,40
+Port Hacking,2010-06-09 10:53,50
+Port Hacking,2010-06-09 10:53,60
+Port Hacking,2010-06-09 10:53,75
+Port Hacking,2010-06-09 10:53,100
+Port Hacking,2010-07-02 11:35,0
+Port Hacking,2010-07-02 11:35,10
+Port Hacking,2010-07-02 11:35,20
+Port Hacking,2010-07-02 11:35,25
+Port Hacking,2010-07-02 11:35,30
+Port Hacking,2010-07-02 11:35,40
+Port Hacking,2010-07-02 11:35,50
+Port Hacking,2010-07-02 11:35,60
+Port Hacking,2010-07-02 11:35,75
+Port Hacking,2010-07-02 11:35,100
+Port Hacking,2010-08-18 09:30,0
+Port Hacking,2010-08-18 09:30,10
+Port Hacking,2010-08-18 09:30,20
+Port Hacking,2010-08-18 09:30,25
+Port Hacking,2010-08-18 09:30,30
+Port Hacking,2010-08-18 09:30,40
+Port Hacking,2010-08-18 09:30,50
+Port Hacking,2010-08-18 09:30,60
+Port Hacking,2010-08-18 09:30,75
+Port Hacking,2010-08-18 09:30,100
+Port Hacking,2010-09-09 09:30,0
+Port Hacking,2010-09-09 09:30,10
+Port Hacking,2010-09-09 09:30,20
+Port Hacking,2010-09-09 09:30,25
+Port Hacking,2010-09-09 09:30,30
+Port Hacking,2010-09-09 09:30,40
+Port Hacking,2010-09-09 09:30,50
+Port Hacking,2010-09-09 09:30,60
+Port Hacking,2010-09-09 09:30,75
+Port Hacking,2010-09-09 09:30,100
+Port Hacking,2010-10-20 10:40,0
+Port Hacking,2010-10-20 10:40,10
+Port Hacking,2010-10-20 10:40,20
+Port Hacking,2010-10-20 10:40,25
+Port Hacking,2010-10-20 10:40,30
+Port Hacking,2010-10-20 10:40,40
+Port Hacking,2010-10-20 10:40,50
+Port Hacking,2010-10-20 10:40,60
+Port Hacking,2010-10-20 10:40,75
+Port Hacking,2010-10-20 10:40,100
+Port Hacking,2010-11-11 09:10,0
+Port Hacking,2010-11-11 09:10,10
+Port Hacking,2010-11-11 09:10,20
+Port Hacking,2010-11-11 09:10,25
+Port Hacking,2010-11-11 09:10,30
+Port Hacking,2010-11-11 09:10,40
+Port Hacking,2010-11-11 09:10,50
+Port Hacking,2010-11-11 09:10,60
+Port Hacking,2010-11-11 09:10,75
+Port Hacking,2010-11-11 09:10,100
+Port Hacking,2010-12-14 09:30,0
+Port Hacking,2010-12-14 09:30,10
+Port Hacking,2010-12-14 09:30,20
+Port Hacking,2010-12-14 09:30,25
+Port Hacking,2010-12-14 09:30,30
+Port Hacking,2010-12-14 09:30,40
+Port Hacking,2010-12-14 09:30,50
+Port Hacking,2010-12-14 09:30,60
+Port Hacking,2010-12-14 09:30,75
+Port Hacking,2010-12-14 09:30,100
+Port Hacking,2011-02-04 09:58,0
+Port Hacking,2011-02-04 09:58,10
+Port Hacking,2011-02-04 09:58,20
+Port Hacking,2011-02-04 09:58,25
+Port Hacking,2011-02-04 09:58,30
+Port Hacking,2011-02-04 09:58,40
+Port Hacking,2011-02-04 09:58,50
+Port Hacking,2011-02-04 09:58,60
+Port Hacking,2011-02-04 09:58,75
+Port Hacking,2011-02-04 09:58,100
+Port Hacking,2011-03-01 09:30,0
+Port Hacking,2011-03-01 09:30,10
+Port Hacking,2011-03-01 09:30,20
+Port Hacking,2011-03-01 09:30,25
+Port Hacking,2011-03-01 09:30,30
+Port Hacking,2011-03-01 09:30,40
+Port Hacking,2011-03-01 09:30,50
+Port Hacking,2011-03-01 09:30,60
+Port Hacking,2011-03-01 09:30,75
+Port Hacking,2011-03-01 09:30,100
+Port Hacking,2011-03-30 09:33,0
+Port Hacking,2011-03-30 09:33,10
+Port Hacking,2011-03-30 09:33,20
+Port Hacking,2011-03-30 09:33,25
+Port Hacking,2011-03-30 09:33,30
+Port Hacking,2011-03-30 09:33,40
+Port Hacking,2011-03-30 09:33,50
+Port Hacking,2011-03-30 09:33,60
+Port Hacking,2011-03-30 09:33,75
+Port Hacking,2011-03-30 09:33,100
+Port Hacking,2011-04-21 09:36,0
+Port Hacking,2011-04-21 09:36,10
+Port Hacking,2011-04-21 09:36,20
+Port Hacking,2011-04-21 09:36,25
+Port Hacking,2011-04-21 09:36,30
+Port Hacking,2011-04-21 09:36,40
+Port Hacking,2011-04-21 09:36,50
+Port Hacking,2011-04-21 09:36,60
+Port Hacking,2011-04-21 09:36,75
+Port Hacking,2011-04-21 09:36,100
+Port Hacking,2011-05-18 09:25,0
+Port Hacking,2011-05-18 09:25,10
+Port Hacking,2011-05-18 09:25,20
+Port Hacking,2011-05-18 09:25,25
+Port Hacking,2011-05-18 09:25,30
+Port Hacking,2011-05-18 09:25,40
+Port Hacking,2011-05-18 09:25,50
+Port Hacking,2011-05-18 09:25,60
+Port Hacking,2011-05-18 09:25,75
+Port Hacking,2011-05-18 09:25,100
+Port Hacking,2011-06-20 09:34,0
+Port Hacking,2011-06-20 09:34,10
+Port Hacking,2011-06-20 09:34,20
+Port Hacking,2011-06-20 09:34,25
+Port Hacking,2011-06-20 09:34,30
+Port Hacking,2011-06-20 09:34,40
+Port Hacking,2011-06-20 09:34,50
+Port Hacking,2011-06-20 09:34,60
+Port Hacking,2011-06-20 09:34,75
+Port Hacking,2011-06-20 09:34,100
+Port Hacking,2011-07-18 09:38,0
+Port Hacking,2011-07-18 09:38,10
+Port Hacking,2011-07-18 09:38,20
+Port Hacking,2011-07-18 09:38,25
+Port Hacking,2011-07-18 09:38,30
+Port Hacking,2011-07-18 09:38,40
+Port Hacking,2011-07-18 09:38,50
+Port Hacking,2011-07-18 09:38,60
+Port Hacking,2011-07-18 09:38,75
+Port Hacking,2011-07-18 09:38,100
+Port Hacking,2011-08-29 10:03,0
+Port Hacking,2011-08-29 10:03,10
+Port Hacking,2011-08-29 10:03,20
+Port Hacking,2011-08-29 10:03,25
+Port Hacking,2011-08-29 10:03,30
+Port Hacking,2011-08-29 10:03,40
+Port Hacking,2011-08-29 10:03,50
+Port Hacking,2011-08-29 10:03,60
+Port Hacking,2011-08-29 10:03,75
+Port Hacking,2011-08-29 10:03,100
+Port Hacking,2011-09-15 09:43,0
+Port Hacking,2011-09-15 09:43,10
+Port Hacking,2011-09-15 09:43,20
+Port Hacking,2011-09-15 09:43,25
+Port Hacking,2011-09-15 09:43,30
+Port Hacking,2011-09-15 09:43,40
+Port Hacking,2011-09-15 09:43,50
+Port Hacking,2011-09-15 09:43,60
+Port Hacking,2011-09-15 09:43,75
+Port Hacking,2011-09-15 09:43,100
+Port Hacking,2011-10-19 09:31,0
+Port Hacking,2011-10-19 09:31,10
+Port Hacking,2011-10-19 09:31,20
+Port Hacking,2011-10-19 09:31,25
+Port Hacking,2011-10-19 09:31,30
+Port Hacking,2011-10-19 09:31,40
+Port Hacking,2011-10-19 09:31,50
+Port Hacking,2011-10-19 09:31,60
+Port Hacking,2011-10-19 09:31,75
+Port Hacking,2011-10-19 09:31,100
+Port Hacking,2011-11-18 09:36,0
+Port Hacking,2011-11-18 09:36,10
+Port Hacking,2011-11-18 09:36,20
+Port Hacking,2011-11-18 09:36,25
+Port Hacking,2011-11-18 09:36,30
+Port Hacking,2011-11-18 09:36,40
+Port Hacking,2011-11-18 09:36,50
+Port Hacking,2011-11-18 09:36,60
+Port Hacking,2011-11-18 09:36,75
+Port Hacking,2011-11-18 09:36,100
+Port Hacking,2011-12-07 09:30,0
+Port Hacking,2011-12-07 09:30,10
+Port Hacking,2011-12-07 09:30,20
+Port Hacking,2011-12-07 09:30,25
+Port Hacking,2011-12-07 09:30,30
+Port Hacking,2011-12-07 09:30,40
+Port Hacking,2011-12-07 09:30,50
+Port Hacking,2011-12-07 09:30,60
+Port Hacking,2011-12-07 09:30,75
+Port Hacking,2011-12-07 09:30,100
+Port Hacking,2012-02-13 10:00,0
+Port Hacking,2012-02-13 10:00,10
+Port Hacking,2012-02-13 10:00,20
+Port Hacking,2012-02-13 10:00,25
+Port Hacking,2012-02-13 10:00,30
+Port Hacking,2012-02-13 10:00,40
+Port Hacking,2012-02-13 10:00,50
+Port Hacking,2012-02-13 10:00,60
+Port Hacking,2012-02-13 10:00,75
+Port Hacking,2012-02-13 10:00,100
+Port Hacking,2012-03-12 09:00,0
+Port Hacking,2012-03-12 09:00,10
+Port Hacking,2012-03-12 09:00,20
+Port Hacking,2012-03-12 09:00,25
+Port Hacking,2012-03-12 09:00,30
+Port Hacking,2012-03-12 09:00,40
+Port Hacking,2012-03-12 09:00,50
+Port Hacking,2012-03-12 09:00,60
+Port Hacking,2012-03-12 09:00,75
+Port Hacking,2012-03-12 09:00,100
+Port Hacking,2012-05-18 09:33,0
+Port Hacking,2012-05-18 09:33,10
+Port Hacking,2012-05-18 09:33,20
+Port Hacking,2012-05-18 09:33,25
+Port Hacking,2012-05-18 09:33,30
+Port Hacking,2012-05-18 09:33,40
+Port Hacking,2012-05-18 09:33,50
+Port Hacking,2012-05-18 09:33,60
+Port Hacking,2012-05-18 09:33,75
+Port Hacking,2012-05-18 09:33,100
+Port Hacking,2012-07-17 10:00,0
+Port Hacking,2012-07-17 10:00,10
+Port Hacking,2012-07-17 10:00,20
+Port Hacking,2012-07-17 10:00,25
+Port Hacking,2012-07-17 10:00,30
+Port Hacking,2012-07-17 10:00,40
+Port Hacking,2012-07-17 10:00,50
+Port Hacking,2012-07-17 10:00,60
+Port Hacking,2012-07-17 10:00,75
+Port Hacking,2012-07-17 10:00,100
+Port Hacking,2012-08-22 09:19,0
+Port Hacking,2012-08-22 09:19,10
+Port Hacking,2012-08-22 09:19,20
+Port Hacking,2012-08-22 09:19,25
+Port Hacking,2012-08-22 09:19,30
+Port Hacking,2012-08-22 09:19,40
+Port Hacking,2012-08-22 09:19,50
+Port Hacking,2012-08-22 09:19,60
+Port Hacking,2012-08-22 09:19,75
+Port Hacking,2012-08-22 09:19,100
+Port Hacking,2012-09-18 09:38,0
+Port Hacking,2012-09-18 09:38,10
+Port Hacking,2012-09-18 09:38,20
+Port Hacking,2012-09-18 09:38,25
+Port Hacking,2012-09-18 09:38,30
+Port Hacking,2012-09-18 09:38,40
+Port Hacking,2012-09-18 09:38,50
+Port Hacking,2012-09-18 09:38,60
+Port Hacking,2012-09-18 09:38,75
+Port Hacking,2012-09-18 09:38,100
+Port Hacking,2012-10-10 09:44,0
+Port Hacking,2012-10-10 09:44,10
+Port Hacking,2012-10-10 09:44,20
+Port Hacking,2012-10-10 09:44,25
+Port Hacking,2012-10-10 09:44,30
+Port Hacking,2012-10-10 09:44,40
+Port Hacking,2012-10-10 09:44,50
+Port Hacking,2012-10-10 09:44,60
+Port Hacking,2012-10-10 09:44,75
+Port Hacking,2012-10-10 09:44,100
+Port Hacking,2012-11-21 09:30,0
+Port Hacking,2012-11-21 09:30,10
+Port Hacking,2012-11-21 09:30,20
+Port Hacking,2012-11-21 09:30,25
+Port Hacking,2012-11-21 09:30,30
+Port Hacking,2012-11-21 09:30,40
+Port Hacking,2012-11-21 09:30,50
+Port Hacking,2012-11-21 09:30,60
+Port Hacking,2012-11-21 09:30,75
+Port Hacking,2012-11-21 09:30,100
+Port Hacking,2012-12-19 09:31,0
+Port Hacking,2012-12-19 09:31,10
+Port Hacking,2012-12-19 09:31,20
+Port Hacking,2012-12-19 09:31,25
+Port Hacking,2012-12-19 09:31,30
+Port Hacking,2012-12-19 09:31,40
+Port Hacking,2012-12-19 09:31,50
+Port Hacking,2012-12-19 09:31,60
+Port Hacking,2012-12-19 09:31,75
+Port Hacking,2012-12-19 09:31,100
+Port Hacking,2013-02-28 08:03,0
+Port Hacking,2013-02-28 08:03,10
+Port Hacking,2013-02-28 08:03,20
+Port Hacking,2013-02-28 08:03,25
+Port Hacking,2013-02-28 08:03,30
+Port Hacking,2013-02-28 08:03,40
+Port Hacking,2013-02-28 08:03,50
+Port Hacking,2013-02-28 08:03,60
+Port Hacking,2013-02-28 08:03,75
+Port Hacking,2013-02-28 08:03,100
+Port Hacking,2013-03-20 09:27,0
+Port Hacking,2013-03-20 09:27,10
+Port Hacking,2013-03-20 09:27,20
+Port Hacking,2013-03-20 09:27,25
+Port Hacking,2013-03-20 09:27,30
+Port Hacking,2013-03-20 09:27,40
+Port Hacking,2013-03-20 09:27,50
+Port Hacking,2013-03-20 09:27,60
+Port Hacking,2013-03-20 09:27,75
+Port Hacking,2013-03-20 09:27,100
+Port Hacking,2013-04-23 09:32,0
+Port Hacking,2013-04-23 09:32,10
+Port Hacking,2013-04-23 09:32,20
+Port Hacking,2013-04-23 09:32,25
+Port Hacking,2013-04-23 09:32,30
+Port Hacking,2013-04-23 09:32,40
+Port Hacking,2013-04-23 09:32,50
+Port Hacking,2013-04-23 09:32,60
+Port Hacking,2013-04-23 09:32,75
+Port Hacking,2013-04-23 09:32,100
+Port Hacking,2013-05-15 09:40,0
+Port Hacking,2013-05-15 09:40,10
+Port Hacking,2013-05-15 09:40,20
+Port Hacking,2013-05-15 09:40,25
+Port Hacking,2013-05-15 09:40,30
+Port Hacking,2013-05-15 09:40,40
+Port Hacking,2013-05-15 09:40,50
+Port Hacking,2013-05-15 09:40,60
+Port Hacking,2013-05-15 09:40,75
+Port Hacking,2013-05-15 09:40,100
+Port Hacking,2013-06-12 09:55,0
+Port Hacking,2013-06-12 09:55,10
+Port Hacking,2013-06-12 09:55,20
+Port Hacking,2013-06-12 09:55,25
+Port Hacking,2013-06-12 09:55,30
+Port Hacking,2013-06-12 09:55,40
+Port Hacking,2013-06-12 09:55,50
+Port Hacking,2013-06-12 09:55,60
+Port Hacking,2013-06-12 09:55,75
+Port Hacking,2013-06-12 09:55,100
+Port Hacking,2013-07-26 09:24,0
+Port Hacking,2013-07-26 09:24,10
+Port Hacking,2013-07-26 09:24,20
+Port Hacking,2013-07-26 09:24,25
+Port Hacking,2013-07-26 09:24,30
+Port Hacking,2013-07-26 09:24,40
+Port Hacking,2013-07-26 09:24,50
+Port Hacking,2013-07-26 09:24,60
+Port Hacking,2013-07-26 09:24,75
+Port Hacking,2013-07-26 09:24,100
+Port Hacking,2013-08-27 09:30,0
+Port Hacking,2013-08-27 09:30,10
+Port Hacking,2013-08-27 09:30,20
+Port Hacking,2013-08-27 09:30,25
+Port Hacking,2013-08-27 09:30,30
+Port Hacking,2013-08-27 09:30,40
+Port Hacking,2013-08-27 09:30,50
+Port Hacking,2013-08-27 09:30,60
+Port Hacking,2013-08-27 09:30,75
+Port Hacking,2013-08-27 09:30,100
+Port Hacking,2013-09-16 08:15,0
+Port Hacking,2013-09-16 08:15,10
+Port Hacking,2013-09-16 08:15,20
+Port Hacking,2013-09-16 08:15,25
+Port Hacking,2013-09-16 08:15,30
+Port Hacking,2013-09-16 08:15,40
+Port Hacking,2013-09-16 08:15,50
+Port Hacking,2013-09-16 08:15,60
+Port Hacking,2013-09-16 08:15,75
+Port Hacking,2013-09-16 08:15,100
+Port Hacking,2013-10-21 09:36,0
+Port Hacking,2013-10-21 09:36,10
+Port Hacking,2013-10-21 09:36,20
+Port Hacking,2013-10-21 09:36,25
+Port Hacking,2013-10-21 09:36,30
+Port Hacking,2013-10-21 09:36,40
+Port Hacking,2013-10-21 09:36,50
+Port Hacking,2013-10-21 09:36,60
+Port Hacking,2013-10-21 09:36,75
+Port Hacking,2013-10-21 09:36,100
+Port Hacking,2013-10-28 10:17,0
+Port Hacking,2013-10-28 10:17,10
+Port Hacking,2013-10-28 10:17,20
+Port Hacking,2013-10-28 10:17,25
+Port Hacking,2013-10-28 10:17,30
+Port Hacking,2013-10-28 10:17,40
+Port Hacking,2013-10-28 10:17,50
+Port Hacking,2013-10-28 10:17,60
+Port Hacking,2013-10-28 10:17,75
+Port Hacking,2013-10-28 10:17,100
+Port Hacking,2013-12-03 09:30,0
+Port Hacking,2013-12-03 09:30,10
+Port Hacking,2013-12-03 09:30,20
+Port Hacking,2013-12-03 09:30,25
+Port Hacking,2013-12-03 09:30,30
+Port Hacking,2013-12-03 09:30,40
+Port Hacking,2013-12-03 09:30,50
+Port Hacking,2013-12-03 09:30,60
+Port Hacking,2013-12-03 09:30,75
+Port Hacking,2013-12-03 09:30,100
+Port Hacking,2014-01-21 09:43,0
+Port Hacking,2014-01-21 09:43,10
+Port Hacking,2014-01-21 09:43,20
+Port Hacking,2014-01-21 09:43,25
+Port Hacking,2014-01-21 09:43,30
+Port Hacking,2014-01-21 09:43,40
+Port Hacking,2014-01-21 09:43,50
+Port Hacking,2014-01-21 09:43,60
+Port Hacking,2014-01-21 09:43,75
+Port Hacking,2014-01-21 09:43,100
+Port Hacking,2014-02-12 09:57,0
+Port Hacking,2014-02-12 09:57,10
+Port Hacking,2014-02-12 09:57,20
+Port Hacking,2014-02-12 09:57,25
+Port Hacking,2014-02-12 09:57,30
+Port Hacking,2014-02-12 09:57,40
+Port Hacking,2014-02-12 09:57,50
+Port Hacking,2014-02-12 09:57,60
+Port Hacking,2014-02-12 09:57,75
+Port Hacking,2014-02-12 09:57,100
+Port Hacking,2014-03-18 09:48,0
+Port Hacking,2014-03-18 09:48,10
+Port Hacking,2014-03-18 09:48,20
+Port Hacking,2014-03-18 09:48,25
+Port Hacking,2014-03-18 09:48,30
+Port Hacking,2014-03-18 09:48,40
+Port Hacking,2014-03-18 09:48,50
+Port Hacking,2014-03-18 09:48,60
+Port Hacking,2014-03-18 09:48,75
+Port Hacking,2014-03-18 09:48,100
+Port Hacking,2014-04-28 09:38,0
+Port Hacking,2014-04-28 09:38,10
+Port Hacking,2014-04-28 09:38,20
+Port Hacking,2014-04-28 09:38,25
+Port Hacking,2014-04-28 09:38,30
+Port Hacking,2014-04-28 09:38,40
+Port Hacking,2014-04-28 09:38,50
+Port Hacking,2014-04-28 09:38,60
+Port Hacking,2014-04-28 09:38,75
+Port Hacking,2014-04-28 09:38,100
+Port Hacking,2014-05-16 09:35,0
+Port Hacking,2014-05-16 09:35,10
+Port Hacking,2014-05-16 09:35,20
+Port Hacking,2014-05-16 09:35,25
+Port Hacking,2014-05-16 09:35,30
+Port Hacking,2014-05-16 09:35,40
+Port Hacking,2014-05-16 09:35,50
+Port Hacking,2014-05-16 09:35,60
+Port Hacking,2014-05-16 09:35,75
+Port Hacking,2014-05-16 09:35,100
+Port Hacking,2014-06-13 09:20,0
+Port Hacking,2014-06-13 09:20,10
+Port Hacking,2014-06-13 09:20,20
+Port Hacking,2014-06-13 09:20,25
+Port Hacking,2014-06-13 09:20,30
+Port Hacking,2014-06-13 09:20,40
+Port Hacking,2014-06-13 09:20,50
+Port Hacking,2014-06-13 09:20,60
+Port Hacking,2014-06-13 09:20,75
+Port Hacking,2014-06-13 09:20,100
+Port Hacking,2014-07-16 10:00,0
+Port Hacking,2014-07-16 10:00,10
+Port Hacking,2014-07-16 10:00,20
+Port Hacking,2014-07-16 10:00,25
+Port Hacking,2014-07-16 10:00,30
+Port Hacking,2014-07-16 10:00,40
+Port Hacking,2014-07-16 10:00,50
+Port Hacking,2014-07-16 10:00,60
+Port Hacking,2014-07-16 10:00,75
+Port Hacking,2014-07-16 10:00,100
+Port Hacking,2014-08-25 09:57,0
+Port Hacking,2014-08-25 09:57,10
+Port Hacking,2014-08-25 09:57,20
+Port Hacking,2014-08-25 09:57,25
+Port Hacking,2014-08-25 09:57,30
+Port Hacking,2014-08-25 09:57,40
+Port Hacking,2014-08-25 09:57,50
+Port Hacking,2014-08-25 09:57,60
+Port Hacking,2014-08-25 09:57,75
+Port Hacking,2014-08-25 09:57,100
+Port Hacking,2014-09-11 10:13,0
+Port Hacking,2014-09-11 10:13,10
+Port Hacking,2014-09-11 10:13,20
+Port Hacking,2014-09-11 10:13,25
+Port Hacking,2014-09-11 10:13,30
+Port Hacking,2014-09-11 10:13,40
+Port Hacking,2014-09-11 10:13,50
+Port Hacking,2014-09-11 10:13,60
+Port Hacking,2014-09-11 10:13,75
+Port Hacking,2014-09-11 10:13,100
+Port Hacking,2014-10-22 09:30,0
+Port Hacking,2014-10-22 09:30,10
+Port Hacking,2014-10-22 09:30,20
+Port Hacking,2014-10-22 09:30,25
+Port Hacking,2014-10-22 09:30,30
+Port Hacking,2014-10-22 09:30,40
+Port Hacking,2014-10-22 09:30,50
+Port Hacking,2014-10-22 09:30,60
+Port Hacking,2014-10-22 09:30,75
+Port Hacking,2014-10-22 09:30,100
+Port Hacking,2014-11-13 09:36,0
+Port Hacking,2014-11-13 09:36,10
+Port Hacking,2014-11-13 09:36,20
+Port Hacking,2014-11-13 09:36,25
+Port Hacking,2014-11-13 09:36,30
+Port Hacking,2014-11-13 09:36,40
+Port Hacking,2014-11-13 09:36,50
+Port Hacking,2014-11-13 09:36,60
+Port Hacking,2014-11-13 09:36,75
+Port Hacking,2014-11-13 09:36,100
+Port Hacking,2014-12-09 09:51,0
+Port Hacking,2014-12-09 09:51,10
+Port Hacking,2014-12-09 09:51,20
+Port Hacking,2014-12-09 09:51,25
+Port Hacking,2014-12-09 09:51,30
+Port Hacking,2014-12-09 09:51,40
+Port Hacking,2014-12-09 09:51,50
+Port Hacking,2014-12-09 09:51,60
+Port Hacking,2014-12-09 09:51,75
+Port Hacking,2014-12-09 09:51,100
+Port Hacking,2015-01-22 09:48,
+Port Hacking,2015-01-22 09:48,0
+Port Hacking,2015-01-22 09:48,10
+Port Hacking,2015-01-22 09:48,20
+Port Hacking,2015-01-22 09:48,25
+Port Hacking,2015-01-22 09:48,30
+Port Hacking,2015-01-22 09:48,40
+Port Hacking,2015-01-22 09:48,50
+Port Hacking,2015-01-22 09:48,60
+Port Hacking,2015-01-22 09:48,75
+Port Hacking,2015-01-22 09:48,100
+Port Hacking,2015-02-26 09:37,0
+Port Hacking,2015-02-26 09:37,10
+Port Hacking,2015-02-26 09:37,20
+Port Hacking,2015-02-26 09:37,25
+Port Hacking,2015-02-26 09:37,30
+Port Hacking,2015-02-26 09:37,40
+Port Hacking,2015-02-26 09:37,50
+Port Hacking,2015-02-26 09:37,60
+Port Hacking,2015-02-26 09:37,75
+Port Hacking,2015-02-26 09:37,100
+Port Hacking,2015-03-31 09:32,0
+Port Hacking,2015-03-31 09:32,10
+Port Hacking,2015-03-31 09:32,20
+Port Hacking,2015-03-31 09:32,25
+Port Hacking,2015-03-31 09:32,30
+Port Hacking,2015-03-31 09:32,40
+Port Hacking,2015-03-31 09:32,50
+Port Hacking,2015-03-31 09:32,60
+Port Hacking,2015-03-31 09:32,75
+Port Hacking,2015-03-31 09:32,100
+Port Hacking,2015-05-19 09:43,0
+Port Hacking,2015-05-19 09:43,10
+Port Hacking,2015-05-19 09:43,20
+Port Hacking,2015-05-19 09:43,25
+Port Hacking,2015-05-19 09:43,30
+Port Hacking,2015-05-19 09:43,40
+Port Hacking,2015-05-19 09:43,50
+Port Hacking,2015-05-19 09:43,60
+Port Hacking,2015-05-19 09:43,75
+Port Hacking,2015-05-19 09:43,100
+Port Hacking,2015-06-30 11:11,0
+Port Hacking,2015-06-30 11:11,10
+Port Hacking,2015-06-30 11:11,20
+Port Hacking,2015-06-30 11:11,25
+Port Hacking,2015-06-30 11:11,30
+Port Hacking,2015-06-30 11:11,40
+Port Hacking,2015-06-30 11:11,50
+Port Hacking,2015-06-30 11:11,60
+Port Hacking,2015-06-30 11:11,75
+Port Hacking,2015-06-30 11:11,100
+Port Hacking,2015-07-23 10:07,0
+Port Hacking,2015-07-23 10:07,10
+Port Hacking,2015-07-23 10:07,20
+Port Hacking,2015-07-23 10:07,25
+Port Hacking,2015-07-23 10:07,30
+Port Hacking,2015-07-23 10:07,40
+Port Hacking,2015-07-23 10:07,50
+Port Hacking,2015-07-23 10:07,60
+Port Hacking,2015-07-23 10:07,75
+Port Hacking,2015-07-23 10:07,100
+Port Hacking,2015-08-19 10:03,0
+Port Hacking,2015-08-19 10:03,10
+Port Hacking,2015-08-19 10:03,20
+Port Hacking,2015-08-19 10:03,25
+Port Hacking,2015-08-19 10:03,30
+Port Hacking,2015-08-19 10:03,40
+Port Hacking,2015-08-19 10:03,50
+Port Hacking,2015-08-19 10:03,60
+Port Hacking,2015-08-19 10:03,75
+Port Hacking,2015-08-19 10:03,100
+Port Hacking,2015-10-14 09:42,0
+Port Hacking,2015-10-14 09:42,10
+Port Hacking,2015-10-14 09:42,20
+Port Hacking,2015-10-14 09:42,25
+Port Hacking,2015-10-14 09:42,30
+Port Hacking,2015-10-14 09:42,40
+Port Hacking,2015-10-14 09:42,50
+Port Hacking,2015-10-14 09:42,60
+Port Hacking,2015-10-14 09:42,75
+Port Hacking,2015-10-14 09:42,100
+Port Hacking,2015-11-16 09:33,0
+Port Hacking,2015-11-16 09:33,10
+Port Hacking,2015-11-16 09:33,20
+Port Hacking,2015-11-16 09:33,25
+Port Hacking,2015-11-16 09:33,30
+Port Hacking,2015-11-16 09:33,40
+Port Hacking,2015-11-16 09:33,50
+Port Hacking,2015-11-16 09:33,60
+Port Hacking,2015-11-16 09:33,75
+Port Hacking,2015-11-16 09:33,100
+Port Hacking,2015-12-16 09:35,0
+Port Hacking,2015-12-16 09:35,10
+Port Hacking,2015-12-16 09:35,20
+Port Hacking,2015-12-16 09:35,25
+Port Hacking,2015-12-16 09:35,30
+Port Hacking,2015-12-16 09:35,40
+Port Hacking,2015-12-16 09:35,50
+Port Hacking,2015-12-16 09:35,60
+Port Hacking,2015-12-16 09:35,75
+Port Hacking,2015-12-16 09:35,100
+Port Hacking,2016-02-02 10:52,0
+Port Hacking,2016-02-02 10:52,10
+Port Hacking,2016-02-02 10:52,20
+Port Hacking,2016-02-02 10:52,25
+Port Hacking,2016-02-02 10:52,30
+Port Hacking,2016-02-02 10:52,40
+Port Hacking,2016-02-02 10:52,50
+Port Hacking,2016-02-02 10:52,60
+Port Hacking,2016-02-02 10:52,75
+Port Hacking,2016-02-02 10:52,100
+Port Hacking,2016-03-01 09:00,0
+Port Hacking,2016-03-01 09:00,10
+Port Hacking,2016-03-01 09:00,20
+Port Hacking,2016-03-01 09:00,25
+Port Hacking,2016-03-01 09:00,30
+Port Hacking,2016-03-01 09:00,40
+Port Hacking,2016-03-01 09:00,50
+Port Hacking,2016-03-01 09:00,60
+Port Hacking,2016-03-01 09:00,75
+Port Hacking,2016-03-01 09:00,100
+Port Hacking,2016-04-08 09:13,0
+Port Hacking,2016-04-08 09:13,10
+Port Hacking,2016-04-08 09:13,20
+Port Hacking,2016-04-08 09:13,25
+Port Hacking,2016-04-08 09:13,30
+Port Hacking,2016-04-08 09:13,40
+Port Hacking,2016-04-08 09:13,50
+Port Hacking,2016-04-08 09:13,60
+Port Hacking,2016-04-08 09:13,75
+Port Hacking,2016-04-08 09:13,100
+Port Hacking,2016-05-03 09:14,0
+Port Hacking,2016-05-03 09:14,10
+Port Hacking,2016-05-03 09:14,20
+Port Hacking,2016-05-03 09:14,25
+Port Hacking,2016-05-03 09:14,30
+Port Hacking,2016-05-03 09:14,40
+Port Hacking,2016-05-03 09:14,50
+Port Hacking,2016-05-03 09:14,60
+Port Hacking,2016-05-03 09:14,75
+Port Hacking,2016-05-03 09:14,100
+Port Hacking,2016-06-15 11:06,0
+Port Hacking,2016-06-15 11:06,10
+Port Hacking,2016-06-15 11:06,20
+Port Hacking,2016-06-15 11:06,25
+Port Hacking,2016-06-15 11:06,30
+Port Hacking,2016-06-15 11:06,40
+Port Hacking,2016-06-15 11:06,50
+Port Hacking,2016-06-15 11:06,60
+Port Hacking,2016-06-15 11:06,75
+Port Hacking,2016-06-15 11:06,100
+Port Hacking,2016-07-19 10:19,0
+Port Hacking,2016-07-19 10:19,10
+Port Hacking,2016-07-19 10:19,20
+Port Hacking,2016-07-19 10:19,25
+Port Hacking,2016-07-19 10:19,30
+Port Hacking,2016-07-19 10:19,40
+Port Hacking,2016-07-19 10:19,50
+Port Hacking,2016-07-19 10:19,60
+Port Hacking,2016-07-19 10:19,75
+Port Hacking,2016-07-19 10:19,100
+Port Hacking,2016-08-30 09:20,0
+Port Hacking,2016-08-30 09:20,10
+Port Hacking,2016-08-30 09:20,20
+Port Hacking,2016-08-30 09:20,25
+Port Hacking,2016-08-30 09:20,30
+Port Hacking,2016-08-30 09:20,40
+Port Hacking,2016-08-30 09:20,50
+Port Hacking,2016-08-30 09:20,60
+Port Hacking,2016-08-30 09:20,75
+Port Hacking,2016-08-30 09:20,100
+Port Hacking,2016-09-27 09:54,0
+Port Hacking,2016-09-27 09:54,10
+Port Hacking,2016-09-27 09:54,20
+Port Hacking,2016-09-27 09:54,25
+Port Hacking,2016-09-27 09:54,30
+Port Hacking,2016-09-27 09:54,40
+Port Hacking,2016-09-27 09:54,50
+Port Hacking,2016-09-27 09:54,60
+Port Hacking,2016-09-27 09:54,75
+Port Hacking,2016-09-27 09:54,100
+Port Hacking,2016-10-31 09:35,0
+Port Hacking,2016-10-31 09:35,10
+Port Hacking,2016-10-31 09:35,20
+Port Hacking,2016-10-31 09:35,25
+Port Hacking,2016-10-31 09:35,30
+Port Hacking,2016-10-31 09:35,40
+Port Hacking,2016-10-31 09:35,50
+Port Hacking,2016-10-31 09:35,60
+Port Hacking,2016-10-31 09:35,75
+Port Hacking,2016-10-31 09:35,100
+Port Hacking,2016-12-05 09:45,0
+Port Hacking,2016-12-05 09:45,10
+Port Hacking,2016-12-05 09:45,20
+Port Hacking,2016-12-05 09:45,25
+Port Hacking,2016-12-05 09:45,30
+Port Hacking,2016-12-05 09:45,40
+Port Hacking,2016-12-05 09:45,50
+Port Hacking,2016-12-05 09:45,60
+Port Hacking,2016-12-05 09:45,75
+Port Hacking,2016-12-05 09:45,100
+Port Hacking,2017-02-06 10:49,0
+Port Hacking,2017-02-06 10:49,10
+Port Hacking,2017-02-06 10:49,20
+Port Hacking,2017-02-06 10:49,25
+Port Hacking,2017-02-06 10:49,30
+Port Hacking,2017-02-06 10:49,40
+Port Hacking,2017-02-06 10:49,50
+Port Hacking,2017-02-06 10:49,60
+Port Hacking,2017-02-06 10:49,75
+Port Hacking,2017-02-06 10:49,100
+Port Hacking,2017-03-22 09:21,0
+Port Hacking,2017-03-22 09:21,10
+Port Hacking,2017-03-22 09:21,20
+Port Hacking,2017-03-22 09:21,25
+Port Hacking,2017-03-22 09:21,30
+Port Hacking,2017-03-22 09:21,40
+Port Hacking,2017-03-22 09:21,50
+Port Hacking,2017-03-22 09:21,60
+Port Hacking,2017-03-22 09:21,75
+Port Hacking,2017-03-22 09:21,100
+Port Hacking,2017-04-19 10:00,0
+Port Hacking,2017-04-19 10:00,10
+Port Hacking,2017-04-19 10:00,20
+Port Hacking,2017-04-19 10:00,25
+Port Hacking,2017-04-19 10:00,30
+Port Hacking,2017-04-19 10:00,40
+Port Hacking,2017-04-19 10:00,50
+Port Hacking,2017-04-19 10:00,60
+Port Hacking,2017-04-19 10:00,75
+Port Hacking,2017-04-19 10:00,100
+Port Hacking,2017-05-18 09:45,0
+Port Hacking,2017-05-18 09:45,10
+Port Hacking,2017-05-18 09:45,20
+Port Hacking,2017-05-18 09:45,25
+Port Hacking,2017-05-18 09:45,30
+Port Hacking,2017-05-18 09:45,40
+Port Hacking,2017-05-18 09:45,50
+Port Hacking,2017-05-18 09:45,60
+Port Hacking,2017-05-18 09:45,75
+Port Hacking,2017-05-18 09:45,100
+Port Hacking,2017-06-15 08:52,0
+Port Hacking,2017-06-15 08:52,10
+Port Hacking,2017-06-15 08:52,20
+Port Hacking,2017-06-15 08:52,25
+Port Hacking,2017-06-15 08:52,30
+Port Hacking,2017-06-15 08:52,40
+Port Hacking,2017-06-15 08:52,50
+Port Hacking,2017-06-15 08:52,60
+Port Hacking,2017-06-15 08:52,75
+Port Hacking,2017-06-15 08:52,100
+Port Hacking,2017-07-17 09:42,0
+Port Hacking,2017-07-17 09:42,10
+Port Hacking,2017-07-17 09:42,20
+Port Hacking,2017-07-17 09:42,25
+Port Hacking,2017-07-17 09:42,30
+Port Hacking,2017-07-17 09:42,40
+Port Hacking,2017-07-17 09:42,50
+Port Hacking,2017-07-17 09:42,60
+Port Hacking,2017-07-17 09:42,75
+Port Hacking,2017-07-17 09:42,100
+Port Hacking,2017-08-22 09:50,0
+Port Hacking,2017-08-22 09:50,10
+Port Hacking,2017-08-22 09:50,20
+Port Hacking,2017-08-22 09:50,25
+Port Hacking,2017-08-22 09:50,30
+Port Hacking,2017-08-22 09:50,40
+Port Hacking,2017-08-22 09:50,50
+Port Hacking,2017-08-22 09:50,60
+Port Hacking,2017-08-22 09:50,75
+Port Hacking,2017-08-22 09:50,100
+Port Hacking,2017-09-22 08:48,0
+Port Hacking,2017-09-22 08:48,10
+Port Hacking,2017-09-22 08:48,20
+Port Hacking,2017-09-22 08:48,25
+Port Hacking,2017-09-22 08:48,30
+Port Hacking,2017-09-22 08:48,40
+Port Hacking,2017-09-22 08:48,50
+Port Hacking,2017-09-22 08:48,60
+Port Hacking,2017-09-22 08:48,75
+Port Hacking,2017-09-22 08:48,100
+Port Hacking,2017-10-25 09:01,0
+Port Hacking,2017-10-25 09:01,10
+Port Hacking,2017-10-25 09:01,20
+Port Hacking,2017-10-25 09:01,25
+Port Hacking,2017-10-25 09:01,30
+Port Hacking,2017-10-25 09:01,40
+Port Hacking,2017-10-25 09:01,50
+Port Hacking,2017-10-25 09:01,60
+Port Hacking,2017-10-25 09:01,75
+Port Hacking,2017-10-25 09:01,100
+Port Hacking,2017-12-12 08:54,0
+Port Hacking,2017-12-12 08:54,10
+Port Hacking,2017-12-12 08:54,20
+Port Hacking,2017-12-12 08:54,25
+Port Hacking,2017-12-12 08:54,30
+Port Hacking,2017-12-12 08:54,40
+Port Hacking,2017-12-12 08:54,50
+Port Hacking,2017-12-12 08:54,60
+Port Hacking,2017-12-12 08:54,75
+Port Hacking,2017-12-12 08:54,100
+Port Hacking,2018-01-24 09:41,0
+Port Hacking,2018-01-24 09:41,10
+Port Hacking,2018-01-24 09:41,20
+Port Hacking,2018-01-24 09:41,25
+Port Hacking,2018-01-24 09:41,30
+Port Hacking,2018-01-24 09:41,40
+Port Hacking,2018-01-24 09:41,50
+Port Hacking,2018-01-24 09:41,60
+Port Hacking,2018-01-24 09:41,75
+Port Hacking,2018-01-24 09:41,100
+Port Hacking,2018-02-22 09:18,0
+Port Hacking,2018-02-22 09:18,10
+Port Hacking,2018-02-22 09:18,20
+Port Hacking,2018-02-22 09:18,25
+Port Hacking,2018-02-22 09:18,30
+Port Hacking,2018-02-22 09:18,40
+Port Hacking,2018-02-22 09:18,50
+Port Hacking,2018-02-22 09:18,60
+Port Hacking,2018-02-22 09:18,75
+Port Hacking,2018-02-22 09:18,100
+Port Hacking,2018-03-27 09:40,0
+Port Hacking,2018-03-27 09:40,10
+Port Hacking,2018-03-27 09:40,20
+Port Hacking,2018-03-27 09:40,25
+Port Hacking,2018-03-27 09:40,30
+Port Hacking,2018-03-27 09:40,40
+Port Hacking,2018-03-27 09:40,50
+Port Hacking,2018-03-27 09:40,60
+Port Hacking,2018-03-27 09:40,75
+Port Hacking,2018-03-27 09:40,100
+Port Hacking,2018-05-29 09:50,0
+Port Hacking,2018-05-29 09:50,10
+Port Hacking,2018-05-29 09:50,20
+Port Hacking,2018-05-29 09:50,25
+Port Hacking,2018-05-29 09:50,30
+Port Hacking,2018-05-29 09:50,40
+Port Hacking,2018-05-29 09:50,50
+Port Hacking,2018-05-29 09:50,60
+Port Hacking,2018-05-29 09:50,75
+Port Hacking,2018-05-29 09:50,100
+Port Hacking,2018-06-27 09:41,0
+Port Hacking,2018-06-27 09:41,10
+Port Hacking,2018-06-27 09:41,20
+Port Hacking,2018-06-27 09:41,25
+Port Hacking,2018-06-27 09:41,30
+Port Hacking,2018-06-27 09:41,40
+Port Hacking,2018-06-27 09:41,50
+Port Hacking,2018-06-27 09:41,60
+Port Hacking,2018-06-27 09:41,75
+Port Hacking,2018-06-27 09:41,100
+Port Hacking,2018-07-25 09:33,0
+Port Hacking,2018-07-25 09:33,10
+Port Hacking,2018-07-25 09:33,20
+Port Hacking,2018-07-25 09:33,25
+Port Hacking,2018-07-25 09:33,30
+Port Hacking,2018-07-25 09:33,40
+Port Hacking,2018-07-25 09:33,50
+Port Hacking,2018-07-25 09:33,60
+Port Hacking,2018-07-25 09:33,75
+Port Hacking,2018-07-25 09:33,100
+Port Hacking,2018-09-05 10:50,0
+Port Hacking,2018-09-05 10:50,10
+Port Hacking,2018-09-05 10:50,20
+Port Hacking,2018-09-05 10:50,25
+Port Hacking,2018-09-05 10:50,30
+Port Hacking,2018-09-05 10:50,40
+Port Hacking,2018-09-05 10:50,50
+Port Hacking,2018-09-05 10:50,60
+Port Hacking,2018-09-05 10:50,75
+Port Hacking,2018-09-05 10:50,100
+Port Hacking,2018-09-27 10:43,0
+Port Hacking,2018-09-27 10:43,10
+Port Hacking,2018-09-27 10:43,20
+Port Hacking,2018-09-27 10:43,25
+Port Hacking,2018-09-27 10:43,30
+Port Hacking,2018-09-27 10:43,40
+Port Hacking,2018-09-27 10:43,50
+Port Hacking,2018-09-27 10:43,60
+Port Hacking,2018-09-27 10:43,75
+Port Hacking,2018-09-27 10:43,100
+Port Hacking,2018-11-21 09:24,0
+Port Hacking,2018-11-21 09:24,10
+Port Hacking,2018-11-21 09:24,20
+Port Hacking,2018-11-21 09:24,25
+Port Hacking,2018-11-21 09:24,30
+Port Hacking,2018-11-21 09:24,40
+Port Hacking,2018-11-21 09:24,50
+Port Hacking,2018-11-21 09:24,60
+Port Hacking,2018-11-21 09:24,75
+Port Hacking,2018-11-21 09:24,100
+Port Hacking,2018-12-19 09:40,0
+Port Hacking,2018-12-19 09:40,0
+Port Hacking,2018-12-19 09:40,10
+Port Hacking,2018-12-19 09:40,10
+Port Hacking,2018-12-19 09:40,20
+Port Hacking,2018-12-19 09:40,20
+Port Hacking,2018-12-19 09:40,25
+Port Hacking,2018-12-19 09:40,30
+Port Hacking,2018-12-19 09:40,30
+Port Hacking,2018-12-19 09:40,40
+Port Hacking,2018-12-19 09:40,40
+Port Hacking,2018-12-19 09:40,50
+Port Hacking,2018-12-19 09:40,50
+Port Hacking,2018-12-19 09:40,60
+Port Hacking,2018-12-19 09:40,75
+Port Hacking,2018-12-19 09:40,100
+Port Hacking,2019-01-22 09:43,0
+Port Hacking,2019-01-22 09:43,0
+Port Hacking,2019-01-22 09:43,10
+Port Hacking,2019-01-22 09:43,10
+Port Hacking,2019-01-22 09:43,20
+Port Hacking,2019-01-22 09:43,25
+Port Hacking,2019-01-22 09:43,30
+Port Hacking,2019-01-22 09:43,30
+Port Hacking,2019-01-22 09:43,40
+Port Hacking,2019-01-22 09:43,40
+Port Hacking,2019-01-22 09:43,50
+Port Hacking,2019-01-22 09:43,50
+Port Hacking,2019-01-22 09:43,60
+Port Hacking,2019-01-22 09:43,75
+Port Hacking,2019-01-22 09:43,100
+Port Hacking,2019-02-28 10:35,0
+Port Hacking,2019-02-28 10:35,10
+Port Hacking,2019-02-28 10:35,20
+Port Hacking,2019-02-28 10:35,25
+Port Hacking,2019-02-28 10:35,30
+Port Hacking,2019-02-28 10:35,40
+Port Hacking,2019-02-28 10:35,50
+Port Hacking,2019-02-28 10:35,60
+Port Hacking,2019-02-28 10:35,75
+Port Hacking,2019-02-28 10:35,100
+Port Hacking,2019-04-09 08:50,0
+Port Hacking,2019-04-09 08:50,10
+Port Hacking,2019-04-09 08:50,20
+Port Hacking,2019-04-09 08:50,25
+Port Hacking,2019-04-09 08:50,30
+Port Hacking,2019-04-09 08:50,40
+Port Hacking,2019-04-09 08:50,50
+Port Hacking,2019-04-09 08:50,60
+Port Hacking,2019-04-09 08:50,75
+Port Hacking,2019-04-09 08:50,100
+Port Hacking,2019-05-23 08:50,0
+Port Hacking,2019-05-23 08:50,10
+Port Hacking,2019-05-23 08:50,20
+Port Hacking,2019-05-23 08:50,25
+Port Hacking,2019-05-23 08:50,30
+Port Hacking,2019-05-23 08:50,40
+Port Hacking,2019-05-23 08:50,50
+Port Hacking,2019-05-23 08:50,60
+Port Hacking,2019-05-23 08:50,75
+Port Hacking,2019-05-23 08:50,100
+Port Hacking,2019-06-27 09:38,0
+Port Hacking,2019-06-27 09:38,10
+Port Hacking,2019-06-27 09:38,20
+Port Hacking,2019-06-27 09:38,25
+Port Hacking,2019-06-27 09:38,30
+Port Hacking,2019-06-27 09:38,40
+Port Hacking,2019-06-27 09:38,50
+Port Hacking,2019-06-27 09:38,60
+Port Hacking,2019-06-27 09:38,75
+Port Hacking,2019-06-27 09:38,100
+Port Hacking,2019-07-29 10:03,0
+Port Hacking,2019-07-29 10:03,10
+Port Hacking,2019-07-29 10:03,20
+Port Hacking,2019-07-29 10:03,25
+Port Hacking,2019-07-29 10:03,30
+Port Hacking,2019-07-29 10:03,40
+Port Hacking,2019-07-29 10:03,50
+Port Hacking,2019-07-29 10:03,60
+Port Hacking,2019-07-29 10:03,75
+Port Hacking,2019-07-29 10:03,100
+Port Hacking,2019-08-28 09:59,0
+Port Hacking,2019-08-28 09:59,10
+Port Hacking,2019-08-28 09:59,20
+Port Hacking,2019-08-28 09:59,25
+Port Hacking,2019-08-28 09:59,30
+Port Hacking,2019-08-28 09:59,40
+Port Hacking,2019-08-28 09:59,50
+Port Hacking,2019-08-28 09:59,60
+Port Hacking,2019-08-28 09:59,75
+Port Hacking,2019-08-28 09:59,100
+Port Hacking,2019-09-24 09:36,0
+Port Hacking,2019-09-24 09:36,10
+Port Hacking,2019-09-24 09:36,20
+Port Hacking,2019-09-24 09:36,25
+Port Hacking,2019-09-24 09:36,30
+Port Hacking,2019-09-24 09:36,40
+Port Hacking,2019-09-24 09:36,50
+Port Hacking,2019-09-24 09:36,60
+Port Hacking,2019-09-24 09:36,75
+Port Hacking,2019-09-24 09:36,100
+Port Hacking,2019-10-29 09:30,0
+Port Hacking,2019-10-29 09:30,10
+Port Hacking,2019-10-29 09:30,20
+Port Hacking,2019-10-29 09:30,25
+Port Hacking,2019-10-29 09:30,30
+Port Hacking,2019-10-29 09:30,40
+Port Hacking,2019-10-29 09:30,50
+Port Hacking,2019-10-29 09:30,60
+Port Hacking,2019-10-29 09:30,75
+Port Hacking,2019-10-29 09:30,100
+Port Hacking,2019-11-19 09:15,0
+Port Hacking,2019-11-19 09:15,10
+Port Hacking,2019-11-19 09:15,20
+Port Hacking,2019-11-19 09:15,25
+Port Hacking,2019-11-19 09:15,30
+Port Hacking,2019-11-19 09:15,40
+Port Hacking,2019-11-19 09:15,50
+Port Hacking,2019-11-19 09:15,60
+Port Hacking,2019-11-19 09:15,75
+Port Hacking,2019-11-19 09:15,100
+Port Hacking,2019-12-17 09:02,0
+Port Hacking,2019-12-17 09:02,10
+Port Hacking,2019-12-17 09:02,20
+Port Hacking,2019-12-17 09:02,25
+Port Hacking,2019-12-17 09:02,30
+Port Hacking,2019-12-17 09:02,40
+Port Hacking,2019-12-17 09:02,50
+Port Hacking,2019-12-17 09:02,60
+Port Hacking,2019-12-17 09:02,75
+Port Hacking,2019-12-17 09:02,100
+Port Hacking,2020-02-25 08:52,0
+Port Hacking,2020-02-25 08:52,10
+Port Hacking,2020-02-25 08:52,20
+Port Hacking,2020-02-25 08:52,25
+Port Hacking,2020-02-25 08:52,30
+Port Hacking,2020-02-25 08:52,40
+Port Hacking,2020-02-25 08:52,50
+Port Hacking,2020-02-25 08:52,60
+Port Hacking,2020-02-25 08:52,75
+Port Hacking,2020-02-25 08:52,100
+Port Hacking,2020-05-20 10:01,0
+Port Hacking,2020-05-20 10:01,10
+Port Hacking,2020-05-20 10:01,20
+Port Hacking,2020-05-20 10:01,25
+Port Hacking,2020-05-20 10:01,30
+Port Hacking,2020-05-20 10:01,40
+Port Hacking,2020-05-20 10:01,50
+Port Hacking,2020-05-20 10:01,60
+Port Hacking,2020-05-20 10:01,75
+Port Hacking,2020-05-20 10:01,100
+Port Hacking,2020-06-10 09:32,0
+Port Hacking,2020-06-10 09:32,10
+Port Hacking,2020-06-10 09:32,20
+Port Hacking,2020-06-10 09:32,25
+Port Hacking,2020-06-10 09:32,30
+Port Hacking,2020-06-10 09:32,40
+Port Hacking,2020-06-10 09:32,50
+Port Hacking,2020-06-10 09:32,60
+Port Hacking,2020-06-10 09:32,75
+Port Hacking,2020-06-10 09:32,100
+Port Hacking,2020-07-01 09:18,0
+Port Hacking,2020-07-01 09:18,10
+Port Hacking,2020-07-01 09:18,20
+Port Hacking,2020-07-01 09:18,25
+Port Hacking,2020-07-01 09:18,30
+Port Hacking,2020-07-01 09:18,40
+Port Hacking,2020-07-01 09:18,50
+Port Hacking,2020-07-01 09:18,60
+Port Hacking,2020-07-01 09:18,75
+Port Hacking,2020-07-01 09:18,100
+Port Hacking,2020-08-13 09:55,0
+Port Hacking,2020-08-13 09:55,10
+Port Hacking,2020-08-13 09:55,20
+Port Hacking,2020-08-13 09:55,25
+Port Hacking,2020-08-13 09:55,30
+Port Hacking,2020-08-13 09:55,40
+Port Hacking,2020-08-13 09:55,50
+Port Hacking,2020-08-13 09:55,60
+Port Hacking,2020-08-13 09:55,75
+Port Hacking,2020-08-13 09:55,100
+Port Hacking,2020-09-01 09:44,0
+Port Hacking,2020-09-01 09:44,0
+Port Hacking,2020-09-01 09:44,10
+Port Hacking,2020-09-01 09:44,20
+Port Hacking,2020-09-01 09:44,25
+Port Hacking,2020-09-01 09:44,30
+Port Hacking,2020-09-01 09:44,40
+Port Hacking,2020-09-01 09:44,50
+Port Hacking,2020-09-01 09:44,60
+Port Hacking,2020-09-01 09:44,75
+Port Hacking,2020-09-01 09:44,100
+Port Hacking,2020-09-23 09:19,0
+Port Hacking,2020-09-23 09:19,10
+Port Hacking,2020-09-23 09:19,20
+Port Hacking,2020-09-23 09:19,25
+Port Hacking,2020-09-23 09:19,30
+Port Hacking,2020-09-23 09:19,40
+Port Hacking,2020-09-23 09:19,50
+Port Hacking,2020-09-23 09:19,60
+Port Hacking,2020-09-23 09:19,75
+Port Hacking,2020-09-23 09:19,100
+Port Hacking,2020-10-14 09:48,0
+Port Hacking,2020-10-14 09:48,10
+Port Hacking,2020-10-14 09:48,20
+Port Hacking,2020-10-14 09:48,25
+Port Hacking,2020-10-14 09:48,30
+Port Hacking,2020-10-14 09:48,40
+Port Hacking,2020-10-14 09:48,50
+Port Hacking,2020-10-14 09:48,60
+Port Hacking,2020-10-14 09:48,75
+Port Hacking,2020-10-14 09:48,100
+Port Hacking,2020-11-11 08:40,0
+Port Hacking,2020-11-11 08:40,10
+Port Hacking,2020-11-11 08:40,20
+Port Hacking,2020-11-11 08:40,25
+Port Hacking,2020-11-11 08:40,30
+Port Hacking,2020-11-11 08:40,40
+Port Hacking,2020-11-11 08:40,50
+Port Hacking,2020-11-11 08:40,60
+Port Hacking,2020-11-11 08:40,75
+Port Hacking,2020-11-11 08:40,100
+Port Hacking,2021-02-11 09:09,0
+Port Hacking,2021-02-11 09:09,10
+Port Hacking,2021-02-11 09:09,20
+Port Hacking,2021-02-11 09:09,25
+Port Hacking,2021-02-11 09:09,30
+Port Hacking,2021-02-11 09:09,40
+Port Hacking,2021-02-11 09:09,50
+Port Hacking,2021-02-11 09:09,60
+Port Hacking,2021-02-11 09:09,75
+Port Hacking,2021-02-11 09:09,100
+Port Hacking,2021-03-11 09:26,0
+Port Hacking,2021-03-11 09:26,10
+Port Hacking,2021-03-11 09:26,20
+Port Hacking,2021-03-11 09:26,25
+Port Hacking,2021-03-11 09:26,30
+Port Hacking,2021-03-11 09:26,40
+Port Hacking,2021-03-11 09:26,50
+Port Hacking,2021-03-11 09:26,60
+Port Hacking,2021-03-11 09:26,75
+Port Hacking,2021-03-11 09:26,100
+Rottnest Island,2009-10-26 09:53,0
+Rottnest Island,2009-10-26 09:53,10
+Rottnest Island,2009-10-26 09:53,20
+Rottnest Island,2009-10-26 09:53,30
+Rottnest Island,2009-10-26 09:53,40
+Rottnest Island,2009-10-26 09:53,48
+Rottnest Island,2009-12-22 10:00,0
+Rottnest Island,2009-12-22 10:00,10
+Rottnest Island,2009-12-22 10:00,20
+Rottnest Island,2009-12-22 10:00,30
+Rottnest Island,2009-12-22 10:00,40
+Rottnest Island,2009-12-22 10:00,47
+Rottnest Island,2010-03-15 10:00,0
+Rottnest Island,2010-03-15 10:00,10
+Rottnest Island,2010-03-15 10:00,20
+Rottnest Island,2010-03-15 10:00,30
+Rottnest Island,2010-03-15 10:00,40
+Rottnest Island,2010-03-15 10:00,49
+Rottnest Island,2010-04-16 08:30,0
+Rottnest Island,2010-04-16 08:30,10
+Rottnest Island,2010-04-16 08:30,20
+Rottnest Island,2010-04-16 08:30,30
+Rottnest Island,2010-04-16 08:30,40
+Rottnest Island,2010-04-16 08:30,49
+Rottnest Island,2010-05-20 10:05,0
+Rottnest Island,2010-05-20 10:05,10
+Rottnest Island,2010-05-20 10:05,20
+Rottnest Island,2010-05-20 10:05,30
+Rottnest Island,2010-05-20 10:05,40
+Rottnest Island,2010-05-20 10:05,48
+Rottnest Island,2010-06-17 10:05,0
+Rottnest Island,2010-06-17 10:05,10
+Rottnest Island,2010-06-17 10:05,20
+Rottnest Island,2010-06-17 10:05,30
+Rottnest Island,2010-06-17 10:05,40
+Rottnest Island,2010-06-17 10:05,48
+Rottnest Island,2010-07-23 12:02,0
+Rottnest Island,2010-07-23 12:02,10
+Rottnest Island,2010-07-23 12:02,20
+Rottnest Island,2010-07-23 12:02,30
+Rottnest Island,2010-07-23 12:02,40
+Rottnest Island,2010-07-23 12:02,48
+Rottnest Island,2010-08-20 14:30,0
+Rottnest Island,2010-08-20 14:30,10
+Rottnest Island,2010-08-20 14:30,20
+Rottnest Island,2010-08-20 14:30,30
+Rottnest Island,2010-08-20 14:30,40
+Rottnest Island,2010-08-20 14:30,48
+Rottnest Island,2010-09-24 12:22,0
+Rottnest Island,2010-09-24 12:22,10
+Rottnest Island,2010-09-24 12:22,20
+Rottnest Island,2010-09-24 12:22,30
+Rottnest Island,2010-09-24 12:22,40
+Rottnest Island,2010-09-24 12:22,48
+Rottnest Island,2010-11-24 11:07,0
+Rottnest Island,2010-11-24 11:07,10
+Rottnest Island,2010-11-24 11:07,20
+Rottnest Island,2010-11-24 11:07,30
+Rottnest Island,2010-11-24 11:07,40
+Rottnest Island,2010-11-24 11:07,48
+Rottnest Island,2010-12-15 10:20,0
+Rottnest Island,2010-12-15 10:20,10
+Rottnest Island,2010-12-15 10:20,20
+Rottnest Island,2010-12-15 10:20,30
+Rottnest Island,2010-12-15 10:20,40
+Rottnest Island,2010-12-15 10:20,48
+Rottnest Island,2011-01-25 09:10,0
+Rottnest Island,2011-01-25 09:10,10
+Rottnest Island,2011-01-25 09:10,20
+Rottnest Island,2011-01-25 09:10,30
+Rottnest Island,2011-01-25 09:10,40
+Rottnest Island,2011-01-25 09:10,47
+Rottnest Island,2011-02-24 09:35,0
+Rottnest Island,2011-02-24 09:35,10
+Rottnest Island,2011-02-24 09:35,20
+Rottnest Island,2011-02-24 09:35,30
+Rottnest Island,2011-02-24 09:35,40
+Rottnest Island,2011-02-24 09:35,48
+Rottnest Island,2011-03-24 09:35,0
+Rottnest Island,2011-03-24 09:35,10
+Rottnest Island,2011-03-24 09:35,20
+Rottnest Island,2011-03-24 09:35,30
+Rottnest Island,2011-03-24 09:35,40
+Rottnest Island,2011-03-24 09:35,46
+Rottnest Island,2011-05-27 09:35,0
+Rottnest Island,2011-05-27 09:35,10
+Rottnest Island,2011-05-27 09:35,20
+Rottnest Island,2011-05-27 09:35,30
+Rottnest Island,2011-05-27 09:35,40
+Rottnest Island,2011-05-27 09:35,46
+Rottnest Island,2011-06-22 10:00,0
+Rottnest Island,2011-06-22 10:00,10
+Rottnest Island,2011-06-22 10:00,20
+Rottnest Island,2011-06-22 10:00,30
+Rottnest Island,2011-06-22 10:00,40
+Rottnest Island,2011-06-22 10:00,45
+Rottnest Island,2011-07-25 10:20,0
+Rottnest Island,2011-07-25 10:20,10
+Rottnest Island,2011-07-25 10:20,20
+Rottnest Island,2011-07-25 10:20,30
+Rottnest Island,2011-07-25 10:20,40
+Rottnest Island,2011-07-25 10:20,50
+Rottnest Island,2011-08-26 09:43,0
+Rottnest Island,2011-08-26 09:43,10
+Rottnest Island,2011-08-26 09:43,20
+Rottnest Island,2011-08-26 09:43,30
+Rottnest Island,2011-08-26 09:43,40
+Rottnest Island,2011-08-26 09:43,50
+Rottnest Island,2011-09-23 09:40,0
+Rottnest Island,2011-09-23 09:40,10
+Rottnest Island,2011-09-23 09:40,20
+Rottnest Island,2011-09-23 09:40,30
+Rottnest Island,2011-09-23 09:40,40
+Rottnest Island,2011-09-23 09:40,50
+Rottnest Island,2011-10-20 12:00,0
+Rottnest Island,2011-10-20 12:00,10
+Rottnest Island,2011-10-20 12:00,20
+Rottnest Island,2011-10-20 12:00,30
+Rottnest Island,2011-10-20 12:00,40
+Rottnest Island,2011-10-20 12:00,50
+Rottnest Island,2011-11-22 15:08,0
+Rottnest Island,2011-11-22 15:08,10
+Rottnest Island,2011-11-22 15:08,20
+Rottnest Island,2011-11-22 15:08,30
+Rottnest Island,2011-11-22 15:08,40
+Rottnest Island,2011-11-22 15:08,50
+Rottnest Island,2011-12-21 15:45,0
+Rottnest Island,2011-12-21 15:45,10
+Rottnest Island,2011-12-21 15:45,20
+Rottnest Island,2011-12-21 15:45,30
+Rottnest Island,2011-12-21 15:45,40
+Rottnest Island,2011-12-21 15:45,50
+Rottnest Island,2012-01-30 11:09,0
+Rottnest Island,2012-01-30 11:09,10
+Rottnest Island,2012-01-30 11:09,20
+Rottnest Island,2012-01-30 11:09,30
+Rottnest Island,2012-01-30 11:09,40
+Rottnest Island,2012-01-30 11:09,50
+Rottnest Island,2012-02-21 09:40,0
+Rottnest Island,2012-02-21 09:40,10
+Rottnest Island,2012-02-21 09:40,20
+Rottnest Island,2012-02-21 09:40,30
+Rottnest Island,2012-02-21 09:40,40
+Rottnest Island,2012-02-21 09:40,50
+Rottnest Island,2012-03-29 10:03,0
+Rottnest Island,2012-03-29 10:03,10
+Rottnest Island,2012-03-29 10:03,20
+Rottnest Island,2012-03-29 10:03,30
+Rottnest Island,2012-03-29 10:03,40
+Rottnest Island,2012-03-29 10:03,50
+Rottnest Island,2012-05-04 13:00,0
+Rottnest Island,2012-05-04 13:00,10
+Rottnest Island,2012-05-04 13:00,20
+Rottnest Island,2012-05-04 13:00,30
+Rottnest Island,2012-05-04 13:00,40
+Rottnest Island,2012-05-04 13:00,50
+Rottnest Island,2012-05-23 12:22,0
+Rottnest Island,2012-05-23 12:22,10
+Rottnest Island,2012-05-23 12:22,20
+Rottnest Island,2012-05-23 12:22,30
+Rottnest Island,2012-05-23 12:22,40
+Rottnest Island,2012-05-23 12:22,50
+Rottnest Island,2012-07-27 09:55,0
+Rottnest Island,2012-07-27 09:55,10
+Rottnest Island,2012-07-27 09:55,20
+Rottnest Island,2012-07-27 09:55,30
+Rottnest Island,2012-07-27 09:55,40
+Rottnest Island,2012-07-27 09:55,50
+Rottnest Island,2012-08-24 11:06,0
+Rottnest Island,2012-08-24 11:06,10
+Rottnest Island,2012-08-24 11:06,20
+Rottnest Island,2012-08-24 11:06,30
+Rottnest Island,2012-08-24 11:06,40
+Rottnest Island,2012-08-24 11:06,50
+Rottnest Island,2012-09-28 11:41,0
+Rottnest Island,2012-09-28 11:41,10
+Rottnest Island,2012-09-28 11:41,20
+Rottnest Island,2012-09-28 11:41,30
+Rottnest Island,2012-09-28 11:41,40
+Rottnest Island,2012-09-28 11:41,50
+Rottnest Island,2012-10-19 09:54,0
+Rottnest Island,2012-10-19 09:54,10
+Rottnest Island,2012-10-19 09:54,20
+Rottnest Island,2012-10-19 09:54,30
+Rottnest Island,2012-10-19 09:54,40
+Rottnest Island,2012-10-19 09:54,46
+Rottnest Island,2012-11-26 11:02,0
+Rottnest Island,2012-11-26 11:02,10
+Rottnest Island,2012-11-26 11:02,20
+Rottnest Island,2012-11-26 11:02,30
+Rottnest Island,2012-11-26 11:02,40
+Rottnest Island,2012-11-26 11:02,46
+Rottnest Island,2012-12-19 11:48,0
+Rottnest Island,2012-12-19 11:48,10
+Rottnest Island,2012-12-19 11:48,20
+Rottnest Island,2012-12-19 11:48,30
+Rottnest Island,2012-12-19 11:48,40
+Rottnest Island,2012-12-19 11:48,46
+Rottnest Island,2013-01-25 10:10,0
+Rottnest Island,2013-01-25 10:10,10
+Rottnest Island,2013-01-25 10:10,20
+Rottnest Island,2013-01-25 10:10,30
+Rottnest Island,2013-01-25 10:10,40
+Rottnest Island,2013-01-25 10:10,46
+Rottnest Island,2013-02-21 12:55,0
+Rottnest Island,2013-02-21 12:55,10
+Rottnest Island,2013-02-21 12:55,20
+Rottnest Island,2013-02-21 12:55,30
+Rottnest Island,2013-02-21 12:55,40
+Rottnest Island,2013-02-21 12:55,46
+Rottnest Island,2013-03-21 11:34,0
+Rottnest Island,2013-03-21 11:34,10
+Rottnest Island,2013-03-21 11:34,20
+Rottnest Island,2013-03-21 11:34,30
+Rottnest Island,2013-03-21 11:34,40
+Rottnest Island,2013-03-21 11:34,46
+Rottnest Island,2013-04-23 10:38,0
+Rottnest Island,2013-04-23 10:38,10
+Rottnest Island,2013-04-23 10:38,20
+Rottnest Island,2013-04-23 10:38,30
+Rottnest Island,2013-04-23 10:38,40
+Rottnest Island,2013-04-23 10:38,46
+Rottnest Island,2013-05-17 10:00,0
+Rottnest Island,2013-05-17 10:00,10
+Rottnest Island,2013-05-17 10:00,20
+Rottnest Island,2013-05-17 10:00,30
+Rottnest Island,2013-05-17 10:00,40
+Rottnest Island,2013-05-17 10:00,46
+Rottnest Island,2013-07-12 12:35,0
+Rottnest Island,2013-07-12 12:35,10
+Rottnest Island,2013-07-12 12:35,20
+Rottnest Island,2013-07-12 12:35,30
+Rottnest Island,2013-07-12 12:35,40
+Rottnest Island,2013-07-12 12:35,46
+Rottnest Island,2013-10-01 11:55,0
+Rottnest Island,2013-10-01 11:55,10
+Rottnest Island,2013-10-01 11:55,20
+Rottnest Island,2013-10-01 11:55,30
+Rottnest Island,2013-10-01 11:55,40
+Rottnest Island,2013-10-01 11:55,46
+Rottnest Island,2013-10-17 08:00,0
+Rottnest Island,2013-10-17 08:00,10
+Rottnest Island,2013-10-17 08:00,20
+Rottnest Island,2013-10-17 08:00,30
+Rottnest Island,2013-10-17 08:00,40
+Rottnest Island,2013-10-17 08:00,46
+Rottnest Island,2013-11-22 10:26,0
+Rottnest Island,2013-11-22 10:26,10
+Rottnest Island,2013-11-22 10:26,20
+Rottnest Island,2013-11-22 10:26,30
+Rottnest Island,2013-11-22 10:26,40
+Rottnest Island,2013-11-22 10:26,46
+Rottnest Island,2013-12-18 10:43,0
+Rottnest Island,2013-12-18 10:43,10
+Rottnest Island,2013-12-18 10:43,20
+Rottnest Island,2013-12-18 10:43,30
+Rottnest Island,2013-12-18 10:43,40
+Rottnest Island,2013-12-18 10:43,46
+Rottnest Island,2014-01-22 10:10,0
+Rottnest Island,2014-01-22 10:10,10
+Rottnest Island,2014-01-22 10:10,20
+Rottnest Island,2014-01-22 10:10,30
+Rottnest Island,2014-01-22 10:10,40
+Rottnest Island,2014-01-22 10:10,46
+Rottnest Island,2014-02-27 12:39,0
+Rottnest Island,2014-02-27 12:39,10
+Rottnest Island,2014-02-27 12:39,20
+Rottnest Island,2014-02-27 12:39,30
+Rottnest Island,2014-02-27 12:39,40
+Rottnest Island,2014-02-27 12:39,46
+Rottnest Island,2014-03-19 12:30,0
+Rottnest Island,2014-03-19 12:30,10
+Rottnest Island,2014-03-19 12:30,20
+Rottnest Island,2014-03-19 12:30,30
+Rottnest Island,2014-03-19 12:30,40
+Rottnest Island,2014-03-19 12:30,46
+Rottnest Island,2014-05-19 12:22,0
+Rottnest Island,2014-05-19 12:22,10
+Rottnest Island,2014-05-19 12:22,20
+Rottnest Island,2014-05-19 12:22,30
+Rottnest Island,2014-05-19 12:22,40
+Rottnest Island,2014-05-19 12:22,46
+Rottnest Island,2014-06-24 13:16,0
+Rottnest Island,2014-06-24 13:16,10
+Rottnest Island,2014-06-24 13:16,20
+Rottnest Island,2014-06-24 13:16,30
+Rottnest Island,2014-06-24 13:16,40
+Rottnest Island,2014-06-24 13:16,46
+Rottnest Island,2014-07-30 10:03,0
+Rottnest Island,2014-07-30 10:03,10
+Rottnest Island,2014-07-30 10:03,20
+Rottnest Island,2014-07-30 10:03,30
+Rottnest Island,2014-07-30 10:03,40
+Rottnest Island,2014-07-30 10:03,46
+Rottnest Island,2014-09-02 11:55,0
+Rottnest Island,2014-09-02 11:55,10
+Rottnest Island,2014-09-02 11:55,20
+Rottnest Island,2014-09-02 11:55,30
+Rottnest Island,2014-09-02 11:55,40
+Rottnest Island,2014-09-02 11:55,46
+Rottnest Island,2014-09-19 12:57,0
+Rottnest Island,2014-09-19 12:57,10
+Rottnest Island,2014-09-19 12:57,20
+Rottnest Island,2014-09-19 12:57,30
+Rottnest Island,2014-09-19 12:57,40
+Rottnest Island,2014-09-19 12:57,46
+Rottnest Island,2014-10-14 11:52,0
+Rottnest Island,2014-10-14 11:52,10
+Rottnest Island,2014-10-14 11:52,20
+Rottnest Island,2014-10-14 11:52,30
+Rottnest Island,2014-10-14 11:52,40
+Rottnest Island,2014-10-14 11:52,46
+Rottnest Island,2014-11-19 10:16,0
+Rottnest Island,2014-11-19 10:16,10
+Rottnest Island,2014-11-19 10:16,20
+Rottnest Island,2014-11-19 10:16,30
+Rottnest Island,2014-11-19 10:16,40
+Rottnest Island,2014-11-19 10:16,46
+Rottnest Island,2014-12-16 09:37,0
+Rottnest Island,2014-12-16 09:37,10
+Rottnest Island,2014-12-16 09:37,20
+Rottnest Island,2014-12-16 09:37,30
+Rottnest Island,2014-12-16 09:37,40
+Rottnest Island,2014-12-16 09:37,46
+Rottnest Island,2015-01-28 10:15,0
+Rottnest Island,2015-01-28 10:15,10
+Rottnest Island,2015-01-28 10:15,20
+Rottnest Island,2015-01-28 10:15,30
+Rottnest Island,2015-01-28 10:15,40
+Rottnest Island,2015-01-28 10:15,46
+Rottnest Island,2015-02-24 10:17,0
+Rottnest Island,2015-02-24 10:17,10
+Rottnest Island,2015-02-24 10:17,20
+Rottnest Island,2015-02-24 10:17,30
+Rottnest Island,2015-02-24 10:17,40
+Rottnest Island,2015-02-24 10:17,47
+Rottnest Island,2015-03-19 11:47,0
+Rottnest Island,2015-03-19 11:47,10
+Rottnest Island,2015-03-19 11:47,20
+Rottnest Island,2015-03-19 11:47,30
+Rottnest Island,2015-03-19 11:47,40
+Rottnest Island,2015-03-19 11:47,47
+Rottnest Island,2015-05-07 09:36,0
+Rottnest Island,2015-05-07 09:36,10
+Rottnest Island,2015-05-07 09:36,20
+Rottnest Island,2015-05-07 09:36,30
+Rottnest Island,2015-05-07 09:36,40
+Rottnest Island,2015-05-07 09:36,47
+Rottnest Island,2015-07-01 09:46,0
+Rottnest Island,2015-07-01 09:46,10
+Rottnest Island,2015-07-01 09:46,20
+Rottnest Island,2015-07-01 09:46,30
+Rottnest Island,2015-07-01 09:46,40
+Rottnest Island,2015-07-01 09:46,47
+Rottnest Island,2015-07-24 09:20,0
+Rottnest Island,2015-07-24 09:20,10
+Rottnest Island,2015-07-24 09:20,20
+Rottnest Island,2015-07-24 09:20,30
+Rottnest Island,2015-07-24 09:20,40
+Rottnest Island,2015-07-24 09:20,46
+Rottnest Island,2015-08-27 11:15,0
+Rottnest Island,2015-08-27 11:15,10
+Rottnest Island,2015-08-27 11:15,20
+Rottnest Island,2015-08-27 11:15,30
+Rottnest Island,2015-08-27 11:15,40
+Rottnest Island,2015-08-27 11:15,47
+Rottnest Island,2015-09-24 10:08,0
+Rottnest Island,2015-09-24 10:08,10
+Rottnest Island,2015-09-24 10:08,20
+Rottnest Island,2015-09-24 10:08,30
+Rottnest Island,2015-09-24 10:08,40
+Rottnest Island,2015-09-24 10:08,47
+Rottnest Island,2015-10-22 09:36,0
+Rottnest Island,2015-10-22 09:36,10
+Rottnest Island,2015-10-22 09:36,20
+Rottnest Island,2015-10-22 09:36,30
+Rottnest Island,2015-10-22 09:36,40
+Rottnest Island,2015-10-22 09:36,47
+Rottnest Island,2015-12-15 08:22,0
+Rottnest Island,2015-12-15 08:22,10
+Rottnest Island,2015-12-15 08:22,20
+Rottnest Island,2015-12-15 08:22,30
+Rottnest Island,2015-12-15 08:22,40
+Rottnest Island,2015-12-15 08:22,47
+Rottnest Island,2016-02-23 08:57,0
+Rottnest Island,2016-02-23 08:57,10
+Rottnest Island,2016-02-23 08:57,20
+Rottnest Island,2016-02-23 08:57,30
+Rottnest Island,2016-02-23 08:57,40
+Rottnest Island,2016-02-23 08:57,46
+Rottnest Island,2016-03-24 09:47,0
+Rottnest Island,2016-03-24 09:47,10
+Rottnest Island,2016-03-24 09:47,20
+Rottnest Island,2016-03-24 09:47,30
+Rottnest Island,2016-03-24 09:47,40
+Rottnest Island,2016-03-24 09:47,47
+Rottnest Island,2016-04-13 09:30,0
+Rottnest Island,2016-04-13 09:30,10
+Rottnest Island,2016-04-13 09:30,20
+Rottnest Island,2016-04-13 09:30,30
+Rottnest Island,2016-04-13 09:30,40
+Rottnest Island,2016-04-13 09:30,47
+Rottnest Island,2016-05-02 09:44,0
+Rottnest Island,2016-05-02 09:44,10
+Rottnest Island,2016-05-02 09:44,20
+Rottnest Island,2016-05-02 09:44,30
+Rottnest Island,2016-05-02 09:44,40
+Rottnest Island,2016-05-02 09:44,46
+Rottnest Island,2016-05-27 09:30,0
+Rottnest Island,2016-05-27 09:30,10
+Rottnest Island,2016-05-27 09:30,20
+Rottnest Island,2016-05-27 09:30,30
+Rottnest Island,2016-05-27 09:30,40
+Rottnest Island,2016-05-27 09:30,47
+Rottnest Island,2016-06-21 09:26,0
+Rottnest Island,2016-06-21 09:26,10
+Rottnest Island,2016-06-21 09:26,20
+Rottnest Island,2016-06-21 09:26,30
+Rottnest Island,2016-06-21 09:26,40
+Rottnest Island,2016-06-21 09:26,46
+Rottnest Island,2016-10-04 10:38,0
+Rottnest Island,2016-10-04 10:38,10
+Rottnest Island,2016-10-04 10:38,20
+Rottnest Island,2016-10-04 10:38,30
+Rottnest Island,2016-10-04 10:38,40
+Rottnest Island,2016-10-04 10:38,46
+Rottnest Island,2016-10-24 09:35,0
+Rottnest Island,2016-10-24 09:35,10
+Rottnest Island,2016-10-24 09:35,20
+Rottnest Island,2016-10-24 09:35,30
+Rottnest Island,2016-10-24 09:35,40
+Rottnest Island,2016-10-24 09:35,46
+Rottnest Island,2016-11-14 09:45,0
+Rottnest Island,2016-11-14 09:45,10
+Rottnest Island,2016-11-14 09:45,20
+Rottnest Island,2016-11-14 09:45,30
+Rottnest Island,2016-11-14 09:45,40
+Rottnest Island,2016-11-14 09:45,46
+Rottnest Island,2016-12-14 09:35,0
+Rottnest Island,2016-12-14 09:35,10
+Rottnest Island,2016-12-14 09:35,20
+Rottnest Island,2016-12-14 09:35,30
+Rottnest Island,2016-12-14 09:35,40
+Rottnest Island,2016-12-14 09:35,46
+Rottnest Island,2017-01-20 10:20,0
+Rottnest Island,2017-01-20 10:20,10
+Rottnest Island,2017-01-20 10:20,20
+Rottnest Island,2017-01-20 10:20,30
+Rottnest Island,2017-01-20 10:20,40
+Rottnest Island,2017-01-20 10:20,46
+Rottnest Island,2017-03-03 10:30,0
+Rottnest Island,2017-03-03 10:30,10
+Rottnest Island,2017-03-03 10:30,20
+Rottnest Island,2017-03-03 10:30,30
+Rottnest Island,2017-03-03 10:30,40
+Rottnest Island,2017-03-03 10:30,46
+Rottnest Island,2017-03-31 10:24,0
+Rottnest Island,2017-03-31 10:24,10
+Rottnest Island,2017-03-31 10:24,20
+Rottnest Island,2017-03-31 10:24,30
+Rottnest Island,2017-03-31 10:24,40
+Rottnest Island,2017-03-31 10:24,46
+Rottnest Island,2017-04-07 09:28,0
+Rottnest Island,2017-04-07 09:28,10
+Rottnest Island,2017-04-07 09:28,20
+Rottnest Island,2017-04-07 09:28,30
+Rottnest Island,2017-04-07 09:28,40
+Rottnest Island,2017-04-07 09:28,46
+Rottnest Island,2017-04-28 09:52,0
+Rottnest Island,2017-04-28 09:52,10
+Rottnest Island,2017-04-28 09:52,20
+Rottnest Island,2017-04-28 09:52,30
+Rottnest Island,2017-04-28 09:52,40
+Rottnest Island,2017-04-28 09:52,46
+Rottnest Island,2017-05-23 09:53,0
+Rottnest Island,2017-05-23 09:53,10
+Rottnest Island,2017-05-23 09:53,20
+Rottnest Island,2017-05-23 09:53,30
+Rottnest Island,2017-05-23 09:53,40
+Rottnest Island,2017-05-23 09:53,46
+Rottnest Island,2017-06-26 09:46,0
+Rottnest Island,2017-06-26 09:46,10
+Rottnest Island,2017-06-26 09:46,20
+Rottnest Island,2017-06-26 09:46,30
+Rottnest Island,2017-06-26 09:46,40
+Rottnest Island,2017-06-26 09:46,46
+Rottnest Island,2017-08-02 09:33,0
+Rottnest Island,2017-08-02 09:33,10
+Rottnest Island,2017-08-02 09:33,20
+Rottnest Island,2017-08-02 09:33,30
+Rottnest Island,2017-08-02 09:33,40
+Rottnest Island,2017-08-02 09:33,46
+Rottnest Island,2017-09-14 09:45,0
+Rottnest Island,2017-09-14 09:45,10
+Rottnest Island,2017-09-14 09:45,20
+Rottnest Island,2017-09-14 09:45,30
+Rottnest Island,2017-09-14 09:45,40
+Rottnest Island,2017-09-14 09:45,46
+Rottnest Island,2017-11-03 09:25,0
+Rottnest Island,2017-11-03 09:25,10
+Rottnest Island,2017-11-03 09:25,20
+Rottnest Island,2017-11-03 09:25,30
+Rottnest Island,2017-11-03 09:25,40
+Rottnest Island,2017-11-03 09:25,46
+Rottnest Island,2017-11-23 10:05,0
+Rottnest Island,2017-11-23 10:05,10
+Rottnest Island,2017-11-23 10:05,20
+Rottnest Island,2017-11-23 10:05,30
+Rottnest Island,2017-11-23 10:05,40
+Rottnest Island,2017-11-23 10:05,46
+Rottnest Island,2017-12-14 09:37,0
+Rottnest Island,2017-12-14 09:37,10
+Rottnest Island,2017-12-14 09:37,20
+Rottnest Island,2017-12-14 09:37,30
+Rottnest Island,2017-12-14 09:37,40
+Rottnest Island,2017-12-14 09:37,46
+Rottnest Island,2018-01-25 10:00,0
+Rottnest Island,2018-01-25 10:00,10
+Rottnest Island,2018-01-25 10:00,20
+Rottnest Island,2018-01-25 10:00,30
+Rottnest Island,2018-01-25 10:00,40
+Rottnest Island,2018-01-25 10:00,46
+Rottnest Island,2018-02-21 10:05,0
+Rottnest Island,2018-02-21 10:05,10
+Rottnest Island,2018-02-21 10:05,20
+Rottnest Island,2018-02-21 10:05,30
+Rottnest Island,2018-02-21 10:05,40
+Rottnest Island,2018-02-21 10:05,46
+Rottnest Island,2018-03-28 09:23,0
+Rottnest Island,2018-03-28 09:23,10
+Rottnest Island,2018-03-28 09:23,20
+Rottnest Island,2018-03-28 09:23,30
+Rottnest Island,2018-03-28 09:23,40
+Rottnest Island,2018-03-28 09:23,46
+Rottnest Island,2018-05-11 09:21,0
+Rottnest Island,2018-05-11 09:21,10
+Rottnest Island,2018-05-11 09:21,20
+Rottnest Island,2018-05-11 09:21,30
+Rottnest Island,2018-05-11 09:21,40
+Rottnest Island,2018-05-11 09:21,46
+Rottnest Island,2018-06-20 09:56,0
+Rottnest Island,2018-06-20 09:56,10
+Rottnest Island,2018-06-20 09:56,20
+Rottnest Island,2018-06-20 09:56,30
+Rottnest Island,2018-06-20 09:56,40
+Rottnest Island,2018-06-20 09:56,46
+Rottnest Island,2018-07-19 09:35,0
+Rottnest Island,2018-07-19 09:35,10
+Rottnest Island,2018-07-19 09:35,20
+Rottnest Island,2018-07-19 09:35,30
+Rottnest Island,2018-07-19 09:35,40
+Rottnest Island,2018-07-19 09:35,46
+Rottnest Island,2018-07-27 09:33,0
+Rottnest Island,2018-07-27 09:33,10
+Rottnest Island,2018-07-27 09:33,20
+Rottnest Island,2018-07-27 09:33,30
+Rottnest Island,2018-07-27 09:33,40
+Rottnest Island,2018-07-27 09:33,46
+Rottnest Island,2018-08-31 10:07,0
+Rottnest Island,2018-08-31 10:07,10
+Rottnest Island,2018-08-31 10:07,20
+Rottnest Island,2018-08-31 10:07,30
+Rottnest Island,2018-08-31 10:07,40
+Rottnest Island,2018-08-31 10:07,46
+Rottnest Island,2018-09-21 09:27,0
+Rottnest Island,2018-09-21 09:27,10
+Rottnest Island,2018-09-21 09:27,20
+Rottnest Island,2018-09-21 09:27,30
+Rottnest Island,2018-09-21 09:27,40
+Rottnest Island,2018-09-21 09:27,46
+Rottnest Island,2018-10-24 09:18,0
+Rottnest Island,2018-10-24 09:18,10
+Rottnest Island,2018-10-24 09:18,20
+Rottnest Island,2018-10-24 09:18,30
+Rottnest Island,2018-10-24 09:18,40
+Rottnest Island,2018-10-24 09:18,46
+Rottnest Island,2018-11-30 09:33,0
+Rottnest Island,2018-11-30 09:33,10
+Rottnest Island,2018-11-30 09:33,20
+Rottnest Island,2018-11-30 09:33,30
+Rottnest Island,2018-11-30 09:33,40
+Rottnest Island,2018-11-30 09:33,46
+Rottnest Island,2018-12-11 09:24,0
+Rottnest Island,2018-12-11 09:24,10
+Rottnest Island,2018-12-11 09:24,20
+Rottnest Island,2018-12-11 09:24,30
+Rottnest Island,2018-12-11 09:24,40
+Rottnest Island,2018-12-11 09:24,46
+Rottnest Island,2019-01-25 09:35,0
+Rottnest Island,2019-01-25 09:35,10
+Rottnest Island,2019-01-25 09:35,20
+Rottnest Island,2019-01-25 09:35,30
+Rottnest Island,2019-01-25 09:35,40
+Rottnest Island,2019-01-25 09:35,46
+Rottnest Island,2019-02-21 09:30,0
+Rottnest Island,2019-02-21 09:30,10
+Rottnest Island,2019-02-21 09:30,20
+Rottnest Island,2019-02-21 09:30,30
+Rottnest Island,2019-02-21 09:30,40
+Rottnest Island,2019-02-21 09:30,46
+Rottnest Island,2019-03-06 10:24,0
+Rottnest Island,2019-03-06 10:24,10
+Rottnest Island,2019-03-06 10:24,20
+Rottnest Island,2019-03-06 10:24,30
+Rottnest Island,2019-03-06 10:24,40
+Rottnest Island,2019-03-06 10:24,46
+Rottnest Island,2019-05-07 09:40,0
+Rottnest Island,2019-05-07 09:40,10
+Rottnest Island,2019-05-07 09:40,20
+Rottnest Island,2019-05-07 09:40,30
+Rottnest Island,2019-05-07 09:40,40
+Rottnest Island,2019-05-07 09:40,46
+Rottnest Island,2019-05-27 09:28,0
+Rottnest Island,2019-05-27 09:28,10
+Rottnest Island,2019-05-27 09:28,20
+Rottnest Island,2019-05-27 09:28,30
+Rottnest Island,2019-05-27 09:28,40
+Rottnest Island,2019-05-27 09:28,46
+Rottnest Island,2019-06-21 09:15,0
+Rottnest Island,2019-06-21 09:15,10
+Rottnest Island,2019-06-21 09:15,20
+Rottnest Island,2019-06-21 09:15,30
+Rottnest Island,2019-06-21 09:15,40
+Rottnest Island,2019-06-21 09:15,46
+Rottnest Island,2019-07-11 09:26,0
+Rottnest Island,2019-07-11 09:26,10
+Rottnest Island,2019-07-11 09:26,20
+Rottnest Island,2019-07-11 09:26,30
+Rottnest Island,2019-07-11 09:26,40
+Rottnest Island,2019-07-11 09:26,46
+Rottnest Island,2019-08-19 08:31,0
+Rottnest Island,2019-08-19 08:31,10
+Rottnest Island,2019-08-19 08:31,20
+Rottnest Island,2019-08-19 08:31,30
+Rottnest Island,2019-08-19 08:31,40
+Rottnest Island,2019-08-19 08:31,46
+Rottnest Island,2019-10-11 10:07,0
+Rottnest Island,2019-10-11 10:07,10
+Rottnest Island,2019-10-11 10:07,20
+Rottnest Island,2019-10-11 10:07,30
+Rottnest Island,2019-10-11 10:07,40
+Rottnest Island,2019-10-11 10:07,46
+Rottnest Island,2019-11-04 09:25,0
+Rottnest Island,2019-11-04 09:25,10
+Rottnest Island,2019-11-04 09:25,20
+Rottnest Island,2019-11-04 09:25,30
+Rottnest Island,2019-11-04 09:25,40
+Rottnest Island,2019-11-04 09:25,46
+Rottnest Island,2019-11-26 09:30,0
+Rottnest Island,2019-11-26 09:30,10
+Rottnest Island,2019-11-26 09:30,20
+Rottnest Island,2019-11-26 09:30,30
+Rottnest Island,2019-11-26 09:30,40
+Rottnest Island,2019-11-26 09:30,46
+Rottnest Island,2019-12-18 09:15,0
+Rottnest Island,2019-12-18 09:15,10
+Rottnest Island,2019-12-18 09:15,20
+Rottnest Island,2019-12-18 09:15,30
+Rottnest Island,2019-12-18 09:15,40
+Rottnest Island,2019-12-18 09:15,46
+Rottnest Island,2020-01-28 09:39,0
+Rottnest Island,2020-01-28 09:39,10
+Rottnest Island,2020-01-28 09:39,20
+Rottnest Island,2020-01-28 09:39,30
+Rottnest Island,2020-01-28 09:39,40
+Rottnest Island,2020-01-28 09:39,46
+Rottnest Island,2020-03-04 09:25,0
+Rottnest Island,2020-03-04 09:25,10
+Rottnest Island,2020-03-04 09:25,20
+Rottnest Island,2020-03-04 09:25,30
+Rottnest Island,2020-03-04 09:25,40
+Rottnest Island,2020-03-04 09:25,46
+Rottnest Island,2020-05-20 09:22,0
+Rottnest Island,2020-05-20 09:22,10
+Rottnest Island,2020-05-20 09:22,20
+Rottnest Island,2020-05-20 09:22,30
+Rottnest Island,2020-05-20 09:22,40
+Rottnest Island,2020-05-20 09:22,47
+Rottnest Island,2020-06-05 09:13,0
+Rottnest Island,2020-06-05 09:13,10
+Rottnest Island,2020-06-05 09:13,20
+Rottnest Island,2020-06-05 09:13,30
+Rottnest Island,2020-06-05 09:13,40
+Rottnest Island,2020-06-05 09:13,47
+Rottnest Island,2020-07-10 10:25,0
+Rottnest Island,2020-07-10 10:25,10
+Rottnest Island,2020-07-10 10:25,20
+Rottnest Island,2020-07-10 10:25,30
+Rottnest Island,2020-07-10 10:25,40
+Rottnest Island,2020-07-10 10:25,47
+Rottnest Island,2020-07-30 09:27,0
+Rottnest Island,2020-07-30 09:27,10
+Rottnest Island,2020-07-30 09:27,20
+Rottnest Island,2020-07-30 09:27,30
+Rottnest Island,2020-07-30 09:27,40
+Rottnest Island,2020-07-30 09:27,47
+Rottnest Island,2020-08-14 09:21,0
+Rottnest Island,2020-08-14 09:21,10
+Rottnest Island,2020-08-14 09:21,20
+Rottnest Island,2020-08-14 09:21,30
+Rottnest Island,2020-08-14 09:21,40
+Rottnest Island,2020-08-14 09:21,47
+Rottnest Island,2020-08-25 10:40,0
+Rottnest Island,2020-08-25 10:40,10
+Rottnest Island,2020-08-25 10:40,20
+Rottnest Island,2020-08-25 10:40,30
+Rottnest Island,2020-08-25 10:40,40
+Rottnest Island,2020-08-25 10:40,47
+Rottnest Island,2020-10-13 09:18,0
+Rottnest Island,2020-10-13 09:18,10
+Rottnest Island,2020-10-13 09:18,20
+Rottnest Island,2020-10-13 09:18,30
+Rottnest Island,2020-10-13 09:18,40
+Rottnest Island,2020-10-13 09:18,47
+Rottnest Island,2020-11-06 10:06,0
+Rottnest Island,2020-11-06 10:06,10
+Rottnest Island,2020-11-06 10:06,20
+Rottnest Island,2020-11-06 10:06,30
+Rottnest Island,2020-11-06 10:06,40
+Rottnest Island,2020-11-06 10:06,47
+Rottnest Island,2020-11-27 09:05,0
+Rottnest Island,2020-11-27 09:05,10
+Rottnest Island,2020-11-27 09:05,20
+Rottnest Island,2020-11-27 09:05,30
+Rottnest Island,2020-11-27 09:05,40
+Rottnest Island,2020-11-27 09:05,47
+Rottnest Island,2021-01-21 10:04,0
+Rottnest Island,2021-01-21 10:04,10
+Rottnest Island,2021-01-21 10:04,20
+Rottnest Island,2021-01-21 10:04,30
+Rottnest Island,2021-01-21 10:04,40
+Rottnest Island,2021-01-21 10:04,47
+Yongala,2009-09-09 10:40,0
+Yongala,2009-09-09 10:40,10
+Yongala,2009-09-09 10:40,20
+Yongala,2009-09-09 10:40,26
+Yongala,2009-11-23 11:45,0
+Yongala,2009-11-23 11:45,10
+Yongala,2009-11-23 11:45,20
+Yongala,2009-11-23 11:45,26
+Yongala,2009-12-15 11:25,0
+Yongala,2009-12-15 11:25,10
+Yongala,2009-12-15 11:25,20
+Yongala,2009-12-15 11:25,26
+Yongala,2010-01-19 10:45,0
+Yongala,2010-01-19 10:45,10
+Yongala,2010-01-19 10:45,20
+Yongala,2010-01-19 10:45,26
+Yongala,2010-02-24 10:58,0
+Yongala,2010-02-24 10:58,10
+Yongala,2010-02-24 10:58,20
+Yongala,2010-02-24 10:58,26
+Yongala,2010-04-13 14:14,0
+Yongala,2010-04-13 14:14,10
+Yongala,2010-04-13 14:14,20
+Yongala,2010-04-13 14:14,26
+Yongala,2010-05-21 12:56,0
+Yongala,2010-05-21 12:56,10
+Yongala,2010-05-21 12:56,20
+Yongala,2010-05-21 12:56,26
+Yongala,2010-07-29 11:22,0
+Yongala,2010-07-29 11:22,10
+Yongala,2010-07-29 11:22,20
+Yongala,2010-07-29 11:22,26
+Yongala,2010-08-17 10:15,0
+Yongala,2010-08-17 10:15,10
+Yongala,2010-08-17 10:15,20
+Yongala,2010-08-17 10:15,26
+Yongala,2010-09-09 11:00,0
+Yongala,2010-09-09 11:00,10
+Yongala,2010-09-09 11:00,20
+Yongala,2010-09-09 11:00,26
+Yongala,2010-11-01 11:45,0
+Yongala,2010-11-01 11:45,10
+Yongala,2010-11-01 11:45,20
+Yongala,2010-11-01 11:45,26
+Yongala,2010-12-08 10:45,0
+Yongala,2010-12-08 10:45,10
+Yongala,2010-12-08 10:45,20
+Yongala,2010-12-08 10:45,26
+Yongala,2011-01-18 11:30,0
+Yongala,2011-01-18 11:30,10
+Yongala,2011-01-18 11:30,20
+Yongala,2011-01-18 11:30,26
+Yongala,2011-02-17 11:30,0
+Yongala,2011-02-17 11:30,10
+Yongala,2011-02-17 11:30,20
+Yongala,2011-02-17 11:30,26
+Yongala,2011-03-23 10:49,0
+Yongala,2011-03-23 10:49,10
+Yongala,2011-03-23 10:49,20
+Yongala,2011-03-23 10:49,26
+Yongala,2011-04-14 11:27,0
+Yongala,2011-04-14 11:27,10
+Yongala,2011-04-14 11:27,20
+Yongala,2011-04-14 11:27,26
+Yongala,2011-05-27 10:50,0
+Yongala,2011-05-27 10:50,10
+Yongala,2011-05-27 10:50,20
+Yongala,2011-05-27 10:50,26
+Yongala,2011-06-16 11:25,0
+Yongala,2011-06-16 11:25,10
+Yongala,2011-06-16 11:25,20
+Yongala,2011-06-16 11:25,26
+Yongala,2011-07-20 11:37,0
+Yongala,2011-07-20 11:37,10
+Yongala,2011-07-20 11:37,20
+Yongala,2011-07-20 11:37,26
+Yongala,2011-08-11 11:00,0
+Yongala,2011-08-11 11:00,10
+Yongala,2011-08-11 11:00,20
+Yongala,2011-08-11 11:00,26
+Yongala,2011-09-08 11:00,0
+Yongala,2011-09-08 11:00,10
+Yongala,2011-09-08 11:00,20
+Yongala,2011-09-08 11:00,26
+Yongala,2011-10-27 13:44,0
+Yongala,2011-10-27 13:44,10
+Yongala,2011-10-27 13:44,20
+Yongala,2011-10-27 13:44,26
+Yongala,2011-12-13 12:55,0
+Yongala,2011-12-13 12:55,10
+Yongala,2011-12-13 12:55,20
+Yongala,2011-12-13 12:55,26
+Yongala,2012-01-12 11:30,0
+Yongala,2012-01-12 11:30,10
+Yongala,2012-01-12 11:30,20
+Yongala,2012-01-12 11:30,26
+Yongala,2012-02-08 10:49,0
+Yongala,2012-02-08 10:49,10
+Yongala,2012-02-08 10:49,20
+Yongala,2012-02-08 10:49,26
+Yongala,2012-04-02 10:44,0
+Yongala,2012-04-02 10:44,10
+Yongala,2012-04-02 10:44,20
+Yongala,2012-04-02 10:44,26
+Yongala,2012-04-24 10:50,0
+Yongala,2012-04-24 10:50,10
+Yongala,2012-04-24 10:50,20
+Yongala,2012-04-24 10:50,26
+Yongala,2012-06-04 10:30,0
+Yongala,2012-06-04 10:30,10
+Yongala,2012-06-04 10:30,20
+Yongala,2012-06-04 10:30,26
+Yongala,2012-06-15 10:41,0
+Yongala,2012-06-15 10:41,10
+Yongala,2012-06-15 10:41,20
+Yongala,2012-06-15 10:41,26
+Yongala,2012-07-26 11:00,0
+Yongala,2012-07-26 11:00,10
+Yongala,2012-07-26 11:00,20
+Yongala,2012-07-26 11:00,26
+Yongala,2012-08-16 00:00,0
+Yongala,2012-08-16 00:00,10
+Yongala,2012-08-16 00:00,20
+Yongala,2012-08-16 00:00,26
+Yongala,2012-09-18 11:00,0
+Yongala,2012-09-18 11:00,10
+Yongala,2012-09-18 11:00,20
+Yongala,2012-09-18 11:00,26
+Yongala,2012-10-26 11:20,0
+Yongala,2012-10-26 11:20,10
+Yongala,2012-10-26 11:20,20
+Yongala,2012-10-26 11:20,26
+Yongala,2012-11-29 10:40,0
+Yongala,2012-11-29 10:40,10
+Yongala,2012-11-29 10:40,20
+Yongala,2012-11-29 10:40,26
+Yongala,2012-12-19 10:20,0
+Yongala,2012-12-19 10:20,10
+Yongala,2012-12-19 10:20,20
+Yongala,2012-12-19 10:20,26
+Yongala,2013-01-31 10:15,0
+Yongala,2013-01-31 10:15,10
+Yongala,2013-01-31 10:15,20
+Yongala,2013-01-31 10:15,26
+Yongala,2013-02-20 10:42,0
+Yongala,2013-02-20 10:42,10
+Yongala,2013-02-20 10:42,20
+Yongala,2013-02-20 10:42,26
+Yongala,2013-04-16 11:35,0
+Yongala,2013-04-16 11:35,10
+Yongala,2013-04-16 11:35,20
+Yongala,2013-04-16 11:35,26
+Yongala,2013-05-15 10:30,0
+Yongala,2013-05-15 10:30,10
+Yongala,2013-05-15 10:30,20
+Yongala,2013-05-15 10:30,26
+Yongala,2013-06-11 13:34,0
+Yongala,2013-06-11 13:34,10
+Yongala,2013-06-11 13:34,20
+Yongala,2013-06-11 13:34,26
+Yongala,2013-07-19 11:08,0
+Yongala,2013-07-19 11:08,10
+Yongala,2013-07-19 11:08,20
+Yongala,2013-07-19 11:08,26
+Yongala,2013-08-08 10:58,0
+Yongala,2013-08-08 10:58,10
+Yongala,2013-08-08 10:58,20
+Yongala,2013-08-08 10:58,26
+Yongala,2013-09-12 11:26,0
+Yongala,2013-09-12 11:26,10
+Yongala,2013-09-12 11:26,20
+Yongala,2013-09-12 11:26,26
+Yongala,2013-10-15 11:40,0
+Yongala,2013-10-15 11:40,10
+Yongala,2013-10-15 11:40,20
+Yongala,2013-10-15 11:40,26
+Yongala,2013-11-14 10:32,0
+Yongala,2013-11-14 10:32,10
+Yongala,2013-11-14 10:32,20
+Yongala,2013-11-14 10:32,26
+Yongala,2013-12-05 11:26,0
+Yongala,2013-12-05 11:26,10
+Yongala,2013-12-05 11:26,20
+Yongala,2013-12-05 11:26,26
+Yongala,2014-01-22 10:00,0
+Yongala,2014-01-22 10:00,10
+Yongala,2014-01-22 10:00,20
+Yongala,2014-01-22 10:00,26
+Yongala,2014-02-20 10:48,0
+Yongala,2014-02-20 10:48,10
+Yongala,2014-02-20 10:48,20
+Yongala,2014-02-20 10:48,26
+Yongala,2014-03-17 14:07,0
+Yongala,2014-03-17 14:07,10
+Yongala,2014-03-17 14:07,20
+Yongala,2014-03-17 14:07,26
+Yongala,2014-05-01 11:25,0
+Yongala,2014-05-01 11:25,10
+Yongala,2014-05-01 11:25,20
+Yongala,2014-05-01 11:25,26
+Yongala,2014-05-27 12:12,0
+Yongala,2014-05-27 12:12,10
+Yongala,2014-05-27 12:12,20
+Yongala,2014-05-27 12:12,26
+Yongala,2014-06-24 10:53,0
+Yongala,2014-06-24 10:53,10
+Yongala,2014-06-24 10:53,20
+Yongala,2014-06-24 10:53,26
+Yongala,2014-07-17 10:28,0
+Yongala,2014-07-17 10:28,10
+Yongala,2014-07-17 10:28,20
+Yongala,2014-07-17 10:28,26
+Yongala,2014-08-20 11:15,0
+Yongala,2014-08-20 11:15,10
+Yongala,2014-08-20 11:15,20
+Yongala,2014-08-20 11:15,26
+Yongala,2014-09-10 10:35,0
+Yongala,2014-09-10 10:35,10
+Yongala,2014-09-10 10:35,20
+Yongala,2014-09-10 10:35,26
+Yongala,2014-10-14 12:02,0
+Yongala,2014-10-14 12:02,10
+Yongala,2014-10-14 12:02,20
+Yongala,2014-10-14 12:02,26
+Yongala,2014-11-21 08:48,0
+Yongala,2014-11-21 08:48,10
+Yongala,2014-11-21 08:48,20
+Yongala,2014-11-21 08:48,26
+Yongala,2014-12-09 10:04,0
+Yongala,2014-12-09 10:04,10
+Yongala,2014-12-09 10:04,20
+Yongala,2014-12-09 10:04,26
+Yongala,2015-01-19 11:25,0
+Yongala,2015-01-19 11:25,10
+Yongala,2015-01-19 11:25,20
+Yongala,2015-01-19 11:25,26
+Yongala,2015-02-24 10:40,0
+Yongala,2015-02-24 10:40,10
+Yongala,2015-02-24 10:40,20
+Yongala,2015-02-24 10:40,26
+Yongala,2015-03-24 15:15,0
+Yongala,2015-03-24 15:15,10
+Yongala,2015-03-24 15:15,20
+Yongala,2015-03-24 15:15,26
+Yongala,2015-04-30 12:10,0
+Yongala,2015-04-30 12:10,10
+Yongala,2015-04-30 12:10,20
+Yongala,2015-04-30 12:10,26
+Yongala,2015-06-01 12:55,0
+Yongala,2015-06-01 12:55,10
+Yongala,2015-06-01 12:55,20
+Yongala,2015-06-01 12:55,26
+Yongala,2015-06-18 10:55,0
+Yongala,2015-06-18 10:55,10
+Yongala,2015-06-18 10:55,20
+Yongala,2015-06-18 10:55,26
+Yongala,2015-08-04 11:45,0
+Yongala,2015-08-04 11:45,10
+Yongala,2015-08-04 11:45,20
+Yongala,2015-08-04 11:45,26
+Yongala,2015-08-25 10:45,0
+Yongala,2015-08-25 10:45,10
+Yongala,2015-08-25 10:45,20
+Yongala,2015-08-25 10:45,26
+Yongala,2015-09-23 13:11,0
+Yongala,2015-09-23 13:11,10
+Yongala,2015-09-23 13:11,20
+Yongala,2015-09-23 13:11,26
+Yongala,2015-10-27 10:10,0
+Yongala,2015-10-27 10:10,10
+Yongala,2015-10-27 10:10,20
+Yongala,2015-10-27 10:10,26
+Yongala,2015-11-11 10:45,0
+Yongala,2015-11-11 10:45,10
+Yongala,2015-11-11 10:45,20
+Yongala,2015-11-11 10:45,26
+Yongala,2015-12-03 11:00,0
+Yongala,2015-12-03 11:00,10
+Yongala,2015-12-03 11:00,20
+Yongala,2015-12-03 11:00,26
+Yongala,2016-01-22 10:39,0
+Yongala,2016-01-22 10:39,10
+Yongala,2016-01-22 10:39,20
+Yongala,2016-01-22 10:39,26
+Yongala,2016-02-15 10:18,0
+Yongala,2016-02-15 10:18,10
+Yongala,2016-02-15 10:18,20
+Yongala,2016-02-15 10:18,26
+Yongala,2016-03-21 10:31,0
+Yongala,2016-03-21 10:31,10
+Yongala,2016-03-21 10:31,20
+Yongala,2016-03-21 10:31,26
+Yongala,2016-05-03 10:01,0
+Yongala,2016-05-03 10:01,10
+Yongala,2016-05-03 10:01,20
+Yongala,2016-05-03 10:01,26
+Yongala,2016-06-01 10:46,0
+Yongala,2016-06-01 10:46,10
+Yongala,2016-06-01 10:46,20
+Yongala,2016-06-01 10:46,26
+Yongala,2016-06-24 10:00,0
+Yongala,2016-06-24 10:00,10
+Yongala,2016-06-24 10:00,20
+Yongala,2016-06-24 10:00,26
+Yongala,2016-07-25 10:25,0
+Yongala,2016-07-25 10:25,10
+Yongala,2016-07-25 10:25,20
+Yongala,2016-07-25 10:25,26
+Yongala,2016-08-23 10:19,0
+Yongala,2016-08-23 10:19,10
+Yongala,2016-08-23 10:19,20
+Yongala,2016-08-23 10:19,26
+Yongala,2016-09-27 10:33,0
+Yongala,2016-09-27 10:33,10
+Yongala,2016-09-27 10:33,20
+Yongala,2016-09-27 10:33,26
+Yongala,2016-10-12 10:26,0
+Yongala,2016-10-12 10:26,10
+Yongala,2016-10-12 10:26,20
+Yongala,2016-10-12 10:26,26
+Yongala,2016-11-08 10:50,0
+Yongala,2016-11-08 10:50,10
+Yongala,2016-11-08 10:50,20
+Yongala,2016-11-08 10:50,26
+Yongala,2016-12-07 10:15,0
+Yongala,2016-12-07 10:15,10
+Yongala,2016-12-07 10:15,20
+Yongala,2016-12-07 10:15,26
+Yongala,2017-01-20 10:00,0
+Yongala,2017-01-20 10:00,10
+Yongala,2017-01-20 10:00,20
+Yongala,2017-01-20 10:00,26
+Yongala,2017-02-20 10:29,0
+Yongala,2017-02-20 10:29,10
+Yongala,2017-02-20 10:29,20
+Yongala,2017-02-20 10:29,26
+Yongala,2017-03-22 12:00,0
+Yongala,2017-03-22 12:00,10
+Yongala,2017-03-22 12:00,20
+Yongala,2017-03-22 12:00,26
+Yongala,2017-04-26 10:20,0
+Yongala,2017-04-26 10:20,10
+Yongala,2017-04-26 10:20,20
+Yongala,2017-04-26 10:20,26
+Yongala,2017-05-29 08:11,0
+Yongala,2017-05-29 08:11,10
+Yongala,2017-05-29 08:11,20
+Yongala,2017-05-29 08:11,26
+Yongala,2017-07-05 10:21,0
+Yongala,2017-07-05 10:21,10
+Yongala,2017-07-05 10:21,20
+Yongala,2017-07-05 10:21,26
+Yongala,2017-07-24 10:45,0
+Yongala,2017-07-24 10:45,10
+Yongala,2017-07-24 10:45,20
+Yongala,2017-07-24 10:45,26
+Yongala,2017-08-16 10:24,0
+Yongala,2017-08-16 10:24,10
+Yongala,2017-08-16 10:24,20
+Yongala,2017-08-16 10:24,26
+Yongala,2017-09-06 10:00,0
+Yongala,2017-09-06 10:00,10
+Yongala,2017-09-06 10:00,20
+Yongala,2017-09-06 10:00,26
+Yongala,2017-10-26 09:56,0
+Yongala,2017-10-26 09:56,10
+Yongala,2017-10-26 09:56,20
+Yongala,2017-10-26 09:56,26
+Yongala,2017-11-30 10:34,0
+Yongala,2017-11-30 10:34,10
+Yongala,2017-11-30 10:34,20
+Yongala,2017-11-30 10:34,26
+Yongala,2017-12-15 10:44,0
+Yongala,2017-12-15 10:44,10
+Yongala,2017-12-15 10:44,20
+Yongala,2017-12-15 10:44,26
+Yongala,2018-01-30 10:05,0
+Yongala,2018-01-30 10:05,10
+Yongala,2018-01-30 10:05,20
+Yongala,2018-01-30 10:05,26
+Yongala,2018-02-20 10:30,0
+Yongala,2018-02-20 10:30,10
+Yongala,2018-02-20 10:30,20
+Yongala,2018-02-20 10:30,26
+Yongala,2018-03-29 10:27,0
+Yongala,2018-03-29 10:27,10
+Yongala,2018-03-29 10:27,20
+Yongala,2018-03-29 10:27,26
+Yongala,2018-04-26 09:48,0
+Yongala,2018-04-26 09:48,10
+Yongala,2018-04-26 09:48,20
+Yongala,2018-04-26 09:48,26
+Yongala,2018-06-03 09:10,0
+Yongala,2018-06-03 09:10,10
+Yongala,2018-06-03 09:10,20
+Yongala,2018-06-03 09:10,26
+Yongala,2018-06-21 11:30,0
+Yongala,2018-06-21 11:30,10
+Yongala,2018-06-21 11:30,20
+Yongala,2018-06-21 11:30,26
+Yongala,2018-07-20 10:56,0
+Yongala,2018-07-20 10:56,10
+Yongala,2018-07-20 10:56,20
+Yongala,2018-07-20 10:56,26
+Yongala,2018-08-17 10:23,0
+Yongala,2018-08-17 10:23,10
+Yongala,2018-08-17 10:23,20
+Yongala,2018-08-17 10:23,26
+Yongala,2018-09-27 10:52,0
+Yongala,2018-09-27 10:52,10
+Yongala,2018-09-27 10:52,20
+Yongala,2018-09-27 10:52,26
+Yongala,2018-10-11 10:54,0
+Yongala,2018-10-11 10:54,10
+Yongala,2018-10-11 10:54,20
+Yongala,2018-10-11 10:54,26
+Yongala,2018-11-23 10:05,0
+Yongala,2018-11-23 10:05,10
+Yongala,2018-11-23 10:05,20
+Yongala,2018-11-23 10:05,26
+Yongala,2018-12-13 10:30,0
+Yongala,2018-12-13 10:30,10
+Yongala,2018-12-13 10:30,20
+Yongala,2018-12-13 10:30,26
+Yongala,2019-01-24 11:12,0
+Yongala,2019-01-24 11:12,10
+Yongala,2019-01-24 11:12,20
+Yongala,2019-01-24 11:12,26
+Yongala,2019-02-13 10:26,0
+Yongala,2019-02-13 10:26,10
+Yongala,2019-02-13 10:26,20
+Yongala,2019-02-13 10:26,26
+Yongala,2019-03-13 10:10,0
+Yongala,2019-03-13 10:10,10
+Yongala,2019-03-13 10:10,20
+Yongala,2019-03-13 10:10,26
+Yongala,2019-05-07 11:30,0
+Yongala,2019-05-07 11:30,10
+Yongala,2019-05-07 11:30,20
+Yongala,2019-05-07 11:30,26
+Yongala,2019-05-28 10:25,0
+Yongala,2019-05-28 10:25,10
+Yongala,2019-05-28 10:25,20
+Yongala,2019-05-28 10:25,26
+Yongala,2019-07-03 10:50,0
+Yongala,2019-07-03 10:50,10
+Yongala,2019-07-03 10:50,20
+Yongala,2019-07-03 10:50,26
+Yongala,2019-08-08 10:04,0
+Yongala,2019-08-08 10:04,10
+Yongala,2019-08-08 10:04,20
+Yongala,2019-08-08 10:04,26
+Yongala,2019-08-26 10:40,0
+Yongala,2019-08-26 10:40,10
+Yongala,2019-08-26 10:40,20
+Yongala,2019-08-26 10:40,26
+Yongala,2019-09-17 10:10,0
+Yongala,2019-09-17 10:10,10
+Yongala,2019-09-17 10:10,20
+Yongala,2019-09-17 10:10,26
+Yongala,2019-10-09 10:00,0
+Yongala,2019-10-09 10:00,10
+Yongala,2019-10-09 10:00,20
+Yongala,2019-10-09 10:00,26
+Yongala,2019-11-07 10:10,0
+Yongala,2019-11-07 10:10,10
+Yongala,2019-11-07 10:10,20
+Yongala,2019-11-07 10:10,26
+Yongala,2019-12-03 09:45,0
+Yongala,2019-12-03 09:45,10
+Yongala,2019-12-03 09:45,20
+Yongala,2019-12-03 09:45,26
+Yongala,2020-01-16 10:05,0
+Yongala,2020-01-16 10:05,10
+Yongala,2020-01-16 10:05,20
+Yongala,2020-01-16 10:05,26
+Yongala,2020-02-13 09:47,0
+Yongala,2020-02-13 09:47,10
+Yongala,2020-02-13 09:47,20
+Yongala,2020-02-13 09:47,26
+Yongala,2020-03-06 10:25,0
+Yongala,2020-03-06 10:25,10
+Yongala,2020-03-06 10:25,20
+Yongala,2020-03-06 10:25,26
+Yongala,2020-04-22 11:24,0
+Yongala,2020-04-22 11:24,10
+Yongala,2020-04-22 11:24,20
+Yongala,2020-04-22 11:24,26
+Yongala,2020-06-12 09:09,0
+Yongala,2020-06-12 09:09,10
+Yongala,2020-06-12 09:09,20
+Yongala,2020-06-12 09:09,26
+Yongala,2020-07-11 09:25,0
+Yongala,2020-07-11 09:25,10
+Yongala,2020-07-11 09:25,20
+Yongala,2020-07-11 09:25,26
+Yongala,2020-08-03 09:15,0
+Yongala,2020-08-03 09:15,10
+Yongala,2020-08-03 09:15,20
+Yongala,2020-08-03 09:15,26
+Yongala,2020-09-04 11:11,0
+Yongala,2020-09-04 11:11,10
+Yongala,2020-09-04 11:11,20
+Yongala,2020-09-04 11:11,26
+Yongala,2020-09-26 12:33,0
+Yongala,2020-09-26 12:33,10
+Yongala,2020-09-26 12:33,20
+Yongala,2020-09-26 12:33,25
+Yongala,2020-10-26 10:40,0
+Yongala,2020-10-26 10:40,10
+Yongala,2020-10-26 10:40,20
+Yongala,2020-10-26 10:40,26
+Yongala,2020-11-20 11:30,0
+Yongala,2020-11-20 11:30,10
+Yongala,2020-11-20 11:30,20
+Yongala,2020-11-20 11:30,26
+Yongala,2020-12-10 08:00,0
+Yongala,2020-12-10 08:00,10
+Yongala,2020-12-10 08:00,20
+Yongala,2020-12-10 08:00,26
+Yongala,2021-01-27 10:46,0
+Yongala,2021-01-27 10:46,10
+Yongala,2021-01-27 10:46,20
+Yongala,2021-01-27 10:46,26
+Yongala,2021-02-09 11:46,0
+Yongala,2021-02-09 11:46,10
+Yongala,2021-02-09 11:46,20
+Yongala,2021-02-09 11:46,26
+Yongala,2021-03-10 10:05,0
+Yongala,2021-03-10 10:05,10
+Yongala,2021-03-10 10:05,20
+Yongala,2021-03-10 10:05,26

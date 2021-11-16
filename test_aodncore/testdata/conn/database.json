@@ -1,0 +1,7 @@
+{
+  "host": "not-a-real-host",
+  "dbname": "not-a-real-db",
+  "port": "1234",
+  "user": "not-a-real-user",
+  "password": "not-a-real-password"
+}

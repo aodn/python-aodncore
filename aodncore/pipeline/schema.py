@@ -35,9 +35,72 @@ HARVEST_PARAMS_SCHEMA = {
     'type': 'object',
     'properties': {
         'slice_size': {'type': 'integer'},
-        'undo_previous_slices': {'type': 'boolean'}
+        'undo_previous_slices': {'type': 'boolean'},
+        'ingest_type': {'type': 'string', 'enum': ['replace', 'truncate', 'append']},
+        'db_schema': {'type': 'string'},
+        'db_objects': {
+            'type': 'array',
+            'items': {'$ref': '#/definitions/db_object'},
+        },
+        'metadata_updates': {
+            'type': 'array',
+            'items': {'$ref': '#/definitions/metadata_update'},
+        },
     },
-    'additionalProperties': False
+    'additionalProperties': False,
+    'definitions': {
+        'db_object': {
+            'type': 'object',
+            'properties': {
+                'name': {'type': 'string'},
+                'type': {'type': 'string'},
+                'dependencies': {'type': 'array', 'items': {'type': 'string'}}
+            },
+            'required': ['name', 'type'],
+            'additionalProperties': False
+        },
+        'metadata_update': {
+            'type': 'object',
+            'properties': {
+                'uuid': {'type': 'string'},
+                'spatial': {
+                    'type': 'object',
+                    'properties': {
+                        'table': {'type': 'string'},
+                        'column': {'type': 'string'},
+                        'resolution': {'type': 'integer'}
+                    },
+                    'required': ['table', 'column', 'resolution'],
+                    'additionalProperties': False
+                },
+                'temporal': {
+                    'type': 'object',
+                    'properties': {
+                        'table': {'type': 'string'},
+                        'column': {'type': 'string'}
+                    },
+                    'required': ['table', 'column'],
+                    'additionalProperties': False
+                },
+                'vertical': {
+                    'type': 'object',
+                    'properties': {
+                        'table': {'type': 'string'},
+                        'column': {'type': 'string'}
+                    },
+                    'required': ['table', 'column'],
+                    'additionalProperties': False
+                },
+            },
+            'required': ['uuid'],
+            'additionalProperties': False
+        }
+    },
+    'dependencies': {
+        'db_schema': ['db_objects'],
+        'db_objects': ['db_schema'],
+        'metadata_updates': ['db_schema', 'db_objects']
+    }
 }
 
 LOGGING_CONFIG_SCHEMA = {
@@ -140,6 +203,15 @@ PIPELINE_CONFIG_SCHEMA = {
             'required': ['talend_log_dir'],
             'additionalProperties': False
         },
+        'harvester': {
+            'type': 'object',
+            'properties': {
+                'config_dir': {'type': 'string'},
+                'schema_base_dir': {'type': 'string'}
+            },
+            'required': ['config_dir', 'schema_base_dir'],
+            'additionalProperties': False
+        },
         'templating': {
             'type': 'object',
             'properties': {
@@ -161,7 +233,8 @@ PIPELINE_CONFIG_SCHEMA = {
             'additionalProperties': False
         }
     },
-    'required': ['global', 'logging', 'mail', 'talend', 'templating', 'watch'],
+    # TODO: add 'harvester' to the required list - once it has been added to the chef build
+    'required': ['global', 'logging', 'mail', 'talend', 'templating', 'watch', 'harvester'],
     'additionalProperties': False,
     'definitions': {
         'loggingLevel': {
