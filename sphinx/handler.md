@@ -87,7 +87,7 @@ dict is controlled by the ``HARVEST_PARAMS_SCHEMA`` object in the [schema](https
 
 String to inform the harvest step factory function which HarvesterRunner implementation to use during the publish step.
 
-Note: currently the only valid value is 'talend', which is set as the default.
+Note: 'talend' is the default, but 'csv' is also valid.
 
 ##### include_regexes
 * type: ``list``
