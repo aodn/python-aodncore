@@ -657,10 +657,12 @@ class TestCsvHarvesterRunner(BaseTestCase):
 
         child = next(filter(lambda x: x['name'] == 'child', harvester_runner.db_objects))
         grandchild = next(filter(lambda x: x['name'] == 'grandchild', harvester_runner.db_objects))
+        greatgrandchild = next(filter(lambda x: x['name'] == 'greatgrandchild', harvester_runner.db_objects))
         secondcousin = next(filter(lambda x: x['name'] == 'secondcousin', harvester_runner.db_objects))
         # child and grandchild should list test_table as a dependency, but secondcousing should not
         self.assertTrue('test_table' in child.get('dependencies'))
         self.assertTrue('test_table' in grandchild.get('dependencies'))
+        self.assertTrue('test_table' in greatgrandchild.get('dependencies'))
         self.assertFalse('test_table' in secondcousin.get('dependencies'))
 
     def test_build_runsheet(self):
