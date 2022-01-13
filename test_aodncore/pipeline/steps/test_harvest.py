@@ -653,7 +653,7 @@ class TestCsvHarvesterRunner(BaseTestCase):
             harvester_runner = CsvHarvesterRunner(self.uploader, hp, self.config, self.test_logger)
 
         for obj in harvester_runner.db_objects:
-            harvester_runner.get_recursive_dependencies(obj)
+            harvester_runner.build_dependency_tree(obj)
 
         child = next(filter(lambda x: x['name'] == 'child', harvester_runner.db_objects))
         grandchild = next(filter(lambda x: x['name'] == 'grandchild', harvester_runner.db_objects))

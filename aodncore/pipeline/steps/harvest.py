@@ -424,7 +424,8 @@ class CsvHarvesterRunner(BaseHarvesterRunner):
         self.storage_broker = storage_broker
         self.config = self._config
         self.logger = self._logger
-        self.db_objects = self.params.get('db_objects')
+        self.db_objects_raw = self.params.get('db_objects')
+        self.db_objects = list(map(self.build_dependency_tree, self.db_objects_raw)) if self.db_objects_raw else None
         self.unexpected_pipeline_files = []
 
     def run(self, pipeline_files):
@@ -527,19 +528,18 @@ class CsvHarvesterRunner(BaseHarvesterRunner):
         else:
             raise InvalidConfigError('No implementation for {} ingest_type'.format(ingest_type))
 
-    def get_recursive_dependencies(self, obj):
-        # TODO: this could be less messy
-        dependencies = obj.get('dependencies')
+    def build_dependency_tree(self, obj):
+        def get_parent_dependencies(deps):
+            if deps:
+                for d in deps:
+                    parent = next(filter(lambda x: x['name'] == d, self.db_objects_raw))
+                    deps = deps + get_parent_dependencies(parent.get('dependencies', []))
+            return deps
+
+        dependencies = get_parent_dependencies(obj.get('dependencies'))
         if dependencies:
-            ancestors = dependencies
-            for d in dependencies:
-                for a in self.db_objects:
-                    if a['name'] == d and a.get('dependencies'):
-                        for dep in a['dependencies']:
-                            if dep.lower() not in ancestors:
-                                ancestors.append(dep.lower())
-            return ancestors
-        return []
+            obj['dependencies'] = list(set(dependencies))
+        return obj
 
     def build_runsheet(self, pf):
         """Function to generate a runsheet for the harvest process.
@@ -552,7 +552,7 @@ class CsvHarvesterRunner(BaseHarvesterRunner):
                 obj['include'] = True
                 obj['local_path'] = pf.local_path
                 found = True
-            if Path(pf.local_path).stem.lower() in self.get_recursive_dependencies(obj):
+            elif Path(pf.local_path).stem.lower() in obj.get('dependencies', []):
                 obj['include'] = True
         if not found:
             self.unexpected_pipeline_files.append(pf.local_path)
