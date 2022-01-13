@@ -424,7 +424,8 @@ class CsvHarvesterRunner(BaseHarvesterRunner):
         self.storage_broker = storage_broker
         self.config = self._config
         self.logger = self._logger
-        self.pipeline_files = None
+        self.db_objects = self.params.get('db_objects')
+        self.unexpected_pipeline_files = []
 
     def run(self, pipeline_files):
         """The entry point to the generic csv harvester
@@ -433,16 +434,13 @@ class CsvHarvesterRunner(BaseHarvesterRunner):
         """
         validate_pipelinefilecollection(pipeline_files)
 
-        self.pipeline_files = pipeline_files
-        objs = self.params.get('db_objects')
-        if objs:
-            runsheet = [x for x in map(self.build_runsheet, objs) if x]
-            missing_files = list(filter(lambda x:
-                                        True if x.local_path not in [d.get('local_path') for d in runsheet]
-                                        else False, pipeline_files))
-            if len(missing_files) > 0:
-                raise UnexpectedCsvFilesError('No db_objects match these pipeline files: {}'.format(
-                    [os.path.basename(m.local_path) for m in missing_files]))
+        if self.db_objects:
+            for pf in pipeline_files:
+                self.build_runsheet(pf)
+            if len(self.unexpected_pipeline_files) > 0:
+                raise UnexpectedCsvFilesError('No db_objects match these pipeline files: {}'
+                                              .format(self.unexpected_pipeline_files))
+            runsheet = list(filter(lambda x: x.get('include'), self.db_objects))
         else:
             raise MissingConfigParameterError('Generic CSV Harvester requires that the '
                                               'harvest_params["db_objects"] attribute be set')
@@ -529,18 +527,36 @@ class CsvHarvesterRunner(BaseHarvesterRunner):
         else:
             raise InvalidConfigError('No implementation for {} ingest_type'.format(ingest_type))
 
-    def build_runsheet(self, obj):
+    def get_recursive_dependencies(self, obj):
+        # TODO: this could be less messy
+        dependencies = obj.get('dependencies')
+        if dependencies:
+            ancestors = dependencies
+            for d in dependencies:
+                for a in self.db_objects:
+                    if a['name'] == d and a.get('dependencies'):
+                        for dep in a['dependencies']:
+                            if dep.lower() not in ancestors:
+                                ancestors.append(dep.lower())
+            return ancestors
+        return []
+
+    def build_runsheet(self, pf):
         """Function to generate a runsheet for the harvest process.
 
-        :return: dict containing one pipeline runsheet item
-            (if the item is not matched on the current pipeline instance, then nothing will be returned).
+        :return: bool
         """
-        pf = next((pf for pf in self.pipeline_files if Path(pf.local_path).stem.lower() == obj['name'].lower()
-                   or Path(pf.local_path).stem.lower() in [i.lower() for i in obj.get('dependencies', [])]), None)
-        if pf:
-            if obj['name'].lower() == Path(pf.local_path).stem.lower():
+        found = False
+        for obj in self.db_objects:
+            if Path(pf.local_path).stem.lower() == obj['name'].lower() and obj['type'] == "table":
+                obj['include'] = True
                 obj['local_path'] = pf.local_path
-            return obj
+                found = True
+            if Path(pf.local_path).stem.lower() in self.get_recursive_dependencies(obj):
+                obj['include'] = True
+        if not found:
+            self.unexpected_pipeline_files.append(pf.local_path)
+        return True
 
 
 validate_triggerevent = validate_type(TriggerEvent)

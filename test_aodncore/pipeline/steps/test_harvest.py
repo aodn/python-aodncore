@@ -583,7 +583,7 @@ def get_csv_harvest_collection(with_store=False, already_stored=False, additiona
 GOOD_HARVEST_PARAMS = os.path.join(TESTDATA_DIR, 'test.harvest_params')
 BAD_HARVEST_PARAMS = os.path.join(TESTDATA_DIR, 'invalid.harvest_params.nodbobjects')
 INCOMPLETE_HARVEST_PARAMS = os.path.join(TESTDATA_DIR, 'test.harvest_params_incomplete')
-
+RECURSIVE_HARVEST_PARAMS = os.path.join(TESTDATA_DIR, 'test.recursive_harvest_params')
 
 class dummy_config(object):
     def __init__(self):
@@ -612,8 +612,7 @@ class TestCsvHarvesterRunner(BaseTestCase):
         self.assertIsNotNone(harvester_runner.storage_broker)
         self.assertIsNotNone(harvester_runner.config)
         self.assertIsNotNone(harvester_runner.logger)
-        # Pipeline files not passed in until run()
-        self.assertIsNone(harvester_runner.pipeline_files)
+        self.assertIsNotNone(harvester_runner.db_objects)
 
         # harvest_params specific
         for attr in ['db_schema', 'ingest_type', 'db_objects']:
@@ -648,18 +647,34 @@ class TestCsvHarvesterRunner(BaseTestCase):
         with self.assertRaises(InvalidConfigError):
             harvester_runner.get_process_sequence(mock_db)
 
+    def test_recursive_dependencies(self):
+        with open(RECURSIVE_HARVEST_PARAMS) as f:
+            hp = json.load(f)
+            harvester_runner = CsvHarvesterRunner(self.uploader, hp, self.config, self.test_logger)
+
+        for obj in harvester_runner.db_objects:
+            harvester_runner.get_recursive_dependencies(obj)
+
+        child = next(filter(lambda x: x['name'] == 'child', harvester_runner.db_objects))
+        grandchild = next(filter(lambda x: x['name'] == 'grandchild', harvester_runner.db_objects))
+        secondcousin = next(filter(lambda x: x['name'] == 'secondcousin', harvester_runner.db_objects))
+        # child and grandchild should list test_table as a dependency, but secondcousing should not
+        self.assertTrue('test_table' in child.get('dependencies'))
+        self.assertTrue('test_table' in grandchild.get('dependencies'))
+        self.assertFalse('test_table' in secondcousin.get('dependencies'))
+
     def test_build_runsheet(self):
         with open(GOOD_HARVEST_PARAMS) as f:
             hp = json.load(f)
             harvester_runner = CsvHarvesterRunner(self.uploader, hp, self.config, self.test_logger)
 
         collection = get_csv_harvest_collection()
-        harvester_runner.pipeline_files = collection
-        rs_size = len(list(x for x in
-                           map(harvester_runner.build_runsheet, harvester_runner.params.get('db_objects')) if x))
+        for c in collection:
+            harvester_runner.build_runsheet(c)
+        rs_size = len(list(filter(lambda x: x.get('include'), harvester_runner.db_objects)))
 
         # Runsheet size should be less than harvest_params.db_objects but greater than 0
-        self.assertLess(rs_size, len(harvester_runner.params.get('db_objects')))
+        self.assertLess(rs_size, len(harvester_runner.db_objects))
         self.assertGreater(rs_size, 0)
 
     @patch('aodncore.pipeline.steps.harvest.GeonetworkMetadataHandler')
