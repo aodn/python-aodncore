@@ -30,7 +30,10 @@ RUN apt-get install -y --no-install-recommends \
     wget \
     libffi-dev \
     # Pyenv pre-requisites
-    make zlib1g-dev libbz2-dev libreadline-dev libsqlite3-dev wget curl llvm libncurses5-dev libncursesw5-dev xz-utils tk-dev libffi-dev liblzma-dev python-openssl git \
+    make zlib1g-dev libbz2-dev libreadline-dev \
+    libsqlite3-dev wget curl llvm libncurses5-dev \
+    libncursesw5-dev xz-utils tk-dev libffi-dev \
+    liblzma-dev python-openssl \
     && rm -rf /var/lib/apt/lists/*
 
 # Set-up necessary Env vars for PyEnv
