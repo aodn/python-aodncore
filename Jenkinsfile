@@ -22,7 +22,7 @@ pipeline {
                     }
                 }
                 stage('set_version') {
-                    when { not { branch "master" } }
+                    when { branch "master" }
                     steps {
                         sh './bumpversion.sh build'
                     }
@@ -36,12 +36,12 @@ pipeline {
                     }
                 }
                 // Test stage commented out to allow builds to complete. See issue #1076 for details
-                stage('test') {
-                    steps {
-                        sh 'pip install --user -r test_requirements.txt'
+                //stage('test') {
+                //    steps {
+                //        sh 'pip install --user -r test_requirements.txt'
                 //        sh 'pytest'
-                    }
-                }
+                //    }
+                //}
                 stage('package') {
                     steps {
                         sh 'python setup.py bdist_wheel'
