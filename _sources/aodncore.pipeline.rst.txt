@@ -36,6 +36,14 @@ aodncore.pipeline.configlib module
    :undoc-members:
    :show-inheritance:
 
+aodncore.pipeline.db module
+---------------------------
+
+.. automodule:: aodncore.pipeline.db
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
 aodncore.pipeline.destpath module
 ---------------------------------
 
@@ -64,6 +72,14 @@ aodncore.pipeline.files module
 ------------------------------
 
 .. automodule:: aodncore.pipeline.files
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+aodncore.pipeline.geonetwork module
+-----------------------------------
+
+.. automodule:: aodncore.pipeline.geonetwork
    :members:
    :undoc-members:
    :show-inheritance:
