@@ -21,17 +21,11 @@ pipeline {
                         sh 'git clean -xffd'
                     }
                 }
-                stage('set_version') {
-                    when { not { branch "master" } }
-                    steps {
-                        sh './bumpversion.sh build'
-                    }
-                }
                 stage('release') {
                     when { branch 'master' }
                     steps {
                         withCredentials([usernamePassword(credentialsId: env.GIT_CREDENTIALS_ID, passwordVariable: 'GIT_PASSWORD', usernameVariable: 'GIT_USERNAME')]) {
-                            sh './bumpversion.sh release'
+                            sh './bumpversion.sh'
                         }
                     }
                 }
@@ -48,13 +42,13 @@ pipeline {
                     }
                 }
 		// Skip generate docs stage due to error. To be resolved later. See backlog item #3414 
-                //stage('generate_docs') {
-                //    steps {
-                //        dir('sphinx') {
-                //            sh 'make generate'
-                //        }
-                //    }
-                //}
+                stage('generate_docs') {
+                    steps {
+                        dir('sphinx') {
+                            sh 'make generate'
+                        }
+                    }
+                }
             }
             post {
                 success {
