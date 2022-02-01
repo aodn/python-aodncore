@@ -48,7 +48,7 @@ RUN set -ex \
     && pyenv rehash \
     && chmod -R a+w $PYENV_ROOT/shims
 
-RUN pip install --upgrade pip==20.3.4
+RUN pip install --upgrade pip==20.3.4 setuptools==50.3.2
 
 RUN pip install \
     Cython==0.29 \    
