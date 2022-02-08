@@ -8,7 +8,7 @@ ENTRY_POINTS = {
 
 INSTALL_REQUIRES = [
     'boto3>=1.9.156',
-    'celery>=4.3.0',
+    'celery>=4.3.0,<5',
     'compliance-checker==4.1.1',
     'jsonschema>=2.6.0',
     'paramiko>=2.6.0',
