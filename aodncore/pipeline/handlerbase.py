@@ -44,8 +44,8 @@ class HandlerBase(object):
     :type input_file: str
 
     :param allowed_archive_path_regexes: List of allowed regular expressions of which
-        .. note:: :py:attr:`PipelineFile.archive_path` must match at least one. If any non-matching values are found,
-        the handler will exit with an error during the publish step *before* publishing anything.
+        :py:attr:`PipelineFile.archive_path` must match at least one. If any non-matching values are found, the handler
+        will exit with an error during the publish step *before* publishing anything.
     :type allowed_archive_path_regexes: list
 
     :param allowed_dest_path_regexes: List of allowed regular expressions of which :py:attr:`PipelineFile.dest_path`
