@@ -43,7 +43,7 @@ PACKAGE_SCRIPTS = ['aodncore/bin/drawmachine.py', 'aodncore/pipeline/watchservic
 
 setup(
     name=PACKAGE_NAME,
-    version='0.0.0',
+    version='4.0.0.dev0',
     scripts=PACKAGE_SCRIPTS,
     packages=find_packages(exclude=PACKAGE_EXCLUDES),
     package_data=PACKAGE_DATA,
