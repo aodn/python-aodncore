@@ -652,9 +652,6 @@ class TestCsvHarvesterRunner(BaseTestCase):
             hp = json.load(f)
             harvester_runner = CsvHarvesterRunner(self.uploader, hp, self.config, self.test_logger)
 
-        for obj in harvester_runner.db_objects:
-            harvester_runner.build_dependency_tree(obj)
-
         child = next(filter(lambda x: x['name'] == 'child', harvester_runner.db_objects))
         grandchild = next(filter(lambda x: x['name'] == 'grandchild', harvester_runner.db_objects))
         greatgrandchild = next(filter(lambda x: x['name'] == 'greatgrandchild', harvester_runner.db_objects))
@@ -664,6 +661,9 @@ class TestCsvHarvesterRunner(BaseTestCase):
         self.assertTrue('test_table' in grandchild.get('dependencies'))
         self.assertTrue('test_table' in greatgrandchild.get('dependencies'))
         self.assertFalse('test_table' in secondcousin.get('dependencies'))
+        # secondcousin and greatgrandchild should also have cousin as a dependency
+        self.assertIn('cousin', secondcousin.get('dependencies'))
+        self.assertIn('cousin', greatgrandchild.get('dependencies'))
 
     def test_build_runsheet(self):
         with open(GOOD_HARVEST_PARAMS) as f:
@@ -673,11 +673,27 @@ class TestCsvHarvesterRunner(BaseTestCase):
         collection = get_csv_harvest_collection()
         for c in collection:
             harvester_runner.build_runsheet(c)
-        rs_size = len(list(filter(lambda x: x.get('include'), harvester_runner.db_objects)))
 
-        # Runsheet size should be less than harvest_params.db_objects but greater than 0
-        self.assertLess(rs_size, len(harvester_runner.db_objects))
-        self.assertGreater(rs_size, 0)
+        # Runsheet should only include test_table and test_view
+        included_objects = [o.get('name')
+                            for o in harvester_runner.db_objects
+                            if o.get('include')]
+        self.assertEqual(included_objects, ['test_table', 'test_view'])
+
+    def test_build_runsheet_recursive(self):
+        with open(RECURSIVE_HARVEST_PARAMS) as f:
+            hp = json.load(f)
+            harvester_runner = CsvHarvesterRunner(self.uploader, hp, self.config, self.test_logger)
+
+        collection = get_csv_harvest_collection()
+        for c in collection:
+            harvester_runner.build_runsheet(c)
+
+        # Runsheet should only include test_table and its dependents
+        included_objects = [o.get('name')
+                            for o in harvester_runner.db_objects
+                            if o.get('include')]
+        self.assertEqual(included_objects, ['test_table', 'child', 'grandchild', 'greatgrandchild'])
 
     @patch('aodncore.pipeline.steps.harvest.GeonetworkMetadataHandler')
     @patch('aodncore.pipeline.steps.harvest.Geonetwork')
