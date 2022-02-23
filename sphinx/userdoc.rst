@@ -82,7 +82,7 @@ actions only on files in the collection which have been flagged for that action 
 attribute of the files).
 
 #. determine files flagged as needing to be archived, and upload to 'archive' location
-#. determine files flagged as needing to be harvested, match and execute Talend harvester(s) for files
+#. determine files flagged as needing to be harvested, match and execute Talend (or CSV) harvester(s) for files
 #. determine files flagged as needing to be uploaded or deleted, and perform the necessary storage operation
 
 .. note:: upload/delete operations are collectively referred to in the handler and supporting code as "store" operations

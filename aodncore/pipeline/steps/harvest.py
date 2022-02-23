@@ -2,9 +2,10 @@
 
 Harvesting is performed by a :py:class:`BaseHarvesterRunner` class.
 
-This currently only supports "talend" as a harvesting tool, which requires it to perform the steps necessary to generate
-the inputs expected by the AODN Talend wrapper scripts, but is written generically to support other hypothetical
-harvesting processes.
+This currently supports "talend" and "csv" as harvesting tools.
+
+The "talend" harvester runner runs Talend instances as subprocesses, whereas the "csv" harvester runner calls the core
+"DatabaseInteractions" harvester class directly.
 """
 
 import abc

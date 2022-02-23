@@ -60,7 +60,7 @@ class HandlerBase(object):
     :param allowed_regexes: List of allowed regular expressions for :py:attr:`input_file`. Non-matching input files will
         cause the handler to exit with an error during the initialise step.
 
-    .. note:: :py:attr:`allowed_regexes` are checked *after* :py:attr:`allowed_extensions`
+        .. note:: :py:attr:`allowed_regexes` are checked *after* :py:attr:`allowed_extensions`
     :type allowed_regexes: list
 
     :param archive_input_file: Flags whether the original input file should be uploaded to the archive, the location of
