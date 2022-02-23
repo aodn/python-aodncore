@@ -10,6 +10,8 @@ from aodncore.pipeline.steps.harvest import (get_harvester_runner, HarvesterMap,
                                              validate_harvester_mapping, CsvHarvesterRunner)
 from aodncore.pipeline.steps.store import StoreRunner
 from aodncore.testlib import BaseTestCase, NullStorageBroker
+from aodncore.util import WriteOnceOrderedDict
+
 from test_aodncore import TESTDATA_DIR
 
 TEST_ROOT = os.path.dirname(__file__)
@@ -605,7 +607,7 @@ class TestCsvHarvesterRunner(BaseTestCase):
 
     def test_harvest_runner_params(self):
         with open(GOOD_HARVEST_PARAMS) as f:
-            hp = json.load(f)
+            hp = json.load(f, object_pairs_hook=WriteOnceOrderedDict)
             harvester_runner = CsvHarvesterRunner(self.uploader, hp, self.config, self.test_logger)
 
         self.assertIsNotNone(harvester_runner.params)
@@ -649,7 +651,7 @@ class TestCsvHarvesterRunner(BaseTestCase):
 
     def test_recursive_dependencies(self):
         with open(RECURSIVE_HARVEST_PARAMS) as f:
-            hp = json.load(f)
+            hp = json.load(f, object_pairs_hook=WriteOnceOrderedDict)
             harvester_runner = CsvHarvesterRunner(self.uploader, hp, self.config, self.test_logger)
 
         child = next(filter(lambda x: x['name'] == 'child', harvester_runner.db_objects))
@@ -667,7 +669,7 @@ class TestCsvHarvesterRunner(BaseTestCase):
 
     def test_build_runsheet(self):
         with open(GOOD_HARVEST_PARAMS) as f:
-            hp = json.load(f)
+            hp = json.load(f, object_pairs_hook=WriteOnceOrderedDict)
             harvester_runner = CsvHarvesterRunner(self.uploader, hp, self.config, self.test_logger)
 
         collection = get_csv_harvest_collection()
@@ -682,7 +684,7 @@ class TestCsvHarvesterRunner(BaseTestCase):
 
     def test_build_runsheet_recursive(self):
         with open(RECURSIVE_HARVEST_PARAMS) as f:
-            hp = json.load(f)
+            hp = json.load(f, object_pairs_hook=WriteOnceOrderedDict)
             harvester_runner = CsvHarvesterRunner(self.uploader, hp, self.config, self.test_logger)
 
         collection = get_csv_harvest_collection()
@@ -702,7 +704,7 @@ class TestCsvHarvesterRunner(BaseTestCase):
         mock_db.return_value.compare_schemas.return_value = True
 
         with open(GOOD_HARVEST_PARAMS) as f:
-            hp = json.load(f)
+            hp = json.load(f, object_pairs_hook=WriteOnceOrderedDict)
         collection = get_csv_harvest_collection()
         harvester_runner = CsvHarvesterRunner(self.uploader, hp, dummy_config(), self.test_logger)
 
@@ -718,7 +720,7 @@ class TestCsvHarvesterRunner(BaseTestCase):
         mock_db.return_value.compare_schemas.return_value = True
 
         with open(BAD_HARVEST_PARAMS) as f:
-            hp = json.load(f)
+            hp = json.load(f, object_pairs_hook=WriteOnceOrderedDict)
         collection = get_csv_harvest_collection()
         harvester_runner = CsvHarvesterRunner(self.uploader, hp, dummy_config(), self.test_logger)
 
@@ -730,7 +732,7 @@ class TestCsvHarvesterRunner(BaseTestCase):
         mock_db.return_value.compare_schemas.return_value = True
 
         with open(INCOMPLETE_HARVEST_PARAMS) as f:
-            hp = json.load(f)
+            hp = json.load(f, object_pairs_hook=WriteOnceOrderedDict)
         collection = get_csv_harvest_collection(additional_files=[ANOTHER_CSV])
         harvester_runner = CsvHarvesterRunner(self.uploader, hp, dummy_config(), self.test_logger)
 
@@ -742,7 +744,7 @@ class TestCsvHarvesterRunner(BaseTestCase):
         mock_db.return_value.compare_schemas.return_value = True
 
         with open(GOOD_HARVEST_PARAMS) as f:
-            hp = json.load(f)
+            hp = json.load(f, object_pairs_hook=WriteOnceOrderedDict)
         collection = get_csv_harvest_collection(additional_files=[ANOTHER_CSV])
         harvester_runner = CsvHarvesterRunner(self.uploader, hp, dummy_config(), self.test_logger)
 
@@ -769,7 +771,7 @@ class TestCsvHarvesterRunner(BaseTestCase):
         mock_db.return_value.compare_schemas.return_value = True
 
         with open(GOOD_HARVEST_PARAMS) as f:
-            hp = json.load(f)
+            hp = json.load(f, object_pairs_hook=WriteOnceOrderedDict)
         collection = get_csv_harvest_collection(with_store=True)
         harvester_runner = CsvHarvesterRunner(self.uploader, hp, dummy_config(), self.test_logger)
 

@@ -529,6 +529,12 @@ class CsvHarvesterRunner(BaseHarvesterRunner):
             raise InvalidConfigError('No implementation for {} ingest_type'.format(ingest_type))
 
     def build_dependency_tree(self, obj):
+        """Update one item from the db_objects list to include indirect dependencies.
+        (i.e. dependencies of dependencies, etc...).
+
+        :param obj: dict describing a database object (from db_objects config)
+        :return: copy of obj with updated dependencies
+        """
         def get_parent_dependencies(deps):
             if deps:
                 for d in deps:
@@ -537,9 +543,10 @@ class CsvHarvesterRunner(BaseHarvesterRunner):
             return deps
 
         dependencies = get_parent_dependencies(obj.get('dependencies'))
+        obj_out = dict(obj)  # make a writeable copy
         if dependencies:
-            obj['dependencies'] = list(set(dependencies))
-        return obj
+            obj_out['dependencies'] = list(set(dependencies))
+        return obj_out
 
     def build_runsheet(self, pf):
         """Function to generate a runsheet for the harvest process.
