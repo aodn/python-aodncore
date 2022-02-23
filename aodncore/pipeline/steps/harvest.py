@@ -424,7 +424,9 @@ class CsvHarvesterRunner(BaseHarvesterRunner):
         self.storage_broker = storage_broker
         self.config = self._config
         self.logger = self._logger
-        self.pipeline_files = None
+        self.db_objects_raw = self.params.get('db_objects')
+        self.db_objects = list(map(self.build_dependency_tree, self.db_objects_raw)) if self.db_objects_raw else None
+        self.unexpected_pipeline_files = []
 
     def run(self, pipeline_files):
         """The entry point to the generic csv harvester
@@ -433,16 +435,13 @@ class CsvHarvesterRunner(BaseHarvesterRunner):
         """
         validate_pipelinefilecollection(pipeline_files)
 
-        self.pipeline_files = pipeline_files
-        objs = self.params.get('db_objects')
-        if objs:
-            runsheet = [x for x in map(self.build_runsheet, objs) if x]
-            missing_files = list(filter(lambda x:
-                                        True if x.local_path not in [d.get('local_path') for d in runsheet]
-                                        else False, pipeline_files))
-            if len(missing_files) > 0:
-                raise UnexpectedCsvFilesError('No db_objects match these pipeline files: {}'.format(
-                    [os.path.basename(m.local_path) for m in missing_files]))
+        if self.db_objects:
+            for pf in pipeline_files:
+                self.build_runsheet(pf)
+            if len(self.unexpected_pipeline_files) > 0:
+                raise UnexpectedCsvFilesError('No db_objects match these pipeline files: {}'
+                                              .format(self.unexpected_pipeline_files))
+            runsheet = list(filter(lambda x: x.get('include'), self.db_objects))
         else:
             raise MissingConfigParameterError('Generic CSV Harvester requires that the '
                                               'harvest_params["db_objects"] attribute be set')
@@ -529,18 +528,42 @@ class CsvHarvesterRunner(BaseHarvesterRunner):
         else:
             raise InvalidConfigError('No implementation for {} ingest_type'.format(ingest_type))
 
-    def build_runsheet(self, obj):
+    def build_dependency_tree(self, obj):
+        """Update one item from the db_objects list to include indirect dependencies.
+        (i.e. dependencies of dependencies, etc...).
+
+        :param obj: dict describing a database object (from db_objects config)
+        :return: copy of obj with updated dependencies
+        """
+        def get_parent_dependencies(deps):
+            if deps:
+                for d in deps:
+                    parent = next(filter(lambda x: x['name'] == d, self.db_objects_raw))
+                    deps = deps + get_parent_dependencies(parent.get('dependencies', []))
+            return deps
+
+        dependencies = get_parent_dependencies(obj.get('dependencies'))
+        obj_out = dict(obj)  # make a writeable copy
+        if dependencies:
+            obj_out['dependencies'] = list(set(dependencies))
+        return obj_out
+
+    def build_runsheet(self, pf):
         """Function to generate a runsheet for the harvest process.
 
-        :return: dict containing one pipeline runsheet item
-            (if the item is not matched on the current pipeline instance, then nothing will be returned).
+        :return: bool
         """
-        pf = next((pf for pf in self.pipeline_files if Path(pf.local_path).stem.lower() == obj['name'].lower()
-                   or Path(pf.local_path).stem.lower() in [i.lower() for i in obj.get('dependencies', [])]), None)
-        if pf:
-            if obj['name'].lower() == Path(pf.local_path).stem.lower():
+        found = False
+        for obj in self.db_objects:
+            if Path(pf.local_path).stem.lower() == obj['name'].lower() and obj['type'] == "table":
+                obj['include'] = True
                 obj['local_path'] = pf.local_path
-            return obj
+                found = True
+            elif Path(pf.local_path).stem.lower() in obj.get('dependencies', []):
+                obj['include'] = True
+        if not found:
+            self.unexpected_pipeline_files.append(pf.local_path)
+        return True
 
 
 validate_triggerevent = validate_type(TriggerEvent)

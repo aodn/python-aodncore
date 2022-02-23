@@ -10,6 +10,8 @@ from aodncore.pipeline.steps.harvest import (get_harvester_runner, HarvesterMap,
                                              validate_harvester_mapping, CsvHarvesterRunner)
 from aodncore.pipeline.steps.store import StoreRunner
 from aodncore.testlib import BaseTestCase, NullStorageBroker
+from aodncore.util import WriteOnceOrderedDict
+
 from test_aodncore import TESTDATA_DIR
 
 TEST_ROOT = os.path.dirname(__file__)
@@ -583,7 +585,7 @@ def get_csv_harvest_collection(with_store=False, already_stored=False, additiona
 GOOD_HARVEST_PARAMS = os.path.join(TESTDATA_DIR, 'test.harvest_params')
 BAD_HARVEST_PARAMS = os.path.join(TESTDATA_DIR, 'invalid.harvest_params.nodbobjects')
 INCOMPLETE_HARVEST_PARAMS = os.path.join(TESTDATA_DIR, 'test.harvest_params_incomplete')
-
+RECURSIVE_HARVEST_PARAMS = os.path.join(TESTDATA_DIR, 'test.recursive_harvest_params')
 
 class dummy_config(object):
     def __init__(self):
@@ -605,15 +607,14 @@ class TestCsvHarvesterRunner(BaseTestCase):
 
     def test_harvest_runner_params(self):
         with open(GOOD_HARVEST_PARAMS) as f:
-            hp = json.load(f)
+            hp = json.load(f, object_pairs_hook=WriteOnceOrderedDict)
             harvester_runner = CsvHarvesterRunner(self.uploader, hp, self.config, self.test_logger)
 
         self.assertIsNotNone(harvester_runner.params)
         self.assertIsNotNone(harvester_runner.storage_broker)
         self.assertIsNotNone(harvester_runner.config)
         self.assertIsNotNone(harvester_runner.logger)
-        # Pipeline files not passed in until run()
-        self.assertIsNone(harvester_runner.pipeline_files)
+        self.assertIsNotNone(harvester_runner.db_objects)
 
         # harvest_params specific
         for attr in ['db_schema', 'ingest_type', 'db_objects']:
@@ -648,19 +649,53 @@ class TestCsvHarvesterRunner(BaseTestCase):
         with self.assertRaises(InvalidConfigError):
             harvester_runner.get_process_sequence(mock_db)
 
+    def test_recursive_dependencies(self):
+        with open(RECURSIVE_HARVEST_PARAMS) as f:
+            hp = json.load(f, object_pairs_hook=WriteOnceOrderedDict)
+            harvester_runner = CsvHarvesterRunner(self.uploader, hp, self.config, self.test_logger)
+
+        child = next(filter(lambda x: x['name'] == 'child', harvester_runner.db_objects))
+        grandchild = next(filter(lambda x: x['name'] == 'grandchild', harvester_runner.db_objects))
+        greatgrandchild = next(filter(lambda x: x['name'] == 'greatgrandchild', harvester_runner.db_objects))
+        secondcousin = next(filter(lambda x: x['name'] == 'secondcousin', harvester_runner.db_objects))
+        # child and grandchild should list test_table as a dependency, but secondcousing should not
+        self.assertTrue('test_table' in child.get('dependencies'))
+        self.assertTrue('test_table' in grandchild.get('dependencies'))
+        self.assertTrue('test_table' in greatgrandchild.get('dependencies'))
+        self.assertFalse('test_table' in secondcousin.get('dependencies'))
+        # secondcousin and greatgrandchild should also have cousin as a dependency
+        self.assertIn('cousin', secondcousin.get('dependencies'))
+        self.assertIn('cousin', greatgrandchild.get('dependencies'))
+
     def test_build_runsheet(self):
         with open(GOOD_HARVEST_PARAMS) as f:
-            hp = json.load(f)
+            hp = json.load(f, object_pairs_hook=WriteOnceOrderedDict)
             harvester_runner = CsvHarvesterRunner(self.uploader, hp, self.config, self.test_logger)
 
         collection = get_csv_harvest_collection()
-        harvester_runner.pipeline_files = collection
-        rs_size = len(list(x for x in
-                           map(harvester_runner.build_runsheet, harvester_runner.params.get('db_objects')) if x))
+        for c in collection:
+            harvester_runner.build_runsheet(c)
 
-        # Runsheet size should be less than harvest_params.db_objects but greater than 0
-        self.assertLess(rs_size, len(harvester_runner.params.get('db_objects')))
-        self.assertGreater(rs_size, 0)
+        # Runsheet should only include test_table and test_view
+        included_objects = [o.get('name')
+                            for o in harvester_runner.db_objects
+                            if o.get('include')]
+        self.assertEqual(included_objects, ['test_table', 'test_view'])
+
+    def test_build_runsheet_recursive(self):
+        with open(RECURSIVE_HARVEST_PARAMS) as f:
+            hp = json.load(f, object_pairs_hook=WriteOnceOrderedDict)
+            harvester_runner = CsvHarvesterRunner(self.uploader, hp, self.config, self.test_logger)
+
+        collection = get_csv_harvest_collection()
+        for c in collection:
+            harvester_runner.build_runsheet(c)
+
+        # Runsheet should only include test_table and its dependents
+        included_objects = [o.get('name')
+                            for o in harvester_runner.db_objects
+                            if o.get('include')]
+        self.assertEqual(included_objects, ['test_table', 'child', 'grandchild', 'greatgrandchild'])
 
     @patch('aodncore.pipeline.steps.harvest.GeonetworkMetadataHandler')
     @patch('aodncore.pipeline.steps.harvest.Geonetwork')
@@ -669,7 +704,7 @@ class TestCsvHarvesterRunner(BaseTestCase):
         mock_db.return_value.compare_schemas.return_value = True
 
         with open(GOOD_HARVEST_PARAMS) as f:
-            hp = json.load(f)
+            hp = json.load(f, object_pairs_hook=WriteOnceOrderedDict)
         collection = get_csv_harvest_collection()
         harvester_runner = CsvHarvesterRunner(self.uploader, hp, dummy_config(), self.test_logger)
 
@@ -685,7 +720,7 @@ class TestCsvHarvesterRunner(BaseTestCase):
         mock_db.return_value.compare_schemas.return_value = True
 
         with open(BAD_HARVEST_PARAMS) as f:
-            hp = json.load(f)
+            hp = json.load(f, object_pairs_hook=WriteOnceOrderedDict)
         collection = get_csv_harvest_collection()
         harvester_runner = CsvHarvesterRunner(self.uploader, hp, dummy_config(), self.test_logger)
 
@@ -697,7 +732,7 @@ class TestCsvHarvesterRunner(BaseTestCase):
         mock_db.return_value.compare_schemas.return_value = True
 
         with open(INCOMPLETE_HARVEST_PARAMS) as f:
-            hp = json.load(f)
+            hp = json.load(f, object_pairs_hook=WriteOnceOrderedDict)
         collection = get_csv_harvest_collection(additional_files=[ANOTHER_CSV])
         harvester_runner = CsvHarvesterRunner(self.uploader, hp, dummy_config(), self.test_logger)
 
@@ -709,7 +744,7 @@ class TestCsvHarvesterRunner(BaseTestCase):
         mock_db.return_value.compare_schemas.return_value = True
 
         with open(GOOD_HARVEST_PARAMS) as f:
-            hp = json.load(f)
+            hp = json.load(f, object_pairs_hook=WriteOnceOrderedDict)
         collection = get_csv_harvest_collection(additional_files=[ANOTHER_CSV])
         harvester_runner = CsvHarvesterRunner(self.uploader, hp, dummy_config(), self.test_logger)
 
@@ -736,7 +771,7 @@ class TestCsvHarvesterRunner(BaseTestCase):
         mock_db.return_value.compare_schemas.return_value = True
 
         with open(GOOD_HARVEST_PARAMS) as f:
-            hp = json.load(f)
+            hp = json.load(f, object_pairs_hook=WriteOnceOrderedDict)
         collection = get_csv_harvest_collection(with_store=True)
         harvester_runner = CsvHarvesterRunner(self.uploader, hp, dummy_config(), self.test_logger)
 

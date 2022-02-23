@@ -1,0 +1,33 @@
+{
+    "db_schema": "conn",
+    "db_objects": [
+        {
+            "name": "test_table",
+            "type": "table"
+        },
+        {
+            "name": "child",
+            "type": "materialized view",
+            "dependencies": ["test_table"]
+        },
+        {
+            "name": "grandchild",
+            "type": "materialized view",
+            "dependencies": ["child"]
+        },
+        {
+            "name": "cousin",
+            "type": "table"
+        },
+        {
+            "name": "secondcousin",
+            "type": "materialized view",
+            "dependencies": ["cousin"]
+        },
+        {
+            "name": "greatgrandchild",
+            "type": "materialized view",
+            "dependencies": ["grandchild","secondcousin"]
+        }
+    ]
+}
