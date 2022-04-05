@@ -1,4 +1,4 @@
-## AODN Core Pipeline
+# AODN Core Pipeline
 
 The `aodncore` package provides the core & generic functionality for all data ingestion pipelines at the AODN. This can be customised and extended for specific data-streams in the [`aodndata`](https://github.com/aodn/python-aodndata) package.
 
@@ -8,3 +8,5 @@ The package provides the base class for each pipeline handler, aodncore.pipeline
 [![coverage](https://codecov.io/gh/aodn/python-aodncore/branch/master/graph/badge.svg)](https://codecov.io/gh/aodn/python-aodncore)
 
 Project documentation is hosted at: https://aodn.github.io/python-aodncore/index.html
+## Licensing
+This project is licensed under the terms of the GNU GPLv3 license.
