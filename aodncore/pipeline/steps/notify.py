@@ -277,7 +277,12 @@ class EmailNotifyRunner(BaseNotifyRunner):
         return message
 
     def _send(self, recipient_addresses, message):
-        smtp_server = smtplib.SMTP(timeout=60)
+        try:
+            smtp_server = smtplib.SMTP(host=self._config.pipeline_config['mail']['smtp_server'],
+                                       port=self._config.pipeline_config['mail'].get('smtp_port', 587),
+                                       timeout=60)
+        except Exception as e:
+            self._logger.warning("Exception thrown when instantiating connection. {e}".format(e=format_exception(e)))
         sendmail_result = None
         try:
             smtp_server.connect(self._config.pipeline_config['mail']['smtp_server'],
