@@ -277,7 +277,9 @@ class EmailNotifyRunner(BaseNotifyRunner):
         return message
 
     def _send(self, recipient_addresses, message):
-        smtp_server = smtplib.SMTP(timeout=60)
+        smtp_server = smtplib.SMTP(host=self._config.pipeline_config['mail']['smtp_server'],
+                                   port=self._config.pipeline_config['mail'].get('smtp_port', 587),
+                                   timeout=60)
         sendmail_result = None
         try:
             smtp_server.connect(self._config.pipeline_config['mail']['smtp_server'],
