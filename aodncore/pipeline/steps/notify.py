@@ -291,8 +291,6 @@ class EmailNotifyRunner(BaseNotifyRunner):
         smtp_server = smtp_server_init(host, port, timeout)
         sendmail_result = None
         try:
-            smtp_server.connect(self._config.pipeline_config['mail']['smtp_server'],
-                                port=self._config.pipeline_config['mail'].get('smtp_port', 587))
             if self._config.pipeline_config['mail'].get('smtp_tls', True):
                 smtp_server.starttls()
             smtp_server.login(self._config.pipeline_config['mail']['smtp_user'],
