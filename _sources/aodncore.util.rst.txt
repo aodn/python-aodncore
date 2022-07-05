@@ -5,6 +5,7 @@ Subpackages
 -----------
 
 .. toctree::
+   :maxdepth: 4
 
    aodncore.util.external
 
@@ -50,7 +51,6 @@ aodncore.util.wfs module
    :members:
    :undoc-members:
    :show-inheritance:
-
 
 Module contents
 ---------------

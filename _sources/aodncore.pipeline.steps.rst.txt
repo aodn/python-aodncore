@@ -52,7 +52,6 @@ aodncore.pipeline.steps.store module
    :undoc-members:
    :show-inheritance:
 
-
 Module contents
 ---------------
 

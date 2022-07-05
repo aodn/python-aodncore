@@ -5,6 +5,7 @@ Subpackages
 -----------
 
 .. toctree::
+   :maxdepth: 4
 
    aodncore.testlib.conf
 
@@ -42,7 +43,6 @@ aodncore.testlib.testutil module
    :members:
    :undoc-members:
    :show-inheritance:
-
 
 Module contents
 ---------------

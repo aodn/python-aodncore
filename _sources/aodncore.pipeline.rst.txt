@@ -5,6 +5,7 @@ Subpackages
 -----------
 
 .. toctree::
+   :maxdepth: 4
 
    aodncore.pipeline.steps
    aodncore.pipeline.templates
@@ -147,7 +148,6 @@ aodncore.pipeline.watchservice module
    :members:
    :undoc-members:
    :show-inheritance:
-
 
 Module contents
 ---------------

@@ -5,6 +5,7 @@ Subpackages
 -----------
 
 .. toctree::
+   :maxdepth: 4
 
    aodncore.common
    aodncore.pipeline
@@ -21,7 +22,6 @@ aodncore.version module
    :members:
    :undoc-members:
    :show-inheritance:
-
 
 Module contents
 ---------------
