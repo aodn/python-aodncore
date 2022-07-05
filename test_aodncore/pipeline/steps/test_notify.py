@@ -4,7 +4,8 @@ import socket
 from unittest.mock import MagicMock, patch
 from aodncore.pipeline import NotificationRecipientType, PipelineFile, PipelineFileCollection
 from aodncore.pipeline.steps.notify import (get_child_notify_runner, BaseNotifyRunner, EmailNotifyRunner,
-                                            LogFailuresNotifyRunner, NotifyList, NotificationRecipient, SnsNotifyRunner)
+                                            LogFailuresNotifyRunner, NotifyList, NotificationRecipient, SnsNotifyRunner,
+                                            smtp_server_init)
 from aodncore.testlib import BaseTestCase
 
 TESTDATA_DIR = os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(__file__))), 'testdata')
@@ -102,20 +103,11 @@ class TestEmailNotifyRunner(BaseTestCase):
         self.assertIsNotNone(recipient.error)
         self.assertIsInstance(self.email_runner.error, smtplib.SMTPException)
 
-    @patch('aodncore.pipeline.steps.notify.smtplib.SMTP')
-    @patch('aodncore.pipeline.steps.notify.TemplateRenderer')
-    def test_invalid_server(self, mock_templaterenderer, mock_smtp):
-        mock_templaterenderer.return_value.render.return_value = 'DUMMY EMAIL BODY'
-        mock_smtp.return_value.connect.side_effect = socket.gaierror
-
-        recipient = NotificationRecipient.from_string('email:invalid_email')
-        self.notify_list.add(recipient)
-        self.email_runner.run(self.notify_list)
-
-        mock_smtp.return_value.sendmail.assert_not_called()
-        self.assertFalse(recipient.notification_succeeded)
-        self.assertIsNotNone(recipient.error)
-        self.assertIsInstance(self.email_runner.error, socket.gaierror)
+    def test_invalid_server(self):
+        host = 'invalid_host'
+        port = 578
+        timeout = 60
+        self.assertIsInstance(smtp_server_init(host, port, timeout), socket.gaierror)
 
     @patch('aodncore.pipeline.steps.notify.smtplib.SMTP')
     @patch('aodncore.pipeline.steps.notify.TemplateRenderer')
