@@ -7,7 +7,7 @@ ENV TZ=Australia/Hobart
 ENV LC_ALL C.UTF-8
 ENV LANG C.UTF-8
 ENV PATH /home/builder/.local/bin:$PATH
-ENV PYTHON_VERSION 3.5.2
+ENV PYTHON_VERSION 3.8.13
 
 RUN apt-get update && \
     apt-get install -y software-properties-common && \
@@ -48,7 +48,7 @@ RUN set -ex \
     && pyenv rehash \
     && chmod -R a+w $PYENV_ROOT/shims
 
-RUN pip install --upgrade pip==20.3.4 setuptools==50.3.2
+RUN pip install --upgrade pip==22.1.2 setuptools==63.1.0
 
 RUN pip install \
     Cython==0.29 \    
