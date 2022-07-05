@@ -15,11 +15,6 @@ RUN apt-get update && \
 
 RUN add-apt-repository ppa:rael-gc/rvm && apt-get update
 
-RUN if [ X"$PYTHON_VERSION" = X"3.5.2" ]; \
-        then apt-get install -y libssl1.0-dev; \
-        else apt-get install -y  libssl-dev; \
-    fi
-
 RUN apt-get install -y --no-install-recommends \
     build-essential \
     ca-certificates \
@@ -29,11 +24,10 @@ RUN apt-get install -y --no-install-recommends \
     python3-dev \
     wget \
     libffi-dev \
-    # Pyenv pre-requisites
-    make zlib1g-dev libbz2-dev libreadline-dev \
-    libsqlite3-dev wget curl llvm libncurses5-dev \
-    libncursesw5-dev xz-utils tk-dev libffi-dev \
-    liblzma-dev python-openssl \
+    # Pyenv pre-requisites (from https://github.com/pyenv/pyenv/wiki#suggested-build-environment)
+    make build-essential libssl-dev zlib1g-dev \
+    libbz2-dev libreadline-dev libsqlite3-dev wget curl llvm \
+    libncursesw5-dev xz-utils tk-dev libxml2-dev libxmlsec1-dev libffi-dev liblzma-dev \
     && rm -rf /var/lib/apt/lists/*
 
 # Set-up necessary Env vars for PyEnv
