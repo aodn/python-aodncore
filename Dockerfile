@@ -48,15 +48,14 @@ RUN set -ex \
     && pyenv rehash \
     && chmod -R a+w $PYENV_ROOT/shims
 
-RUN pip install --upgrade pip==22.1.2 setuptools==63.1.0
+RUN pip install --upgrade pip==22.1.2 setuptools==63.1.0 wheel
 
 RUN pip install \
-    Cython==0.29 \    
-    bump2version==0.5.10 \
-    sphinx==2.2.2 \
-    sphinx_rtd_theme==0.4.3 \
-    numpy \
-    wheel
+    Cython==0.29.30 \
+    bump2version==1.0.1 \
+    sphinx==5.0.2 \
+    sphinx_rtd_theme==1.0.0 \
+    numpy==1.23.0
 
 RUN useradd --create-home --no-log-init --shell /bin/bash --uid $BUILDER_UID builder
 
