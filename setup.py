@@ -21,6 +21,7 @@ INSTALL_REQUIRES = [
 
 TESTS_REQUIRE = [
     'pytest',
+    'setuptools_scm',
     'testcontainers[postgresql]'
 ]
 
