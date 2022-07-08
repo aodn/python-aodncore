@@ -115,3 +115,5 @@ ENV/
 !/sphinx/modules.rst
 !/sphinx/quickstartdoc.rst
 !/sphinx/userdoc.rst
+
+.vscode
