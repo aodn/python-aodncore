@@ -49,7 +49,8 @@ RUN pip install \
     bump2version==1.0.1 \
     sphinx==5.0.2 \
     sphinx_rtd_theme==1.0.0 \
-    numpy==1.23.0
+    numpy==1.23.0 \
+    setuptools-scm==7.0.4
 
 RUN useradd --create-home --no-log-init --shell /bin/bash --uid $BUILDER_UID builder
 
