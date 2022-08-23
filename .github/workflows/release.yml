@@ -5,6 +5,9 @@ on:
     types:
       - created
 
+#on:
+#  push
+
 jobs:
   release:
     name: Build wheels on ${{ matrix.os }}
@@ -22,6 +25,12 @@ jobs:
         run: python -m pip install build --user
       - name: Build wheels
         run: python -m build --outdir wheels
+
+      - name: "Build Changelog"
+        id: build_changelog
+        uses: mikepenz/release-changelog-builder-action@{latest-release}
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Release
         uses: softprops/action-gh-release@v1
