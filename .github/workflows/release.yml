@@ -33,3 +33,4 @@ jobs:
         uses: softprops/action-gh-release@v1
         with:
           files: wheels/*.whl
+          body: ${{steps.github_release.outputs.changelog}}
