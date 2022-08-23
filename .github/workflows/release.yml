@@ -29,8 +29,8 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Release
-        uses: softprops/action-gh-release@v1
+      - name: Update Release
+        uses: mikepenz/action-gh-release@v0.2.0-a03
         with:
           files: wheels/*.whl
           body: ${{ steps.build_changelog.outputs.changelog }}
