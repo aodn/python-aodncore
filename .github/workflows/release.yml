@@ -1,9 +1,9 @@
-name: Build
+name: Release
 
 on:
-  push:
-    tags:
-      - "v*.*.*"
+  release:
+    types:
+      - created
 
 jobs:
   release:
@@ -15,20 +15,15 @@ jobs:
 
     steps:
       - uses: actions/checkout@v3
-
+        with:
+          fetch-depth: 0
       - uses: actions/setup-python@v3
-
-      - name: Fetch tags
-        run: git fetch --prune --unshallow --tags
-
       - name: Install build tools
         run: python -m pip install build --user
-
       - name: Build wheels
         run: python -m build --outdir wheels
 
       - name: Release
         uses: softprops/action-gh-release@v1
-        if: startsWith(github.ref, 'refs/tags/')
         with:
           files: wheels/*.whl
