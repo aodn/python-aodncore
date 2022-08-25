@@ -68,14 +68,15 @@ jobs:
   copy_artifact_rc:
     name: copy wheel to rc folder
     runs-on: ubuntu-latest
+    environment: 'rc'
     needs: build_and_publish
     steps:
-      - name: wait for approval
-        uses: trstringer/manual-approval@v1
-        if: ${{ !env.ACT }}
-        with:
-          secret: ${{ github.TOKEN }}
-          approvers: digorgonzola
+#      - name: wait for approval
+#        uses: trstringer/manual-approval@v1
+#        if: ${{ !env.ACT }}
+#        with:
+#          secret: ${{ github.TOKEN }}
+#          approvers: digorgonzola
 
       - uses: unfor19/install-aws-cli-action@master
         if: ${{ env.ACT }}
@@ -99,16 +100,17 @@ jobs:
   copy_artifact_prod:
     name: copy wheel to prod folder
     runs-on: ubuntu-latest
+    environment: 'prod'
     needs:
       - build_and_publish
       - copy_artifact_rc
     steps:
-      - name: wait for approval
-        uses: trstringer/manual-approval@v1
-        if: ${{ !env.ACT }}
-        with:
-          secret: ${{ github.TOKEN }}
-          approvers: digorgonzola
+#      - name: wait for approval
+#        uses: trstringer/manual-approval@v1
+#        if: ${{ !env.ACT }}
+#        with:
+#          secret: ${{ github.TOKEN }}
+#          approvers: digorgonzola
 
       - uses: unfor19/install-aws-cli-action@master
         if: ${{ env.ACT }}
