@@ -94,7 +94,7 @@ jobs:
         run: |
           aws s3 cp \
           s3://${{ secrets.AWS_ARTIFACT_BUCKET }}/releases/python-aodncore/${{ needs.build_and_publish.outputs.wheel_file }} \
-          s3://imos-artifacts-test/promoted/python-aodncore/rc/
+          s3://${{ secrets.AWS_ARTIFACT_BUCKET }}/promoted/python-aodncore/rc/
 
   copy_artifact_prod:
     name: copy wheel to prod folder
@@ -127,4 +127,4 @@ jobs:
         run: |
           aws s3 cp \
           s3://${{ secrets.AWS_ARTIFACT_BUCKET }}/releases/python-aodncore/${{ needs.build_and_publish.outputs.wheel_file }} \
-          s3://imos-artifacts-test/promoted/python-aodncore/prod/
+          s3://${{ secrets.AWS_ARTIFACT_BUCKET }}/promoted/python-aodncore/prod/
