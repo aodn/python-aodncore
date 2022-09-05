@@ -38,7 +38,7 @@ pipeline {
                 //}
                 stage('package') {
                     steps {
-                        sh 'python setup.py bdist_wheel'
+                        sh 'python -m build -w'
                     }
                 }
 		// Skip generate docs stage due to error. To be resolved later. See backlog item #3414 
