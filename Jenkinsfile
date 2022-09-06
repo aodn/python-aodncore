@@ -41,7 +41,6 @@ pipeline {
                         sh 'python -m build -w'
                     }
                 }
-		// Skip generate docs stage due to error. To be resolved later. See backlog item #3414 
                 stage('generate_docs') {
                     steps {
                         dir('sphinx') {
