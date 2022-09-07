@@ -21,7 +21,7 @@ from .steps import (get_check_runner, get_harvester_runner, get_notify_runner, g
 from ..util import (ensure_regex_list, ensure_writeonceordereddict, format_exception,
                     get_file_checksum, iter_public_attributes, lazyproperty, matches_regexes, merge_dicts,
                     validate_relative_path_attr, TemporaryDirectory, WfsBroker, DEFAULT_WFS_VERSION)
-from ..version import __version__ as _aodncore_version
+from aodncore import __version__ as _aodncore_version
 
 __all__ = [
     'HandlerBase'
