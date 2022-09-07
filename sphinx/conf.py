@@ -20,7 +20,7 @@ import os
 import sys
 
 sys.path.insert(0, os.path.abspath('..'))
-import aodncore._version
+from aodncore import __version__ as _aodncore_version
 
 # -- General configuration ------------------------------------------------
 
@@ -58,7 +58,7 @@ author = u'AODN'
 #
 
 # The full version, including alpha/beta/rc tags.
-release = aodncore._version.__version__
+release = _aodncore_version
 
 # The short X.Y version.
 version = '.'.join(release.split('.')[:2])
