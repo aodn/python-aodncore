@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>aodncore.common.exceptions &mdash; aodncore 1.4.2 documentation</title>
+  <title>aodncore.util.ff &mdash; aodncore 1.4.2 documentation</title>
       <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
   <!--[if lt IE 9]>
@@ -76,7 +76,7 @@
   <ul class="wy-breadcrumbs">
       <li><a href="../../../index.html" class="icon icon-home"></a> &raquo;</li>
           <li><a href="../../index.html">Module code</a> &raquo;</li>
-      <li>aodncore.common.exceptions</li>
+      <li>aodncore.util.ff</li>
       <li class="wy-breadcrumbs-aside">
       </li>
   </ul>
@@ -85,24 +85,50 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
              
-  <h1>Source code for aodncore.common.exceptions</h1><div class="highlight"><pre>
-<span></span><span class="sd">&quot;&quot;&quot;This module contains base exceptions for the :py:mod:`aodncore` package.</span>
+  <h1>Source code for aodncore.util.ff</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;This module provides utility functions specifically related to frictionless framework / tableschema.</span>
 <span class="sd">&quot;&quot;&quot;</span>
 
+<span class="kn">from</span> <span class="nn">tableschema</span> <span class="kn">import</span> <span class="n">Schema</span>
+<span class="kn">from</span> <span class="nn">..pipeline.exceptions</span> <span class="kn">import</span> <span class="n">InvalidSchemaError</span>
+
 <span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span>
-    <span class="s1">&#39;AodnBaseError&#39;</span><span class="p">,</span>
-    <span class="s1">&#39;SystemCommandFailedError&#39;</span>
+    <span class="s1">&#39;get_tableschema_descriptor&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;get_field_type&#39;</span>
 <span class="p">]</span>
 
 
-<div class="viewcode-block" id="AodnBaseError"><a class="viewcode-back" href="../../../aodncore.common.html#aodncore.common.exceptions.AodnBaseError">[docs]</a><span class="k">class</span> <span class="nc">AodnBaseError</span><span class="p">(</span><span class="ne">Exception</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Base class for *all* exceptions</span>
+<div class="viewcode-block" id="get_tableschema_descriptor"><a class="viewcode-back" href="../../../aodncore.util.html#aodncore.util.ff.get_tableschema_descriptor">[docs]</a><span class="k">def</span> <span class="nf">get_tableschema_descriptor</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="n">name</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Convenience function to return a valid tableschema definition.</span>
+
+<span class="sd">    :param obj: A dict that is either the desired object or the parent of the desired object</span>
+<span class="sd">    :param name: A string containing name of the nested object (eg. &#39;schema&#39;)</span>
+<span class="sd">    :return: A valid tableschema definition</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">pass</span></div>
+    <span class="n">s</span> <span class="o">=</span> <span class="n">Schema</span><span class="p">(</span><span class="n">obj</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">obj</span><span class="p">))</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">s</span><span class="o">.</span><span class="n">valid</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="n">InvalidSchemaError</span><span class="p">(</span><span class="s1">&#39;Schema definition does not meet the tableschema standard&#39;</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">s</span><span class="o">.</span><span class="n">descriptor</span></div>
 
 
-<div class="viewcode-block" id="SystemCommandFailedError"><a class="viewcode-back" href="../../../aodncore.common.html#aodncore.common.exceptions.SystemCommandFailedError">[docs]</a><span class="k">class</span> <span class="nc">SystemCommandFailedError</span><span class="p">(</span><span class="n">AodnBaseError</span><span class="p">):</span>
-    <span class="k">pass</span></div>
+<div class="viewcode-block" id="get_field_type"><a class="viewcode-back" href="../../../aodncore.util.html#aodncore.util.ff.get_field_type">[docs]</a><span class="k">def</span> <span class="nf">get_field_type</span><span class="p">(</span><span class="n">field</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Find a field by name in translation table and return associated field type.</span>
+
+<span class="sd">    :param field: A string containing the tableschema definition field type.</span>
+<span class="sd">    :return: A string containing the associated postgresql field type if different</span>
+<span class="sd">        - otherwise the passed in field param.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">translations</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="s1">&#39;integer&#39;</span><span class="p">:</span> <span class="s1">&#39;int&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;string&#39;</span><span class="p">:</span> <span class="s1">&#39;varchar&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;any&#39;</span><span class="p">:</span> <span class="s1">&#39;varchar&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;number&#39;</span><span class="p">:</span> <span class="s1">&#39;numeric&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;datetime&#39;</span><span class="p">:</span> <span class="s1">&#39;timestamp&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;date&#39;</span><span class="p">:</span> <span class="s1">&#39;date&#39;</span>
+    <span class="p">}</span>
+    <span class="k">return</span> <span class="n">translations</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">field</span><span class="p">,</span> <span class="n">field</span><span class="p">)</span></div>
+
 </pre></div>
 
            </div>

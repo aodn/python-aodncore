@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>aodncore.testlib package &mdash; aodncore 0.0.0 documentation</title>
+  <title>aodncore.testlib package &mdash; aodncore 1.4.2 documentation</title>
       <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
   <!--[if lt IE 9]>
@@ -31,7 +31,7 @@
             <a href="index.html" class="icon icon-home"> aodncore
           </a>
               <div class="version">
-                0.0.0
+                1.4
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
@@ -70,8 +70,6 @@
 <li class="toctree-l4"><a class="reference internal" href="aodncore.util.html">aodncore.util package</a></li>
 </ul>
 </li>
-<li class="toctree-l3"><a class="reference internal" href="aodncore.html#submodules">Submodules</a></li>
-<li class="toctree-l3"><a class="reference internal" href="aodncore.html#module-aodncore.version">aodncore.version module</a></li>
 <li class="toctree-l3"><a class="reference internal" href="aodncore.html#module-aodncore">Module contents</a></li>
 </ul>
 </li>
@@ -115,20 +113,796 @@
 <section id="submodules">
 <h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this heading"></a></h2>
 </section>
-<section id="aodncore-testlib-basetest-module">
-<h2>aodncore.testlib.basetest module<a class="headerlink" href="#aodncore-testlib-basetest-module" title="Permalink to this heading"></a></h2>
+<section id="module-aodncore.testlib.basetest">
+<span id="aodncore-testlib-basetest-module"></span><h2>aodncore.testlib.basetest module<a class="headerlink" href="#module-aodncore.testlib.basetest" title="Permalink to this heading"></a></h2>
+<dl class="py class">
+<dt class="sig sig-object py" id="aodncore.testlib.basetest.BaseTestCase">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">aodncore.testlib.basetest.</span></span><span class="sig-name descname"><span class="pre">BaseTestCase</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">methodName</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'runTest'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/aodncore/testlib/basetest.html#BaseTestCase"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#aodncore.testlib.basetest.BaseTestCase" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">TestCase</span></code></p>
+<dl class="py method">
+<dt class="sig sig-object py" id="aodncore.testlib.basetest.BaseTestCase.assertNoException">
+<span class="sig-name descname"><span class="pre">assertNoException</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">callableObj</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/aodncore/testlib/basetest.html#BaseTestCase.assertNoException"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#aodncore.testlib.basetest.BaseTestCase.assertNoException" title="Permalink to this definition"></a></dt>
+<dd><p>Fail if any exception is raised</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>None</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="aodncore.testlib.basetest.BaseTestCase.config">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">config</span></span><a class="headerlink" href="#aodncore.testlib.basetest.BaseTestCase.config" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="aodncore.testlib.basetest.BaseTestCase.setUp">
+<span class="sig-name descname"><span class="pre">setUp</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/aodncore/testlib/basetest.html#BaseTestCase.setUp"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#aodncore.testlib.basetest.BaseTestCase.setUp" title="Permalink to this definition"></a></dt>
+<dd><p>Hook method for setting up the test fixture before exercising it.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="aodncore.testlib.basetest.BaseTestCase.tearDown">
+<span class="sig-name descname"><span class="pre">tearDown</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/aodncore/testlib/basetest.html#BaseTestCase.tearDown"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#aodncore.testlib.basetest.BaseTestCase.tearDown" title="Permalink to this definition"></a></dt>
+<dd><p>Hook method for deconstructing the test fixture after testing it.</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="aodncore.testlib.basetest.BaseTestCase.temp_dir">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">temp_dir</span></span><a class="headerlink" href="#aodncore.testlib.basetest.BaseTestCase.temp_dir" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="aodncore.testlib.basetest.BaseTestCase.temp_nc_file">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">temp_nc_file</span></span><a class="headerlink" href="#aodncore.testlib.basetest.BaseTestCase.temp_nc_file" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
 </section>
-<section id="aodncore-testlib-dummyhandler-module">
-<h2>aodncore.testlib.dummyhandler module<a class="headerlink" href="#aodncore-testlib-dummyhandler-module" title="Permalink to this heading"></a></h2>
+<section id="module-aodncore.testlib.dummyhandler">
+<span id="aodncore-testlib-dummyhandler-module"></span><h2>aodncore.testlib.dummyhandler module<a class="headerlink" href="#module-aodncore.testlib.dummyhandler" title="Permalink to this heading"></a></h2>
+<dl class="py class">
+<dt class="sig sig-object py" id="aodncore.testlib.dummyhandler.DummyHandler">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">aodncore.testlib.dummyhandler.</span></span><span class="sig-name descname"><span class="pre">DummyHandler</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/aodncore/testlib/dummyhandler.html#DummyHandler"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#aodncore.testlib.dummyhandler.DummyHandler" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="aodncore.pipeline.html#aodncore.pipeline.handlerbase.HandlerBase" title="aodncore.pipeline.handlerbase.HandlerBase"><code class="xref py py-class docutils literal notranslate"><span class="pre">HandlerBase</span></code></a></p>
+<p>This is an example handler, used for testing and also to demonstrate some of the kinds of things that each step
+might perform.</p>
+<p>Bear in mind that this inherits everything from the HandlerBase, but only some of the things are suitable to be
+overridden in this child class.</p>
+<p>Inherited instance members that will nearly always be relevant:</p>
+<ul class="simple">
+<li><dl class="simple">
+<dt>self.file_collection - the main collection of files, which is a PipelineFileCollection object whose elements</dt><dd><p>are all PipelineFile instances (see handlerlib.files to see what these are)</p>
+</dd>
+</dl>
+</li>
+<li><p>self.logger - log things!</p></li>
+</ul>
+<p>Inherited
+Things that you would typically implement here:</p>
+<ul class="simple">
+<li><p>dest_path static method to</p></li>
+<li><p>preprocess</p></li>
+<li><p>process</p></li>
+<li><p>postprocess methods</p></li>
+</ul>
+<dl class="py method">
+<dt class="sig sig-object py" id="aodncore.testlib.dummyhandler.DummyHandler.dest_path">
+<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">dest_path</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filename</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/aodncore/testlib/dummyhandler.html#DummyHandler.dest_path"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#aodncore.testlib.dummyhandler.DummyHandler.dest_path" title="Permalink to this definition"></a></dt>
+<dd><p>This method is optional, but if it is defined, it will be used to determine the destination path for a given
+input path. This could be based purely on the filename, or you could import the netcdf library and open the file
+and work it out based on the contents, or of course any other way you want to determine it
+:param filename: individual input file
+:return: destination path for the input file</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="aodncore.testlib.dummyhandler.DummyHandler.postprocess">
+<span class="sig-name descname"><span class="pre">postprocess</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/aodncore/testlib/dummyhandler.html#DummyHandler.postprocess"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#aodncore.testlib.dummyhandler.DummyHandler.postprocess" title="Permalink to this definition"></a></dt>
+<dd><p>Here you can run code that needs to run <em>after</em> the publishing step but <em>before</em> the notify step</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>None</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="aodncore.testlib.dummyhandler.DummyHandler.preprocess">
+<span class="sig-name descname"><span class="pre">preprocess</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/aodncore/testlib/dummyhandler.html#DummyHandler.preprocess"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#aodncore.testlib.dummyhandler.DummyHandler.preprocess" title="Permalink to this definition"></a></dt>
+<dd><p>Here you can run code that needs to run before the compliance checker step. This might be where you specify
+which files in the “eligible_files” list are “UPLOAD_ONLY”, or not published at all</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>None</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="aodncore.testlib.dummyhandler.DummyHandler.process">
+<span class="sig-name descname"><span class="pre">process</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/aodncore/testlib/dummyhandler.html#DummyHandler.process"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#aodncore.testlib.dummyhandler.DummyHandler.process" title="Permalink to this definition"></a></dt>
+<dd><p>Here you can run code that needs to run <em>after</em> the compliance checker step but <em>before</em> the publishing step.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>None</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
 </section>
-<section id="aodncore-testlib-handlertest-module">
-<h2>aodncore.testlib.handlertest module<a class="headerlink" href="#aodncore-testlib-handlertest-module" title="Permalink to this heading"></a></h2>
+<section id="module-aodncore.testlib.handlertest">
+<span id="aodncore-testlib-handlertest-module"></span><h2>aodncore.testlib.handlertest module<a class="headerlink" href="#module-aodncore.testlib.handlertest" title="Permalink to this heading"></a></h2>
+<dl class="py class">
+<dt class="sig sig-object py" id="aodncore.testlib.handlertest.HandlerTestCase">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">aodncore.testlib.handlertest.</span></span><span class="sig-name descname"><span class="pre">HandlerTestCase</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">methodName</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'runTest'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/aodncore/testlib/handlertest.html#HandlerTestCase"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#aodncore.testlib.handlertest.HandlerTestCase" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="#aodncore.testlib.basetest.BaseTestCase" title="aodncore.testlib.basetest.BaseTestCase"><code class="xref py py-class docutils literal notranslate"><span class="pre">BaseTestCase</span></code></a></p>
+<dl class="py method">
+<dt class="sig sig-object py" id="aodncore.testlib.handlertest.HandlerTestCase.run_handler">
+<span class="sig-name descname"><span class="pre">run_handler</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/aodncore/testlib/handlertest.html#HandlerTestCase.run_handler"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#aodncore.testlib.handlertest.HandlerTestCase.run_handler" title="Permalink to this definition"></a></dt>
+<dd><dl class="simple">
+<dt>Instantiate and run the handler class defined in self.handler_class.</dt><dd><p>Raise an AssertionError if the handler completes with any error</p>
+</dd>
+</dl>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>args</strong> – args passed directly to handler instance</p></li>
+<li><p><strong>kwargs</strong> – kwargs passed directly to handler instance</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>the handler instance</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="aodncore.testlib.handlertest.HandlerTestCase.run_handler_with_exception">
+<span class="sig-name descname"><span class="pre">run_handler_with_exception</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">expected_error</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/aodncore/testlib/handlertest.html#HandlerTestCase.run_handler_with_exception"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#aodncore.testlib.handlertest.HandlerTestCase.run_handler_with_exception" title="Permalink to this definition"></a></dt>
+<dd><dl class="simple">
+<dt>Instantiate and run the handler class defined in self.handler_class</dt><dd><p>Raise an AssertionError if the handler completes <em>without</em> the error attribute being the expected Exception
+class</p>
+</dd>
+</dl>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>expected_error</strong> – expected Exception class</p></li>
+<li><p><strong>args</strong> – args passed directly to handler instance</p></li>
+<li><p><strong>kwargs</strong> – kwargs passed directly to handler instance</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>the handler instance</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="aodncore.testlib.handlertest.HandlerTestCase.setUp">
+<span class="sig-name descname"><span class="pre">setUp</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/aodncore/testlib/handlertest.html#HandlerTestCase.setUp"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#aodncore.testlib.handlertest.HandlerTestCase.setUp" title="Permalink to this definition"></a></dt>
+<dd><p>Hook method for setting up the test fixture before exercising it.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="aodncore.testlib.handlertest.HandlerTestCase.setUpClass">
+<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">setUpClass</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/aodncore/testlib/handlertest.html#HandlerTestCase.setUpClass"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#aodncore.testlib.handlertest.HandlerTestCase.setUpClass" title="Permalink to this definition"></a></dt>
+<dd><p>Hook method for setting up class fixture before running tests in the class.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="aodncore.testlib.handlertest.HandlerTestCase.test_base">
+<span class="sig-name descname"><span class="pre">test_base</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/aodncore/testlib/handlertest.html#HandlerTestCase.test_base"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#aodncore.testlib.handlertest.HandlerTestCase.test_base" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
 </section>
-<section id="aodncore-testlib-testutil-module">
-<h2>aodncore.testlib.testutil module<a class="headerlink" href="#aodncore-testlib-testutil-module" title="Permalink to this heading"></a></h2>
+<section id="module-aodncore.testlib.testutil">
+<span id="aodncore-testlib-testutil-module"></span><h2>aodncore.testlib.testutil module<a class="headerlink" href="#module-aodncore.testlib.testutil" title="Permalink to this heading"></a></h2>
+<dl class="py class">
+<dt class="sig sig-object py" id="aodncore.testlib.testutil.NullStorageBroker">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">aodncore.testlib.testutil.</span></span><span class="sig-name descname"><span class="pre">NullStorageBroker</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">prefix</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fail</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/aodncore/testlib/testutil.html#NullStorageBroker"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#aodncore.testlib.testutil.NullStorageBroker" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">BaseStorageBroker</span></code></p>
+<dl class="py method">
+<dt class="sig sig-object py" id="aodncore.testlib.testutil.NullStorageBroker.assert_delete_call_count">
+<span class="sig-name descname"><span class="pre">assert_delete_call_count</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">count</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/aodncore/testlib/testutil.html#NullStorageBroker.assert_delete_call_count"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#aodncore.testlib.testutil.NullStorageBroker.assert_delete_call_count" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="aodncore.testlib.testutil.NullStorageBroker.assert_delete_called">
+<span class="sig-name descname"><span class="pre">assert_delete_called</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/aodncore/testlib/testutil.html#NullStorageBroker.assert_delete_called"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#aodncore.testlib.testutil.NullStorageBroker.assert_delete_called" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="aodncore.testlib.testutil.NullStorageBroker.assert_delete_not_called">
+<span class="sig-name descname"><span class="pre">assert_delete_not_called</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/aodncore/testlib/testutil.html#NullStorageBroker.assert_delete_not_called"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#aodncore.testlib.testutil.NullStorageBroker.assert_delete_not_called" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="aodncore.testlib.testutil.NullStorageBroker.assert_download_call_count">
+<span class="sig-name descname"><span class="pre">assert_download_call_count</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">count</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/aodncore/testlib/testutil.html#NullStorageBroker.assert_download_call_count"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#aodncore.testlib.testutil.NullStorageBroker.assert_download_call_count" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="aodncore.testlib.testutil.NullStorageBroker.assert_download_called">
+<span class="sig-name descname"><span class="pre">assert_download_called</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/aodncore/testlib/testutil.html#NullStorageBroker.assert_download_called"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#aodncore.testlib.testutil.NullStorageBroker.assert_download_called" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="aodncore.testlib.testutil.NullStorageBroker.assert_query_call_count">
+<span class="sig-name descname"><span class="pre">assert_query_call_count</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">count</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/aodncore/testlib/testutil.html#NullStorageBroker.assert_query_call_count"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#aodncore.testlib.testutil.NullStorageBroker.assert_query_call_count" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="aodncore.testlib.testutil.NullStorageBroker.assert_query_called">
+<span class="sig-name descname"><span class="pre">assert_query_called</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/aodncore/testlib/testutil.html#NullStorageBroker.assert_query_called"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#aodncore.testlib.testutil.NullStorageBroker.assert_query_called" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="aodncore.testlib.testutil.NullStorageBroker.assert_query_not_called">
+<span class="sig-name descname"><span class="pre">assert_query_not_called</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/aodncore/testlib/testutil.html#NullStorageBroker.assert_query_not_called"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#aodncore.testlib.testutil.NullStorageBroker.assert_query_not_called" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="aodncore.testlib.testutil.NullStorageBroker.assert_upload_call_count">
+<span class="sig-name descname"><span class="pre">assert_upload_call_count</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">count</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/aodncore/testlib/testutil.html#NullStorageBroker.assert_upload_call_count"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#aodncore.testlib.testutil.NullStorageBroker.assert_upload_call_count" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="aodncore.testlib.testutil.NullStorageBroker.assert_upload_called">
+<span class="sig-name descname"><span class="pre">assert_upload_called</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/aodncore/testlib/testutil.html#NullStorageBroker.assert_upload_called"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#aodncore.testlib.testutil.NullStorageBroker.assert_upload_called" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="aodncore.testlib.testutil.NullStorageBroker.assert_upload_not_called">
+<span class="sig-name descname"><span class="pre">assert_upload_not_called</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/aodncore/testlib/testutil.html#NullStorageBroker.assert_upload_not_called"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#aodncore.testlib.testutil.NullStorageBroker.assert_upload_not_called" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="aodncore.testlib.testutil.NullStorageBroker.delete">
+<span class="sig-name descname"><span class="pre">delete</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">pipeline_files</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">is_stored_attr</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'is_stored'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dest_path_attr</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'dest_path'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/aodncore/testlib/testutil.html#NullStorageBroker.delete"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#aodncore.testlib.testutil.NullStorageBroker.delete" title="Permalink to this definition"></a></dt>
+<dd><p>Delete the given PipelineFileCollection or PipelineFile from the storage backend</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>pipeline_files</strong> – collection to delete</p></li>
+<li><p><strong>is_stored_attr</strong> – PipelineFile attribute which will be set to True if delete is successful</p></li>
+<li><p><strong>dest_path_attr</strong> – PipelineFile attribute containing the destination path</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>None</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="aodncore.testlib.testutil.NullStorageBroker.download">
+<span class="sig-name descname"><span class="pre">download</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">remote_pipeline_files</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">local_path</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dest_path_attr</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'dest_path'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/aodncore/testlib/testutil.html#NullStorageBroker.download"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#aodncore.testlib.testutil.NullStorageBroker.download" title="Permalink to this definition"></a></dt>
+<dd><p>Download the given RemotePipelineFileCollection or RemotePipelineFile from the storage backend</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>remote_pipeline_files</strong> – collection to download</p></li>
+<li><p><strong>local_path</strong> – local path to download the files into</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>None</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="aodncore.testlib.testutil.NullStorageBroker.query">
+<span class="sig-name descname"><span class="pre">query</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">query</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">''</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/aodncore/testlib/testutil.html#NullStorageBroker.query"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#aodncore.testlib.testutil.NullStorageBroker.query" title="Permalink to this definition"></a></dt>
+<dd><p>Query the storage for existing files</p>
+<p>A trailing slash will result in a directory listing type of query, recursively listing all files underneath
+the given directory.</p>
+<p>Omitting the trailing slash will cause a prefix style query, where the results will be any path that matches the
+query <em>including</em> partial file names.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>query</strong> – S3 prefix style string (if omitted, will search with a blank prefix)</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>RemotePipelineFileCollection of files matching the prefix</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="aodncore.testlib.testutil.NullStorageBroker.upload">
+<span class="sig-name descname"><span class="pre">upload</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">pipeline_files</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">is_stored_attr</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'is_stored'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dest_path_attr</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'dest_path'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/aodncore/testlib/testutil.html#NullStorageBroker.upload"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#aodncore.testlib.testutil.NullStorageBroker.upload" title="Permalink to this definition"></a></dt>
+<dd><p>Upload the given PipelineFileCollection or PipelineFile to the storage backend</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>pipeline_files</strong> – collection to upload</p></li>
+<li><p><strong>is_stored_attr</strong> – PipelineFile attribute which will be set to True if upload is successful</p></li>
+<li><p><strong>dest_path_attr</strong> – PipelineFile attribute containing the destination path</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>None</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="aodncore.testlib.testutil.dest_path_testing">
+<span class="sig-prename descclassname"><span class="pre">aodncore.testlib.testutil.</span></span><span class="sig-name descname"><span class="pre">dest_path_testing</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filename</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/aodncore/testlib/testutil.html#dest_path_testing"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#aodncore.testlib.testutil.dest_path_testing" title="Permalink to this definition"></a></dt>
+<dd><p>Example/test function for destination path resolution</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>filename</strong> – </p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>relative path prepended with DUMMY</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="aodncore.testlib.testutil.get_nonexistent_path">
+<span class="sig-prename descclassname"><span class="pre">aodncore.testlib.testutil.</span></span><span class="sig-name descname"><span class="pre">get_nonexistent_path</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">relative</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/aodncore/testlib/testutil.html#get_nonexistent_path"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#aodncore.testlib.testutil.get_nonexistent_path" title="Permalink to this definition"></a></dt>
+<dd><p>Return a path that is guaranteed not to exist</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>string containing guaranteed non-existent path</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="aodncore.testlib.testutil.get_test_config">
+<span class="sig-prename descclassname"><span class="pre">aodncore.testlib.testutil.</span></span><span class="sig-name descname"><span class="pre">get_test_config</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">temp_dir</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/aodncore/testlib/testutil.html#get_test_config"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#aodncore.testlib.testutil.get_test_config" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="aodncore.testlib.testutil.load_runtime_patched_pipeline_config_file">
+<span class="sig-prename descclassname"><span class="pre">aodncore.testlib.testutil.</span></span><span class="sig-name descname"><span class="pre">load_runtime_patched_pipeline_config_file</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">config_file</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rel_path</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">temp_dir</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">additional_patch</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/aodncore/testlib/testutil.html#load_runtime_patched_pipeline_config_file"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#aodncore.testlib.testutil.load_runtime_patched_pipeline_config_file" title="Permalink to this definition"></a></dt>
+<dd><p>Load and update pipeline config file with dynamic runtime values (e.g. temp directories)</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>config_file</strong> – Pipeline config file to load, patch and return</p></li>
+<li><p><strong>rel_path</strong> – Path for wip_dir</p></li>
+<li><p><strong>temp_dir</strong> – temporary directory used to update values</p></li>
+<li><p><strong>additional_patch</strong> – any additional pipeline config items to patch</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>ConfigParser object patched with runtime test values</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="aodncore.testlib.testutil.make_test_file">
+<span class="sig-prename descclassname"><span class="pre">aodncore.testlib.testutil.</span></span><span class="sig-name descname"><span class="pre">make_test_file</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filename</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">attributes</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">variables</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/aodncore/testlib/testutil.html#make_test_file"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#aodncore.testlib.testutil.make_test_file" title="Permalink to this definition"></a></dt>
+<dd><p>Create a netcdf file with the given global and variable
+attributes. Variables are created as dimensionless doubles.</p>
+<p>For example this:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">make_test_file</span><span class="p">(</span><span class="n">testfile</span><span class="p">,</span>
+               <span class="p">{</span><span class="s1">&#39;title&#39;</span><span class="p">:</span> <span class="s1">&#39;test file&#39;</span><span class="p">,</span> <span class="s1">&#39;site_code&#39;</span><span class="p">:</span> <span class="s1">&#39;NRSMAI&#39;</span><span class="p">},</span>
+               <span class="n">TEMP</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;standard_name&#39;</span><span class="p">:</span> <span class="s1">&#39;sea_water_temperature&#39;</span><span class="p">},</span>
+               <span class="n">PSAL</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;standard_name&#39;</span><span class="p">:</span> <span class="s1">&#39;sea_water_salinity&#39;</span><span class="p">}</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+<p>will create (in cdl):</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">netcdf</span> <span class="n">testfile</span> <span class="p">{</span>
+<span class="n">variables</span><span class="p">:</span>
+    <span class="n">double</span> <span class="n">PSAL</span> <span class="p">;</span>
+            <span class="n">PSAL</span><span class="p">:</span><span class="n">standard_name</span> <span class="o">=</span> <span class="s2">&quot;sea_water_salinity&quot;</span> <span class="p">;</span>
+    <span class="n">double</span> <span class="n">TEMP</span> <span class="p">;</span>
+            <span class="n">TEMP</span><span class="p">:</span><span class="n">standard_name</span> <span class="o">=</span> <span class="s2">&quot;sea_water_temperature&quot;</span> <span class="p">;</span>
+
+<span class="o">//</span> <span class="k">global</span> <span class="n">attributes</span><span class="p">:</span>
+            <span class="p">:</span><span class="n">site_code</span> <span class="o">=</span> <span class="s2">&quot;NRSMAI&quot;</span> <span class="p">;</span>
+            <span class="p">:</span><span class="n">title</span> <span class="o">=</span> <span class="s2">&quot;test file&quot;</span> <span class="p">;</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="aodncore.testlib.testutil.make_zip">
+<span class="sig-prename descclassname"><span class="pre">aodncore.testlib.testutil.</span></span><span class="sig-name descname"><span class="pre">make_zip</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">temp_dir</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">file_list</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/aodncore/testlib/testutil.html#make_zip"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#aodncore.testlib.testutil.make_zip" title="Permalink to this definition"></a></dt>
+<dd><p>Create a zip file in tmp_dir containing the files listed in file_list.
+Return the full path to the zip file.</p>
+</dd></dl>
+
 </section>
-<section id="module-contents">
-<h2>Module contents<a class="headerlink" href="#module-contents" title="Permalink to this heading"></a></h2>
+<section id="module-aodncore.testlib">
+<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-aodncore.testlib" title="Permalink to this heading"></a></h2>
+<p>This package contains test “helper” code, which may also be used by other packages (e.g. aodndata).</p>
+<dl class="py class">
+<dt class="sig sig-object py" id="aodncore.testlib.BaseTestCase">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">aodncore.testlib.</span></span><span class="sig-name descname"><span class="pre">BaseTestCase</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">methodName</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'runTest'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/aodncore/testlib/basetest.html#BaseTestCase"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#aodncore.testlib.BaseTestCase" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">TestCase</span></code></p>
+<dl class="py method">
+<dt class="sig sig-object py" id="aodncore.testlib.BaseTestCase.assertNoException">
+<span class="sig-name descname"><span class="pre">assertNoException</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">callableObj</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/aodncore/testlib/basetest.html#BaseTestCase.assertNoException"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#aodncore.testlib.BaseTestCase.assertNoException" title="Permalink to this definition"></a></dt>
+<dd><p>Fail if any exception is raised</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>None</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="aodncore.testlib.BaseTestCase.config">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">config</span></span><a class="headerlink" href="#aodncore.testlib.BaseTestCase.config" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="aodncore.testlib.BaseTestCase.setUp">
+<span class="sig-name descname"><span class="pre">setUp</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/aodncore/testlib/basetest.html#BaseTestCase.setUp"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#aodncore.testlib.BaseTestCase.setUp" title="Permalink to this definition"></a></dt>
+<dd><p>Hook method for setting up the test fixture before exercising it.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="aodncore.testlib.BaseTestCase.tearDown">
+<span class="sig-name descname"><span class="pre">tearDown</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/aodncore/testlib/basetest.html#BaseTestCase.tearDown"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#aodncore.testlib.BaseTestCase.tearDown" title="Permalink to this definition"></a></dt>
+<dd><p>Hook method for deconstructing the test fixture after testing it.</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="aodncore.testlib.BaseTestCase.temp_dir">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">temp_dir</span></span><a class="headerlink" href="#aodncore.testlib.BaseTestCase.temp_dir" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="aodncore.testlib.BaseTestCase.temp_nc_file">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">temp_nc_file</span></span><a class="headerlink" href="#aodncore.testlib.BaseTestCase.temp_nc_file" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="aodncore.testlib.DummyHandler">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">aodncore.testlib.</span></span><span class="sig-name descname"><span class="pre">DummyHandler</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/aodncore/testlib/dummyhandler.html#DummyHandler"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#aodncore.testlib.DummyHandler" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="aodncore.pipeline.html#aodncore.pipeline.handlerbase.HandlerBase" title="aodncore.pipeline.handlerbase.HandlerBase"><code class="xref py py-class docutils literal notranslate"><span class="pre">HandlerBase</span></code></a></p>
+<p>This is an example handler, used for testing and also to demonstrate some of the kinds of things that each step
+might perform.</p>
+<p>Bear in mind that this inherits everything from the HandlerBase, but only some of the things are suitable to be
+overridden in this child class.</p>
+<p>Inherited instance members that will nearly always be relevant:</p>
+<ul class="simple">
+<li><dl class="simple">
+<dt>self.file_collection - the main collection of files, which is a PipelineFileCollection object whose elements</dt><dd><p>are all PipelineFile instances (see handlerlib.files to see what these are)</p>
+</dd>
+</dl>
+</li>
+<li><p>self.logger - log things!</p></li>
+</ul>
+<p>Inherited
+Things that you would typically implement here:</p>
+<ul class="simple">
+<li><p>dest_path static method to</p></li>
+<li><p>preprocess</p></li>
+<li><p>process</p></li>
+<li><p>postprocess methods</p></li>
+</ul>
+<dl class="py method">
+<dt class="sig sig-object py" id="aodncore.testlib.DummyHandler.dest_path">
+<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">dest_path</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filename</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/aodncore/testlib/dummyhandler.html#DummyHandler.dest_path"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#aodncore.testlib.DummyHandler.dest_path" title="Permalink to this definition"></a></dt>
+<dd><p>This method is optional, but if it is defined, it will be used to determine the destination path for a given
+input path. This could be based purely on the filename, or you could import the netcdf library and open the file
+and work it out based on the contents, or of course any other way you want to determine it
+:param filename: individual input file
+:return: destination path for the input file</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="aodncore.testlib.DummyHandler.postprocess">
+<span class="sig-name descname"><span class="pre">postprocess</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/aodncore/testlib/dummyhandler.html#DummyHandler.postprocess"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#aodncore.testlib.DummyHandler.postprocess" title="Permalink to this definition"></a></dt>
+<dd><p>Here you can run code that needs to run <em>after</em> the publishing step but <em>before</em> the notify step</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>None</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="aodncore.testlib.DummyHandler.preprocess">
+<span class="sig-name descname"><span class="pre">preprocess</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/aodncore/testlib/dummyhandler.html#DummyHandler.preprocess"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#aodncore.testlib.DummyHandler.preprocess" title="Permalink to this definition"></a></dt>
+<dd><p>Here you can run code that needs to run before the compliance checker step. This might be where you specify
+which files in the “eligible_files” list are “UPLOAD_ONLY”, or not published at all</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>None</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="aodncore.testlib.DummyHandler.process">
+<span class="sig-name descname"><span class="pre">process</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/aodncore/testlib/dummyhandler.html#DummyHandler.process"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#aodncore.testlib.DummyHandler.process" title="Permalink to this definition"></a></dt>
+<dd><p>Here you can run code that needs to run <em>after</em> the compliance checker step but <em>before</em> the publishing step.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>None</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="aodncore.testlib.HandlerTestCase">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">aodncore.testlib.</span></span><span class="sig-name descname"><span class="pre">HandlerTestCase</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">methodName</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'runTest'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/aodncore/testlib/handlertest.html#HandlerTestCase"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#aodncore.testlib.HandlerTestCase" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="#aodncore.testlib.basetest.BaseTestCase" title="aodncore.testlib.basetest.BaseTestCase"><code class="xref py py-class docutils literal notranslate"><span class="pre">BaseTestCase</span></code></a></p>
+<dl class="py method">
+<dt class="sig sig-object py" id="aodncore.testlib.HandlerTestCase.run_handler">
+<span class="sig-name descname"><span class="pre">run_handler</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/aodncore/testlib/handlertest.html#HandlerTestCase.run_handler"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#aodncore.testlib.HandlerTestCase.run_handler" title="Permalink to this definition"></a></dt>
+<dd><dl class="simple">
+<dt>Instantiate and run the handler class defined in self.handler_class.</dt><dd><p>Raise an AssertionError if the handler completes with any error</p>
+</dd>
+</dl>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>args</strong> – args passed directly to handler instance</p></li>
+<li><p><strong>kwargs</strong> – kwargs passed directly to handler instance</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>the handler instance</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="aodncore.testlib.HandlerTestCase.run_handler_with_exception">
+<span class="sig-name descname"><span class="pre">run_handler_with_exception</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">expected_error</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/aodncore/testlib/handlertest.html#HandlerTestCase.run_handler_with_exception"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#aodncore.testlib.HandlerTestCase.run_handler_with_exception" title="Permalink to this definition"></a></dt>
+<dd><dl class="simple">
+<dt>Instantiate and run the handler class defined in self.handler_class</dt><dd><p>Raise an AssertionError if the handler completes <em>without</em> the error attribute being the expected Exception
+class</p>
+</dd>
+</dl>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>expected_error</strong> – expected Exception class</p></li>
+<li><p><strong>args</strong> – args passed directly to handler instance</p></li>
+<li><p><strong>kwargs</strong> – kwargs passed directly to handler instance</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>the handler instance</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="aodncore.testlib.HandlerTestCase.setUp">
+<span class="sig-name descname"><span class="pre">setUp</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/aodncore/testlib/handlertest.html#HandlerTestCase.setUp"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#aodncore.testlib.HandlerTestCase.setUp" title="Permalink to this definition"></a></dt>
+<dd><p>Hook method for setting up the test fixture before exercising it.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="aodncore.testlib.HandlerTestCase.setUpClass">
+<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">setUpClass</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/aodncore/testlib/handlertest.html#HandlerTestCase.setUpClass"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#aodncore.testlib.HandlerTestCase.setUpClass" title="Permalink to this definition"></a></dt>
+<dd><p>Hook method for setting up class fixture before running tests in the class.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="aodncore.testlib.HandlerTestCase.test_base">
+<span class="sig-name descname"><span class="pre">test_base</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/aodncore/testlib/handlertest.html#HandlerTestCase.test_base"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#aodncore.testlib.HandlerTestCase.test_base" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="aodncore.testlib.NullStorageBroker">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">aodncore.testlib.</span></span><span class="sig-name descname"><span class="pre">NullStorageBroker</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">prefix</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fail</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/aodncore/testlib/testutil.html#NullStorageBroker"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#aodncore.testlib.NullStorageBroker" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">BaseStorageBroker</span></code></p>
+<dl class="py method">
+<dt class="sig sig-object py" id="aodncore.testlib.NullStorageBroker.assert_delete_call_count">
+<span class="sig-name descname"><span class="pre">assert_delete_call_count</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">count</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/aodncore/testlib/testutil.html#NullStorageBroker.assert_delete_call_count"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#aodncore.testlib.NullStorageBroker.assert_delete_call_count" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="aodncore.testlib.NullStorageBroker.assert_delete_called">
+<span class="sig-name descname"><span class="pre">assert_delete_called</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/aodncore/testlib/testutil.html#NullStorageBroker.assert_delete_called"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#aodncore.testlib.NullStorageBroker.assert_delete_called" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="aodncore.testlib.NullStorageBroker.assert_delete_not_called">
+<span class="sig-name descname"><span class="pre">assert_delete_not_called</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/aodncore/testlib/testutil.html#NullStorageBroker.assert_delete_not_called"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#aodncore.testlib.NullStorageBroker.assert_delete_not_called" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="aodncore.testlib.NullStorageBroker.assert_download_call_count">
+<span class="sig-name descname"><span class="pre">assert_download_call_count</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">count</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/aodncore/testlib/testutil.html#NullStorageBroker.assert_download_call_count"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#aodncore.testlib.NullStorageBroker.assert_download_call_count" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="aodncore.testlib.NullStorageBroker.assert_download_called">
+<span class="sig-name descname"><span class="pre">assert_download_called</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/aodncore/testlib/testutil.html#NullStorageBroker.assert_download_called"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#aodncore.testlib.NullStorageBroker.assert_download_called" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="aodncore.testlib.NullStorageBroker.assert_query_call_count">
+<span class="sig-name descname"><span class="pre">assert_query_call_count</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">count</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/aodncore/testlib/testutil.html#NullStorageBroker.assert_query_call_count"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#aodncore.testlib.NullStorageBroker.assert_query_call_count" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="aodncore.testlib.NullStorageBroker.assert_query_called">
+<span class="sig-name descname"><span class="pre">assert_query_called</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/aodncore/testlib/testutil.html#NullStorageBroker.assert_query_called"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#aodncore.testlib.NullStorageBroker.assert_query_called" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="aodncore.testlib.NullStorageBroker.assert_query_not_called">
+<span class="sig-name descname"><span class="pre">assert_query_not_called</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/aodncore/testlib/testutil.html#NullStorageBroker.assert_query_not_called"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#aodncore.testlib.NullStorageBroker.assert_query_not_called" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="aodncore.testlib.NullStorageBroker.assert_upload_call_count">
+<span class="sig-name descname"><span class="pre">assert_upload_call_count</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">count</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/aodncore/testlib/testutil.html#NullStorageBroker.assert_upload_call_count"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#aodncore.testlib.NullStorageBroker.assert_upload_call_count" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="aodncore.testlib.NullStorageBroker.assert_upload_called">
+<span class="sig-name descname"><span class="pre">assert_upload_called</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/aodncore/testlib/testutil.html#NullStorageBroker.assert_upload_called"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#aodncore.testlib.NullStorageBroker.assert_upload_called" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="aodncore.testlib.NullStorageBroker.assert_upload_not_called">
+<span class="sig-name descname"><span class="pre">assert_upload_not_called</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/aodncore/testlib/testutil.html#NullStorageBroker.assert_upload_not_called"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#aodncore.testlib.NullStorageBroker.assert_upload_not_called" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="aodncore.testlib.NullStorageBroker.delete">
+<span class="sig-name descname"><span class="pre">delete</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">pipeline_files</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">is_stored_attr</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'is_stored'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dest_path_attr</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'dest_path'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/aodncore/testlib/testutil.html#NullStorageBroker.delete"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#aodncore.testlib.NullStorageBroker.delete" title="Permalink to this definition"></a></dt>
+<dd><p>Delete the given PipelineFileCollection or PipelineFile from the storage backend</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>pipeline_files</strong> – collection to delete</p></li>
+<li><p><strong>is_stored_attr</strong> – PipelineFile attribute which will be set to True if delete is successful</p></li>
+<li><p><strong>dest_path_attr</strong> – PipelineFile attribute containing the destination path</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>None</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="aodncore.testlib.NullStorageBroker.download">
+<span class="sig-name descname"><span class="pre">download</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">remote_pipeline_files</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">local_path</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dest_path_attr</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'dest_path'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/aodncore/testlib/testutil.html#NullStorageBroker.download"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#aodncore.testlib.NullStorageBroker.download" title="Permalink to this definition"></a></dt>
+<dd><p>Download the given RemotePipelineFileCollection or RemotePipelineFile from the storage backend</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>remote_pipeline_files</strong> – collection to download</p></li>
+<li><p><strong>local_path</strong> – local path to download the files into</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>None</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="aodncore.testlib.NullStorageBroker.query">
+<span class="sig-name descname"><span class="pre">query</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">query</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">''</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/aodncore/testlib/testutil.html#NullStorageBroker.query"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#aodncore.testlib.NullStorageBroker.query" title="Permalink to this definition"></a></dt>
+<dd><p>Query the storage for existing files</p>
+<p>A trailing slash will result in a directory listing type of query, recursively listing all files underneath
+the given directory.</p>
+<p>Omitting the trailing slash will cause a prefix style query, where the results will be any path that matches the
+query <em>including</em> partial file names.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>query</strong> – S3 prefix style string (if omitted, will search with a blank prefix)</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>RemotePipelineFileCollection of files matching the prefix</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="aodncore.testlib.NullStorageBroker.upload">
+<span class="sig-name descname"><span class="pre">upload</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">pipeline_files</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">is_stored_attr</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'is_stored'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dest_path_attr</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'dest_path'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/aodncore/testlib/testutil.html#NullStorageBroker.upload"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#aodncore.testlib.NullStorageBroker.upload" title="Permalink to this definition"></a></dt>
+<dd><p>Upload the given PipelineFileCollection or PipelineFile to the storage backend</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>pipeline_files</strong> – collection to upload</p></li>
+<li><p><strong>is_stored_attr</strong> – PipelineFile attribute which will be set to True if upload is successful</p></li>
+<li><p><strong>dest_path_attr</strong> – PipelineFile attribute containing the destination path</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>None</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="aodncore.testlib.dest_path_testing">
+<span class="sig-prename descclassname"><span class="pre">aodncore.testlib.</span></span><span class="sig-name descname"><span class="pre">dest_path_testing</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filename</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/aodncore/testlib/testutil.html#dest_path_testing"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#aodncore.testlib.dest_path_testing" title="Permalink to this definition"></a></dt>
+<dd><p>Example/test function for destination path resolution</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>filename</strong> – </p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>relative path prepended with DUMMY</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="aodncore.testlib.get_nonexistent_path">
+<span class="sig-prename descclassname"><span class="pre">aodncore.testlib.</span></span><span class="sig-name descname"><span class="pre">get_nonexistent_path</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">relative</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/aodncore/testlib/testutil.html#get_nonexistent_path"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#aodncore.testlib.get_nonexistent_path" title="Permalink to this definition"></a></dt>
+<dd><p>Return a path that is guaranteed not to exist</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>string containing guaranteed non-existent path</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="aodncore.testlib.get_test_config">
+<span class="sig-prename descclassname"><span class="pre">aodncore.testlib.</span></span><span class="sig-name descname"><span class="pre">get_test_config</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">temp_dir</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/aodncore/testlib/testutil.html#get_test_config"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#aodncore.testlib.get_test_config" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="aodncore.testlib.make_test_file">
+<span class="sig-prename descclassname"><span class="pre">aodncore.testlib.</span></span><span class="sig-name descname"><span class="pre">make_test_file</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filename</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">attributes</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">variables</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/aodncore/testlib/testutil.html#make_test_file"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#aodncore.testlib.make_test_file" title="Permalink to this definition"></a></dt>
+<dd><p>Create a netcdf file with the given global and variable
+attributes. Variables are created as dimensionless doubles.</p>
+<p>For example this:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">make_test_file</span><span class="p">(</span><span class="n">testfile</span><span class="p">,</span>
+               <span class="p">{</span><span class="s1">&#39;title&#39;</span><span class="p">:</span> <span class="s1">&#39;test file&#39;</span><span class="p">,</span> <span class="s1">&#39;site_code&#39;</span><span class="p">:</span> <span class="s1">&#39;NRSMAI&#39;</span><span class="p">},</span>
+               <span class="n">TEMP</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;standard_name&#39;</span><span class="p">:</span> <span class="s1">&#39;sea_water_temperature&#39;</span><span class="p">},</span>
+               <span class="n">PSAL</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;standard_name&#39;</span><span class="p">:</span> <span class="s1">&#39;sea_water_salinity&#39;</span><span class="p">}</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+<p>will create (in cdl):</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">netcdf</span> <span class="n">testfile</span> <span class="p">{</span>
+<span class="n">variables</span><span class="p">:</span>
+    <span class="n">double</span> <span class="n">PSAL</span> <span class="p">;</span>
+            <span class="n">PSAL</span><span class="p">:</span><span class="n">standard_name</span> <span class="o">=</span> <span class="s2">&quot;sea_water_salinity&quot;</span> <span class="p">;</span>
+    <span class="n">double</span> <span class="n">TEMP</span> <span class="p">;</span>
+            <span class="n">TEMP</span><span class="p">:</span><span class="n">standard_name</span> <span class="o">=</span> <span class="s2">&quot;sea_water_temperature&quot;</span> <span class="p">;</span>
+
+<span class="o">//</span> <span class="k">global</span> <span class="n">attributes</span><span class="p">:</span>
+            <span class="p">:</span><span class="n">site_code</span> <span class="o">=</span> <span class="s2">&quot;NRSMAI&quot;</span> <span class="p">;</span>
+            <span class="p">:</span><span class="n">title</span> <span class="o">=</span> <span class="s2">&quot;test file&quot;</span> <span class="p">;</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="aodncore.testlib.make_zip">
+<span class="sig-prename descclassname"><span class="pre">aodncore.testlib.</span></span><span class="sig-name descname"><span class="pre">make_zip</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">temp_dir</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">file_list</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/aodncore/testlib/testutil.html#make_zip"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#aodncore.testlib.make_zip" title="Permalink to this definition"></a></dt>
+<dd><p>Create a zip file in tmp_dir containing the files listed in file_list.
+Return the full path to the zip file.</p>
+</dd></dl>
+
 </section>
 </section>
 

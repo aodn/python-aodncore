@@ -1,0 +1,401 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>aodncore.pipeline.common &mdash; aodncore 1.4.2 documentation</title>
+      <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../../../" id="documentation_options" src="../../../_static/documentation_options.js"></script>
+        <script src="../../../_static/jquery.js"></script>
+        <script src="../../../_static/underscore.js"></script>
+        <script src="../../../_static/_sphinx_javascript_frameworks_compat.js"></script>
+        <script src="../../../_static/doctools.js"></script>
+    <script src="../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="../../../index.html" class="icon icon-home"> aodncore
+          </a>
+              <div class="version">
+                1.4
+              </div>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Quick Start Guide:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../quickstartdoc.html">Writing a <code class="xref py py-meth docutils literal notranslate"><span class="pre">dest_path()</span></code> function</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../quickstartdoc.html#overriding-default-file-actions">Overriding default file actions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../quickstartdoc.html#creating-products-during-the-handler-lifetime">Creating products during the handler lifetime</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../quickstartdoc.html#query-storage">Query Storage</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">User documentation:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../userdoc.html">Overview</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../userdoc.html#state-machine-handler-steps">State machine / handler steps</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../userdoc.html#customising-handler-behaviour">Customising handler behaviour</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../userdoc.html#attributes">Attributes</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Developer documentation:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../developerdoc.html">Overview</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Module contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../modules.html">aodncore</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">aodncore</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../index.html" class="icon icon-home"></a> &raquo;</li>
+          <li><a href="../../index.html">Module code</a> &raquo;</li>
+      <li>aodncore.pipeline.common</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for aodncore.pipeline.common</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;This module contains common &quot;types&quot; (typically enums or simple data classes) used by more than one module in the</span>
+<span class="sd">    project.</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="kn">import</span> <span class="nn">os</span>
+
+<span class="kn">from</span> <span class="nn">enum</span> <span class="kn">import</span> <span class="n">Enum</span>
+
+<span class="kn">from</span> <span class="nn">..util</span> <span class="kn">import</span> <span class="p">(</span><span class="n">classproperty</span><span class="p">,</span> <span class="n">is_gzip_file</span><span class="p">,</span> <span class="n">is_jpeg_file</span><span class="p">,</span> <span class="n">is_json_file</span><span class="p">,</span> <span class="n">is_netcdf_file</span><span class="p">,</span> <span class="n">is_nonempty_file</span><span class="p">,</span>
+                    <span class="n">is_pdf_file</span><span class="p">,</span> <span class="n">is_png_file</span><span class="p">,</span> <span class="n">is_valid_email_address</span><span class="p">,</span> <span class="n">is_tiff_file</span><span class="p">,</span> <span class="n">is_zip_file</span><span class="p">,</span> <span class="n">iter_public_attributes</span><span class="p">,</span>
+                    <span class="n">validate_membership</span><span class="p">,</span> <span class="n">validate_type</span><span class="p">)</span>
+
+<span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="s1">&#39;CheckResult&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;FileType&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;HandlerResult&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;NotificationRecipientType&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;PipelineFileCheckType&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;PipelineFilePublishType&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;validate_addition_publishtype&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;validate_deletion_publishtype&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;validate_checkresult&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;validate_checktype&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;validate_publishtype&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;validate_recipienttype&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;validate_settable_checktype&#39;</span>
+<span class="p">]</span>
+
+
+<div class="viewcode-block" id="CheckResult"><a class="viewcode-back" href="../../../aodncore.pipeline.html#aodncore.pipeline.common.CheckResult">[docs]</a><span class="k">class</span> <span class="nc">CheckResult</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Simple container class to hold a check result</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">compliant</span><span class="p">,</span> <span class="n">log</span><span class="p">,</span> <span class="n">errors</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_compliant</span> <span class="o">=</span> <span class="n">compliant</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_log</span> <span class="o">=</span> <span class="n">log</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_errors</span> <span class="o">=</span> <span class="n">errors</span>
+
+    <span class="k">def</span> <span class="fm">__iter__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">iter_public_attributes</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">compliant</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_compliant</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">log</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_log</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">errors</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_errors</span></div>
+
+
+<div class="viewcode-block" id="HandlerResult"><a class="viewcode-back" href="../../../aodncore.pipeline.html#aodncore.pipeline.common.HandlerResult">[docs]</a><span class="k">class</span> <span class="nc">HandlerResult</span><span class="p">(</span><span class="n">Enum</span><span class="p">):</span>
+    <span class="n">UNKNOWN</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="n">SUCCESS</span> <span class="o">=</span> <span class="mi">1</span>
+    <span class="n">ERROR</span> <span class="o">=</span> <span class="mi">2</span></div>
+
+
+<div class="viewcode-block" id="NotificationRecipientType"><a class="viewcode-back" href="../../../aodncore.pipeline.html#aodncore.pipeline.common.NotificationRecipientType">[docs]</a><span class="k">class</span> <span class="nc">NotificationRecipientType</span><span class="p">(</span><span class="n">Enum</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Notification recipient type</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">INVALID</span> <span class="o">=</span> <span class="p">(</span><span class="s1">&#39;invalid&#39;</span><span class="p">,</span> <span class="k">lambda</span> <span class="n">p</span><span class="p">:</span> <span class="kc">False</span><span class="p">,</span> <span class="s1">&#39;invalid protocol&#39;</span><span class="p">)</span>
+    <span class="n">EMAIL</span> <span class="o">=</span> <span class="p">(</span><span class="s1">&#39;email&#39;</span><span class="p">,</span> <span class="n">is_valid_email_address</span><span class="p">,</span> <span class="s1">&#39;invalid email address&#39;</span><span class="p">)</span>
+    <span class="n">SNS</span> <span class="o">=</span> <span class="p">(</span><span class="s1">&#39;sns&#39;</span><span class="p">,</span> <span class="k">lambda</span> <span class="n">p</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span> <span class="s1">&#39;invalid SNS topic&#39;</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">protocol</span><span class="p">,</span> <span class="n">address_validation_function</span><span class="p">,</span> <span class="n">error_string</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+
+<span class="sd">        :param protocol: protocol string used to map string representation of a protocol to an Enum element</span>
+<span class="sd">        :param address_validation_function: function used to validate the address component (must accept the address</span>
+<span class="sd">                as a parameter and return a bool representing whether it is valid for the given protocol)</span>
+<span class="sd">        :param error_string: descriptive error string used when the validation function fails (returns False)</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_protocol</span> <span class="o">=</span> <span class="n">protocol</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_address_validation_function</span> <span class="o">=</span> <span class="n">address_validation_function</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_error_string</span> <span class="o">=</span> <span class="n">error_string</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">protocol</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_protocol</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">address_validation_function</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_address_validation_function</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">error_string</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_error_string</span>
+
+<div class="viewcode-block" id="NotificationRecipientType.get_type_from_protocol"><a class="viewcode-back" href="../../../aodncore.pipeline.html#aodncore.pipeline.common.NotificationRecipientType.get_type_from_protocol">[docs]</a>    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">get_type_from_protocol</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">protocol</span><span class="p">):</span>
+        <span class="k">return</span> <span class="nb">next</span><span class="p">((</span><span class="n">t</span> <span class="k">for</span> <span class="n">t</span> <span class="ow">in</span> <span class="bp">cls</span> <span class="k">if</span> <span class="n">t</span><span class="o">.</span><span class="n">protocol</span> <span class="o">==</span> <span class="n">protocol</span><span class="p">),</span> <span class="bp">cls</span><span class="o">.</span><span class="n">INVALID</span><span class="p">)</span></div></div>
+
+
+<div class="viewcode-block" id="FileType"><a class="viewcode-back" href="../../../aodncore.pipeline.html#aodncore.pipeline.common.FileType">[docs]</a><span class="k">class</span> <span class="nc">FileType</span><span class="p">(</span><span class="n">Enum</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Represents each known file type, including extensions, mime type and validator function</span>
+
+<span class="sd">    Each enum member may have it&#39;s attributes accessed by name when required for comparisons and filtering, e.g.</span>
+
+<span class="sd">    - lookup the extension and mime-type for PNG file types in general::</span>
+
+<span class="sd">        FileType.PNG.extensions</span>
+<span class="sd">        (&#39;.png&#39;,)</span>
+
+<span class="sd">        FileType.PNG.mime_type</span>
+<span class="sd">        &#39;image/png&#39;</span>
+
+<span class="sd">    - assign a type attribute to an object, and query the type-specific values directly from the object::</span>
+
+<span class="sd">        class Object(object):</span>
+<span class="sd">            pass</span>
+
+<span class="sd">        o = Object()</span>
+<span class="sd">        o.file_type = FileType.JPEG</span>
+<span class="sd">        o.file_type.extensions</span>
+<span class="sd">        (&#39;.jpg&#39;, &#39;.jpeg&#39;)</span>
+<span class="sd">        o.file_type.mime_type</span>
+<span class="sd">        &#39;image/jpeg&#39;</span>
+
+<span class="sd">    The function referenced by validator must accept a single parameter, which is the path to file being checked, and</span>
+<span class="sd">    return True if the path represents a valid file of that type. For example, this would typically attempt to</span>
+<span class="sd">    open/parse/read the file using a corresponding library (e.g. an NC file can be opened as a valid Dataset by the</span>
+<span class="sd">    NetCDF library, a ZIP file can be read using the zipfile module etc.). If</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="vm">__slots__</span> <span class="o">=</span> <span class="p">(</span><span class="s1">&#39;extensions&#39;</span><span class="p">,</span> <span class="s1">&#39;mime_type&#39;</span><span class="p">,</span> <span class="s1">&#39;validator&#39;</span><span class="p">)</span>
+
+    <span class="n">UNKNOWN</span> <span class="o">=</span> <span class="p">((),</span> <span class="kc">None</span><span class="p">,</span> <span class="n">is_nonempty_file</span><span class="p">)</span>
+
+    <span class="n">CSV</span> <span class="o">=</span> <span class="p">((</span><span class="s1">&#39;.csv&#39;</span><span class="p">,),</span> <span class="s1">&#39;text/csv&#39;</span><span class="p">,</span> <span class="n">is_nonempty_file</span><span class="p">)</span>
+    <span class="n">GZIP</span> <span class="o">=</span> <span class="p">((</span><span class="s1">&#39;.gz&#39;</span><span class="p">,),</span> <span class="s1">&#39;application/gzip&#39;</span><span class="p">,</span> <span class="n">is_gzip_file</span><span class="p">)</span>
+    <span class="n">JPEG</span> <span class="o">=</span> <span class="p">((</span><span class="s1">&#39;.jpg&#39;</span><span class="p">,</span> <span class="s1">&#39;.jpeg&#39;</span><span class="p">),</span> <span class="s1">&#39;image/jpeg&#39;</span><span class="p">,</span> <span class="n">is_jpeg_file</span><span class="p">)</span>
+    <span class="n">PDF</span> <span class="o">=</span> <span class="p">((</span><span class="s1">&#39;.pdf&#39;</span><span class="p">,),</span> <span class="s1">&#39;application/pdf&#39;</span><span class="p">,</span> <span class="n">is_pdf_file</span><span class="p">)</span>
+    <span class="n">PNG</span> <span class="o">=</span> <span class="p">((</span><span class="s1">&#39;.png&#39;</span><span class="p">,),</span> <span class="s1">&#39;image/png&#39;</span><span class="p">,</span> <span class="n">is_png_file</span><span class="p">)</span>
+    <span class="n">ZIP</span> <span class="o">=</span> <span class="p">((</span><span class="s1">&#39;.zip&#39;</span><span class="p">,),</span> <span class="s1">&#39;application/zip&#39;</span><span class="p">,</span> <span class="n">is_zip_file</span><span class="p">)</span>
+    <span class="n">TIFF</span> <span class="o">=</span> <span class="p">((</span><span class="s1">&#39;.tif&#39;</span><span class="p">,</span> <span class="s1">&#39;.tiff&#39;</span><span class="p">),</span> <span class="s1">&#39;image/tiff&#39;</span><span class="p">,</span> <span class="n">is_tiff_file</span><span class="p">)</span>
+
+    <span class="n">NETCDF</span> <span class="o">=</span> <span class="p">((</span><span class="s1">&#39;.nc&#39;</span><span class="p">,),</span> <span class="s1">&#39;application/octet-stream&#39;</span><span class="p">,</span> <span class="n">is_netcdf_file</span><span class="p">)</span>
+    <span class="n">DIR_MANIFEST</span> <span class="o">=</span> <span class="p">((</span><span class="s1">&#39;.dir_manifest&#39;</span><span class="p">,),</span> <span class="s1">&#39;text/plain&#39;</span><span class="p">,</span> <span class="n">is_nonempty_file</span><span class="p">)</span>
+    <span class="n">JSON_MANIFEST</span> <span class="o">=</span> <span class="p">((</span><span class="s1">&#39;.json_manifest&#39;</span><span class="p">,),</span> <span class="s1">&#39;application/json&#39;</span><span class="p">,</span> <span class="n">is_json_file</span><span class="p">)</span>
+    <span class="n">MAP_MANIFEST</span> <span class="o">=</span> <span class="p">((</span><span class="s1">&#39;.map_manifest&#39;</span><span class="p">,),</span> <span class="s1">&#39;text/csv&#39;</span><span class="p">,</span> <span class="n">is_nonempty_file</span><span class="p">)</span>
+    <span class="n">RSYNC_MANIFEST</span> <span class="o">=</span> <span class="p">((</span><span class="s1">&#39;.rsync_manifest&#39;</span><span class="p">,),</span> <span class="s1">&#39;text/plain&#39;</span><span class="p">,</span> <span class="n">is_nonempty_file</span><span class="p">)</span>
+    <span class="n">SIMPLE_MANIFEST</span> <span class="o">=</span> <span class="p">((</span><span class="s1">&#39;.manifest&#39;</span><span class="p">,),</span> <span class="s1">&#39;text/plain&#39;</span><span class="p">,</span> <span class="n">is_nonempty_file</span><span class="p">)</span>
+    <span class="n">DELETE_MANIFEST</span> <span class="o">=</span> <span class="p">((</span><span class="s1">&#39;.delete_manifest&#39;</span><span class="p">,),</span> <span class="s1">&#39;text/csv&#39;</span><span class="p">,</span> <span class="n">is_nonempty_file</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">extensions</span><span class="p">,</span> <span class="n">mime_type</span><span class="p">,</span> <span class="n">validator</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">extensions</span> <span class="o">=</span> <span class="n">extensions</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">mime_type</span> <span class="o">=</span> <span class="n">mime_type</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">validator</span> <span class="o">=</span> <span class="n">validator</span>
+
+    <span class="c1"># noinspection PyTypeChecker</span>
+<div class="viewcode-block" id="FileType.get_type_from_extension"><a class="viewcode-back" href="../../../aodncore.pipeline.html#aodncore.pipeline.common.FileType.get_type_from_extension">[docs]</a>    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">get_type_from_extension</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">extension</span><span class="p">):</span>
+        <span class="k">return</span> <span class="nb">next</span><span class="p">((</span><span class="n">t</span> <span class="k">for</span> <span class="n">t</span> <span class="ow">in</span> <span class="bp">cls</span> <span class="k">if</span> <span class="n">extension</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="ow">in</span> <span class="n">t</span><span class="o">.</span><span class="n">extensions</span><span class="p">),</span> <span class="bp">cls</span><span class="o">.</span><span class="n">UNKNOWN</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="FileType.get_type_from_name"><a class="viewcode-back" href="../../../aodncore.pipeline.html#aodncore.pipeline.common.FileType.get_type_from_name">[docs]</a>    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">get_type_from_name</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">name</span><span class="p">):</span>
+        <span class="n">_</span><span class="p">,</span> <span class="n">extension</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">splitext</span><span class="p">(</span><span class="n">name</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">cls</span><span class="o">.</span><span class="n">get_type_from_extension</span><span class="p">(</span><span class="n">extension</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="FileType.is_type"><a class="viewcode-back" href="../../../aodncore.pipeline.html#aodncore.pipeline.common.FileType.is_type">[docs]</a>    <span class="k">def</span> <span class="nf">is_type</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Check whether the *type* (i.e. the information before the slash) equals the given value</span>
+
+<span class="sd">        :param value: type to compare against</span>
+<span class="sd">        :return: True if this type matches the given value, otherwise False</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">mime_type</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">return</span> <span class="kc">False</span>
+        <span class="n">type_</span><span class="p">,</span> <span class="n">subtype</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">mime_type</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;/&#39;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">type_</span> <span class="o">==</span> <span class="n">value</span></div>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">is_image_type</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Read-only boolean property indicating whether the file type instance is an image type.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">is_type</span><span class="p">(</span><span class="s1">&#39;image&#39;</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="PipelineFileCheckType"><a class="viewcode-back" href="../../../aodncore.pipeline.html#aodncore.pipeline.common.PipelineFileCheckType">[docs]</a><span class="k">class</span> <span class="nc">PipelineFileCheckType</span><span class="p">(</span><span class="n">Enum</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Each :py:class:`PipelineFile` may individually specify which checks are performed against it</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">UNSET</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="n">NO_ACTION</span> <span class="o">=</span> <span class="mi">1</span>
+    <span class="n">NONEMPTY_CHECK</span> <span class="o">=</span> <span class="mi">2</span>
+    <span class="n">FORMAT_CHECK</span> <span class="o">=</span> <span class="mi">3</span>
+    <span class="n">NC_COMPLIANCE_CHECK</span> <span class="o">=</span> <span class="mi">4</span>
+    <span class="n">TABLE_SCHEMA_CHECK</span> <span class="o">=</span> <span class="mi">5</span>
+
+    <span class="c1"># noinspection PyMethodParameters,PyTypeChecker</span>
+    <span class="nd">@classproperty</span>
+    <span class="k">def</span> <span class="nf">all_settable_types</span><span class="p">(</span><span class="bp">cls</span><span class="p">):</span>
+        <span class="k">return</span> <span class="p">{</span><span class="n">t</span> <span class="k">for</span> <span class="n">t</span> <span class="ow">in</span> <span class="bp">cls</span> <span class="k">if</span> <span class="n">t</span> <span class="o">!=</span> <span class="bp">cls</span><span class="o">.</span><span class="n">UNSET</span><span class="p">}</span>
+
+    <span class="c1"># noinspection PyMethodParameters,PyTypeChecker</span>
+    <span class="nd">@classproperty</span>
+    <span class="k">def</span> <span class="nf">all_checkable_types</span><span class="p">(</span><span class="bp">cls</span><span class="p">):</span>
+        <span class="k">return</span> <span class="p">{</span><span class="n">t</span> <span class="k">for</span> <span class="n">t</span> <span class="ow">in</span> <span class="bp">cls</span> <span class="k">if</span> <span class="n">t</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">(</span><span class="bp">cls</span><span class="o">.</span><span class="n">UNSET</span><span class="p">,</span> <span class="bp">cls</span><span class="o">.</span><span class="n">NO_ACTION</span><span class="p">)}</span></div>
+
+
+<div class="viewcode-block" id="PipelineFilePublishType"><a class="viewcode-back" href="../../../aodncore.pipeline.html#aodncore.pipeline.common.PipelineFilePublishType">[docs]</a><span class="k">class</span> <span class="nc">PipelineFilePublishType</span><span class="p">(</span><span class="n">Enum</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Each :py:class:`PipelineFile` may individually specify which combination of archive/upload/harvest actions must</span>
+<span class="sd">    occur before it is considered &quot;published&quot;</span>
+
+<span class="sd">    Enum member values are a tuple containing boolean flags used for querying/validating types, which are provided</span>
+<span class="sd">    to the :py:meth:`__init__` for each member (since confusingly, each :py:class:`Enum` member is an *instance* of this</span>
+<span class="sd">    class).</span>
+
+<span class="sd">    Each member&#39;s valid is therefore a tuple of :py:class:`bool` values representing the following flags::</span>
+
+<span class="sd">        (is_addition_type, is_deletion_type, is_archive_type, is_store_type, is_harvest_type)</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="vm">__slots__</span> <span class="o">=</span> <span class="p">(</span><span class="s1">&#39;_is_addition_type&#39;</span><span class="p">,</span> <span class="s1">&#39;_is_deletion_type&#39;</span><span class="p">,</span> <span class="s1">&#39;_is_archive_type&#39;</span><span class="p">,</span> <span class="s1">&#39;_is_store_type&#39;</span><span class="p">,</span> <span class="s1">&#39;_is_harvest_type&#39;</span><span class="p">)</span>
+
+    <span class="c1"># initial type, used as a sentinel value to denote files which haven&#39;t been assigned a type</span>
+    <span class="n">UNSET</span> <span class="o">=</span> <span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+
+    <span class="c1"># valid for both addition and deletion types</span>
+    <span class="n">NO_ACTION</span> <span class="o">=</span> <span class="p">(</span><span class="kc">True</span><span class="p">,</span> <span class="kc">True</span><span class="p">,</span> <span class="kc">False</span><span class="p">,</span> <span class="kc">False</span><span class="p">,</span> <span class="kc">False</span><span class="p">)</span>
+
+    <span class="c1"># valid addition types</span>
+    <span class="n">ARCHIVE_ONLY</span> <span class="o">=</span> <span class="p">(</span><span class="kc">True</span><span class="p">,</span> <span class="kc">False</span><span class="p">,</span> <span class="kc">True</span><span class="p">,</span> <span class="kc">False</span><span class="p">,</span> <span class="kc">False</span><span class="p">)</span>
+    <span class="n">UPLOAD_ONLY</span> <span class="o">=</span> <span class="p">(</span><span class="kc">True</span><span class="p">,</span> <span class="kc">False</span><span class="p">,</span> <span class="kc">False</span><span class="p">,</span> <span class="kc">True</span><span class="p">,</span> <span class="kc">False</span><span class="p">)</span>
+    <span class="n">HARVEST_ONLY</span> <span class="o">=</span> <span class="p">(</span><span class="kc">True</span><span class="p">,</span> <span class="kc">False</span><span class="p">,</span> <span class="kc">False</span><span class="p">,</span> <span class="kc">False</span><span class="p">,</span> <span class="kc">True</span><span class="p">)</span>
+    <span class="n">HARVEST_ARCHIVE</span> <span class="o">=</span> <span class="p">(</span><span class="kc">True</span><span class="p">,</span> <span class="kc">False</span><span class="p">,</span> <span class="kc">True</span><span class="p">,</span> <span class="kc">False</span><span class="p">,</span> <span class="kc">True</span><span class="p">)</span>
+    <span class="n">HARVEST_UPLOAD</span> <span class="o">=</span> <span class="p">(</span><span class="kc">True</span><span class="p">,</span> <span class="kc">False</span><span class="p">,</span> <span class="kc">False</span><span class="p">,</span> <span class="kc">True</span><span class="p">,</span> <span class="kc">True</span><span class="p">)</span>
+    <span class="n">HARVEST_ARCHIVE_UPLOAD</span> <span class="o">=</span> <span class="p">(</span><span class="kc">True</span><span class="p">,</span> <span class="kc">False</span><span class="p">,</span> <span class="kc">True</span><span class="p">,</span> <span class="kc">True</span><span class="p">,</span> <span class="kc">True</span><span class="p">)</span>
+
+    <span class="c1"># valid deletion types</span>
+    <span class="n">UNHARVEST_ONLY</span> <span class="o">=</span> <span class="p">(</span><span class="kc">False</span><span class="p">,</span> <span class="kc">True</span><span class="p">,</span> <span class="kc">False</span><span class="p">,</span> <span class="kc">False</span><span class="p">,</span> <span class="kc">True</span><span class="p">)</span>
+    <span class="n">DELETE_ONLY</span> <span class="o">=</span> <span class="p">(</span><span class="kc">False</span><span class="p">,</span> <span class="kc">True</span><span class="p">,</span> <span class="kc">False</span><span class="p">,</span> <span class="kc">True</span><span class="p">,</span> <span class="kc">False</span><span class="p">)</span>
+    <span class="n">DELETE_UNHARVEST</span> <span class="o">=</span> <span class="p">(</span><span class="kc">False</span><span class="p">,</span> <span class="kc">True</span><span class="p">,</span> <span class="kc">False</span><span class="p">,</span> <span class="kc">True</span><span class="p">,</span> <span class="kc">True</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">is_addition_type</span><span class="p">,</span> <span class="n">is_deletion_type</span><span class="p">,</span> <span class="n">is_archive_type</span><span class="p">,</span> <span class="n">is_store_type</span><span class="p">,</span> <span class="n">is_harvest_type</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_is_addition_type</span> <span class="o">=</span> <span class="n">is_addition_type</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_is_deletion_type</span> <span class="o">=</span> <span class="n">is_deletion_type</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_is_archive_type</span> <span class="o">=</span> <span class="n">is_archive_type</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_is_store_type</span> <span class="o">=</span> <span class="n">is_store_type</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_is_harvest_type</span> <span class="o">=</span> <span class="n">is_harvest_type</span>
+
+<div class="viewcode-block" id="PipelineFilePublishType.get_type_from_name"><a class="viewcode-back" href="../../../aodncore.pipeline.html#aodncore.pipeline.common.PipelineFilePublishType.get_type_from_name">[docs]</a>    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">get_type_from_name</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">name</span><span class="p">):</span>
+        <span class="k">return</span> <span class="nb">next</span><span class="p">((</span><span class="n">t</span> <span class="k">for</span> <span class="n">t</span> <span class="ow">in</span> <span class="bp">cls</span> <span class="k">if</span> <span class="n">name</span> <span class="o">==</span> <span class="n">t</span><span class="o">.</span><span class="n">name</span><span class="p">),</span> <span class="bp">cls</span><span class="o">.</span><span class="n">UNSET</span><span class="p">)</span></div>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">is_addition_type</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_is_addition_type</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">is_deletion_type</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_is_deletion_type</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">is_archive_type</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_is_archive_type</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">is_store_type</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_is_store_type</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">is_harvest_type</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_is_harvest_type</span>
+
+    <span class="c1"># noinspection PyMethodParameters,PyTypeChecker</span>
+    <span class="nd">@classproperty</span>
+    <span class="k">def</span> <span class="nf">all_addition_types</span><span class="p">(</span><span class="bp">cls</span><span class="p">):</span>
+        <span class="k">return</span> <span class="p">{</span><span class="n">t</span> <span class="k">for</span> <span class="n">t</span> <span class="ow">in</span> <span class="bp">cls</span> <span class="k">if</span> <span class="n">t</span><span class="o">.</span><span class="n">is_addition_type</span><span class="p">}</span>
+
+    <span class="c1"># noinspection PyMethodParameters,PyTypeChecker</span>
+    <span class="nd">@classproperty</span>
+    <span class="k">def</span> <span class="nf">all_deletion_types</span><span class="p">(</span><span class="bp">cls</span><span class="p">):</span>
+        <span class="k">return</span> <span class="p">{</span><span class="n">t</span> <span class="k">for</span> <span class="n">t</span> <span class="ow">in</span> <span class="bp">cls</span> <span class="k">if</span> <span class="n">t</span><span class="o">.</span><span class="n">is_deletion_type</span><span class="p">}</span></div>
+
+
+<span class="n">validate_addition_publishtype</span> <span class="o">=</span> <span class="n">validate_membership</span><span class="p">(</span><span class="n">PipelineFilePublishType</span><span class="o">.</span><span class="n">all_addition_types</span><span class="p">)</span>
+<span class="n">validate_checkable_checktype</span> <span class="o">=</span> <span class="n">validate_membership</span><span class="p">(</span><span class="n">PipelineFileCheckType</span><span class="o">.</span><span class="n">all_checkable_types</span><span class="p">)</span>
+<span class="n">validate_checkresult</span> <span class="o">=</span> <span class="n">validate_type</span><span class="p">(</span><span class="n">CheckResult</span><span class="p">)</span>
+<span class="n">validate_checktype</span> <span class="o">=</span> <span class="n">validate_membership</span><span class="p">(</span><span class="n">PipelineFileCheckType</span><span class="p">)</span>
+<span class="n">validate_deletion_publishtype</span> <span class="o">=</span> <span class="n">validate_membership</span><span class="p">(</span><span class="n">PipelineFilePublishType</span><span class="o">.</span><span class="n">all_deletion_types</span><span class="p">)</span>
+<span class="n">validate_recipienttype</span> <span class="o">=</span> <span class="n">validate_membership</span><span class="p">(</span><span class="n">NotificationRecipientType</span><span class="p">)</span>
+<span class="n">validate_publishtype</span> <span class="o">=</span> <span class="n">validate_membership</span><span class="p">(</span><span class="n">PipelineFilePublishType</span><span class="p">)</span>
+<span class="n">validate_settable_checktype</span> <span class="o">=</span> <span class="n">validate_membership</span><span class="p">(</span><span class="n">PipelineFileCheckType</span><span class="o">.</span><span class="n">all_settable_types</span><span class="p">)</span>
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2018, AODN.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

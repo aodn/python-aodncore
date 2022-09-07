@@ -1,0 +1,374 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>aodncore.pipeline.db &mdash; aodncore 1.4.2 documentation</title>
+      <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../../../" id="documentation_options" src="../../../_static/documentation_options.js"></script>
+        <script src="../../../_static/jquery.js"></script>
+        <script src="../../../_static/underscore.js"></script>
+        <script src="../../../_static/_sphinx_javascript_frameworks_compat.js"></script>
+        <script src="../../../_static/doctools.js"></script>
+    <script src="../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="../../../index.html" class="icon icon-home"> aodncore
+          </a>
+              <div class="version">
+                1.4
+              </div>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Quick Start Guide:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../quickstartdoc.html">Writing a <code class="xref py py-meth docutils literal notranslate"><span class="pre">dest_path()</span></code> function</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../quickstartdoc.html#overriding-default-file-actions">Overriding default file actions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../quickstartdoc.html#creating-products-during-the-handler-lifetime">Creating products during the handler lifetime</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../quickstartdoc.html#query-storage">Query Storage</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">User documentation:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../userdoc.html">Overview</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../userdoc.html#state-machine-handler-steps">State machine / handler steps</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../userdoc.html#customising-handler-behaviour">Customising handler behaviour</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../userdoc.html#attributes">Attributes</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Developer documentation:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../developerdoc.html">Overview</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Module contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../modules.html">aodncore</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">aodncore</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../index.html" class="icon icon-home"></a> &raquo;</li>
+          <li><a href="../../index.html">Module code</a> &raquo;</li>
+      <li>aodncore.pipeline.db</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for aodncore.pipeline.db</h1><div class="highlight"><pre>
+<span></span><span class="kn">import</span> <span class="nn">csv</span>
+<span class="kn">import</span> <span class="nn">psycopg2</span>
+<span class="kn">from</span> <span class="nn">psycopg2</span> <span class="kn">import</span> <span class="n">sql</span><span class="p">,</span> <span class="n">extras</span>
+<span class="kn">import</span> <span class="nn">yaml</span>
+
+<span class="kn">from</span> <span class="nn">.exceptions</span> <span class="kn">import</span> <span class="n">InvalidSQLConnectionError</span><span class="p">,</span> <span class="n">InvalidSQLTransactionError</span><span class="p">,</span> <span class="n">MissingFileError</span>
+<span class="kn">from</span> <span class="nn">..util</span> <span class="kn">import</span> <span class="n">find_file</span><span class="p">,</span> <span class="n">get_field_type</span><span class="p">,</span> <span class="n">get_tableschema_descriptor</span><span class="p">,</span> <span class="n">is_nonstring_iterable</span>
+
+<span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="s1">&#39;DatabaseInteractions&#39;</span>
+<span class="p">]</span>
+
+
+<div class="viewcode-block" id="DatabaseInteractions"><a class="viewcode-back" href="../../../aodncore.pipeline.html#aodncore.pipeline.db.DatabaseInteractions">[docs]</a><span class="k">class</span> <span class="nc">DatabaseInteractions</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Database connection object.</span>
+
+<span class="sd">    This class should be instantiated via the &#39;with DatabaseInteractions() as...&#39; method, so the __enter__ and __exit__</span>
+<span class="sd">    functions will be correctly implemented.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="c1"># private methods</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">config</span><span class="p">,</span> <span class="n">schema_base_path</span><span class="p">,</span> <span class="n">logger</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_conn</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_cur</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">config</span> <span class="o">=</span> <span class="n">config</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_logger</span> <span class="o">=</span> <span class="n">logger</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">schema_base_path</span> <span class="o">=</span> <span class="n">schema_base_path</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">status</span> <span class="o">=</span> <span class="s1">&#39;initiated&#39;</span>
+
+    <span class="k">def</span> <span class="fm">__enter__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="c1"># Call database connection method and then create a cursor</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_conn</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">__connect</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_cur</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_conn</span><span class="o">.</span><span class="n">cursor</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">status</span> <span class="o">=</span> <span class="s1">&#39;connected&#39;</span>
+        <span class="k">return</span> <span class="bp">self</span>
+
+    <span class="k">def</span> <span class="fm">__exit__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">exc_type</span><span class="p">,</span> <span class="n">exc_val</span><span class="p">,</span> <span class="n">exc_tb</span><span class="p">):</span>
+        <span class="c1"># Check for errors and roll back changes if they exist, otherwise commit changes</span>
+        <span class="c1"># Finally close the cursor and the connection</span>
+        <span class="k">if</span> <span class="n">exc_type</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Rolling back changes&quot;</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_conn</span><span class="o">.</span><span class="n">rollback</span><span class="p">()</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">status</span> <span class="o">=</span> <span class="s1">&#39;rolled_back&#39;</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Committing changes&quot;</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_conn</span><span class="o">.</span><span class="n">commit</span><span class="p">()</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">status</span> <span class="o">=</span> <span class="s1">&#39;committed&#39;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_cur</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_conn</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+
+    <span class="k">def</span> <span class="nf">__connect</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Connect to the PostgreSQL database server.</span>
+
+<span class="sd">        :return: The database connection.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">params</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">config</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="c1"># use ssl if it is enabled on the server</span>
+            <span class="k">return</span> <span class="n">psycopg2</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="n">sslmode</span><span class="o">=</span><span class="s1">&#39;prefer&#39;</span><span class="p">,</span> <span class="o">**</span><span class="n">params</span><span class="p">)</span>
+        <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">error</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">InvalidSQLConnectionError</span><span class="p">(</span><span class="n">error</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">__exec</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">statement</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Execute an SQL transaction using the instance cursor.</span>
+
+<span class="sd">        :param statement: A string containing an SQL statement or multiple statements separated by semi-colons.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_cur</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">sql</span><span class="o">.</span><span class="n">SQL</span><span class="p">(</span><span class="n">statement</span><span class="p">))</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_logger</span><span class="o">.</span><span class="n">sysinfo</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_cur</span><span class="o">.</span><span class="n">query</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_logger</span><span class="o">.</span><span class="n">sysinfo</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_cur</span><span class="o">.</span><span class="n">statusmessage</span><span class="p">)</span>
+        <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">error</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">InvalidSQLTransactionError</span><span class="p">(</span><span class="n">error</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">__query</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">statement</span><span class="p">,</span> <span class="n">many</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Execute an SQL statement using the instance cursor.</span>
+
+<span class="sd">        :param statement: A string containing an SQL statement or multiple statements separated by semi-colons.</span>
+<span class="sd">        :param many: Boolean value indicating whether to return 1 or many records.</span>
+<span class="sd">        :return: A Dict of one record (the first) if many is False, otherwise a List of Dicts containing all records</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">dict_cur</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_conn</span><span class="o">.</span><span class="n">cursor</span><span class="p">(</span><span class="n">cursor_factory</span><span class="o">=</span><span class="n">extras</span><span class="o">.</span><span class="n">DictCursor</span><span class="p">)</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">dict_cur</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">sql</span><span class="o">.</span><span class="n">SQL</span><span class="p">(</span><span class="n">statement</span><span class="p">))</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_logger</span><span class="o">.</span><span class="n">sysinfo</span><span class="p">(</span><span class="n">dict_cur</span><span class="o">.</span><span class="n">query</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_logger</span><span class="o">.</span><span class="n">sysinfo</span><span class="p">(</span><span class="n">dict_cur</span><span class="o">.</span><span class="n">statusmessage</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">dict_cur</span><span class="o">.</span><span class="n">fetchall</span><span class="p">()</span> <span class="k">if</span> <span class="n">many</span> <span class="k">else</span> <span class="n">dict_cur</span><span class="o">.</span><span class="n">fetchone</span><span class="p">()</span>
+        <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">error</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">InvalidSQLTransactionError</span><span class="p">(</span><span class="n">error</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">__exec_copy</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">statement</span><span class="p">,</span> <span class="n">file</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Execute a COPY FROM statement using the instance cursor.</span>
+
+<span class="sd">        :param statement: A string containing a COPY statement.</span>
+<span class="sd">        :param file: A readable file-like object.</span>
+<span class="sd">        :return: None</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_cur</span><span class="o">.</span><span class="n">copy_expert</span><span class="p">(</span><span class="n">sql</span><span class="o">.</span><span class="n">SQL</span><span class="p">(</span><span class="n">statement</span><span class="p">),</span> <span class="n">file</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_logger</span><span class="o">.</span><span class="n">sysinfo</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_cur</span><span class="o">.</span><span class="n">query</span><span class="p">)</span>
+        <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">error</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">InvalidSQLTransactionError</span><span class="p">(</span><span class="n">error</span><span class="p">)</span>
+
+    <span class="c1"># public methods</span>
+
+<div class="viewcode-block" id="DatabaseInteractions.compare_schemas"><a class="viewcode-back" href="../../../aodncore.pipeline.html#aodncore.pipeline.db.DatabaseInteractions.compare_schemas">[docs]</a>    <span class="k">def</span> <span class="nf">compare_schemas</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Placeholder for possible future implementation of schema version checking</span>
+
+<span class="sd">        :return: boolean - True if schemas match, else False</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Compare schema not yet implemented...&quot;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="kc">True</span></div>
+
+<div class="viewcode-block" id="DatabaseInteractions.truncate_table"><a class="viewcode-back" href="../../../aodncore.pipeline.html#aodncore.pipeline.db.DatabaseInteractions.truncate_table">[docs]</a>    <span class="k">def</span> <span class="nf">truncate_table</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">step</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Truncate the specified table.</span>
+
+<span class="sd">        :param step: A dict containing &#39;name&#39; and &#39;type&#39; (at least) keys</span>
+<span class="sd">        - step.name is the name of the database object</span>
+<span class="sd">        - step.type is the type of database object - the database transaction will only be performed</span>
+<span class="sd">            if type = &#39;table&#39;</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">step</span><span class="p">[</span><span class="s1">&#39;type&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;table&#39;</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">__exec</span><span class="p">(</span><span class="s2">&quot;TRUNCATE TABLE </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">step</span><span class="p">[</span><span class="s1">&#39;name&#39;</span><span class="p">]))</span></div>
+
+<div class="viewcode-block" id="DatabaseInteractions.refresh_materialized_view"><a class="viewcode-back" href="../../../aodncore.pipeline.html#aodncore.pipeline.db.DatabaseInteractions.refresh_materialized_view">[docs]</a>    <span class="k">def</span> <span class="nf">refresh_materialized_view</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">step</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Refresh the specified materialized view.</span>
+
+<span class="sd">        :param step: A dict containing &#39;name&#39; and &#39;type&#39; (at least) keys</span>
+<span class="sd">        - step.name is the name of the database object</span>
+<span class="sd">        - step.type is the type of database object - the database transaction will only be performed</span>
+<span class="sd">            if type = &#39;materialized view&#39;</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">step</span><span class="p">[</span><span class="s1">&#39;type&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;materialized view&#39;</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">__exec</span><span class="p">(</span><span class="s2">&quot;REFRESH MATERIALIZED VIEW </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">step</span><span class="p">[</span><span class="s1">&#39;name&#39;</span><span class="p">]))</span></div>
+
+<div class="viewcode-block" id="DatabaseInteractions.drop_object"><a class="viewcode-back" href="../../../aodncore.pipeline.html#aodncore.pipeline.db.DatabaseInteractions.drop_object">[docs]</a>    <span class="k">def</span> <span class="nf">drop_object</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">step</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Drop the specified database object.</span>
+
+<span class="sd">        The database transaction uses the IF EXISTS parameter, so will not error if the database object does not exist;</span>
+<span class="sd">        and also the CASCADE parameter meaning that a previous call to this method may have already cascaded to the</span>
+<span class="sd">        current database object.</span>
+
+<span class="sd">        :param step: A dict containing &#39;name&#39; and &#39;type&#39; (at least) keys</span>
+<span class="sd">        - step.name is the name of the database object</span>
+<span class="sd">        - step.type is the type of database object</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Dropping </span><span class="si">{type}</span><span class="s2"> </span><span class="si">{name}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="o">**</span><span class="n">step</span><span class="p">))</span>
+        <span class="n">stmt</span> <span class="o">=</span> <span class="s2">&quot;DROP </span><span class="si">{type}</span><span class="s2"> IF EXISTS </span><span class="si">{name}</span><span class="s2"> CASCADE&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="o">**</span><span class="n">step</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">__exec</span><span class="p">(</span><span class="n">stmt</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="DatabaseInteractions.load_data_from_csv"><a class="viewcode-back" href="../../../aodncore.pipeline.html#aodncore.pipeline.db.DatabaseInteractions.load_data_from_csv">[docs]</a>    <span class="k">def</span> <span class="nf">load_data_from_csv</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">step</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Function to read a csv file prior to loading into the specified table.</span>
+
+<span class="sd">        Currently uses the utf-8 encoding to read the csv file, and reads the headings into the COPY FROM statement -</span>
+<span class="sd">        the latter may not be necessary as it is assumed that the file has been validated in a previous handler step.</span>
+<span class="sd">        :param step: A dict containing &#39;name&#39; and &#39;local_path&#39; (at least) keys</span>
+<span class="sd">        - step.name is the name of the target table</span>
+<span class="sd">        - step.local_path is the full path to the source file (csv)</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">fn</span> <span class="o">=</span> <span class="n">step</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;local_path&#39;</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">fn</span><span class="p">:</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">fn</span><span class="p">,</span> <span class="n">encoding</span><span class="o">=</span><span class="s2">&quot;utf-8&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">_logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Loading data from </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">fn</span><span class="p">))</span>
+                    <span class="n">stmt</span> <span class="o">=</span> <span class="s2">&quot;COPY </span><span class="si">{}</span><span class="s2"> FROM STDIN WITH HEADER CSV&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">step</span><span class="p">[</span><span class="s1">&#39;name&#39;</span><span class="p">])</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">__exec_copy</span><span class="p">(</span><span class="n">stmt</span><span class="p">,</span> <span class="n">f</span><span class="p">)</span>
+            <span class="k">except</span> <span class="ne">FileNotFoundError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="n">MissingFileError</span><span class="p">(</span><span class="n">e</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="DatabaseInteractions.execute_sql_file"><a class="viewcode-back" href="../../../aodncore.pipeline.html#aodncore.pipeline.db.DatabaseInteractions.execute_sql_file">[docs]</a>    <span class="k">def</span> <span class="nf">execute_sql_file</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">step</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Function to read an SQL file prior to executing against the database.</span>
+
+<span class="sd">        :param step: A dict containing &#39;name&#39; (at least) key</span>
+<span class="sd">        - step.name is the name used as part of the match regular expression</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">fn</span> <span class="o">=</span> <span class="n">find_file</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">schema_base_path</span><span class="p">,</span> <span class="sa">r</span><span class="s1">&#39;</span><span class="si">{name}</span><span class="s1">(\..*)?\.sql&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="n">step</span><span class="p">[</span><span class="s1">&#39;name&#39;</span><span class="p">]))</span>
+        <span class="k">if</span> <span class="n">fn</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Executing sql from </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">fn</span><span class="p">))</span>
+            <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">fn</span><span class="p">)</span> <span class="k">as</span> <span class="n">stream</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">__exec</span><span class="p">(</span><span class="n">stream</span><span class="o">.</span><span class="n">read</span><span class="p">())</span></div>
+
+<div class="viewcode-block" id="DatabaseInteractions.create_table_from_yaml_file"><a class="viewcode-back" href="../../../aodncore.pipeline.html#aodncore.pipeline.db.DatabaseInteractions.create_table_from_yaml_file">[docs]</a>    <span class="k">def</span> <span class="nf">create_table_from_yaml_file</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">step</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Function to read an yaml file and use it to build a CREATE TABLE script for execution against the database.</span>
+
+<span class="sd">        :param step: A dict containing &#39;name&#39; and &#39;type&#39; (at least) keys</span>
+<span class="sd">        - step.name is the name used as part of the match regular expression</span>
+<span class="sd">        - step.type is the type of database object. Type should always be table in this context</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">fn</span> <span class="o">=</span> <span class="n">find_file</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">schema_base_path</span><span class="p">,</span> <span class="sa">r</span><span class="s1">&#39;</span><span class="si">{name}</span><span class="s1">(\..*)?\.(?:yml|yaml)&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="n">step</span><span class="p">[</span><span class="s1">&#39;name&#39;</span><span class="p">]))</span>
+        <span class="k">if</span> <span class="n">fn</span> <span class="ow">and</span> <span class="n">step</span><span class="p">[</span><span class="s1">&#39;type&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;table&#39;</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Creating </span><span class="si">{type}</span><span class="s2"> </span><span class="si">{name}</span><span class="s2"> from </span><span class="si">{fn}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">fn</span><span class="o">=</span><span class="n">fn</span><span class="p">,</span> <span class="o">**</span><span class="n">step</span><span class="p">))</span>
+            <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">fn</span><span class="p">)</span> <span class="k">as</span> <span class="n">stream</span><span class="p">:</span>
+                <span class="n">schema</span> <span class="o">=</span> <span class="n">get_tableschema_descriptor</span><span class="p">(</span><span class="n">yaml</span><span class="o">.</span><span class="n">safe_load</span><span class="p">(</span><span class="n">stream</span><span class="p">),</span> <span class="s1">&#39;schema&#39;</span><span class="p">)</span>
+                <span class="n">columns</span> <span class="o">=</span> <span class="p">[]</span>
+                <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="n">schema</span><span class="p">[</span><span class="s1">&#39;fields&#39;</span><span class="p">]:</span>
+                    <span class="n">f</span><span class="p">[</span><span class="s1">&#39;type&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">get_field_type</span><span class="p">(</span><span class="n">f</span><span class="p">[</span><span class="s1">&#39;type&#39;</span><span class="p">])</span>
+                    <span class="n">columns</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">{name}</span><span class="s1"> </span><span class="si">{type}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="o">**</span><span class="n">f</span><span class="p">))</span>
+                <span class="n">pk</span> <span class="o">=</span> <span class="n">schema</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;primaryKey&#39;</span><span class="p">)</span>
+                <span class="k">if</span> <span class="n">pk</span><span class="p">:</span>
+                    <span class="n">pk</span> <span class="o">=</span> <span class="n">pk</span> <span class="k">if</span> <span class="n">is_nonstring_iterable</span><span class="p">(</span><span class="n">pk</span><span class="p">)</span> <span class="k">else</span> <span class="p">[</span><span class="n">pk</span><span class="p">]</span>
+                    <span class="n">columns</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;PRIMARY KEY (</span><span class="si">{}</span><span class="s2">)&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="s1">&#39;,&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">pk</span><span class="p">)))</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">__exec</span><span class="p">(</span><span class="s1">&#39;CREATE TABLE </span><span class="si">{}</span><span class="s1"> (</span><span class="si">{}</span><span class="s1">)&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">step</span><span class="p">[</span><span class="s1">&#39;name&#39;</span><span class="p">],</span> <span class="s1">&#39;,&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">columns</span><span class="p">)))</span></div>
+
+<div class="viewcode-block" id="DatabaseInteractions.get_spatial_extent"><a class="viewcode-back" href="../../../aodncore.pipeline.html#aodncore.pipeline.db.DatabaseInteractions.get_spatial_extent">[docs]</a>    <span class="k">def</span> <span class="nf">get_spatial_extent</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">db_schema</span><span class="p">,</span> <span class="n">table</span><span class="p">,</span> <span class="n">column</span><span class="p">,</span> <span class="n">resolution</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Function to retrieve spatial data from the database.</span>
+
+<span class="sd">        :param db_schema: string containing name of schema</span>
+<span class="sd">        :param table: string containing name of table</span>
+<span class="sd">        :param column: string containing name of column</span>
+<span class="sd">        :param resolution: int as resolution of polygons</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Retrieving spatial extent&quot;</span><span class="p">)</span>
+        <span class="n">query</span> <span class="o">=</span> <span class="s2">&quot;SELECT BoundingPolygonAsGml3(&#39;</span><span class="si">{schema}</span><span class="s2">&#39;,&#39;</span><span class="si">{table}</span><span class="s2">&#39;,&#39;</span><span class="si">{column}</span><span class="s2">&#39;,</span><span class="si">{resolution}</span><span class="s2">)&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+            <span class="n">schema</span><span class="o">=</span><span class="n">db_schema</span><span class="p">,</span>
+            <span class="n">table</span><span class="o">=</span><span class="n">table</span><span class="p">,</span>
+            <span class="n">column</span><span class="o">=</span><span class="n">column</span><span class="p">,</span>
+            <span class="n">resolution</span><span class="o">=</span><span class="n">resolution</span>
+        <span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">__query</span><span class="p">(</span><span class="n">query</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="DatabaseInteractions.get_temporal_extent"><a class="viewcode-back" href="../../../aodncore.pipeline.html#aodncore.pipeline.db.DatabaseInteractions.get_temporal_extent">[docs]</a>    <span class="k">def</span> <span class="nf">get_temporal_extent</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">table</span><span class="p">,</span> <span class="n">column</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Function to retrieve temporal data from the database.</span>
+
+<span class="sd">        :param table: string containing name of table</span>
+<span class="sd">        :param column: string containing name of column</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Retrieving temporal extent&quot;</span><span class="p">)</span>
+        <span class="n">query</span> <span class="o">=</span> <span class="s2">&quot;&quot;&quot;</span>
+<span class="s2">            SELECT </span>
+<span class="s2">                TO_CHAR(timezone(&#39;UTC&#39;::text, MIN(&quot;</span><span class="si">{column}</span><span class="s2">&quot;)), &#39;YYYY-MM-DDThh:mm:ss&#39;) as min_value,</span>
+<span class="s2">                TO_CHAR(timezone(&#39;UTC&#39;::text, MAX(&quot;</span><span class="si">{column}</span><span class="s2">&quot;)), &#39;YYYY-MM-DDThh:mm:ss&#39;) as max_value</span>
+<span class="s2">            FROM </span><span class="si">{table}</span><span class="s2"></span>
+<span class="s2">        &quot;&quot;&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+            <span class="n">table</span><span class="o">=</span><span class="n">table</span><span class="p">,</span>
+            <span class="n">column</span><span class="o">=</span><span class="n">column</span>
+        <span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">__query</span><span class="p">(</span><span class="n">query</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="DatabaseInteractions.get_vertical_extent"><a class="viewcode-back" href="../../../aodncore.pipeline.html#aodncore.pipeline.db.DatabaseInteractions.get_vertical_extent">[docs]</a>    <span class="k">def</span> <span class="nf">get_vertical_extent</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">table</span><span class="p">,</span> <span class="n">column</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Function to retrieve vertical data from the database.</span>
+
+<span class="sd">        :param table: string containing name of table</span>
+<span class="sd">        :param column: string containing name of column</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Retrieving vertical extent&quot;</span><span class="p">)</span>
+        <span class="n">query</span> <span class="o">=</span> <span class="s2">&quot;&quot;&quot;</span>
+<span class="s2">            SELECT</span>
+<span class="s2">                MIN(&quot;</span><span class="si">{column}</span><span class="s2">&quot;) as &quot;min_value&quot;,</span>
+<span class="s2">                MAX(&quot;</span><span class="si">{column}</span><span class="s2">&quot;) as &quot;max_value&quot;</span>
+<span class="s2">            FROM </span><span class="si">{table}</span><span class="s2"></span>
+<span class="s2">        &quot;&quot;&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+            <span class="n">table</span><span class="o">=</span><span class="n">table</span><span class="p">,</span>
+            <span class="n">column</span><span class="o">=</span><span class="n">column</span>
+        <span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">__query</span><span class="p">(</span><span class="n">query</span><span class="p">)</span></div></div>
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2018, AODN.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

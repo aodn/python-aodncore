@@ -1,0 +1,345 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>aodncore.pipeline.geonetwork &mdash; aodncore 1.4.2 documentation</title>
+      <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../../../" id="documentation_options" src="../../../_static/documentation_options.js"></script>
+        <script src="../../../_static/jquery.js"></script>
+        <script src="../../../_static/underscore.js"></script>
+        <script src="../../../_static/_sphinx_javascript_frameworks_compat.js"></script>
+        <script src="../../../_static/doctools.js"></script>
+    <script src="../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="../../../index.html" class="icon icon-home"> aodncore
+          </a>
+              <div class="version">
+                1.4
+              </div>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Quick Start Guide:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../quickstartdoc.html">Writing a <code class="xref py py-meth docutils literal notranslate"><span class="pre">dest_path()</span></code> function</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../quickstartdoc.html#overriding-default-file-actions">Overriding default file actions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../quickstartdoc.html#creating-products-during-the-handler-lifetime">Creating products during the handler lifetime</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../quickstartdoc.html#query-storage">Query Storage</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">User documentation:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../userdoc.html">Overview</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../userdoc.html#state-machine-handler-steps">State machine / handler steps</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../userdoc.html#customising-handler-behaviour">Customising handler behaviour</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../userdoc.html#attributes">Attributes</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Developer documentation:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../developerdoc.html">Overview</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Module contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../modules.html">aodncore</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">aodncore</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../index.html" class="icon icon-home"></a> &raquo;</li>
+          <li><a href="../../index.html">Module code</a> &raquo;</li>
+      <li>aodncore.pipeline.geonetwork</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for aodncore.pipeline.geonetwork</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">Geonetwork Library</span>
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="kn">import</span> <span class="nn">contextlib</span>
+<span class="kn">import</span> <span class="nn">json</span>
+<span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">from</span> <span class="nn">io</span> <span class="kn">import</span> <span class="n">StringIO</span>
+<span class="kn">from</span> <span class="nn">xml.etree</span> <span class="kn">import</span> <span class="n">ElementTree</span>
+
+<span class="c1"># &#39;requests&gt;=2.5&#39; is a dependency of tableschema (and possibly other aodncore requirements), however should tableschema</span>
+<span class="c1"># no longer be required, it may be necessary to explicitly install &#39;requests&#39;</span>
+<span class="kn">import</span> <span class="nn">requests</span>
+<span class="kn">from</span> <span class="nn">requests.exceptions</span> <span class="kn">import</span> <span class="ne">ConnectionError</span><span class="p">,</span> <span class="n">RequestException</span>
+
+<span class="kn">from</span> <span class="nn">..util</span> <span class="kn">import</span> <span class="n">list_not_empty</span><span class="p">,</span> <span class="n">generate_id</span>
+<span class="kn">from</span> <span class="nn">.exceptions</span> <span class="kn">import</span> <span class="n">GeonetworkRequestError</span><span class="p">,</span> <span class="n">GeonetworkConnectionError</span>
+
+
+<span class="n">BASE_API</span> <span class="o">=</span> <span class="s2">&quot;srv/api/0.1&quot;</span>
+<span class="n">ENDPOINT_RECORD_GET</span> <span class="o">=</span> <span class="s1">&#39;records&#39;</span>
+<span class="n">ENDPOINT_BATCH_UPDATE</span> <span class="o">=</span> <span class="s1">&#39;records/batchediting&#39;</span>
+
+
+<div class="viewcode-block" id="dict_to_xml"><a class="viewcode-back" href="../../../aodncore.pipeline.html#aodncore.pipeline.geonetwork.dict_to_xml">[docs]</a><span class="k">def</span> <span class="nf">dict_to_xml</span><span class="p">(</span><span class="n">tag</span><span class="p">,</span> <span class="n">value</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">attr</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">elems</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">display</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Convert a dictionary of XML nodes into a nested XML string</span>
+
+<span class="sd">    :param tag: a string or list containing element tag(s).  If tag is a list then recursively build the parent elements</span>
+<span class="sd">        and apply the rest of the logic to the last element.</span>
+<span class="sd">    :param value: string representing text for an element</span>
+<span class="sd">    :param attr: dict containing key:value pairs representing attributes of the element</span>
+<span class="sd">    :param elems: list of dicts containing nested element definitions.  If this is present then the value will be</span>
+<span class="sd">        overridden with recursive child elements</span>
+<span class="sd">    :param display: boolen to identify whether the element (and child nodes) should be rendered to the XML string</span>
+<span class="sd">    :return: an XML string</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">tag</span><span class="p">,</span> <span class="nb">list</span><span class="p">):</span>
+        <span class="n">nodes</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;tag&#39;</span><span class="p">:</span> <span class="n">tag</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span> <span class="s1">&#39;elems&#39;</span><span class="p">:</span> <span class="n">elems</span><span class="p">,</span> <span class="s1">&#39;attr&#39;</span><span class="p">:</span> <span class="n">attr</span><span class="p">,</span> <span class="s1">&#39;value&#39;</span><span class="p">:</span> <span class="n">value</span><span class="p">}</span>
+        <span class="k">for</span> <span class="n">t</span> <span class="ow">in</span> <span class="nb">reversed</span><span class="p">(</span><span class="n">tag</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">]):</span>
+            <span class="n">nodes</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;tag&#39;</span><span class="p">:</span> <span class="n">t</span><span class="p">,</span> <span class="s1">&#39;elems&#39;</span><span class="p">:</span> <span class="p">[</span><span class="n">nodes</span><span class="p">]}</span>
+        <span class="k">return</span> <span class="n">dict_to_xml</span><span class="p">(</span><span class="o">**</span><span class="n">nodes</span><span class="p">)</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">display</span><span class="p">:</span>
+        <span class="k">return</span> <span class="s1">&#39;&#39;</span>
+    <span class="n">attr</span> <span class="o">=</span> <span class="p">[]</span> <span class="k">if</span> <span class="n">attr</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="p">[</span><span class="s1">&#39; </span><span class="si">{}</span><span class="s1">=&quot;</span><span class="si">{}</span><span class="s1">&quot;&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">k</span><span class="p">,</span> <span class="n">v</span><span class="p">)</span> <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">attr</span><span class="o">.</span><span class="n">items</span><span class="p">()]</span>
+    <span class="k">if</span> <span class="n">elems</span><span class="p">:</span>
+        <span class="n">value</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
+        <span class="k">for</span> <span class="n">elem</span> <span class="ow">in</span> <span class="n">elems</span><span class="p">:</span>
+            <span class="n">value</span> <span class="o">+=</span> <span class="n">dict_to_xml</span><span class="p">(</span><span class="o">**</span><span class="n">elem</span><span class="p">)</span>
+    <span class="k">return</span> <span class="s1">&#39;&lt;</span><span class="si">{tag}{attributes}</span><span class="s1">&gt;</span><span class="si">{value}</span><span class="s1">&lt;/</span><span class="si">{tag}</span><span class="s1">&gt;&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">tag</span><span class="o">=</span><span class="n">tag</span><span class="p">,</span> <span class="n">attributes</span><span class="o">=</span><span class="s1">&#39; &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">attr</span><span class="p">),</span> <span class="n">value</span><span class="o">=</span><span class="n">value</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="geonetwork_exception_handler"><a class="viewcode-back" href="../../../aodncore.pipeline.html#aodncore.pipeline.geonetwork.geonetwork_exception_handler">[docs]</a><span class="nd">@contextlib</span><span class="o">.</span><span class="n">contextmanager</span>
+<span class="k">def</span> <span class="nf">geonetwork_exception_handler</span><span class="p">():</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="k">yield</span>
+    <span class="k">except</span> <span class="ne">ConnectionError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="n">GeonetworkConnectionError</span><span class="p">(</span><span class="n">e</span><span class="p">)</span>
+    <span class="k">except</span> <span class="n">RequestException</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="n">GeonetworkRequestError</span><span class="p">(</span><span class="n">e</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="Geonetwork"><a class="viewcode-back" href="../../../aodncore.pipeline.html#aodncore.pipeline.geonetwork.Geonetwork">[docs]</a><span class="k">class</span> <span class="nc">Geonetwork</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Geonetwork API session handler</span>
+
+<span class="sd">    :param base_url: Geonetwork instance base url</span>
+<span class="sd">    :param username: username for the Geonetwork API</span>
+<span class="sd">    :param password: password for the Geonetwork API</span>
+<span class="sd">    :param logger: an instance of the logger</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">base_url</span><span class="p">,</span> <span class="n">username</span><span class="p">,</span> <span class="n">password</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">base_url</span> <span class="o">=</span> <span class="n">base_url</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">session</span> <span class="o">=</span> <span class="n">requests</span><span class="o">.</span><span class="n">Session</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">verify</span> <span class="o">=</span> <span class="kc">True</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">auth</span> <span class="o">=</span> <span class="p">(</span><span class="n">username</span><span class="p">,</span> <span class="n">password</span><span class="p">)</span>
+
+        <span class="c1"># init cookies</span>
+        <span class="n">url</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">base_url</span><span class="p">,</span> <span class="n">BASE_API</span><span class="p">)</span>
+        <span class="k">with</span> <span class="n">geonetwork_exception_handler</span><span class="p">():</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">post</span><span class="p">(</span><span class="n">url</span><span class="p">)</span>
+
+        <span class="k">for</span> <span class="n">cookie</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">cookies</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">cookie</span><span class="o">.</span><span class="n">name</span> <span class="o">==</span> <span class="s2">&quot;XSRF-TOKEN&quot;</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">headers</span><span class="o">.</span><span class="n">update</span><span class="p">({</span><span class="s1">&#39;X-XSRF-TOKEN&#39;</span><span class="p">:</span> <span class="n">cookie</span><span class="o">.</span><span class="n">value</span><span class="p">})</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">headers</span><span class="o">.</span><span class="n">update</span><span class="p">({</span><span class="s1">&#39;Accept&#39;</span><span class="p">:</span> <span class="s1">&#39;application/xml&#39;</span><span class="p">})</span>
+
+    <span class="k">def</span> <span class="nf">_get</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">path</span><span class="p">):</span>
+        <span class="n">url</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">base_url</span><span class="p">,</span> <span class="n">path</span><span class="p">)</span>
+        <span class="k">with</span> <span class="n">geonetwork_exception_handler</span><span class="p">():</span>
+            <span class="n">response</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">url</span><span class="p">)</span>
+            <span class="n">response</span><span class="o">.</span><span class="n">raise_for_status</span><span class="p">()</span>
+        <span class="k">return</span> <span class="n">response</span>
+
+    <span class="k">def</span> <span class="nf">_post</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">path</span><span class="p">,</span> <span class="n">data</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">params</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="n">url</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">base_url</span><span class="p">,</span> <span class="n">path</span><span class="p">)</span>
+        <span class="k">with</span> <span class="n">geonetwork_exception_handler</span><span class="p">():</span>
+            <span class="n">response</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">post</span><span class="p">(</span><span class="n">url</span><span class="p">,</span> <span class="n">data</span><span class="o">=</span><span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">data</span><span class="p">),</span> <span class="n">params</span><span class="o">=</span><span class="n">params</span><span class="p">)</span>
+            <span class="n">response</span><span class="o">.</span><span class="n">raise_for_status</span><span class="p">()</span>
+        <span class="k">return</span> <span class="n">response</span>
+
+    <span class="k">def</span> <span class="nf">_put</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">path</span><span class="p">,</span> <span class="n">data</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">params</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">headers</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="n">url</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">base_url</span><span class="p">,</span> <span class="n">path</span><span class="p">)</span>
+        <span class="k">with</span> <span class="n">geonetwork_exception_handler</span><span class="p">():</span>
+            <span class="n">response</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">put</span><span class="p">(</span><span class="n">url</span><span class="p">,</span> <span class="n">data</span><span class="o">=</span><span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">data</span><span class="p">),</span> <span class="n">params</span><span class="o">=</span><span class="n">params</span><span class="p">,</span> <span class="n">headers</span><span class="o">=</span><span class="n">headers</span><span class="p">)</span>
+            <span class="n">response</span><span class="o">.</span><span class="n">raise_for_status</span><span class="p">()</span>
+        <span class="k">return</span> <span class="n">response</span>
+
+<div class="viewcode-block" id="Geonetwork.get_record"><a class="viewcode-back" href="../../../aodncore.pipeline.html#aodncore.pipeline.geonetwork.Geonetwork.get_record">[docs]</a>    <span class="k">def</span> <span class="nf">get_record</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">_uuid</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Retrieve a metadata record</span>
+
+<span class="sd">        :param _uuid: Geonetwork record ID</span>
+<span class="sd">        :return: xml of specified metadata record&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">BASE_API</span><span class="p">,</span> <span class="n">ENDPOINT_RECORD_GET</span><span class="p">,</span> <span class="n">_uuid</span><span class="p">))</span><span class="o">.</span><span class="n">text</span></div>
+
+<div class="viewcode-block" id="Geonetwork.update_record"><a class="viewcode-back" href="../../../aodncore.pipeline.html#aodncore.pipeline.geonetwork.Geonetwork.update_record">[docs]</a>    <span class="k">def</span> <span class="nf">update_record</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">_uuid</span><span class="p">,</span> <span class="n">changes</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Update Geonetwork record</span>
+
+<span class="sd">        :param _uuid: Geonetwork record ID</span>
+<span class="sd">        :param changes: list of change dicts where each change contains a value and an xpath</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">params</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;uuids&quot;</span><span class="p">:</span> <span class="n">_uuid</span><span class="p">}</span>
+        <span class="n">headers</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;accept&quot;</span><span class="p">:</span> <span class="s2">&quot;application/json&quot;</span><span class="p">,</span> <span class="s2">&quot;content-type&quot;</span><span class="p">:</span> <span class="s2">&quot;application/json&quot;</span><span class="p">}</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_put</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">BASE_API</span><span class="p">,</span> <span class="n">ENDPOINT_BATCH_UPDATE</span><span class="p">),</span> <span class="n">data</span><span class="o">=</span><span class="n">changes</span><span class="p">,</span> <span class="n">params</span><span class="o">=</span><span class="n">params</span><span class="p">,</span> <span class="n">headers</span><span class="o">=</span><span class="n">headers</span><span class="p">)</span></div></div>
+
+
+<div class="viewcode-block" id="GeonetworkMetadataHandler"><a class="viewcode-back" href="../../../aodncore.pipeline.html#aodncore.pipeline.geonetwork.GeonetworkMetadataHandler">[docs]</a><span class="k">class</span> <span class="nc">GeonetworkMetadataHandler</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Handle changes to Geonetwork metadata from Harvester</span>
+
+<span class="sd">    Build the geonetwork payload and push changes</span>
+<span class="sd">    :param conn: the database connection class (DatabaseInteractions)</span>
+<span class="sd">    :param session: the geonetwork API session</span>
+<span class="sd">    :param metadata: dict containing extents for a single metadata record</span>
+<span class="sd">    :param logger: instance of the logger</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">conn</span><span class="p">,</span> <span class="n">session</span><span class="p">,</span> <span class="n">metadata</span><span class="p">,</span> <span class="n">logger</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_logger</span> <span class="o">=</span> <span class="n">logger</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_session</span> <span class="o">=</span> <span class="n">session</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_conn</span> <span class="o">=</span> <span class="n">conn</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">uuid</span> <span class="o">=</span> <span class="n">metadata</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;uuid&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">spatial</span> <span class="o">=</span> <span class="n">metadata</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;spatial&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">temporal</span> <span class="o">=</span> <span class="n">metadata</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;temporal&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">vertical</span> <span class="o">=</span> <span class="n">metadata</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;vertical&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">spatial_data</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">vertical_data</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">temporal_data</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">xml_text</span> <span class="o">=</span> <span class="kc">None</span>
+
+<div class="viewcode-block" id="GeonetworkMetadataHandler.get_namespace_dict"><a class="viewcode-back" href="../../../aodncore.pipeline.html#aodncore.pipeline.geonetwork.GeonetworkMetadataHandler.get_namespace_dict">[docs]</a>    <span class="k">def</span> <span class="nf">get_namespace_dict</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Scrape relevant namespaces from source metadata record&quot;&quot;&quot;</span>
+        <span class="n">ns_raw</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">([</span>
+            <span class="n">node</span> <span class="k">for</span> <span class="p">(</span><span class="n">_</span><span class="p">,</span> <span class="n">node</span><span class="p">)</span> <span class="ow">in</span> <span class="n">ElementTree</span><span class="o">.</span><span class="n">iterparse</span><span class="p">(</span><span class="n">StringIO</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">xml_text</span><span class="p">),</span> <span class="n">events</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;start-ns&#39;</span><span class="p">])</span>
+        <span class="p">])</span>
+        <span class="n">ns_keep</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;mri&#39;</span><span class="p">,</span> <span class="s1">&#39;gex&#39;</span><span class="p">,</span> <span class="s1">&#39;gml&#39;</span><span class="p">,</span> <span class="s1">&#39;gco&#39;</span><span class="p">]</span>
+        <span class="n">ns</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">ns_raw</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="k">if</span> <span class="n">k</span> <span class="ow">in</span> <span class="n">ns_keep</span><span class="p">:</span>
+                <span class="n">ns</span><span class="p">[</span><span class="s1">&#39;xmlns:</span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">k</span><span class="p">)]</span> <span class="o">=</span> <span class="n">v</span>
+        <span class="k">return</span> <span class="n">ns</span></div>
+
+<div class="viewcode-block" id="GeonetworkMetadataHandler.build_api_payload"><a class="viewcode-back" href="../../../aodncore.pipeline.html#aodncore.pipeline.geonetwork.GeonetworkMetadataHandler.build_api_payload">[docs]</a>    <span class="k">def</span> <span class="nf">build_api_payload</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Build the batchedit API payload based on dict template</span>
+
+<span class="sd">        The payload is a complete replacement of all extents for the provided metadata record</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">template</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="s1">&#39;tag&#39;</span><span class="p">:</span> <span class="p">[</span><span class="s1">&#39;gn_replace&#39;</span><span class="p">,</span> <span class="s1">&#39;gex:EX_Extent&#39;</span><span class="p">],</span>
+            <span class="s1">&#39;attr&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_namespace_dict</span><span class="p">(),</span>
+            <span class="s1">&#39;elems&#39;</span><span class="p">:</span> <span class="p">[</span>
+                <span class="p">{</span>
+                    <span class="c1"># geographic extent</span>
+                    <span class="s1">&#39;display&#39;</span><span class="p">:</span> <span class="nb">bool</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">spatial_data</span><span class="p">),</span>
+                    <span class="s1">&#39;tag&#39;</span><span class="p">:</span> <span class="p">[</span><span class="s1">&#39;gex:geographicElement&#39;</span><span class="p">,</span> <span class="s1">&#39;gex:EX_BoundingPolygon&#39;</span><span class="p">,</span> <span class="s1">&#39;gex:polygon&#39;</span><span class="p">],</span>
+                    <span class="s1">&#39;value&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">spatial_data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;boundingpolygonasgml3&#39;</span><span class="p">)</span>
+                <span class="p">},</span>
+                <span class="p">{</span>
+                    <span class="c1"># vertical extent</span>
+                    <span class="s1">&#39;display&#39;</span><span class="p">:</span> <span class="nb">bool</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">vertical_data</span><span class="p">),</span>
+                    <span class="s1">&#39;tag&#39;</span><span class="p">:</span> <span class="p">[</span><span class="s1">&#39;gex:verticalElement&#39;</span><span class="p">,</span> <span class="s1">&#39;gex:EX_VerticalExtent&#39;</span><span class="p">],</span>
+                    <span class="s1">&#39;elems&#39;</span><span class="p">:</span> <span class="p">[</span>
+                        <span class="p">{</span>
+                            <span class="s1">&#39;tag&#39;</span><span class="p">:</span> <span class="p">[</span><span class="s1">&#39;gex:minimumValue&#39;</span><span class="p">,</span> <span class="s1">&#39;gco:Real&#39;</span><span class="p">],</span>
+                            <span class="s1">&#39;value&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">vertical_data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;min_value&#39;</span><span class="p">)</span>
+                        <span class="p">},</span>
+                        <span class="p">{</span>
+                            <span class="s1">&#39;tag&#39;</span><span class="p">:</span> <span class="p">[</span><span class="s1">&#39;gex:maximumValue&#39;</span><span class="p">,</span> <span class="s1">&#39;gco:Real&#39;</span><span class="p">],</span>
+                            <span class="s1">&#39;value&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">vertical_data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;max_value&#39;</span><span class="p">)</span>
+                        <span class="p">}</span>
+                    <span class="p">]</span>
+                <span class="p">},</span>
+                <span class="p">{</span>
+                    <span class="c1"># temporal extent</span>
+                    <span class="s1">&#39;display&#39;</span><span class="p">:</span> <span class="nb">bool</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">temporal_data</span><span class="p">),</span>
+                    <span class="s1">&#39;tag&#39;</span><span class="p">:</span> <span class="p">[</span><span class="s1">&#39;gex:temporalElement&#39;</span><span class="p">,</span> <span class="s1">&#39;gex:EX_TemporalExtent&#39;</span><span class="p">,</span> <span class="s1">&#39;gex:extent&#39;</span><span class="p">,</span> <span class="s1">&#39;gml:TimePeriod&#39;</span><span class="p">],</span>
+                    <span class="s1">&#39;attr&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;gml:id&#39;</span><span class="p">:</span> <span class="n">generate_id</span><span class="p">()},</span>
+                    <span class="s1">&#39;elems&#39;</span><span class="p">:</span> <span class="p">[</span>
+                        <span class="p">{</span>
+                            <span class="s1">&#39;tag&#39;</span><span class="p">:</span> <span class="s1">&#39;gml:beginPosition&#39;</span><span class="p">,</span>
+                            <span class="s1">&#39;value&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">temporal_data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;min_value&#39;</span><span class="p">)</span>
+                        <span class="p">},</span>
+                        <span class="p">{</span>
+                            <span class="s1">&#39;tag&#39;</span><span class="p">:</span> <span class="s1">&#39;gml:endPosition&#39;</span><span class="p">,</span>
+                            <span class="s1">&#39;value&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">temporal_data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;max_value&#39;</span><span class="p">)</span>
+                        <span class="p">}</span>
+                    <span class="p">]</span>
+                <span class="p">}</span>
+            <span class="p">]</span>
+        <span class="p">}</span>
+        <span class="k">return</span> <span class="p">[</span>
+            <span class="p">{</span><span class="s1">&#39;value&#39;</span><span class="p">:</span> <span class="n">dict_to_xml</span><span class="p">(</span><span class="o">**</span><span class="n">template</span><span class="p">),</span>
+             <span class="s1">&#39;xpath&#39;</span><span class="p">:</span> <span class="s1">&#39;.//mri:MD_DataIdentification/mri:extent&#39;</span><span class="p">}</span>
+        <span class="p">]</span></div>
+
+<div class="viewcode-block" id="GeonetworkMetadataHandler.run"><a class="viewcode-back" href="../../../aodncore.pipeline.html#aodncore.pipeline.geonetwork.GeonetworkMetadataHandler.run">[docs]</a>    <span class="k">def</span> <span class="nf">run</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">list_not_empty</span><span class="p">([</span><span class="bp">self</span><span class="o">.</span><span class="n">spatial</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">temporal</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">vertical</span><span class="p">]):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Collecting extent data for </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">uuid</span><span class="p">))</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">spatial</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">spatial_data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_conn</span><span class="o">.</span><span class="n">get_spatial_extent</span><span class="p">(</span><span class="o">**</span><span class="bp">self</span><span class="o">.</span><span class="n">spatial</span><span class="p">)</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">temporal</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">temporal_data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_conn</span><span class="o">.</span><span class="n">get_temporal_extent</span><span class="p">(</span><span class="o">**</span><span class="bp">self</span><span class="o">.</span><span class="n">temporal</span><span class="p">)</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">vertical</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">vertical_data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_conn</span><span class="o">.</span><span class="n">get_vertical_extent</span><span class="p">(</span><span class="o">**</span><span class="bp">self</span><span class="o">.</span><span class="n">vertical</span><span class="p">)</span>
+
+            <span class="bp">self</span><span class="o">.</span><span class="n">xml_text</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_session</span><span class="o">.</span><span class="n">get_record</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">uuid</span><span class="p">)</span>
+            <span class="n">payload</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">build_api_payload</span><span class="p">()</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Updating extent data for </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">uuid</span><span class="p">))</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_session</span><span class="o">.</span><span class="n">update_record</span><span class="p">(</span><span class="n">_uuid</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">uuid</span><span class="p">,</span> <span class="n">changes</span><span class="o">=</span><span class="n">payload</span><span class="p">)</span></div></div>
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2018, AODN.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

@@ -12,17 +12,6 @@ Subpackages
    aodncore.testlib
    aodncore.util
 
-Submodules
-----------
-
-aodncore.version module
------------------------
-
-.. automodule:: aodncore.version
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
 Module contents
 ---------------
 

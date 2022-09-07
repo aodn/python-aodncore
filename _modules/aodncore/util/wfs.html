@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>aodncore.util.wfs &mdash; aodncore 1.4.2 documentation</title>
+      <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../../../" id="documentation_options" src="../../../_static/documentation_options.js"></script>
+        <script src="../../../_static/jquery.js"></script>
+        <script src="../../../_static/underscore.js"></script>
+        <script src="../../../_static/_sphinx_javascript_frameworks_compat.js"></script>
+        <script src="../../../_static/doctools.js"></script>
+    <script src="../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="../../../index.html" class="icon icon-home"> aodncore
+          </a>
+              <div class="version">
+                1.4
+              </div>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Quick Start Guide:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../quickstartdoc.html">Writing a <code class="xref py py-meth docutils literal notranslate"><span class="pre">dest_path()</span></code> function</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../quickstartdoc.html#overriding-default-file-actions">Overriding default file actions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../quickstartdoc.html#creating-products-during-the-handler-lifetime">Creating products during the handler lifetime</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../quickstartdoc.html#query-storage">Query Storage</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">User documentation:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../userdoc.html">Overview</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../userdoc.html#state-machine-handler-steps">State machine / handler steps</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../userdoc.html#customising-handler-behaviour">Customising handler behaviour</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../userdoc.html#attributes">Attributes</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Developer documentation:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../developerdoc.html">Overview</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Module contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../modules.html">aodncore</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">aodncore</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../index.html" class="icon icon-home"></a> &raquo;</li>
+          <li><a href="../../index.html">Module code</a> &raquo;</li>
+      <li>aodncore.util.wfs</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for aodncore.util.wfs</h1><div class="highlight"><pre>
+<span></span><span class="kn">import</span> <span class="nn">json</span>
+<span class="kn">import</span> <span class="nn">warnings</span>
+<span class="kn">from</span> <span class="nn">collections</span> <span class="kn">import</span> <span class="n">OrderedDict</span>
+
+<span class="kn">from</span> <span class="nn">owslib.etree</span> <span class="kn">import</span> <span class="n">etree</span>
+<span class="kn">from</span> <span class="nn">owslib.fes</span> <span class="kn">import</span> <span class="n">PropertyIsEqualTo</span>
+<span class="kn">from</span> <span class="nn">owslib.wfs</span> <span class="kn">import</span> <span class="n">WebFeatureService</span>
+
+<span class="kn">from</span> <span class="nn">..util</span> <span class="kn">import</span> <span class="n">IndexedSet</span><span class="p">,</span> <span class="n">lazyproperty</span>
+
+<span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="s1">&#39;DEFAULT_WFS_VERSION&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;WfsBroker&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;get_ogc_expression_for_file_url&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;ogc_filter_to_string&#39;</span>
+<span class="p">]</span>
+
+<span class="n">DEFAULT_WFS_VERSION</span> <span class="o">=</span> <span class="s1">&#39;1.1.0&#39;</span>
+
+
+<div class="viewcode-block" id="ogc_filter_to_string"><a class="viewcode-back" href="../../../aodncore.util.html#aodncore.util.wfs.ogc_filter_to_string">[docs]</a><span class="k">def</span> <span class="nf">ogc_filter_to_string</span><span class="p">(</span><span class="n">ogc_expression</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Convert an OGCExpression object into it&#39;s XML string representation. If parameter is a `str` object, it is</span>
+<span class="sd">        returned unchanged</span>
+
+<span class="sd">    :param ogc_expression: OGCExpression object</span>
+<span class="sd">    :return: XML string representation of the input object</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">ogc_expression</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">ogc_expression</span>
+    <span class="k">return</span> <span class="n">etree</span><span class="o">.</span><span class="n">tostring</span><span class="p">(</span><span class="n">ogc_expression</span><span class="o">.</span><span class="n">toXML</span><span class="p">(),</span> <span class="n">encoding</span><span class="o">=</span><span class="s1">&#39;unicode&#39;</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="get_ogc_expression_for_file_url"><a class="viewcode-back" href="../../../aodncore.util.html#aodncore.util.wfs.get_ogc_expression_for_file_url">[docs]</a><span class="k">def</span> <span class="nf">get_ogc_expression_for_file_url</span><span class="p">(</span><span class="n">file_url</span><span class="p">,</span> <span class="n">property_name</span><span class="o">=</span><span class="s1">&#39;url&#39;</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Return OGCExpression to query for a single file_url</span>
+
+<span class="sd">    :param file_url: URL string</span>
+<span class="sd">    :param property_name: URL property name to filter on</span>
+<span class="sd">    :return: OGCExpression which may be used to query the given URL value</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">PropertyIsEqualTo</span><span class="p">(</span><span class="n">propertyname</span><span class="o">=</span><span class="n">property_name</span><span class="p">,</span> <span class="n">literal</span><span class="o">=</span><span class="n">file_url</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="WfsBroker"><a class="viewcode-back" href="../../../aodncore.util.html#aodncore.util.wfs.WfsBroker">[docs]</a><span class="k">class</span> <span class="nc">WfsBroker</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Simple higher level interface to a WebFeatureService instance, to provide common helper methods and standardise</span>
+<span class="sd">    response handling around JSON</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="c1"># The *first* matching property name found by the WebFeatureService.get_schema method will be considered to be the</span>
+    <span class="c1"># &quot;url&quot; property for a given layer. Accordingly, this should be ordered with highest priority name first.</span>
+    <span class="n">url_propertyname_candidates</span> <span class="o">=</span> <span class="p">(</span><span class="s1">&#39;file_url&#39;</span><span class="p">,</span> <span class="s1">&#39;url&#39;</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">wfs_url</span><span class="p">,</span> <span class="n">version</span><span class="o">=</span><span class="n">DEFAULT_WFS_VERSION</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_wfs_url</span> <span class="o">=</span> <span class="n">wfs_url</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_wfs_version</span> <span class="o">=</span> <span class="n">version</span>
+
+    <span class="nd">@lazyproperty</span>
+    <span class="k">def</span> <span class="nf">wfs</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Read-only property to access the instantiated WebFeatureService object directly</span>
+
+<span class="sd">        Note: lazily initialised because instantiating a WebFeatureService causes HTTP traffic, which is only</span>
+<span class="sd">        desirable if subsequent WFS requests are actually going to be made (which isn&#39;t always the case when</span>
+<span class="sd">        instantiating this broker class)</span>
+
+<span class="sd">        :return: WebFeatureService instance</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">WebFeatureService</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_wfs_url</span><span class="p">,</span> <span class="n">version</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_wfs_version</span><span class="p">)</span>
+
+<div class="viewcode-block" id="WfsBroker.getfeature_dict"><a class="viewcode-back" href="../../../aodncore.util.html#aodncore.util.wfs.WfsBroker.getfeature_dict">[docs]</a>    <span class="k">def</span> <span class="nf">getfeature_dict</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">layer</span><span class="p">,</span> <span class="n">ogc_expression</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Make a GetFeature request, and return the response in a native dict.</span>
+
+<span class="sd">        :param layer: layer name supplied to GetFeature typename parameter</span>
+<span class="sd">        :param ogc_expression: OgcExpression used to filter the returned features. If omitted, returns all features.</span>
+<span class="sd">        :param kwargs: keyword arguments passed to the underlying WebFeatureService.getfeature method</span>
+<span class="sd">        :return: dict containing the parsed GetFeature response</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">getfeature_kwargs</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+
+        <span class="c1"># convert expression to XML string representation as required by underlying WFS API</span>
+        <span class="k">if</span> <span class="n">ogc_expression</span><span class="p">:</span>
+            <span class="n">getfeature_kwargs</span><span class="p">[</span><span class="s1">&#39;filter&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">ogc_filter_to_string</span><span class="p">(</span><span class="n">ogc_expression</span><span class="p">)</span>
+
+        <span class="c1"># force the output format to JSON, as other formats don&#39;t make sense in the context of parsing into a dict</span>
+        <span class="n">getfeature_kwargs</span><span class="p">[</span><span class="s1">&#39;outputFormat&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;json&#39;</span>
+
+        <span class="n">getfeature_kwargs</span><span class="p">[</span><span class="s1">&#39;typename&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">layer</span>
+
+        <span class="n">response</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">wfs</span><span class="o">.</span><span class="n">getfeature</span><span class="p">(</span><span class="o">**</span><span class="n">getfeature_kwargs</span><span class="p">)</span>
+        <span class="n">response_body</span> <span class="o">=</span> <span class="n">response</span><span class="o">.</span><span class="n">getvalue</span><span class="p">()</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">json</span><span class="o">.</span><span class="n">loads</span><span class="p">(</span><span class="n">response_body</span><span class="p">,</span> <span class="n">object_pairs_hook</span><span class="o">=</span><span class="n">OrderedDict</span><span class="p">)</span>
+        <span class="k">finally</span><span class="p">:</span>
+            <span class="n">response</span><span class="o">.</span><span class="n">close</span><span class="p">()</span></div>
+
+<div class="viewcode-block" id="WfsBroker.get_url_property_name"><a class="viewcode-back" href="../../../aodncore.util.html#aodncore.util.wfs.WfsBroker.get_url_property_name">[docs]</a>    <span class="k">def</span> <span class="nf">get_url_property_name</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">layer</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Get the URL property name for a given layer</span>
+
+<span class="sd">        :param layer: schema dict as returned by WebFeatureService.get_schema</span>
+<span class="sd">        :return: string containing the URL property name</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">schema</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">wfs</span><span class="o">.</span><span class="n">get_schema</span><span class="p">(</span><span class="n">layer</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">candidate</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">url_propertyname_candidates</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">candidate</span> <span class="ow">in</span> <span class="n">schema</span><span class="p">[</span><span class="s1">&#39;properties&#39;</span><span class="p">]:</span>
+                <span class="k">return</span> <span class="n">candidate</span>
+        <span class="k">else</span><span class="p">:</span>  <span class="c1"># pragma: no cover</span>
+            <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s1">&#39;unable to determine URL property name!&#39;</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="WfsBroker.query_files"><a class="viewcode-back" href="../../../aodncore.util.html#aodncore.util.wfs.WfsBroker.query_files">[docs]</a>    <span class="k">def</span> <span class="nf">query_files</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">layer</span><span class="p">,</span> <span class="n">ogc_expression</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">url_property_name</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Return an IndexedSet of files for a given layer</span>
+
+<span class="sd">        :param layer: layer name supplied to GetFeature typename parameter</span>
+<span class="sd">        :param ogc_expression: OgcExpression used to filter the returned features. If omitted, all URLs are returned.</span>
+<span class="sd">        :param url_property_name: property name for file URL. If omitted, property name is determined from layer schema</span>
+<span class="sd">        :return: list of files for the layer</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">if</span> <span class="n">url_property_name</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">url_property_name</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_url_property_name</span><span class="p">(</span><span class="n">layer</span><span class="p">)</span>
+
+        <span class="n">getfeature_kwargs</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="s1">&#39;propertyname&#39;</span><span class="p">:</span> <span class="n">url_property_name</span>
+        <span class="p">}</span>
+
+        <span class="k">if</span> <span class="n">ogc_expression</span><span class="p">:</span>
+            <span class="n">getfeature_kwargs</span><span class="p">[</span><span class="s1">&#39;ogc_expression&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">ogc_expression</span>
+
+        <span class="n">parsed_response</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">getfeature_dict</span><span class="p">(</span><span class="n">layer</span><span class="p">,</span> <span class="o">**</span><span class="n">getfeature_kwargs</span><span class="p">)</span>
+        <span class="n">file_urls</span> <span class="o">=</span> <span class="n">IndexedSet</span><span class="p">(</span><span class="n">f</span><span class="p">[</span><span class="s1">&#39;properties&#39;</span><span class="p">][</span><span class="n">url_property_name</span><span class="p">]</span> <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="n">parsed_response</span><span class="p">[</span><span class="s1">&#39;features&#39;</span><span class="p">])</span>
+        <span class="k">return</span> <span class="n">file_urls</span></div>
+
+<div class="viewcode-block" id="WfsBroker.query_urls_for_layer"><a class="viewcode-back" href="../../../aodncore.util.html#aodncore.util.wfs.WfsBroker.query_urls_for_layer">[docs]</a>    <span class="k">def</span> <span class="nf">query_urls_for_layer</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">layer</span><span class="p">,</span> <span class="n">ogc_expression</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">url_property_name</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="s2">&quot;This method will be removed in a future version. Please update code to use &quot;</span>
+                      <span class="s2">&quot;`query_files` instead.&quot;</span><span class="p">,</span> <span class="ne">DeprecationWarning</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">query_files</span><span class="p">(</span><span class="n">layer</span><span class="p">,</span> <span class="n">ogc_expression</span><span class="o">=</span><span class="n">ogc_expression</span><span class="p">,</span> <span class="n">url_property_name</span><span class="o">=</span><span class="n">url_property_name</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="WfsBroker.query_file_exists"><a class="viewcode-back" href="../../../aodncore.util.html#aodncore.util.wfs.WfsBroker.query_file_exists">[docs]</a>    <span class="k">def</span> <span class="nf">query_file_exists</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">layer</span><span class="p">,</span> <span class="n">name</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Returns a bool representing whether a given &#39;file_url&#39; is present in a layer</span>
+
+<span class="sd">        :param layer: layer name supplied to GetFeature typename parameter</span>
+<span class="sd">        :param name: &#39;file_url&#39; inserted into OGC filter, and supplied to GetFeature filter parameter</span>
+<span class="sd">        :return: whether the given file is present in the layer</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">url_property_name</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_url_property_name</span><span class="p">(</span><span class="n">layer</span><span class="p">)</span>
+        <span class="n">ogc_expression</span> <span class="o">=</span> <span class="n">get_ogc_expression_for_file_url</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">property_name</span><span class="o">=</span><span class="n">url_property_name</span><span class="p">)</span>
+        <span class="n">file_urls</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">query_files</span><span class="p">(</span><span class="n">layer</span><span class="p">,</span> <span class="n">ogc_expression</span><span class="o">=</span><span class="n">ogc_expression</span><span class="p">,</span> <span class="n">url_property_name</span><span class="o">=</span><span class="n">url_property_name</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">name</span> <span class="ow">in</span> <span class="n">file_urls</span></div></div>
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2018, AODN.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>
