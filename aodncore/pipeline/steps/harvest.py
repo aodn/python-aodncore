@@ -58,6 +58,8 @@ def get_harvester_runner(harvester_name, store_runner, harvest_params, tmp_base_
         return TalendHarvesterRunner(store_runner, harvest_params, tmp_base_dir, config, logger)
     elif harvester_name == 'csv':
         return CsvHarvesterRunner(store_runner, harvest_params, config, logger)
+    elif harvester_name is None:
+        return NoHarvestRunner(store_runner, config, logger)
     else:
         raise InvalidHarvesterError("invalid harvester '{name}'".format(name=harvester_name))
 
@@ -565,6 +567,23 @@ class CsvHarvesterRunner(BaseHarvesterRunner):
         if not found:
             self.unexpected_pipeline_files.append(pf.local_path)
         return True
+
+
+class NoHarvestRunner(BaseHarvesterRunner):
+    """:py:class:`BaseHarvesterRunner` implementation to store files without harvest."""
+
+    def __init__(self, storage_broker, config, logger):
+        super().__init__(config, logger)
+        self.storage_broker = storage_broker
+        self.config = self._config
+        self.logger = self._logger
+        self.unexpected_pipeline_files = []
+
+    def run(self, pipeline_files):
+
+        files_to_upload = pipeline_files.filter_by_bool_attribute('pending_store_addition')
+        if files_to_upload:
+            self.storage_broker.upload(pipeline_files=files_to_upload)
 
 
 validate_triggerevent = validate_type(TriggerEvent)

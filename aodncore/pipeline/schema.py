@@ -147,6 +147,7 @@ PIPELINE_CONFIG_SCHEMA = {
                     'type': 'array',
                     'items': {'type': 'string'}
                 },
+                'landing_bucket': {'type': 'string'},
                 'archive_uri': {'type': 'string'},
                 'error_uri': {'type': 'string'},
                 'opendap_root': {'type': 'string'},
