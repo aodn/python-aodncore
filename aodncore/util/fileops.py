@@ -18,6 +18,9 @@ from tempfile import TemporaryFile
 import magic
 import netCDF4
 
+
+from aodncore.util.s3_util import *
+
 __all__ = [
     'TemporaryDirectory',
     'extract_gzip',
@@ -329,7 +332,6 @@ def rm_rf(path):
         elif e.errno != errno.ENOENT:
             raise  # pragma: no cover
 
-
 def safe_copy_file(source, destination, overwrite=False):
     """Copy a file atomically by copying first to a temporary file in the same directory (and therefore filesystem) as
     the intended destination, before performing a rename (which is atomic)
@@ -339,10 +341,11 @@ def safe_copy_file(source, destination, overwrite=False):
     :param overwrite: set to True to allow existing destination file to be overwritten
     :return: None
     """
-    if not os.path.exists(source):
+
+    if not os.path.exists(source) and not is_s3(source):
         raise OSError("source file '{source}' does not exist".format(source=source))
     if source == destination:
-        raise OSError("source file and destination file can't refer the to same file")
+        raise OSError("source file and destination file can't refer to the same file")
     if not overwrite and os.path.exists(destination):
         raise OSError("destination file '{destination}' already exists".format(destination=destination))
 
@@ -350,8 +353,11 @@ def safe_copy_file(source, destination, overwrite=False):
     try:
         with tempfile.NamedTemporaryFile(mode='wb', dir=os.path.dirname(destination), delete=False) as temp_destination:
             temp_destination_name = temp_destination.name
-            with open(source, 'rb') as f:
-                shutil.copyfileobj(f, temp_destination)
+            if is_s3(source):
+                download_object(get_s3_bucket(source), get_s3_key(source), temp_destination_name)
+            else:
+                with open(source, 'rb') as f:
+                    shutil.copyfileobj(f, temp_destination)
         os.rename(temp_destination_name, destination)
     finally:
         try:
