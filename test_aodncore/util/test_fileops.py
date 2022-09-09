@@ -251,7 +251,7 @@ class TestUtilFileOps(BaseTestCase):
         with open(temp_source_file_path, 'w') as f:
             f.write(u'foobar')
 
-        with self.assertRaisesRegex(OSError, r"source file and destination file can't refer the to same file"):
+        with self.assertRaisesRegex(OSError, r"source file and destination file can't refer to the same file"):
             safe_copy_file(temp_source_file_path, temp_source_file_path)
 
         safe_copy_file(temp_source_file_path, temp_dest_file_path)
