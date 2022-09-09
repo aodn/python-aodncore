@@ -14,12 +14,13 @@ s3 = boto3.resource('s3')
 
 
 def move_object(key, source_bucket, dest_bucket):
+    # Move objects between buckets
     copy_source = {
         'Bucket': source_bucket,
         'Key': key
     }
     s3.meta.client.copy(copy_source, dest_bucket, key)
-    s3.Object(source_bucket, key).delete()
+    delete_object(source_bucket, key)
 
     return True
 
@@ -32,6 +33,10 @@ def list_1000_objects(bucket, prefix):
 
 def download_object(bucket, key, destination):
     s3.Object(bucket, key).download_file(destination)
+
+
+def delete_object(bucket, key):
+    s3.Object(bucket, key).delete()
 
 
 def is_s3(url):

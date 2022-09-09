@@ -17,7 +17,7 @@ from tempfile import TemporaryFile
 
 import magic
 import netCDF4
-
+from botocore.exceptions import ClientError
 
 from aodncore.util.s3_util import *
 
@@ -49,6 +49,8 @@ __all__ = [
     'validate_dir_writable',
     'validate_file_writable'
 ]
+
+from aodncore.util.s3_util import delete_object
 
 # allow for consistent sorting of filesystem directory listings
 locale.setlocale(locale.LC_ALL, 'C')
@@ -332,7 +334,8 @@ def rm_rf(path):
         elif e.errno != errno.ENOENT:
             raise  # pragma: no cover
 
-def safe_copy_file(source, destination, overwrite=False):
+
+def safe_copy_file(source, destination, overwrite=False, move=False):
     """Copy a file atomically by copying first to a temporary file in the same directory (and therefore filesystem) as
     the intended destination, before performing a rename (which is atomic)
 
@@ -377,7 +380,10 @@ def safe_move_file(src, dst, overwrite=False):
     :return: None
     """
     safe_copy_file(src, dst, overwrite)
-    os.remove(src)
+    if is_s3(src):
+        delete_object(get_s3_bucket(src), get_s3_key(src))
+    else:
+        os.remove(src)
 
 
 def validate_dir_writable(path):

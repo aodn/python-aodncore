@@ -3,8 +3,9 @@ import os
 
 from aodncore.pipeline import HandlerBase, FileType
 from aodncore.pipeline.exceptions import InvalidInputFileError
-from aodncore.pipeline.handlerbase import FALLBACK_LOG_LEVEL, FALLBACK_LOG_FORMAT
 from aodncore.pipeline.log import get_pipeline_logger
+from aodncore.pipeline.steps import get_resolve_runner
+from aodncore.util import ensure_regex_list
 
 
 class PrefectHandlerBase(HandlerBase):
@@ -41,3 +42,19 @@ class PrefectHandlerBase(HandlerBase):
         self._logger = logger
         self._celery_task_id = None
         self._celery_task_name = 'NO_TASK'
+
+    def _resolve(self):
+        resolve_runner = get_resolve_runner(self.input_file, self.collection_dir, self.config, self.logger,
+                                            self.resolve_params)
+        self.logger.sysinfo("get_resolve_runner -> {resolve_runner}".format(resolve_runner=resolve_runner))
+        resolved_files = resolve_runner.run(move=True)
+
+        resolved_files.set_file_update_callback(self._file_update_callback)
+
+        # if include_regexes is not defined, default to including all files when setting publish types
+        include_regexes = self.include_regexes if self.include_regexes else ensure_regex_list([r'.*'])
+        resolved_files.set_publish_types_from_regexes(include_regexes, self.exclude_regexes,
+                                                      self.default_addition_publish_type,
+                                                      self.default_deletion_publish_type)
+
+        self.file_collection.update(resolved_files)
