@@ -31,8 +31,7 @@ class PrefectHandlerBase(HandlerBase):
 
     def _init_logger(self, logger_function):
 
-        logging.basicConfig(level=FALLBACK_LOG_LEVEL, format=FALLBACK_LOG_FORMAT)
-        logger = get_pipeline_logger('', logger_function=logger_function)
+        logger = get_pipeline_logger(None, logger_function=logger_function)
 
         # turn down logging for noisy libraries to WARN, unless overridden in pipeline config 'liblevel' key
         liblevel = getattr(self.config, 'pipeline_config', {}).get('logging', {}).get('liblevel', 'WARN')
@@ -42,4 +41,3 @@ class PrefectHandlerBase(HandlerBase):
         self._logger = logger
         self._celery_task_id = None
         self._celery_task_name = 'NO_TASK'
-        self._pipeline_name = 'NO_PIPELINE'
