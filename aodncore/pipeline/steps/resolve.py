@@ -34,7 +34,8 @@ from ..common import FileType, PipelineFilePublishType
 from ..exceptions import InvalidFileFormatError
 from ..files import PipelineFile, PipelineFileCollection, RemotePipelineFile
 from ..schema import validate_json_manifest
-from ...util import extract_gzip, extract_zip, list_regular_files, is_gzip_file, is_zip_file, safe_copy_file
+from ...util import extract_gzip, extract_zip, list_regular_files, is_gzip_file, is_zip_file, safe_copy_file, \
+    safe_move_file
 
 __all__ = [
     'get_resolve_runner',
@@ -98,10 +99,14 @@ class BaseResolveRunner(BaseStepRunner, metaclass=abc.ABCMeta):
 
 
 class SingleFileResolveRunner(BaseResolveRunner):
-    def run(self):
+    def run(self, move=False):
         name = os.path.basename(self.input_file)
         temp_location = os.path.join(self.output_dir, name)
-        safe_copy_file(self.input_file, temp_location)
+        if move:
+            safe_move_file(self.input_file, temp_location)
+        else:
+            safe_copy_file(self.input_file, temp_location)
+
 
         self._collection.add(temp_location)
         return self._collection
