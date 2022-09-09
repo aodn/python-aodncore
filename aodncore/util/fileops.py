@@ -17,7 +17,6 @@ from tempfile import TemporaryFile
 
 import magic
 import netCDF4
-from botocore.exceptions import ClientError
 
 from aodncore.util.s3_util import *
 
@@ -49,8 +48,6 @@ __all__ = [
     'validate_dir_writable',
     'validate_file_writable'
 ]
-
-from aodncore.util.s3_util import delete_object
 
 # allow for consistent sorting of filesystem directory listings
 locale.setlocale(locale.LC_ALL, 'C')

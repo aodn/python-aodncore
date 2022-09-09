@@ -7,7 +7,8 @@ __all__ = [
     "download_object",
     "is_s3",
     "get_s3_bucket",
-    "get_s3_key"
+    "get_s3_key",
+    "delete_object"
 ]
 
 s3 = boto3.resource('s3')
