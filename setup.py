@@ -21,6 +21,7 @@ INSTALL_REQUIRES = [
 
 TESTS_REQUIRE = [
     'pytest',
+    'setuptools_scm',
     'testcontainers[postgresql]'
 ]
 
@@ -43,7 +44,8 @@ PACKAGE_SCRIPTS = ['aodncore/bin/drawmachine.py', 'aodncore/pipeline/watchservic
 
 setup(
     name=PACKAGE_NAME,
-    version='0.0.0',
+    use_scm_version=True,
+    setup_requires=['setuptools_scm'],
     scripts=PACKAGE_SCRIPTS,
     packages=find_packages(exclude=PACKAGE_EXCLUDES),
     package_data=PACKAGE_DATA,

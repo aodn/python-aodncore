@@ -1,7 +1,13 @@
+# Ignore the version file, it's created on install
+aodncore/_version.py
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
 *$py.class
+
+# Ignore .idea folder
+.idea
 
 # C extensions
 *.so

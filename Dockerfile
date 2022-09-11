@@ -1,4 +1,4 @@
-FROM ubuntu:latest
+FROM ubuntu:20.04
 
 ARG BUILDER_UID=9999
 ARG DEBIAN_FRONTEND=noninteractive
@@ -7,7 +7,7 @@ ENV TZ=Australia/Hobart
 ENV LC_ALL C.UTF-8
 ENV LANG C.UTF-8
 ENV PATH /home/builder/.local/bin:$PATH
-ENV PYTHON_VERSION 3.5.2
+ENV PYTHON_VERSION 3.8.13
 
 RUN apt-get update && \
     apt-get install -y software-properties-common && \
@@ -15,25 +15,16 @@ RUN apt-get update && \
 
 RUN add-apt-repository ppa:rael-gc/rvm && apt-get update
 
-RUN if [ X"$PYTHON_VERSION" = X"3.5.2" ]; \
-        then apt-get install -y libssl1.0-dev; \
-        else apt-get install -y  libssl-dev; \
-    fi
-
 RUN apt-get install -y --no-install-recommends \
-    build-essential \
     ca-certificates \
     git \
     libmagic1 \
     libudunits2-dev \
     python3-dev \
-    wget \
-    libffi-dev \
-    # Pyenv pre-requisites
-    make zlib1g-dev libbz2-dev libreadline-dev \
-    libsqlite3-dev wget curl llvm libncurses5-dev \
-    libncursesw5-dev xz-utils tk-dev libffi-dev \
-    liblzma-dev python-openssl \
+    # Pyenv pre-requisites (from https://github.com/pyenv/pyenv/wiki#suggested-build-environment)
+    make build-essential libssl-dev zlib1g-dev \
+    libbz2-dev libreadline-dev libsqlite3-dev wget curl llvm \
+    libncursesw5-dev xz-utils tk-dev libxml2-dev libxmlsec1-dev libffi-dev liblzma-dev \
     && rm -rf /var/lib/apt/lists/*
 
 # Set-up necessary Env vars for PyEnv
@@ -48,15 +39,15 @@ RUN set -ex \
     && pyenv rehash \
     && chmod -R a+w $PYENV_ROOT/shims
 
-RUN pip install --upgrade pip==20.3.4 setuptools==50.3.2
+RUN pip install --upgrade pip==22.1.2 setuptools==63.1.0 wheel build
 
 RUN pip install \
-    Cython==0.29 \    
-    bump2version==0.5.10 \
-    sphinx==2.2.2 \
-    sphinx_rtd_theme==0.4.3 \
-    numpy \
-    wheel
+    Cython==0.29.30 \
+    bump2version==1.0.1 \
+    sphinx==5.0.2 \
+    sphinx_rtd_theme==1.0.0 \
+    numpy==1.23.0 \
+    setuptools-scm==7.0.4
 
 RUN useradd --create-home --no-log-init --shell /bin/bash --uid $BUILDER_UID builder
 

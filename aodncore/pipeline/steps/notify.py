@@ -234,6 +234,14 @@ class NotifyRunnerAdapter(BaseNotifyRunner):
         return notify_list_object
 
 
+def smtp_server_init(host, port, timeout):
+    try:
+        smtp_server = smtplib.SMTP(host=host, port=port, timeout=timeout)
+        return smtp_server
+    except Exception as e:
+        return e
+
+
 class EmailNotifyRunner(BaseNotifyRunner):
     def _construct_message(self, recipient_addresses, subject, from_address):
         rendered_text, rendered_html = self.message_parts
@@ -277,11 +285,12 @@ class EmailNotifyRunner(BaseNotifyRunner):
         return message
 
     def _send(self, recipient_addresses, message):
-        smtp_server = smtplib.SMTP(timeout=60)
+        host = self._config.pipeline_config['mail']['smtp_server']
+        port = self._config.pipeline_config['mail'].get('smtp_port', 587)
+        timeout = 60
+        smtp_server = smtp_server_init(host, port, timeout)
         sendmail_result = None
         try:
-            smtp_server.connect(self._config.pipeline_config['mail']['smtp_server'],
-                                port=self._config.pipeline_config['mail'].get('smtp_port', 587))
             if self._config.pipeline_config['mail'].get('smtp_tls', True):
                 smtp_server.starttls()
             smtp_server.login(self._config.pipeline_config['mail']['smtp_user'],

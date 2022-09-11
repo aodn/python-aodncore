@@ -29,19 +29,18 @@ pipeline {
                         }
                     }
                 }
-                // Test stage commented out to allow builds to complete. See issue #1076 for details
-                //stage('test') {
-                //    steps {
-                //        sh 'pip install --user -r test_requirements.txt'
-                //        sh 'pytest'
-                //    }
-                //}
-                stage('package') {
+                // Test stage commented out to allow builds to complete. Requirements still needed for sphinx. See issue #1076 for details
+                stage('test') {
                     steps {
-                        sh 'python setup.py bdist_wheel'
+                        sh 'pip install --user -r test_requirements.txt'
+                //        sh 'pytest'
                     }
                 }
-		// Skip generate docs stage due to error. To be resolved later. See backlog item #3414 
+                stage('package') {
+                    steps {
+                        sh 'python -m build -w'
+                    }
+                }
                 stage('generate_docs') {
                     steps {
                         dir('sphinx') {
