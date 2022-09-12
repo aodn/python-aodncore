@@ -16,7 +16,7 @@ INSTALL_REQUIRES = [
     'tableschema>=1.19.4',
     'transitions>=0.7.1',
     'psycopg2-binary==2.8.6',
-    'PyYAML==5.3.1'
+    'PyYAML>=5.4.1'
 ]
 
 TESTS_REQUIRE = [
