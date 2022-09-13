@@ -8,10 +8,19 @@ __all__ = [
     "is_s3",
     "get_s3_bucket",
     "get_s3_key",
-    "delete_object"
+    "delete_object",
+    "set_s3"
 ]
 
-s3 = boto3.resource('s3')
+s3 = None
+
+def set_s3(credentials=None):
+    global s3
+    if credentials:
+        s3 = boto3.resource('s3', aws_session_token=credentials['SessionToken'])
+    else:
+        s3 = boto3.resource('s3')
+
 
 
 def move_object(key, source_bucket, dest_bucket):
