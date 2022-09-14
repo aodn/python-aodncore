@@ -257,7 +257,7 @@ PIPELINE_CONFIG_SCHEMA = {
         },
         'triggers': {
             'type': 'string',
-            'enum': ['EVENT', 'LOCAL_AGENT']
+            'enum': ['EVENT']
         }
     }
 }
