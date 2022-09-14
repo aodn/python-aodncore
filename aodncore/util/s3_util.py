@@ -14,13 +14,13 @@ __all__ = [
 
 s3 = None
 
+
 def set_s3(credentials=None):
     global s3
     if credentials:
         s3 = boto3.resource('s3', aws_session_token=credentials['SessionToken'])
     else:
         s3 = boto3.resource('s3')
-
 
 
 def move_object(key, source_bucket, dest_bucket):
