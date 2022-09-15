@@ -238,6 +238,7 @@ PIPELINE_CONFIG_SCHEMA = {
             'properties': {
                 "trigger_type": {'$ref': '#/definitions/triggers'},
                 "sns_topic_arn": {'type': 'string'},
+                "sns_message": {'type': 'string'},
                 "prefect_api_key": {'type': 'string'},
                 "prefect_queue_id": {'type': 'string'},
                 "prefect_deployment_id": {'type': 'string'},
