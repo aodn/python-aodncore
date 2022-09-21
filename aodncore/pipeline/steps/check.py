@@ -10,6 +10,8 @@ The most common use of this step is to test for compliance using the IOOS Compli
 import abc
 import itertools
 import os
+import re
+
 # from collections import namedtuple
 # import json
 
@@ -58,7 +60,7 @@ def get_child_check_runner(check_type, config, logger, check_params=None):
     elif check_type is PipelineFileCheckType.NONEMPTY_CHECK:
         return NonEmptyCheckRunner(config, logger)
     elif check_type is PipelineFileCheckType.TABLE_SCHEMA_CHECK:
-        return TableSchemaCheckRunner(config, logger)
+        return TableSchemaCheckRunner(config, logger, check_params)
     else:
         raise InvalidCheckTypeError("invalid check type '{check_type}'".format(check_type=check_type))
 
@@ -223,11 +225,18 @@ class NonEmptyCheckRunner(BaseCheckRunner):
 
 
 class TableSchemaCheckRunner(BaseCheckRunner):
-    def __init__(self, config, logger):
+    def __init__(self, config, logger, check_params=None):
         super().__init__(config, logger)
         self.compliance_log = []
         self.compliant = True
         self.schema_base_path = self._config.pipeline_config['harvester']['schema_base_dir']
+        self.tableschema_filename_pattern = None
+        if check_params is None:
+            check_params = {}
+        pattern = check_params.get("tableschema_filename_pattern", None)
+        if pattern is not None:
+            self._logger.sysinfo(f"Schema matching pattern is '{pattern}'")
+            self.tableschema_filename_pattern = re.compile(pattern)
 
     def _dict_to_str(self, _dict):
         _str = ''
@@ -248,7 +257,12 @@ class TableSchemaCheckRunner(BaseCheckRunner):
     def validate(self, path):
         self._reset_compliance()
         search_string = os.path.splitext(os.path.basename(path))[0]
+        if self.tableschema_filename_pattern is not None:
+            match = self.tableschema_filename_pattern.match(search_string)
+            if match:
+                search_string = match.group()
         fn = find_file(self.schema_base_path, '(.*){}(.*).yaml'.format(search_string))
+        self._logger.sysinfo(f"schema file: {fn}")
         if fn:
             with open(fn) as stream:
                 schema = get_tableschema_descriptor(yaml.safe_load(stream), 'schema')

@@ -1,4 +1,6 @@
 import os
+import re
+from glob import glob
 from tempfile import mkstemp
 
 from aodncore.pipeline import CheckResult, PipelineFile, PipelineFileCheckType, PipelineFileCollection
@@ -16,6 +18,8 @@ WARNING_NC = os.path.join(TESTDATA_DIR, 'test_manifest.nc')
 GOOD_CSV = os.path.join(TESTDATA_DIR, 'test_frictionless.csv')
 BAD_CSV = os.path.join(TESTDATA_DIR, 'invalid.schemadata.csv')
 UNMATCHED_CSV = os.path.join(TESTDATA_DIR, 'test_frictionless_no_resource.csv')
+SAME_SCHEMA_CSVS = glob(os.path.join(TESTDATA_DIR, "test_frictionless_subset*"))
+SAME_SCHEMA_CSVS.append(os.path.join(TESTDATA_DIR, 'simple_schema_data1.csv'))
 
 
 class TestPipelineStepsCheck(BaseTestCase):
@@ -41,6 +45,13 @@ class TestPipelineStepsCheck(BaseTestCase):
         ts_runner = get_child_check_runner(PipelineFileCheckType.TABLE_SCHEMA_CHECK, dummy_config(), self.test_logger,
                                            None)
         self.assertIsInstance(ts_runner, TableSchemaCheckRunner)
+        self.assertIsNone(ts_runner.tableschema_filename_pattern)
+
+        # make sure check_parames are passed through to TableSchemaCheckRunner
+        ts_runner = get_child_check_runner(PipelineFileCheckType.TABLE_SCHEMA_CHECK, dummy_config(), self.test_logger,
+                                           check_params={"tableschema_filename_pattern": "x.*"})
+        self.assertIsInstance(ts_runner, TableSchemaCheckRunner)
+        self.assertIsInstance(ts_runner.tableschema_filename_pattern, re.Pattern)
 
 
 class TestComplianceCheckerRunner(BaseTestCase):
@@ -223,3 +234,16 @@ class TestTableSchemaCheckRunner(BaseTestCase):
         self.assertFalse(check_result.compliant)
         self.assertFalse(check_result.errors)
         self.assertNotEqual(check_result.log, [])
+
+    def test_pattern_schema_match(self):
+        ts_runner = TableSchemaCheckRunner(dummy_config(), self.test_logger,
+                                           check_params={"tableschema_filename_pattern": "[^_]*(_[^_]*)?"}
+                                           )
+        collection = PipelineFileCollection(SAME_SCHEMA_CSVS)
+        ts_runner.run(collection)
+
+        failed_files = [(f.name, f.check_result.log)
+                        for f in collection
+                        if not f.check_result.compliant
+                        ]
+        self.assertEqual([], failed_files)
