@@ -223,6 +223,7 @@ class TestTableSchemaCheckRunner(BaseTestCase):
         self.assertFalse(check_result.compliant)
         self.assertFalse(check_result.errors)
         self.assertNotEqual(check_result.log, [])
+        self.assertLessEqual(len(check_result.log), 11)
 
     def test_missing_schema_file(self):
         ts_file = PipelineFile(UNMATCHED_CSV)

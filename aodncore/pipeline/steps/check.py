@@ -245,9 +245,7 @@ class TableSchemaCheckRunner(BaseCheckRunner):
         return _str[:-1]
 
     def _exc_handler(self, exc, row_number=None, row_data=None, error_data=None):
-        error = "Exception: {}\nRow Data: {}\nError Data: {}\n".format(str(exc),
-                                                                       self._dict_to_str(row_data),
-                                                                       self._dict_to_str(error_data))
+        error = f"Exception: {exc}\nError Data: {self._dict_to_str(error_data)}\n"
         self.compliance_log.append(error)
 
     def _reset_compliance(self):
@@ -268,8 +266,12 @@ class TableSchemaCheckRunner(BaseCheckRunner):
                 schema = get_tableschema_descriptor(yaml.safe_load(stream), 'schema')
                 table = tableschema.Table(path, schema)
                 _ = [r for r in table.iter(exc_handler=self._exc_handler)]
-            if len(self.compliance_log) > 0:
+            n_errors = len(self.compliance_log)
+            if n_errors > 0:
                 self.compliant = False
+                if n_errors > 10:
+                    self.compliance_log = self.compliance_log[:10]
+                    self.compliance_log.append(f"(Listing first 10 errors out of {n_errors})")
         else:
             self.compliance_log = ("could not find schema definition matching: {search_string}".format(
                     search_string=search_string),)
