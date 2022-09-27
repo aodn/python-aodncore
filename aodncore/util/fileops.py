@@ -20,6 +20,7 @@ import netCDF4
 
 __all__ = [
     'TemporaryDirectory',
+    'dir_exists',
     'extract_gzip',
     'extract_zip',
     'filesystem_sort_key',
@@ -89,6 +90,14 @@ try:
     TemporaryDirectory = tempfile.TemporaryDirectory
 except AttributeError:
     TemporaryDirectory = _TemporaryDirectory
+
+
+def dir_exists(path):
+    """Check directory exists at a given path returning True or False
+
+    :param path: directory to check
+    """
+    return os.path.isdir(path)
 
 
 def extract_gzip(gzip_path, dest_dir, dest_name=None):

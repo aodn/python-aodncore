@@ -1,5 +1,5 @@
 from .external import retry_decorator, IndexedSet, classproperty, lazyproperty
-from .fileops import (TemporaryDirectory, extract_gzip, extract_zip, filesystem_sort_key, get_file_checksum,
+from .fileops import (TemporaryDirectory, dir_exists, extract_gzip, extract_zip, filesystem_sort_key, get_file_checksum,
                       is_dir_writable, is_gzip_file, is_jpeg_file, is_json_file, is_netcdf_file, is_nonempty_file,
                       is_pdf_file, is_png_file, is_tiff_file, is_zip_file, list_regular_files, find_file, mkdir_p, rm_f,
                       rm_r, rm_rf, rm_rf, safe_copy_file, safe_move_file, validate_dir_writable, validate_file_writable)
