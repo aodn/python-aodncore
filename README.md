@@ -8,9 +8,11 @@ A new class, aodncore/pipeline/prefecthandlerbase.py. PrefectHandlerBase extends
 
 In PrefectHandlerBase the following HandlerBase methods are overridden:
 
-    _set_input_file_attributes is overridden to use the s3 ETag for the checksum
-    _init_logger is overridden to use the Prefect logger to log messages from aodncore to the Prefect Cloud UI
-    _resolve is overridden so that resolve runners can move files from the landing s3 to the local filesystem instead of copying. This is currently only available for the SingleFileResolveRunner.
+`_set_input_file_attributes` is overridden to use the s3 ETag for the checksum
+
+`_init_logger` is overridden to use the Prefect logger to log messages from aodncore to the Prefect Cloud UI.
+ 
+`_resolve` is overridden so that resolve runners can move files from the landing s3 to the local filesystem instead of copying. This is currently only available for the SingleFileResolveRunner.
 
 It is not intended for the Prefect pipelines to do the harvesting step. This would be part of additional Prefect flows downstream of the data ingestion. We have avoided the harvesting step by simply using a newly created NoHarvestRunner class in aodncore/pipeline/steps/harvest.py which will do the file upload without actually harvesting.
 
