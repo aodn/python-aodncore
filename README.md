@@ -4,7 +4,7 @@ This branch modifies the original python-aodncore and allows the pipeline steps 
 
 The branch also includes functions for processing files in s3 buckets (aodncore/util/s3_util.py) and some minor changes to use these instead of the local file system.
 
-A new class, aodncore/pipeline/prefecthandlerbase.py. PrefectHandlerBase extends HandlerBase and should be used instead of HandlerBase when creating pipelines for use in Prefect flows.
+A new class, aodncore/pipeline/prefecthandlerbase.py. `PrefectHandlerBase` extends `HandlerBase` and should be used instead of `HandlerBase` when creating pipelines for use in Prefect flows.
 
 In PrefectHandlerBase the following HandlerBase methods are overridden:
 
@@ -12,9 +12,9 @@ In PrefectHandlerBase the following HandlerBase methods are overridden:
 
 `_init_logger` is overridden to use the Prefect logger to log messages from aodncore to the Prefect Cloud UI.
  
-`_resolve` is overridden so that resolve runners can move files from the landing s3 to the local filesystem instead of copying. This is currently only available for the SingleFileResolveRunner.
+`_resolve` is overridden so that resolve runners can move files from the landing s3 to the local filesystem instead of copying. This is currently only available for the `SingleFileResolveRunner`.
 
-It is not intended for the Prefect pipelines to do the harvesting step. This would be part of additional Prefect flows downstream of the data ingestion. We have avoided the harvesting step by simply using a newly created NoHarvestRunner class in aodncore/pipeline/steps/harvest.py which will do the file upload without actually harvesting.
+It is not intended for the Prefect pipelines to do the harvesting step. This would be part of additional Prefect flows downstream of the data ingestion. We have avoided the harvesting step by simply using a newly created `NoHarvestRunner` class in `aodncore/pipeline/steps/harvest.py` which will do the file upload without actually harvesting.
 
 For additional details and notes on future possible work see https://github.com/aodn/backlog/issues/4290.
 
