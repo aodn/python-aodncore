@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>aodncore.pipeline.watch &mdash; aodncore 1.4.3 documentation</title>
+  <title>aodncore.pipeline.watch &mdash; aodncore 1.4.4 documentation</title>
       <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
   <!--[if lt IE 9]>
@@ -138,7 +138,7 @@
 <span class="kn">from</span> <span class="nn">celery.utils.log</span> <span class="kn">import</span> <span class="n">get_task_logger</span>
 
 <span class="kn">from</span> <span class="nn">.exceptions</span> <span class="kn">import</span> <span class="n">InvalidHandlerError</span>
-<span class="kn">from</span> <span class="nn">..util</span> <span class="kn">import</span> <span class="n">list_regular_files</span><span class="p">,</span> <span class="n">safe_move_file</span>
+<span class="kn">from</span> <span class="nn">..util</span> <span class="kn">import</span> <span class="n">dir_exists</span><span class="p">,</span> <span class="n">list_regular_files</span><span class="p">,</span> <span class="n">safe_move_file</span>
 
 <span class="c1"># Filter noisy and useless numpy warnings</span>
 <span class="c1"># Reference: https://github.com/numpy/numpy/pull/432</span>
@@ -658,14 +658,19 @@
 <span class="sd">        :return: None</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">for</span> <span class="n">directory</span><span class="p">,</span> <span class="n">queue</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_config</span><span class="o">.</span><span class="n">watch_directory_map</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
-            <span class="k">for</span> <span class="n">existing_file</span> <span class="ow">in</span> <span class="n">list_regular_files</span><span class="p">(</span><span class="n">directory</span><span class="p">):</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">_logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span>
-                    <span class="s2">&quot;queuing existing file: existing_file=&#39;</span><span class="si">{existing_file}</span><span class="s2">&#39;&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
-                        <span class="n">existing_file</span><span class="o">=</span><span class="n">existing_file</span><span class="p">))</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">_event_handler</span><span class="o">.</span><span class="n">queue_task</span><span class="p">(</span><span class="n">directory</span><span class="p">,</span> <span class="n">existing_file</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">dir_exists</span><span class="p">(</span><span class="n">directory</span><span class="p">):</span>
+                <span class="k">for</span> <span class="n">existing_file</span> <span class="ow">in</span> <span class="n">list_regular_files</span><span class="p">(</span><span class="n">directory</span><span class="p">):</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">_logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span>
+                        <span class="s2">&quot;queuing existing file: existing_file=&#39;</span><span class="si">{existing_file}</span><span class="s2">&#39;&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                            <span class="n">existing_file</span><span class="o">=</span><span class="n">existing_file</span><span class="p">))</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">_event_handler</span><span class="o">.</span><span class="n">queue_task</span><span class="p">(</span><span class="n">directory</span><span class="p">,</span> <span class="n">existing_file</span><span class="p">)</span>
 
-            <span class="bp">self</span><span class="o">.</span><span class="n">_logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;adding watch for &#39;</span><span class="si">{directory}</span><span class="s2">&#39;&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">directory</span><span class="o">=</span><span class="n">directory</span><span class="p">))</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_watch_manager</span><span class="o">.</span><span class="n">add_watch</span><span class="p">(</span><span class="n">directory</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">EVENT_MASK</span><span class="p">)</span></div>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;adding watch for &#39;</span><span class="si">{directory}</span><span class="s2">&#39;&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">directory</span><span class="o">=</span><span class="n">directory</span><span class="p">))</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_watch_manager</span><span class="o">.</span><span class="n">add_watch</span><span class="p">(</span><span class="n">directory</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">EVENT_MASK</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_logger</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span>
+                    <span class="s2">&quot;skipping directory &#39;</span><span class="si">{directory}</span><span class="s2">&#39; because it does not exist. Check pipeline watch config file&quot;</span>
+                    <span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">directory</span><span class="o">=</span><span class="n">directory</span><span class="p">))</span></div>
 
 
 <span class="n">validate_exitpolicy</span> <span class="o">=</span> <span class="n">validate_membership</span><span class="p">(</span><span class="n">ExitPolicy</span><span class="p">)</span>
