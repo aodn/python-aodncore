@@ -50,7 +50,7 @@ from celery import Task
 from celery.utils.log import get_task_logger
 
 from .exceptions import InvalidHandlerError
-from ..util import list_regular_files, safe_move_file
+from ..util import dir_exists, list_regular_files, safe_move_file
 
 # Filter noisy and useless numpy warnings
 # Reference: https://github.com/numpy/numpy/pull/432
@@ -570,14 +570,19 @@ class WatchServiceManager(object):
         :return: None
         """
         for directory, queue in self._config.watch_directory_map.items():
-            for existing_file in list_regular_files(directory):
-                self._logger.info(
-                    "queuing existing file: existing_file='{existing_file}'".format(
-                        existing_file=existing_file))
-                self._event_handler.queue_task(directory, existing_file)
+            if dir_exists(directory):
+                for existing_file in list_regular_files(directory):
+                    self._logger.info(
+                        "queuing existing file: existing_file='{existing_file}'".format(
+                            existing_file=existing_file))
+                    self._event_handler.queue_task(directory, existing_file)
 
-            self._logger.info("adding watch for '{directory}'".format(directory=directory))
-            self._watch_manager.add_watch(directory, self.EVENT_MASK)
+                self._logger.info("adding watch for '{directory}'".format(directory=directory))
+                self._watch_manager.add_watch(directory, self.EVENT_MASK)
+            else:
+                self._logger.warn(
+                    "skipping directory '{directory}' because it does not exist. Check pipeline watch config file"
+                    .format(directory=directory))
 
 
 validate_exitpolicy = validate_membership(ExitPolicy)

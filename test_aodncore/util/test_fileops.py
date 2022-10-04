@@ -5,10 +5,10 @@ import socket
 import uuid
 import zipfile
 from io import open
-from tempfile import mkdtemp, mkstemp
+from tempfile import mkdtemp, mkstemp, TemporaryDirectory
 
 from aodncore.testlib import BaseTestCase, get_nonexistent_path
-from aodncore.util import (extract_gzip, extract_zip, is_gzip_file, is_jpeg_file, is_netcdf_file, is_pdf_file,
+from aodncore.util import (dir_exists, extract_gzip, extract_zip, is_gzip_file, is_jpeg_file, is_netcdf_file, is_pdf_file,
                            is_png_file, is_tiff_file, is_zip_file, list_regular_files, find_file, mkdir_p, rm_f, rm_r,
                            rm_rf, safe_copy_file, safe_move_file, get_file_checksum, TemporaryDirectory)
 from aodncore.util.misc import format_exception
@@ -22,6 +22,14 @@ TIFF_FILE = os.path.join(TESTDATA_DIR, 'aodn.tiff')
 
 
 class TestUtilFileOps(BaseTestCase):
+
+    def test_dir_exists(self):
+
+        tempdir = TemporaryDirectory()
+        self.assertTrue(dir_exists(tempdir.name))
+        os.rmdir(tempdir.name)
+        self.assertFalse(dir_exists(tempdir.name))
+
     def test_extract_gzip(self):
         temp_file_content = str(uuid.uuid4()).encode('utf-8')
 
