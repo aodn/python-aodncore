@@ -390,7 +390,8 @@ def validate_dir_writable(path):
 
 def validate_file_writable(path):
     if not is_file_writable(path):
-        raise ValueError("file '{file}' is not writable".format(file=path))
+        uid = os.getuid()
+        raise ValueError("file '{file}' is not writable by '{uid}'".format(file=path, uid=uid))
 
 
 def validate_mime_type(t):
