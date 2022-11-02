@@ -466,7 +466,7 @@ class IncomingFileStateManager(object):
 
     def _pre_processing_checks(self):
         try:
-            # validate_file_writable(self.input_file)
+            validate_file_writable(self.input_file)
 
             mkdir_p(self.processing_dir)
             validate_dir_writable(self.processing_dir)
