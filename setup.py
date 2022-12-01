@@ -9,11 +9,12 @@ ENTRY_POINTS = {
 INSTALL_REQUIRES = [
     'boto3>=1.9.156',
     'celery>=4.3.0',
-    'compliance-checker==4.1.1',
+    'compliance-checker>=4.1.1',
     'jsonschema>=2.6.0',
     'paramiko>=2.6.0',
     'python-magic>=0.4.15',
     'tableschema>=1.19.4',
+    'tabulate>=0.8.2',
     'transitions>=0.7.1',
     'psycopg2-binary==2.8.6',
     'PyYAML==5.3.1'
