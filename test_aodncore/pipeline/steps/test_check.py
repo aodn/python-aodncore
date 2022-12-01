@@ -29,7 +29,7 @@ class TestPipelineStepsCheck(BaseTestCase):
             _ = get_child_check_runner(PipelineFileCheckType.NO_ACTION, None, self.test_logger, None)
 
         cc_runner = get_child_check_runner(PipelineFileCheckType.NC_COMPLIANCE_CHECK, None, self.test_logger,
-                                           {'checks': ['cf']})
+                                           {'checks': ['cf:1.6']})
         self.assertIsInstance(cc_runner, ComplianceCheckerCheckRunner)
 
         fc_runner = get_child_check_runner(PipelineFileCheckType.FORMAT_CHECK, None, self.test_logger, None)
@@ -46,7 +46,7 @@ class TestPipelineStepsCheck(BaseTestCase):
 class TestComplianceCheckerRunner(BaseTestCase):
     def setUp(self):
         super().setUp()
-        self.cc_runner = ComplianceCheckerCheckRunner(None, self.test_logger, {'checks': ['cf']})
+        self.cc_runner = ComplianceCheckerCheckRunner(None, self.test_logger, {'checks': ['cf:1.6']})
 
     def test_compliant_file(self):
         collection = PipelineFileCollection([GOOD_NC])
@@ -84,8 +84,8 @@ class TestComplianceCheckerRunner(BaseTestCase):
         self.assertNotEqual(check_result.log, [])
 
     def test_multiple_check_suite(self):
-        collection = PipelineFileCollection([GOOD_NC])  # GOOD_NC complies with cf but NOT acdd:1.3
-        self.cc_runner = ComplianceCheckerCheckRunner(None, self.test_logger, {'checks': ['cf', 'acdd:1.3']})
+        collection = PipelineFileCollection([GOOD_NC])  # GOOD_NC complies with cf:1.6 but NOT acdd:1.3
+        self.cc_runner = ComplianceCheckerCheckRunner(None, self.test_logger, {'checks': ['cf:1.6', 'acdd:1.3']})
         self.cc_runner.run(collection)
 
         check_result = collection[0].check_result
@@ -97,7 +97,7 @@ class TestComplianceCheckerRunner(BaseTestCase):
 
     def test_invalid_check_suite(self):
         with self.assertRaises(InvalidCheckSuiteError):
-            self.cc_runner = ComplianceCheckerCheckRunner(None, self.test_logger, {'checks': ['cf', 'no_such_thing']})
+            self.cc_runner = ComplianceCheckerCheckRunner(None, self.test_logger, {'checks': ['cf:1.6', 'no_such_thing']})
 
     def test_no_check_suite(self):
         with self.assertRaises(InvalidCheckSuiteError):
@@ -110,7 +110,8 @@ class TestComplianceCheckerRunner(BaseTestCase):
 
         self.cc_runner = ComplianceCheckerCheckRunner(None,
                                                       self.test_logger,
-                                                      {'checks': ['cf'], 'skip_checks': ['check_convention_globals']}
+                                                      {'checks': ['cf:1.6'],
+                                                       'skip_checks': ['check_convention_globals:M']}
                                                       )
         self.cc_runner.run(collection)
         self.assertTrue(collection[0].check_result.compliant)  # now should pass
