@@ -14,6 +14,7 @@ INSTALL_REQUIRES = [
     'paramiko>=2.6.0',
     'python-magic>=0.4.15',
     'tableschema>=1.19.4',
+    'tabulate>=0.8.2',
     'transitions>=0.7.1',
     'psycopg2-binary==2.8.6',
     'PyYAML==5.3.1'
