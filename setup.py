@@ -9,7 +9,7 @@ ENTRY_POINTS = {
 INSTALL_REQUIRES = [
     'boto3>=1.9.156',
     'celery>=4.3.0',
-    'git+https://github.com/ioos/compliance-checker.git@5.0.1',
+    'compliance-checker @ git+https://github.com/ioos/compliance-checker.git@5.0.1',
     'jsonschema>=2.6.0',
     'paramiko>=2.6.0',
     'python-magic>=0.4.15',
