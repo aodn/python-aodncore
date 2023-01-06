@@ -12,7 +12,6 @@ from .misc import (CaptureStdIO, LoggingContext, Pattern, TemplateRenderer, Writ
                    validate_relative_path, validate_relative_path_attr, validate_string, validate_type, generate_id)
 from .process import SystemProcess
 from .wfs import DEFAULT_WFS_VERSION, WfsBroker
-from .ff import get_field_type, get_tableschema_descriptor
 
 __all__ = [
     'CaptureStdIO',
@@ -81,7 +80,5 @@ __all__ = [
     'validate_relative_path',
     'validate_relative_path_attr',
     'validate_string',
-    'validate_type',
-    'get_field_type',
-    'get_tableschema_descriptor'
+    'validate_type'
 ]

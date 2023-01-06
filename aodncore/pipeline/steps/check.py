@@ -22,8 +22,8 @@ from .basestep import BaseStepRunner
 from ..common import CheckResult, PipelineFileCheckType, validate_checktype
 from ..exceptions import ComplianceCheckFailedError, InvalidCheckSuiteError, InvalidCheckTypeError, MissingFileError
 from ..files import PipelineFileCollection
-from ...util import (format_exception, is_netcdf_file, is_nonempty_file, CaptureStdIO, find_file,
-                     get_tableschema_descriptor)
+from ...util import (format_exception, is_netcdf_file, is_nonempty_file, CaptureStdIO, find_file)
+from ...table import get_tableschema_descriptor
 
 __all__ = [
     'get_check_runner',
