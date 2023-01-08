@@ -8,5 +8,9 @@ The package provides the base class for each pipeline handler, aodncore.pipeline
 [![coverage](https://codecov.io/gh/aodn/python-aodncore/branch/master/graph/badge.svg)](https://codecov.io/gh/aodn/python-aodncore)
 
 Project documentation is hosted at: https://aodn.github.io/python-aodncore/index.html
+
+## Testing
+You can run pip install -e . from the project root to install the aodn core from local source during testing
+
 ## Licensing
 This project is licensed under the terms of the GNU GPLv3 license.
