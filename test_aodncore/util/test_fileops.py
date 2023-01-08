@@ -10,7 +10,7 @@ from tempfile import mkdtemp, mkstemp, TemporaryDirectory
 from aodncore.testlib import BaseTestCase, get_nonexistent_path
 from aodncore.util import (dir_exists, extract_gzip, extract_zip, is_gzip_file, is_jpeg_file, is_netcdf_file, is_pdf_file,
                            is_png_file, is_tiff_file, is_zip_file, list_regular_files, find_file, mkdir_p, rm_f, rm_r,
-                           rm_rf, safe_copy_file, safe_move_file, get_file_checksum, TemporaryDirectory)
+                           rm_rf, safe_copy_file, safe_move_file, get_file_checksum, TemporaryDirectory as TempDir)
 from aodncore.util.misc import format_exception
 
 from test_aodncore import TESTDATA_DIR
@@ -20,6 +20,8 @@ PDF_FILE = os.path.join(TESTDATA_DIR, 'aodn.pdf')
 PNG_FILE = os.path.join(TESTDATA_DIR, 'invalid.png')
 TIFF_FILE = os.path.join(TESTDATA_DIR, 'aodn.tiff')
 
+TEST_ROOT = os.path.join(os.path.dirname(__file__))
+GOOD_NC_GZ_DM01 = os.path.join(TEST_ROOT, "IMOS_OceanCurrent_HV_20000101T000000Z_GSLA_FV02_DM01_C-20200601T010724Z.nc.gz")
 
 class TestUtilFileOps(BaseTestCase):
 
@@ -301,3 +303,12 @@ class TestUtilFileOps(BaseTestCase):
                     "temporary directory is not writable. {e}".format(e=format_exception(e)))
             self.assertTrue(os.path.isfile(temp_file_path))
         self.assertFalse(os.path.exists(d))
+
+    def test_temporary_directory_from_util(self):
+        """
+        Test circular import issue fixed when aodncore.util TemporaryDirectory() function is in use, before change
+        the TemporaryDirectory() function is shield by another import, hence we need to rename the function to TempDir()
+        """
+        with TempDir() as tmpdir:
+            t = os.path.join(tmpdir, os.path.basename(GOOD_NC_GZ_DM01.replace('.gz', '')))
+            self.assertTrue(len(t) > 0)
