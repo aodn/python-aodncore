@@ -8,7 +8,14 @@ import os
 import re
 import sys
 import types
-from collections import Iterable, OrderedDict, Mapping
+
+try:
+    # Import of collections stop working after 3.10, use collections.abc
+    from collections.abc import Iterable, OrderedDict, Mapping
+except ImportError:
+    # Python 2, Python < 3.2
+    from collections import Iterable, OrderedDict, Mapping
+
 from enum import Enum, EnumMeta
 from io import StringIO
 import uuid
