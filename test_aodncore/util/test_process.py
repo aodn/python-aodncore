@@ -53,23 +53,23 @@ class TestUtilProcess(BaseTestCase):
 
     def test_empty_command(self):
         with self.assertRaisesRegex(SystemCommandFailedError,
-                                   'command parameter must be a list if not a bash shell command'):
+                                    'command parameter must be a list if not a bash shell command'):
             _ = SystemProcess(())
 
     def test_empty_shell_command(self):
         with self.assertRaisesRegex(SystemCommandFailedError,
-                                   'command param must not be empty if bash shell command'):
+                                    'command param must not be empty if bash shell command'):
             _ = SystemProcess('', shell=True)
 
     def test_empty_non_string_shell_command(self):
         with self.assertRaisesRegex(SystemCommandFailedError,
-                                   'command param must be a string if bash shell command'):
+                                    'command param must be a string if bash shell command'):
             _ = SystemProcess((), shell=True)
 
     def test_nonexistent_command(self):
         command = [os.path.join('/nonexistent/path/with/a/{uuid}/in/the/middle'.format(uuid=uuid.uuid4()))]
         process = SystemProcess(command)
-        with self.assertRaisesRegex(SystemCommandFailedError, ".*\[Errno 2\] No such file or directory"):
+        with self.assertRaisesRegex(SystemCommandFailedError, ".*\\[Errno 2\\] No such file or directory"):
             process.execute()
 
     def test_execute_failure(self):
