@@ -9,10 +9,7 @@ The most common use of this step is to test for compliance using the IOOS Compli
 
 import abc
 import itertools
-import logging
 import os
-# from collections import namedtuple
-# import json
 
 import tableschema
 import yaml
@@ -163,8 +160,6 @@ class ComplianceCheckerCheckRunner(BaseCheckRunner):
 
             compliant = all(r.compliant for r in check_results)
             compliance_log = list(itertools.chain.from_iterable(r.log for r in check_results))
-
-            logging.info(check_results)
             errors = any(r.errors for r in check_results)
 
             pipeline_file.check_result = CheckResult(compliant, compliance_log, errors)

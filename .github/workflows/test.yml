@@ -28,6 +28,7 @@ jobs:
         pip install numpy
         pip install -r test_requirements.txt
         pip install pytest-cov
+        pip list
     - name: Test with pytest
       run: |
         pytest --cov=./ --cov-report=xml
