@@ -2,7 +2,13 @@ import abc
 import mimetypes
 import os
 import warnings
-from collections import Counter, MutableSet, OrderedDict
+
+try:
+    # Import of collections stop working after 3.10, use collections.abc
+    from collections.abc import Counter, MutableSet, OrderedDict
+except ImportError:
+    # Python 2, Python < 3.2
+    from collections import Counter, MutableSet, OrderedDict
 
 from .common import (FileType, PipelineFilePublishType, PipelineFileCheckType, validate_addition_publishtype,
                      validate_checkresult, validate_deletion_publishtype, validate_publishtype,
