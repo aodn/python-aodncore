@@ -17,6 +17,9 @@ INSTALL_REQUIRES = [
     'tabulate>=0.8.2',
     'transitions>=0.7.1',
     'psycopg2-binary==2.8.6',
+    # Compliance-checker 5.0.2 (currently latest) still have problem with numpy.float
+    # Starting 1.24.0 numpy.float no longer support and should use float instead.
+    'numpy<1.24.0',
     'PyYAML==5.3.1'
 ]
 
