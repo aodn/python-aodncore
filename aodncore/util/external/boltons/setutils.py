@@ -14,8 +14,13 @@ from __future__ import print_function
 from __future__ import division
 from bisect import bisect_left
 from itertools import chain, islice
-from collections import MutableSet
 import operator
+
+""" Import of collections after 3.10 will changed to collections.abc """
+try:
+    from collections.abc import MutableSet  # noqa
+except ImportError:
+    from collections import MutableSet  # noqa
 
 try:
     from typeutils import make_sentinel

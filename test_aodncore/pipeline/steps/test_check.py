@@ -1,3 +1,4 @@
+import logging
 import os
 from tempfile import mkstemp
 
@@ -55,8 +56,12 @@ class TestComplianceCheckerRunner(BaseTestCase):
         check_result = collection[0].check_result
 
         self.assertIsInstance(check_result, CheckResult)
-        self.assertTrue(check_result.compliant)
+
+        if check_result.errors:
+            logging.error(check_result.log)
+
         self.assertFalse(check_result.errors)
+        self.assertTrue(check_result.compliant)
         self.assertListEqual(check_result.log, [])
 
     def test_noncompliant_file(self):
