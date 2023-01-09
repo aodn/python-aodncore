@@ -147,8 +147,10 @@ PIPELINE_CONFIG_SCHEMA = {
                     'type': 'array',
                     'items': {'type': 'string'}
                 },
+                'landing_bucket': {'type': 'string'},
                 'archive_uri': {'type': 'string'},
                 'error_uri': {'type': 'string'},
+                'optimised_uri': {'type': 'string'},
                 'opendap_root': {'type': 'string'},
                 'processing_dir': {'type': 'string'},
                 'tmp_dir': {'type': 'string'},
@@ -231,15 +233,33 @@ PIPELINE_CONFIG_SCHEMA = {
             },
             'required': ['incoming_dir', 'logger_name', 'task_namespace'],
             'additionalProperties': False
+        },
+        "trigger": {
+            'type': 'object',
+            'properties': {
+                "trigger_type": {'$ref': '#/definitions/triggers'},
+                "sns_topic_arn": {'type': 'string'},
+                "sns_message": {'type': 'string'},
+                "prefect_api_key": {'type': 'string'},
+                "prefect_queue_id": {'type': 'string'},
+                "prefect_deployment_id": {'type': 'string'},
+                "prefect_account_id": {'type': 'string'},
+                "prefect_workspace_id": {'type': 'string'},
+                "end_flow_function": {'type': 'string'}
+            },
+            'additionalProperties': False
         }
     },
-    # TODO: add 'harvester' to the required list - once it has been added to the chef build
     'required': ['global', 'logging', 'mail', 'talend', 'templating', 'watch', 'harvester'],
     'additionalProperties': False,
     'definitions': {
         'loggingLevel': {
             'type': 'string',
             'enum': ['CRITICAL', 'FATAL', 'ERROR', 'WARNING', 'WARN', 'INFO', 'SYSINFO', 'DEBUG', 'NOTSET']
+        },
+        'triggers': {
+            'type': 'string',
+            'enum': ['EVENT']
         }
     }
 }

@@ -13,6 +13,7 @@ from .misc import (CaptureStdIO, LoggingContext, Pattern, TemplateRenderer, Writ
 from .process import SystemProcess
 from .wfs import DEFAULT_WFS_VERSION, WfsBroker
 from .ff import get_field_type, get_tableschema_descriptor
+from .s3_util import *
 
 __all__ = [
     'CaptureStdIO',
