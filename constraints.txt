@@ -1,2 +1,6 @@
 pyrsistent<0.17
 jsonschema<4.0
+
+# Compliance-checker 5.0.1 have problem with numpy.float / numpy.int
+# Starting 1.24.0 numpy.float / numpy.int no longer supported and should use float / int instead.
+numpy<1.24.0
