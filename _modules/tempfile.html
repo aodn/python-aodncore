@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>tempfile &mdash; aodncore 1.4.6 documentation</title>
+  <title>tempfile &mdash; aodncore 1.4.7 documentation</title>
       <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <!--[if lt IE 9]>
@@ -170,7 +170,7 @@
 
 
 <span class="k">def</span> <span class="nf">_infer_return_type</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Look at the type of all args and divine their implied return type.&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Look at the type of all args and divine their implied return type.&quot;&quot;&quot;</span>
     <span class="n">return_type</span> <span class="o">=</span> <span class="kc">None</span>
     <span class="k">for</span> <span class="n">arg</span> <span class="ow">in</span> <span class="n">args</span><span class="p">:</span>
         <span class="k">if</span> <span class="n">arg</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
@@ -191,7 +191,7 @@
 
 
 <span class="k">def</span> <span class="nf">_sanitize_params</span><span class="p">(</span><span class="n">prefix</span><span class="p">,</span> <span class="n">suffix</span><span class="p">,</span> <span class="nb">dir</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Common parameter processing for most APIs in this module.&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Common parameter processing for most APIs in this module.&quot;&quot;&quot;</span>
     <span class="n">output_type</span> <span class="o">=</span> <span class="n">_infer_return_type</span><span class="p">(</span><span class="n">prefix</span><span class="p">,</span> <span class="n">suffix</span><span class="p">,</span> <span class="nb">dir</span><span class="p">)</span>
     <span class="k">if</span> <span class="n">suffix</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
         <span class="n">suffix</span> <span class="o">=</span> <span class="n">output_type</span><span class="p">()</span>
@@ -209,7 +209,7 @@
 
 
 <span class="k">class</span> <span class="nc">_RandomNameSequence</span><span class="p">:</span>
-    <span class="sd">&quot;&quot;&quot;An instance of _RandomNameSequence generates an endless</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;An instance of _RandomNameSequence generates an endless</span>
 <span class="sd">    sequence of unpredictable strings which can safely be incorporated</span>
 <span class="sd">    into file names.  Each string is eight characters long.  Multiple</span>
 <span class="sd">    threads can safely use the same instance at the same time.</span>
@@ -236,7 +236,7 @@
         <span class="k">return</span> <span class="s1">&#39;&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">letters</span><span class="p">)</span>
 
 <span class="k">def</span> <span class="nf">_candidate_tempdir_list</span><span class="p">():</span>
-    <span class="sd">&quot;&quot;&quot;Generate a list of candidate temporary directories which</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Generate a list of candidate temporary directories which</span>
 <span class="sd">    _get_default_tempdir will try.&quot;&quot;&quot;</span>
 
     <span class="n">dirlist</span> <span class="o">=</span> <span class="p">[]</span>
@@ -263,7 +263,7 @@
     <span class="k">return</span> <span class="n">dirlist</span>
 
 <span class="k">def</span> <span class="nf">_get_default_tempdir</span><span class="p">():</span>
-    <span class="sd">&quot;&quot;&quot;Calculate the default directory to use for temporary files.</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Calculate the default directory to use for temporary files.</span>
 <span class="sd">    This routine should be called exactly once.</span>
 
 <span class="sd">    We determine whether or not a candidate temp dir is usable by</span>
@@ -310,7 +310,7 @@
 <span class="n">_name_sequence</span> <span class="o">=</span> <span class="kc">None</span>
 
 <span class="k">def</span> <span class="nf">_get_candidate_names</span><span class="p">():</span>
-    <span class="sd">&quot;&quot;&quot;Common setup sequence for all user-callable interfaces.&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Common setup sequence for all user-callable interfaces.&quot;&quot;&quot;</span>
 
     <span class="k">global</span> <span class="n">_name_sequence</span>
     <span class="k">if</span> <span class="n">_name_sequence</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
@@ -324,7 +324,7 @@
 
 
 <span class="k">def</span> <span class="nf">_mkstemp_inner</span><span class="p">(</span><span class="nb">dir</span><span class="p">,</span> <span class="n">pre</span><span class="p">,</span> <span class="n">suf</span><span class="p">,</span> <span class="n">flags</span><span class="p">,</span> <span class="n">output_type</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Code common to mkstemp, TemporaryFile, and NamedTemporaryFile.&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Code common to mkstemp, TemporaryFile, and NamedTemporaryFile.&quot;&quot;&quot;</span>
 
     <span class="n">names</span> <span class="o">=</span> <span class="n">_get_candidate_names</span><span class="p">()</span>
     <span class="k">if</span> <span class="n">output_type</span> <span class="ow">is</span> <span class="nb">bytes</span><span class="p">:</span>
@@ -355,17 +355,17 @@
 <span class="c1"># User visible interfaces.</span>
 
 <span class="k">def</span> <span class="nf">gettempprefix</span><span class="p">():</span>
-    <span class="sd">&quot;&quot;&quot;The default prefix for temporary directories.&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;The default prefix for temporary directories.&quot;&quot;&quot;</span>
     <span class="k">return</span> <span class="n">template</span>
 
 <span class="k">def</span> <span class="nf">gettempprefixb</span><span class="p">():</span>
-    <span class="sd">&quot;&quot;&quot;The default prefix for temporary directories as bytes.&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;The default prefix for temporary directories as bytes.&quot;&quot;&quot;</span>
     <span class="k">return</span> <span class="n">_os</span><span class="o">.</span><span class="n">fsencode</span><span class="p">(</span><span class="n">gettempprefix</span><span class="p">())</span>
 
 <span class="n">tempdir</span> <span class="o">=</span> <span class="kc">None</span>
 
 <span class="k">def</span> <span class="nf">gettempdir</span><span class="p">():</span>
-    <span class="sd">&quot;&quot;&quot;Accessor for tempfile.tempdir.&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Accessor for tempfile.tempdir.&quot;&quot;&quot;</span>
     <span class="k">global</span> <span class="n">tempdir</span>
     <span class="k">if</span> <span class="n">tempdir</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
         <span class="n">_once_lock</span><span class="o">.</span><span class="n">acquire</span><span class="p">()</span>
@@ -377,11 +377,11 @@
     <span class="k">return</span> <span class="n">tempdir</span>
 
 <span class="k">def</span> <span class="nf">gettempdirb</span><span class="p">():</span>
-    <span class="sd">&quot;&quot;&quot;A bytes version of tempfile.gettempdir().&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;A bytes version of tempfile.gettempdir().&quot;&quot;&quot;</span>
     <span class="k">return</span> <span class="n">_os</span><span class="o">.</span><span class="n">fsencode</span><span class="p">(</span><span class="n">gettempdir</span><span class="p">())</span>
 
 <span class="k">def</span> <span class="nf">mkstemp</span><span class="p">(</span><span class="n">suffix</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">prefix</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="nb">dir</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">text</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;User-callable function to create and return a unique temporary</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;User-callable function to create and return a unique temporary</span>
 <span class="sd">    file.  The return value is a pair (fd, name) where fd is the</span>
 <span class="sd">    file descriptor returned by os.open, and name is the filename.</span>
 
@@ -420,7 +420,7 @@
 
 
 <span class="k">def</span> <span class="nf">mkdtemp</span><span class="p">(</span><span class="n">suffix</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">prefix</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="nb">dir</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;User-callable function to create and return a unique temporary</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;User-callable function to create and return a unique temporary</span>
 <span class="sd">    directory.  The return value is the pathname of the directory.</span>
 
 <span class="sd">    Arguments are as for mkstemp, except that the &#39;text&#39; argument is</span>
@@ -460,7 +460,7 @@
                           <span class="s2">&quot;No usable temporary directory name found&quot;</span><span class="p">)</span>
 
 <span class="k">def</span> <span class="nf">mktemp</span><span class="p">(</span><span class="n">suffix</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">prefix</span><span class="o">=</span><span class="n">template</span><span class="p">,</span> <span class="nb">dir</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;User-callable function to return a unique temporary file name.  The</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;User-callable function to return a unique temporary file name.  The</span>
 <span class="sd">    file is not created.</span>
 
 <span class="sd">    Arguments are similar to mkstemp, except that the &#39;text&#39; argument is</span>
@@ -492,7 +492,7 @@
 
 
 <span class="k">class</span> <span class="nc">_TemporaryFileCloser</span><span class="p">:</span>
-    <span class="sd">&quot;&quot;&quot;A separate object allowing proper closing of a temporary file&#39;s</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;A separate object allowing proper closing of a temporary file&#39;s</span>
 <span class="sd">    underlying file object, without adding a __del__ method to the</span>
 <span class="sd">    temporary file.&quot;&quot;&quot;</span>
 
@@ -535,7 +535,7 @@
 
 
 <span class="k">class</span> <span class="nc">_TemporaryFileWrapper</span><span class="p">:</span>
-    <span class="sd">&quot;&quot;&quot;Temporary file wrapper</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Temporary file wrapper</span>
 
 <span class="sd">    This class provides a wrapper around files opened for</span>
 <span class="sd">    temporary use.  In particular, it seeks to automatically</span>
@@ -581,7 +581,7 @@
         <span class="k">return</span> <span class="n">result</span>
 
     <span class="k">def</span> <span class="nf">close</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Close the temporary file, possibly deleting it.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_closer</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
@@ -600,7 +600,7 @@
 <span class="k">def</span> <span class="nf">NamedTemporaryFile</span><span class="p">(</span><span class="n">mode</span><span class="o">=</span><span class="s1">&#39;w+b&#39;</span><span class="p">,</span> <span class="n">buffering</span><span class="o">=-</span><span class="mi">1</span><span class="p">,</span> <span class="n">encoding</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
                        <span class="n">newline</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">suffix</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">prefix</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
                        <span class="nb">dir</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">delete</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">errors</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Create and return a temporary file.</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Create and return a temporary file.</span>
 <span class="sd">    Arguments:</span>
 <span class="sd">    &#39;prefix&#39;, &#39;suffix&#39;, &#39;dir&#39; -- as for mkstemp.</span>
 <span class="sd">    &#39;mode&#39; -- the mode argument to io.open (default &quot;w+b&quot;).</span>
@@ -650,7 +650,7 @@
     <span class="k">def</span> <span class="nf">TemporaryFile</span><span class="p">(</span><span class="n">mode</span><span class="o">=</span><span class="s1">&#39;w+b&#39;</span><span class="p">,</span> <span class="n">buffering</span><span class="o">=-</span><span class="mi">1</span><span class="p">,</span> <span class="n">encoding</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
                       <span class="n">newline</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">suffix</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">prefix</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
                       <span class="nb">dir</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">errors</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Create and return a temporary file.</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Create and return a temporary file.</span>
 <span class="sd">        Arguments:</span>
 <span class="sd">        &#39;prefix&#39;, &#39;suffix&#39;, &#39;dir&#39; -- as for mkstemp.</span>
 <span class="sd">        &#39;mode&#39; -- the mode argument to io.open (default &quot;w+b&quot;).</span>
@@ -708,7 +708,7 @@
             <span class="k">raise</span>
 
 <span class="k">class</span> <span class="nc">SpooledTemporaryFile</span><span class="p">:</span>
-    <span class="sd">&quot;&quot;&quot;Temporary file wrapper, specialized to switch from BytesIO</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Temporary file wrapper, specialized to switch from BytesIO</span>
 <span class="sd">    or StringIO to a real file when it exceeds a certain size or</span>
 <span class="sd">    when a fileno is needed.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
@@ -853,7 +853,7 @@
 
 
 <div class="viewcode-block" id="TemporaryDirectory"><a class="viewcode-back" href="../aodncore.util.html#aodncore.util.fileops.TemporaryDirectory">[docs]</a><span class="k">class</span> <span class="nc">TemporaryDirectory</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Create and return a temporary directory.  This has the same</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Create and return a temporary directory.  This has the same</span>
 <span class="sd">    behavior as mkdtemp but can be used as a context manager.  For</span>
 <span class="sd">    example:</span>
 

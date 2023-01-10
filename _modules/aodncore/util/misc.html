@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>aodncore.util.misc &mdash; aodncore 1.4.6 documentation</title>
+  <title>aodncore.util.misc &mdash; aodncore 1.4.7 documentation</title>
       <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
   <!--[if lt IE 9]>
@@ -149,7 +149,7 @@
 
 
 <div class="viewcode-block" id="discover_entry_points"><a class="viewcode-back" href="../../../aodncore.util.html#aodncore.util.misc.discover_entry_points">[docs]</a><span class="k">def</span> <span class="nf">discover_entry_points</span><span class="p">(</span><span class="n">entry_point_group</span><span class="p">,</span> <span class="n">working_set</span><span class="o">=</span><span class="n">pkg_resources</span><span class="o">.</span><span class="n">working_set</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Discover entry points registered under the given entry point group name in the given</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Discover entry points registered under the given entry point group name in the given</span>
 <span class="sd">    :py:class:`pkg_resources.WorkingSet` instance</span>
 
 <span class="sd">    :param entry_point_group: entry point group name used to find entry points in working set</span>
@@ -171,7 +171,7 @@
 
 
 <div class="viewcode-block" id="ensure_regex"><a class="viewcode-back" href="../../../aodncore.util.html#aodncore.util.misc.ensure_regex">[docs]</a><span class="k">def</span> <span class="nf">ensure_regex</span><span class="p">(</span><span class="n">o</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Ensure that the returned value is a compiled regular expression (Pattern) from a given input, or raise if the</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Ensure that the returned value is a compiled regular expression (Pattern) from a given input, or raise if the</span>
 <span class="sd">    object is not a valid regular expression</span>
 
 <span class="sd">    :param o: input object, a single regex (string or pre-compiled)</span>
@@ -184,7 +184,7 @@
 
 
 <div class="viewcode-block" id="ensure_regex_list"><a class="viewcode-back" href="../../../aodncore.util.html#aodncore.util.misc.ensure_regex_list">[docs]</a><span class="k">def</span> <span class="nf">ensure_regex_list</span><span class="p">(</span><span class="n">o</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Ensure that the returned value is a list of compiled regular expressions (Pattern) from a given input, or raise</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Ensure that the returned value is a list of compiled regular expressions (Pattern) from a given input, or raise</span>
 <span class="sd">    if the object is not a list of valid regular expression</span>
 
 <span class="sd">    :param o: input object, either a single regex or a sequence of regexes (string or pre-compiled)</span>
@@ -204,7 +204,7 @@
 
 
 <div class="viewcode-block" id="ensure_writeonceordereddict"><a class="viewcode-back" href="../../../aodncore.util.html#aodncore.util.misc.ensure_writeonceordereddict">[docs]</a><span class="k">def</span> <span class="nf">ensure_writeonceordereddict</span><span class="p">(</span><span class="n">o</span><span class="p">,</span> <span class="n">empty_on_fail</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Function to accept and object and return the WriteOnceOrderedDict representation of the object. An object which</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Function to accept and object and return the WriteOnceOrderedDict representation of the object. An object which</span>
 <span class="sd">    can *not* be handled by the WriteOnceOrderedDict __init__ method will either result in an empty, or if</span>
 <span class="sd">    &#39;empty_on_fail&#39; is set to False, will result in an exception.</span>
 
@@ -225,7 +225,7 @@
 
 
 <div class="viewcode-block" id="format_exception"><a class="viewcode-back" href="../../../aodncore.util.html#aodncore.util.misc.format_exception">[docs]</a><span class="k">def</span> <span class="nf">format_exception</span><span class="p">(</span><span class="n">exception</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Return a pretty string representation of an Exception object containing the Exception name and message</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Return a pretty string representation of an Exception object containing the Exception name and message</span>
 
 <span class="sd">    :param exception: :py:class:`Exception` object</span>
 <span class="sd">    :return: string</span>
@@ -234,7 +234,7 @@
 
 
 <div class="viewcode-block" id="generate_id"><a class="viewcode-back" href="../../../aodncore.util.html#aodncore.util.misc.generate_id">[docs]</a><span class="k">def</span> <span class="nf">generate_id</span><span class="p">():</span>
-    <span class="sd">&quot;&quot;&quot;Generate a unique id starting with non-numeric character</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Generate a unique id starting with non-numeric character</span>
 
 <span class="sd">    :return: unique id</span>
 <span class="sd">    &quot;&quot;&quot;</span>
@@ -242,7 +242,7 @@
 
 
 <div class="viewcode-block" id="get_regex_subgroups_from_string"><a class="viewcode-back" href="../../../aodncore.util.html#aodncore.util.misc.get_regex_subgroups_from_string">[docs]</a><span class="k">def</span> <span class="nf">get_regex_subgroups_from_string</span><span class="p">(</span><span class="n">string</span><span class="p">,</span> <span class="n">regex</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Function to retrieve parts of a string given a compiled pattern (re.compile(pattern))</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Function to retrieve parts of a string given a compiled pattern (re.compile(pattern))</span>
 <span class="sd">    the pattern needs to match the beginning of the string</span>
 <span class="sd">    (see https://docs.python.org/2/library/re.html#re.RegexObject.match)</span>
 
@@ -260,7 +260,7 @@
 
 
 <div class="viewcode-block" id="is_function"><a class="viewcode-back" href="../../../aodncore.util.html#aodncore.util.misc.is_function">[docs]</a><span class="k">def</span> <span class="nf">is_function</span><span class="p">(</span><span class="n">o</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Check whether a given object is a function</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Check whether a given object is a function</span>
 
 <span class="sd">    :param o: object to check</span>
 <span class="sd">    :return: True if object is a function, otherwise False</span>
@@ -269,7 +269,7 @@
 
 
 <div class="viewcode-block" id="is_nonstring_iterable"><a class="viewcode-back" href="../../../aodncore.util.html#aodncore.util.misc.is_nonstring_iterable">[docs]</a><span class="k">def</span> <span class="nf">is_nonstring_iterable</span><span class="p">(</span><span class="n">sequence</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Check whether an object is a non-string :py:class:`Iterable`</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Check whether an object is a non-string :py:class:`Iterable`</span>
 <span class="sd">    </span>
 <span class="sd">    :param sequence: object to check </span>
 <span class="sd">    :return: True if object is a non-string sub class of :py:class:`Iterable`</span>
@@ -278,7 +278,7 @@
 
 
 <div class="viewcode-block" id="is_valid_email_address"><a class="viewcode-back" href="../../../aodncore.util.html#aodncore.util.misc.is_valid_email_address">[docs]</a><span class="k">def</span> <span class="nf">is_valid_email_address</span><span class="p">(</span><span class="n">address</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Simple email address validation</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Simple email address validation</span>
 
 <span class="sd">    :param address: address to validate</span>
 <span class="sd">    :return: True if address matches the regex, otherwise False</span>
@@ -288,7 +288,7 @@
 
 
 <div class="viewcode-block" id="iter_public_attributes"><a class="viewcode-back" href="../../../aodncore.util.html#aodncore.util.misc.iter_public_attributes">[docs]</a><span class="k">def</span> <span class="nf">iter_public_attributes</span><span class="p">(</span><span class="n">instance</span><span class="p">,</span> <span class="n">ignored_attributes</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Get an iterator over an instance&#39;s public attributes, *including* properties</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Get an iterator over an instance&#39;s public attributes, *including* properties</span>
 
 <span class="sd">    :param instance: object instance</span>
 <span class="sd">    :param ignored_attributes: set of attribute names to exclude</span>
@@ -311,7 +311,7 @@
 
 
 <div class="viewcode-block" id="matches_regexes"><a class="viewcode-back" href="../../../aodncore.util.html#aodncore.util.misc.matches_regexes">[docs]</a><span class="k">def</span> <span class="nf">matches_regexes</span><span class="p">(</span><span class="n">input_string</span><span class="p">,</span> <span class="n">include_regexes</span><span class="p">,</span> <span class="n">exclude_regexes</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Function to filter a string (e.g. file path) according to regular expression inclusions minus exclusions</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Function to filter a string (e.g. file path) according to regular expression inclusions minus exclusions</span>
 
 <span class="sd">    :param input_string: string for comparison to the regular expressions</span>
 <span class="sd">    :param include_regexes: list of inclusions</span>
@@ -330,7 +330,7 @@
 
 
 <div class="viewcode-block" id="merge_dicts"><a class="viewcode-back" href="../../../aodncore.util.html#aodncore.util.misc.merge_dicts">[docs]</a><span class="k">def</span> <span class="nf">merge_dicts</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Recursive :py:class:`dict` merge</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Recursive :py:class:`dict` merge</span>
 
 <span class="sd">    Dict-like objects are merged sequentially from left to right into a new :py:class:`dict`</span>
 
@@ -357,7 +357,7 @@
 
 
 <div class="viewcode-block" id="slice_sequence"><a class="viewcode-back" href="../../../aodncore.util.html#aodncore.util.misc.slice_sequence">[docs]</a><span class="k">def</span> <span class="nf">slice_sequence</span><span class="p">(</span><span class="n">sequence</span><span class="p">,</span> <span class="n">slice_size</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Return a :py:class:`list` containing the input :py:class:`Sequence` sliced into :py:class:`Sequence` instances</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Return a :py:class:`list` containing the input :py:class:`Sequence` sliced into :py:class:`Sequence` instances</span>
 <span class="sd">    with a length equal to or less than :py:attr:`slice_size`</span>
 
 <span class="sd">    .. note:: The type of the elements should be the same type as the original sequence based on the usual Python</span>
@@ -371,7 +371,7 @@
 
 
 <div class="viewcode-block" id="str_to_list"><a class="viewcode-back" href="../../../aodncore.util.html#aodncore.util.misc.str_to_list">[docs]</a><span class="k">def</span> <span class="nf">str_to_list</span><span class="p">(</span><span class="n">string_</span><span class="p">,</span> <span class="n">delimiter</span><span class="o">=</span><span class="s1">&#39;,&#39;</span><span class="p">,</span> <span class="n">strip_method</span><span class="o">=</span><span class="s1">&#39;strip&#39;</span><span class="p">,</span> <span class="n">include_empty</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Return a comma-separated string as native list, with whitespace stripped and empty strings excluded</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Return a comma-separated string as native list, with whitespace stripped and empty strings excluded</span>
 
 <span class="sd">    :param string_: input string</span>
 <span class="sd">    :param delimiter: character(s) used to split the string</span>
@@ -395,7 +395,7 @@
 
 
 <div class="viewcode-block" id="list_not_empty"><a class="viewcode-back" href="../../../aodncore.util.html#aodncore.util.misc.list_not_empty">[docs]</a><span class="k">def</span> <span class="nf">list_not_empty</span><span class="p">(</span><span class="n">_list</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Flag a list containing not None values</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Flag a list containing not None values</span>
 <span class="sd">    :return: boolean - True if list contains any non-None values, otherwise False</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">_list</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
@@ -421,7 +421,7 @@
 
 
 <div class="viewcode-block" id="validate_type"><a class="viewcode-back" href="../../../aodncore.util.html#aodncore.util.misc.validate_type">[docs]</a><span class="k">def</span> <span class="nf">validate_type</span><span class="p">(</span><span class="n">t</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Closure to generate type validation functions</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Closure to generate type validation functions</span>
 
 <span class="sd">    :param t: type</span>
 <span class="sd">    :return: function reference to a function which validates a given input is an instance of type `t`</span>
@@ -474,7 +474,7 @@
 
 
 <div class="viewcode-block" id="validate_relative_path_attr"><a class="viewcode-back" href="../../../aodncore.util.html#aodncore.util.misc.validate_relative_path_attr">[docs]</a><span class="k">def</span> <span class="nf">validate_relative_path_attr</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="n">path_attr</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Validate a path, raising an exception containing the name of the attribute which failed</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Validate a path, raising an exception containing the name of the attribute which failed</span>
 
 <span class="sd">    :param path: string containing the path to test</span>
 <span class="sd">    :param path_attr: attribute name to include in the exceptions message if validation fails</span>
@@ -487,7 +487,7 @@
 
 
 <div class="viewcode-block" id="validate_mandatory_elements"><a class="viewcode-back" href="../../../aodncore.util.html#aodncore.util.misc.validate_mandatory_elements">[docs]</a><span class="k">def</span> <span class="nf">validate_mandatory_elements</span><span class="p">(</span><span class="n">mandatory</span><span class="p">,</span> <span class="n">actual</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s1">&#39;item&#39;</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Ensure that a collection contains all the elements in a &#39;mandatory&#39; collection of elements</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Ensure that a collection contains all the elements in a &#39;mandatory&#39; collection of elements</span>
 
 <span class="sd">    :param mandatory: collection of mandatory elements</span>
 <span class="sd">    :param actual: collection to compare against mandatory collection</span>
@@ -503,7 +503,7 @@
 
 
 <div class="viewcode-block" id="CaptureStdIO"><a class="viewcode-back" href="../../../aodncore.util.html#aodncore.util.misc.CaptureStdIO">[docs]</a><span class="k">class</span> <span class="nc">CaptureStdIO</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Context manager to capture stdout and stderr emitted from the block into a list. </span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Context manager to capture stdout and stderr emitted from the block into a list. </span>
 <span class="sd">        Optionally merge stdout and stderr streams into stdout.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
@@ -530,7 +530,7 @@
 
 
 <div class="viewcode-block" id="LoggingContext"><a class="viewcode-back" href="../../../aodncore.util.html#aodncore.util.misc.LoggingContext">[docs]</a><span class="k">class</span> <span class="nc">LoggingContext</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Context manager to allow temporary changes to logging configuration within the context of the block</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Context manager to allow temporary changes to logging configuration within the context of the block</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">logger</span><span class="p">,</span> <span class="n">level</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">format_</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">handler</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">close</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
@@ -566,7 +566,7 @@
 
 
 <div class="viewcode-block" id="WriteOnceOrderedDict"><a class="viewcode-back" href="../../../aodncore.util.html#aodncore.util.misc.WriteOnceOrderedDict">[docs]</a><span class="k">class</span> <span class="nc">WriteOnceOrderedDict</span><span class="p">(</span><span class="n">OrderedDict</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Sub-class of OrderedDict which prevents overwriting/deleting of keys once set</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Sub-class of OrderedDict which prevents overwriting/deleting of keys once set</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="k">def</span> <span class="nf">__readonly__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
@@ -586,7 +586,7 @@
 
 
 <div class="viewcode-block" id="TemplateRenderer"><a class="viewcode-back" href="../../../aodncore.util.html#aodncore.util.misc.TemplateRenderer">[docs]</a><span class="k">class</span> <span class="nc">TemplateRenderer</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Simple template renderer</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Simple template renderer</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">package</span><span class="o">=</span><span class="s1">&#39;aodncore.pipeline&#39;</span><span class="p">,</span> <span class="n">package_path</span><span class="o">=</span><span class="s1">&#39;templates&#39;</span><span class="p">):</span>
@@ -596,7 +596,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">_env</span> <span class="o">=</span> <span class="n">jinja2</span><span class="o">.</span><span class="n">Environment</span><span class="p">(</span><span class="n">loader</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_loader</span><span class="p">)</span>
 
 <div class="viewcode-block" id="TemplateRenderer.render"><a class="viewcode-back" href="../../../aodncore.util.html#aodncore.util.misc.TemplateRenderer.render">[docs]</a>    <span class="k">def</span> <span class="nf">render</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">values</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Render a template with the given values and return as a :py:class:`str`</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Render a template with the given values and return as a :py:class:`str`</span>
 
 <span class="sd">        :param name: name of the template to find in the :py:class:`jinja2.Environment`</span>
 <span class="sd">        :param values: :py:class:`dict` containing values to render into the template</span>

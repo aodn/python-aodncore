@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>aodncore.testlib.dummyhandler &mdash; aodncore 1.4.6 documentation</title>
+  <title>aodncore.testlib.dummyhandler &mdash; aodncore 1.4.7 documentation</title>
       <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
   <!--[if lt IE 9]>
@@ -90,7 +90,7 @@
 
 
 <div class="viewcode-block" id="DummyHandler"><a class="viewcode-back" href="../../../aodncore.testlib.html#aodncore.testlib.dummyhandler.DummyHandler">[docs]</a><span class="k">class</span> <span class="nc">DummyHandler</span><span class="p">(</span><span class="n">HandlerBase</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;This is an example handler, used for testing and also to demonstrate some of the kinds of things that each step</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;This is an example handler, used for testing and also to demonstrate some of the kinds of things that each step</span>
 <span class="sd">        might perform.</span>
 <span class="sd">        </span>
 <span class="sd">        Bear in mind that this inherits everything from the HandlerBase, but only some of the things are suitable to be</span>
@@ -120,7 +120,7 @@
 
 <div class="viewcode-block" id="DummyHandler.dest_path"><a class="viewcode-back" href="../../../aodncore.testlib.html#aodncore.testlib.dummyhandler.DummyHandler.dest_path">[docs]</a>    <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">dest_path</span><span class="p">(</span><span class="n">filename</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;This method is optional, but if it is defined, it will be used to determine the destination path for a given</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;This method is optional, but if it is defined, it will be used to determine the destination path for a given</span>
 <span class="sd">        input path. This could be based purely on the filename, or you could import the netcdf library and open the file</span>
 <span class="sd">        and work it out based on the contents, or of course any other way you want to determine it</span>
 <span class="sd">        :param filename: individual input file</span>
@@ -130,7 +130,7 @@
         <span class="k">return</span> <span class="n">dest_path</span></div>
 
 <div class="viewcode-block" id="DummyHandler.preprocess"><a class="viewcode-back" href="../../../aodncore.testlib.html#aodncore.testlib.dummyhandler.DummyHandler.preprocess">[docs]</a>    <span class="k">def</span> <span class="nf">preprocess</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Here you can run code that needs to run before the compliance checker step. This might be where you specify</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Here you can run code that needs to run before the compliance checker step. This might be where you specify</span>
 <span class="sd">        which files in the &quot;eligible_files&quot; list are &quot;UPLOAD_ONLY&quot;, or not published at all </span>
 <span class="sd">        </span>
 <span class="sd">        :return: None</span>
@@ -143,14 +143,14 @@
         <span class="p">)</span></div>
 
 <div class="viewcode-block" id="DummyHandler.process"><a class="viewcode-back" href="../../../aodncore.testlib.html#aodncore.testlib.dummyhandler.DummyHandler.process">[docs]</a>    <span class="k">def</span> <span class="nf">process</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Here you can run code that needs to run *after* the compliance checker step but *before* the publishing step.</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Here you can run code that needs to run *after* the compliance checker step but *before* the publishing step.</span>
 
 <span class="sd">        :return: None</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Running process from child class&quot;</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="DummyHandler.postprocess"><a class="viewcode-back" href="../../../aodncore.testlib.html#aodncore.testlib.dummyhandler.DummyHandler.postprocess">[docs]</a>    <span class="k">def</span> <span class="nf">postprocess</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Here you can run code that needs to run *after* the publishing step but *before* the notify step</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Here you can run code that needs to run *after* the publishing step but *before* the notify step</span>
 
 <span class="sd">        :return: None</span>
 <span class="sd">        &quot;&quot;&quot;</span>

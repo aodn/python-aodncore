@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>aodncore.pipeline.files &mdash; aodncore 1.4.6 documentation</title>
+  <title>aodncore.pipeline.files &mdash; aodncore 1.4.7 documentation</title>
       <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
   <!--[if lt IE 9]>
@@ -116,7 +116,7 @@
 
 
 <div class="viewcode-block" id="ensure_pipelinefilecollection"><a class="viewcode-back" href="../../../aodncore.pipeline.html#aodncore.pipeline.files.ensure_pipelinefilecollection">[docs]</a><span class="k">def</span> <span class="nf">ensure_pipelinefilecollection</span><span class="p">(</span><span class="n">o</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Function to accept either a single PipelineFile OR a PipelineFileCollection and ensure that a</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Function to accept either a single PipelineFile OR a PipelineFileCollection and ensure that a</span>
 <span class="sd">    PipelineFileCollection object is returned in either case</span>
 
 <span class="sd">    :param o: PipelineFile or PipelineFileCollection object</span>
@@ -127,7 +127,7 @@
 
 
 <div class="viewcode-block" id="ensure_remotepipelinefilecollection"><a class="viewcode-back" href="../../../aodncore.pipeline.html#aodncore.pipeline.files.ensure_remotepipelinefilecollection">[docs]</a><span class="k">def</span> <span class="nf">ensure_remotepipelinefilecollection</span><span class="p">(</span><span class="n">o</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Function to accept either a single RemotePipelineFile OR a RemotePipelineFileCollection and ensure that a</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Function to accept either a single RemotePipelineFile OR a RemotePipelineFileCollection and ensure that a</span>
 <span class="sd">    RemotePipelineFileCollection object is returned in either case</span>
 
 <span class="sd">    :param o: RemotePipelineFile or RemotePipelineFileCollection object</span>
@@ -138,7 +138,7 @@
 
 
 <span class="k">class</span> <span class="nc">PipelineFileBase</span><span class="p">(</span><span class="nb">object</span><span class="p">,</span> <span class="n">metaclass</span><span class="o">=</span><span class="n">abc</span><span class="o">.</span><span class="n">ABCMeta</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;A base class to represent a &quot;pipeline file&quot;, which consists of a local path and a remote &quot;destination path&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;A base class to represent a &quot;pipeline file&quot;, which consists of a local path and a remote &quot;destination path&quot;</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="vm">__slots__</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;_file_checksum&#39;</span><span class="p">,</span> <span class="s1">&#39;_dest_path&#39;</span><span class="p">,</span> <span class="s1">&#39;_local_path&#39;</span><span class="p">,</span> <span class="s1">&#39;_extension&#39;</span><span class="p">,</span> <span class="s1">&#39;_name&#39;</span><span class="p">,</span> <span class="s1">&#39;file_type&#39;</span><span class="p">]</span>
 
@@ -213,7 +213,7 @@
 
 
 <div class="viewcode-block" id="RemotePipelineFile"><a class="viewcode-back" href="../../../aodncore.pipeline.html#aodncore.pipeline.files.RemotePipelineFile">[docs]</a><span class="k">class</span> <span class="nc">RemotePipelineFile</span><span class="p">(</span><span class="n">PipelineFileBase</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Implementation of PipelineFileBase to represents a single *remote* file. This is used to provide a common</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Implementation of PipelineFileBase to represents a single *remote* file. This is used to provide a common</span>
 <span class="sd">        interface for a remote file, to facilitate querying and downloading operations where the *current* state</span>
 <span class="sd">        of the storage is relevant information</span>
 <span class="sd">    &quot;&quot;&quot;</span>
@@ -235,7 +235,7 @@
 
 <div class="viewcode-block" id="RemotePipelineFile.from_pipelinefile"><a class="viewcode-back" href="../../../aodncore.pipeline.html#aodncore.pipeline.files.RemotePipelineFile.from_pipelinefile">[docs]</a>    <span class="nd">@classmethod</span>
     <span class="k">def</span> <span class="nf">from_pipelinefile</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">pipeline_file</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Construct a RemotePipelineFile instance from an existing PipelineFile instance</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Construct a RemotePipelineFile instance from an existing PipelineFile instance</span>
 
 <span class="sd">        Note: the local_path is deliberately *not* set in the new instance, primarily to avoid accidental overwriting of</span>
 <span class="sd">        local files in case of conversion to a remote file and having the remote file downloaded. The local_path</span>
@@ -279,7 +279,7 @@
 
 
 <div class="viewcode-block" id="PipelineFile"><a class="viewcode-back" href="../../../aodncore.pipeline.html#aodncore.pipeline.files.PipelineFile">[docs]</a><span class="k">class</span> <span class="nc">PipelineFile</span><span class="p">(</span><span class="n">PipelineFileBase</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Represents a single file in order to store state information relating to the intended actions to be performed</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Represents a single file in order to store state information relating to the intended actions to be performed</span>
 <span class="sd">    on the file, and the actions that *were* performed on the file</span>
 
 <span class="sd">    :param local_path: absolute source path to the file being represented</span>
@@ -353,7 +353,7 @@
 <div class="viewcode-block" id="PipelineFile.from_remotepipelinefile"><a class="viewcode-back" href="../../../aodncore.pipeline.html#aodncore.pipeline.files.PipelineFile.from_remotepipelinefile">[docs]</a>    <span class="nd">@classmethod</span>
     <span class="k">def</span> <span class="nf">from_remotepipelinefile</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">remotepipelinefile</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">is_deletion</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">late_deletion</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
                                 <span class="n">file_update_callback</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">check_type</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">publish_type</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Construct a PipelineFile instance from an existing RemotePipelineFile instance</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Construct a PipelineFile instance from an existing RemotePipelineFile instance</span>
 
 <span class="sd">        :param remotepipelinefile: RemotePipelineFile instance used to instantiate a PipelineFile instance</span>
 <span class="sd">        :param name: name flag passed to __init__ (defaults to remotepipelinefile.name)</span>
@@ -614,7 +614,7 @@
 
     <span class="nd">@publish_type</span><span class="o">.</span><span class="n">setter</span>
     <span class="k">def</span> <span class="nf">publish_type</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">publish_type</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Publish type is a special property which allows handler sub-classes to specify in a single line what</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Publish type is a special property which allows handler sub-classes to specify in a single line what</span>
 <span class="sd">        &quot;publishing&quot; actions should be performed on a given file. For this reason, the boolean flags are read-only</span>
 <span class="sd">        properties and only intended to be changed via this property.</span>
 <span class="sd">        </span>
@@ -660,7 +660,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">_post_property_update</span><span class="p">({</span><span class="s1">&#39;should_undo&#39;</span><span class="p">:</span> <span class="n">should_undo</span><span class="p">})</span>
 
     <span class="k">def</span> <span class="nf">_post_property_update</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">properties</span><span class="p">,</span> <span class="n">include_values</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Method run after a property is updated in order to perform optional actions such as updating ORM (if enabled)</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Method run after a property is updated in order to perform optional actions such as updating ORM (if enabled)</span>
 <span class="sd">            and running the update callback (if set)</span>
 
 <span class="sd">        :param properties: dict containing the updated properties and their new values (used to update ORM)</span>
@@ -675,7 +675,7 @@
 
 
 <span class="k">class</span> <span class="nc">PipelineFileCollectionBase</span><span class="p">(</span><span class="n">MutableSet</span><span class="p">,</span> <span class="n">metaclass</span><span class="o">=</span><span class="n">abc</span><span class="o">.</span><span class="n">ABCMeta</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;A collection base class which implements the MutableSet abstract base class to allow clean set operations, but</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;A collection base class which implements the MutableSet abstract base class to allow clean set operations, but</span>
 <span class="sd">    limited to containing only :py:class:`PipelineFile` or :py:class:`RemotePipelineFile`elements and providing specific</span>
 <span class="sd">    functionality for handling a collection of them (e.g. filtering, generating tabular data, etc.)</span>
 
@@ -738,7 +738,7 @@
         <span class="k">return</span> <span class="s2">&quot;</span><span class="si">{name}</span><span class="s2">(</span><span class="si">{repr}</span><span class="s2">)&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="p">,</span> <span class="nb">repr</span><span class="o">=</span><span class="nb">repr</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_s</span><span class="p">)))</span>
 
     <span class="k">def</span> <span class="nf">add</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pipeline_file</span><span class="p">,</span> <span class="n">overwrite</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">validate_unique</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Add a file to the collection</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Add a file to the collection</span>
 
 <span class="sd">        :param pipeline_file: :py:class:`PipelineFile` or file path</span>
 <span class="sd">        :param kwargs: :py:class:`dict` additional keywords passed to to PipelineFileBase __init__ method</span>
@@ -775,7 +775,7 @@
     <span class="n">append</span> <span class="o">=</span> <span class="n">add</span>
 
     <span class="k">def</span> <span class="nf">discard</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pipeline_file</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Remove an element from the collection. Do not raise an exception if absent.</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Remove an element from the collection. Do not raise an exception if absent.</span>
 
 <span class="sd">        :param pipeline_file: :py:class:`PipelineFile` or file path</span>
 <span class="sd">        :return: :py:class:`bool` which indicates whether the file was in the collection AND was successfully discarded</span>
@@ -806,7 +806,7 @@
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_s</span><span class="o">.</span><span class="n">union</span><span class="p">(</span><span class="n">sequence</span><span class="p">))</span>
 
     <span class="k">def</span> <span class="nf">update</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">sequence</span><span class="p">,</span> <span class="n">overwrite</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">validate_unique</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Add the elements of an existing :py:class:`Sequence` to this collection</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Add the elements of an existing :py:class:`Sequence` to this collection</span>
 
 <span class="sd">        :param sequence: :py:class:`Sequence` containing :py:class:`PipelineFile` or file path elements to be added to</span>
 <span class="sd">            the collection</span>
@@ -823,7 +823,7 @@
         <span class="k">return</span> <span class="nb">any</span><span class="p">(</span><span class="n">results</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">get_pipelinefile_from_dest_path</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dest_path</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Get PipelineFile for a given src_path</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Get PipelineFile for a given src_path</span>
 
 <span class="sd">        :param dest_path: destination path string for which to retrieve corresponding :py:class:`RemotePipelineFile`</span>
 <span class="sd">        instance</span>
@@ -833,7 +833,7 @@
         <span class="k">return</span> <span class="n">pipeline_file</span>
 
     <span class="k">def</span> <span class="nf">get_pipelinefile_from_src_path</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">src_path</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Get PipelineFile for a given src_path</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Get PipelineFile for a given src_path</span>
 
 <span class="sd">        :param src_path: source path string for which to retrieve corresponding :py:class:`PipelineFile` instances</span>
 <span class="sd">        :return: matching :py:class:`PipelineFile` instance or :py:const:`None` if it is not in the collection</span>
@@ -842,7 +842,7 @@
         <span class="k">return</span> <span class="n">pipeline_file</span>
 
     <span class="k">def</span> <span class="nf">get_slices</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">slice_size</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Slice this collection into a list of :py:class:`PipelineFileCollections` with maximum length of slice_size</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Slice this collection into a list of :py:class:`PipelineFileCollections` with maximum length of slice_size</span>
 
 <span class="sd">        :param slice_size: maximum length of each slice</span>
 <span class="sd">        :return: list containing the current object sliced into new :py:class:`PipelineFileCollection` instances of max</span>
@@ -852,7 +852,7 @@
         <span class="k">return</span> <span class="n">slice_sequence</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">slice_size</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">filter_by_attribute_id</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">attribute</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Return a new :py:class:`PipelineFileCollection` containing only elements where the id of the given attribute</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return a new :py:class:`PipelineFileCollection` containing only elements where the id of the given attribute</span>
 <span class="sd">        *is* the given id (i.e. refers to the same object)</span>
 <span class="sd">        </span>
 <span class="sd">        :param attribute: attribute by which to filter :py:class:`PipelineFile` instances</span>
@@ -864,7 +864,7 @@
         <span class="k">return</span> <span class="n">collection</span>
 
     <span class="k">def</span> <span class="nf">filter_by_attribute_id_not</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">attribute</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Return a new :py:class:`PipelineFileCollection` containing only elements where the id of the given attribute</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return a new :py:class:`PipelineFileCollection` containing only elements where the id of the given attribute</span>
 <span class="sd">        is *not* the given id (i.e. refers to the same object)</span>
 
 <span class="sd">        :param attribute: attribute by which to filter :py:class:`PipelineFile` instances</span>
@@ -876,7 +876,7 @@
         <span class="k">return</span> <span class="n">collection</span>
 
     <span class="k">def</span> <span class="nf">filter_by_attribute_value</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">attribute</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Return a new :py:class:`PipelineFileCollection` containing only elements where the value of the given</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return a new :py:class:`PipelineFileCollection` containing only elements where the value of the given</span>
 <span class="sd">        attribute is equal to the given value</span>
 
 <span class="sd">        :param attribute: attribute by which to filter :py:class:`PipelineFile` instances</span>
@@ -888,7 +888,7 @@
         <span class="k">return</span> <span class="n">collection</span>
 
     <span class="k">def</span> <span class="nf">filter_by_attribute_regexes</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">attribute</span><span class="p">,</span> <span class="n">regexes</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Return a new :py:class:`PipelineFileCollection` containing only elements where the value of the named</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return a new :py:class:`PipelineFileCollection` containing only elements where the value of the named</span>
 <span class="sd">        attribute matches a given regex pattern</span>
 
 <span class="sd">        :param attribute: attribute to filter on</span>
@@ -907,7 +907,7 @@
     <span class="n">filter_by_attribute_regex</span> <span class="o">=</span> <span class="n">filter_by_attribute_regexes</span>
 
     <span class="k">def</span> <span class="nf">filter_by_bool_attribute</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">attribute</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Return a new :py:class:`PipelineFileCollection` containing only elements where the named attribute resolves</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return a new :py:class:`PipelineFileCollection` containing only elements where the named attribute resolves</span>
 <span class="sd">        to True</span>
 
 <span class="sd">        :param attribute: attribute by which to filter :py:class:`PipelineFile` instances</span>
@@ -918,7 +918,7 @@
         <span class="k">return</span> <span class="n">collection</span>
 
     <span class="k">def</span> <span class="nf">filter_by_bool_attribute_not</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">attribute</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Return a new :py:class:`PipelineFileCollection` containing only elements where the named attribute resolves</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return a new :py:class:`PipelineFileCollection` containing only elements where the named attribute resolves</span>
 <span class="sd">        to False</span>
 
 <span class="sd">        :param attribute: attribute by which to filter :py:class:`PipelineFile` instances</span>
@@ -929,7 +929,7 @@
         <span class="k">return</span> <span class="n">collection</span>
 
     <span class="k">def</span> <span class="nf">filter_by_bool_attributes_and</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">attributes</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Return a new :py:class:`PipelineFileCollection` containing only elements where *all* of the named attributes</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return a new :py:class:`PipelineFileCollection` containing only elements where *all* of the named attributes</span>
 <span class="sd">        resolve to True</span>
 
 <span class="sd">        :param attributes: attributes by which to filter :py:class:`PipelineFile` instances</span>
@@ -945,7 +945,7 @@
         <span class="k">return</span> <span class="n">collection</span>
 
     <span class="k">def</span> <span class="nf">filter_by_bool_attributes_and_not</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">true_attributes</span><span class="p">,</span> <span class="n">false_attributes</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Return a new :py:class:`PipelineFileCollection` containing only elements where *all* of the named</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return a new :py:class:`PipelineFileCollection` containing only elements where *all* of the named</span>
 <span class="sd">        true_attributes have a value of True and all of the false_attributes have a value of False</span>
 
 <span class="sd">        :param true_attributes: attributes which *must* be True</span>
@@ -974,7 +974,7 @@
         <span class="k">return</span> <span class="n">collection</span>
 
     <span class="k">def</span> <span class="nf">filter_by_bool_attributes_not</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">attributes</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Return a new :py:class:`PipelineFileCollection` containing only elements where *all* of the named attributes</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return a new :py:class:`PipelineFileCollection` containing only elements where *all* of the named attributes</span>
 <span class="sd">        resolve to False</span>
 
 <span class="sd">        :param attributes: attributes by which to filter :py:class:`PipelineFile` instances</span>
@@ -990,7 +990,7 @@
         <span class="k">return</span> <span class="n">collection</span>
 
     <span class="k">def</span> <span class="nf">filter_by_bool_attributes_or</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">attributes</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Return a new :py:class:`PipelineFileCollection` containing only elements where *any* of the named attributes</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return a new :py:class:`PipelineFileCollection` containing only elements where *any* of the named attributes</span>
 <span class="sd">        resolve to True</span>
 
 <span class="sd">        :param attributes: attributes by which to filter :py:class:`PipelineFile` instances</span>
@@ -1006,7 +1006,7 @@
         <span class="k">return</span> <span class="n">collection</span>
 
     <span class="k">def</span> <span class="nf">get_attribute_list</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">attribute</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Return a :py:class:`list` containing the given attribute from each PipelineFile in the collection</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return a :py:class:`list` containing the given attribute from each PipelineFile in the collection</span>
 
 <span class="sd">        :param attribute: the attribute name to retrieve from the objects</span>
 <span class="sd">        :return: :py:class:`list` containing the value of the given attribute for each file in the collection</span>
@@ -1014,7 +1014,7 @@
         <span class="k">return</span> <span class="p">[</span><span class="nb">getattr</span><span class="p">(</span><span class="n">f</span><span class="p">,</span> <span class="n">attribute</span><span class="p">)</span> <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_s</span><span class="p">]</span>
 
     <span class="k">def</span> <span class="nf">get_table_data</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Return :py:class:`PipelineFile` members in a simple tabular data format suitable for rendering into formatted</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return :py:class:`PipelineFile` members in a simple tabular data format suitable for rendering into formatted</span>
 <span class="sd">        tables</span>
 
 <span class="sd">        :return: a :py:class:`tuple` with the first element being a list of columns, and the second being a 2D list of</span>
@@ -1028,7 +1028,7 @@
         <span class="k">return</span> <span class="n">columns</span><span class="p">,</span> <span class="n">data</span>
 
     <span class="k">def</span> <span class="nf">validate_unique_attribute_value</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">attribute</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Check that a given value is not already in the collection for the given :py:class:`PipelineFile` attribute,</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Check that a given value is not already in the collection for the given :py:class:`PipelineFile` attribute,</span>
 <span class="sd">        and raise an exception if it is</span>
 
 <span class="sd">        This is intended for the use case of when an *intended* value is known for a particular attribute, and it is</span>
@@ -1046,7 +1046,7 @@
                                                                                             <span class="n">duplicates</span><span class="o">=</span><span class="n">duplicates</span><span class="p">))</span>
 
     <span class="k">def</span> <span class="nf">validate_attribute_value_matches_regexes</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">attribute</span><span class="p">,</span> <span class="n">include_regexes</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Check that the given :py:class:`PipelineFile` attribute matches at least one of the given regexes for each</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Check that the given :py:class:`PipelineFile` attribute matches at least one of the given regexes for each</span>
 <span class="sd">        file in the collection and raise an exception if any have a non-matched value</span>
 
 <span class="sd">        :param attribute: the attribute to compare</span>
@@ -1063,7 +1063,7 @@
                     <span class="n">attribute</span><span class="o">=</span><span class="n">attribute</span><span class="p">,</span> <span class="n">unmatched</span><span class="o">=</span><span class="n">unmatched</span><span class="p">,</span> <span class="n">regexes</span><span class="o">=</span><span class="n">include_regexes</span><span class="p">))</span>
 
     <span class="k">def</span> <span class="nf">validate_attribute_uniqueness</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">attribute</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Check that the given :py:class:`PipelineFile` attribute is unique amongst all :py:class:`PipelineFile`</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Check that the given :py:class:`PipelineFile` attribute is unique amongst all :py:class:`PipelineFile`</span>
 <span class="sd">        instances currently in the collection, and raise an exception if any duplicates are found</span>
 
 <span class="sd">        This is intended for the use case of a final sanity check of the collection before using it (e.g. before</span>
@@ -1087,7 +1087,7 @@
 
 
 <div class="viewcode-block" id="RemotePipelineFileCollection"><a class="viewcode-back" href="../../../aodncore.pipeline.html#aodncore.pipeline.files.RemotePipelineFileCollection">[docs]</a><span class="k">class</span> <span class="nc">RemotePipelineFileCollection</span><span class="p">(</span><span class="n">PipelineFileCollectionBase</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;A PipelineFileCollectionBase subclass to hold a set of RemotePipelineFile instances</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;A PipelineFileCollectionBase subclass to hold a set of RemotePipelineFile instances</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 <div class="viewcode-block" id="RemotePipelineFileCollection.member_class"><a class="viewcode-back" href="../../../aodncore.pipeline.html#aodncore.pipeline.files.RemotePipelineFileCollection.member_class">[docs]</a>    <span class="nd">@classproperty</span>
     <span class="k">def</span> <span class="nf">member_class</span><span class="p">(</span><span class="bp">cls</span><span class="p">):</span>
@@ -1110,7 +1110,7 @@
         <span class="k">return</span> <span class="bp">cls</span><span class="p">(</span><span class="n">RemotePipelineFile</span><span class="o">.</span><span class="n">from_pipelinefile</span><span class="p">(</span><span class="n">f</span><span class="p">)</span> <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="n">pipelinefilecollection</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="RemotePipelineFileCollection.download"><a class="viewcode-back" href="../../../aodncore.pipeline.html#aodncore.pipeline.files.RemotePipelineFileCollection.download">[docs]</a>    <span class="k">def</span> <span class="nf">download</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">broker</span><span class="p">,</span> <span class="n">local_path</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Helper method to download the current collection from a given broker to a given local path</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Helper method to download the current collection from a given broker to a given local path</span>
 
 <span class="sd">        :param broker: BaseStorageBroker subclass to download from</span>
 <span class="sd">        :param local_path: local path into which files are downloaded</span>
@@ -1129,7 +1129,7 @@
 
 
 <div class="viewcode-block" id="PipelineFileCollection"><a class="viewcode-back" href="../../../aodncore.pipeline.html#aodncore.pipeline.files.PipelineFileCollection">[docs]</a><span class="k">class</span> <span class="nc">PipelineFileCollection</span><span class="p">(</span><span class="n">PipelineFileCollectionBase</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;A PipelineFileCollectionBase subclass to hold a set of PipelineFile instances</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;A PipelineFileCollectionBase subclass to hold a set of PipelineFile instances</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 <div class="viewcode-block" id="PipelineFileCollection.member_class"><a class="viewcode-back" href="../../../aodncore.pipeline.html#aodncore.pipeline.files.PipelineFileCollection.member_class">[docs]</a>    <span class="nd">@classproperty</span>
     <span class="k">def</span> <span class="nf">member_class</span><span class="p">(</span><span class="bp">cls</span><span class="p">):</span>
@@ -1167,7 +1167,7 @@
             <span class="nb">setattr</span><span class="p">(</span><span class="n">f</span><span class="p">,</span> <span class="n">attribute</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span>
 
 <div class="viewcode-block" id="PipelineFileCollection.set_archive_paths"><a class="viewcode-back" href="../../../aodncore.pipeline.html#aodncore.pipeline.files.PipelineFileCollection.set_archive_paths">[docs]</a>    <span class="k">def</span> <span class="nf">set_archive_paths</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">archive_path_function</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Set archive_path attributes for each file in the collection</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Set archive_path attributes for each file in the collection</span>
 
 <span class="sd">        :param archive_path_function: function used to determine archive destination path</span>
 <span class="sd">        :return: None</span>
@@ -1181,7 +1181,7 @@
                 <span class="n">f</span><span class="o">.</span><span class="n">archive_path</span> <span class="o">=</span> <span class="n">candidate_path</span></div>
 
 <div class="viewcode-block" id="PipelineFileCollection.set_check_types"><a class="viewcode-back" href="../../../aodncore.pipeline.html#aodncore.pipeline.files.PipelineFileCollection.set_check_types">[docs]</a>    <span class="k">def</span> <span class="nf">set_check_types</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">check_type</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Set check_type attributes for each file in the collection</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Set check_type attributes for each file in the collection</span>
 
 <span class="sd">        :param check_type: :py:class:`PipefileFileCheckType` enum member</span>
 <span class="sd">        :return: None</span>
@@ -1191,7 +1191,7 @@
         <span class="n">additions</span><span class="o">.</span><span class="n">_set_attribute</span><span class="p">(</span><span class="s1">&#39;check_type&#39;</span><span class="p">,</span> <span class="n">check_type</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="PipelineFileCollection.set_dest_paths"><a class="viewcode-back" href="../../../aodncore.pipeline.html#aodncore.pipeline.files.PipelineFileCollection.set_dest_paths">[docs]</a>    <span class="k">def</span> <span class="nf">set_dest_paths</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dest_path_function</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Set dest_path attributes for each file in the collection</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Set dest_path attributes for each file in the collection</span>
 
 <span class="sd">        :param dest_path_function: function used to determine publishing destination path</span>
 <span class="sd">        :return: None</span>
@@ -1205,7 +1205,7 @@
                 <span class="n">f</span><span class="o">.</span><span class="n">dest_path</span> <span class="o">=</span> <span class="n">candidate_path</span></div>
 
 <div class="viewcode-block" id="PipelineFileCollection.set_bool_attribute"><a class="viewcode-back" href="../../../aodncore.pipeline.html#aodncore.pipeline.files.PipelineFileCollection.set_bool_attribute">[docs]</a>    <span class="k">def</span> <span class="nf">set_bool_attribute</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">attribute</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Set a :py:class:`bool` attribute for each file in the collection</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Set a :py:class:`bool` attribute for each file in the collection</span>
 
 <span class="sd">        :param attribute: attribute to set</span>
 <span class="sd">        :param value: value to set the attribute</span>
@@ -1215,7 +1215,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">_set_attribute</span><span class="p">(</span><span class="n">attribute</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="PipelineFileCollection.set_publish_types"><a class="viewcode-back" href="../../../aodncore.pipeline.html#aodncore.pipeline.files.PipelineFileCollection.set_publish_types">[docs]</a>    <span class="k">def</span> <span class="nf">set_publish_types</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">publish_type</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Set publish_type attributes for each file in the collection</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Set publish_type attributes for each file in the collection</span>
 
 <span class="sd">        :param publish_type: :py:class:`PipefileFilePublishType` enum member</span>
 <span class="sd">        :return: None</span>
@@ -1224,7 +1224,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">_set_attribute</span><span class="p">(</span><span class="s1">&#39;publish_type&#39;</span><span class="p">,</span> <span class="n">publish_type</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="PipelineFileCollection.set_string_attribute"><a class="viewcode-back" href="../../../aodncore.pipeline.html#aodncore.pipeline.files.PipelineFileCollection.set_string_attribute">[docs]</a>    <span class="k">def</span> <span class="nf">set_string_attribute</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">attribute</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Set a string attribute for each file in the collection</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Set a string attribute for each file in the collection</span>
 
 <span class="sd">        :param attribute: attribute to set</span>
 <span class="sd">        :param value: value to set the attribute</span>
@@ -1234,7 +1234,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">_set_attribute</span><span class="p">(</span><span class="n">attribute</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="PipelineFileCollection.set_file_update_callback"><a class="viewcode-back" href="../../../aodncore.pipeline.html#aodncore.pipeline.files.PipelineFileCollection.set_file_update_callback">[docs]</a>    <span class="k">def</span> <span class="nf">set_file_update_callback</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">file_update_callback</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Set a callback function in each :py:class:`PipelineFile` in this collection</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Set a callback function in each :py:class:`PipelineFile` in this collection</span>
 
 <span class="sd">        :param file_update_callback: callback (function)</span>
 <span class="sd">        :return: None</span>
@@ -1243,7 +1243,7 @@
             <span class="n">f</span><span class="o">.</span><span class="n">file_update_callback</span> <span class="o">=</span> <span class="n">file_update_callback</span></div>
 
 <div class="viewcode-block" id="PipelineFileCollection.set_default_check_types"><a class="viewcode-back" href="../../../aodncore.pipeline.html#aodncore.pipeline.files.PipelineFileCollection.set_default_check_types">[docs]</a>    <span class="k">def</span> <span class="nf">set_default_check_types</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">check_params</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Set check_type attribute for each file in the collection to the default value, based on the file type and</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Set check_type attribute for each file in the collection to the default value, based on the file type and</span>
 <span class="sd">        presence of compliance checker checks in the check parameters</span>
 
 <span class="sd">        :param check_params: :py:class:`dict` or None</span>
@@ -1266,7 +1266,7 @@
         <span class="n">non_netcdf_additions</span><span class="o">.</span><span class="n">set_check_types</span><span class="p">(</span><span class="n">PipelineFileCheckType</span><span class="o">.</span><span class="n">FORMAT_CHECK</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="PipelineFileCollection.set_publish_types_from_regexes"><a class="viewcode-back" href="../../../aodncore.pipeline.html#aodncore.pipeline.files.PipelineFileCollection.set_publish_types_from_regexes">[docs]</a>    <span class="k">def</span> <span class="nf">set_publish_types_from_regexes</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">include_regexes</span><span class="p">,</span> <span class="n">exclude_regexes</span><span class="p">,</span> <span class="n">addition_type</span><span class="p">,</span> <span class="n">deletion_type</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Set publish_type attribute for each file in the collection depending on whether it is considered &quot;included&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Set publish_type attribute for each file in the collection depending on whether it is considered &quot;included&quot;</span>
 <span class="sd">        according to the regex parameters</span>
 
 <span class="sd">        :param include_regexes: regex(es) for which a file must match one or more to be included</span>

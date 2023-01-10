@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>aodncore.pipeline.steps.check &mdash; aodncore 1.4.6 documentation</title>
+  <title>aodncore.pipeline.steps.check &mdash; aodncore 1.4.7 documentation</title>
       <link rel="stylesheet" href="../../../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../../../_static/css/theme.css" type="text/css" />
   <!--[if lt IE 9]>
@@ -129,7 +129,7 @@
 
 
 <div class="viewcode-block" id="get_child_check_runner"><a class="viewcode-back" href="../../../../aodncore.pipeline.steps.html#aodncore.pipeline.steps.check.get_child_check_runner">[docs]</a><span class="k">def</span> <span class="nf">get_child_check_runner</span><span class="p">(</span><span class="n">check_type</span><span class="p">,</span> <span class="n">config</span><span class="p">,</span> <span class="n">logger</span><span class="p">,</span> <span class="n">check_params</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Factory function to return appropriate checker class based on check type value</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Factory function to return appropriate checker class based on check type value</span>
 
 <span class="sd">    :param check_type: :py:class:`PipelineFileCheckType` enum member</span>
 <span class="sd">    :param check_params: dict of parameters to pass to :py:class:`BaseCheckRunner` class for runtime configuration</span>
@@ -152,7 +152,7 @@
 
 
 <span class="k">class</span> <span class="nc">BaseCheckRunner</span><span class="p">(</span><span class="n">BaseStepRunner</span><span class="p">,</span> <span class="n">metaclass</span><span class="o">=</span><span class="n">abc</span><span class="o">.</span><span class="n">ABCMeta</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;A CheckRunner is responsible for performing checks on a given collection of files.</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;A CheckRunner is responsible for performing checks on a given collection of files.</span>
 <span class="sd">    </span>
 <span class="sd">    The &#39;run&#39; method is supplied with a PipelineFileCollection object and performs arbitrary checks against the files, </span>
 <span class="sd">    with the only expectation being that it must update the PipelineFile elements&#39; check_result property with a</span>
@@ -255,7 +255,7 @@
             <span class="n">pipeline_file</span><span class="o">.</span><span class="n">check_result</span> <span class="o">=</span> <span class="n">CheckResult</span><span class="p">(</span><span class="n">compliant</span><span class="p">,</span> <span class="n">compliance_log</span><span class="p">,</span> <span class="n">errors</span><span class="p">)</span></div>
 
     <span class="k">def</span> <span class="nf">_run_check</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">file_path</span><span class="p">,</span> <span class="n">check</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Run a single check suite on the given file.</span>
 
 <span class="sd">        :param str file_path: Full path to the file</span>

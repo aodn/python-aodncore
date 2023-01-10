@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>aodncore.pipeline.handlerbase &mdash; aodncore 1.4.6 documentation</title>
+  <title>aodncore.pipeline.handlerbase &mdash; aodncore 1.4.7 documentation</title>
       <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
   <!--[if lt IE 9]>
@@ -120,7 +120,7 @@
 
 
 <div class="viewcode-block" id="HandlerBase"><a class="viewcode-back" href="../../../aodncore.pipeline.html#aodncore.pipeline.handlerbase.HandlerBase">[docs]</a><span class="k">class</span> <span class="nc">HandlerBase</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Base class for pipeline handler sub-classes.</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Base class for pipeline handler sub-classes.</span>
 
 <span class="sd">    Implements common handler methods and defines state machine states and transitions.</span>
 
@@ -451,7 +451,7 @@
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">celery_task_id</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Read-only property to access Celery task ID</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Read-only property to access Celery task ID</span>
 
 <span class="sd">        :return: Celery task ID (if applicable)</span>
 <span class="sd">        :rtype: :class:`str`, :class:`None`</span>
@@ -460,7 +460,7 @@
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">celery_task_name</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Read-only property to access Celery task name</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Read-only property to access Celery task name</span>
 
 <span class="sd">        :return: Celery task name (if applicable)</span>
 <span class="sd">        :rtype: :class:`str`, :class:`None`</span>
@@ -469,7 +469,7 @@
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">config</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Property to access the :attr:`config` attribute</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Property to access the :attr:`config` attribute</span>
 
 <span class="sd">        :return: configuration object</span>
 <span class="sd">        :rtype: :class:`aodncore.pipeline.config.LazyConfigManager`</span>
@@ -483,7 +483,7 @@
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">error</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Read-only property to access :py:class:`Exception` object from handler instance</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Read-only property to access :py:class:`Exception` object from handler instance</span>
 
 <span class="sd">        :return: the exception object which caused the handler to fail (if applicable)</span>
 <span class="sd">        :rtype: :class:`Exception`, :class:`None`</span>
@@ -492,7 +492,7 @@
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">error_details</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Read-only property to retrieve string description of error from handler instance</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Read-only property to retrieve string description of error from handler instance</span>
 
 <span class="sd">        :return: error description string (if applicable)</span>
 <span class="sd">        :rtype: :class:`str`, :class:`None`</span>
@@ -501,7 +501,7 @@
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">exclude_regexes</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Property to manage exclude_regexes attribute</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Property to manage exclude_regexes attribute</span>
 
 <span class="sd">        :return:</span>
 <span class="sd">        :rtype: :py:class:`list`</span>
@@ -514,7 +514,7 @@
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">file_basename</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Read-only property to access the :py:attr:`input_file` basename</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Read-only property to access the :py:attr:`input_file` basename</span>
 
 <span class="sd">        :return: :attr:`input_file` basename</span>
 <span class="sd">        :rtype: :class:`str`</span>
@@ -523,7 +523,7 @@
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">file_collection</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Read-only property to access the handler&#39;s primary PipelineFileCollection instance</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Read-only property to access the handler&#39;s primary PipelineFileCollection instance</span>
 
 <span class="sd">        :return: handler file collection</span>
 <span class="sd">        :rtype: :class:`PipelineFileCollection`</span>
@@ -532,7 +532,7 @@
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">file_checksum</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Read-only property to access the :py:attr:`input_file` checksum</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Read-only property to access the :py:attr:`input_file` checksum</span>
 
 <span class="sd">        :return: :attr:`input_file` checksum string</span>
 <span class="sd">        :rtype: :class:`str`</span>
@@ -541,7 +541,7 @@
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">file_extension</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Read-only property to access the :py:attr:`input_file` extension</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Read-only property to access the :py:attr:`input_file` extension</span>
 
 <span class="sd">        :return: :attr:`input_file` extension string</span>
 <span class="sd">        :rtype: :class:`str`</span>
@@ -550,7 +550,7 @@
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">file_type</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Read-only property to access the :py:attr:`input_file` type</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Read-only property to access the :py:attr:`input_file` type</span>
 
 <span class="sd">        :return: :attr:`input_file` type</span>
 <span class="sd">        :rtype: :class:`FileType`</span>
@@ -559,7 +559,7 @@
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">include_regexes</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Property to manage include_regexes attribute</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Property to manage include_regexes attribute</span>
 
 <span class="sd">        :return:</span>
 <span class="sd">        :rtype: :py:class:`list`</span>
@@ -572,7 +572,7 @@
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">instance_working_directory</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Read-only property to retrieve the instance working directory</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Read-only property to retrieve the instance working directory</span>
 
 <span class="sd">        :return: string containing path to top level working directory for this instance</span>
 <span class="sd">        :rtype: :class:`str`, :class:`None`</span>
@@ -581,7 +581,7 @@
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">input_file_archive_path</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Property used to determine the archive path for the original input file</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Property used to determine the archive path for the original input file</span>
 
 <span class="sd">        :return: string containing the archive path</span>
 <span class="sd">        :rtype: :class:`str`</span>
@@ -597,7 +597,7 @@
 
     <span class="nd">@lazyproperty</span>
     <span class="k">def</span> <span class="nf">input_file_object</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Read-only property to access the original input file represented as a PipelineFile object</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Read-only property to access the original input file represented as a PipelineFile object</span>
 
 <span class="sd">        :return: input file object</span>
 <span class="sd">        :rtype: :py:class:`PipelineFile`</span>
@@ -607,7 +607,7 @@
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">logger</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Read-only property to access the instance Logger</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Read-only property to access the instance Logger</span>
 
 <span class="sd">        :return: :py:class:`Logger`</span>
 <span class="sd">        &quot;&quot;&quot;</span>
@@ -617,7 +617,7 @@
 
     <span class="nd">@lazyproperty</span>
     <span class="k">def</span> <span class="nf">versions</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Read-only property to access module versions</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Read-only property to access module versions</span>
 
 <span class="sd">        :return: module version strings for aodncore, aodndata and compliance checker modules</span>
 <span class="sd">        :rtype: :class:`dict`</span>
@@ -632,7 +632,7 @@
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">notification_results</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Read-only property to retrieve the notification results, including the sent status of each recipient</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Read-only property to retrieve the notification results, including the sent status of each recipient</span>
 
 <span class="sd">        :return: list of :class:`aodncore.pipeline.steps.notify.NotifyRecipient` instances</span>
 <span class="sd">        :rtype: :class:`aodncore.pipeline.steps.notify.NotifyList`</span>
@@ -641,7 +641,7 @@
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">result</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Read-only property to retrieve the overall end result of the handler instance</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Read-only property to retrieve the overall end result of the handler instance</span>
 
 <span class="sd">        :return: handler result</span>
 <span class="sd">        :rtype: :class:`aodncore.pipeline.common.HandlerResult`</span>
@@ -650,7 +650,7 @@
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">should_notify</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Read-only property to retrieve the list of intended recipients *after* being assembled based on</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Read-only property to retrieve the list of intended recipients *after* being assembled based on</span>
 <span class="sd">        :py:attr:`notify_params`</span>
 
 <span class="sd">        :return: list of intended recipients</span>
@@ -660,7 +660,7 @@
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">start_time</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Read-only property containing the timestamp of when this instance was created</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Read-only property containing the timestamp of when this instance was created</span>
 
 <span class="sd">        :return: timestamp of handler starting time</span>
 <span class="sd">        :rtype: :py:class:`datetime.datetime`</span>
@@ -669,7 +669,7 @@
 
     <span class="nd">@lazyproperty</span>
     <span class="k">def</span> <span class="nf">state_query</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Read-only property containing an initialised StateQuery instance, for querying existing pipeline state</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Read-only property containing an initialised StateQuery instance, for querying existing pipeline state</span>
 
 <span class="sd">        :return: StateQuery instance</span>
 <span class="sd">        :rtype: :py:class:`StateQuery`</span>
@@ -680,7 +680,7 @@
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">default_addition_publish_type</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Property to manage attribute which determines the default publish type assigned to &#39;addition&#39;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Property to manage attribute which determines the default publish type assigned to &#39;addition&#39;</span>
 <span class="sd">        :py:class:`PipelineFile` instances</span>
 
 <span class="sd">        :return: default addition publish type</span>
@@ -695,7 +695,7 @@
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">default_deletion_publish_type</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Property to manage attribute which determines the default publish type assigned to &#39;deletion&#39;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Property to manage attribute which determines the default publish type assigned to &#39;deletion&#39;</span>
 <span class="sd">        :py:class:`PipelineFile` instances</span>
 
 <span class="sd">        :return: default deletion publish type</span>
@@ -710,7 +710,7 @@
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">collection_dir</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Temporary subdirectory where the *initial* input file collection will be unpacked</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Temporary subdirectory where the *initial* input file collection will be unpacked</span>
 
 <span class="sd">        .. warning:: Any new files created during the handler execution (i.e. were not in the original input file)</span>
 <span class="sd">            should be created in :py:attr:`self.products_dir` rather than here.</span>
@@ -724,7 +724,7 @@
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">products_dir</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Temporary subdirectory in which products may be created</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Temporary subdirectory in which products may be created</span>
 
 <span class="sd">        :return: products subdirectory of instance working directory</span>
 <span class="sd">        :rtype: :class:`str`, :class:`None`</span>
@@ -734,7 +734,7 @@
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">temp_dir</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Temporary subdirectory where any other arbitrary temporary files may be created by handler sub-classes</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Temporary subdirectory where any other arbitrary temporary files may be created by handler sub-classes</span>
 
 <span class="sd">        :return: temporary subdirectory of instance working directory</span>
 <span class="sd">        :rtype: :class:`str`, :class:`None`</span>
@@ -748,7 +748,7 @@
 
     <span class="nd">@lazyproperty</span>
     <span class="k">def</span> <span class="nf">_archive_store_runner</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Private read-only property for accessing the instance&#39;s &#39;archive&#39; store runner (for internal use only)</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Private read-only property for accessing the instance&#39;s &#39;archive&#39; store runner (for internal use only)</span>
 
 <span class="sd">        :return: :py:class:`StoreRunner`</span>
 <span class="sd">        &quot;&quot;&quot;</span>
@@ -760,7 +760,7 @@
 
     <span class="nd">@lazyproperty</span>
     <span class="k">def</span> <span class="nf">_upload_store_runner</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Private read-only property for accessing the instance &#39;upload&#39; store runner (for internal use only)</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Private read-only property for accessing the instance &#39;upload&#39; store runner (for internal use only)</span>
 
 <span class="sd">        :return: :py:class:`StoreRunner`</span>
 <span class="sd">        &quot;&quot;&quot;</span>
@@ -1086,21 +1086,21 @@
     <span class="c1">#</span>
 
 <div class="viewcode-block" id="HandlerBase.preprocess"><a class="viewcode-back" href="../../../aodncore.pipeline.html#aodncore.pipeline.handlerbase.HandlerBase.preprocess">[docs]</a>    <span class="k">def</span> <span class="nf">preprocess</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>  <span class="c1"># pragma: no cover</span>
-        <span class="sd">&quot;&quot;&quot;Method designed to be overridden by child handlers in order to execute code between resolve and check steps</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Method designed to be overridden by child handlers in order to execute code between resolve and check steps</span>
 
 <span class="sd">        :return: None</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">sysinfo</span><span class="p">(</span><span class="s2">&quot;`preprocess` not overridden by child class, skipping step&quot;</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="HandlerBase.process"><a class="viewcode-back" href="../../../aodncore.pipeline.html#aodncore.pipeline.handlerbase.HandlerBase.process">[docs]</a>    <span class="k">def</span> <span class="nf">process</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>  <span class="c1"># pragma: no cover</span>
-        <span class="sd">&quot;&quot;&quot;Method designed to be overridden by child handlers in order to execute code between check and publish steps</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Method designed to be overridden by child handlers in order to execute code between check and publish steps</span>
 
 <span class="sd">        :return: None</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">sysinfo</span><span class="p">(</span><span class="s2">&quot;`process` not overridden by child class, skipping step&quot;</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="HandlerBase.postprocess"><a class="viewcode-back" href="../../../aodncore.pipeline.html#aodncore.pipeline.handlerbase.HandlerBase.postprocess">[docs]</a>    <span class="k">def</span> <span class="nf">postprocess</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>  <span class="c1"># pragma: no cover</span>
-        <span class="sd">&quot;&quot;&quot;Method designed to be overridden by child handlers in order to execute code between publish and notify steps</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Method designed to be overridden by child handlers in order to execute code between publish and notify steps</span>
 
 <span class="sd">        :return: None</span>
 <span class="sd">        &quot;&quot;&quot;</span>
@@ -1111,7 +1111,7 @@
     <span class="c1">#</span>
 
 <div class="viewcode-block" id="HandlerBase.add_to_collection"><a class="viewcode-back" href="../../../aodncore.pipeline.html#aodncore.pipeline.handlerbase.HandlerBase.add_to_collection">[docs]</a>    <span class="k">def</span> <span class="nf">add_to_collection</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pipeline_file</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Helper method to add a PipelineFile object or path to the handler&#39;s file_collection, with the handler</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Helper method to add a PipelineFile object or path to the handler&#39;s file_collection, with the handler</span>
 <span class="sd">        instance&#39;s file_update_callback method assigned</span>
 
 <span class="sd">            Note: as this is a wrapper to the PipelineFileCollection.add method, kwargs are *only* applied when</span>
@@ -1127,7 +1127,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">file_collection</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">pipeline_file</span><span class="p">,</span> <span class="n">file_update_callback</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_file_update_callback</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="HandlerBase.run"><a class="viewcode-back" href="../../../aodncore.pipeline.html#aodncore.pipeline.handlerbase.HandlerBase.run">[docs]</a>    <span class="k">def</span> <span class="nf">run</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;The entry point to the handler instance. Executes the automatic state machine transitions, and populates the</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;The entry point to the handler instance. Executes the automatic state machine transitions, and populates the</span>
 <span class="sd">            :attr:`result` attribute to signal success or failure of the handler instance.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_handler_run</span><span class="p">:</span>

@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>aodncore.pipeline.common &mdash; aodncore 1.4.6 documentation</title>
+  <title>aodncore.pipeline.common &mdash; aodncore 1.4.7 documentation</title>
       <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
   <!--[if lt IE 9]>
@@ -116,7 +116,7 @@
 
 
 <div class="viewcode-block" id="CheckResult"><a class="viewcode-back" href="../../../aodncore.pipeline.html#aodncore.pipeline.common.CheckResult">[docs]</a><span class="k">class</span> <span class="nc">CheckResult</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Simple container class to hold a check result</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Simple container class to hold a check result</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">compliant</span><span class="p">,</span> <span class="n">log</span><span class="p">,</span> <span class="n">errors</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
@@ -147,14 +147,14 @@
 
 
 <div class="viewcode-block" id="NotificationRecipientType"><a class="viewcode-back" href="../../../aodncore.pipeline.html#aodncore.pipeline.common.NotificationRecipientType">[docs]</a><span class="k">class</span> <span class="nc">NotificationRecipientType</span><span class="p">(</span><span class="n">Enum</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Notification recipient type</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Notification recipient type</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">INVALID</span> <span class="o">=</span> <span class="p">(</span><span class="s1">&#39;invalid&#39;</span><span class="p">,</span> <span class="k">lambda</span> <span class="n">p</span><span class="p">:</span> <span class="kc">False</span><span class="p">,</span> <span class="s1">&#39;invalid protocol&#39;</span><span class="p">)</span>
     <span class="n">EMAIL</span> <span class="o">=</span> <span class="p">(</span><span class="s1">&#39;email&#39;</span><span class="p">,</span> <span class="n">is_valid_email_address</span><span class="p">,</span> <span class="s1">&#39;invalid email address&#39;</span><span class="p">)</span>
     <span class="n">SNS</span> <span class="o">=</span> <span class="p">(</span><span class="s1">&#39;sns&#39;</span><span class="p">,</span> <span class="k">lambda</span> <span class="n">p</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span> <span class="s1">&#39;invalid SNS topic&#39;</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">protocol</span><span class="p">,</span> <span class="n">address_validation_function</span><span class="p">,</span> <span class="n">error_string</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 
 <span class="sd">        :param protocol: protocol string used to map string representation of a protocol to an Enum element</span>
 <span class="sd">        :param address_validation_function: function used to validate the address component (must accept the address</span>
@@ -183,7 +183,7 @@
 
 
 <div class="viewcode-block" id="FileType"><a class="viewcode-back" href="../../../aodncore.pipeline.html#aodncore.pipeline.common.FileType">[docs]</a><span class="k">class</span> <span class="nc">FileType</span><span class="p">(</span><span class="n">Enum</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Represents each known file type, including extensions, mime type and validator function</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Represents each known file type, including extensions, mime type and validator function</span>
 
 <span class="sd">    Each enum member may have it&#39;s attributes accessed by name when required for comparisons and filtering, e.g.</span>
 
@@ -248,7 +248,7 @@
         <span class="k">return</span> <span class="bp">cls</span><span class="o">.</span><span class="n">get_type_from_extension</span><span class="p">(</span><span class="n">extension</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="FileType.is_type"><a class="viewcode-back" href="../../../aodncore.pipeline.html#aodncore.pipeline.common.FileType.is_type">[docs]</a>    <span class="k">def</span> <span class="nf">is_type</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Check whether the *type* (i.e. the information before the slash) equals the given value</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Check whether the *type* (i.e. the information before the slash) equals the given value</span>
 
 <span class="sd">        :param value: type to compare against</span>
 <span class="sd">        :return: True if this type matches the given value, otherwise False</span>
@@ -260,12 +260,12 @@
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">is_image_type</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Read-only boolean property indicating whether the file type instance is an image type.&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Read-only boolean property indicating whether the file type instance is an image type.&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">is_type</span><span class="p">(</span><span class="s1">&#39;image&#39;</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="PipelineFileCheckType"><a class="viewcode-back" href="../../../aodncore.pipeline.html#aodncore.pipeline.common.PipelineFileCheckType">[docs]</a><span class="k">class</span> <span class="nc">PipelineFileCheckType</span><span class="p">(</span><span class="n">Enum</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Each :py:class:`PipelineFile` may individually specify which checks are performed against it</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Each :py:class:`PipelineFile` may individually specify which checks are performed against it</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">UNSET</span> <span class="o">=</span> <span class="mi">0</span>
     <span class="n">NO_ACTION</span> <span class="o">=</span> <span class="mi">1</span>
@@ -286,7 +286,7 @@
 
 
 <div class="viewcode-block" id="PipelineFilePublishType"><a class="viewcode-back" href="../../../aodncore.pipeline.html#aodncore.pipeline.common.PipelineFilePublishType">[docs]</a><span class="k">class</span> <span class="nc">PipelineFilePublishType</span><span class="p">(</span><span class="n">Enum</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Each :py:class:`PipelineFile` may individually specify which combination of archive/upload/harvest actions must</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Each :py:class:`PipelineFile` may individually specify which combination of archive/upload/harvest actions must</span>
 <span class="sd">    occur before it is considered &quot;published&quot;</span>
 
 <span class="sd">    Enum member values are a tuple containing boolean flags used for querying/validating types, which are provided</span>

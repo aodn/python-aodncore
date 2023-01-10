@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>aodncore.pipeline.geonetwork &mdash; aodncore 1.4.6 documentation</title>
+  <title>aodncore.pipeline.geonetwork &mdash; aodncore 1.4.7 documentation</title>
       <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
   <!--[if lt IE 9]>
@@ -110,7 +110,7 @@
 
 
 <div class="viewcode-block" id="dict_to_xml"><a class="viewcode-back" href="../../../aodncore.pipeline.html#aodncore.pipeline.geonetwork.dict_to_xml">[docs]</a><span class="k">def</span> <span class="nf">dict_to_xml</span><span class="p">(</span><span class="n">tag</span><span class="p">,</span> <span class="n">value</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">attr</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">elems</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">display</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Convert a dictionary of XML nodes into a nested XML string</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Convert a dictionary of XML nodes into a nested XML string</span>
 
 <span class="sd">    :param tag: a string or list containing element tag(s).  If tag is a list then recursively build the parent elements</span>
 <span class="sd">        and apply the rest of the logic to the last element.</span>
@@ -147,7 +147,7 @@
 
 
 <div class="viewcode-block" id="Geonetwork"><a class="viewcode-back" href="../../../aodncore.pipeline.html#aodncore.pipeline.geonetwork.Geonetwork">[docs]</a><span class="k">class</span> <span class="nc">Geonetwork</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Geonetwork API session handler</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Geonetwork API session handler</span>
 
 <span class="sd">    :param base_url: Geonetwork instance base url</span>
 <span class="sd">    :param username: username for the Geonetwork API</span>
@@ -193,14 +193,14 @@
         <span class="k">return</span> <span class="n">response</span>
 
 <div class="viewcode-block" id="Geonetwork.get_record"><a class="viewcode-back" href="../../../aodncore.pipeline.html#aodncore.pipeline.geonetwork.Geonetwork.get_record">[docs]</a>    <span class="k">def</span> <span class="nf">get_record</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">_uuid</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Retrieve a metadata record</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Retrieve a metadata record</span>
 
 <span class="sd">        :param _uuid: Geonetwork record ID</span>
 <span class="sd">        :return: xml of specified metadata record&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">BASE_API</span><span class="p">,</span> <span class="n">ENDPOINT_RECORD_GET</span><span class="p">,</span> <span class="n">_uuid</span><span class="p">))</span><span class="o">.</span><span class="n">text</span></div>
 
 <div class="viewcode-block" id="Geonetwork.update_record"><a class="viewcode-back" href="../../../aodncore.pipeline.html#aodncore.pipeline.geonetwork.Geonetwork.update_record">[docs]</a>    <span class="k">def</span> <span class="nf">update_record</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">_uuid</span><span class="p">,</span> <span class="n">changes</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Update Geonetwork record</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Update Geonetwork record</span>
 
 <span class="sd">        :param _uuid: Geonetwork record ID</span>
 <span class="sd">        :param changes: list of change dicts where each change contains a value and an xpath</span>
@@ -211,7 +211,7 @@
 
 
 <div class="viewcode-block" id="GeonetworkMetadataHandler"><a class="viewcode-back" href="../../../aodncore.pipeline.html#aodncore.pipeline.geonetwork.GeonetworkMetadataHandler">[docs]</a><span class="k">class</span> <span class="nc">GeonetworkMetadataHandler</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Handle changes to Geonetwork metadata from Harvester</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Handle changes to Geonetwork metadata from Harvester</span>
 
 <span class="sd">    Build the geonetwork payload and push changes</span>
 <span class="sd">    :param conn: the database connection class (DatabaseInteractions)</span>
@@ -235,7 +235,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">xml_text</span> <span class="o">=</span> <span class="kc">None</span>
 
 <div class="viewcode-block" id="GeonetworkMetadataHandler.get_namespace_dict"><a class="viewcode-back" href="../../../aodncore.pipeline.html#aodncore.pipeline.geonetwork.GeonetworkMetadataHandler.get_namespace_dict">[docs]</a>    <span class="k">def</span> <span class="nf">get_namespace_dict</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Scrape relevant namespaces from source metadata record&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Scrape relevant namespaces from source metadata record&quot;&quot;&quot;</span>
         <span class="n">ns_raw</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">([</span>
             <span class="n">node</span> <span class="k">for</span> <span class="p">(</span><span class="n">_</span><span class="p">,</span> <span class="n">node</span><span class="p">)</span> <span class="ow">in</span> <span class="n">ElementTree</span><span class="o">.</span><span class="n">iterparse</span><span class="p">(</span><span class="n">StringIO</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">xml_text</span><span class="p">),</span> <span class="n">events</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;start-ns&#39;</span><span class="p">])</span>
         <span class="p">])</span>
@@ -247,7 +247,7 @@
         <span class="k">return</span> <span class="n">ns</span></div>
 
 <div class="viewcode-block" id="GeonetworkMetadataHandler.build_api_payload"><a class="viewcode-back" href="../../../aodncore.pipeline.html#aodncore.pipeline.geonetwork.GeonetworkMetadataHandler.build_api_payload">[docs]</a>    <span class="k">def</span> <span class="nf">build_api_payload</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Build the batchedit API payload based on dict template</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Build the batchedit API payload based on dict template</span>
 
 <span class="sd">        The payload is a complete replacement of all extents for the provided metadata record</span>
 <span class="sd">        &quot;&quot;&quot;</span>

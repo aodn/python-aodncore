@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>aodncore.pipeline.steps.notify &mdash; aodncore 1.4.6 documentation</title>
+  <title>aodncore.pipeline.steps.notify &mdash; aodncore 1.4.7 documentation</title>
       <link rel="stylesheet" href="../../../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../../../_static/css/theme.css" type="text/css" />
   <!--[if lt IE 9]>
@@ -125,7 +125,7 @@
 
 
 <div class="viewcode-block" id="get_notify_runner"><a class="viewcode-back" href="../../../../aodncore.pipeline.steps.html#aodncore.pipeline.steps.notify.get_notify_runner">[docs]</a><span class="k">def</span> <span class="nf">get_notify_runner</span><span class="p">(</span><span class="n">notification_data</span><span class="p">,</span> <span class="n">config</span><span class="p">,</span> <span class="n">logger</span><span class="p">,</span> <span class="n">notify_params</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Factory function to return notify runner class</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Factory function to return notify runner class</span>
 
 <span class="sd">    :param notification_data: dictionary containing notification data (i.e. template values)</span>
 <span class="sd">    :param config: :py:class:`LazyConfigManager` instance</span>
@@ -137,7 +137,7 @@
 
 
 <span class="k">def</span> <span class="nf">get_child_notify_runner</span><span class="p">(</span><span class="n">recipient_type</span><span class="p">,</span> <span class="n">notification_data</span><span class="p">,</span> <span class="n">config</span><span class="p">,</span> <span class="n">logger</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Factory function to return appropriate notify runner based on recipient type value</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Factory function to return appropriate notify runner based on recipient type value</span>
 
 <span class="sd">    :param recipient_type: :py:class:`NotificationRecipientType` enum member</span>
 <span class="sd">    :param notification_data: dict containing values used in templating etc.</span>
@@ -156,7 +156,7 @@
 
 
 <span class="k">class</span> <span class="nc">BaseNotifyRunner</span><span class="p">(</span><span class="n">BaseStepRunner</span><span class="p">,</span> <span class="n">metaclass</span><span class="o">=</span><span class="n">abc</span><span class="o">.</span><span class="n">ABCMeta</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Base class for NotifyRunner classes, provides *protocol agnostic* helper methods and properties for child</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Base class for NotifyRunner classes, provides *protocol agnostic* helper methods and properties for child</span>
 <span class="sd">        NotifyRunner classes</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
@@ -174,7 +174,7 @@
 
     <span class="nd">@lazyproperty</span>
     <span class="k">def</span> <span class="nf">message_parts</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Returns a tuple containing the rendered text and HTML templates</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Returns a tuple containing the rendered text and HTML templates</span>
 
 <span class="sd">        :return: tuple containing (text_part, html_part)</span>
 <span class="sd">        &quot;&quot;&quot;</span>
@@ -183,7 +183,7 @@
 
     <span class="nd">@lazyproperty</span>
     <span class="k">def</span> <span class="nf">template_values</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Assemble the template values from the supplied notification data and rendered file tables</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Assemble the template values from the supplied notification data and rendered file tables</span>
 
 <span class="sd">        :return: dict containing final template values</span>
 <span class="sd">        &quot;&quot;&quot;</span>
@@ -212,7 +212,7 @@
         <span class="k">return</span> <span class="n">text</span>
 
     <span class="k">def</span> <span class="nf">_get_file_tables</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Render tables for use in notifications</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Render tables for use in notifications</span>
 
 <span class="sd">            .. note:: everything in this method assumes *strict ordering* of elements, hence use of :py:class:`list` and</span>
 <span class="sd">                :py:class:`OrderedDict` types, rather than potentially more efficient :py:class:`dict` and set types</span>
@@ -262,7 +262,7 @@
 
     <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">_get_recipient_addresses</span><span class="p">(</span><span class="n">notify_list</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Get a list of *only* the address attributes of the :py:class:`NotifyList`</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Get a list of *only* the address attributes of the :py:class:`NotifyList`</span>
 
 <span class="sd">        :param notify_list: :py:class:`NotifyList` instance from which to retrieve addresses</span>
 <span class="sd">        :return: :py:class:`list` of addresses</span>
@@ -396,7 +396,7 @@
         <span class="k">return</span> <span class="n">sendmail_result</span>
 
 <div class="viewcode-block" id="EmailNotifyRunner.run"><a class="viewcode-back" href="../../../../aodncore.pipeline.steps.html#aodncore.pipeline.steps.notify.EmailNotifyRunner.run">[docs]</a>    <span class="k">def</span> <span class="nf">run</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">notify_list</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Attempt to send notification email to recipients in notify_list parameter.</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Attempt to send notification email to recipients in notify_list parameter.</span>
 
 <span class="sd">        The status of each individual attempt is stored in a :py:class:`dict` instance, as described in the</span>
 <span class="sd">        :py:meth:`smtplib.SMTP.sendmail` method docs, which allows per-recipient status inspection/error logging.</span>
@@ -519,7 +519,7 @@
         <span class="k">return</span> <span class="n">NotifyList</span><span class="p">(</span><span class="n">r</span> <span class="k">for</span> <span class="n">r</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">__s</span> <span class="k">if</span> <span class="n">r</span><span class="o">.</span><span class="n">notification_attempted</span> <span class="ow">and</span> <span class="n">r</span><span class="o">.</span><span class="n">notification_succeeded</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="NotifyList.filter_by_notify_type"><a class="viewcode-back" href="../../../../aodncore.pipeline.steps.html#aodncore.pipeline.steps.notify.NotifyList.filter_by_notify_type">[docs]</a>    <span class="k">def</span> <span class="nf">filter_by_notify_type</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">notify_type</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Return a new :py:class:`NotifyList` containing only recipients of the given notify_type</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return a new :py:class:`NotifyList` containing only recipients of the given notify_type</span>
 
 <span class="sd">        :param notify_type: :py:class:`NotificationRecipientType` enum member by which to filter</span>
 <span class="sd">            :py:class:`PipelineFile` instances</span>
@@ -538,7 +538,7 @@
             <span class="n">recipient</span><span class="o">.</span><span class="n">notification_attempted</span> <span class="o">=</span> <span class="kc">True</span></div>
 
 <div class="viewcode-block" id="NotifyList.set_error"><a class="viewcode-back" href="../../../../aodncore.pipeline.steps.html#aodncore.pipeline.steps.notify.NotifyList.set_error">[docs]</a>    <span class="k">def</span> <span class="nf">set_error</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">error</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Set the error attribute for all elements</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Set the error attribute for all elements</span>
 
 <span class="sd">        :param error: :py:class:`Exception` instance</span>
 <span class="sd">        :return: None</span>
@@ -547,7 +547,7 @@
             <span class="n">recipient</span><span class="o">.</span><span class="n">error</span> <span class="o">=</span> <span class="n">error</span></div>
 
 <div class="viewcode-block" id="NotifyList.update_from_error_dict"><a class="viewcode-back" href="../../../../aodncore.pipeline.steps.html#aodncore.pipeline.steps.notify.NotifyList.update_from_error_dict">[docs]</a>    <span class="k">def</span> <span class="nf">update_from_error_dict</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">error_dict</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Update recipient statuses according to the given error dictionary parameter. The absence of an address in the</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Update recipient statuses according to the given error dictionary parameter. The absence of an address in the</span>
 <span class="sd">        dict keys will be interpreted as &quot;successfully sent&quot;.</span>
 
 <span class="sd">        :param error_dict: dict as returned by :py:meth:`smtplib.SMTP.sendmail` method</span>
@@ -614,7 +614,7 @@
 
 <div class="viewcode-block" id="NotificationRecipient.from_string"><a class="viewcode-back" href="../../../../aodncore.pipeline.steps.html#aodncore.pipeline.steps.notify.NotificationRecipient.from_string">[docs]</a>    <span class="nd">@classmethod</span>
     <span class="k">def</span> <span class="nf">from_string</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">recipient_string</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;From a given &#39;recipient string&#39;, expected to be in the format of &#39;protocol:address&#39;, return a new</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;From a given &#39;recipient string&#39;, expected to be in the format of &#39;protocol:address&#39;, return a new</span>
 <span class="sd">        :py:class:`NotificationRecipient` object with attributes set according to the content/validity of the input</span>
 <span class="sd">        string</span>
 

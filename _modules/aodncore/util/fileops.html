@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>aodncore.util.fileops &mdash; aodncore 1.4.6 documentation</title>
+  <title>aodncore.util.fileops &mdash; aodncore 1.4.7 documentation</title>
       <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
   <!--[if lt IE 9]>
@@ -142,7 +142,7 @@
 
 
 <span class="k">class</span> <span class="nc">_TemporaryDirectory</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Context manager for :py:function:`tempfile.mkdtemp` (available in core library in v3.2+).</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Context manager for :py:function:`tempfile.mkdtemp` (available in core library in v3.2+).</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">suffix</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">prefix</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="nb">dir</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
@@ -181,7 +181,7 @@
 
 
 <div class="viewcode-block" id="dir_exists"><a class="viewcode-back" href="../../../aodncore.util.html#aodncore.util.fileops.dir_exists">[docs]</a><span class="k">def</span> <span class="nf">dir_exists</span><span class="p">(</span><span class="n">path</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Check directory exists at a given path returning True or False</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Check directory exists at a given path returning True or False</span>
 
 <span class="sd">    :param path: directory to check</span>
 <span class="sd">    &quot;&quot;&quot;</span>
@@ -189,7 +189,7 @@
 
 
 <div class="viewcode-block" id="extract_gzip"><a class="viewcode-back" href="../../../aodncore.util.html#aodncore.util.fileops.extract_gzip">[docs]</a><span class="k">def</span> <span class="nf">extract_gzip</span><span class="p">(</span><span class="n">gzip_path</span><span class="p">,</span> <span class="n">dest_dir</span><span class="p">,</span> <span class="n">dest_name</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Extract a GZ (GZIP) file&#39;s contents into a directory</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Extract a GZ (GZIP) file&#39;s contents into a directory</span>
 
 <span class="sd">    :param gzip_path: path to the source GZ file</span>
 <span class="sd">    :param dest_dir: destination directory into which the GZ is extracted</span>
@@ -205,7 +205,7 @@
 
 
 <div class="viewcode-block" id="extract_zip"><a class="viewcode-back" href="../../../aodncore.util.html#aodncore.util.fileops.extract_zip">[docs]</a><span class="k">def</span> <span class="nf">extract_zip</span><span class="p">(</span><span class="n">zip_path</span><span class="p">,</span> <span class="n">dest_dir</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Extract a ZIP file&#39;s contents into a directory</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Extract a ZIP file&#39;s contents into a directory</span>
 <span class="sd">    </span>
 <span class="sd">    :param zip_path: path to the source ZIP file</span>
 <span class="sd">    :param dest_dir: destination directory into which the ZIP is extracted</span>
@@ -216,7 +216,7 @@
 
 
 <div class="viewcode-block" id="get_file_checksum"><a class="viewcode-back" href="../../../aodncore.util.html#aodncore.util.fileops.get_file_checksum">[docs]</a><span class="k">def</span> <span class="nf">get_file_checksum</span><span class="p">(</span><span class="n">filepath</span><span class="p">,</span> <span class="n">block_size</span><span class="o">=</span><span class="mi">65536</span><span class="p">,</span> <span class="n">algorithm</span><span class="o">=</span><span class="s1">&#39;sha256&#39;</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Get the hash (checksum) of a file</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Get the hash (checksum) of a file</span>
 
 <span class="sd">    :param filepath: path to the input file</span>
 <span class="sd">    :param block_size: number of bytes to hash each iteration</span>
@@ -232,7 +232,7 @@
 
 
 <div class="viewcode-block" id="is_dir_writable"><a class="viewcode-back" href="../../../aodncore.util.html#aodncore.util.fileops.is_dir_writable">[docs]</a><span class="k">def</span> <span class="nf">is_dir_writable</span><span class="p">(</span><span class="n">path</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Check whether a directory is writable</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Check whether a directory is writable</span>
 
 <span class="sd">    :param path: directory path to check</span>
 <span class="sd">    :return: None</span>
@@ -248,7 +248,7 @@
 
 
 <div class="viewcode-block" id="is_file_writable"><a class="viewcode-back" href="../../../aodncore.util.html#aodncore.util.fileops.is_file_writable">[docs]</a><span class="k">def</span> <span class="nf">is_file_writable</span><span class="p">(</span><span class="n">path</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Check whether a file is writable</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Check whether a file is writable</span>
 
 <span class="sd">        .. note:: Not as reliable as the :py:func:`is_dir_writable` function since that actually writes a file</span>
 
@@ -259,7 +259,7 @@
 
 
 <div class="viewcode-block" id="is_gzip_file"><a class="viewcode-back" href="../../../aodncore.util.html#aodncore.util.fileops.is_gzip_file">[docs]</a><span class="k">def</span> <span class="nf">is_gzip_file</span><span class="p">(</span><span class="n">filepath</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Check whether a file path refers to a valid ZIP file</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Check whether a file path refers to a valid ZIP file</span>
 
 <span class="sd">    :param filepath: path to the file being checked</span>
 <span class="sd">    :return: True if filepath is a valid ZIP file, otherwise False</span>
@@ -273,7 +273,7 @@
 
 
 <div class="viewcode-block" id="is_json_file"><a class="viewcode-back" href="../../../aodncore.util.html#aodncore.util.fileops.is_json_file">[docs]</a><span class="k">def</span> <span class="nf">is_json_file</span><span class="p">(</span><span class="n">filepath</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Check whether a file path refers to a valid JSON file</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Check whether a file path refers to a valid JSON file</span>
 
 <span class="sd">    :param filepath: path to the file being checked</span>
 <span class="sd">    :return: True if filepath is a valid JSON file, otherwise False</span>
@@ -288,7 +288,7 @@
 
 
 <div class="viewcode-block" id="is_netcdf_file"><a class="viewcode-back" href="../../../aodncore.util.html#aodncore.util.fileops.is_netcdf_file">[docs]</a><span class="k">def</span> <span class="nf">is_netcdf_file</span><span class="p">(</span><span class="n">filepath</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Check whether a file path refers to a valid NetCDF file</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Check whether a file path refers to a valid NetCDF file</span>
 
 <span class="sd">    :param filepath: path to the file being checked</span>
 <span class="sd">    :return: True if filepath is a valid NetCDF file, otherwise False </span>
@@ -306,7 +306,7 @@
 
 
 <div class="viewcode-block" id="is_nonempty_file"><a class="viewcode-back" href="../../../aodncore.util.html#aodncore.util.fileops.is_nonempty_file">[docs]</a><span class="k">def</span> <span class="nf">is_nonempty_file</span><span class="p">(</span><span class="n">filepath</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Check whether a file path refers to a file with length greater than zero</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Check whether a file path refers to a file with length greater than zero</span>
 
 <span class="sd">    :param filepath: path to the file being checked</span>
 <span class="sd">    :return: True if filepath is non-zero, otherwise False</span>
@@ -315,7 +315,7 @@
 
 
 <div class="viewcode-block" id="is_zip_file"><a class="viewcode-back" href="../../../aodncore.util.html#aodncore.util.fileops.is_zip_file">[docs]</a><span class="k">def</span> <span class="nf">is_zip_file</span><span class="p">(</span><span class="n">filepath</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Check whether a file path refers to a valid ZIP file</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Check whether a file path refers to a valid ZIP file</span>
 
 <span class="sd">    :param filepath: path to the file being checked</span>
 <span class="sd">    :return: True if filepath is a valid ZIP file, otherwise False </span>
@@ -324,7 +324,7 @@
 
 
 <div class="viewcode-block" id="list_regular_files"><a class="viewcode-back" href="../../../aodncore.util.html#aodncore.util.fileops.list_regular_files">[docs]</a><span class="k">def</span> <span class="nf">list_regular_files</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="n">recursive</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">sort_key</span><span class="o">=</span><span class="n">filesystem_sort_key</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;List all regular files in a given directory, returning the absolute path</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;List all regular files in a given directory, returning the absolute path</span>
 
 <span class="sd">    :param sort_key: callable used to sort directory listings</span>
 <span class="sd">    :param path: input directory to list</span>
@@ -352,7 +352,7 @@
 
 
 <div class="viewcode-block" id="find_file"><a class="viewcode-back" href="../../../aodncore.util.html#aodncore.util.fileops.find_file">[docs]</a><span class="k">def</span> <span class="nf">find_file</span><span class="p">(</span><span class="n">base_path</span><span class="p">,</span> <span class="n">regex</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Find a file in a directory (recursively) based on a match string.</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Find a file in a directory (recursively) based on a match string.</span>
 
 <span class="sd">    This purpose of this method is to identify a specific file, so only the first match will be returned.</span>
 
@@ -369,7 +369,7 @@
 
 
 <div class="viewcode-block" id="mkdir_p"><a class="viewcode-back" href="../../../aodncore.util.html#aodncore.util.fileops.mkdir_p">[docs]</a><span class="k">def</span> <span class="nf">mkdir_p</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="mo">0o755</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Recursively create a directory, including parent directories (analogous to shell command &#39;mkdir -p&#39;)</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Recursively create a directory, including parent directories (analogous to shell command &#39;mkdir -p&#39;)</span>
 
 <span class="sd">    :param mode:</span>
 <span class="sd">    :param path: path to new directory</span>
@@ -385,7 +385,7 @@
 
 
 <div class="viewcode-block" id="rm_f"><a class="viewcode-back" href="../../../aodncore.util.html#aodncore.util.fileops.rm_f">[docs]</a><span class="k">def</span> <span class="nf">rm_f</span><span class="p">(</span><span class="n">path</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Remove a file, ignoring &quot;file not found&quot; errors (analogous to shell command &#39;rm -f&#39;)</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Remove a file, ignoring &quot;file not found&quot; errors (analogous to shell command &#39;rm -f&#39;)</span>
 <span class="sd">    </span>
 <span class="sd">    :param path: path to file being deleted</span>
 <span class="sd">    :return: None</span>
@@ -398,7 +398,7 @@
 
 
 <div class="viewcode-block" id="rm_r"><a class="viewcode-back" href="../../../aodncore.util.html#aodncore.util.fileops.rm_r">[docs]</a><span class="k">def</span> <span class="nf">rm_r</span><span class="p">(</span><span class="n">path</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Remove a file or directory recursively (analogous to shell command &#39;rm -r&#39;)</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Remove a file or directory recursively (analogous to shell command &#39;rm -r&#39;)</span>
 
 <span class="sd">    :param path: path to file being deleted</span>
 <span class="sd">    :return: None</span>
@@ -413,7 +413,7 @@
 
 
 <div class="viewcode-block" id="rm_rf"><a class="viewcode-back" href="../../../aodncore.util.html#aodncore.util.fileops.rm_rf">[docs]</a><span class="k">def</span> <span class="nf">rm_rf</span><span class="p">(</span><span class="n">path</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Remove a file or directory, ignoring &quot;file not found&quot; errors (analogous to shell command &#39;rm -f&#39;)</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Remove a file or directory, ignoring &quot;file not found&quot; errors (analogous to shell command &#39;rm -f&#39;)</span>
 
 <span class="sd">    :param path: path to file being deleted</span>
 <span class="sd">    :return: None</span>
@@ -428,7 +428,7 @@
 
 
 <div class="viewcode-block" id="safe_copy_file"><a class="viewcode-back" href="../../../aodncore.util.html#aodncore.util.fileops.safe_copy_file">[docs]</a><span class="k">def</span> <span class="nf">safe_copy_file</span><span class="p">(</span><span class="n">source</span><span class="p">,</span> <span class="n">destination</span><span class="p">,</span> <span class="n">overwrite</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Copy a file atomically by copying first to a temporary file in the same directory (and therefore filesystem) as</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Copy a file atomically by copying first to a temporary file in the same directory (and therefore filesystem) as</span>
 <span class="sd">    the intended destination, before performing a rename (which is atomic)</span>
 
 <span class="sd">    :param source: source file path</span>
@@ -460,7 +460,7 @@
 
 
 <div class="viewcode-block" id="safe_move_file"><a class="viewcode-back" href="../../../aodncore.util.html#aodncore.util.fileops.safe_move_file">[docs]</a><span class="k">def</span> <span class="nf">safe_move_file</span><span class="p">(</span><span class="n">src</span><span class="p">,</span> <span class="n">dst</span><span class="p">,</span> <span class="n">overwrite</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Move a file atomically by performing a copy and delete</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Move a file atomically by performing a copy and delete</span>
 
 <span class="sd">    :param src: source file path</span>
 <span class="sd">    :param dst: destination file path</span>
@@ -482,7 +482,7 @@
 
 
 <span class="k">def</span> <span class="nf">validate_mime_type</span><span class="p">(</span><span class="n">t</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Closure to generate mime type validation functions</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Closure to generate mime type validation functions</span>
 
 <span class="sd">    :param t: type</span>
 <span class="sd">    :return: function reference to a function which validates a given path is a file with the mime type of type `t`</span>

@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>aodncore.pipeline.log &mdash; aodncore 1.4.6 documentation</title>
+  <title>aodncore.pipeline.log &mdash; aodncore 1.4.7 documentation</title>
       <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
   <!--[if lt IE 9]>
@@ -139,7 +139,7 @@
         <span class="p">}</span>
 
 <div class="viewcode-block" id="WorkerLoggingConfigBuilder.add_watch_config"><a class="viewcode-back" href="../../../aodncore.pipeline.html#aodncore.pipeline.log.WorkerLoggingConfigBuilder.add_watch_config">[docs]</a>    <span class="k">def</span> <span class="nf">add_watch_config</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">formatter</span><span class="o">=</span><span class="s1">&#39;pipeline_formatter&#39;</span><span class="p">,</span> <span class="n">level</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Add logging configuration for a single pipeline watch</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Add logging configuration for a single pipeline watch</span>
 
 <span class="sd">        :param name: name of the pipeline for which the config is being generated</span>
 <span class="sd">        :param formatter: name of the formatter to use for handler</span>
@@ -177,7 +177,7 @@
 
 
 <div class="viewcode-block" id="get_watchservice_logging_config"><a class="viewcode-back" href="../../../aodncore.pipeline.html#aodncore.pipeline.log.get_watchservice_logging_config">[docs]</a><span class="k">def</span> <span class="nf">get_watchservice_logging_config</span><span class="p">(</span><span class="n">pipeline_config</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Generate logging configuration for the &#39;watchservice&#39; service, suitable for use by</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Generate logging configuration for the &#39;watchservice&#39; service, suitable for use by</span>
 <span class="sd">    :py:meth:`logging.config.dictConfig`</span>
 
 <span class="sd">    :param pipeline_config: :py:attr:`LazyConfigManager.pipeline_config` instance</span>
@@ -210,7 +210,7 @@
 
 
 <div class="viewcode-block" id="get_pipeline_logger"><a class="viewcode-back" href="../../../aodncore.pipeline.html#aodncore.pipeline.log.get_pipeline_logger">[docs]</a><span class="k">def</span> <span class="nf">get_pipeline_logger</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">extra</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">logger_function</span><span class="o">=</span><span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Return a logger adapter prepared with given extra metadata and SYSINFO logging level</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Return a logger adapter prepared with given extra metadata and SYSINFO logging level</span>
 
 <span class="sd">    :param name: logger name</span>
 <span class="sd">    :param extra: extra dict to pass to :py:class:`LoggerAdapter`</span>

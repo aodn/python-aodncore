@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>aodncore.testlib.handlertest &mdash; aodncore 1.4.6 documentation</title>
+  <title>aodncore.testlib.handlertest &mdash; aodncore 1.4.7 documentation</title>
       <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
   <!--[if lt IE 9]>
@@ -115,7 +115,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">assertIsInstance</span><span class="p">(</span><span class="n">handler</span><span class="p">,</span> <span class="n">HandlerBase</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="HandlerTestCase.run_handler"><a class="viewcode-back" href="../../../aodncore.testlib.html#aodncore.testlib.handlertest.HandlerTestCase.run_handler">[docs]</a>    <span class="k">def</span> <span class="nf">run_handler</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Instantiate and run the handler class defined in self.handler_class.</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Instantiate and run the handler class defined in self.handler_class.</span>
 <span class="sd">            Raise an AssertionError if the handler completes with any error</span>
 
 <span class="sd">        :param args: args passed directly to handler instance</span>
@@ -128,7 +128,7 @@
         <span class="k">return</span> <span class="n">handler</span></div>
 
 <div class="viewcode-block" id="HandlerTestCase.run_handler_with_exception"><a class="viewcode-back" href="../../../aodncore.testlib.html#aodncore.testlib.handlertest.HandlerTestCase.run_handler_with_exception">[docs]</a>    <span class="k">def</span> <span class="nf">run_handler_with_exception</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">expected_error</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Instantiate and run the handler class defined in self.handler_class</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Instantiate and run the handler class defined in self.handler_class</span>
 <span class="sd">            Raise an AssertionError if the handler completes *without* the error attribute being the expected Exception</span>
 <span class="sd">            class</span>
 

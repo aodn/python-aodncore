@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>aodncore.testlib.testutil &mdash; aodncore 1.4.6 documentation</title>
+  <title>aodncore.testlib.testutil &mdash; aodncore 1.4.7 documentation</title>
       <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
   <!--[if lt IE 9]>
@@ -212,7 +212,7 @@
 
 
 <div class="viewcode-block" id="dest_path_testing"><a class="viewcode-back" href="../../../aodncore.testlib.html#aodncore.testlib.testutil.dest_path_testing">[docs]</a><span class="k">def</span> <span class="nf">dest_path_testing</span><span class="p">(</span><span class="n">filename</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Example/test function for destination path resolution</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Example/test function for destination path resolution</span>
 
 <span class="sd">    :param filename:</span>
 <span class="sd">    :return: relative path prepended with DUMMY</span>
@@ -221,7 +221,7 @@
 
 
 <div class="viewcode-block" id="get_nonexistent_path"><a class="viewcode-back" href="../../../aodncore.testlib.html#aodncore.testlib.testutil.get_nonexistent_path">[docs]</a><span class="k">def</span> <span class="nf">get_nonexistent_path</span><span class="p">(</span><span class="n">relative</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Return a path that is guaranteed not to exist</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Return a path that is guaranteed not to exist</span>
 
 <span class="sd">    :return: string containing guaranteed non-existent path</span>
 <span class="sd">    &quot;&quot;&quot;</span>
@@ -234,7 +234,7 @@
 
 
 <div class="viewcode-block" id="make_test_file"><a class="viewcode-back" href="../../../aodncore.testlib.html#aodncore.testlib.testutil.make_test_file">[docs]</a><span class="k">def</span> <span class="nf">make_test_file</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="n">attributes</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">variables</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Create a netcdf file with the given global and variable</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Create a netcdf file with the given global and variable</span>
 <span class="sd">        attributes. Variables are created as dimensionless doubles.</span>
 
 <span class="sd">        For example this::</span>
@@ -272,7 +272,7 @@
 
 <span class="c1"># TODO: make this a util function in core module</span>
 <div class="viewcode-block" id="make_zip"><a class="viewcode-back" href="../../../aodncore.testlib.html#aodncore.testlib.testutil.make_zip">[docs]</a><span class="k">def</span> <span class="nf">make_zip</span><span class="p">(</span><span class="n">temp_dir</span><span class="p">,</span> <span class="n">file_list</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Create a zip file in tmp_dir containing the files listed in file_list.</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Create a zip file in tmp_dir containing the files listed in file_list.</span>
 <span class="sd">    Return the full path to the zip file.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">with</span> <span class="n">tempfile</span><span class="o">.</span><span class="n">NamedTemporaryFile</span><span class="p">(</span><span class="nb">dir</span><span class="o">=</span><span class="n">temp_dir</span><span class="p">,</span> <span class="n">suffix</span><span class="o">=</span><span class="s1">&#39;.zip&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
@@ -287,7 +287,7 @@
 
 
 <div class="viewcode-block" id="load_runtime_patched_pipeline_config_file"><a class="viewcode-back" href="../../../aodncore.testlib.html#aodncore.testlib.testutil.load_runtime_patched_pipeline_config_file">[docs]</a><span class="k">def</span> <span class="nf">load_runtime_patched_pipeline_config_file</span><span class="p">(</span><span class="n">config_file</span><span class="p">,</span> <span class="n">rel_path</span><span class="p">,</span> <span class="n">temp_dir</span><span class="p">,</span> <span class="n">additional_patch</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Load and update pipeline config file with dynamic runtime values (e.g. temp directories)</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Load and update pipeline config file with dynamic runtime values (e.g. temp directories)</span>
 
 <span class="sd">    :param config_file: Pipeline config file to load, patch and return</span>
 <span class="sd">    :param rel_path: Path for wip_dir</span>

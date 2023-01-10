@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>aodncore.pipeline.steps.resolve &mdash; aodncore 1.4.6 documentation</title>
+  <title>aodncore.pipeline.steps.resolve &mdash; aodncore 1.4.7 documentation</title>
       <link rel="stylesheet" href="../../../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../../../_static/css/theme.css" type="text/css" />
   <!--[if lt IE 9]>
@@ -139,7 +139,7 @@
 
 
 <div class="viewcode-block" id="get_resolve_runner"><a class="viewcode-back" href="../../../../aodncore.pipeline.steps.html#aodncore.pipeline.steps.resolve.get_resolve_runner">[docs]</a><span class="k">def</span> <span class="nf">get_resolve_runner</span><span class="p">(</span><span class="n">input_file</span><span class="p">,</span> <span class="n">output_dir</span><span class="p">,</span> <span class="n">config</span><span class="p">,</span> <span class="n">logger</span><span class="p">,</span> <span class="n">resolve_params</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Factory function to return appropriate resolver class based on the file extension</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Factory function to return appropriate resolver class based on the file extension</span>
 
 <span class="sd">    :param input_file: path to the input file</span>
 <span class="sd">    :param output_dir: directory where the resolved files will be extracted/copied</span>
@@ -235,7 +235,7 @@
 
 
 <div class="viewcode-block" id="JsonManifestResolveRunner"><a class="viewcode-back" href="../../../../aodncore.pipeline.steps.html#aodncore.pipeline.steps.resolve.JsonManifestResolveRunner">[docs]</a><span class="k">class</span> <span class="nc">JsonManifestResolveRunner</span><span class="p">(</span><span class="n">BaseManifestResolveRunner</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Handles a JSON manifest file, *optionally* with a pre-determined destination path. Unlike other resolve runners,</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Handles a JSON manifest file, *optionally* with a pre-determined destination path. Unlike other resolve runners,</span>
 <span class="sd">    this creates :py:class:`PipelineFile` objects to add to the collection rather than allowing the collection to</span>
 <span class="sd">    generate the objects.</span>
 
@@ -285,7 +285,7 @@
 
 <span class="c1"># noinspection PyAbstractClass</span>
 <span class="k">class</span> <span class="nc">BaseCsvManifestResolveRunner</span><span class="p">(</span><span class="n">BaseManifestResolveRunner</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Base class for handling a CSV manifest file. Unlike other resolve runners, this creates :py:class:`PipelineFile`</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Base class for handling a CSV manifest file. Unlike other resolve runners, this creates :py:class:`PipelineFile`</span>
 <span class="sd">    objects to add to the collection rather than allowing the collection to generate theobjects.</span>
 
 <span class="sd">    Subclasses must implement a &#39;schema&#39; property which describes and validates the CSV fields, and a `_row_handler`</span>
@@ -301,14 +301,14 @@
     <span class="nd">@property</span>
     <span class="nd">@abc</span><span class="o">.</span><span class="n">abstractmethod</span>
     <span class="k">def</span> <span class="nf">schema</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Defines the tableschema schema describing the input file</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Defines the tableschema schema describing the input file</span>
 <span class="sd">        :returns: tableschema.Schema instance</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">pass</span>
 
     <span class="nd">@abc</span><span class="o">.</span><span class="n">abstractmethod</span>
     <span class="k">def</span> <span class="nf">_row_handler</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">row</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Translates a parsed row into a PipelineFile object to add to the collection</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Translates a parsed row into a PipelineFile object to add to the collection</span>
 <span class="sd">        :returns: PipelineFile instance</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">pass</span>
@@ -346,7 +346,7 @@
 
 
 <div class="viewcode-block" id="MapManifestResolveRunner"><a class="viewcode-back" href="../../../../aodncore.pipeline.steps.html#aodncore.pipeline.steps.resolve.MapManifestResolveRunner">[docs]</a><span class="k">class</span> <span class="nc">MapManifestResolveRunner</span><span class="p">(</span><span class="n">BaseCsvManifestResolveRunner</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Handles a manifest file with a pre-determined destination path. Unlike other resolve runners, this creates</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Handles a manifest file with a pre-determined destination path. Unlike other resolve runners, this creates</span>
 <span class="sd">    :py:class:`PipelineFile` objects to add to the collection rather than allowing the collection to generate the</span>
 <span class="sd">    objects.</span>
 <span class="sd">    </span>
@@ -389,7 +389,7 @@
 
 
 <div class="viewcode-block" id="DeleteManifestResolveRunner"><a class="viewcode-back" href="../../../../aodncore.pipeline.steps.html#aodncore.pipeline.steps.resolve.DeleteManifestResolveRunner">[docs]</a><span class="k">class</span> <span class="nc">DeleteManifestResolveRunner</span><span class="p">(</span><span class="n">BaseCsvManifestResolveRunner</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Handles a delete manifest file which only contains a list of source files, and optionally a valid</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Handles a delete manifest file which only contains a list of source files, and optionally a valid</span>
 <span class="sd">        &quot;deletion publish type&quot; string, as defined by the PipelineFilePublishType enum. If delete_publish_type is</span>
 <span class="sd">        omitted, the value will remain UNSET, and the handler will assume responsibility for setting the appropriate</span>
 <span class="sd">        type</span>
@@ -440,7 +440,7 @@
 
 
 <div class="viewcode-block" id="RsyncManifestResolveRunner"><a class="viewcode-back" href="../../../../aodncore.pipeline.steps.html#aodncore.pipeline.steps.resolve.RsyncManifestResolveRunner">[docs]</a><span class="k">class</span> <span class="nc">RsyncManifestResolveRunner</span><span class="p">(</span><span class="n">BaseManifestResolveRunner</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Handles a manifest file as output by an rsync process</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Handles a manifest file as output by an rsync process</span>
 
 <span class="sd">    The manifest is generated by capturing the output of an rsync process run with the &quot;-i, --itemize-changes&quot; argument.</span>
 <span class="sd">    See the RSYNC man page, https://download.samba.org/pub/rsync/rsync.html, for a detailed description of this format.</span>
@@ -514,7 +514,7 @@
 
 
 <div class="viewcode-block" id="SimpleManifestResolveRunner"><a class="viewcode-back" href="../../../../aodncore.pipeline.steps.html#aodncore.pipeline.steps.resolve.SimpleManifestResolveRunner">[docs]</a><span class="k">class</span> <span class="nc">SimpleManifestResolveRunner</span><span class="p">(</span><span class="n">BaseManifestResolveRunner</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Handles a simple manifest file which only contains a list of source files</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Handles a simple manifest file which only contains a list of source files</span>
 
 <span class="sd">    File format must be as follows::</span>
 
@@ -534,7 +534,7 @@
 
 
 <div class="viewcode-block" id="DirManifestResolveRunner"><a class="viewcode-back" href="../../../../aodncore.pipeline.steps.html#aodncore.pipeline.steps.resolve.DirManifestResolveRunner">[docs]</a><span class="k">class</span> <span class="nc">DirManifestResolveRunner</span><span class="p">(</span><span class="n">BaseManifestResolveRunner</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Handles a simple manifest file which only contains a list of source files or directories, which will have all</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Handles a simple manifest file which only contains a list of source files or directories, which will have all</span>
 <span class="sd">    files recursively added to the collection</span>
 
 <span class="sd">    File format must be as follows::</span>

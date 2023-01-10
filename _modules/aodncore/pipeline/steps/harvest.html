@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>aodncore.pipeline.steps.harvest &mdash; aodncore 1.4.6 documentation</title>
+  <title>aodncore.pipeline.steps.harvest &mdash; aodncore 1.4.7 documentation</title>
       <link rel="stylesheet" href="../../../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../../../_static/css/theme.css" type="text/css" />
   <!--[if lt IE 9]>
@@ -131,7 +131,7 @@
 
 
 <div class="viewcode-block" id="get_harvester_runner"><a class="viewcode-back" href="../../../../aodncore.pipeline.steps.html#aodncore.pipeline.steps.harvest.get_harvester_runner">[docs]</a><span class="k">def</span> <span class="nf">get_harvester_runner</span><span class="p">(</span><span class="n">harvester_name</span><span class="p">,</span> <span class="n">store_runner</span><span class="p">,</span> <span class="n">harvest_params</span><span class="p">,</span> <span class="n">tmp_base_dir</span><span class="p">,</span> <span class="n">config</span><span class="p">,</span> <span class="n">logger</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Factory function to return appropriate harvester class</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Factory function to return appropriate harvester class</span>
 
 <span class="sd">    :param harvester_name: harvester name used to retrieve :py:class:`BaseHarvesterRunner` class</span>
 <span class="sd">    :param store_runner: :py:class:`BaseStoreRunner` instance to use for uploads</span>
@@ -161,7 +161,7 @@
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">all_events</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Get a flattened list of all events from all harvesters.</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Get a flattened list of all events from all harvesters.</span>
 
 <span class="sd">        :return: list of all :py:class:`TriggerEvent` instances from all harvesters</span>
 <span class="sd">        &quot;&quot;&quot;</span>
@@ -169,7 +169,7 @@
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">all_pipeline_files</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Get a flattened collection containing all :py:class:`PipelineFile` instances from all harvester events</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Get a flattened collection containing all :py:class:`PipelineFile` instances from all harvester events</span>
 
 <span class="sd">        :return: :py:class:`PipelineFileCollection` containing all :py:class:`PipelineFile` objects in map</span>
 <span class="sd">        &quot;&quot;&quot;</span>
@@ -183,7 +183,7 @@
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_map</span>
 
 <div class="viewcode-block" id="HarvesterMap.add_event"><a class="viewcode-back" href="../../../../aodncore.pipeline.steps.html#aodncore.pipeline.steps.harvest.HarvesterMap.add_event">[docs]</a>    <span class="k">def</span> <span class="nf">add_event</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">harvester</span><span class="p">,</span> <span class="n">event</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Add a :py:class:`TriggerEvent` to this map, under the given harvester</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Add a :py:class:`TriggerEvent` to this map, under the given harvester</span>
 
 <span class="sd">        :param harvester: harvester name</span>
 <span class="sd">        :param event: :py:class:`TriggerEvent` object</span>
@@ -198,7 +198,7 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">map</span><span class="p">[</span><span class="n">harvester</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="n">event</span><span class="p">]</span></div>
 
 <div class="viewcode-block" id="HarvesterMap.merge"><a class="viewcode-back" href="../../../../aodncore.pipeline.steps.html#aodncore.pipeline.steps.harvest.HarvesterMap.merge">[docs]</a>    <span class="k">def</span> <span class="nf">merge</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Merge another :py:class:`HarvesterMap` instance into this one</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Merge another :py:class:`HarvesterMap` instance into this one</span>
 
 <span class="sd">        :param other: other :py:class:`HarvesterMap` instance</span>
 <span class="sd">        :return: None</span>
@@ -207,7 +207,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">_map</span> <span class="o">=</span> <span class="n">merge_dicts</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_map</span><span class="p">,</span> <span class="n">other</span><span class="o">.</span><span class="n">map</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="HarvesterMap.set_pipelinefile_bool_attribute"><a class="viewcode-back" href="../../../../aodncore.pipeline.steps.html#aodncore.pipeline.steps.harvest.HarvesterMap.set_pipelinefile_bool_attribute">[docs]</a>    <span class="k">def</span> <span class="nf">set_pipelinefile_bool_attribute</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">attribute</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Set a boolean attribute on all :py:class:`PipelineFile` instances in all events</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Set a boolean attribute on all :py:class:`PipelineFile` instances in all events</span>
 
 <span class="sd">        :param attribute: attribute to set</span>
 <span class="sd">        :param value: value to set</span>
@@ -216,7 +216,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">all_pipeline_files</span><span class="o">.</span><span class="n">set_bool_attribute</span><span class="p">(</span><span class="n">attribute</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="HarvesterMap.is_collection_superset"><a class="viewcode-back" href="../../../../aodncore.pipeline.steps.html#aodncore.pipeline.steps.harvest.HarvesterMap.is_collection_superset">[docs]</a>    <span class="k">def</span> <span class="nf">is_collection_superset</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pipeline_files</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Determine whether all :py:class:`PipelineFile` instances in the given :py:class:`PipelineFileCollection` are</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Determine whether all :py:class:`PipelineFile` instances in the given :py:class:`PipelineFileCollection` are</span>
 <span class="sd">        present in this map</span>
 
 <span class="sd">        :param pipeline_files: :py:class:`PipelineFileCollection` for comparison</span>
@@ -265,7 +265,7 @@
 
 
 <div class="viewcode-block" id="validate_harvester_mapping"><a class="viewcode-back" href="../../../../aodncore.pipeline.steps.html#aodncore.pipeline.steps.harvest.validate_harvester_mapping">[docs]</a><span class="k">def</span> <span class="nf">validate_harvester_mapping</span><span class="p">(</span><span class="n">pipeline_files</span><span class="p">,</span> <span class="n">harvester_map</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Validate whether all files in the given :py:class:`PipelineFileCollection` are present at least once in the</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Validate whether all files in the given :py:class:`PipelineFileCollection` are present at least once in the</span>
 <span class="sd">    given :py:class:`HarvesterMap`</span>
 
 <span class="sd">    :param pipeline_files: :py:class:`PipelineFileCollection` instance</span>
@@ -282,7 +282,7 @@
 
 
 <span class="k">class</span> <span class="nc">BaseHarvesterRunner</span><span class="p">(</span><span class="n">BaseStepRunner</span><span class="p">,</span> <span class="n">metaclass</span><span class="o">=</span><span class="n">abc</span><span class="o">.</span><span class="n">ABCMeta</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Base class for HarvesterRunner classes</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Base class for HarvesterRunner classes</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="nd">@abc</span><span class="o">.</span><span class="n">abstractmethod</span>
@@ -291,7 +291,7 @@
 
 
 <div class="viewcode-block" id="TalendHarvesterRunner"><a class="viewcode-back" href="../../../../aodncore.pipeline.steps.html#aodncore.pipeline.steps.harvest.TalendHarvesterRunner">[docs]</a><span class="k">class</span> <span class="nc">TalendHarvesterRunner</span><span class="p">(</span><span class="n">BaseHarvesterRunner</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;:py:class:`BaseHarvesterRunner` implementation to execute Talend harvesters</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;:py:class:`BaseHarvesterRunner` implementation to execute Talend harvesters</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">storage_broker</span><span class="p">,</span> <span class="n">harvest_params</span><span class="p">,</span> <span class="n">tmp_base_dir</span><span class="p">,</span> <span class="n">config</span><span class="p">,</span> <span class="n">logger</span><span class="p">,</span> <span class="n">deletion</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
@@ -308,7 +308,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">harvested_file_map</span> <span class="o">=</span> <span class="n">HarvesterMap</span><span class="p">()</span>
 
 <div class="viewcode-block" id="TalendHarvesterRunner.run"><a class="viewcode-back" href="../../../../aodncore.pipeline.steps.html#aodncore.pipeline.steps.harvest.TalendHarvesterRunner.run">[docs]</a>    <span class="k">def</span> <span class="nf">run</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pipeline_files</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;The entry point to the ported talend trigger code to execute the harvester(s) for each file</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;The entry point to the ported talend trigger code to execute the harvester(s) for each file</span>
 
 <span class="sd">        :return: None</span>
 <span class="sd">        &quot;&quot;&quot;</span>
@@ -403,7 +403,7 @@
                 <span class="bp">self</span><span class="o">.</span><span class="n">_logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;--- END TALEND OUTPUT ---&#39;</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="TalendHarvesterRunner.run_deletions"><a class="viewcode-back" href="../../../../aodncore.pipeline.steps.html#aodncore.pipeline.steps.harvest.TalendHarvesterRunner.run_deletions">[docs]</a>    <span class="k">def</span> <span class="nf">run_deletions</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">harvester_map</span><span class="p">,</span> <span class="n">tmp_base_dir</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Function to un-harvest and delete files using the appropriate file upload runner.</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Function to un-harvest and delete files using the appropriate file upload runner.</span>
 
 <span class="sd">        Operates in newly created temporary directory as talend requires a non-existent file to perform un-harvesting</span>
 
@@ -429,7 +429,7 @@
                     <span class="bp">self</span><span class="o">.</span><span class="n">storage_broker</span><span class="o">.</span><span class="n">delete</span><span class="p">(</span><span class="n">pipeline_files</span><span class="o">=</span><span class="n">files_to_delete</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="TalendHarvesterRunner.run_undo_deletions"><a class="viewcode-back" href="../../../../aodncore.pipeline.steps.html#aodncore.pipeline.steps.harvest.TalendHarvesterRunner.run_undo_deletions">[docs]</a>    <span class="k">def</span> <span class="nf">run_undo_deletions</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">harvester_map</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Function to un-harvest and undo stored files as appropriate in the case of errors.</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Function to un-harvest and undo stored files as appropriate in the case of errors.</span>
 
 <span class="sd">        Operates in newly created temporary directory as talend requires a non-existent file to perform &quot;unharvesting&quot;</span>
 
@@ -455,7 +455,7 @@
                     <span class="bp">self</span><span class="o">.</span><span class="n">storage_broker</span><span class="o">.</span><span class="n">delete</span><span class="p">(</span><span class="n">pipeline_files</span><span class="o">=</span><span class="n">files_to_delete</span><span class="p">,</span> <span class="n">is_stored_attr</span><span class="o">=</span><span class="s1">&#39;is_upload_undone&#39;</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="TalendHarvesterRunner.run_additions"><a class="viewcode-back" href="../../../../aodncore.pipeline.steps.html#aodncore.pipeline.steps.harvest.TalendHarvesterRunner.run_additions">[docs]</a>    <span class="k">def</span> <span class="nf">run_additions</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">harvester_map</span><span class="p">,</span> <span class="n">tmp_base_dir</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Function to harvest and upload files using the appropriate file upload runner.</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Function to harvest and upload files using the appropriate file upload runner.</span>
 
 <span class="sd">        Operates in newly created temporary directory and creates symlink between source and destination file. Talend</span>
 <span class="sd">        will then operate on the destination file (symlink).</span>
@@ -502,7 +502,7 @@
 
 
 <div class="viewcode-block" id="CsvHarvesterRunner"><a class="viewcode-back" href="../../../../aodncore.pipeline.steps.html#aodncore.pipeline.steps.harvest.CsvHarvesterRunner">[docs]</a><span class="k">class</span> <span class="nc">CsvHarvesterRunner</span><span class="p">(</span><span class="n">BaseHarvesterRunner</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;:py:class:`BaseHarvesterRunner` implementation to load csv pipeline files to the database.&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;:py:class:`BaseHarvesterRunner` implementation to load csv pipeline files to the database.&quot;&quot;&quot;</span>
 
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">storage_broker</span><span class="p">,</span> <span class="n">harvest_params</span><span class="p">,</span> <span class="n">config</span><span class="p">,</span> <span class="n">logger</span><span class="p">):</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">config</span><span class="p">,</span> <span class="n">logger</span><span class="p">)</span>
@@ -518,7 +518,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">unexpected_pipeline_files</span> <span class="o">=</span> <span class="p">[]</span>
 
 <div class="viewcode-block" id="CsvHarvesterRunner.run"><a class="viewcode-back" href="../../../../aodncore.pipeline.steps.html#aodncore.pipeline.steps.harvest.CsvHarvesterRunner.run">[docs]</a>    <span class="k">def</span> <span class="nf">run</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pipeline_files</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;The entry point to the generic csv harvester</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;The entry point to the generic csv harvester</span>
 
 <span class="sd">        :return: None</span>
 <span class="sd">        &quot;&quot;&quot;</span>
@@ -573,7 +573,7 @@
                 <span class="bp">self</span><span class="o">.</span><span class="n">_logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="n">e</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="CsvHarvesterRunner.get_config_file"><a class="viewcode-back" href="../../../../aodncore.pipeline.steps.html#aodncore.pipeline.steps.harvest.CsvHarvesterRunner.get_config_file">[docs]</a>    <span class="k">def</span> <span class="nf">get_config_file</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filename</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Function to return database connection object for schema</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Function to return database connection object for schema</span>
 
 <span class="sd">        :return: dict containing database connection parameters.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
@@ -586,7 +586,7 @@
             <span class="k">raise</span> <span class="n">MissingConfigFileError</span><span class="p">(</span><span class="n">e</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="CsvHarvesterRunner.get_process_sequence"><a class="viewcode-back" href="../../../../aodncore.pipeline.steps.html#aodncore.pipeline.steps.harvest.CsvHarvesterRunner.get_process_sequence">[docs]</a>    <span class="k">def</span> <span class="nf">get_process_sequence</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">conn</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Function to return the database transaction process sequence based in ingest_type.</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Function to return the database transaction process sequence based in ingest_type.</span>
 
 <span class="sd">        :param conn: instance of DatabaseInteractions().</span>
 <span class="sd">        :return: dict containing process sequence.</span>
@@ -618,7 +618,7 @@
             <span class="k">raise</span> <span class="n">InvalidConfigError</span><span class="p">(</span><span class="s1">&#39;No implementation for </span><span class="si">{}</span><span class="s1"> ingest_type&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">ingest_type</span><span class="p">))</span></div>
 
 <div class="viewcode-block" id="CsvHarvesterRunner.build_dependency_tree"><a class="viewcode-back" href="../../../../aodncore.pipeline.steps.html#aodncore.pipeline.steps.harvest.CsvHarvesterRunner.build_dependency_tree">[docs]</a>    <span class="k">def</span> <span class="nf">build_dependency_tree</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">obj</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Update one item from the db_objects list to include indirect dependencies.</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Update one item from the db_objects list to include indirect dependencies.</span>
 <span class="sd">        (i.e. dependencies of dependencies, etc...).</span>
 
 <span class="sd">        :param obj: dict describing a database object (from db_objects config)</span>
@@ -638,7 +638,7 @@
         <span class="k">return</span> <span class="n">obj_out</span></div>
 
 <div class="viewcode-block" id="CsvHarvesterRunner.build_runsheet"><a class="viewcode-back" href="../../../../aodncore.pipeline.steps.html#aodncore.pipeline.steps.harvest.CsvHarvesterRunner.build_runsheet">[docs]</a>    <span class="k">def</span> <span class="nf">build_runsheet</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pf</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Function to generate a runsheet for the harvest process.</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Function to generate a runsheet for the harvest process.</span>
 
 <span class="sd">        :return: bool</span>
 <span class="sd">        &quot;&quot;&quot;</span>
