@@ -23,7 +23,7 @@ CHECK_PARAMS_SCHEMA = {
         'skip_checks': {'type': 'array', 'items': {'type': 'string'}},
         'output_format': {'type': 'string'},
         'verbosity': {'type': 'integer'},
-        'tableschema_filename_pattern': {'type': 'array'}
+        'tableschema_filename_pattern': {'type': 'string'}
     },
     'additionalProperties': False
 }
