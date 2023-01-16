@@ -3,7 +3,7 @@ import yaml
 from tableschema import Schema
 
 from aodncore.testlib import BaseTestCase
-from aodncore.util import (get_field_type, get_tableschema_descriptor)
+from aodncore.table import (get_field_type, get_tableschema_descriptor)
 from aodncore.pipeline.exceptions import InvalidSchemaError
 
 
