@@ -2,7 +2,7 @@
 """
 
 from tableschema import Schema
-from ..pipeline.exceptions import InvalidSchemaError
+from aodncore.pipeline.exceptions import InvalidSchemaError
 
 __all__ = [
     'get_tableschema_descriptor',

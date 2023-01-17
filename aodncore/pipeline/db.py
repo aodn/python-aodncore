@@ -4,7 +4,8 @@ from psycopg2 import sql, extras
 import yaml
 
 from .exceptions import InvalidSQLConnectionError, InvalidSQLTransactionError, MissingFileError
-from ..util import find_file, get_field_type, get_tableschema_descriptor, is_nonstring_iterable
+from ..util import find_file, is_nonstring_iterable
+from ..table import get_field_type, get_tableschema_descriptor
 
 __all__ = [
     'DatabaseInteractions'
