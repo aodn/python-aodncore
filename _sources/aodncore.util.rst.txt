@@ -12,14 +12,6 @@ Subpackages
 Submodules
 ----------
 
-aodncore.util.ff module
------------------------
-
-.. automodule:: aodncore.util.ff
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
 aodncore.util.fileops module
 ----------------------------
 

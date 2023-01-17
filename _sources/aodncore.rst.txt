@@ -9,6 +9,7 @@ Subpackages
 
    aodncore.common
    aodncore.pipeline
+   aodncore.table
    aodncore.testlib
    aodncore.util
 

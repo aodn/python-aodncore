@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>aodncore.util package &mdash; aodncore 1.4.7 documentation</title>
+  <title>aodncore.util package &mdash; aodncore 1.4.8 documentation</title>
       <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
   <!--[if lt IE 9]>
@@ -65,6 +65,7 @@
 <li class="toctree-l3 current"><a class="reference internal" href="aodncore.html#subpackages">Subpackages</a><ul class="current">
 <li class="toctree-l4"><a class="reference internal" href="aodncore.common.html">aodncore.common package</a></li>
 <li class="toctree-l4"><a class="reference internal" href="aodncore.pipeline.html">aodncore.pipeline package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="aodncore.table.html">aodncore.table package</a></li>
 <li class="toctree-l4"><a class="reference internal" href="aodncore.testlib.html">aodncore.testlib package</a></li>
 <li class="toctree-l4 current"><a class="current reference internal" href="#">aodncore.util package</a></li>
 </ul>
@@ -111,42 +112,6 @@
 </section>
 <section id="submodules">
 <h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this heading"></a></h2>
-</section>
-<section id="module-aodncore.util.ff">
-<span id="aodncore-util-ff-module"></span><h2>aodncore.util.ff module<a class="headerlink" href="#module-aodncore.util.ff" title="Permalink to this heading"></a></h2>
-<p>This module provides utility functions specifically related to frictionless framework / tableschema.</p>
-<dl class="py function">
-<dt class="sig sig-object py" id="aodncore.util.ff.get_field_type">
-<span class="sig-prename descclassname"><span class="pre">aodncore.util.ff.</span></span><span class="sig-name descname"><span class="pre">get_field_type</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">field</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/aodncore/util/ff.html#get_field_type"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#aodncore.util.ff.get_field_type" title="Permalink to this definition"></a></dt>
-<dd><p>Find a field by name in translation table and return associated field type.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>field</strong> – A string containing the tableschema definition field type.</p>
-</dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p>A string containing the associated postgresql field type if different
-- otherwise the passed in field param.</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="aodncore.util.ff.get_tableschema_descriptor">
-<span class="sig-prename descclassname"><span class="pre">aodncore.util.ff.</span></span><span class="sig-name descname"><span class="pre">get_tableschema_descriptor</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">obj</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/aodncore/util/ff.html#get_tableschema_descriptor"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#aodncore.util.ff.get_tableschema_descriptor" title="Permalink to this definition"></a></dt>
-<dd><p>Convenience function to return a valid tableschema definition.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>obj</strong> – A dict that is either the desired object or the parent of the desired object</p></li>
-<li><p><strong>name</strong> – A string containing name of the nested object (eg. ‘schema’)</p></li>
-</ul>
-</dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p>A valid tableschema definition</p>
-</dd>
-</dl>
-</dd></dl>
-
 </section>
 <section id="module-aodncore.util.fileops">
 <span id="aodncore-util-fileops-module"></span><h2>aodncore.util.fileops module<a class="headerlink" href="#module-aodncore.util.fileops" title="Permalink to this heading"></a></h2>
@@ -1951,21 +1916,6 @@ WriteOnceOrderedDict being returned or the exception re-raised.</p></li>
 </dd></dl>
 
 <dl class="py function">
-<dt class="sig sig-object py" id="aodncore.util.get_field_type">
-<span class="sig-prename descclassname"><span class="pre">aodncore.util.</span></span><span class="sig-name descname"><span class="pre">get_field_type</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">field</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/aodncore/util/ff.html#get_field_type"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#aodncore.util.get_field_type" title="Permalink to this definition"></a></dt>
-<dd><p>Find a field by name in translation table and return associated field type.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>field</strong> – A string containing the tableschema definition field type.</p>
-</dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p>A string containing the associated postgresql field type if different
-- otherwise the passed in field param.</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py function">
 <dt class="sig sig-object py" id="aodncore.util.get_file_checksum">
 <span class="sig-prename descclassname"><span class="pre">aodncore.util.</span></span><span class="sig-name descname"><span class="pre">get_file_checksum</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filepath</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">block_size</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">65536</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">algorithm</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'sha256'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/aodncore/util/fileops.html#get_file_checksum"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#aodncore.util.get_file_checksum" title="Permalink to this definition"></a></dt>
 <dd><p>Get the hash (checksum) of a file</p>
@@ -1996,23 +1946,6 @@ the pattern needs to match the beginning of the string
 <dl class="field-list simple">
 <dt class="field-odd">Returns</dt>
 <dd class="field-odd"><p>dictionary of fields matching a given pattern</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="aodncore.util.get_tableschema_descriptor">
-<span class="sig-prename descclassname"><span class="pre">aodncore.util.</span></span><span class="sig-name descname"><span class="pre">get_tableschema_descriptor</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">obj</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/aodncore/util/ff.html#get_tableschema_descriptor"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#aodncore.util.get_tableschema_descriptor" title="Permalink to this definition"></a></dt>
-<dd><p>Convenience function to return a valid tableschema definition.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>obj</strong> – A dict that is either the desired object or the parent of the desired object</p></li>
-<li><p><strong>name</strong> – A string containing name of the nested object (eg. ‘schema’)</p></li>
-</ul>
-</dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p>A valid tableschema definition</p>
 </dd>
 </dl>
 </dd></dl>
