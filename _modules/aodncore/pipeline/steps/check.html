@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>aodncore.pipeline.steps.check &mdash; aodncore 1.4.8 documentation</title>
+  <title>aodncore.pipeline.steps.check &mdash; aodncore 1.4.9 documentation</title>
       <link rel="stylesheet" href="../../../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../../../_static/css/theme.css" type="text/css" />
   <!--[if lt IE 9]>
@@ -98,6 +98,8 @@
 <span class="kn">import</span> <span class="nn">abc</span>
 <span class="kn">import</span> <span class="nn">itertools</span>
 <span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">import</span> <span class="nn">re</span>
+
 <span class="c1"># from collections import namedtuple</span>
 <span class="c1"># import json</span>
 
@@ -146,7 +148,7 @@
     <span class="k">elif</span> <span class="n">check_type</span> <span class="ow">is</span> <span class="n">PipelineFileCheckType</span><span class="o">.</span><span class="n">NONEMPTY_CHECK</span><span class="p">:</span>
         <span class="k">return</span> <span class="n">NonEmptyCheckRunner</span><span class="p">(</span><span class="n">config</span><span class="p">,</span> <span class="n">logger</span><span class="p">)</span>
     <span class="k">elif</span> <span class="n">check_type</span> <span class="ow">is</span> <span class="n">PipelineFileCheckType</span><span class="o">.</span><span class="n">TABLE_SCHEMA_CHECK</span><span class="p">:</span>
-        <span class="k">return</span> <span class="n">TableSchemaCheckRunner</span><span class="p">(</span><span class="n">config</span><span class="p">,</span> <span class="n">logger</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">TableSchemaCheckRunner</span><span class="p">(</span><span class="n">config</span><span class="p">,</span> <span class="n">logger</span><span class="p">,</span> <span class="n">check_params</span><span class="p">)</span>
     <span class="k">else</span><span class="p">:</span>
         <span class="k">raise</span> <span class="n">InvalidCheckTypeError</span><span class="p">(</span><span class="s2">&quot;invalid check type &#39;</span><span class="si">{check_type}</span><span class="s2">&#39;&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">check_type</span><span class="o">=</span><span class="n">check_type</span><span class="p">))</span></div>
 
@@ -311,11 +313,19 @@
 
 
 <div class="viewcode-block" id="TableSchemaCheckRunner"><a class="viewcode-back" href="../../../../aodncore.pipeline.steps.html#aodncore.pipeline.steps.check.TableSchemaCheckRunner">[docs]</a><span class="k">class</span> <span class="nc">TableSchemaCheckRunner</span><span class="p">(</span><span class="n">BaseCheckRunner</span><span class="p">):</span>
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">config</span><span class="p">,</span> <span class="n">logger</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">config</span><span class="p">,</span> <span class="n">logger</span><span class="p">,</span> <span class="n">check_params</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">config</span><span class="p">,</span> <span class="n">logger</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">compliance_log</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">compliant</span> <span class="o">=</span> <span class="kc">True</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">errors</span> <span class="o">=</span> <span class="kc">False</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">schema_base_path</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_config</span><span class="o">.</span><span class="n">pipeline_config</span><span class="p">[</span><span class="s1">&#39;harvester&#39;</span><span class="p">][</span><span class="s1">&#39;schema_base_dir&#39;</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">tableschema_filename_pattern</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="k">if</span> <span class="n">check_params</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">check_params</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="n">pattern</span> <span class="o">=</span> <span class="n">check_params</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;tableschema_filename_pattern&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">pattern</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_logger</span><span class="o">.</span><span class="n">sysinfo</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Schema matching pattern is &#39;</span><span class="si">{</span><span class="n">pattern</span><span class="si">}</span><span class="s2">&#39;&quot;</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">tableschema_filename_pattern</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="n">pattern</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">_dict_to_str</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">_dict</span><span class="p">):</span>
         <span class="n">_str</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
@@ -324,37 +334,45 @@
         <span class="k">return</span> <span class="n">_str</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
 
     <span class="k">def</span> <span class="nf">_exc_handler</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">exc</span><span class="p">,</span> <span class="n">row_number</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">row_data</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">error_data</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-        <span class="n">error</span> <span class="o">=</span> <span class="s2">&quot;Exception: </span><span class="si">{}</span><span class="se">\n</span><span class="s2">Row Data: </span><span class="si">{}</span><span class="se">\n</span><span class="s2">Error Data: </span><span class="si">{}</span><span class="se">\n</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">exc</span><span class="p">),</span>
-                                                                       <span class="bp">self</span><span class="o">.</span><span class="n">_dict_to_str</span><span class="p">(</span><span class="n">row_data</span><span class="p">),</span>
-                                                                       <span class="bp">self</span><span class="o">.</span><span class="n">_dict_to_str</span><span class="p">(</span><span class="n">error_data</span><span class="p">))</span>
+        <span class="n">error</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;Exception: </span><span class="si">{</span><span class="n">exc</span><span class="si">}</span><span class="se">\n</span><span class="s2">Error Data: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_dict_to_str</span><span class="p">(</span><span class="n">error_data</span><span class="p">)</span><span class="si">}</span><span class="se">\n</span><span class="s2">&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">compliance_log</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">error</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">_reset_compliance</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">compliance_log</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">compliant</span> <span class="o">=</span> <span class="kc">True</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">errors</span> <span class="o">=</span> <span class="kc">False</span>
 
 <div class="viewcode-block" id="TableSchemaCheckRunner.validate"><a class="viewcode-back" href="../../../../aodncore.pipeline.steps.html#aodncore.pipeline.steps.check.TableSchemaCheckRunner.validate">[docs]</a>    <span class="k">def</span> <span class="nf">validate</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">path</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_reset_compliance</span><span class="p">()</span>
         <span class="n">search_string</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">splitext</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">basename</span><span class="p">(</span><span class="n">path</span><span class="p">))[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">tableschema_filename_pattern</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">match</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">tableschema_filename_pattern</span><span class="o">.</span><span class="n">match</span><span class="p">(</span><span class="n">search_string</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">match</span><span class="p">:</span>
+                <span class="n">search_string</span> <span class="o">=</span> <span class="n">match</span><span class="o">.</span><span class="n">group</span><span class="p">()</span>
         <span class="n">fn</span> <span class="o">=</span> <span class="n">find_file</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">schema_base_path</span><span class="p">,</span> <span class="s1">&#39;(.*)</span><span class="si">{}</span><span class="s1">(.*).yaml&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">search_string</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_logger</span><span class="o">.</span><span class="n">sysinfo</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;schema file: </span><span class="si">{</span><span class="n">fn</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">fn</span><span class="p">:</span>
             <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">fn</span><span class="p">)</span> <span class="k">as</span> <span class="n">stream</span><span class="p">:</span>
                 <span class="n">schema</span> <span class="o">=</span> <span class="n">get_tableschema_descriptor</span><span class="p">(</span><span class="n">yaml</span><span class="o">.</span><span class="n">safe_load</span><span class="p">(</span><span class="n">stream</span><span class="p">),</span> <span class="s1">&#39;schema&#39;</span><span class="p">)</span>
                 <span class="n">table</span> <span class="o">=</span> <span class="n">tableschema</span><span class="o">.</span><span class="n">Table</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="n">schema</span><span class="p">)</span>
                 <span class="n">_</span> <span class="o">=</span> <span class="p">[</span><span class="n">r</span> <span class="k">for</span> <span class="n">r</span> <span class="ow">in</span> <span class="n">table</span><span class="o">.</span><span class="n">iter</span><span class="p">(</span><span class="n">exc_handler</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_exc_handler</span><span class="p">)]</span>
-            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">compliance_log</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">n_errors</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">compliance_log</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">n_errors</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">compliant</span> <span class="o">=</span> <span class="kc">False</span>
+                <span class="k">if</span> <span class="n">n_errors</span> <span class="o">&gt;</span> <span class="mi">10</span><span class="p">:</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">compliance_log</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">compliance_log</span><span class="p">[:</span><span class="mi">10</span><span class="p">]</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">compliance_log</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;(Listing first 10 errors out of </span><span class="si">{</span><span class="n">n_errors</span><span class="si">}</span><span class="s2">)&quot;</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">compliance_log</span> <span class="o">=</span> <span class="p">(</span><span class="s2">&quot;could not find schema definition matching: </span><span class="si">{search_string}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
-                    <span class="n">search_string</span><span class="o">=</span><span class="n">search_string</span><span class="p">),)</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">compliant</span> <span class="o">=</span> <span class="kc">False</span></div>
+            <span class="bp">self</span><span class="o">.</span><span class="n">compliance_log</span> <span class="o">=</span> <span class="p">(</span><span class="sa">f</span><span class="s2">&quot;could not find schema definition matching &#39;</span><span class="si">{</span><span class="n">search_string</span><span class="si">}</span><span class="s2">&#39;&quot;</span><span class="p">,)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">compliant</span> <span class="o">=</span> <span class="kc">False</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">errors</span> <span class="o">=</span> <span class="kc">True</span></div>
 
 <div class="viewcode-block" id="TableSchemaCheckRunner.run"><a class="viewcode-back" href="../../../../aodncore.pipeline.steps.html#aodncore.pipeline.steps.check.TableSchemaCheckRunner.run">[docs]</a>    <span class="k">def</span> <span class="nf">run</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pipeline_files</span><span class="p">):</span>
         <span class="k">for</span> <span class="n">pipeline_file</span> <span class="ow">in</span> <span class="n">pipeline_files</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span>
                 <span class="s2">&quot;checking that &#39;</span><span class="si">{pipeline_file.src_path}</span><span class="s2">&#39; is valid&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">pipeline_file</span><span class="o">=</span><span class="n">pipeline_file</span><span class="p">))</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">validate</span><span class="p">(</span><span class="n">pipeline_file</span><span class="o">.</span><span class="n">src_path</span><span class="p">)</span>
-            <span class="n">pipeline_file</span><span class="o">.</span><span class="n">check_result</span> <span class="o">=</span> <span class="n">CheckResult</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">compliant</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">compliance_log</span><span class="p">)</span></div></div>
+            <span class="n">pipeline_file</span><span class="o">.</span><span class="n">check_result</span> <span class="o">=</span> <span class="n">CheckResult</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">compliant</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">compliance_log</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">errors</span><span class="p">)</span></div></div>
 </pre></div>
 
            </div>
