@@ -10,6 +10,8 @@ The most common use of this step is to test for compliance using the IOOS Compli
 import abc
 import itertools
 import os
+import re
+
 # from collections import namedtuple
 # import json
 
@@ -58,7 +60,7 @@ def get_child_check_runner(check_type, config, logger, check_params=None):
     elif check_type is PipelineFileCheckType.NONEMPTY_CHECK:
         return NonEmptyCheckRunner(config, logger)
     elif check_type is PipelineFileCheckType.TABLE_SCHEMA_CHECK:
-        return TableSchemaCheckRunner(config, logger)
+        return TableSchemaCheckRunner(config, logger, check_params)
     else:
         raise InvalidCheckTypeError("invalid check type '{check_type}'".format(check_type=check_type))
 
@@ -223,11 +225,19 @@ class NonEmptyCheckRunner(BaseCheckRunner):
 
 
 class TableSchemaCheckRunner(BaseCheckRunner):
-    def __init__(self, config, logger):
+    def __init__(self, config, logger, check_params=None):
         super().__init__(config, logger)
         self.compliance_log = []
         self.compliant = True
+        self.errors = False
         self.schema_base_path = self._config.pipeline_config['harvester']['schema_base_dir']
+        self.tableschema_filename_pattern = None
+        if check_params is None:
+            check_params = {}
+        pattern = check_params.get("tableschema_filename_pattern", None)
+        if pattern is not None:
+            self._logger.sysinfo(f"Schema matching pattern is '{pattern}'")
+            self.tableschema_filename_pattern = re.compile(pattern)
 
     def _dict_to_str(self, _dict):
         _str = ''
@@ -236,34 +246,42 @@ class TableSchemaCheckRunner(BaseCheckRunner):
         return _str[:-1]
 
     def _exc_handler(self, exc, row_number=None, row_data=None, error_data=None):
-        error = "Exception: {}\nRow Data: {}\nError Data: {}\n".format(str(exc),
-                                                                       self._dict_to_str(row_data),
-                                                                       self._dict_to_str(error_data))
+        error = f"Exception: {exc}\nError Data: {self._dict_to_str(error_data)}\n"
         self.compliance_log.append(error)
 
     def _reset_compliance(self):
         self.compliance_log = []
         self.compliant = True
+        self.errors = False
 
     def validate(self, path):
         self._reset_compliance()
         search_string = os.path.splitext(os.path.basename(path))[0]
+        if self.tableschema_filename_pattern is not None:
+            match = self.tableschema_filename_pattern.match(search_string)
+            if match:
+                search_string = match.group()
         fn = find_file(self.schema_base_path, '(.*){}(.*).yaml'.format(search_string))
+        self._logger.sysinfo(f"schema file: {fn}")
         if fn:
             with open(fn) as stream:
                 schema = get_tableschema_descriptor(yaml.safe_load(stream), 'schema')
                 table = tableschema.Table(path, schema)
                 _ = [r for r in table.iter(exc_handler=self._exc_handler)]
-            if len(self.compliance_log) > 0:
+            n_errors = len(self.compliance_log)
+            if n_errors > 0:
                 self.compliant = False
+                if n_errors > 10:
+                    self.compliance_log = self.compliance_log[:10]
+                    self.compliance_log.append(f"(Listing first 10 errors out of {n_errors})")
         else:
-            self.compliance_log = ("could not find schema definition matching: {search_string}".format(
-                    search_string=search_string),)
+            self.compliance_log = (f"could not find schema definition matching '{search_string}'",)
             self.compliant = False
+            self.errors = True
 
     def run(self, pipeline_files):
         for pipeline_file in pipeline_files:
             self._logger.info(
                 "checking that '{pipeline_file.src_path}' is valid".format(pipeline_file=pipeline_file))
             self.validate(pipeline_file.src_path)
-            pipeline_file.check_result = CheckResult(self.compliant, self.compliance_log)
+            pipeline_file.check_result = CheckResult(self.compliant, self.compliance_log, self.errors)
