@@ -17,7 +17,7 @@ WARNING_NC = os.path.join(TESTDATA_DIR, 'test_manifest.nc')
 
 GOOD_CSV = os.path.join(TESTDATA_DIR, 'test_frictionless.csv')
 BAD_CSV = os.path.join(TESTDATA_DIR, 'invalid.schemadata.csv')
-UNMATCHED_CSV = os.path.join(TESTDATA_DIR, 'test_frictionless_no_resource.csv')
+UNMATCHED_CSV = os.path.join(TESTDATA_DIR, 'missing_schema.csv')
 SAME_SCHEMA_CSVS = glob(os.path.join(TESTDATA_DIR, "test_frictionless_subset*"))
 SAME_SCHEMA_CSVS.append(os.path.join(TESTDATA_DIR, 'simple_schema_data1.csv'))
 
@@ -234,7 +234,7 @@ class TestTableSchemaCheckRunner(BaseTestCase):
 
         self.assertFalse(check_result.compliant)
         self.assertFalse(check_result.errors)
-        self.assertNotEqual(check_result.log, [])
+        self.assertRegex(check_result.log[0], r"could not find schema definition matching 'missing_schema'")
 
     def test_pattern_schema_match(self):
         ts_runner = TableSchemaCheckRunner(dummy_config(), self.test_logger,
@@ -243,8 +243,17 @@ class TestTableSchemaCheckRunner(BaseTestCase):
         collection = PipelineFileCollection(SAME_SCHEMA_CSVS)
         ts_runner.run(collection)
 
-        failed_files = [(f.name, f.check_result.log)
-                        for f in collection
-                        if not f.check_result.compliant
-                        ]
-        self.assertEqual([], failed_files)
+        self.assertTrue(all(f.check_result.compliant for f in collection))
+
+    def test_pattern_schema_nomatch(self):
+        ts_runner = TableSchemaCheckRunner(dummy_config(), self.test_logger,
+                                           check_params={"tableschema_filename_pattern": "NO__MATCH.*"}
+                                           )
+        ts_file = PipelineFile(UNMATCHED_CSV)
+        collection = PipelineFileCollection(ts_file)
+        ts_runner.run(collection)
+
+        check_result = ts_file.check_result
+        self.assertFalse(check_result.compliant)
+        self.assertRegex(check_result.log[0], r"could not find schema definition matching 'missing_schema'")
+

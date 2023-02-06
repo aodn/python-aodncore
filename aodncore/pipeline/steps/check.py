@@ -273,8 +273,7 @@ class TableSchemaCheckRunner(BaseCheckRunner):
                     self.compliance_log = self.compliance_log[:10]
                     self.compliance_log.append(f"(Listing first 10 errors out of {n_errors})")
         else:
-            self.compliance_log = ("could not find schema definition matching: {search_string}".format(
-                    search_string=search_string),)
+            self.compliance_log = (f"could not find schema definition matching '{search_string}'",)
             self.compliant = False
 
     def run(self, pipeline_files):
