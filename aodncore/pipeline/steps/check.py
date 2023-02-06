@@ -229,6 +229,7 @@ class TableSchemaCheckRunner(BaseCheckRunner):
         super().__init__(config, logger)
         self.compliance_log = []
         self.compliant = True
+        self.errors = False
         self.schema_base_path = self._config.pipeline_config['harvester']['schema_base_dir']
         self.tableschema_filename_pattern = None
         if check_params is None:
@@ -251,6 +252,7 @@ class TableSchemaCheckRunner(BaseCheckRunner):
     def _reset_compliance(self):
         self.compliance_log = []
         self.compliant = True
+        self.errors = False
 
     def validate(self, path):
         self._reset_compliance()
@@ -275,10 +277,11 @@ class TableSchemaCheckRunner(BaseCheckRunner):
         else:
             self.compliance_log = (f"could not find schema definition matching '{search_string}'",)
             self.compliant = False
+            self.errors = True
 
     def run(self, pipeline_files):
         for pipeline_file in pipeline_files:
             self._logger.info(
                 "checking that '{pipeline_file.src_path}' is valid".format(pipeline_file=pipeline_file))
             self.validate(pipeline_file.src_path)
-            pipeline_file.check_result = CheckResult(self.compliant, self.compliance_log)
+            pipeline_file.check_result = CheckResult(self.compliant, self.compliance_log, self.errors)

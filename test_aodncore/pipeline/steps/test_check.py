@@ -233,7 +233,7 @@ class TestTableSchemaCheckRunner(BaseTestCase):
         check_result = ts_file.check_result
 
         self.assertFalse(check_result.compliant)
-        self.assertFalse(check_result.errors)
+        self.assertTrue(check_result.errors)
         self.assertRegex(check_result.log[0], r"could not find schema definition matching 'missing_schema'")
 
     def test_pattern_schema_match(self):
@@ -244,6 +244,7 @@ class TestTableSchemaCheckRunner(BaseTestCase):
         ts_runner.run(collection)
 
         self.assertTrue(all(f.check_result.compliant for f in collection))
+        self.assertFalse(all(f.check_result.errors for f in collection))
 
     def test_pattern_schema_nomatch(self):
         ts_runner = TableSchemaCheckRunner(dummy_config(), self.test_logger,
@@ -255,5 +256,6 @@ class TestTableSchemaCheckRunner(BaseTestCase):
 
         check_result = ts_file.check_result
         self.assertFalse(check_result.compliant)
+        self.assertTrue(check_result.errors)
         self.assertRegex(check_result.log[0], r"could not find schema definition matching 'missing_schema'")
 
