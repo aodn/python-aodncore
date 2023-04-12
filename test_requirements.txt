@@ -6,7 +6,7 @@
 #
 --index-url https://pypi.python.org/simple/
 
--e file:///home/stefan/git_repos/python-aodncore
+-e .[testing]
     # via -r requirements.txt
 amqp==5.1.1
     # via
