@@ -11,7 +11,7 @@ jobs:
 
     runs-on: ubuntu-latest
     container:
-      image: gchr.io/aodn/aodncore-build:latest
+      image: ghcr.io/aodn/aodncore-build:latest
     steps:
     - uses: actions/checkout@v3
     - name: Install dependencies
