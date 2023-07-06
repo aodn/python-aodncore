@@ -40,7 +40,6 @@ class TestDatabaseInteractions(BaseTestCase):
         cls.bad_params = cls.params.copy()
         cls.bad_params['password'] = 'not_a_real_password'
 
-
     @classmethod
     def tearDownClass(cls):
         # Cleanup and stop the postgresql container
@@ -100,6 +99,7 @@ class TestDatabaseInteractions(BaseTestCase):
         self.assertEqual(0, count)
 
     def test_commit(self):
+        self.drop_table(GOOD_TABLE_DEFN['name'])
         with DatabaseInteractions(config=self.params, schema_base_path=TESTDATA_DIR, logger=self.test_logger) as db:
             db.create_table_from_yaml_file(GOOD_TABLE_DEFN)
 
