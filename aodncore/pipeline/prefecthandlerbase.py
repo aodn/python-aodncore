@@ -5,6 +5,7 @@ from aodncore.pipeline import HandlerBase, FileType
 from aodncore.pipeline.exceptions import InvalidInputFileError
 from aodncore.pipeline.log import get_pipeline_logger
 from aodncore.pipeline.steps import get_resolve_runner
+from aodncore.pipeline.steps.resolve import SingleFileResolveRunner
 from aodncore.util import ensure_regex_list
 
 
@@ -47,7 +48,10 @@ class PrefectHandlerBase(HandlerBase):
         resolve_runner = get_resolve_runner(self.input_file, self.collection_dir, self.config, self.logger,
                                             self.resolve_params)
         self.logger.sysinfo("get_resolve_runner -> {resolve_runner}".format(resolve_runner=resolve_runner))
-        resolved_files = resolve_runner.run(move=True)
+        if isinstance(resolve_runner, SingleFileResolveRunner):
+            resolved_files = resolve_runner.run(move=True)
+        else:
+            resolved_files = resolve_runner.run()
 
         resolved_files.set_file_update_callback(self._file_update_callback)
 

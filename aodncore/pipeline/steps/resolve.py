@@ -35,7 +35,7 @@ from ..exceptions import InvalidFileFormatError
 from ..files import PipelineFile, PipelineFileCollection, RemotePipelineFile
 from ..schema import validate_json_manifest
 from ...util import extract_gzip, extract_zip, list_regular_files, is_gzip_file, is_zip_file, safe_copy_file, \
-    safe_move_file
+    safe_move_file, is_s3, TemporaryDirectory
 
 __all__ = [
     'get_resolve_runner',
@@ -126,10 +126,20 @@ class GzipFileResolveRunner(BaseResolveRunner):
 
 class ZipFileResolveRunner(BaseResolveRunner):
     def run(self):
+
+        if is_s3(self.input_file):
+            removeS3Download = True
+            temp = f'/tmp/{os.path.basename(self.input_file)}'
+            safe_move_file(self.input_file, temp)
+            self.input_file = temp
+
         if not is_zip_file(self.input_file):
             raise InvalidFileFormatError("input_file must be a valid ZIP file")
 
         extract_zip(self.input_file, self.output_dir)
+
+        if removeS3Download:
+            os.remove(self.input_file)
 
         for f in list_regular_files(self.output_dir, recursive=True):
             self._collection.add(f)
