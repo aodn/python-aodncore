@@ -324,7 +324,7 @@ class S3StorageBroker(BaseStorageBroker):
         super().__init__()
 
         self.bucket = bucket
-        self.prefix = prefix.strip('/')
+        self.prefix = prefix.lstrip('/')
 
         self.s3_client = boto3.client('s3')
 
