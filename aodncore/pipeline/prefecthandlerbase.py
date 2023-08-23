@@ -34,6 +34,7 @@ class PrefectHandlerBase(HandlerBase):
     def _init_logger(self, logger_function):
 
         logger = get_pipeline_logger(None, logger_function=logger_function)
+        logger.setLevel(getattr(self.config, 'pipeline_config', {}).get('logging', {}).get('level', 'INFO'))
 
         # turn down logging for noisy libraries to WARN, unless overridden in pipeline config 'liblevel' key
         liblevel = getattr(self.config, 'pipeline_config', {}).get('logging', {}).get('liblevel', 'WARN')
