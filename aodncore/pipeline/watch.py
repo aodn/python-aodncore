@@ -186,8 +186,9 @@ def build_task(config, pipeline_name, handler_class, success_exit_policies, erro
             try:
                 logging.config.dictConfig(config.get_worker_logging_config(task_name))
                 logging_extra = {
-                    'celery_task_id': self.request.id,
-                    'celery_task_name': task_name
+                    'task_id': self.request.id,
+                    'celery_task_id': self.request.id,  # deprecated name, retained for backwards compatibility
+                    'pipeline_name': pipeline_name
                 }
                 self.logger = get_pipeline_logger(task_name, extra=logging_extra, logger_function=get_task_logger)
 
@@ -209,8 +210,13 @@ def build_task(config, pipeline_name, handler_class, success_exit_policies, erro
                 file_state_manager.move_to_processing()
 
                 try:
-                    handler = handler_class(file_state_manager.processing_path, celery_task=self, config=config,
-                                            upload_path=file_state_manager.relative_path, **kwargs)
+                    handler = handler_class(file_state_manager.processing_path,
+                                            task_id=self.request.id,
+                                            config=config,
+                                            logger=self.logger,
+                                            state_change_callback=self.celery_task.update_state,
+                                            upload_path=file_state_manager.relative_path,
+                                            **kwargs)
                 except Exception as e:
                     file_state_manager.move_to_error()
                     self.logger.error("failed to instantiate handler class: {e}".format(e=format_exception(e)))
