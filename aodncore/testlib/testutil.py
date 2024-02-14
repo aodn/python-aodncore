@@ -21,7 +21,8 @@ __all__ = [
     'make_test_file',
     'make_zip',
     'get_test_config',
-    'load_runtime_patched_pipeline_config_file'
+    'load_runtime_patched_pipeline_config_file',
+    'TESTLIB_CONF_DIR'
 ]
 
 GLOBAL_TEST_BASE = os.path.dirname(os.path.dirname(__file__))

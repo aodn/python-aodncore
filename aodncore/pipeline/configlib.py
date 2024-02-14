@@ -21,7 +21,8 @@ __all__ = [
     'load_pipeline_config',
     'load_trigger_config',
     'load_watch_config',
-    'validate_lazyconfigmanager'
+    'validate_lazyconfigmanager',
+    'validate_pipeline_config'
 ]
 
 DEFAULT_CONFIG_FILE = '/mnt/ebs/pipeline/etc/pipeline.conf'
