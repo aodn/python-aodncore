@@ -9,6 +9,7 @@ The "talend" harvester runner runs Talend instances as subprocesses, whereas the
 """
 
 import abc
+import contextlib
 import itertools
 import os
 import re
@@ -16,6 +17,8 @@ import json
 from collections import OrderedDict
 from tempfile import NamedTemporaryFile
 from pathlib import Path
+
+import psycopg2
 
 from .basestep import BaseStepRunner
 from ..exceptions import (InvalidHarvesterError, UnmappedFilesError, MissingConfigParameterError, InvalidConfigError,
@@ -32,6 +35,7 @@ __all__ = [
     'create_symlink',
     'executor_conversion',
     'get_harvester_runner',
+    'CsvHarvesterRunner',
     'HarvesterMap',
     'TalendHarvesterRunner',
     'CsvHarvesterRunner',
@@ -200,6 +204,78 @@ class BaseHarvesterRunner(BaseStepRunner, metaclass=abc.ABCMeta):
     @abc.abstractmethod
     def run(self, pipeline_files):
         pass
+
+
+class AodnHarvesterRunner(BaseHarvesterRunner):
+    """:py:class:`BaseHarvesterRunner` implementation to execute Talend harvesters
+    """
+
+    def __init__(self, storage_broker, harvest_params, config, logger):
+        super().__init__(config, logger)
+        if harvest_params is None:
+            harvest_params = {}
+
+        self._storage_broker = storage_broker
+        self._harvest_params = harvest_params
+        self._slice_size = harvest_params.get('slice_size', 2048)
+
+    @contextlib.contextmanager
+    def _pgcursor(self):
+        conn = psycopg2.connect('')  # DB connection details retrieved from the runtime environment
+        try:
+            with conn.cursor() as cur:
+                yield cur
+        finally:
+            conn.close()
+
+    @abc.abstractmethod
+    def _harvest_files(self, pipeline_files):
+        pass
+
+    @abc.abstractmethod
+    def _unharvest_files(self, pipeline_files):
+        pass
+
+    def run(self, pipeline_files):
+        validate_pipelinefilecollection(pipeline_files)
+
+        deletions = pipeline_files.filter_by_bool_attribute('pending_harvest_early_deletion')
+        additions = pipeline_files.filter_by_bool_attribute('pending_harvest_addition')
+        late_deletions = pipeline_files.filter_by_bool_attribute('pending_harvest_late_deletion')
+
+        self._logger.sysinfo("harvesting slice size: {slice_size}".format(slice_size=self._slice_size))
+        deletion_slices = deletions.get_slices(self._slice_size)
+        addition_slices = additions.get_slices(self._slice_size)
+        late_deletions_slices = late_deletions.get_slices(self._slice_size)
+
+        for file_slice in deletion_slices:
+            self._unharvest_files(file_slice)
+
+        for file_slice in addition_slices:
+            self._harvest_files(file_slice)
+
+        for file_slice in late_deletions_slices:
+            self._unharvest_files(file_slice)
+
+
+class CsvHarvesterRunner(AodnHarvesterRunner):
+    def _harvest_files(self, pipeline_files):
+        # TODO: replace with SQL that actually harvests the files
+        with self._pgcursor() as cursor:
+            cursor.execute('SELECT 1')
+            print("Result:" + str(cursor.fetchone()))
+
+        pipeline_files.set_bool_attribute('is_harvested', True)
+        self._storage_broker.upload(pipeline_files)
+
+    def _unharvest_files(self, pipeline_files):
+        # TODO: replace with SQL that actually unharvests the files
+        with self._pgcursor() as cursor:
+            cursor.execute('SELECT 2')
+            print("Result:" + str(cursor.fetchone()))
+
+        pipeline_files.set_bool_attribute('is_harvested', True)
+        self._storage_broker.delete(pipeline_files)
 
 
 class TalendHarvesterRunner(BaseHarvesterRunner):
