@@ -112,7 +112,7 @@ The methods in the HandlerBase (and therefore any subclasses inheriting from it)
 
 These methods must *not* be overridden by child handlers, or the handler behaviour will be compromised. In following the
 Python convention, these methods begin with a single underscore (_) character. Note that this is a convention, and
-therefore it is possible to manipulate or even override them, however it is mandatory that the conventions are followed
+therefore it is possible to manipulate or even override them, however it is intended that the conventions are followed
 to maintain the integrity of the handler execution.
 
 In addition to any methods starting with one or more underscores, the ``run`` method is also a special case, which must
