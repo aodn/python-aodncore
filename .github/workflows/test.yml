@@ -2,7 +2,9 @@ name: python-aodncore
 
 on:
   push:
-    # branches: [ master ]
+    branches:
+    - master
+    - fix_unit_tests
   pull_request:
     branches: [ master ]
 
@@ -14,20 +16,21 @@ jobs:
       matrix:
         python-version: [ '3.8' ]
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v4
     - name: Install libudunits2-dev
       run: |
         sudo apt install libudunits2-dev
     - name: Set up Python ${{ matrix.python-version }}
-      uses: actions/setup-python@v2
+      uses: actions/setup-python@v5
       with:
         python-version: ${{ matrix.python-version }}
+        cache: 'pip'
     - name: Install dependencies
       run: |
         python -m pip install --upgrade pip
         pip install -r test_requirements.txt
 #         pip install pytest-cov
-        pip list
+#         pip list
     - name: Test with pytest
       run: |
         pytest
