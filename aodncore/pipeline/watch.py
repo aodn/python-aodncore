@@ -359,7 +359,7 @@ class IncomingFileEventHandler(pyinotify.ProcessEvent):
             "task data: event_id='{event_id}' queue='{queue}' task_name='{task_name}' pathname='{pathname}'".format(
                 **task_data))
 
-        result = self._config.celery_application.send_task(task_name, args=[pathname])
+        result = self._config.celery_application.send_task(task_name, countdown=60, args=[pathname])
         task_data['task_id'] = result.id
 
         # pathname is deliberately duplicated here to enable cross-referencing from pipeline specific logs in order to
