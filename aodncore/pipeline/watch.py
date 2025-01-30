@@ -30,6 +30,7 @@ from .log import get_pipeline_logger
 from .storage import get_storage_broker
 from ..util import (ensure_regex_list, format_exception, lazyproperty, mkdir_p, rm_f, rm_r, validate_dir_writable,
                     validate_file_writable, validate_membership)
+from ..util.aws import upload_to_s3
 
 # OS X test compatibility, due to absence of pyinotify (which is specific to the Linux kernel)
 try:
@@ -185,6 +186,8 @@ def build_task(config, pipeline_name, handler_class, success_exit_policies, erro
         def run(self, incoming_file):
             try:
                 logging.config.dictConfig(config.get_worker_logging_config(task_name))
+                logging.getLogger('boto3').setLevel(logging.DEBUG)
+                logging.getLogger('botocore').setLevel(logging.DEBUG)
                 logging_extra = {
                     'celery_task_id': self.request.id,
                     'celery_task_name': task_name
@@ -386,7 +389,7 @@ class IncomingFileStateManager(object):
             'trigger': 'move_to_processing',
             'source': 'FILE_IN_INCOMING',
             'dest': 'FILE_IN_PROCESSING',
-            'before': ['_pre_processing_checks', '_move_to_processing']
+            'before': ['_pre_processing_checks', '_copy_to_landing', '_move_to_processing']
         },
         {
             'trigger': 'move_to_error',
@@ -413,6 +416,8 @@ class IncomingFileStateManager(object):
         self.error_exit_policies = error_exit_policies or []
         self.success_exit_policies = success_exit_policies or []
         self._error_broker = error_broker
+        self.landing_bucket = "aodn-dataflow-dev"
+        self.landing_prefix = "landing"
 
         self._machine = Machine(model=self, states=self.states, initial='FILE_IN_INCOMING', auto_transitions=False,
                                 transitions=self.transitions, after_state_change='_after_state_change')
@@ -476,6 +481,26 @@ class IncomingFileStateManager(object):
         except Exception:  # pragma: no cover
             self.logger.exception('exception occurred initialising IncomingFileStateManager')
             raise
+
+    def _copy_to_landing(self):
+        self.logger.info(f"{self.__class__.__name__}.copy_to_landing -> 's3://{self.landing_bucket}/{self.landing_prefix}'")
+
+        # Temporarily remove AWS_CONFIG_FILE environment variable
+        aws_config_file = os.environ.pop('AWS_CONFIG_FILE', None)
+        self.logger.sysinfo(f"Removed AWS_CONFIG_FILE environment variable")
+        self.logger.debug(f"Environment now has AWS_CONFIG_FILE: {os.getenv('AWS_CONFIG_FILE')}; AWS_PROFILE: {os.getenv('AWS_PROFILE')}")
+
+        self.logger.sysinfo(f"Uploading {self.input_file} to s3://{self.landing_bucket}/{self.landing_prefix}")
+
+        try:
+            upload_to_s3(self.input_file, self.landing_bucket, self.landing_prefix, self.basename, aws_profile="edge-admin")
+        except Exception as e:
+            self.logger.warning(f"Failed to upload file to s3://{self.landing_bucket}/{self.landing_prefix}: {e}")
+
+        # Restore AWS_CONFIG_FILE environment variable
+        if aws_config_file is not None:
+            os.environ['AWS_CONFIG_FILE'] = aws_config_file
+            self.logger.sysinfo(f"Restored AWS_CONFIG_FILE: {aws_config_file}")
 
     def _move_to_processing(self):
         self.logger.info("{self.__class__.__name__}.move_to_processing -> '{self.processing_path}'".format(self=self))
