@@ -9,7 +9,7 @@ def upload_to_s3(local_file: str,
                  bucket_name: str,
                  bucket_prefix: Optional[str] = None,
                  key: Optional[str] = None,
-                 aws_profile: Optional[str] = "edge-admin") -> None:
+                 aws_profile: Optional[str] = None) -> None:
     """
     Upload a file to an S3 bucket
 

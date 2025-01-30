@@ -500,24 +500,13 @@ class IncomingFileStateManager(object):
         if not self.landing_bucket or not self.copy_to_landing_enabled:
             return
 
-        # Temporarily remove AWS_CONFIG_FILE environment variable
-        # aws_config_file = os.environ.pop('AWS_CONFIG_FILE', None)
-        # self.logger.sysinfo(f"Removed AWS_CONFIG_FILE environment variable")
-        # self.logger.debug(f"Environment now has AWS_CONFIG_FILE: {os.getenv('AWS_CONFIG_FILE')}; AWS_PROFILE: {os.getenv('AWS_PROFILE')}")
-
         self.logger.info(
             f"{self.__class__.__name__}.copy_to_landing -> 's3://{self.landing_bucket}/{self.landing_prefix}'")
-
         self.logger.sysinfo(f"Uploading {self.input_file} to 's3://{self.landing_bucket}/{self.landing_prefix}'")
         try:
-            upload_to_s3(self.input_file, self.landing_bucket, self.landing_prefix, self.basename, aws_profile="edge-admin")
+            upload_to_s3(self.input_file, self.landing_bucket, self.landing_prefix, self.basename)
         except Exception as e:
             self.logger.warning(f"Failed to upload file to s3://{self.landing_bucket}/{self.landing_prefix}: {e}")
-
-        # Restore AWS_CONFIG_FILE environment variable
-        # if aws_config_file is not None:
-        #     os.environ['AWS_CONFIG_FILE'] = aws_config_file
-        #     self.logger.sysinfo(f"Restored AWS_CONFIG_FILE: {aws_config_file}")
 
     def _move_to_processing(self):
         self.logger.info("{self.__class__.__name__}.move_to_processing -> '{self.processing_path}'".format(self=self))
