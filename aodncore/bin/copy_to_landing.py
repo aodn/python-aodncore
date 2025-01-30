@@ -3,19 +3,7 @@
 import argparse
 import logging
 
-import boto3
-from botocore.exceptions import NoCredentialsError
-
-
-def upload_to_s3(local_file, bucket_name, s3_file):
-    s3 = boto3.client('s3')
-    try:
-        s3.upload_file(local_file, bucket_name, s3_file)
-        print(f"Upload Successful: {local_file} to {bucket_name}/{s3_file}")
-    except FileNotFoundError:
-        print(f"The file {local_file} was not found")
-    except NoCredentialsError:
-        print("Credentials not available")
+from aodncore.util.aws import upload_to_s3
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description='Upload a file to an AWS S3 bucket.')
@@ -36,4 +24,4 @@ if __name__ == "__main__":
         logging.getLogger('boto3').setLevel(logging.DEBUG)
         logging.getLogger('botocore').setLevel(logging.DEBUG)
 
-    upload_to_s3(args.local_file, args.bucket, args.s3_key)
+    upload_to_s3(args.local_file, args.bucket, key=args.s3_key)
