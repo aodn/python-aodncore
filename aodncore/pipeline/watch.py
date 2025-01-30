@@ -201,13 +201,18 @@ def build_task(config, pipeline_name, handler_class, success_exit_policies, erro
                     "{self.__class__.__name__}.error_exit_policies -> "
                     "{policies}".format(self=self, policies=[p.name for p in error_exit_policies]))
 
+                self.logger.sysinfo(
+                    f"{self.__class__.__name__}.kwargs -> {kwargs}"
+                )
+
                 file_state_manager = IncomingFileStateManager(input_file=incoming_file,
                                                               pipeline_name=pipeline_name,
                                                               config=config,
                                                               logger=self.logger,
                                                               celery_request=self.request,
                                                               error_exit_policies=error_exit_policies,
-                                                              success_exit_policies=success_exit_policies)
+                                                              success_exit_policies=success_exit_policies,
+                                                              params=kwargs)
 
                 file_state_manager.move_to_processing()
 
@@ -407,7 +412,7 @@ class IncomingFileStateManager(object):
     ]
 
     def __init__(self, input_file, pipeline_name, config, logger, celery_request, error_exit_policies=None,
-                 success_exit_policies=None, error_broker=None):
+                 success_exit_policies=None, error_broker=None, params=None):
         self.input_file = input_file
         self.pipeline_name = pipeline_name
         self.config = config
@@ -416,7 +421,12 @@ class IncomingFileStateManager(object):
         self.error_exit_policies = error_exit_policies or []
         self.success_exit_policies = success_exit_policies or []
         self._error_broker = error_broker
-        self.landing_prefix = "landing"
+        if params and "custom_params" in params:
+            self.custom_params = params["custom_params"]
+            self.copy_to_landing_enabled = self.custom_params.get("copy_to_landing_bucket", False)
+            self.landing_prefix = self.custom_params.get("landing_prefix", "")
+        else:
+            self.copy_to_landing_enabled = False
 
         self._machine = Machine(model=self, states=self.states, initial='FILE_IN_INCOMING', auto_transitions=False,
                                 transitions=self.transitions, after_state_change='_after_state_change')
@@ -487,7 +497,7 @@ class IncomingFileStateManager(object):
 
     def _copy_to_landing(self):
         # skip this step all together if not configured to copy to landing
-        if not self.landing_bucket:
+        if not self.landing_bucket or not self.copy_to_landing_enabled:
             return
 
         # Temporarily remove AWS_CONFIG_FILE environment variable
