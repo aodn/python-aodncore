@@ -17,7 +17,7 @@ def upload_to_s3(local_file: str,
     :param bucket_name: Bucket to upload to
     :param bucket_prefix: Prefix to add to key
     :param key: Path in bucket to upload to (defaults to local file name)
-    :param aws_profile: AWS profile to use (devaults to edge-admin)
+    :param aws_profile: AWS profile to use
     :return: None
     """
 
