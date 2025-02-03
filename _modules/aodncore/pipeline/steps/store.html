@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>aodncore.pipeline.steps.store &mdash; aodncore 1.4.9 documentation</title>
+  <title>aodncore.pipeline.steps.store &mdash; aodncore 1.4.10 documentation</title>
       <link rel="stylesheet" href="../../../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../../../_static/css/theme.css" type="text/css" />
   <!--[if lt IE 9]>
@@ -93,9 +93,9 @@
 <span class="sd">similar to the other handler steps.</span>
 <span class="sd">&quot;&quot;&quot;</span>
 
-<span class="kn">from</span> <span class="nn">.basestep</span> <span class="kn">import</span> <span class="n">BaseStepRunner</span>
-<span class="kn">from</span> <span class="nn">..files</span> <span class="kn">import</span> <span class="n">ensure_pipelinefilecollection</span>
-<span class="kn">from</span> <span class="nn">..storage</span> <span class="kn">import</span> <span class="n">get_storage_broker</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">.basestep</span><span class="w"> </span><span class="kn">import</span> <span class="n">BaseStepRunner</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">..files</span><span class="w"> </span><span class="kn">import</span> <span class="n">ensure_pipelinefilecollection</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">..storage</span><span class="w"> </span><span class="kn">import</span> <span class="n">get_storage_broker</span>
 
 <span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span>
     <span class="s1">&#39;get_store_runner&#39;</span><span class="p">,</span>
@@ -104,7 +104,7 @@
 <span class="p">]</span>
 
 
-<div class="viewcode-block" id="get_store_runner"><a class="viewcode-back" href="../../../../aodncore.pipeline.steps.html#aodncore.pipeline.steps.store.get_store_runner">[docs]</a><span class="k">def</span> <span class="nf">get_store_runner</span><span class="p">(</span><span class="n">store_base_url</span><span class="p">,</span> <span class="n">config</span><span class="p">,</span> <span class="n">logger</span><span class="p">,</span> <span class="n">archive_mode</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+<div class="viewcode-block" id="get_store_runner"><a class="viewcode-back" href="../../../../aodncore.pipeline.steps.html#aodncore.pipeline.steps.store.get_store_runner">[docs]</a><span class="k">def</span><span class="w"> </span><span class="nf">get_store_runner</span><span class="p">(</span><span class="n">store_base_url</span><span class="p">,</span> <span class="n">config</span><span class="p">,</span> <span class="n">logger</span><span class="p">,</span> <span class="n">archive_mode</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Factory function to return store runner class, with it&#39;s storage broker based on URL scheme</span>
 
 <span class="sd">    :param store_base_url: URL base for storage location</span>
@@ -117,17 +117,17 @@
     <span class="k">return</span> <span class="n">StoreRunner</span><span class="p">(</span><span class="n">broker</span><span class="p">,</span> <span class="n">config</span><span class="p">,</span> <span class="n">logger</span><span class="p">,</span> <span class="n">archive_mode</span><span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="StoreRunner"><a class="viewcode-back" href="../../../../aodncore.pipeline.steps.html#aodncore.pipeline.steps.store.StoreRunner">[docs]</a><span class="k">class</span> <span class="nc">StoreRunner</span><span class="p">(</span><span class="n">BaseStepRunner</span><span class="p">):</span>
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">broker</span><span class="p">,</span> <span class="n">config</span><span class="p">,</span> <span class="n">logger</span><span class="p">,</span> <span class="n">archive_mode</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+<div class="viewcode-block" id="StoreRunner"><a class="viewcode-back" href="../../../../aodncore.pipeline.steps.html#aodncore.pipeline.steps.store.StoreRunner">[docs]</a><span class="k">class</span><span class="w"> </span><span class="nc">StoreRunner</span><span class="p">(</span><span class="n">BaseStepRunner</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">broker</span><span class="p">,</span> <span class="n">config</span><span class="p">,</span> <span class="n">logger</span><span class="p">,</span> <span class="n">archive_mode</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">config</span><span class="p">,</span> <span class="n">logger</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">broker</span> <span class="o">=</span> <span class="n">broker</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">archive_mode</span> <span class="o">=</span> <span class="n">archive_mode</span>
 
-    <span class="k">def</span> <span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="s2">&quot;</span><span class="si">{self.__class__.__name__}</span><span class="s2">(broker=</span><span class="si">{self.broker}</span><span class="s2">)&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">=</span><span class="bp">self</span><span class="p">)</span>
 
     <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">is_stored_attr</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">is_stored_attr</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;PipelineFile attribute to flag completion of upload operation</span>
 
 <span class="sd">        :return: bool</span>
@@ -135,18 +135,18 @@
         <span class="k">return</span> <span class="s1">&#39;is_archived&#39;</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">archive_mode</span> <span class="k">else</span> <span class="s1">&#39;is_stored&#39;</span>
 
     <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">pending_addition_attr</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">pending_addition_attr</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="s1">&#39;pending_archive&#39;</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">archive_mode</span> <span class="k">else</span> <span class="s1">&#39;pending_store_addition&#39;</span>
 
     <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">dest_path_attr</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">dest_path_attr</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;PipelineFile attribute containing the destination path</span>
 
 <span class="sd">        :return: bool</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="s1">&#39;archive_path&#39;</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">archive_mode</span> <span class="k">else</span> <span class="s1">&#39;dest_path&#39;</span>
 
-<div class="viewcode-block" id="StoreRunner.set_is_overwrite"><a class="viewcode-back" href="../../../../aodncore.pipeline.steps.html#aodncore.pipeline.steps.store.StoreRunner.set_is_overwrite">[docs]</a>    <span class="k">def</span> <span class="nf">set_is_overwrite</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pipeline_files</span><span class="p">):</span>
+<div class="viewcode-block" id="StoreRunner.set_is_overwrite"><a class="viewcode-back" href="../../../../aodncore.pipeline.steps.html#aodncore.pipeline.steps.store.StoreRunner.set_is_overwrite">[docs]</a>    <span class="k">def</span><span class="w"> </span><span class="nf">set_is_overwrite</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pipeline_files</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Set the &quot;is_overwrite&quot; attribute for each file in the given collection</span>
 
 <span class="sd">        :param pipeline_files: collection to</span>
@@ -155,7 +155,7 @@
         <span class="n">collection</span> <span class="o">=</span> <span class="n">ensure_pipelinefilecollection</span><span class="p">(</span><span class="n">pipeline_files</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">broker</span><span class="o">.</span><span class="n">set_is_overwrite</span><span class="p">(</span><span class="n">pipeline_files</span><span class="o">=</span><span class="n">collection</span><span class="p">,</span> <span class="n">dest_path_attr</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">dest_path_attr</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="StoreRunner.run"><a class="viewcode-back" href="../../../../aodncore.pipeline.steps.html#aodncore.pipeline.steps.store.StoreRunner.run">[docs]</a>    <span class="k">def</span> <span class="nf">run</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pipeline_files</span><span class="p">):</span>
+<div class="viewcode-block" id="StoreRunner.run"><a class="viewcode-back" href="../../../../aodncore.pipeline.steps.html#aodncore.pipeline.steps.store.StoreRunner.run">[docs]</a>    <span class="k">def</span><span class="w"> </span><span class="nf">run</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pipeline_files</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Execute the pending storage operation(s) for each file in the given collection</span>
 
 <span class="sd">        :param pipeline_files: PipelineFileCollection instance</span>

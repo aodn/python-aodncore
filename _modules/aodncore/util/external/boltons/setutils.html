@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>aodncore.util.external.boltons.setutils &mdash; aodncore 1.4.9 documentation</title>
+  <title>aodncore.util.external.boltons.setutils &mdash; aodncore 1.4.10 documentation</title>
       <link rel="stylesheet" href="../../../../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../../../../_static/css/theme.css" type="text/css" />
   <!--[if lt IE 9]>
@@ -98,15 +98,15 @@
 <span class="sd">characteristics of Python&#39;s built-in set implementation.</span>
 <span class="sd">&quot;&quot;&quot;</span>
 
-<span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">print_function</span>
-<span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">division</span>
-<span class="kn">from</span> <span class="nn">bisect</span> <span class="kn">import</span> <span class="n">bisect_left</span>
-<span class="kn">from</span> <span class="nn">itertools</span> <span class="kn">import</span> <span class="n">chain</span><span class="p">,</span> <span class="n">islice</span>
-<span class="kn">from</span> <span class="nn">collections</span> <span class="kn">import</span> <span class="n">MutableSet</span>
-<span class="kn">import</span> <span class="nn">operator</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">__future__</span><span class="w"> </span><span class="kn">import</span> <span class="n">print_function</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">__future__</span><span class="w"> </span><span class="kn">import</span> <span class="n">division</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">bisect</span><span class="w"> </span><span class="kn">import</span> <span class="n">bisect_left</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">itertools</span><span class="w"> </span><span class="kn">import</span> <span class="n">chain</span><span class="p">,</span> <span class="n">islice</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">collections</span><span class="w"> </span><span class="kn">import</span> <span class="n">MutableSet</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">operator</span>
 
 <span class="k">try</span><span class="p">:</span>
-    <span class="kn">from</span> <span class="nn">typeutils</span> <span class="kn">import</span> <span class="n">make_sentinel</span>
+    <span class="kn">from</span><span class="w"> </span><span class="nn">typeutils</span><span class="w"> </span><span class="kn">import</span> <span class="n">make_sentinel</span>
     <span class="n">_MISSING</span> <span class="o">=</span> <span class="n">make_sentinel</span><span class="p">(</span><span class="n">var_name</span><span class="o">=</span><span class="s1">&#39;_MISSING&#39;</span><span class="p">)</span>
 <span class="k">except</span> <span class="ne">ImportError</span><span class="p">:</span>
     <span class="n">_MISSING</span> <span class="o">=</span> <span class="nb">object</span><span class="p">()</span>
@@ -125,7 +125,7 @@
 <span class="c1"># insertion order)</span>
 
 
-<div class="viewcode-block" id="IndexedSet"><a class="viewcode-back" href="../../../../../aodncore.util.html#aodncore.util.IndexedSet">[docs]</a><span class="k">class</span> <span class="nc">IndexedSet</span><span class="p">(</span><span class="n">MutableSet</span><span class="p">):</span>
+<div class="viewcode-block" id="IndexedSet"><a class="viewcode-back" href="../../../../../aodncore.util.html#aodncore.util.IndexedSet">[docs]</a><span class="k">class</span><span class="w"> </span><span class="nc">IndexedSet</span><span class="p">(</span><span class="n">MutableSet</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;``IndexedSet`` is a :class:`collections.MutableSet` that maintains</span>
 <span class="sd">    insertion order and uniqueness of inserted elements. It&#39;s a hybrid</span>
 <span class="sd">    type, mostly like an OrderedSet, but also :class:`list`-like, in</span>
@@ -168,7 +168,7 @@
 <span class="sd">    Otherwise, the API strives to be as complete a union of the</span>
 <span class="sd">    :class:`list` and :class:`set` APIs as possible.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">item_index_map</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">item_list</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">dead_indices</span> <span class="o">=</span> <span class="p">[]</span>
@@ -179,10 +179,10 @@
 
     <span class="c1"># internal functions</span>
     <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">_dead_index_count</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_dead_index_count</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">item_list</span><span class="p">)</span> <span class="o">-</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">item_index_map</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">_compact</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_compact</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">dead_indices</span><span class="p">:</span>
             <span class="k">return</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_compactions</span> <span class="o">+=</span> <span class="mi">1</span>
@@ -195,7 +195,7 @@
         <span class="k">del</span> <span class="n">items</span><span class="p">[</span><span class="o">-</span><span class="n">dead_index_count</span><span class="p">:]</span>
         <span class="k">del</span> <span class="bp">self</span><span class="o">.</span><span class="n">dead_indices</span><span class="p">[:]</span>
 
-    <span class="k">def</span> <span class="nf">_cull</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_cull</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="n">ded</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">dead_indices</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="n">ded</span><span class="p">:</span>
             <span class="k">return</span>
@@ -215,7 +215,7 @@
                 <span class="k">del</span> <span class="n">ded</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
             <span class="k">del</span> <span class="n">items</span><span class="p">[</span><span class="o">-</span><span class="n">num_dead</span><span class="p">:]</span>
 
-    <span class="k">def</span> <span class="nf">_get_real_index</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">index</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_get_real_index</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">index</span><span class="p">):</span>
         <span class="k">if</span> <span class="n">index</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span>
             <span class="n">index</span> <span class="o">+=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">dead_indices</span><span class="p">:</span>
@@ -227,7 +227,7 @@
             <span class="n">real_index</span> <span class="o">+=</span> <span class="n">d_stop</span> <span class="o">-</span> <span class="n">d_start</span>
         <span class="k">return</span> <span class="n">real_index</span>
 
-    <span class="k">def</span> <span class="nf">_add_dead</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">start</span><span class="p">,</span> <span class="n">stop</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_add_dead</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">start</span><span class="p">,</span> <span class="n">stop</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="c1"># TODO: does not handle when the new interval subsumes</span>
         <span class="c1"># multiple existing intervals</span>
         <span class="n">dints</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">dead_indices</span>
@@ -249,40 +249,40 @@
         <span class="k">return</span>
 
     <span class="c1"># common operations (shared by set and list)</span>
-    <span class="k">def</span> <span class="fm">__len__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__len__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">item_index_map</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="fm">__contains__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">item</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__contains__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">item</span><span class="p">):</span>
         <span class="k">return</span> <span class="n">item</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">item_index_map</span>
 
-    <span class="k">def</span> <span class="fm">__iter__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__iter__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="p">(</span><span class="n">item</span> <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">item_list</span> <span class="k">if</span> <span class="n">item</span> <span class="ow">is</span> <span class="ow">not</span> <span class="n">_MISSING</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="fm">__reversed__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__reversed__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="n">item_list</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">item_list</span>
         <span class="k">return</span> <span class="p">(</span><span class="n">item</span> <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="nb">reversed</span><span class="p">(</span><span class="n">item_list</span><span class="p">)</span> <span class="k">if</span> <span class="n">item</span> <span class="ow">is</span> <span class="ow">not</span> <span class="n">_MISSING</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="s1">&#39;</span><span class="si">%s</span><span class="s1">(</span><span class="si">%r</span><span class="s1">)&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="p">,</span> <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="p">))</span>
 
-    <span class="k">def</span> <span class="fm">__eq__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__eq__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">other</span><span class="p">,</span> <span class="n">IndexedSet</span><span class="p">):</span>
             <span class="k">return</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">==</span> <span class="nb">len</span><span class="p">(</span><span class="n">other</span><span class="p">)</span> <span class="ow">and</span> <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">==</span> <span class="nb">list</span><span class="p">(</span><span class="n">other</span><span class="p">)</span>
         <span class="k">return</span> <span class="nb">set</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">==</span> <span class="nb">set</span><span class="p">(</span><span class="n">other</span><span class="p">)</span>
 
 <div class="viewcode-block" id="IndexedSet.from_iterable"><a class="viewcode-back" href="../../../../../aodncore.util.html#aodncore.util.IndexedSet.from_iterable">[docs]</a>    <span class="nd">@classmethod</span>
-    <span class="k">def</span> <span class="nf">from_iterable</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">it</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">from_iterable</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">it</span><span class="p">):</span>
         <span class="s2">&quot;from_iterable(it) -&gt; create a set from an iterable&quot;</span>
         <span class="k">return</span> <span class="bp">cls</span><span class="p">(</span><span class="n">it</span><span class="p">)</span></div>
 
     <span class="c1"># set operations</span>
-<div class="viewcode-block" id="IndexedSet.add"><a class="viewcode-back" href="../../../../../aodncore.util.html#aodncore.util.IndexedSet.add">[docs]</a>    <span class="k">def</span> <span class="nf">add</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">item</span><span class="p">):</span>
+<div class="viewcode-block" id="IndexedSet.add"><a class="viewcode-back" href="../../../../../aodncore.util.html#aodncore.util.IndexedSet.add">[docs]</a>    <span class="k">def</span><span class="w"> </span><span class="nf">add</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">item</span><span class="p">):</span>
         <span class="s2">&quot;add(item) -&gt; add item to the set&quot;</span>
         <span class="k">if</span> <span class="n">item</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">item_index_map</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">item_index_map</span><span class="p">[</span><span class="n">item</span><span class="p">]</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">item_list</span><span class="p">)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">item_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">item</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="IndexedSet.remove"><a class="viewcode-back" href="../../../../../aodncore.util.html#aodncore.util.IndexedSet.remove">[docs]</a>    <span class="k">def</span> <span class="nf">remove</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">item</span><span class="p">):</span>
+<div class="viewcode-block" id="IndexedSet.remove"><a class="viewcode-back" href="../../../../../aodncore.util.html#aodncore.util.IndexedSet.remove">[docs]</a>    <span class="k">def</span><span class="w"> </span><span class="nf">remove</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">item</span><span class="p">):</span>
         <span class="s2">&quot;remove(item) -&gt; remove item from the set, raises if not present&quot;</span>
         <span class="k">try</span><span class="p">:</span>
             <span class="n">didx</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">item_index_map</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="n">item</span><span class="p">)</span>
@@ -292,20 +292,20 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">_add_dead</span><span class="p">(</span><span class="n">didx</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_cull</span><span class="p">()</span></div>
 
-<div class="viewcode-block" id="IndexedSet.discard"><a class="viewcode-back" href="../../../../../aodncore.util.html#aodncore.util.IndexedSet.discard">[docs]</a>    <span class="k">def</span> <span class="nf">discard</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">item</span><span class="p">):</span>
+<div class="viewcode-block" id="IndexedSet.discard"><a class="viewcode-back" href="../../../../../aodncore.util.html#aodncore.util.IndexedSet.discard">[docs]</a>    <span class="k">def</span><span class="w"> </span><span class="nf">discard</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">item</span><span class="p">):</span>
         <span class="s2">&quot;discard(item) -&gt; discard item from the set (does not raise)&quot;</span>
         <span class="k">try</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="n">item</span><span class="p">)</span>
         <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
             <span class="k">pass</span></div>
 
-<div class="viewcode-block" id="IndexedSet.clear"><a class="viewcode-back" href="../../../../../aodncore.util.html#aodncore.util.IndexedSet.clear">[docs]</a>    <span class="k">def</span> <span class="nf">clear</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="IndexedSet.clear"><a class="viewcode-back" href="../../../../../aodncore.util.html#aodncore.util.IndexedSet.clear">[docs]</a>    <span class="k">def</span><span class="w"> </span><span class="nf">clear</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="s2">&quot;clear() -&gt; empty the set&quot;</span>
         <span class="k">del</span> <span class="bp">self</span><span class="o">.</span><span class="n">item_list</span><span class="p">[:]</span>
         <span class="k">del</span> <span class="bp">self</span><span class="o">.</span><span class="n">dead_indices</span><span class="p">[:]</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">item_index_map</span><span class="o">.</span><span class="n">clear</span><span class="p">()</span></div>
 
-<div class="viewcode-block" id="IndexedSet.isdisjoint"><a class="viewcode-back" href="../../../../../aodncore.util.html#aodncore.util.IndexedSet.isdisjoint">[docs]</a>    <span class="k">def</span> <span class="nf">isdisjoint</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
+<div class="viewcode-block" id="IndexedSet.isdisjoint"><a class="viewcode-back" href="../../../../../aodncore.util.html#aodncore.util.IndexedSet.isdisjoint">[docs]</a>    <span class="k">def</span><span class="w"> </span><span class="nf">isdisjoint</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
         <span class="s2">&quot;isdisjoint(other) -&gt; return True if no overlap with other&quot;</span>
         <span class="n">iim</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">item_index_map</span>
         <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="n">other</span><span class="p">:</span>
@@ -313,7 +313,7 @@
                 <span class="k">return</span> <span class="kc">False</span>
         <span class="k">return</span> <span class="kc">True</span></div>
 
-<div class="viewcode-block" id="IndexedSet.issubset"><a class="viewcode-back" href="../../../../../aodncore.util.html#aodncore.util.IndexedSet.issubset">[docs]</a>    <span class="k">def</span> <span class="nf">issubset</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
+<div class="viewcode-block" id="IndexedSet.issubset"><a class="viewcode-back" href="../../../../../aodncore.util.html#aodncore.util.IndexedSet.issubset">[docs]</a>    <span class="k">def</span><span class="w"> </span><span class="nf">issubset</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
         <span class="s2">&quot;issubset(other) -&gt; return True if other contains this set&quot;</span>
         <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">other</span><span class="p">)</span> <span class="o">&lt;</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
             <span class="k">return</span> <span class="kc">False</span>
@@ -322,7 +322,7 @@
                 <span class="k">return</span> <span class="kc">False</span>
         <span class="k">return</span> <span class="kc">True</span></div>
 
-<div class="viewcode-block" id="IndexedSet.issuperset"><a class="viewcode-back" href="../../../../../aodncore.util.html#aodncore.util.IndexedSet.issuperset">[docs]</a>    <span class="k">def</span> <span class="nf">issuperset</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
+<div class="viewcode-block" id="IndexedSet.issuperset"><a class="viewcode-back" href="../../../../../aodncore.util.html#aodncore.util.IndexedSet.issuperset">[docs]</a>    <span class="k">def</span><span class="w"> </span><span class="nf">issuperset</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
         <span class="s2">&quot;issuperset(other) -&gt; return True if set contains other&quot;</span>
         <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">other</span><span class="p">)</span> <span class="o">&gt;</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
             <span class="k">return</span> <span class="kc">False</span>
@@ -332,11 +332,11 @@
                 <span class="k">return</span> <span class="kc">False</span>
         <span class="k">return</span> <span class="kc">True</span></div>
 
-<div class="viewcode-block" id="IndexedSet.union"><a class="viewcode-back" href="../../../../../aodncore.util.html#aodncore.util.IndexedSet.union">[docs]</a>    <span class="k">def</span> <span class="nf">union</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">others</span><span class="p">):</span>
+<div class="viewcode-block" id="IndexedSet.union"><a class="viewcode-back" href="../../../../../aodncore.util.html#aodncore.util.IndexedSet.union">[docs]</a>    <span class="k">def</span><span class="w"> </span><span class="nf">union</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">others</span><span class="p">):</span>
         <span class="s2">&quot;union(*others) -&gt; return a new set containing this set and others&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">from_iterable</span><span class="p">(</span><span class="n">chain</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">others</span><span class="p">))</span></div>
 
-<div class="viewcode-block" id="IndexedSet.iter_intersection"><a class="viewcode-back" href="../../../../../aodncore.util.html#aodncore.util.IndexedSet.iter_intersection">[docs]</a>    <span class="k">def</span> <span class="nf">iter_intersection</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">others</span><span class="p">):</span>
+<div class="viewcode-block" id="IndexedSet.iter_intersection"><a class="viewcode-back" href="../../../../../aodncore.util.html#aodncore.util.IndexedSet.iter_intersection">[docs]</a>    <span class="k">def</span><span class="w"> </span><span class="nf">iter_intersection</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">others</span><span class="p">):</span>
         <span class="s2">&quot;iter_intersection(*others) -&gt; iterate over elements also in others&quot;</span>
         <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="bp">self</span><span class="p">:</span>
             <span class="k">for</span> <span class="n">other</span> <span class="ow">in</span> <span class="n">others</span><span class="p">:</span>
@@ -346,14 +346,14 @@
                 <span class="k">yield</span> <span class="n">k</span>
         <span class="k">return</span></div>
 
-<div class="viewcode-block" id="IndexedSet.intersection"><a class="viewcode-back" href="../../../../../aodncore.util.html#aodncore.util.IndexedSet.intersection">[docs]</a>    <span class="k">def</span> <span class="nf">intersection</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">others</span><span class="p">):</span>
+<div class="viewcode-block" id="IndexedSet.intersection"><a class="viewcode-back" href="../../../../../aodncore.util.html#aodncore.util.IndexedSet.intersection">[docs]</a>    <span class="k">def</span><span class="w"> </span><span class="nf">intersection</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">others</span><span class="p">):</span>
         <span class="s2">&quot;intersection(*others) -&gt; get a set with overlap of this and others&quot;</span>
         <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">others</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
             <span class="n">other</span> <span class="o">=</span> <span class="n">others</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
             <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">from_iterable</span><span class="p">(</span><span class="n">k</span> <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="bp">self</span> <span class="k">if</span> <span class="n">k</span> <span class="ow">in</span> <span class="n">other</span><span class="p">)</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">from_iterable</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">iter_intersection</span><span class="p">(</span><span class="o">*</span><span class="n">others</span><span class="p">))</span></div>
 
-<div class="viewcode-block" id="IndexedSet.iter_difference"><a class="viewcode-back" href="../../../../../aodncore.util.html#aodncore.util.IndexedSet.iter_difference">[docs]</a>    <span class="k">def</span> <span class="nf">iter_difference</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">others</span><span class="p">):</span>
+<div class="viewcode-block" id="IndexedSet.iter_difference"><a class="viewcode-back" href="../../../../../aodncore.util.html#aodncore.util.IndexedSet.iter_difference">[docs]</a>    <span class="k">def</span><span class="w"> </span><span class="nf">iter_difference</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">others</span><span class="p">):</span>
         <span class="s2">&quot;iter_difference(*others) -&gt; iterate over elements not in others&quot;</span>
         <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="bp">self</span><span class="p">:</span>
             <span class="k">for</span> <span class="n">other</span> <span class="ow">in</span> <span class="n">others</span><span class="p">:</span>
@@ -363,14 +363,14 @@
                 <span class="k">yield</span> <span class="n">k</span>
         <span class="k">return</span></div>
 
-<div class="viewcode-block" id="IndexedSet.difference"><a class="viewcode-back" href="../../../../../aodncore.util.html#aodncore.util.IndexedSet.difference">[docs]</a>    <span class="k">def</span> <span class="nf">difference</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">others</span><span class="p">):</span>
+<div class="viewcode-block" id="IndexedSet.difference"><a class="viewcode-back" href="../../../../../aodncore.util.html#aodncore.util.IndexedSet.difference">[docs]</a>    <span class="k">def</span><span class="w"> </span><span class="nf">difference</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">others</span><span class="p">):</span>
         <span class="s2">&quot;difference(*others) -&gt; get a new set with elements not in others&quot;</span>
         <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">others</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
             <span class="n">other</span> <span class="o">=</span> <span class="n">others</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
             <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">from_iterable</span><span class="p">(</span><span class="n">k</span> <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="bp">self</span> <span class="k">if</span> <span class="n">k</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">other</span><span class="p">)</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">from_iterable</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">iter_difference</span><span class="p">(</span><span class="o">*</span><span class="n">others</span><span class="p">))</span></div>
 
-<div class="viewcode-block" id="IndexedSet.symmetric_difference"><a class="viewcode-back" href="../../../../../aodncore.util.html#aodncore.util.IndexedSet.symmetric_difference">[docs]</a>    <span class="k">def</span> <span class="nf">symmetric_difference</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">others</span><span class="p">):</span>
+<div class="viewcode-block" id="IndexedSet.symmetric_difference"><a class="viewcode-back" href="../../../../../aodncore.util.html#aodncore.util.IndexedSet.symmetric_difference">[docs]</a>    <span class="k">def</span><span class="w"> </span><span class="nf">symmetric_difference</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">others</span><span class="p">):</span>
         <span class="s2">&quot;symmetric_difference(*others) -&gt; XOR set of this and others&quot;</span>
         <span class="n">ret</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">union</span><span class="p">(</span><span class="o">*</span><span class="n">others</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">ret</span><span class="o">.</span><span class="n">difference</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">intersection</span><span class="p">(</span><span class="o">*</span><span class="n">others</span><span class="p">))</span></div>
@@ -381,7 +381,7 @@
     <span class="fm">__xor__</span> <span class="o">=</span> <span class="fm">__rxor__</span> <span class="o">=</span> <span class="n">symmetric_difference</span>
 
     <span class="c1"># in-place set operations</span>
-<div class="viewcode-block" id="IndexedSet.update"><a class="viewcode-back" href="../../../../../aodncore.util.html#aodncore.util.IndexedSet.update">[docs]</a>    <span class="k">def</span> <span class="nf">update</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">others</span><span class="p">):</span>
+<div class="viewcode-block" id="IndexedSet.update"><a class="viewcode-back" href="../../../../../aodncore.util.html#aodncore.util.IndexedSet.update">[docs]</a>    <span class="k">def</span><span class="w"> </span><span class="nf">update</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">others</span><span class="p">):</span>
         <span class="s2">&quot;update(*others) -&gt; add values from one or more iterables&quot;</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="n">others</span><span class="p">:</span>
             <span class="k">return</span>  <span class="c1"># raise?</span>
@@ -392,19 +392,19 @@
         <span class="k">for</span> <span class="n">o</span> <span class="ow">in</span> <span class="n">other</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">o</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="IndexedSet.intersection_update"><a class="viewcode-back" href="../../../../../aodncore.util.html#aodncore.util.IndexedSet.intersection_update">[docs]</a>    <span class="k">def</span> <span class="nf">intersection_update</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">others</span><span class="p">):</span>
+<div class="viewcode-block" id="IndexedSet.intersection_update"><a class="viewcode-back" href="../../../../../aodncore.util.html#aodncore.util.IndexedSet.intersection_update">[docs]</a>    <span class="k">def</span><span class="w"> </span><span class="nf">intersection_update</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">others</span><span class="p">):</span>
         <span class="s2">&quot;intersection_update(*others) -&gt; discard self.difference(*others)&quot;</span>
         <span class="k">for</span> <span class="n">val</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">difference</span><span class="p">(</span><span class="o">*</span><span class="n">others</span><span class="p">):</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">discard</span><span class="p">(</span><span class="n">val</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="IndexedSet.difference_update"><a class="viewcode-back" href="../../../../../aodncore.util.html#aodncore.util.IndexedSet.difference_update">[docs]</a>    <span class="k">def</span> <span class="nf">difference_update</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">others</span><span class="p">):</span>
+<div class="viewcode-block" id="IndexedSet.difference_update"><a class="viewcode-back" href="../../../../../aodncore.util.html#aodncore.util.IndexedSet.difference_update">[docs]</a>    <span class="k">def</span><span class="w"> </span><span class="nf">difference_update</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">others</span><span class="p">):</span>
         <span class="s2">&quot;difference_update(*others) -&gt; discard self.intersection(*others)&quot;</span>
         <span class="k">if</span> <span class="bp">self</span> <span class="ow">in</span> <span class="n">others</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">clear</span><span class="p">()</span>
         <span class="k">for</span> <span class="n">val</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">intersection</span><span class="p">(</span><span class="o">*</span><span class="n">others</span><span class="p">):</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">discard</span><span class="p">(</span><span class="n">val</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="IndexedSet.symmetric_difference_update"><a class="viewcode-back" href="../../../../../aodncore.util.html#aodncore.util.IndexedSet.symmetric_difference_update">[docs]</a>    <span class="k">def</span> <span class="nf">symmetric_difference_update</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>  <span class="c1"># note singular &#39;other&#39;</span>
+<div class="viewcode-block" id="IndexedSet.symmetric_difference_update"><a class="viewcode-back" href="../../../../../aodncore.util.html#aodncore.util.IndexedSet.symmetric_difference_update">[docs]</a>    <span class="k">def</span><span class="w"> </span><span class="nf">symmetric_difference_update</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>  <span class="c1"># note singular &#39;other&#39;</span>
         <span class="s2">&quot;symmetric_difference_update(other) -&gt; in-place XOR with other&quot;</span>
         <span class="k">if</span> <span class="bp">self</span> <span class="ow">is</span> <span class="n">other</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">clear</span><span class="p">()</span>
@@ -414,23 +414,23 @@
             <span class="k">else</span><span class="p">:</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">val</span><span class="p">)</span></div>
 
-    <span class="k">def</span> <span class="fm">__ior__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">others</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__ior__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">others</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="o">*</span><span class="n">others</span><span class="p">)</span>
         <span class="k">return</span> <span class="bp">self</span>
 
-    <span class="k">def</span> <span class="fm">__iand__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">others</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__iand__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">others</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">intersection_update</span><span class="p">(</span><span class="o">*</span><span class="n">others</span><span class="p">)</span>
         <span class="k">return</span> <span class="bp">self</span>
 
-    <span class="k">def</span> <span class="fm">__isub__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">others</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__isub__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">others</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">difference_update</span><span class="p">(</span><span class="o">*</span><span class="n">others</span><span class="p">)</span>
         <span class="k">return</span> <span class="bp">self</span>
 
-    <span class="k">def</span> <span class="fm">__ixor__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">others</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__ixor__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">others</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">symmetric_difference_update</span><span class="p">(</span><span class="o">*</span><span class="n">others</span><span class="p">)</span>
         <span class="k">return</span> <span class="bp">self</span>
 
-<div class="viewcode-block" id="IndexedSet.iter_slice"><a class="viewcode-back" href="../../../../../aodncore.util.html#aodncore.util.IndexedSet.iter_slice">[docs]</a>    <span class="k">def</span> <span class="nf">iter_slice</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">start</span><span class="p">,</span> <span class="n">stop</span><span class="p">,</span> <span class="n">step</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<div class="viewcode-block" id="IndexedSet.iter_slice"><a class="viewcode-back" href="../../../../../aodncore.util.html#aodncore.util.IndexedSet.iter_slice">[docs]</a>    <span class="k">def</span><span class="w"> </span><span class="nf">iter_slice</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">start</span><span class="p">,</span> <span class="n">stop</span><span class="p">,</span> <span class="n">step</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="s2">&quot;iterate over a slice of the set&quot;</span>
         <span class="n">iterable</span> <span class="o">=</span> <span class="bp">self</span>
         <span class="k">if</span> <span class="n">start</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
@@ -443,7 +443,7 @@
         <span class="k">return</span> <span class="n">islice</span><span class="p">(</span><span class="n">iterable</span><span class="p">,</span> <span class="n">start</span><span class="p">,</span> <span class="n">stop</span><span class="p">,</span> <span class="n">step</span><span class="p">)</span></div>
 
     <span class="c1"># list operations</span>
-    <span class="k">def</span> <span class="fm">__getitem__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">index</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__getitem__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">index</span><span class="p">):</span>
         <span class="k">try</span><span class="p">:</span>
             <span class="n">start</span><span class="p">,</span> <span class="n">stop</span><span class="p">,</span> <span class="n">step</span> <span class="o">=</span> <span class="n">index</span><span class="o">.</span><span class="n">start</span><span class="p">,</span> <span class="n">index</span><span class="o">.</span><span class="n">stop</span><span class="p">,</span> <span class="n">index</span><span class="o">.</span><span class="n">step</span>
         <span class="k">except</span> <span class="ne">AttributeError</span><span class="p">:</span>
@@ -460,7 +460,7 @@
             <span class="k">raise</span> <span class="ne">IndexError</span><span class="p">(</span><span class="s1">&#39;IndexedSet index out of range&#39;</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">ret</span>
 
-<div class="viewcode-block" id="IndexedSet.pop"><a class="viewcode-back" href="../../../../../aodncore.util.html#aodncore.util.IndexedSet.pop">[docs]</a>    <span class="k">def</span> <span class="nf">pop</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<div class="viewcode-block" id="IndexedSet.pop"><a class="viewcode-back" href="../../../../../aodncore.util.html#aodncore.util.IndexedSet.pop">[docs]</a>    <span class="k">def</span><span class="w"> </span><span class="nf">pop</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="s2">&quot;pop(index) -&gt; remove the item at a given index (-1 by default)&quot;</span>
         <span class="n">item_index_map</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">item_index_map</span>
         <span class="n">len_self</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">item_index_map</span><span class="p">)</span>
@@ -476,13 +476,13 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">_cull</span><span class="p">()</span>
         <span class="k">return</span> <span class="n">ret</span></div>
 
-<div class="viewcode-block" id="IndexedSet.count"><a class="viewcode-back" href="../../../../../aodncore.util.html#aodncore.util.IndexedSet.count">[docs]</a>    <span class="k">def</span> <span class="nf">count</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">val</span><span class="p">):</span>
+<div class="viewcode-block" id="IndexedSet.count"><a class="viewcode-back" href="../../../../../aodncore.util.html#aodncore.util.IndexedSet.count">[docs]</a>    <span class="k">def</span><span class="w"> </span><span class="nf">count</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">val</span><span class="p">):</span>
         <span class="s2">&quot;count(val) -&gt; count number of instances of value (0 or 1)&quot;</span>
         <span class="k">if</span> <span class="n">val</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">item_index_map</span><span class="p">:</span>
             <span class="k">return</span> <span class="mi">1</span>
         <span class="k">return</span> <span class="mi">0</span></div>
 
-<div class="viewcode-block" id="IndexedSet.reverse"><a class="viewcode-back" href="../../../../../aodncore.util.html#aodncore.util.IndexedSet.reverse">[docs]</a>    <span class="k">def</span> <span class="nf">reverse</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="IndexedSet.reverse"><a class="viewcode-back" href="../../../../../aodncore.util.html#aodncore.util.IndexedSet.reverse">[docs]</a>    <span class="k">def</span><span class="w"> </span><span class="nf">reverse</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="s2">&quot;reverse() -&gt; reverse the contents of the set in-place&quot;</span>
         <span class="n">reversed_list</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">reversed</span><span class="p">(</span><span class="bp">self</span><span class="p">))</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">item_list</span><span class="p">[:]</span> <span class="o">=</span> <span class="n">reversed_list</span>
@@ -490,7 +490,7 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">item_index_map</span><span class="p">[</span><span class="n">item</span><span class="p">]</span> <span class="o">=</span> <span class="n">i</span>
         <span class="k">del</span> <span class="bp">self</span><span class="o">.</span><span class="n">dead_indices</span><span class="p">[:]</span></div>
 
-<div class="viewcode-block" id="IndexedSet.sort"><a class="viewcode-back" href="../../../../../aodncore.util.html#aodncore.util.IndexedSet.sort">[docs]</a>    <span class="k">def</span> <span class="nf">sort</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="IndexedSet.sort"><a class="viewcode-back" href="../../../../../aodncore.util.html#aodncore.util.IndexedSet.sort">[docs]</a>    <span class="k">def</span><span class="w"> </span><span class="nf">sort</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="s2">&quot;sort() -&gt; sort the contents of the set in-place&quot;</span>
         <span class="n">sorted_list</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">sorted_list</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">item_list</span><span class="p">:</span>
@@ -500,7 +500,7 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">item_index_map</span><span class="p">[</span><span class="n">item</span><span class="p">]</span> <span class="o">=</span> <span class="n">i</span>
         <span class="k">del</span> <span class="bp">self</span><span class="o">.</span><span class="n">dead_indices</span><span class="p">[:]</span></div>
 
-<div class="viewcode-block" id="IndexedSet.index"><a class="viewcode-back" href="../../../../../aodncore.util.html#aodncore.util.IndexedSet.index">[docs]</a>    <span class="k">def</span> <span class="nf">index</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">val</span><span class="p">):</span>
+<div class="viewcode-block" id="IndexedSet.index"><a class="viewcode-back" href="../../../../../aodncore.util.html#aodncore.util.IndexedSet.index">[docs]</a>    <span class="k">def</span><span class="w"> </span><span class="nf">index</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">val</span><span class="p">):</span>
         <span class="s2">&quot;index(val) -&gt; get the index of a value, raises if not present&quot;</span>
         <span class="k">try</span><span class="p">:</span>
             <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">item_index_map</span><span class="p">[</span><span class="n">val</span><span class="p">]</span>

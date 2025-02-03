@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>aodncore.util.process &mdash; aodncore 1.4.9 documentation</title>
+  <title>aodncore.util.process &mdash; aodncore 1.4.10 documentation</title>
       <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
   <!--[if lt IE 9]>
@@ -89,22 +89,22 @@
 <span></span><span class="sd">&quot;&quot;&quot;This module provides general purpose code for interacting with operating system subprocesses</span>
 <span class="sd">&quot;&quot;&quot;</span>
 
-<span class="kn">import</span> <span class="nn">os</span>
-<span class="kn">import</span> <span class="nn">subprocess</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">os</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">subprocess</span>
 
-<span class="kn">from</span> <span class="nn">.misc</span> <span class="kn">import</span> <span class="n">format_exception</span>
-<span class="kn">from</span> <span class="nn">..common</span> <span class="kn">import</span> <span class="n">SystemCommandFailedError</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">.misc</span><span class="w"> </span><span class="kn">import</span> <span class="n">format_exception</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">..common</span><span class="w"> </span><span class="kn">import</span> <span class="n">SystemCommandFailedError</span>
 
 <span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span>
     <span class="s1">&#39;SystemProcess&#39;</span>
 <span class="p">]</span>
 
 
-<div class="viewcode-block" id="SystemProcess"><a class="viewcode-back" href="../../../aodncore.util.html#aodncore.util.process.SystemProcess">[docs]</a><span class="k">class</span> <span class="nc">SystemProcess</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+<div class="viewcode-block" id="SystemProcess"><a class="viewcode-back" href="../../../aodncore.util.html#aodncore.util.process.SystemProcess">[docs]</a><span class="k">class</span><span class="w"> </span><span class="nc">SystemProcess</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Class to encapsulate a system command, including execution, output handling and returncode handling</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">command</span><span class="p">,</span> <span class="n">stdin</span><span class="o">=</span><span class="n">subprocess</span><span class="o">.</span><span class="n">PIPE</span><span class="p">,</span> <span class="n">stdout</span><span class="o">=</span><span class="n">subprocess</span><span class="o">.</span><span class="n">PIPE</span><span class="p">,</span> <span class="n">stdin_text</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">env</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">shell</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">command</span><span class="p">,</span> <span class="n">stdin</span><span class="o">=</span><span class="n">subprocess</span><span class="o">.</span><span class="n">PIPE</span><span class="p">,</span> <span class="n">stdout</span><span class="o">=</span><span class="n">subprocess</span><span class="o">.</span><span class="n">PIPE</span><span class="p">,</span> <span class="n">stdin_text</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">env</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">shell</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">command</span> <span class="o">=</span> <span class="n">command</span>
@@ -126,7 +126,7 @@
 
         <span class="bp">self</span><span class="o">.</span><span class="n">validate_command</span><span class="p">()</span>
 
-<div class="viewcode-block" id="SystemProcess.validate_command"><a class="viewcode-back" href="../../../aodncore.util.html#aodncore.util.process.SystemProcess.validate_command">[docs]</a>    <span class="k">def</span> <span class="nf">validate_command</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="SystemProcess.validate_command"><a class="viewcode-back" href="../../../aodncore.util.html#aodncore.util.process.SystemProcess.validate_command">[docs]</a>    <span class="k">def</span><span class="w"> </span><span class="nf">validate_command</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">shell</span> <span class="ow">is</span> <span class="kc">False</span><span class="p">:</span>
             <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">command</span><span class="p">,</span> <span class="nb">list</span><span class="p">):</span>
@@ -138,7 +138,7 @@
                 <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">command</span><span class="p">:</span>
                     <span class="k">raise</span> <span class="n">SystemCommandFailedError</span><span class="p">(</span><span class="s2">&quot;command param must not be empty if bash shell command&quot;</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="SystemProcess.execute"><a class="viewcode-back" href="../../../aodncore.util.html#aodncore.util.process.SystemProcess.execute">[docs]</a>    <span class="k">def</span> <span class="nf">execute</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="SystemProcess.execute"><a class="viewcode-back" href="../../../aodncore.util.html#aodncore.util.process.SystemProcess.execute">[docs]</a>    <span class="k">def</span><span class="w"> </span><span class="nf">execute</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Execute the system command</span>
 
 <span class="sd">        :return: None</span>

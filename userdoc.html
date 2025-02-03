@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Overview &mdash; aodncore 1.4.9 documentation</title>
+  <title>Overview &mdash; aodncore 1.4.10 documentation</title>
       <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
   <!--[if lt IE 9]>
@@ -238,12 +238,12 @@ subclass (e.g. when writing tests).</p>
 <p>The following class parameters are also assigned to attributes of the same name, as a convenience.</p>
 <p>For example, a handler instantiated with any of these class parameters may also access them from the class instance as
 follows:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">aodncore.pipeline</span> <span class="kn">import</span> <span class="n">HandlerBase</span>
-<span class="kn">from</span> <span class="nn">aodncore.pipeline.config</span> <span class="kn">import</span> <span class="n">CONFIG</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">aodncore.pipeline</span><span class="w"> </span><span class="kn">import</span> <span class="n">HandlerBase</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">aodncore.pipeline.config</span><span class="w"> </span><span class="kn">import</span> <span class="n">CONFIG</span>
 
 
-<span class="k">class</span> <span class="nc">MyHandler</span><span class="p">(</span><span class="n">HandlerBase</span><span class="p">):</span>
-    <span class="k">def</span> <span class="nf">print_upload_path</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">MyHandler</span><span class="p">(</span><span class="n">HandlerBase</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">print_upload_path</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="c1"># Note: when accessing attributes from within the class itself, the usual Python &#39;self.attr&#39;</span>
         <span class="c1"># convention applies to access the *current* instance</span>
         <span class="nb">print</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">upload_path</span><span class="p">)</span>

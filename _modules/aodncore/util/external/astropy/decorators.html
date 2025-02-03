@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>aodncore.util.external.astropy.decorators &mdash; aodncore 1.4.9 documentation</title>
+  <title>aodncore.util.external.astropy.decorators &mdash; aodncore 1.4.10 documentation</title>
       <link rel="stylesheet" href="../../../../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../../../../_static/css/theme.css" type="text/css" />
   <!--[if lt IE 9]>
@@ -91,7 +91,7 @@
 <span class="sd">&quot;&quot;&quot;Sundry function and class decorators.&quot;&quot;&quot;</span>
 
 
-<span class="kn">import</span> <span class="nn">functools</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">functools</span>
 
 
 <span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;classproperty&#39;</span><span class="p">,</span>
@@ -103,7 +103,7 @@
 <span class="c1"># TODO: This can still be made to work for setters by implementing an</span>
 <span class="c1"># accompanying metaclass that supports it; we just don&#39;t need that right this</span>
 <span class="c1"># second</span>
-<div class="viewcode-block" id="classproperty"><a class="viewcode-back" href="../../../../../aodncore.util.html#aodncore.util.wfs.classproperty">[docs]</a><span class="k">class</span> <span class="nc">classproperty</span><span class="p">(</span><span class="nb">property</span><span class="p">):</span>
+<div class="viewcode-block" id="classproperty"><a class="viewcode-back" href="../../../../../aodncore.util.html#aodncore.util.wfs.classproperty">[docs]</a><span class="k">class</span><span class="w"> </span><span class="nc">classproperty</span><span class="p">(</span><span class="nb">property</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Similar to `property`, but allows class-level properties.  That is,</span>
 <span class="sd">    a property whose getter is like a `classmethod`.</span>
@@ -201,18 +201,18 @@
 <span class="sd">        1</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="k">def</span> <span class="fm">__new__</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">fget</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">doc</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">lazy</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__new__</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">fget</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">doc</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">lazy</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
         <span class="k">if</span> <span class="n">fget</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="c1"># Being used as a decorator--return a wrapper that implements</span>
             <span class="c1"># decorator syntax</span>
-            <span class="k">def</span> <span class="nf">wrapper</span><span class="p">(</span><span class="n">func</span><span class="p">):</span>
+            <span class="k">def</span><span class="w"> </span><span class="nf">wrapper</span><span class="p">(</span><span class="n">func</span><span class="p">):</span>
                 <span class="k">return</span> <span class="bp">cls</span><span class="p">(</span><span class="n">func</span><span class="p">,</span> <span class="n">lazy</span><span class="o">=</span><span class="n">lazy</span><span class="p">)</span>
 
             <span class="k">return</span> <span class="n">wrapper</span>
 
         <span class="k">return</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__new__</span><span class="p">(</span><span class="bp">cls</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">fget</span><span class="p">,</span> <span class="n">doc</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">lazy</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">fget</span><span class="p">,</span> <span class="n">doc</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">lazy</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_lazy</span> <span class="o">=</span> <span class="n">lazy</span>
         <span class="k">if</span> <span class="n">lazy</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_cache</span> <span class="o">=</span> <span class="p">{}</span>
@@ -228,7 +228,7 @@
         <span class="k">if</span> <span class="n">doc</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="vm">__doc__</span> <span class="o">=</span> <span class="n">doc</span>
 
-    <span class="k">def</span> <span class="fm">__get__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">obj</span><span class="p">,</span> <span class="n">objtype</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__get__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">obj</span><span class="p">,</span> <span class="n">objtype</span><span class="p">):</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_lazy</span> <span class="ow">and</span> <span class="n">objtype</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_cache</span><span class="p">:</span>
             <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_cache</span><span class="p">[</span><span class="n">objtype</span><span class="p">]</span>
 
@@ -242,21 +242,21 @@
 
         <span class="k">return</span> <span class="n">val</span>
 
-<div class="viewcode-block" id="classproperty.getter"><a class="viewcode-back" href="../../../../../aodncore.util.html#aodncore.util.wfs.classproperty.getter">[docs]</a>    <span class="k">def</span> <span class="nf">getter</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">fget</span><span class="p">):</span>
+<div class="viewcode-block" id="classproperty.getter"><a class="viewcode-back" href="../../../../../aodncore.util.html#aodncore.util.wfs.classproperty.getter">[docs]</a>    <span class="k">def</span><span class="w"> </span><span class="nf">getter</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">fget</span><span class="p">):</span>
         <span class="k">return</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">getter</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_wrap_fget</span><span class="p">(</span><span class="n">fget</span><span class="p">))</span></div>
 
-<div class="viewcode-block" id="classproperty.setter"><a class="viewcode-back" href="../../../../../aodncore.util.html#aodncore.util.wfs.classproperty.setter">[docs]</a>    <span class="k">def</span> <span class="nf">setter</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">fset</span><span class="p">):</span>
+<div class="viewcode-block" id="classproperty.setter"><a class="viewcode-back" href="../../../../../aodncore.util.html#aodncore.util.wfs.classproperty.setter">[docs]</a>    <span class="k">def</span><span class="w"> </span><span class="nf">setter</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">fset</span><span class="p">):</span>
         <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span>
             <span class="s2">&quot;classproperty can only be read-only; use a metaclass to &quot;</span>
             <span class="s2">&quot;implement modifiable class-level properties&quot;</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="classproperty.deleter"><a class="viewcode-back" href="../../../../../aodncore.util.html#aodncore.util.wfs.classproperty.deleter">[docs]</a>    <span class="k">def</span> <span class="nf">deleter</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">fdel</span><span class="p">):</span>
+<div class="viewcode-block" id="classproperty.deleter"><a class="viewcode-back" href="../../../../../aodncore.util.html#aodncore.util.wfs.classproperty.deleter">[docs]</a>    <span class="k">def</span><span class="w"> </span><span class="nf">deleter</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">fdel</span><span class="p">):</span>
         <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span>
             <span class="s2">&quot;classproperty can only be read-only; use a metaclass to &quot;</span>
             <span class="s2">&quot;implement modifiable class-level properties&quot;</span><span class="p">)</span></div>
 
     <span class="nd">@staticmethod</span>
-    <span class="k">def</span> <span class="nf">_wrap_fget</span><span class="p">(</span><span class="n">orig_fget</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_wrap_fget</span><span class="p">(</span><span class="n">orig_fget</span><span class="p">):</span>
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">orig_fget</span><span class="p">,</span> <span class="nb">classmethod</span><span class="p">):</span>
             <span class="n">orig_fget</span> <span class="o">=</span> <span class="n">orig_fget</span><span class="o">.</span><span class="vm">__func__</span>
 
@@ -264,13 +264,13 @@
         <span class="c1"># found later in this module, which is overkill for this purpose</span>
 
         <span class="nd">@functools</span><span class="o">.</span><span class="n">wraps</span><span class="p">(</span><span class="n">orig_fget</span><span class="p">)</span>
-        <span class="k">def</span> <span class="nf">fget</span><span class="p">(</span><span class="n">obj</span><span class="p">):</span>
+        <span class="k">def</span><span class="w"> </span><span class="nf">fget</span><span class="p">(</span><span class="n">obj</span><span class="p">):</span>
             <span class="k">return</span> <span class="n">orig_fget</span><span class="p">(</span><span class="n">obj</span><span class="o">.</span><span class="vm">__class__</span><span class="p">)</span>
 
         <span class="k">return</span> <span class="n">fget</span></div>
 
 
-<div class="viewcode-block" id="lazyproperty"><a class="viewcode-back" href="../../../../../aodncore.util.html#aodncore.util.wfs.lazyproperty">[docs]</a><span class="k">class</span> <span class="nc">lazyproperty</span><span class="p">(</span><span class="nb">property</span><span class="p">):</span>
+<div class="viewcode-block" id="lazyproperty"><a class="viewcode-back" href="../../../../../aodncore.util.html#aodncore.util.wfs.lazyproperty">[docs]</a><span class="k">class</span><span class="w"> </span><span class="nc">lazyproperty</span><span class="p">(</span><span class="nb">property</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Works similarly to property(), but computes the value only once.</span>
 
@@ -307,11 +307,11 @@
 <span class="sd">    http://code.activestate.com/recipes/363602-lazy-property-evaluation</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">fget</span><span class="p">,</span> <span class="n">fset</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">fdel</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">doc</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">fget</span><span class="p">,</span> <span class="n">fset</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">fdel</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">doc</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">fget</span><span class="p">,</span> <span class="n">fset</span><span class="p">,</span> <span class="n">fdel</span><span class="p">,</span> <span class="n">doc</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_key</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">fget</span><span class="o">.</span><span class="vm">__name__</span>
 
-    <span class="k">def</span> <span class="fm">__get__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">obj</span><span class="p">,</span> <span class="n">owner</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__get__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">obj</span><span class="p">,</span> <span class="n">owner</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="k">try</span><span class="p">:</span>
             <span class="n">val</span> <span class="o">=</span> <span class="n">obj</span><span class="o">.</span><span class="vm">__dict__</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_key</span><span class="p">,</span> <span class="n">_NotFound</span><span class="p">)</span>
             <span class="k">if</span> <span class="n">val</span> <span class="ow">is</span> <span class="ow">not</span> <span class="n">_NotFound</span><span class="p">:</span>

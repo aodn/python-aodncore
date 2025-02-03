@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>aodncore.util.fileops &mdash; aodncore 1.4.9 documentation</title>
+  <title>aodncore.util.fileops &mdash; aodncore 1.4.10 documentation</title>
       <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
   <!--[if lt IE 9]>
@@ -89,22 +89,22 @@
 <span></span><span class="sd">&quot;&quot;&quot;This module provides utility functions relating to various filesystem operations</span>
 <span class="sd">&quot;&quot;&quot;</span>
 
-<span class="kn">import</span> <span class="nn">errno</span>
-<span class="kn">import</span> <span class="nn">gzip</span>
-<span class="kn">import</span> <span class="nn">hashlib</span>
-<span class="kn">import</span> <span class="nn">json</span>
-<span class="kn">import</span> <span class="nn">locale</span>
-<span class="kn">import</span> <span class="nn">os</span>
-<span class="kn">import</span> <span class="nn">re</span>
-<span class="kn">import</span> <span class="nn">shutil</span>
-<span class="kn">import</span> <span class="nn">tempfile</span>
-<span class="kn">import</span> <span class="nn">zipfile</span>
-<span class="kn">from</span> <span class="nn">functools</span> <span class="kn">import</span> <span class="n">cmp_to_key</span><span class="p">,</span> <span class="n">partial</span>
-<span class="kn">from</span> <span class="nn">io</span> <span class="kn">import</span> <span class="nb">open</span>
-<span class="kn">from</span> <span class="nn">tempfile</span> <span class="kn">import</span> <span class="n">TemporaryFile</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">errno</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">gzip</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">hashlib</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">json</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">locale</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">os</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">re</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">shutil</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">tempfile</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">zipfile</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">functools</span><span class="w"> </span><span class="kn">import</span> <span class="n">cmp_to_key</span><span class="p">,</span> <span class="n">partial</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">io</span><span class="w"> </span><span class="kn">import</span> <span class="nb">open</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">tempfile</span><span class="w"> </span><span class="kn">import</span> <span class="n">TemporaryFile</span>
 
-<span class="kn">import</span> <span class="nn">magic</span>
-<span class="kn">import</span> <span class="nn">netCDF4</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">magic</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">netCDF4</span>
 
 <span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span>
     <span class="s1">&#39;TemporaryDirectory&#39;</span><span class="p">,</span>
@@ -141,11 +141,11 @@
 <span class="n">filesystem_sort_key</span> <span class="o">=</span> <span class="n">cmp_to_key</span><span class="p">(</span><span class="n">locale</span><span class="o">.</span><span class="n">strcoll</span><span class="p">)</span>
 
 
-<span class="k">class</span> <span class="nc">_TemporaryDirectory</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">_TemporaryDirectory</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Context manager for :py:function:`tempfile.mkdtemp` (available in core library in v3.2+).</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">suffix</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">prefix</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="nb">dir</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">suffix</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">prefix</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="nb">dir</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_closed</span> <span class="o">=</span> <span class="kc">False</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="kc">None</span>
 
@@ -154,19 +154,19 @@
 
         <span class="bp">self</span><span class="o">.</span><span class="n">_rmtree</span> <span class="o">=</span> <span class="n">shutil</span><span class="o">.</span><span class="n">rmtree</span>
 
-    <span class="k">def</span> <span class="fm">__del__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__del__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">cleanup</span><span class="p">()</span>
 
-    <span class="k">def</span> <span class="fm">__enter__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__enter__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">name</span>
 
-    <span class="k">def</span> <span class="fm">__exit__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">exc_type</span><span class="p">,</span> <span class="n">exc_value</span><span class="p">,</span> <span class="n">traceback</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__exit__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">exc_type</span><span class="p">,</span> <span class="n">exc_value</span><span class="p">,</span> <span class="n">traceback</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">cleanup</span><span class="p">()</span>
 
-    <span class="k">def</span> <span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>  <span class="c1"># pragma: no cover</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>  <span class="c1"># pragma: no cover</span>
         <span class="k">return</span> <span class="s2">&quot;&lt;</span><span class="si">{}</span><span class="s2"> </span><span class="si">{!r}</span><span class="s2">&gt;&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">cleanup</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">cleanup</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">try</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_rmtree</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
         <span class="k">except</span> <span class="ne">OSError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
@@ -180,7 +180,7 @@
     <span class="n">TemporaryDirectory</span> <span class="o">=</span> <span class="n">_TemporaryDirectory</span>
 
 
-<div class="viewcode-block" id="dir_exists"><a class="viewcode-back" href="../../../aodncore.util.html#aodncore.util.fileops.dir_exists">[docs]</a><span class="k">def</span> <span class="nf">dir_exists</span><span class="p">(</span><span class="n">path</span><span class="p">):</span>
+<div class="viewcode-block" id="dir_exists"><a class="viewcode-back" href="../../../aodncore.util.html#aodncore.util.fileops.dir_exists">[docs]</a><span class="k">def</span><span class="w"> </span><span class="nf">dir_exists</span><span class="p">(</span><span class="n">path</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Check directory exists at a given path returning True or False</span>
 
 <span class="sd">    :param path: directory to check</span>
@@ -188,7 +188,7 @@
     <span class="k">return</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isdir</span><span class="p">(</span><span class="n">path</span><span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="extract_gzip"><a class="viewcode-back" href="../../../aodncore.util.html#aodncore.util.fileops.extract_gzip">[docs]</a><span class="k">def</span> <span class="nf">extract_gzip</span><span class="p">(</span><span class="n">gzip_path</span><span class="p">,</span> <span class="n">dest_dir</span><span class="p">,</span> <span class="n">dest_name</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<div class="viewcode-block" id="extract_gzip"><a class="viewcode-back" href="../../../aodncore.util.html#aodncore.util.fileops.extract_gzip">[docs]</a><span class="k">def</span><span class="w"> </span><span class="nf">extract_gzip</span><span class="p">(</span><span class="n">gzip_path</span><span class="p">,</span> <span class="n">dest_dir</span><span class="p">,</span> <span class="n">dest_name</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Extract a GZ (GZIP) file&#39;s contents into a directory</span>
 
 <span class="sd">    :param gzip_path: path to the source GZ file</span>
@@ -204,7 +204,7 @@
         <span class="n">shutil</span><span class="o">.</span><span class="n">copyfileobj</span><span class="p">(</span><span class="n">g</span><span class="p">,</span> <span class="n">f</span><span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="extract_zip"><a class="viewcode-back" href="../../../aodncore.util.html#aodncore.util.fileops.extract_zip">[docs]</a><span class="k">def</span> <span class="nf">extract_zip</span><span class="p">(</span><span class="n">zip_path</span><span class="p">,</span> <span class="n">dest_dir</span><span class="p">):</span>
+<div class="viewcode-block" id="extract_zip"><a class="viewcode-back" href="../../../aodncore.util.html#aodncore.util.fileops.extract_zip">[docs]</a><span class="k">def</span><span class="w"> </span><span class="nf">extract_zip</span><span class="p">(</span><span class="n">zip_path</span><span class="p">,</span> <span class="n">dest_dir</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Extract a ZIP file&#39;s contents into a directory</span>
 <span class="sd">    </span>
 <span class="sd">    :param zip_path: path to the source ZIP file</span>
@@ -215,7 +215,7 @@
         <span class="n">z</span><span class="o">.</span><span class="n">extractall</span><span class="p">(</span><span class="n">dest_dir</span><span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="get_file_checksum"><a class="viewcode-back" href="../../../aodncore.util.html#aodncore.util.fileops.get_file_checksum">[docs]</a><span class="k">def</span> <span class="nf">get_file_checksum</span><span class="p">(</span><span class="n">filepath</span><span class="p">,</span> <span class="n">block_size</span><span class="o">=</span><span class="mi">65536</span><span class="p">,</span> <span class="n">algorithm</span><span class="o">=</span><span class="s1">&#39;sha256&#39;</span><span class="p">):</span>
+<div class="viewcode-block" id="get_file_checksum"><a class="viewcode-back" href="../../../aodncore.util.html#aodncore.util.fileops.get_file_checksum">[docs]</a><span class="k">def</span><span class="w"> </span><span class="nf">get_file_checksum</span><span class="p">(</span><span class="n">filepath</span><span class="p">,</span> <span class="n">block_size</span><span class="o">=</span><span class="mi">65536</span><span class="p">,</span> <span class="n">algorithm</span><span class="o">=</span><span class="s1">&#39;sha256&#39;</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Get the hash (checksum) of a file</span>
 
 <span class="sd">    :param filepath: path to the input file</span>
@@ -231,7 +231,7 @@
     <span class="k">return</span> <span class="n">hasher</span><span class="o">.</span><span class="n">hexdigest</span><span class="p">()</span></div>
 
 
-<div class="viewcode-block" id="is_dir_writable"><a class="viewcode-back" href="../../../aodncore.util.html#aodncore.util.fileops.is_dir_writable">[docs]</a><span class="k">def</span> <span class="nf">is_dir_writable</span><span class="p">(</span><span class="n">path</span><span class="p">):</span>
+<div class="viewcode-block" id="is_dir_writable"><a class="viewcode-back" href="../../../aodncore.util.html#aodncore.util.fileops.is_dir_writable">[docs]</a><span class="k">def</span><span class="w"> </span><span class="nf">is_dir_writable</span><span class="p">(</span><span class="n">path</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Check whether a directory is writable</span>
 
 <span class="sd">    :param path: directory path to check</span>
@@ -247,7 +247,7 @@
         <span class="k">return</span> <span class="kc">True</span></div>
 
 
-<div class="viewcode-block" id="is_file_writable"><a class="viewcode-back" href="../../../aodncore.util.html#aodncore.util.fileops.is_file_writable">[docs]</a><span class="k">def</span> <span class="nf">is_file_writable</span><span class="p">(</span><span class="n">path</span><span class="p">):</span>
+<div class="viewcode-block" id="is_file_writable"><a class="viewcode-back" href="../../../aodncore.util.html#aodncore.util.fileops.is_file_writable">[docs]</a><span class="k">def</span><span class="w"> </span><span class="nf">is_file_writable</span><span class="p">(</span><span class="n">path</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Check whether a file is writable</span>
 
 <span class="sd">        .. note:: Not as reliable as the :py:func:`is_dir_writable` function since that actually writes a file</span>
@@ -258,7 +258,7 @@
     <span class="k">return</span> <span class="n">os</span><span class="o">.</span><span class="n">access</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="n">os</span><span class="o">.</span><span class="n">W_OK</span><span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="is_gzip_file"><a class="viewcode-back" href="../../../aodncore.util.html#aodncore.util.fileops.is_gzip_file">[docs]</a><span class="k">def</span> <span class="nf">is_gzip_file</span><span class="p">(</span><span class="n">filepath</span><span class="p">):</span>
+<div class="viewcode-block" id="is_gzip_file"><a class="viewcode-back" href="../../../aodncore.util.html#aodncore.util.fileops.is_gzip_file">[docs]</a><span class="k">def</span><span class="w"> </span><span class="nf">is_gzip_file</span><span class="p">(</span><span class="n">filepath</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Check whether a file path refers to a valid ZIP file</span>
 
 <span class="sd">    :param filepath: path to the file being checked</span>
@@ -272,7 +272,7 @@
         <span class="k">return</span> <span class="kc">False</span></div>
 
 
-<div class="viewcode-block" id="is_json_file"><a class="viewcode-back" href="../../../aodncore.util.html#aodncore.util.fileops.is_json_file">[docs]</a><span class="k">def</span> <span class="nf">is_json_file</span><span class="p">(</span><span class="n">filepath</span><span class="p">):</span>
+<div class="viewcode-block" id="is_json_file"><a class="viewcode-back" href="../../../aodncore.util.html#aodncore.util.fileops.is_json_file">[docs]</a><span class="k">def</span><span class="w"> </span><span class="nf">is_json_file</span><span class="p">(</span><span class="n">filepath</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Check whether a file path refers to a valid JSON file</span>
 
 <span class="sd">    :param filepath: path to the file being checked</span>
@@ -287,7 +287,7 @@
         <span class="k">return</span> <span class="kc">True</span></div>
 
 
-<div class="viewcode-block" id="is_netcdf_file"><a class="viewcode-back" href="../../../aodncore.util.html#aodncore.util.fileops.is_netcdf_file">[docs]</a><span class="k">def</span> <span class="nf">is_netcdf_file</span><span class="p">(</span><span class="n">filepath</span><span class="p">):</span>
+<div class="viewcode-block" id="is_netcdf_file"><a class="viewcode-back" href="../../../aodncore.util.html#aodncore.util.fileops.is_netcdf_file">[docs]</a><span class="k">def</span><span class="w"> </span><span class="nf">is_netcdf_file</span><span class="p">(</span><span class="n">filepath</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Check whether a file path refers to a valid NetCDF file</span>
 
 <span class="sd">    :param filepath: path to the file being checked</span>
@@ -305,7 +305,7 @@
             <span class="n">fh</span><span class="o">.</span><span class="n">close</span><span class="p">()</span></div>
 
 
-<div class="viewcode-block" id="is_nonempty_file"><a class="viewcode-back" href="../../../aodncore.util.html#aodncore.util.fileops.is_nonempty_file">[docs]</a><span class="k">def</span> <span class="nf">is_nonempty_file</span><span class="p">(</span><span class="n">filepath</span><span class="p">):</span>
+<div class="viewcode-block" id="is_nonempty_file"><a class="viewcode-back" href="../../../aodncore.util.html#aodncore.util.fileops.is_nonempty_file">[docs]</a><span class="k">def</span><span class="w"> </span><span class="nf">is_nonempty_file</span><span class="p">(</span><span class="n">filepath</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Check whether a file path refers to a file with length greater than zero</span>
 
 <span class="sd">    :param filepath: path to the file being checked</span>
@@ -314,7 +314,7 @@
     <span class="k">return</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">getsize</span><span class="p">(</span><span class="n">filepath</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span></div>
 
 
-<div class="viewcode-block" id="is_zip_file"><a class="viewcode-back" href="../../../aodncore.util.html#aodncore.util.fileops.is_zip_file">[docs]</a><span class="k">def</span> <span class="nf">is_zip_file</span><span class="p">(</span><span class="n">filepath</span><span class="p">):</span>
+<div class="viewcode-block" id="is_zip_file"><a class="viewcode-back" href="../../../aodncore.util.html#aodncore.util.fileops.is_zip_file">[docs]</a><span class="k">def</span><span class="w"> </span><span class="nf">is_zip_file</span><span class="p">(</span><span class="n">filepath</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Check whether a file path refers to a valid ZIP file</span>
 
 <span class="sd">    :param filepath: path to the file being checked</span>
@@ -323,7 +323,7 @@
     <span class="k">return</span> <span class="n">zipfile</span><span class="o">.</span><span class="n">is_zipfile</span><span class="p">(</span><span class="n">filepath</span><span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="list_regular_files"><a class="viewcode-back" href="../../../aodncore.util.html#aodncore.util.fileops.list_regular_files">[docs]</a><span class="k">def</span> <span class="nf">list_regular_files</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="n">recursive</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">sort_key</span><span class="o">=</span><span class="n">filesystem_sort_key</span><span class="p">):</span>
+<div class="viewcode-block" id="list_regular_files"><a class="viewcode-back" href="../../../aodncore.util.html#aodncore.util.fileops.list_regular_files">[docs]</a><span class="k">def</span><span class="w"> </span><span class="nf">list_regular_files</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="n">recursive</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">sort_key</span><span class="o">=</span><span class="n">filesystem_sort_key</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;List all regular files in a given directory, returning the absolute path</span>
 
 <span class="sd">    :param sort_key: callable used to sort directory listings</span>
@@ -331,14 +331,14 @@
 <span class="sd">    :param recursive: :py:class:`bool` flag to enable recursive listing</span>
 <span class="sd">    :return: iterator returning only regular files</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">if</span> <span class="ow">not</span> <span class="n">callable</span><span class="p">(</span><span class="n">sort_key</span><span class="p">):</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="nb">callable</span><span class="p">(</span><span class="n">sort_key</span><span class="p">):</span>
         <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;sort_key must be callable&quot;</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">nonrecursive_list</span><span class="p">(</span><span class="n">path_</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">nonrecursive_list</span><span class="p">(</span><span class="n">path_</span><span class="p">):</span>
         <span class="n">dir_entries</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">scandir</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">abspath</span><span class="p">(</span><span class="n">path_</span><span class="p">)),</span> <span class="n">key</span><span class="o">=</span><span class="k">lambda</span> <span class="n">p</span><span class="p">:</span> <span class="n">sort_key</span><span class="p">(</span><span class="n">p</span><span class="o">.</span><span class="n">name</span><span class="p">))</span>
         <span class="k">return</span> <span class="p">(</span><span class="n">f</span><span class="o">.</span><span class="n">path</span> <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="n">dir_entries</span> <span class="k">if</span> <span class="n">f</span><span class="o">.</span><span class="n">is_file</span><span class="p">(</span><span class="n">follow_symlinks</span><span class="o">=</span><span class="kc">False</span><span class="p">))</span>
 
-    <span class="k">def</span> <span class="nf">recursive_list</span><span class="p">(</span><span class="n">path_</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">recursive_list</span><span class="p">(</span><span class="n">path_</span><span class="p">):</span>
         <span class="k">for</span> <span class="n">root</span><span class="p">,</span> <span class="n">dirs</span><span class="p">,</span> <span class="n">files</span> <span class="ow">in</span> <span class="n">os</span><span class="o">.</span><span class="n">walk</span><span class="p">(</span><span class="n">path_</span><span class="p">):</span>
             <span class="n">dirs</span><span class="o">.</span><span class="n">sort</span><span class="p">(</span><span class="n">key</span><span class="o">=</span><span class="n">sort_key</span><span class="p">)</span>
             <span class="n">files</span><span class="o">.</span><span class="n">sort</span><span class="p">(</span><span class="n">key</span><span class="o">=</span><span class="n">sort_key</span><span class="p">)</span>
@@ -351,7 +351,7 @@
     <span class="k">return</span> <span class="n">inner_func</span><span class="p">(</span><span class="n">path</span><span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="find_file"><a class="viewcode-back" href="../../../aodncore.util.html#aodncore.util.fileops.find_file">[docs]</a><span class="k">def</span> <span class="nf">find_file</span><span class="p">(</span><span class="n">base_path</span><span class="p">,</span> <span class="n">regex</span><span class="p">):</span>
+<div class="viewcode-block" id="find_file"><a class="viewcode-back" href="../../../aodncore.util.html#aodncore.util.fileops.find_file">[docs]</a><span class="k">def</span><span class="w"> </span><span class="nf">find_file</span><span class="p">(</span><span class="n">base_path</span><span class="p">,</span> <span class="n">regex</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Find a file in a directory (recursively) based on a match string.</span>
 
 <span class="sd">    This purpose of this method is to identify a specific file, so only the first match will be returned.</span>
@@ -368,7 +368,7 @@
     <span class="k">return</span> <span class="kc">None</span></div>
 
 
-<div class="viewcode-block" id="mkdir_p"><a class="viewcode-back" href="../../../aodncore.util.html#aodncore.util.fileops.mkdir_p">[docs]</a><span class="k">def</span> <span class="nf">mkdir_p</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="mo">0o755</span><span class="p">):</span>
+<div class="viewcode-block" id="mkdir_p"><a class="viewcode-back" href="../../../aodncore.util.html#aodncore.util.fileops.mkdir_p">[docs]</a><span class="k">def</span><span class="w"> </span><span class="nf">mkdir_p</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="mo">0o755</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Recursively create a directory, including parent directories (analogous to shell command &#39;mkdir -p&#39;)</span>
 
 <span class="sd">    :param mode:</span>
@@ -384,7 +384,7 @@
             <span class="k">raise</span></div>
 
 
-<div class="viewcode-block" id="rm_f"><a class="viewcode-back" href="../../../aodncore.util.html#aodncore.util.fileops.rm_f">[docs]</a><span class="k">def</span> <span class="nf">rm_f</span><span class="p">(</span><span class="n">path</span><span class="p">):</span>
+<div class="viewcode-block" id="rm_f"><a class="viewcode-back" href="../../../aodncore.util.html#aodncore.util.fileops.rm_f">[docs]</a><span class="k">def</span><span class="w"> </span><span class="nf">rm_f</span><span class="p">(</span><span class="n">path</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Remove a file, ignoring &quot;file not found&quot; errors (analogous to shell command &#39;rm -f&#39;)</span>
 <span class="sd">    </span>
 <span class="sd">    :param path: path to file being deleted</span>
@@ -397,7 +397,7 @@
             <span class="k">raise</span>  <span class="c1"># pragma: no cover</span></div>
 
 
-<div class="viewcode-block" id="rm_r"><a class="viewcode-back" href="../../../aodncore.util.html#aodncore.util.fileops.rm_r">[docs]</a><span class="k">def</span> <span class="nf">rm_r</span><span class="p">(</span><span class="n">path</span><span class="p">):</span>
+<div class="viewcode-block" id="rm_r"><a class="viewcode-back" href="../../../aodncore.util.html#aodncore.util.fileops.rm_r">[docs]</a><span class="k">def</span><span class="w"> </span><span class="nf">rm_r</span><span class="p">(</span><span class="n">path</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Remove a file or directory recursively (analogous to shell command &#39;rm -r&#39;)</span>
 
 <span class="sd">    :param path: path to file being deleted</span>
@@ -412,7 +412,7 @@
             <span class="k">raise</span></div>
 
 
-<div class="viewcode-block" id="rm_rf"><a class="viewcode-back" href="../../../aodncore.util.html#aodncore.util.fileops.rm_rf">[docs]</a><span class="k">def</span> <span class="nf">rm_rf</span><span class="p">(</span><span class="n">path</span><span class="p">):</span>
+<div class="viewcode-block" id="rm_rf"><a class="viewcode-back" href="../../../aodncore.util.html#aodncore.util.fileops.rm_rf">[docs]</a><span class="k">def</span><span class="w"> </span><span class="nf">rm_rf</span><span class="p">(</span><span class="n">path</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Remove a file or directory, ignoring &quot;file not found&quot; errors (analogous to shell command &#39;rm -f&#39;)</span>
 
 <span class="sd">    :param path: path to file being deleted</span>
@@ -427,7 +427,7 @@
             <span class="k">raise</span>  <span class="c1"># pragma: no cover</span></div>
 
 
-<div class="viewcode-block" id="safe_copy_file"><a class="viewcode-back" href="../../../aodncore.util.html#aodncore.util.fileops.safe_copy_file">[docs]</a><span class="k">def</span> <span class="nf">safe_copy_file</span><span class="p">(</span><span class="n">source</span><span class="p">,</span> <span class="n">destination</span><span class="p">,</span> <span class="n">overwrite</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+<div class="viewcode-block" id="safe_copy_file"><a class="viewcode-back" href="../../../aodncore.util.html#aodncore.util.fileops.safe_copy_file">[docs]</a><span class="k">def</span><span class="w"> </span><span class="nf">safe_copy_file</span><span class="p">(</span><span class="n">source</span><span class="p">,</span> <span class="n">destination</span><span class="p">,</span> <span class="n">overwrite</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Copy a file atomically by copying first to a temporary file in the same directory (and therefore filesystem) as</span>
 <span class="sd">    the intended destination, before performing a rename (which is atomic)</span>
 
@@ -459,7 +459,7 @@
                 <span class="k">raise</span></div>
 
 
-<div class="viewcode-block" id="safe_move_file"><a class="viewcode-back" href="../../../aodncore.util.html#aodncore.util.fileops.safe_move_file">[docs]</a><span class="k">def</span> <span class="nf">safe_move_file</span><span class="p">(</span><span class="n">src</span><span class="p">,</span> <span class="n">dst</span><span class="p">,</span> <span class="n">overwrite</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+<div class="viewcode-block" id="safe_move_file"><a class="viewcode-back" href="../../../aodncore.util.html#aodncore.util.fileops.safe_move_file">[docs]</a><span class="k">def</span><span class="w"> </span><span class="nf">safe_move_file</span><span class="p">(</span><span class="n">src</span><span class="p">,</span> <span class="n">dst</span><span class="p">,</span> <span class="n">overwrite</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Move a file atomically by performing a copy and delete</span>
 
 <span class="sd">    :param src: source file path</span>
@@ -471,24 +471,24 @@
     <span class="n">os</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="n">src</span><span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="validate_dir_writable"><a class="viewcode-back" href="../../../aodncore.util.html#aodncore.util.fileops.validate_dir_writable">[docs]</a><span class="k">def</span> <span class="nf">validate_dir_writable</span><span class="p">(</span><span class="n">path</span><span class="p">):</span>
+<div class="viewcode-block" id="validate_dir_writable"><a class="viewcode-back" href="../../../aodncore.util.html#aodncore.util.fileops.validate_dir_writable">[docs]</a><span class="k">def</span><span class="w"> </span><span class="nf">validate_dir_writable</span><span class="p">(</span><span class="n">path</span><span class="p">):</span>
     <span class="k">if</span> <span class="ow">not</span> <span class="n">is_dir_writable</span><span class="p">(</span><span class="n">path</span><span class="p">):</span>
         <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;dir &#39;</span><span class="si">{dir}</span><span class="s2">&#39; is not writable&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="nb">dir</span><span class="o">=</span><span class="n">path</span><span class="p">))</span></div>
 
 
-<div class="viewcode-block" id="validate_file_writable"><a class="viewcode-back" href="../../../aodncore.util.html#aodncore.util.fileops.validate_file_writable">[docs]</a><span class="k">def</span> <span class="nf">validate_file_writable</span><span class="p">(</span><span class="n">path</span><span class="p">):</span>
+<div class="viewcode-block" id="validate_file_writable"><a class="viewcode-back" href="../../../aodncore.util.html#aodncore.util.fileops.validate_file_writable">[docs]</a><span class="k">def</span><span class="w"> </span><span class="nf">validate_file_writable</span><span class="p">(</span><span class="n">path</span><span class="p">):</span>
     <span class="k">if</span> <span class="ow">not</span> <span class="n">is_file_writable</span><span class="p">(</span><span class="n">path</span><span class="p">):</span>
         <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;file &#39;</span><span class="si">{file}</span><span class="s2">&#39; is not writable&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">file</span><span class="o">=</span><span class="n">path</span><span class="p">))</span></div>
 
 
-<span class="k">def</span> <span class="nf">validate_mime_type</span><span class="p">(</span><span class="n">t</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">validate_mime_type</span><span class="p">(</span><span class="n">t</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Closure to generate mime type validation functions</span>
 
 <span class="sd">    :param t: type</span>
 <span class="sd">    :return: function reference to a function which validates a given path is a file with the mime type of type `t`</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="k">def</span> <span class="nf">validate_type_func</span><span class="p">(</span><span class="n">o</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">validate_type_func</span><span class="p">(</span><span class="n">o</span><span class="p">):</span>
         <span class="n">mime_type</span> <span class="o">=</span> <span class="n">magic</span><span class="o">.</span><span class="n">Magic</span><span class="p">(</span><span class="n">mime</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span><span class="o">.</span><span class="n">from_file</span><span class="p">(</span><span class="n">o</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">mime_type</span> <span class="o">!=</span> <span class="n">t</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;filepath &#39;</span><span class="si">{o}</span><span class="s2">&#39; must be of type &#39;</span><span class="si">{t}</span><span class="s2">&#39;. Detected type: </span><span class="si">{m}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">o</span><span class="o">=</span><span class="n">o</span><span class="p">,</span> <span class="n">t</span><span class="o">=</span><span class="n">t</span><span class="p">,</span> <span class="n">m</span><span class="o">=</span><span class="n">mime_type</span><span class="p">))</span>
@@ -502,7 +502,7 @@
 <span class="n">validate_tiff_file</span> <span class="o">=</span> <span class="n">validate_mime_type</span><span class="p">(</span><span class="s1">&#39;image/tiff&#39;</span><span class="p">)</span>
 
 
-<div class="viewcode-block" id="is_jpeg_file"><a class="viewcode-back" href="../../../aodncore.util.html#aodncore.util.fileops.is_jpeg_file">[docs]</a><span class="k">def</span> <span class="nf">is_jpeg_file</span><span class="p">(</span><span class="n">filepath</span><span class="p">):</span>
+<div class="viewcode-block" id="is_jpeg_file"><a class="viewcode-back" href="../../../aodncore.util.html#aodncore.util.fileops.is_jpeg_file">[docs]</a><span class="k">def</span><span class="w"> </span><span class="nf">is_jpeg_file</span><span class="p">(</span><span class="n">filepath</span><span class="p">):</span>
     <span class="k">try</span><span class="p">:</span>
         <span class="n">validate_jpeg_file</span><span class="p">(</span><span class="n">filepath</span><span class="p">)</span>
     <span class="k">except</span> <span class="ne">TypeError</span><span class="p">:</span>
@@ -511,7 +511,7 @@
         <span class="k">return</span> <span class="kc">True</span></div>
 
 
-<div class="viewcode-block" id="is_pdf_file"><a class="viewcode-back" href="../../../aodncore.util.html#aodncore.util.fileops.is_pdf_file">[docs]</a><span class="k">def</span> <span class="nf">is_pdf_file</span><span class="p">(</span><span class="n">filepath</span><span class="p">):</span>
+<div class="viewcode-block" id="is_pdf_file"><a class="viewcode-back" href="../../../aodncore.util.html#aodncore.util.fileops.is_pdf_file">[docs]</a><span class="k">def</span><span class="w"> </span><span class="nf">is_pdf_file</span><span class="p">(</span><span class="n">filepath</span><span class="p">):</span>
     <span class="k">try</span><span class="p">:</span>
         <span class="n">validate_pdf_file</span><span class="p">(</span><span class="n">filepath</span><span class="p">)</span>
     <span class="k">except</span> <span class="ne">TypeError</span><span class="p">:</span>
@@ -520,7 +520,7 @@
         <span class="k">return</span> <span class="kc">True</span></div>
 
 
-<div class="viewcode-block" id="is_png_file"><a class="viewcode-back" href="../../../aodncore.util.html#aodncore.util.fileops.is_png_file">[docs]</a><span class="k">def</span> <span class="nf">is_png_file</span><span class="p">(</span><span class="n">filepath</span><span class="p">):</span>
+<div class="viewcode-block" id="is_png_file"><a class="viewcode-back" href="../../../aodncore.util.html#aodncore.util.fileops.is_png_file">[docs]</a><span class="k">def</span><span class="w"> </span><span class="nf">is_png_file</span><span class="p">(</span><span class="n">filepath</span><span class="p">):</span>
     <span class="k">try</span><span class="p">:</span>
         <span class="n">validate_png_file</span><span class="p">(</span><span class="n">filepath</span><span class="p">)</span>
     <span class="k">except</span> <span class="ne">TypeError</span><span class="p">:</span>
@@ -529,7 +529,7 @@
         <span class="k">return</span> <span class="kc">True</span></div>
 
 
-<div class="viewcode-block" id="is_tiff_file"><a class="viewcode-back" href="../../../aodncore.util.html#aodncore.util.fileops.is_tiff_file">[docs]</a><span class="k">def</span> <span class="nf">is_tiff_file</span><span class="p">(</span><span class="n">filepath</span><span class="p">):</span>
+<div class="viewcode-block" id="is_tiff_file"><a class="viewcode-back" href="../../../aodncore.util.html#aodncore.util.fileops.is_tiff_file">[docs]</a><span class="k">def</span><span class="w"> </span><span class="nf">is_tiff_file</span><span class="p">(</span><span class="n">filepath</span><span class="p">):</span>
     <span class="k">try</span><span class="p">:</span>
         <span class="n">validate_tiff_file</span><span class="p">(</span><span class="n">filepath</span><span class="p">)</span>
     <span class="k">except</span> <span class="ne">TypeError</span><span class="p">:</span>

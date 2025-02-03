@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Writing a dest_path() function &mdash; aodncore 1.4.9 documentation</title>
+  <title>Writing a dest_path() function &mdash; aodncore 1.4.10 documentation</title>
       <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
   <!--[if lt IE 9]>
@@ -95,10 +95,10 @@ which a file will be published. This key is used by both the harvesting process 
 process, and is one of the most important elements of a handler.</p>
 <ul>
 <li><p>Writing a <code class="xref py py-meth docutils literal notranslate"><span class="pre">dest_path()</span></code> function with an unmodified filename:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">os</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">os</span>
 
-<span class="k">class</span> <span class="nc">MyHandler</span><span class="p">(</span><span class="n">HandlerBase</span><span class="p">):</span>
-    <span class="k">def</span> <span class="nf">dest_path</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">file_path</span><span class="p">):</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">MyHandler</span><span class="p">(</span><span class="n">HandlerBase</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">dest_path</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">file_path</span><span class="p">):</span>
         <span class="n">basename</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">basename</span><span class="p">(</span><span class="n">file_path</span><span class="p">)</span>
         <span class="n">dest_filename</span> <span class="o">=</span> <span class="s2">&quot;IMOS_filename_01_XX_</span><span class="si">{basename}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">basename</span><span class="o">=</span><span class="n">basename</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="s1">&#39;IMOS/MYFACILITY&#39;</span><span class="p">,</span> <span class="n">dest_filename</span><span class="p">)</span>
@@ -106,12 +106,12 @@ process, and is one of the most important elements of a handler.</p>
 </div>
 </li>
 <li><p>Writing a <code class="xref py py-meth docutils literal notranslate"><span class="pre">dest_path()</span></code> function based on contents of a NetCDF file:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">os</span>
-<span class="kn">from</span> <span class="nn">netCDF4</span> <span class="kn">import</span> <span class="n">Dataset</span>
-<span class="kn">from</span> <span class="nn">aodncore.pipeline</span> <span class="kn">import</span> <span class="n">HandlerBase</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">os</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">netCDF4</span><span class="w"> </span><span class="kn">import</span> <span class="n">Dataset</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">aodncore.pipeline</span><span class="w"> </span><span class="kn">import</span> <span class="n">HandlerBase</span>
 
-<span class="k">class</span> <span class="nc">MyHandler</span><span class="p">(</span><span class="n">HandlerBase</span><span class="p">):</span>
-    <span class="k">def</span> <span class="nf">dest_path</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">file_path</span><span class="p">):</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">MyHandler</span><span class="p">(</span><span class="n">HandlerBase</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">dest_path</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">file_path</span><span class="p">):</span>
         <span class="k">with</span> <span class="n">Dataset</span><span class="p">(</span><span class="n">file_path</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s1">&#39;r&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">d</span><span class="p">:</span>
             <span class="n">site_code</span> <span class="o">=</span> <span class="n">d</span><span class="o">.</span><span class="n">site_code</span>
 
@@ -121,13 +121,13 @@ process, and is one of the most important elements of a handler.</p>
 </div>
 </li>
 <li><p>Writing a <code class="xref py py-meth docutils literal notranslate"><span class="pre">dest_path()</span></code> function which is <em>external</em> to the handler class:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">os</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">os</span>
 
-<span class="k">def</span> <span class="nf">dest_path_external</span><span class="p">(</span><span class="n">file_path</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">dest_path_external</span><span class="p">(</span><span class="n">file_path</span><span class="p">):</span>
     <span class="k">return</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="s2">&quot;IMOS/DUMMY/</span><span class="si">{basename}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">basename</span><span class="o">=</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">basename</span><span class="p">(</span><span class="n">file_path</span><span class="p">))</span>
 
 
-<span class="k">class</span> <span class="nc">MyHandler</span><span class="p">(</span><span class="n">HandlerBase</span><span class="p">):</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">MyHandler</span><span class="p">(</span><span class="n">HandlerBase</span><span class="p">):</span>
     <span class="k">pass</span>
 
 <span class="n">handler</span> <span class="o">=</span> <span class="n">MyHandler</span><span class="p">(</span><span class="s1">&#39;/path/to/input/file&#39;</span><span class="p">,</span> <span class="n">dest_path_function</span><span class="o">=</span><span class="n">dest_path_external</span><span class="p">)</span>
@@ -146,16 +146,16 @@ path is the only point of difference between them, to save duplicating code.</p>
 <h1>Overriding default file actions<a class="headerlink" href="#overriding-default-file-actions" title="Permalink to this heading"></a></h1>
 <ul>
 <li><p>Set all ‘.txt’ files to UPLOAD_ONLY publish type in the <code class="xref py py-meth docutils literal notranslate"><span class="pre">preprocess()</span></code> step:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">aodncore.pipeline</span> <span class="kn">import</span> <span class="n">HandlerBase</span><span class="p">,</span> <span class="n">PipelineFilePublishType</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">aodncore.pipeline</span><span class="w"> </span><span class="kn">import</span> <span class="n">HandlerBase</span><span class="p">,</span> <span class="n">PipelineFilePublishType</span>
 
-<span class="k">class</span> <span class="nc">MyHandler</span><span class="p">(</span><span class="n">HandlerBase</span><span class="p">):</span>
-    <span class="k">def</span> <span class="nf">preprocess</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">MyHandler</span><span class="p">(</span><span class="n">HandlerBase</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">preprocess</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="c1"># use of filter_* and set_* methods reduces excessive nesting of &#39;if&#39; and &#39;for&#39;</span>
         <span class="c1"># statements</span>
         <span class="n">txt_files</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">file_collection</span><span class="o">.</span><span class="n">filter_by_attribute_value</span><span class="p">(</span><span class="s1">&#39;extension&#39;</span><span class="p">,</span> <span class="s1">&#39;.txt&#39;</span><span class="p">)</span>
         <span class="n">txt_files</span><span class="o">.</span><span class="n">set_publish_type</span><span class="p">(</span><span class="n">PipelineFilePublishType</span><span class="o">.</span><span class="n">UPLOAD_ONLY</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">preprocess</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">preprocess</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="c1"># functionally equivalent to the above example, but with unnecessary indentation</span>
         <span class="c1"># and explicit looping</span>
         <span class="k">for</span> <span class="n">pf</span> <span class="ow">in</span> <span class="n">txt_files</span><span class="p">:</span>
@@ -165,10 +165,10 @@ path is the only point of difference between them, to save duplicating code.</p>
 </div>
 </li>
 <li><p>Do not perform any checks on PDF (.pdf) files:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">aodncore.pipeline</span> <span class="kn">import</span> <span class="n">FileType</span><span class="p">,</span> <span class="n">HandlerBase</span><span class="p">,</span> <span class="n">PipelineFilePublishType</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">aodncore.pipeline</span><span class="w"> </span><span class="kn">import</span> <span class="n">FileType</span><span class="p">,</span> <span class="n">HandlerBase</span><span class="p">,</span> <span class="n">PipelineFilePublishType</span>
 
-<span class="k">class</span> <span class="nc">MyHandler</span><span class="p">(</span><span class="n">HandlerBase</span><span class="p">):</span>
-    <span class="k">def</span> <span class="nf">preprocess</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">MyHandler</span><span class="p">(</span><span class="n">HandlerBase</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">preprocess</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="c1"># &#39;known&#39; file types may be filtered by their type rather than by their extension</span>
         <span class="c1"># string attribute</span>
         <span class="n">pdf_files</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">file_collection</span><span class="o">.</span><span class="n">filter_by_attribute_id</span><span class="p">(</span><span class="s1">&#39;file_type&#39;</span><span class="p">,</span> <span class="n">FileType</span><span class="o">.</span><span class="n">PDF</span><span class="p">)</span>
@@ -182,11 +182,11 @@ path is the only point of difference between them, to save duplicating code.</p>
 <h1>Creating products during the handler lifetime<a class="headerlink" href="#creating-products-during-the-handler-lifetime" title="Permalink to this heading"></a></h1>
 <ul>
 <li><p>Create a simple product during the <code class="xref py py-meth docutils literal notranslate"><span class="pre">preprocess()</span></code> step and add to the file collection:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">os</span>
-<span class="kn">from</span> <span class="nn">aodncore.pipeline</span> <span class="kn">import</span> <span class="n">HandlerBase</span><span class="p">,</span> <span class="n">PipelineFile</span><span class="p">,</span> <span class="n">PipelineFilePublishType</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">os</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">aodncore.pipeline</span><span class="w"> </span><span class="kn">import</span> <span class="n">HandlerBase</span><span class="p">,</span> <span class="n">PipelineFile</span><span class="p">,</span> <span class="n">PipelineFilePublishType</span>
 
-<span class="k">class</span> <span class="nc">MyHandler</span><span class="p">(</span><span class="n">HandlerBase</span><span class="p">):</span>
-    <span class="k">def</span> <span class="nf">preprocess</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">MyHandler</span><span class="p">(</span><span class="n">HandlerBase</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">preprocess</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="c1"># create the product</span>
         <span class="n">product_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">products_dir</span><span class="p">,</span> <span class="s1">&#39;product.txt&#39;</span><span class="p">)</span>
         <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">product_path</span><span class="p">,</span> <span class="s1">&#39;w&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
@@ -205,11 +205,11 @@ path is the only point of difference between them, to save duplicating code.</p>
 <section id="query-storage">
 <h1>Query Storage<a class="headerlink" href="#query-storage" title="Permalink to this heading"></a></h1>
 <p>Query the existing pipeline storage for files matching a string:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">aodncore.pipeline</span> <span class="kn">import</span> <span class="n">HandlerBase</span>
-<span class="kn">from</span> <span class="nn">aodncore.pipeline.config</span> <span class="kn">import</span> <span class="n">CONFIG</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">aodncore.pipeline</span><span class="w"> </span><span class="kn">import</span> <span class="n">HandlerBase</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">aodncore.pipeline.config</span><span class="w"> </span><span class="kn">import</span> <span class="n">CONFIG</span>
 
-<span class="k">class</span> <span class="nc">MyHandler</span><span class="p">(</span><span class="n">HandlerBase</span><span class="p">):</span>
-    <span class="k">def</span> <span class="nf">preprocess</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">MyHandler</span><span class="p">(</span><span class="n">HandlerBase</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">preprocess</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="n">prefix</span> <span class="o">=</span> <span class="s1">&#39;Department_of_Defence/DSTG/slocum_glider/Perth&#39;</span>
         <span class="n">file_to_check</span> <span class="o">=</span> <span class="s1">&#39;Department_of_Defence/DSTG/slocum_glider/PerthCanyonB20140213/PerthCanyonB20140213.kml&#39;</span>
 

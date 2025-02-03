@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>aodncore.pipeline.steps.resolve &mdash; aodncore 1.4.9 documentation</title>
+  <title>aodncore.pipeline.steps.resolve &mdash; aodncore 1.4.10 documentation</title>
       <link rel="stylesheet" href="../../../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../../../_static/css/theme.css" type="text/css" />
   <!--[if lt IE 9]>
@@ -105,24 +105,24 @@
 <span class="sd">collection may then be processed in a generic way.</span>
 <span class="sd">&quot;&quot;&quot;</span>
 
-<span class="kn">import</span> <span class="nn">abc</span>
-<span class="kn">import</span> <span class="nn">json</span>
-<span class="kn">import</span> <span class="nn">os</span>
-<span class="kn">import</span> <span class="nn">re</span>
-<span class="kn">import</span> <span class="nn">warnings</span>
-<span class="kn">from</span> <span class="nn">collections</span> <span class="kn">import</span> <span class="n">namedtuple</span>
-<span class="kn">from</span> <span class="nn">enum</span> <span class="kn">import</span> <span class="n">Enum</span>
-<span class="kn">from</span> <span class="nn">io</span> <span class="kn">import</span> <span class="nb">open</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">abc</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">json</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">os</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">re</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">warnings</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">collections</span><span class="w"> </span><span class="kn">import</span> <span class="n">namedtuple</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">enum</span><span class="w"> </span><span class="kn">import</span> <span class="n">Enum</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">io</span><span class="w"> </span><span class="kn">import</span> <span class="nb">open</span>
 
-<span class="kn">import</span> <span class="nn">tableschema</span>
-<span class="kn">from</span> <span class="nn">jsonschema.exceptions</span> <span class="kn">import</span> <span class="n">ValidationError</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">tableschema</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">jsonschema.exceptions</span><span class="w"> </span><span class="kn">import</span> <span class="n">ValidationError</span>
 
-<span class="kn">from</span> <span class="nn">.basestep</span> <span class="kn">import</span> <span class="n">BaseStepRunner</span>
-<span class="kn">from</span> <span class="nn">..common</span> <span class="kn">import</span> <span class="n">FileType</span><span class="p">,</span> <span class="n">PipelineFilePublishType</span>
-<span class="kn">from</span> <span class="nn">..exceptions</span> <span class="kn">import</span> <span class="n">InvalidFileFormatError</span>
-<span class="kn">from</span> <span class="nn">..files</span> <span class="kn">import</span> <span class="n">PipelineFile</span><span class="p">,</span> <span class="n">PipelineFileCollection</span><span class="p">,</span> <span class="n">RemotePipelineFile</span>
-<span class="kn">from</span> <span class="nn">..schema</span> <span class="kn">import</span> <span class="n">validate_json_manifest</span>
-<span class="kn">from</span> <span class="nn">...util</span> <span class="kn">import</span> <span class="n">extract_gzip</span><span class="p">,</span> <span class="n">extract_zip</span><span class="p">,</span> <span class="n">list_regular_files</span><span class="p">,</span> <span class="n">is_gzip_file</span><span class="p">,</span> <span class="n">is_zip_file</span><span class="p">,</span> <span class="n">safe_copy_file</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">.basestep</span><span class="w"> </span><span class="kn">import</span> <span class="n">BaseStepRunner</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">..common</span><span class="w"> </span><span class="kn">import</span> <span class="n">FileType</span><span class="p">,</span> <span class="n">PipelineFilePublishType</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">..exceptions</span><span class="w"> </span><span class="kn">import</span> <span class="n">InvalidFileFormatError</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">..files</span><span class="w"> </span><span class="kn">import</span> <span class="n">PipelineFile</span><span class="p">,</span> <span class="n">PipelineFileCollection</span><span class="p">,</span> <span class="n">RemotePipelineFile</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">..schema</span><span class="w"> </span><span class="kn">import</span> <span class="n">validate_json_manifest</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">...util</span><span class="w"> </span><span class="kn">import</span> <span class="n">extract_gzip</span><span class="p">,</span> <span class="n">extract_zip</span><span class="p">,</span> <span class="n">list_regular_files</span><span class="p">,</span> <span class="n">is_gzip_file</span><span class="p">,</span> <span class="n">is_zip_file</span><span class="p">,</span> <span class="n">safe_copy_file</span>
 
 <span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span>
     <span class="s1">&#39;get_resolve_runner&#39;</span><span class="p">,</span>
@@ -138,7 +138,7 @@
 <span class="p">]</span>
 
 
-<div class="viewcode-block" id="get_resolve_runner"><a class="viewcode-back" href="../../../../aodncore.pipeline.steps.html#aodncore.pipeline.steps.resolve.get_resolve_runner">[docs]</a><span class="k">def</span> <span class="nf">get_resolve_runner</span><span class="p">(</span><span class="n">input_file</span><span class="p">,</span> <span class="n">output_dir</span><span class="p">,</span> <span class="n">config</span><span class="p">,</span> <span class="n">logger</span><span class="p">,</span> <span class="n">resolve_params</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<div class="viewcode-block" id="get_resolve_runner"><a class="viewcode-back" href="../../../../aodncore.pipeline.steps.html#aodncore.pipeline.steps.resolve.get_resolve_runner">[docs]</a><span class="k">def</span><span class="w"> </span><span class="nf">get_resolve_runner</span><span class="p">(</span><span class="n">input_file</span><span class="p">,</span> <span class="n">output_dir</span><span class="p">,</span> <span class="n">config</span><span class="p">,</span> <span class="n">logger</span><span class="p">,</span> <span class="n">resolve_params</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Factory function to return appropriate resolver class based on the file extension</span>
 
 <span class="sd">    :param input_file: path to the input file</span>
@@ -173,20 +173,20 @@
         <span class="k">return</span> <span class="n">SingleFileResolveRunner</span><span class="p">(</span><span class="n">input_file</span><span class="p">,</span> <span class="n">output_dir</span><span class="p">,</span> <span class="n">config</span><span class="p">,</span> <span class="n">logger</span><span class="p">)</span></div>
 
 
-<span class="k">class</span> <span class="nc">BaseResolveRunner</span><span class="p">(</span><span class="n">BaseStepRunner</span><span class="p">,</span> <span class="n">metaclass</span><span class="o">=</span><span class="n">abc</span><span class="o">.</span><span class="n">ABCMeta</span><span class="p">):</span>
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">input_file</span><span class="p">,</span> <span class="n">output_dir</span><span class="p">,</span> <span class="n">config</span><span class="p">,</span> <span class="n">logger</span><span class="p">):</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">BaseResolveRunner</span><span class="p">(</span><span class="n">BaseStepRunner</span><span class="p">,</span> <span class="n">metaclass</span><span class="o">=</span><span class="n">abc</span><span class="o">.</span><span class="n">ABCMeta</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">input_file</span><span class="p">,</span> <span class="n">output_dir</span><span class="p">,</span> <span class="n">config</span><span class="p">,</span> <span class="n">logger</span><span class="p">):</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">config</span><span class="p">,</span> <span class="n">logger</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">input_file</span> <span class="o">=</span> <span class="n">input_file</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">output_dir</span> <span class="o">=</span> <span class="n">output_dir</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_collection</span> <span class="o">=</span> <span class="n">PipelineFileCollection</span><span class="p">()</span>
 
     <span class="nd">@abc</span><span class="o">.</span><span class="n">abstractmethod</span>
-    <span class="k">def</span> <span class="nf">run</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">run</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">pass</span>
 
 
-<div class="viewcode-block" id="SingleFileResolveRunner"><a class="viewcode-back" href="../../../../aodncore.pipeline.steps.html#aodncore.pipeline.steps.resolve.SingleFileResolveRunner">[docs]</a><span class="k">class</span> <span class="nc">SingleFileResolveRunner</span><span class="p">(</span><span class="n">BaseResolveRunner</span><span class="p">):</span>
-<div class="viewcode-block" id="SingleFileResolveRunner.run"><a class="viewcode-back" href="../../../../aodncore.pipeline.steps.html#aodncore.pipeline.steps.resolve.SingleFileResolveRunner.run">[docs]</a>    <span class="k">def</span> <span class="nf">run</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="SingleFileResolveRunner"><a class="viewcode-back" href="../../../../aodncore.pipeline.steps.html#aodncore.pipeline.steps.resolve.SingleFileResolveRunner">[docs]</a><span class="k">class</span><span class="w"> </span><span class="nc">SingleFileResolveRunner</span><span class="p">(</span><span class="n">BaseResolveRunner</span><span class="p">):</span>
+<div class="viewcode-block" id="SingleFileResolveRunner.run"><a class="viewcode-back" href="../../../../aodncore.pipeline.steps.html#aodncore.pipeline.steps.resolve.SingleFileResolveRunner.run">[docs]</a>    <span class="k">def</span><span class="w"> </span><span class="nf">run</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="n">name</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">basename</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">input_file</span><span class="p">)</span>
         <span class="n">temp_location</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">output_dir</span><span class="p">,</span> <span class="n">name</span><span class="p">)</span>
         <span class="n">safe_copy_file</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">input_file</span><span class="p">,</span> <span class="n">temp_location</span><span class="p">)</span>
@@ -195,8 +195,8 @@
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_collection</span></div></div>
 
 
-<div class="viewcode-block" id="GzipFileResolveRunner"><a class="viewcode-back" href="../../../../aodncore.pipeline.steps.html#aodncore.pipeline.steps.resolve.GzipFileResolveRunner">[docs]</a><span class="k">class</span> <span class="nc">GzipFileResolveRunner</span><span class="p">(</span><span class="n">BaseResolveRunner</span><span class="p">):</span>
-<div class="viewcode-block" id="GzipFileResolveRunner.run"><a class="viewcode-back" href="../../../../aodncore.pipeline.steps.html#aodncore.pipeline.steps.resolve.GzipFileResolveRunner.run">[docs]</a>    <span class="k">def</span> <span class="nf">run</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="GzipFileResolveRunner"><a class="viewcode-back" href="../../../../aodncore.pipeline.steps.html#aodncore.pipeline.steps.resolve.GzipFileResolveRunner">[docs]</a><span class="k">class</span><span class="w"> </span><span class="nc">GzipFileResolveRunner</span><span class="p">(</span><span class="n">BaseResolveRunner</span><span class="p">):</span>
+<div class="viewcode-block" id="GzipFileResolveRunner.run"><a class="viewcode-back" href="../../../../aodncore.pipeline.steps.html#aodncore.pipeline.steps.resolve.GzipFileResolveRunner.run">[docs]</a>    <span class="k">def</span><span class="w"> </span><span class="nf">run</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="n">is_gzip_file</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">input_file</span><span class="p">):</span>
             <span class="k">raise</span> <span class="n">InvalidFileFormatError</span><span class="p">(</span><span class="s2">&quot;input_file must be a valid GZ file&quot;</span><span class="p">)</span>
 
@@ -207,8 +207,8 @@
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_collection</span></div></div>
 
 
-<div class="viewcode-block" id="ZipFileResolveRunner"><a class="viewcode-back" href="../../../../aodncore.pipeline.steps.html#aodncore.pipeline.steps.resolve.ZipFileResolveRunner">[docs]</a><span class="k">class</span> <span class="nc">ZipFileResolveRunner</span><span class="p">(</span><span class="n">BaseResolveRunner</span><span class="p">):</span>
-<div class="viewcode-block" id="ZipFileResolveRunner.run"><a class="viewcode-back" href="../../../../aodncore.pipeline.steps.html#aodncore.pipeline.steps.resolve.ZipFileResolveRunner.run">[docs]</a>    <span class="k">def</span> <span class="nf">run</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="ZipFileResolveRunner"><a class="viewcode-back" href="../../../../aodncore.pipeline.steps.html#aodncore.pipeline.steps.resolve.ZipFileResolveRunner">[docs]</a><span class="k">class</span><span class="w"> </span><span class="nc">ZipFileResolveRunner</span><span class="p">(</span><span class="n">BaseResolveRunner</span><span class="p">):</span>
+<div class="viewcode-block" id="ZipFileResolveRunner.run"><a class="viewcode-back" href="../../../../aodncore.pipeline.steps.html#aodncore.pipeline.steps.resolve.ZipFileResolveRunner.run">[docs]</a>    <span class="k">def</span><span class="w"> </span><span class="nf">run</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="n">is_zip_file</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">input_file</span><span class="p">):</span>
             <span class="k">raise</span> <span class="n">InvalidFileFormatError</span><span class="p">(</span><span class="s2">&quot;input_file must be a valid ZIP file&quot;</span><span class="p">)</span>
 
@@ -220,8 +220,8 @@
 
 
 <span class="c1"># noinspection PyAbstractClass</span>
-<span class="k">class</span> <span class="nc">BaseManifestResolveRunner</span><span class="p">(</span><span class="n">BaseResolveRunner</span><span class="p">):</span>
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">input_file</span><span class="p">,</span> <span class="n">output_dir</span><span class="p">,</span> <span class="n">config</span><span class="p">,</span> <span class="n">logger</span><span class="p">,</span> <span class="n">resolve_params</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">BaseManifestResolveRunner</span><span class="p">(</span><span class="n">BaseResolveRunner</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">input_file</span><span class="p">,</span> <span class="n">output_dir</span><span class="p">,</span> <span class="n">config</span><span class="p">,</span> <span class="n">logger</span><span class="p">,</span> <span class="n">resolve_params</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">input_file</span><span class="p">,</span> <span class="n">output_dir</span><span class="p">,</span> <span class="n">config</span><span class="p">,</span> <span class="n">logger</span><span class="p">)</span>
 
         <span class="k">if</span> <span class="n">resolve_params</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
@@ -230,11 +230,11 @@
         <span class="n">relative_path_root</span> <span class="o">=</span> <span class="n">resolve_params</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;relative_path_root&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_config</span><span class="o">.</span><span class="n">pipeline_config</span><span class="p">[</span><span class="s1">&#39;global&#39;</span><span class="p">][</span><span class="s1">&#39;wip_dir&#39;</span><span class="p">])</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">relative_path_root</span> <span class="o">=</span> <span class="n">relative_path_root</span>
 
-    <span class="k">def</span> <span class="nf">get_abs_path</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">path</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_abs_path</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">path</span><span class="p">):</span>
         <span class="k">return</span> <span class="n">path</span> <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isabs</span><span class="p">(</span><span class="n">path</span><span class="p">)</span> <span class="k">else</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">relative_path_root</span><span class="p">,</span> <span class="n">path</span><span class="p">)</span>
 
 
-<div class="viewcode-block" id="JsonManifestResolveRunner"><a class="viewcode-back" href="../../../../aodncore.pipeline.steps.html#aodncore.pipeline.steps.resolve.JsonManifestResolveRunner">[docs]</a><span class="k">class</span> <span class="nc">JsonManifestResolveRunner</span><span class="p">(</span><span class="n">BaseManifestResolveRunner</span><span class="p">):</span>
+<div class="viewcode-block" id="JsonManifestResolveRunner"><a class="viewcode-back" href="../../../../aodncore.pipeline.steps.html#aodncore.pipeline.steps.resolve.JsonManifestResolveRunner">[docs]</a><span class="k">class</span><span class="w"> </span><span class="nc">JsonManifestResolveRunner</span><span class="p">(</span><span class="n">BaseManifestResolveRunner</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Handles a JSON manifest file, *optionally* with a pre-determined destination path. Unlike other resolve runners,</span>
 <span class="sd">    this creates :py:class:`PipelineFile` objects to add to the collection rather than allowing the collection to</span>
 <span class="sd">    generate the objects.</span>
@@ -261,7 +261,7 @@
 
 <span class="sd">    &quot;&quot;&quot;</span>
 
-<div class="viewcode-block" id="JsonManifestResolveRunner.run"><a class="viewcode-back" href="../../../../aodncore.pipeline.steps.html#aodncore.pipeline.steps.resolve.JsonManifestResolveRunner.run">[docs]</a>    <span class="k">def</span> <span class="nf">run</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="JsonManifestResolveRunner.run"><a class="viewcode-back" href="../../../../aodncore.pipeline.steps.html#aodncore.pipeline.steps.resolve.JsonManifestResolveRunner.run">[docs]</a>    <span class="k">def</span><span class="w"> </span><span class="nf">run</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">try</span><span class="p">:</span>
             <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">input_file</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
                 <span class="n">contents</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">f</span><span class="p">)</span>
@@ -284,7 +284,7 @@
 
 
 <span class="c1"># noinspection PyAbstractClass</span>
-<span class="k">class</span> <span class="nc">BaseCsvManifestResolveRunner</span><span class="p">(</span><span class="n">BaseManifestResolveRunner</span><span class="p">):</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">BaseCsvManifestResolveRunner</span><span class="p">(</span><span class="n">BaseManifestResolveRunner</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Base class for handling a CSV manifest file. Unlike other resolve runners, this creates :py:class:`PipelineFile`</span>
 <span class="sd">    objects to add to the collection rather than allowing the collection to generate theobjects.</span>
 
@@ -293,43 +293,43 @@
 
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">errors</span> <span class="o">=</span> <span class="p">[]</span>
 
     <span class="nd">@property</span>
     <span class="nd">@abc</span><span class="o">.</span><span class="n">abstractmethod</span>
-    <span class="k">def</span> <span class="nf">schema</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">schema</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Defines the tableschema schema describing the input file</span>
 <span class="sd">        :returns: tableschema.Schema instance</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">pass</span>
 
     <span class="nd">@abc</span><span class="o">.</span><span class="n">abstractmethod</span>
-    <span class="k">def</span> <span class="nf">_row_handler</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">row</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_row_handler</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">row</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Translates a parsed row into a PipelineFile object to add to the collection</span>
 <span class="sd">        :returns: PipelineFile instance</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">pass</span>
 
-    <span class="k">def</span> <span class="nf">_exc_handler</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">exc</span><span class="p">,</span> <span class="n">row_number</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">row_data</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">error_data</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_exc_handler</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">exc</span><span class="p">,</span> <span class="n">row_number</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">row_data</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">error_data</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">errors</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">TableRowErrorDetails</span><span class="p">(</span><span class="n">exc</span><span class="p">,</span> <span class="n">row_number</span><span class="p">,</span> <span class="n">row_data</span><span class="p">,</span> <span class="n">error_data</span><span class="p">))</span>
 
     <span class="nd">@staticmethod</span>
-    <span class="k">def</span> <span class="nf">_format_error</span><span class="p">(</span><span class="n">error</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_format_error</span><span class="p">(</span><span class="n">error</span><span class="p">):</span>
         <span class="k">return</span> <span class="s2">&quot;</span><span class="si">{args}</span><span class="s2">: </span><span class="si">{errors}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">args</span><span class="o">=</span><span class="s1">&#39;,&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">e</span><span class="p">)</span> <span class="k">for</span> <span class="n">e</span> <span class="ow">in</span> <span class="n">error</span><span class="o">.</span><span class="n">exc</span><span class="o">.</span><span class="n">args</span><span class="p">),</span>
                                          <span class="n">errors</span><span class="o">=</span><span class="s1">&#39;,&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">e</span><span class="p">)</span> <span class="k">for</span> <span class="n">e</span> <span class="ow">in</span> <span class="n">error</span><span class="o">.</span><span class="n">exc</span><span class="o">.</span><span class="n">errors</span><span class="p">))</span>
 
-    <span class="k">def</span> <span class="nf">_handle_errors</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_handle_errors</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="n">error_details</span> <span class="o">=</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">_format_error</span><span class="p">(</span><span class="n">e</span><span class="p">)</span> <span class="k">for</span> <span class="n">e</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">errors</span><span class="p">]</span>
         <span class="k">raise</span> <span class="n">InvalidFileFormatError</span><span class="p">(</span><span class="n">error_details</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">_table_iterator</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_table_iterator</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="n">table</span> <span class="o">=</span> <span class="n">tableschema</span><span class="o">.</span><span class="n">Table</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">input_file</span><span class="p">,</span> <span class="n">headers</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">schema</span><span class="o">.</span><span class="n">field_names</span><span class="p">,</span> <span class="n">schema</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">schema</span><span class="p">,</span> <span class="nb">format</span><span class="o">=</span><span class="s1">&#39;csv&#39;</span><span class="p">)</span>
         <span class="k">return</span> <span class="p">(</span><span class="n">r</span> <span class="k">for</span> <span class="n">r</span> <span class="ow">in</span> <span class="n">table</span><span class="o">.</span><span class="n">iter</span><span class="p">(</span><span class="n">exc_handler</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_exc_handler</span><span class="p">))</span>
 
-    <span class="k">def</span> <span class="nf">run</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">run</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">for</span> <span class="n">row</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_table_iterator</span><span class="p">():</span>
             <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">errors</span><span class="p">:</span>
                 <span class="c1"># continue iterating to detect *all* errors in the file, but don&#39;t waste resources building the</span>
@@ -345,7 +345,7 @@
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_collection</span>
 
 
-<div class="viewcode-block" id="MapManifestResolveRunner"><a class="viewcode-back" href="../../../../aodncore.pipeline.steps.html#aodncore.pipeline.steps.resolve.MapManifestResolveRunner">[docs]</a><span class="k">class</span> <span class="nc">MapManifestResolveRunner</span><span class="p">(</span><span class="n">BaseCsvManifestResolveRunner</span><span class="p">):</span>
+<div class="viewcode-block" id="MapManifestResolveRunner"><a class="viewcode-back" href="../../../../aodncore.pipeline.steps.html#aodncore.pipeline.steps.resolve.MapManifestResolveRunner">[docs]</a><span class="k">class</span><span class="w"> </span><span class="nc">MapManifestResolveRunner</span><span class="p">(</span><span class="n">BaseCsvManifestResolveRunner</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Handles a manifest file with a pre-determined destination path. Unlike other resolve runners, this creates</span>
 <span class="sd">    :py:class:`PipelineFile` objects to add to the collection rather than allowing the collection to generate the</span>
 <span class="sd">    objects.</span>
@@ -358,7 +358,7 @@
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">schema</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">schema</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="n">tableschema</span><span class="o">.</span><span class="n">Schema</span><span class="p">({</span>
             <span class="s1">&#39;fields&#39;</span><span class="p">:</span> <span class="p">[</span>
                 <span class="p">{</span>
@@ -381,14 +381,14 @@
             <span class="n">strict</span><span class="o">=</span><span class="kc">True</span>
         <span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">_row_handler</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">row</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_row_handler</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">row</span><span class="p">):</span>
         <span class="n">local_path</span><span class="p">,</span> <span class="n">dest_path</span> <span class="o">=</span> <span class="n">row</span>
         <span class="n">abs_path</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_abs_path</span><span class="p">(</span><span class="n">local_path</span><span class="p">)</span>
         <span class="n">pipeline_file</span> <span class="o">=</span> <span class="n">PipelineFile</span><span class="p">(</span><span class="n">abs_path</span><span class="p">,</span> <span class="n">dest_path</span><span class="o">=</span><span class="n">dest_path</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">pipeline_file</span></div>
 
 
-<div class="viewcode-block" id="DeleteManifestResolveRunner"><a class="viewcode-back" href="../../../../aodncore.pipeline.steps.html#aodncore.pipeline.steps.resolve.DeleteManifestResolveRunner">[docs]</a><span class="k">class</span> <span class="nc">DeleteManifestResolveRunner</span><span class="p">(</span><span class="n">BaseCsvManifestResolveRunner</span><span class="p">):</span>
+<div class="viewcode-block" id="DeleteManifestResolveRunner"><a class="viewcode-back" href="../../../../aodncore.pipeline.steps.html#aodncore.pipeline.steps.resolve.DeleteManifestResolveRunner">[docs]</a><span class="k">class</span><span class="w"> </span><span class="nc">DeleteManifestResolveRunner</span><span class="p">(</span><span class="n">BaseCsvManifestResolveRunner</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Handles a delete manifest file which only contains a list of source files, and optionally a valid</span>
 <span class="sd">        &quot;deletion publish type&quot; string, as defined by the PipelineFilePublishType enum. If delete_publish_type is</span>
 <span class="sd">        omitted, the value will remain UNSET, and the handler will assume responsibility for setting the appropriate</span>
@@ -402,7 +402,7 @@
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">schema</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">schema</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="n">tableschema</span><span class="o">.</span><span class="n">Schema</span><span class="p">({</span>
             <span class="s1">&#39;fields&#39;</span><span class="p">:</span> <span class="p">[</span>
                 <span class="p">{</span>
@@ -417,14 +417,14 @@
             <span class="n">strict</span><span class="o">=</span><span class="kc">True</span>
         <span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">_row_handler</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">row</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_row_handler</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">row</span><span class="p">):</span>
         <span class="n">dest_path</span><span class="p">,</span> <span class="o">=</span> <span class="n">row</span>
         <span class="n">remote_file</span> <span class="o">=</span> <span class="n">RemotePipelineFile</span><span class="p">(</span><span class="n">dest_path</span><span class="p">)</span>
         <span class="n">pipeline_file</span> <span class="o">=</span> <span class="n">PipelineFile</span><span class="o">.</span><span class="n">from_remotepipelinefile</span><span class="p">(</span><span class="n">remote_file</span><span class="p">,</span> <span class="n">is_deletion</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">pipeline_file</span></div>
 
 
-<span class="k">class</span> <span class="nc">RsyncLineType</span><span class="p">(</span><span class="n">Enum</span><span class="p">):</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">RsyncLineType</span><span class="p">(</span><span class="n">Enum</span><span class="p">):</span>
     <span class="n">INVALID</span> <span class="o">=</span> <span class="mi">0</span>
     <span class="n">HEADER</span> <span class="o">=</span> <span class="mi">1</span>
     <span class="n">FILE_ADD</span> <span class="o">=</span> <span class="mi">2</span>
@@ -433,13 +433,13 @@
     <span class="n">DIRECTORY_DELETE</span> <span class="o">=</span> <span class="mi">5</span>
 
 
-<span class="k">class</span> <span class="nc">RsyncManifestLine</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">path</span><span class="p">,</span> <span class="n">type_</span><span class="p">):</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">RsyncManifestLine</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">path</span><span class="p">,</span> <span class="n">type_</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">path</span> <span class="o">=</span> <span class="n">path</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">type</span> <span class="o">=</span> <span class="n">type_</span>
 
 
-<div class="viewcode-block" id="RsyncManifestResolveRunner"><a class="viewcode-back" href="../../../../aodncore.pipeline.steps.html#aodncore.pipeline.steps.resolve.RsyncManifestResolveRunner">[docs]</a><span class="k">class</span> <span class="nc">RsyncManifestResolveRunner</span><span class="p">(</span><span class="n">BaseManifestResolveRunner</span><span class="p">):</span>
+<div class="viewcode-block" id="RsyncManifestResolveRunner"><a class="viewcode-back" href="../../../../aodncore.pipeline.steps.html#aodncore.pipeline.steps.resolve.RsyncManifestResolveRunner">[docs]</a><span class="k">class</span><span class="w"> </span><span class="nc">RsyncManifestResolveRunner</span><span class="p">(</span><span class="n">BaseManifestResolveRunner</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Handles a manifest file as output by an rsync process</span>
 
 <span class="sd">    The manifest is generated by capturing the output of an rsync process run with the &quot;-i, --itemize-changes&quot; argument.</span>
@@ -473,7 +473,7 @@
     <span class="n">DELETE_PATTERN</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;^\*deleting&#39;</span><span class="p">)</span>
 
 <div class="viewcode-block" id="RsyncManifestResolveRunner.classify_line"><a class="viewcode-back" href="../../../../aodncore.pipeline.steps.html#aodncore.pipeline.steps.resolve.RsyncManifestResolveRunner.classify_line">[docs]</a>    <span class="nd">@classmethod</span>
-    <span class="k">def</span> <span class="nf">classify_line</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">line</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">classify_line</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">line</span><span class="p">):</span>
 
         <span class="n">match</span> <span class="o">=</span> <span class="bp">cls</span><span class="o">.</span><span class="n">RECORD_PATTERN</span><span class="o">.</span><span class="n">match</span><span class="p">(</span><span class="n">line</span><span class="p">)</span>
         <span class="k">try</span><span class="p">:</span>
@@ -495,7 +495,7 @@
         <span class="k">else</span><span class="p">:</span>
             <span class="k">return</span> <span class="n">RsyncManifestLine</span><span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="n">RsyncLineType</span><span class="o">.</span><span class="n">INVALID</span><span class="p">)</span>  <span class="c1"># pragma: no cover</span></div>
 
-<div class="viewcode-block" id="RsyncManifestResolveRunner.run"><a class="viewcode-back" href="../../../../aodncore.pipeline.steps.html#aodncore.pipeline.steps.resolve.RsyncManifestResolveRunner.run">[docs]</a>    <span class="k">def</span> <span class="nf">run</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="RsyncManifestResolveRunner.run"><a class="viewcode-back" href="../../../../aodncore.pipeline.steps.html#aodncore.pipeline.steps.resolve.RsyncManifestResolveRunner.run">[docs]</a>    <span class="k">def</span><span class="w"> </span><span class="nf">run</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">input_file</span><span class="p">,</span> <span class="s1">&#39;r&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
             <span class="k">for</span> <span class="n">line_newline</span> <span class="ow">in</span> <span class="n">f</span><span class="p">:</span>
                 <span class="n">line</span> <span class="o">=</span> <span class="n">line_newline</span><span class="o">.</span><span class="n">rstrip</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">linesep</span><span class="p">)</span>
@@ -513,7 +513,7 @@
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_collection</span></div></div>
 
 
-<div class="viewcode-block" id="SimpleManifestResolveRunner"><a class="viewcode-back" href="../../../../aodncore.pipeline.steps.html#aodncore.pipeline.steps.resolve.SimpleManifestResolveRunner">[docs]</a><span class="k">class</span> <span class="nc">SimpleManifestResolveRunner</span><span class="p">(</span><span class="n">BaseManifestResolveRunner</span><span class="p">):</span>
+<div class="viewcode-block" id="SimpleManifestResolveRunner"><a class="viewcode-back" href="../../../../aodncore.pipeline.steps.html#aodncore.pipeline.steps.resolve.SimpleManifestResolveRunner">[docs]</a><span class="k">class</span><span class="w"> </span><span class="nc">SimpleManifestResolveRunner</span><span class="p">(</span><span class="n">BaseManifestResolveRunner</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Handles a simple manifest file which only contains a list of source files</span>
 
 <span class="sd">    File format must be as follows::</span>
@@ -523,7 +523,7 @@
 
 <span class="sd">    &quot;&quot;&quot;</span>
 
-<div class="viewcode-block" id="SimpleManifestResolveRunner.run"><a class="viewcode-back" href="../../../../aodncore.pipeline.steps.html#aodncore.pipeline.steps.resolve.SimpleManifestResolveRunner.run">[docs]</a>    <span class="k">def</span> <span class="nf">run</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="SimpleManifestResolveRunner.run"><a class="viewcode-back" href="../../../../aodncore.pipeline.steps.html#aodncore.pipeline.steps.resolve.SimpleManifestResolveRunner.run">[docs]</a>    <span class="k">def</span><span class="w"> </span><span class="nf">run</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">input_file</span><span class="p">,</span> <span class="s1">&#39;r&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
             <span class="k">for</span> <span class="n">line_newline</span> <span class="ow">in</span> <span class="n">f</span><span class="p">:</span>
                 <span class="n">line</span> <span class="o">=</span> <span class="n">line_newline</span><span class="o">.</span><span class="n">rstrip</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">linesep</span><span class="p">)</span>
@@ -533,7 +533,7 @@
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_collection</span></div></div>
 
 
-<div class="viewcode-block" id="DirManifestResolveRunner"><a class="viewcode-back" href="../../../../aodncore.pipeline.steps.html#aodncore.pipeline.steps.resolve.DirManifestResolveRunner">[docs]</a><span class="k">class</span> <span class="nc">DirManifestResolveRunner</span><span class="p">(</span><span class="n">BaseManifestResolveRunner</span><span class="p">):</span>
+<div class="viewcode-block" id="DirManifestResolveRunner"><a class="viewcode-back" href="../../../../aodncore.pipeline.steps.html#aodncore.pipeline.steps.resolve.DirManifestResolveRunner">[docs]</a><span class="k">class</span><span class="w"> </span><span class="nc">DirManifestResolveRunner</span><span class="p">(</span><span class="n">BaseManifestResolveRunner</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Handles a simple manifest file which only contains a list of source files or directories, which will have all</span>
 <span class="sd">    files recursively added to the collection</span>
 
@@ -544,12 +544,12 @@
 
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
         <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="s2">&quot;This FileType (&#39;.dir_manifest&#39;) will be removed in a future version. Please update code to use &quot;</span>
                       <span class="s2">&quot;a pre-generated simple manifest (&#39;.manifest&#39;) instead.&quot;</span><span class="p">,</span> <span class="ne">DeprecationWarning</span><span class="p">)</span>
 
-<div class="viewcode-block" id="DirManifestResolveRunner.run"><a class="viewcode-back" href="../../../../aodncore.pipeline.steps.html#aodncore.pipeline.steps.resolve.DirManifestResolveRunner.run">[docs]</a>    <span class="k">def</span> <span class="nf">run</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="DirManifestResolveRunner.run"><a class="viewcode-back" href="../../../../aodncore.pipeline.steps.html#aodncore.pipeline.steps.resolve.DirManifestResolveRunner.run">[docs]</a>    <span class="k">def</span><span class="w"> </span><span class="nf">run</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">input_file</span><span class="p">,</span> <span class="s1">&#39;r&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
             <span class="k">for</span> <span class="n">line_newline</span> <span class="ow">in</span> <span class="n">f</span><span class="p">:</span>
                 <span class="n">line</span> <span class="o">=</span> <span class="n">line_newline</span><span class="o">.</span><span class="n">rstrip</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">linesep</span><span class="p">)</span>

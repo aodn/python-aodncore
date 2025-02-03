@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>aodncore.pipeline.schema &mdash; aodncore 1.4.9 documentation</title>
+  <title>aodncore.pipeline.schema &mdash; aodncore 1.4.10 documentation</title>
       <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
   <!--[if lt IE 9]>
@@ -90,7 +90,7 @@
 <span class="sd">pipeline, and also the helper functions necessary to validate an object against their respective schema.</span>
 <span class="sd">&quot;&quot;&quot;</span>
 
-<span class="kn">import</span> <span class="nn">jsonschema</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">jsonschema</span>
 
 <span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span>
     <span class="s1">&#39;validate_check_params&#39;</span><span class="p">,</span>
@@ -244,7 +244,8 @@
                 <span class="s1">&#39;upload_uri&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;type&#39;</span><span class="p">:</span> <span class="s1">&#39;string&#39;</span><span class="p">},</span>
                 <span class="s1">&#39;wfs_url&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;type&#39;</span><span class="p">:</span> <span class="s1">&#39;string&#39;</span><span class="p">},</span>
                 <span class="s1">&#39;wfs_version&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;type&#39;</span><span class="p">:</span> <span class="s1">&#39;string&#39;</span><span class="p">},</span>
-                <span class="s1">&#39;wip_dir&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;type&#39;</span><span class="p">:</span> <span class="s1">&#39;string&#39;</span><span class="p">}</span>
+                <span class="s1">&#39;wip_dir&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;type&#39;</span><span class="p">:</span> <span class="s1">&#39;string&#39;</span><span class="p">},</span>
+                <span class="s1">&#39;landing_bucket&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;type&#39;</span><span class="p">:</span> <span class="s1">&#39;string&#39;</span><span class="p">}</span>
             <span class="p">},</span>
             <span class="s1">&#39;required&#39;</span><span class="p">:</span> <span class="p">[</span><span class="s1">&#39;admin_recipients&#39;</span><span class="p">,</span> <span class="s1">&#39;archive_uri&#39;</span><span class="p">,</span> <span class="s1">&#39;error_uri&#39;</span><span class="p">,</span> <span class="s1">&#39;processing_dir&#39;</span><span class="p">,</span> <span class="s1">&#39;upload_uri&#39;</span><span class="p">,</span> <span class="s1">&#39;wip_dir&#39;</span><span class="p">],</span>
             <span class="s1">&#39;additionalProperties&#39;</span><span class="p">:</span> <span class="kc">False</span>
@@ -363,35 +364,35 @@
 <span class="p">}</span>
 
 
-<div class="viewcode-block" id="validate_check_params"><a class="viewcode-back" href="../../../aodncore.pipeline.html#aodncore.pipeline.schema.validate_check_params">[docs]</a><span class="k">def</span> <span class="nf">validate_check_params</span><span class="p">(</span><span class="n">check_params</span><span class="p">):</span>
+<div class="viewcode-block" id="validate_check_params"><a class="viewcode-back" href="../../../aodncore.pipeline.html#aodncore.pipeline.schema.validate_check_params">[docs]</a><span class="k">def</span><span class="w"> </span><span class="nf">validate_check_params</span><span class="p">(</span><span class="n">check_params</span><span class="p">):</span>
     <span class="n">jsonschema</span><span class="o">.</span><span class="n">validate</span><span class="p">(</span><span class="n">check_params</span><span class="p">,</span> <span class="n">CHECK_PARAMS_SCHEMA</span><span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="validate_custom_params"><a class="viewcode-back" href="../../../aodncore.pipeline.html#aodncore.pipeline.schema.validate_custom_params">[docs]</a><span class="k">def</span> <span class="nf">validate_custom_params</span><span class="p">(</span><span class="n">check_params</span><span class="p">):</span>
+<div class="viewcode-block" id="validate_custom_params"><a class="viewcode-back" href="../../../aodncore.pipeline.html#aodncore.pipeline.schema.validate_custom_params">[docs]</a><span class="k">def</span><span class="w"> </span><span class="nf">validate_custom_params</span><span class="p">(</span><span class="n">check_params</span><span class="p">):</span>
     <span class="n">jsonschema</span><span class="o">.</span><span class="n">validate</span><span class="p">(</span><span class="n">check_params</span><span class="p">,</span> <span class="n">CUSTOM_PARAMS_SCHEMA</span><span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="validate_harvest_params"><a class="viewcode-back" href="../../../aodncore.pipeline.html#aodncore.pipeline.schema.validate_harvest_params">[docs]</a><span class="k">def</span> <span class="nf">validate_harvest_params</span><span class="p">(</span><span class="n">harvest_params</span><span class="p">):</span>
+<div class="viewcode-block" id="validate_harvest_params"><a class="viewcode-back" href="../../../aodncore.pipeline.html#aodncore.pipeline.schema.validate_harvest_params">[docs]</a><span class="k">def</span><span class="w"> </span><span class="nf">validate_harvest_params</span><span class="p">(</span><span class="n">harvest_params</span><span class="p">):</span>
     <span class="n">jsonschema</span><span class="o">.</span><span class="n">validate</span><span class="p">(</span><span class="n">harvest_params</span><span class="p">,</span> <span class="n">HARVEST_PARAMS_SCHEMA</span><span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="validate_logging_config"><a class="viewcode-back" href="../../../aodncore.pipeline.html#aodncore.pipeline.schema.validate_logging_config">[docs]</a><span class="k">def</span> <span class="nf">validate_logging_config</span><span class="p">(</span><span class="n">logging_config</span><span class="p">):</span>
+<div class="viewcode-block" id="validate_logging_config"><a class="viewcode-back" href="../../../aodncore.pipeline.html#aodncore.pipeline.schema.validate_logging_config">[docs]</a><span class="k">def</span><span class="w"> </span><span class="nf">validate_logging_config</span><span class="p">(</span><span class="n">logging_config</span><span class="p">):</span>
     <span class="n">jsonschema</span><span class="o">.</span><span class="n">validate</span><span class="p">(</span><span class="n">logging_config</span><span class="p">,</span> <span class="n">LOGGING_CONFIG_SCHEMA</span><span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="validate_notify_params"><a class="viewcode-back" href="../../../aodncore.pipeline.html#aodncore.pipeline.schema.validate_notify_params">[docs]</a><span class="k">def</span> <span class="nf">validate_notify_params</span><span class="p">(</span><span class="n">notify_params</span><span class="p">):</span>
+<div class="viewcode-block" id="validate_notify_params"><a class="viewcode-back" href="../../../aodncore.pipeline.html#aodncore.pipeline.schema.validate_notify_params">[docs]</a><span class="k">def</span><span class="w"> </span><span class="nf">validate_notify_params</span><span class="p">(</span><span class="n">notify_params</span><span class="p">):</span>
     <span class="n">jsonschema</span><span class="o">.</span><span class="n">validate</span><span class="p">(</span><span class="n">notify_params</span><span class="p">,</span> <span class="n">NOTIFY_PARAMS_SCHEMA</span><span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="validate_pipeline_config"><a class="viewcode-back" href="../../../aodncore.pipeline.html#aodncore.pipeline.schema.validate_pipeline_config">[docs]</a><span class="k">def</span> <span class="nf">validate_pipeline_config</span><span class="p">(</span><span class="n">pipeline_config</span><span class="p">):</span>
+<div class="viewcode-block" id="validate_pipeline_config"><a class="viewcode-back" href="../../../aodncore.pipeline.html#aodncore.pipeline.schema.validate_pipeline_config">[docs]</a><span class="k">def</span><span class="w"> </span><span class="nf">validate_pipeline_config</span><span class="p">(</span><span class="n">pipeline_config</span><span class="p">):</span>
     <span class="n">jsonschema</span><span class="o">.</span><span class="n">validate</span><span class="p">(</span><span class="n">pipeline_config</span><span class="p">,</span> <span class="n">PIPELINE_CONFIG_SCHEMA</span><span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="validate_resolve_params"><a class="viewcode-back" href="../../../aodncore.pipeline.html#aodncore.pipeline.schema.validate_resolve_params">[docs]</a><span class="k">def</span> <span class="nf">validate_resolve_params</span><span class="p">(</span><span class="n">resolve_params</span><span class="p">):</span>
+<div class="viewcode-block" id="validate_resolve_params"><a class="viewcode-back" href="../../../aodncore.pipeline.html#aodncore.pipeline.schema.validate_resolve_params">[docs]</a><span class="k">def</span><span class="w"> </span><span class="nf">validate_resolve_params</span><span class="p">(</span><span class="n">resolve_params</span><span class="p">):</span>
     <span class="n">jsonschema</span><span class="o">.</span><span class="n">validate</span><span class="p">(</span><span class="n">resolve_params</span><span class="p">,</span> <span class="n">RESOLVE_PARAMS_SCHEMA</span><span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="validate_json_manifest"><a class="viewcode-back" href="../../../aodncore.pipeline.html#aodncore.pipeline.schema.validate_json_manifest">[docs]</a><span class="k">def</span> <span class="nf">validate_json_manifest</span><span class="p">(</span><span class="n">json_manifest</span><span class="p">):</span>
+<div class="viewcode-block" id="validate_json_manifest"><a class="viewcode-back" href="../../../aodncore.pipeline.html#aodncore.pipeline.schema.validate_json_manifest">[docs]</a><span class="k">def</span><span class="w"> </span><span class="nf">validate_json_manifest</span><span class="p">(</span><span class="n">json_manifest</span><span class="p">):</span>
     <span class="n">jsonschema</span><span class="o">.</span><span class="n">validate</span><span class="p">(</span><span class="n">json_manifest</span><span class="p">,</span> <span class="n">JSON_MANIFEST_SCHEMA</span><span class="p">)</span></div>
 </pre></div>
 

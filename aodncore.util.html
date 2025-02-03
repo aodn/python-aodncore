@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>aodncore.util package &mdash; aodncore 1.4.9 documentation</title>
+  <title>aodncore.util package &mdash; aodncore 1.4.10 documentation</title>
       <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
   <!--[if lt IE 9]>
@@ -112,6 +112,29 @@
 </section>
 <section id="submodules">
 <h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this heading"></a></h2>
+</section>
+<section id="module-aodncore.util.aws">
+<span id="aodncore-util-aws-module"></span><h2>aodncore.util.aws module<a class="headerlink" href="#module-aodncore.util.aws" title="Permalink to this heading"></a></h2>
+<dl class="py function">
+<dt class="sig sig-object py" id="aodncore.util.aws.upload_to_s3">
+<span class="sig-prename descclassname"><span class="pre">aodncore.util.aws.</span></span><span class="sig-name descname"><span class="pre">upload_to_s3</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">local_file</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bucket_name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bucket_prefix</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">key</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">aws_profile</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="_modules/aodncore/util/aws.html#upload_to_s3"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#aodncore.util.aws.upload_to_s3" title="Permalink to this definition"></a></dt>
+<dd><p>Upload a file to an S3 bucket</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>local_file</strong> – Full path to local file</p></li>
+<li><p><strong>bucket_name</strong> – Bucket to upload to</p></li>
+<li><p><strong>bucket_prefix</strong> – Prefix to add to key</p></li>
+<li><p><strong>key</strong> – Path in bucket to upload to (defaults to local file name)</p></li>
+<li><p><strong>aws_profile</strong> – AWS profile to use</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>None</p>
+</dd>
+</dl>
+</dd></dl>
+
 </section>
 <section id="module-aodncore.util.fileops">
 <span id="aodncore-util-fileops-module"></span><h2>aodncore.util.fileops module<a class="headerlink" href="#module-aodncore.util.fileops" title="Permalink to this heading"></a></h2>
@@ -1687,10 +1710,10 @@ argument can also be used when <cite>classproperty</cite> is used as a decorator
 <em>must</em> be passed in as a keyword argument.</p>
 </dd>
 </dl>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="k">class</span> <span class="nc">Foo</span><span class="p">:</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="k">class</span><span class="w"> </span><span class="nc">Foo</span><span class="p">:</span>
 <span class="gp">... </span>    <span class="n">_bar_internal</span> <span class="o">=</span> <span class="mi">1</span>
 <span class="gp">... </span>    <span class="nd">@classproperty</span>
-<span class="gp">... </span>    <span class="k">def</span> <span class="nf">bar</span><span class="p">(</span><span class="bp">cls</span><span class="p">):</span>
+<span class="gp">... </span>    <span class="k">def</span><span class="w"> </span><span class="nf">bar</span><span class="p">(</span><span class="bp">cls</span><span class="p">):</span>
 <span class="gp">... </span>        <span class="k">return</span> <span class="bp">cls</span><span class="o">.</span><span class="n">_bar_internal</span> <span class="o">+</span> <span class="mi">1</span>
 <span class="gp">...</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">Foo</span><span class="o">.</span><span class="n">bar</span>
@@ -1705,25 +1728,25 @@ argument can also be used when <cite>classproperty</cite> is used as a decorator
 </div>
 <p>As previously noted, a <cite>classproperty</cite> is limited to implementing
 read-only attributes:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="k">class</span> <span class="nc">Foo</span><span class="p">:</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="k">class</span><span class="w"> </span><span class="nc">Foo</span><span class="p">:</span>
 <span class="gp">... </span>    <span class="n">_bar_internal</span> <span class="o">=</span> <span class="mi">1</span>
 <span class="gp">... </span>    <span class="nd">@classproperty</span>
-<span class="gp">... </span>    <span class="k">def</span> <span class="nf">bar</span><span class="p">(</span><span class="bp">cls</span><span class="p">):</span>
+<span class="gp">... </span>    <span class="k">def</span><span class="w"> </span><span class="nf">bar</span><span class="p">(</span><span class="bp">cls</span><span class="p">):</span>
 <span class="gp">... </span>        <span class="k">return</span> <span class="bp">cls</span><span class="o">.</span><span class="n">_bar_internal</span>
 <span class="gp">... </span>    <span class="nd">@bar</span><span class="o">.</span><span class="n">setter</span>
-<span class="gp">... </span>    <span class="k">def</span> <span class="nf">bar</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
+<span class="gp">... </span>    <span class="k">def</span><span class="w"> </span><span class="nf">bar</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
 <span class="gp">... </span>        <span class="bp">cls</span><span class="o">.</span><span class="n">_bar_internal</span> <span class="o">=</span> <span class="n">value</span>
 <span class="gp">...</span>
 <span class="gt">Traceback (most recent call last):</span>
 <span class="c">...</span>
 <span class="gr">NotImplementedError</span>: <span class="n">classproperty can only be read-only; use a</span>
-<span class="go">metaclass to implement modifiable class-level properties</span>
+<span class="x">metaclass to implement modifiable class-level properties</span>
 </pre></div>
 </div>
 <p>When the <code class="docutils literal notranslate"><span class="pre">lazy</span></code> option is used, the getter is only called once:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="k">class</span> <span class="nc">Foo</span><span class="p">:</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="k">class</span><span class="w"> </span><span class="nc">Foo</span><span class="p">:</span>
 <span class="gp">... </span>    <span class="nd">@classproperty</span><span class="p">(</span><span class="n">lazy</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-<span class="gp">... </span>    <span class="k">def</span> <span class="nf">bar</span><span class="p">(</span><span class="bp">cls</span><span class="p">):</span>
+<span class="gp">... </span>    <span class="k">def</span><span class="w"> </span><span class="nf">bar</span><span class="p">(</span><span class="bp">cls</span><span class="p">):</span>
 <span class="gp">... </span>        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Performing complicated calculation&quot;</span><span class="p">)</span>
 <span class="gp">... </span>        <span class="k">return</span> <span class="mi">1</span>
 <span class="gp">...</span>
@@ -1736,7 +1759,7 @@ read-only attributes:</p>
 </div>
 <p>If a subclass inherits a lazy <cite>classproperty</cite> the property is still
 re-evaluated for the subclass:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="k">class</span> <span class="nc">FooSub</span><span class="p">(</span><span class="n">Foo</span><span class="p">):</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="k">class</span><span class="w"> </span><span class="nc">FooSub</span><span class="p">(</span><span class="n">Foo</span><span class="p">):</span>
 <span class="gp">... </span>    <span class="k">pass</span>
 <span class="gp">...</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">FooSub</span><span class="o">.</span><span class="n">bar</span>
@@ -2122,9 +2145,9 @@ the pattern needs to match the beginning of the string
 of its computation in the <code class="docutils literal notranslate"><span class="pre">__dict__</span></code> of the object instance.  This is
 useful for computing the value of some property that should otherwise be
 invariant.  For example:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="k">class</span> <span class="nc">LazyTest</span><span class="p">:</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="k">class</span><span class="w"> </span><span class="nc">LazyTest</span><span class="p">:</span>
 <span class="gp">... </span>    <span class="nd">@lazyproperty</span>
-<span class="gp">... </span>    <span class="k">def</span> <span class="nf">complicated_property</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="gp">... </span>    <span class="k">def</span><span class="w"> </span><span class="nf">complicated_property</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="gp">... </span>        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Computing the value for complicated_property...&#39;</span><span class="p">)</span>
 <span class="gp">... </span>        <span class="k">return</span> <span class="mi">42</span>
 <span class="gp">...</span>

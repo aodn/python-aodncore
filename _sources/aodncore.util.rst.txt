@@ -12,6 +12,14 @@ Subpackages
 Submodules
 ----------
 
+aodncore.util.aws module
+------------------------
+
+.. automodule:: aodncore.util.aws
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
 aodncore.util.fileops module
 ----------------------------
 

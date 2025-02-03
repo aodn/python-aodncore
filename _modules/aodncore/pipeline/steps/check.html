@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>aodncore.pipeline.steps.check &mdash; aodncore 1.4.9 documentation</title>
+  <title>aodncore.pipeline.steps.check &mdash; aodncore 1.4.10 documentation</title>
       <link rel="stylesheet" href="../../../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../../../_static/css/theme.css" type="text/css" />
   <!--[if lt IE 9]>
@@ -95,25 +95,25 @@
 <span class="sd">The most common use of this step is to test for compliance using the IOOS Compliance Checker.</span>
 <span class="sd">&quot;&quot;&quot;</span>
 
-<span class="kn">import</span> <span class="nn">abc</span>
-<span class="kn">import</span> <span class="nn">itertools</span>
-<span class="kn">import</span> <span class="nn">os</span>
-<span class="kn">import</span> <span class="nn">re</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">abc</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">itertools</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">os</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">re</span>
 
 <span class="c1"># from collections import namedtuple</span>
 <span class="c1"># import json</span>
 
-<span class="kn">import</span> <span class="nn">tableschema</span>
-<span class="kn">import</span> <span class="nn">yaml</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">tableschema</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">yaml</span>
 
-<span class="kn">from</span> <span class="nn">compliance_checker.runner</span> <span class="kn">import</span> <span class="n">ComplianceChecker</span><span class="p">,</span> <span class="n">CheckSuite</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">compliance_checker.runner</span><span class="w"> </span><span class="kn">import</span> <span class="n">ComplianceChecker</span><span class="p">,</span> <span class="n">CheckSuite</span>
 
-<span class="kn">from</span> <span class="nn">.basestep</span> <span class="kn">import</span> <span class="n">BaseStepRunner</span>
-<span class="kn">from</span> <span class="nn">..common</span> <span class="kn">import</span> <span class="n">CheckResult</span><span class="p">,</span> <span class="n">PipelineFileCheckType</span><span class="p">,</span> <span class="n">validate_checktype</span>
-<span class="kn">from</span> <span class="nn">..exceptions</span> <span class="kn">import</span> <span class="n">ComplianceCheckFailedError</span><span class="p">,</span> <span class="n">InvalidCheckSuiteError</span><span class="p">,</span> <span class="n">InvalidCheckTypeError</span><span class="p">,</span> <span class="n">MissingFileError</span>
-<span class="kn">from</span> <span class="nn">..files</span> <span class="kn">import</span> <span class="n">PipelineFileCollection</span>
-<span class="kn">from</span> <span class="nn">...util</span> <span class="kn">import</span> <span class="p">(</span><span class="n">format_exception</span><span class="p">,</span> <span class="n">is_netcdf_file</span><span class="p">,</span> <span class="n">is_nonempty_file</span><span class="p">,</span> <span class="n">CaptureStdIO</span><span class="p">,</span> <span class="n">find_file</span><span class="p">)</span>
-<span class="kn">from</span> <span class="nn">...table</span> <span class="kn">import</span> <span class="p">(</span><span class="n">get_tableschema_descriptor</span><span class="p">)</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">.basestep</span><span class="w"> </span><span class="kn">import</span> <span class="n">BaseStepRunner</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">..common</span><span class="w"> </span><span class="kn">import</span> <span class="n">CheckResult</span><span class="p">,</span> <span class="n">PipelineFileCheckType</span><span class="p">,</span> <span class="n">validate_checktype</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">..exceptions</span><span class="w"> </span><span class="kn">import</span> <span class="n">ComplianceCheckFailedError</span><span class="p">,</span> <span class="n">InvalidCheckSuiteError</span><span class="p">,</span> <span class="n">InvalidCheckTypeError</span><span class="p">,</span> <span class="n">MissingFileError</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">..files</span><span class="w"> </span><span class="kn">import</span> <span class="n">PipelineFileCollection</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">...util</span><span class="w"> </span><span class="kn">import</span> <span class="p">(</span><span class="n">format_exception</span><span class="p">,</span> <span class="n">is_netcdf_file</span><span class="p">,</span> <span class="n">is_nonempty_file</span><span class="p">,</span> <span class="n">CaptureStdIO</span><span class="p">,</span> <span class="n">find_file</span><span class="p">)</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">...table</span><span class="w"> </span><span class="kn">import</span> <span class="p">(</span><span class="n">get_tableschema_descriptor</span><span class="p">)</span>
 
 <span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span>
     <span class="s1">&#39;get_check_runner&#39;</span><span class="p">,</span>
@@ -126,11 +126,11 @@
 <span class="p">]</span>
 
 
-<div class="viewcode-block" id="get_check_runner"><a class="viewcode-back" href="../../../../aodncore.pipeline.steps.html#aodncore.pipeline.steps.check.get_check_runner">[docs]</a><span class="k">def</span> <span class="nf">get_check_runner</span><span class="p">(</span><span class="n">config</span><span class="p">,</span> <span class="n">logger</span><span class="p">,</span> <span class="n">check_params</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<div class="viewcode-block" id="get_check_runner"><a class="viewcode-back" href="../../../../aodncore.pipeline.steps.html#aodncore.pipeline.steps.check.get_check_runner">[docs]</a><span class="k">def</span><span class="w"> </span><span class="nf">get_check_runner</span><span class="p">(</span><span class="n">config</span><span class="p">,</span> <span class="n">logger</span><span class="p">,</span> <span class="n">check_params</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
     <span class="k">return</span> <span class="n">CheckRunnerAdapter</span><span class="p">(</span><span class="n">config</span><span class="p">,</span> <span class="n">logger</span><span class="p">,</span> <span class="n">check_params</span><span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="get_child_check_runner"><a class="viewcode-back" href="../../../../aodncore.pipeline.steps.html#aodncore.pipeline.steps.check.get_child_check_runner">[docs]</a><span class="k">def</span> <span class="nf">get_child_check_runner</span><span class="p">(</span><span class="n">check_type</span><span class="p">,</span> <span class="n">config</span><span class="p">,</span> <span class="n">logger</span><span class="p">,</span> <span class="n">check_params</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<div class="viewcode-block" id="get_child_check_runner"><a class="viewcode-back" href="../../../../aodncore.pipeline.steps.html#aodncore.pipeline.steps.check.get_child_check_runner">[docs]</a><span class="k">def</span><span class="w"> </span><span class="nf">get_child_check_runner</span><span class="p">(</span><span class="n">check_type</span><span class="p">,</span> <span class="n">config</span><span class="p">,</span> <span class="n">logger</span><span class="p">,</span> <span class="n">check_params</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Factory function to return appropriate checker class based on check type value</span>
 
 <span class="sd">    :param check_type: :py:class:`PipelineFileCheckType` enum member</span>
@@ -153,7 +153,7 @@
         <span class="k">raise</span> <span class="n">InvalidCheckTypeError</span><span class="p">(</span><span class="s2">&quot;invalid check type &#39;</span><span class="si">{check_type}</span><span class="s2">&#39;&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">check_type</span><span class="o">=</span><span class="n">check_type</span><span class="p">))</span></div>
 
 
-<span class="k">class</span> <span class="nc">BaseCheckRunner</span><span class="p">(</span><span class="n">BaseStepRunner</span><span class="p">,</span> <span class="n">metaclass</span><span class="o">=</span><span class="n">abc</span><span class="o">.</span><span class="n">ABCMeta</span><span class="p">):</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">BaseCheckRunner</span><span class="p">(</span><span class="n">BaseStepRunner</span><span class="p">,</span> <span class="n">metaclass</span><span class="o">=</span><span class="n">abc</span><span class="o">.</span><span class="n">ABCMeta</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;A CheckRunner is responsible for performing checks on a given collection of files.</span>
 <span class="sd">    </span>
 <span class="sd">    The &#39;run&#39; method is supplied with a PipelineFileCollection object and performs arbitrary checks against the files, </span>
@@ -167,12 +167,12 @@
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="nd">@abc</span><span class="o">.</span><span class="n">abstractmethod</span>
-    <span class="k">def</span> <span class="nf">run</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pipeline_files</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">run</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pipeline_files</span><span class="p">):</span>
         <span class="k">pass</span>
 
 
-<div class="viewcode-block" id="CheckRunnerAdapter"><a class="viewcode-back" href="../../../../aodncore.pipeline.steps.html#aodncore.pipeline.steps.check.CheckRunnerAdapter">[docs]</a><span class="k">class</span> <span class="nc">CheckRunnerAdapter</span><span class="p">(</span><span class="n">BaseCheckRunner</span><span class="p">):</span>
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">config</span><span class="p">,</span> <span class="n">logger</span><span class="p">,</span> <span class="n">check_params</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<div class="viewcode-block" id="CheckRunnerAdapter"><a class="viewcode-back" href="../../../../aodncore.pipeline.steps.html#aodncore.pipeline.steps.check.CheckRunnerAdapter">[docs]</a><span class="k">class</span><span class="w"> </span><span class="nc">CheckRunnerAdapter</span><span class="p">(</span><span class="n">BaseCheckRunner</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">config</span><span class="p">,</span> <span class="n">logger</span><span class="p">,</span> <span class="n">check_params</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">config</span><span class="p">,</span> <span class="n">logger</span><span class="p">)</span>
 
         <span class="k">if</span> <span class="n">check_params</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
@@ -180,7 +180,7 @@
 
         <span class="bp">self</span><span class="o">.</span><span class="n">check_params</span> <span class="o">=</span> <span class="n">check_params</span>
 
-<div class="viewcode-block" id="CheckRunnerAdapter.run"><a class="viewcode-back" href="../../../../aodncore.pipeline.steps.html#aodncore.pipeline.steps.check.CheckRunnerAdapter.run">[docs]</a>    <span class="k">def</span> <span class="nf">run</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pipeline_files</span><span class="p">):</span>
+<div class="viewcode-block" id="CheckRunnerAdapter.run"><a class="viewcode-back" href="../../../../aodncore.pipeline.steps.html#aodncore.pipeline.steps.check.CheckRunnerAdapter.run">[docs]</a>    <span class="k">def</span><span class="w"> </span><span class="nf">run</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pipeline_files</span><span class="p">):</span>
         <span class="n">check_types</span> <span class="o">=</span> <span class="p">{</span><span class="n">t</span><span class="o">.</span><span class="n">check_type</span> <span class="k">for</span> <span class="n">t</span> <span class="ow">in</span> <span class="n">pipeline_files</span> <span class="k">if</span>
                        <span class="n">t</span><span class="o">.</span><span class="n">check_type</span> <span class="ow">in</span> <span class="n">PipelineFileCheckType</span><span class="o">.</span><span class="n">all_checkable_types</span><span class="p">}</span>
 
@@ -204,8 +204,8 @@
                 <span class="s2">&quot;the following files failed the check step: </span><span class="si">{failed_list}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">failed_list</span><span class="o">=</span><span class="n">failed_list</span><span class="p">))</span></div></div>
 
 
-<div class="viewcode-block" id="ComplianceCheckerCheckRunner"><a class="viewcode-back" href="../../../../aodncore.pipeline.steps.html#aodncore.pipeline.steps.check.ComplianceCheckerCheckRunner">[docs]</a><span class="k">class</span> <span class="nc">ComplianceCheckerCheckRunner</span><span class="p">(</span><span class="n">BaseCheckRunner</span><span class="p">):</span>
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">config</span><span class="p">,</span> <span class="n">logger</span><span class="p">,</span> <span class="n">check_params</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<div class="viewcode-block" id="ComplianceCheckerCheckRunner"><a class="viewcode-back" href="../../../../aodncore.pipeline.steps.html#aodncore.pipeline.steps.check.ComplianceCheckerCheckRunner">[docs]</a><span class="k">class</span><span class="w"> </span><span class="nc">ComplianceCheckerCheckRunner</span><span class="p">(</span><span class="n">BaseCheckRunner</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">config</span><span class="p">,</span> <span class="n">logger</span><span class="p">,</span> <span class="n">check_params</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">config</span><span class="p">,</span> <span class="n">logger</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">check_params</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">check_params</span> <span class="o">=</span> <span class="p">{}</span>
@@ -229,10 +229,10 @@
             <span class="k">raise</span> <span class="n">InvalidCheckSuiteError</span><span class="p">(</span>
                 <span class="s1">&#39;invalid compliance check suites: </span><span class="si">{invalid_suites}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">invalid_suites</span><span class="o">=</span><span class="n">invalid_suites</span><span class="p">))</span>
 
-    <span class="k">def</span> <span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="s2">&quot;</span><span class="si">{self.__class__.__name__}</span><span class="s2">(checks=</span><span class="si">{self.checks}</span><span class="s2">)&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">=</span><span class="bp">self</span><span class="p">)</span>
 
-<div class="viewcode-block" id="ComplianceCheckerCheckRunner.run"><a class="viewcode-back" href="../../../../aodncore.pipeline.steps.html#aodncore.pipeline.steps.check.ComplianceCheckerCheckRunner.run">[docs]</a>    <span class="k">def</span> <span class="nf">run</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pipeline_files</span><span class="p">):</span>
+<div class="viewcode-block" id="ComplianceCheckerCheckRunner.run"><a class="viewcode-back" href="../../../../aodncore.pipeline.steps.html#aodncore.pipeline.steps.check.ComplianceCheckerCheckRunner.run">[docs]</a>    <span class="k">def</span><span class="w"> </span><span class="nf">run</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pipeline_files</span><span class="p">):</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">skip_checks</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;compliance checks will skip </span><span class="si">{self.skip_checks}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">=</span><span class="bp">self</span><span class="p">))</span>
 
@@ -256,7 +256,7 @@
 
             <span class="n">pipeline_file</span><span class="o">.</span><span class="n">check_result</span> <span class="o">=</span> <span class="n">CheckResult</span><span class="p">(</span><span class="n">compliant</span><span class="p">,</span> <span class="n">compliance_log</span><span class="p">,</span> <span class="n">errors</span><span class="p">)</span></div>
 
-    <span class="k">def</span> <span class="nf">_run_check</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">file_path</span><span class="p">,</span> <span class="n">check</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_run_check</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">file_path</span><span class="p">,</span> <span class="n">check</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Run a single check suite on the given file.</span>
 
@@ -289,8 +289,8 @@
         <span class="k">return</span> <span class="n">CheckResult</span><span class="p">(</span><span class="n">compliant</span><span class="p">,</span> <span class="n">compliance_log</span><span class="p">,</span> <span class="n">errors</span><span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="FormatCheckRunner"><a class="viewcode-back" href="../../../../aodncore.pipeline.steps.html#aodncore.pipeline.steps.check.FormatCheckRunner">[docs]</a><span class="k">class</span> <span class="nc">FormatCheckRunner</span><span class="p">(</span><span class="n">BaseCheckRunner</span><span class="p">):</span>
-<div class="viewcode-block" id="FormatCheckRunner.run"><a class="viewcode-back" href="../../../../aodncore.pipeline.steps.html#aodncore.pipeline.steps.check.FormatCheckRunner.run">[docs]</a>    <span class="k">def</span> <span class="nf">run</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pipeline_files</span><span class="p">):</span>
+<div class="viewcode-block" id="FormatCheckRunner"><a class="viewcode-back" href="../../../../aodncore.pipeline.steps.html#aodncore.pipeline.steps.check.FormatCheckRunner">[docs]</a><span class="k">class</span><span class="w"> </span><span class="nc">FormatCheckRunner</span><span class="p">(</span><span class="n">BaseCheckRunner</span><span class="p">):</span>
+<div class="viewcode-block" id="FormatCheckRunner.run"><a class="viewcode-back" href="../../../../aodncore.pipeline.steps.html#aodncore.pipeline.steps.check.FormatCheckRunner.run">[docs]</a>    <span class="k">def</span><span class="w"> </span><span class="nf">run</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pipeline_files</span><span class="p">):</span>
         <span class="k">for</span> <span class="n">pipeline_file</span> <span class="ow">in</span> <span class="n">pipeline_files</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span>
                 <span class="s2">&quot;checking &#39;</span><span class="si">{pipeline_file.src_path}</span><span class="s2">&#39; is a valid &#39;</span><span class="si">{pipeline_file.file_type.name}</span><span class="s2">&#39; file&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
@@ -302,8 +302,8 @@
             <span class="n">pipeline_file</span><span class="o">.</span><span class="n">check_result</span> <span class="o">=</span> <span class="n">CheckResult</span><span class="p">(</span><span class="n">compliant</span><span class="p">,</span> <span class="n">compliance_log</span><span class="p">)</span></div></div>
 
 
-<div class="viewcode-block" id="NonEmptyCheckRunner"><a class="viewcode-back" href="../../../../aodncore.pipeline.steps.html#aodncore.pipeline.steps.check.NonEmptyCheckRunner">[docs]</a><span class="k">class</span> <span class="nc">NonEmptyCheckRunner</span><span class="p">(</span><span class="n">BaseCheckRunner</span><span class="p">):</span>
-<div class="viewcode-block" id="NonEmptyCheckRunner.run"><a class="viewcode-back" href="../../../../aodncore.pipeline.steps.html#aodncore.pipeline.steps.check.NonEmptyCheckRunner.run">[docs]</a>    <span class="k">def</span> <span class="nf">run</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pipeline_files</span><span class="p">):</span>
+<div class="viewcode-block" id="NonEmptyCheckRunner"><a class="viewcode-back" href="../../../../aodncore.pipeline.steps.html#aodncore.pipeline.steps.check.NonEmptyCheckRunner">[docs]</a><span class="k">class</span><span class="w"> </span><span class="nc">NonEmptyCheckRunner</span><span class="p">(</span><span class="n">BaseCheckRunner</span><span class="p">):</span>
+<div class="viewcode-block" id="NonEmptyCheckRunner.run"><a class="viewcode-back" href="../../../../aodncore.pipeline.steps.html#aodncore.pipeline.steps.check.NonEmptyCheckRunner.run">[docs]</a>    <span class="k">def</span><span class="w"> </span><span class="nf">run</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pipeline_files</span><span class="p">):</span>
         <span class="k">for</span> <span class="n">pipeline_file</span> <span class="ow">in</span> <span class="n">pipeline_files</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span>
                 <span class="s2">&quot;checking that &#39;</span><span class="si">{pipeline_file.src_path}</span><span class="s2">&#39; is not empty&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">pipeline_file</span><span class="o">=</span><span class="n">pipeline_file</span><span class="p">))</span>
@@ -312,8 +312,8 @@
             <span class="n">pipeline_file</span><span class="o">.</span><span class="n">check_result</span> <span class="o">=</span> <span class="n">CheckResult</span><span class="p">(</span><span class="n">compliant</span><span class="p">,</span> <span class="n">compliance_log</span><span class="p">)</span></div></div>
 
 
-<div class="viewcode-block" id="TableSchemaCheckRunner"><a class="viewcode-back" href="../../../../aodncore.pipeline.steps.html#aodncore.pipeline.steps.check.TableSchemaCheckRunner">[docs]</a><span class="k">class</span> <span class="nc">TableSchemaCheckRunner</span><span class="p">(</span><span class="n">BaseCheckRunner</span><span class="p">):</span>
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">config</span><span class="p">,</span> <span class="n">logger</span><span class="p">,</span> <span class="n">check_params</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<div class="viewcode-block" id="TableSchemaCheckRunner"><a class="viewcode-back" href="../../../../aodncore.pipeline.steps.html#aodncore.pipeline.steps.check.TableSchemaCheckRunner">[docs]</a><span class="k">class</span><span class="w"> </span><span class="nc">TableSchemaCheckRunner</span><span class="p">(</span><span class="n">BaseCheckRunner</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">config</span><span class="p">,</span> <span class="n">logger</span><span class="p">,</span> <span class="n">check_params</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">config</span><span class="p">,</span> <span class="n">logger</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">compliance_log</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">compliant</span> <span class="o">=</span> <span class="kc">True</span>
@@ -327,22 +327,22 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">_logger</span><span class="o">.</span><span class="n">sysinfo</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Schema matching pattern is &#39;</span><span class="si">{</span><span class="n">pattern</span><span class="si">}</span><span class="s2">&#39;&quot;</span><span class="p">)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">tableschema_filename_pattern</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="n">pattern</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">_dict_to_str</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">_dict</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_dict_to_str</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">_dict</span><span class="p">):</span>
         <span class="n">_str</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
         <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">_dict</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
             <span class="n">_str</span> <span class="o">+=</span> <span class="s1">&#39; </span><span class="si">{}</span><span class="s1">: </span><span class="si">{}</span><span class="s1">,&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">k</span><span class="p">,</span> <span class="n">v</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">_str</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
 
-    <span class="k">def</span> <span class="nf">_exc_handler</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">exc</span><span class="p">,</span> <span class="n">row_number</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">row_data</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">error_data</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_exc_handler</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">exc</span><span class="p">,</span> <span class="n">row_number</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">row_data</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">error_data</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="n">error</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;Exception: </span><span class="si">{</span><span class="n">exc</span><span class="si">}</span><span class="se">\n</span><span class="s2">Error Data: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_dict_to_str</span><span class="p">(</span><span class="n">error_data</span><span class="p">)</span><span class="si">}</span><span class="se">\n</span><span class="s2">&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">compliance_log</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">error</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">_reset_compliance</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_reset_compliance</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">compliance_log</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">compliant</span> <span class="o">=</span> <span class="kc">True</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">errors</span> <span class="o">=</span> <span class="kc">False</span>
 
-<div class="viewcode-block" id="TableSchemaCheckRunner.validate"><a class="viewcode-back" href="../../../../aodncore.pipeline.steps.html#aodncore.pipeline.steps.check.TableSchemaCheckRunner.validate">[docs]</a>    <span class="k">def</span> <span class="nf">validate</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">path</span><span class="p">):</span>
+<div class="viewcode-block" id="TableSchemaCheckRunner.validate"><a class="viewcode-back" href="../../../../aodncore.pipeline.steps.html#aodncore.pipeline.steps.check.TableSchemaCheckRunner.validate">[docs]</a>    <span class="k">def</span><span class="w"> </span><span class="nf">validate</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">path</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_reset_compliance</span><span class="p">()</span>
         <span class="n">search_string</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">splitext</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">basename</span><span class="p">(</span><span class="n">path</span><span class="p">))[</span><span class="mi">0</span><span class="p">]</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">tableschema_filename_pattern</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
@@ -367,7 +367,7 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">compliant</span> <span class="o">=</span> <span class="kc">False</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">errors</span> <span class="o">=</span> <span class="kc">True</span></div>
 
-<div class="viewcode-block" id="TableSchemaCheckRunner.run"><a class="viewcode-back" href="../../../../aodncore.pipeline.steps.html#aodncore.pipeline.steps.check.TableSchemaCheckRunner.run">[docs]</a>    <span class="k">def</span> <span class="nf">run</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pipeline_files</span><span class="p">):</span>
+<div class="viewcode-block" id="TableSchemaCheckRunner.run"><a class="viewcode-back" href="../../../../aodncore.pipeline.steps.html#aodncore.pipeline.steps.check.TableSchemaCheckRunner.run">[docs]</a>    <span class="k">def</span><span class="w"> </span><span class="nf">run</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pipeline_files</span><span class="p">):</span>
         <span class="k">for</span> <span class="n">pipeline_file</span> <span class="ow">in</span> <span class="n">pipeline_files</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span>
                 <span class="s2">&quot;checking that &#39;</span><span class="si">{pipeline_file.src_path}</span><span class="s2">&#39; is valid&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">pipeline_file</span><span class="o">=</span><span class="n">pipeline_file</span><span class="p">))</span>

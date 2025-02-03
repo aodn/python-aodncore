@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>aodncore.pipeline.common &mdash; aodncore 1.4.9 documentation</title>
+  <title>aodncore.pipeline.common &mdash; aodncore 1.4.10 documentation</title>
       <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
   <!--[if lt IE 9]>
@@ -90,11 +90,11 @@
 <span class="sd">    project.</span>
 <span class="sd">&quot;&quot;&quot;</span>
 
-<span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">os</span>
 
-<span class="kn">from</span> <span class="nn">enum</span> <span class="kn">import</span> <span class="n">Enum</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">enum</span><span class="w"> </span><span class="kn">import</span> <span class="n">Enum</span>
 
-<span class="kn">from</span> <span class="nn">..util</span> <span class="kn">import</span> <span class="p">(</span><span class="n">classproperty</span><span class="p">,</span> <span class="n">is_gzip_file</span><span class="p">,</span> <span class="n">is_jpeg_file</span><span class="p">,</span> <span class="n">is_json_file</span><span class="p">,</span> <span class="n">is_netcdf_file</span><span class="p">,</span> <span class="n">is_nonempty_file</span><span class="p">,</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">..util</span><span class="w"> </span><span class="kn">import</span> <span class="p">(</span><span class="n">classproperty</span><span class="p">,</span> <span class="n">is_gzip_file</span><span class="p">,</span> <span class="n">is_jpeg_file</span><span class="p">,</span> <span class="n">is_json_file</span><span class="p">,</span> <span class="n">is_netcdf_file</span><span class="p">,</span> <span class="n">is_nonempty_file</span><span class="p">,</span>
                     <span class="n">is_pdf_file</span><span class="p">,</span> <span class="n">is_png_file</span><span class="p">,</span> <span class="n">is_valid_email_address</span><span class="p">,</span> <span class="n">is_tiff_file</span><span class="p">,</span> <span class="n">is_zip_file</span><span class="p">,</span> <span class="n">iter_public_attributes</span><span class="p">,</span>
                     <span class="n">validate_membership</span><span class="p">,</span> <span class="n">validate_type</span><span class="p">)</span>
 
@@ -115,45 +115,45 @@
 <span class="p">]</span>
 
 
-<div class="viewcode-block" id="CheckResult"><a class="viewcode-back" href="../../../aodncore.pipeline.html#aodncore.pipeline.common.CheckResult">[docs]</a><span class="k">class</span> <span class="nc">CheckResult</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+<div class="viewcode-block" id="CheckResult"><a class="viewcode-back" href="../../../aodncore.pipeline.html#aodncore.pipeline.common.CheckResult">[docs]</a><span class="k">class</span><span class="w"> </span><span class="nc">CheckResult</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Simple container class to hold a check result</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">compliant</span><span class="p">,</span> <span class="n">log</span><span class="p">,</span> <span class="n">errors</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">compliant</span><span class="p">,</span> <span class="n">log</span><span class="p">,</span> <span class="n">errors</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_compliant</span> <span class="o">=</span> <span class="n">compliant</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_log</span> <span class="o">=</span> <span class="n">log</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_errors</span> <span class="o">=</span> <span class="n">errors</span>
 
-    <span class="k">def</span> <span class="fm">__iter__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__iter__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="n">iter_public_attributes</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
 
     <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">compliant</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">compliant</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_compliant</span>
 
     <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">log</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">log</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_log</span>
 
     <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">errors</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">errors</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_errors</span></div>
 
 
-<div class="viewcode-block" id="HandlerResult"><a class="viewcode-back" href="../../../aodncore.pipeline.html#aodncore.pipeline.common.HandlerResult">[docs]</a><span class="k">class</span> <span class="nc">HandlerResult</span><span class="p">(</span><span class="n">Enum</span><span class="p">):</span>
+<div class="viewcode-block" id="HandlerResult"><a class="viewcode-back" href="../../../aodncore.pipeline.html#aodncore.pipeline.common.HandlerResult">[docs]</a><span class="k">class</span><span class="w"> </span><span class="nc">HandlerResult</span><span class="p">(</span><span class="n">Enum</span><span class="p">):</span>
     <span class="n">UNKNOWN</span> <span class="o">=</span> <span class="mi">0</span>
     <span class="n">SUCCESS</span> <span class="o">=</span> <span class="mi">1</span>
     <span class="n">ERROR</span> <span class="o">=</span> <span class="mi">2</span></div>
 
 
-<div class="viewcode-block" id="NotificationRecipientType"><a class="viewcode-back" href="../../../aodncore.pipeline.html#aodncore.pipeline.common.NotificationRecipientType">[docs]</a><span class="k">class</span> <span class="nc">NotificationRecipientType</span><span class="p">(</span><span class="n">Enum</span><span class="p">):</span>
+<div class="viewcode-block" id="NotificationRecipientType"><a class="viewcode-back" href="../../../aodncore.pipeline.html#aodncore.pipeline.common.NotificationRecipientType">[docs]</a><span class="k">class</span><span class="w"> </span><span class="nc">NotificationRecipientType</span><span class="p">(</span><span class="n">Enum</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Notification recipient type</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">INVALID</span> <span class="o">=</span> <span class="p">(</span><span class="s1">&#39;invalid&#39;</span><span class="p">,</span> <span class="k">lambda</span> <span class="n">p</span><span class="p">:</span> <span class="kc">False</span><span class="p">,</span> <span class="s1">&#39;invalid protocol&#39;</span><span class="p">)</span>
     <span class="n">EMAIL</span> <span class="o">=</span> <span class="p">(</span><span class="s1">&#39;email&#39;</span><span class="p">,</span> <span class="n">is_valid_email_address</span><span class="p">,</span> <span class="s1">&#39;invalid email address&#39;</span><span class="p">)</span>
     <span class="n">SNS</span> <span class="o">=</span> <span class="p">(</span><span class="s1">&#39;sns&#39;</span><span class="p">,</span> <span class="k">lambda</span> <span class="n">p</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span> <span class="s1">&#39;invalid SNS topic&#39;</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">protocol</span><span class="p">,</span> <span class="n">address_validation_function</span><span class="p">,</span> <span class="n">error_string</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">protocol</span><span class="p">,</span> <span class="n">address_validation_function</span><span class="p">,</span> <span class="n">error_string</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 
 <span class="sd">        :param protocol: protocol string used to map string representation of a protocol to an Enum element</span>
@@ -166,23 +166,23 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">_error_string</span> <span class="o">=</span> <span class="n">error_string</span>
 
     <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">protocol</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">protocol</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_protocol</span>
 
     <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">address_validation_function</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">address_validation_function</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_address_validation_function</span>
 
     <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">error_string</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">error_string</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_error_string</span>
 
 <div class="viewcode-block" id="NotificationRecipientType.get_type_from_protocol"><a class="viewcode-back" href="../../../aodncore.pipeline.html#aodncore.pipeline.common.NotificationRecipientType.get_type_from_protocol">[docs]</a>    <span class="nd">@classmethod</span>
-    <span class="k">def</span> <span class="nf">get_type_from_protocol</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">protocol</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_type_from_protocol</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">protocol</span><span class="p">):</span>
         <span class="k">return</span> <span class="nb">next</span><span class="p">((</span><span class="n">t</span> <span class="k">for</span> <span class="n">t</span> <span class="ow">in</span> <span class="bp">cls</span> <span class="k">if</span> <span class="n">t</span><span class="o">.</span><span class="n">protocol</span> <span class="o">==</span> <span class="n">protocol</span><span class="p">),</span> <span class="bp">cls</span><span class="o">.</span><span class="n">INVALID</span><span class="p">)</span></div></div>
 
 
-<div class="viewcode-block" id="FileType"><a class="viewcode-back" href="../../../aodncore.pipeline.html#aodncore.pipeline.common.FileType">[docs]</a><span class="k">class</span> <span class="nc">FileType</span><span class="p">(</span><span class="n">Enum</span><span class="p">):</span>
+<div class="viewcode-block" id="FileType"><a class="viewcode-back" href="../../../aodncore.pipeline.html#aodncore.pipeline.common.FileType">[docs]</a><span class="k">class</span><span class="w"> </span><span class="nc">FileType</span><span class="p">(</span><span class="n">Enum</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Represents each known file type, including extensions, mime type and validator function</span>
 
 <span class="sd">    Each enum member may have it&#39;s attributes accessed by name when required for comparisons and filtering, e.g.</span>
@@ -232,22 +232,22 @@
     <span class="n">SIMPLE_MANIFEST</span> <span class="o">=</span> <span class="p">((</span><span class="s1">&#39;.manifest&#39;</span><span class="p">,),</span> <span class="s1">&#39;text/plain&#39;</span><span class="p">,</span> <span class="n">is_nonempty_file</span><span class="p">)</span>
     <span class="n">DELETE_MANIFEST</span> <span class="o">=</span> <span class="p">((</span><span class="s1">&#39;.delete_manifest&#39;</span><span class="p">,),</span> <span class="s1">&#39;text/csv&#39;</span><span class="p">,</span> <span class="n">is_nonempty_file</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">extensions</span><span class="p">,</span> <span class="n">mime_type</span><span class="p">,</span> <span class="n">validator</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">extensions</span><span class="p">,</span> <span class="n">mime_type</span><span class="p">,</span> <span class="n">validator</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">extensions</span> <span class="o">=</span> <span class="n">extensions</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">mime_type</span> <span class="o">=</span> <span class="n">mime_type</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">validator</span> <span class="o">=</span> <span class="n">validator</span>
 
     <span class="c1"># noinspection PyTypeChecker</span>
 <div class="viewcode-block" id="FileType.get_type_from_extension"><a class="viewcode-back" href="../../../aodncore.pipeline.html#aodncore.pipeline.common.FileType.get_type_from_extension">[docs]</a>    <span class="nd">@classmethod</span>
-    <span class="k">def</span> <span class="nf">get_type_from_extension</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">extension</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_type_from_extension</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">extension</span><span class="p">):</span>
         <span class="k">return</span> <span class="nb">next</span><span class="p">((</span><span class="n">t</span> <span class="k">for</span> <span class="n">t</span> <span class="ow">in</span> <span class="bp">cls</span> <span class="k">if</span> <span class="n">extension</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="ow">in</span> <span class="n">t</span><span class="o">.</span><span class="n">extensions</span><span class="p">),</span> <span class="bp">cls</span><span class="o">.</span><span class="n">UNKNOWN</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="FileType.get_type_from_name"><a class="viewcode-back" href="../../../aodncore.pipeline.html#aodncore.pipeline.common.FileType.get_type_from_name">[docs]</a>    <span class="nd">@classmethod</span>
-    <span class="k">def</span> <span class="nf">get_type_from_name</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">name</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_type_from_name</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">name</span><span class="p">):</span>
         <span class="n">_</span><span class="p">,</span> <span class="n">extension</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">splitext</span><span class="p">(</span><span class="n">name</span><span class="p">)</span>
         <span class="k">return</span> <span class="bp">cls</span><span class="o">.</span><span class="n">get_type_from_extension</span><span class="p">(</span><span class="n">extension</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="FileType.is_type"><a class="viewcode-back" href="../../../aodncore.pipeline.html#aodncore.pipeline.common.FileType.is_type">[docs]</a>    <span class="k">def</span> <span class="nf">is_type</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
+<div class="viewcode-block" id="FileType.is_type"><a class="viewcode-back" href="../../../aodncore.pipeline.html#aodncore.pipeline.common.FileType.is_type">[docs]</a>    <span class="k">def</span><span class="w"> </span><span class="nf">is_type</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Check whether the *type* (i.e. the information before the slash) equals the given value</span>
 
 <span class="sd">        :param value: type to compare against</span>
@@ -259,12 +259,12 @@
         <span class="k">return</span> <span class="n">type_</span> <span class="o">==</span> <span class="n">value</span></div>
 
     <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">is_image_type</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">is_image_type</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Read-only boolean property indicating whether the file type instance is an image type.&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">is_type</span><span class="p">(</span><span class="s1">&#39;image&#39;</span><span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="PipelineFileCheckType"><a class="viewcode-back" href="../../../aodncore.pipeline.html#aodncore.pipeline.common.PipelineFileCheckType">[docs]</a><span class="k">class</span> <span class="nc">PipelineFileCheckType</span><span class="p">(</span><span class="n">Enum</span><span class="p">):</span>
+<div class="viewcode-block" id="PipelineFileCheckType"><a class="viewcode-back" href="../../../aodncore.pipeline.html#aodncore.pipeline.common.PipelineFileCheckType">[docs]</a><span class="k">class</span><span class="w"> </span><span class="nc">PipelineFileCheckType</span><span class="p">(</span><span class="n">Enum</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Each :py:class:`PipelineFile` may individually specify which checks are performed against it</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">UNSET</span> <span class="o">=</span> <span class="mi">0</span>
@@ -276,16 +276,16 @@
 
     <span class="c1"># noinspection PyMethodParameters,PyTypeChecker</span>
     <span class="nd">@classproperty</span>
-    <span class="k">def</span> <span class="nf">all_settable_types</span><span class="p">(</span><span class="bp">cls</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">all_settable_types</span><span class="p">(</span><span class="bp">cls</span><span class="p">):</span>
         <span class="k">return</span> <span class="p">{</span><span class="n">t</span> <span class="k">for</span> <span class="n">t</span> <span class="ow">in</span> <span class="bp">cls</span> <span class="k">if</span> <span class="n">t</span> <span class="o">!=</span> <span class="bp">cls</span><span class="o">.</span><span class="n">UNSET</span><span class="p">}</span>
 
     <span class="c1"># noinspection PyMethodParameters,PyTypeChecker</span>
     <span class="nd">@classproperty</span>
-    <span class="k">def</span> <span class="nf">all_checkable_types</span><span class="p">(</span><span class="bp">cls</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">all_checkable_types</span><span class="p">(</span><span class="bp">cls</span><span class="p">):</span>
         <span class="k">return</span> <span class="p">{</span><span class="n">t</span> <span class="k">for</span> <span class="n">t</span> <span class="ow">in</span> <span class="bp">cls</span> <span class="k">if</span> <span class="n">t</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">(</span><span class="bp">cls</span><span class="o">.</span><span class="n">UNSET</span><span class="p">,</span> <span class="bp">cls</span><span class="o">.</span><span class="n">NO_ACTION</span><span class="p">)}</span></div>
 
 
-<div class="viewcode-block" id="PipelineFilePublishType"><a class="viewcode-back" href="../../../aodncore.pipeline.html#aodncore.pipeline.common.PipelineFilePublishType">[docs]</a><span class="k">class</span> <span class="nc">PipelineFilePublishType</span><span class="p">(</span><span class="n">Enum</span><span class="p">):</span>
+<div class="viewcode-block" id="PipelineFilePublishType"><a class="viewcode-back" href="../../../aodncore.pipeline.html#aodncore.pipeline.common.PipelineFilePublishType">[docs]</a><span class="k">class</span><span class="w"> </span><span class="nc">PipelineFilePublishType</span><span class="p">(</span><span class="n">Enum</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Each :py:class:`PipelineFile` may individually specify which combination of archive/upload/harvest actions must</span>
 <span class="sd">    occur before it is considered &quot;published&quot;</span>
 
@@ -319,7 +319,7 @@
     <span class="n">DELETE_ONLY</span> <span class="o">=</span> <span class="p">(</span><span class="kc">False</span><span class="p">,</span> <span class="kc">True</span><span class="p">,</span> <span class="kc">False</span><span class="p">,</span> <span class="kc">True</span><span class="p">,</span> <span class="kc">False</span><span class="p">)</span>
     <span class="n">DELETE_UNHARVEST</span> <span class="o">=</span> <span class="p">(</span><span class="kc">False</span><span class="p">,</span> <span class="kc">True</span><span class="p">,</span> <span class="kc">False</span><span class="p">,</span> <span class="kc">True</span><span class="p">,</span> <span class="kc">True</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">is_addition_type</span><span class="p">,</span> <span class="n">is_deletion_type</span><span class="p">,</span> <span class="n">is_archive_type</span><span class="p">,</span> <span class="n">is_store_type</span><span class="p">,</span> <span class="n">is_harvest_type</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">is_addition_type</span><span class="p">,</span> <span class="n">is_deletion_type</span><span class="p">,</span> <span class="n">is_archive_type</span><span class="p">,</span> <span class="n">is_store_type</span><span class="p">,</span> <span class="n">is_harvest_type</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_is_addition_type</span> <span class="o">=</span> <span class="n">is_addition_type</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_is_deletion_type</span> <span class="o">=</span> <span class="n">is_deletion_type</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_is_archive_type</span> <span class="o">=</span> <span class="n">is_archive_type</span>
@@ -327,37 +327,37 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">_is_harvest_type</span> <span class="o">=</span> <span class="n">is_harvest_type</span>
 
 <div class="viewcode-block" id="PipelineFilePublishType.get_type_from_name"><a class="viewcode-back" href="../../../aodncore.pipeline.html#aodncore.pipeline.common.PipelineFilePublishType.get_type_from_name">[docs]</a>    <span class="nd">@classmethod</span>
-    <span class="k">def</span> <span class="nf">get_type_from_name</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">name</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_type_from_name</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">name</span><span class="p">):</span>
         <span class="k">return</span> <span class="nb">next</span><span class="p">((</span><span class="n">t</span> <span class="k">for</span> <span class="n">t</span> <span class="ow">in</span> <span class="bp">cls</span> <span class="k">if</span> <span class="n">name</span> <span class="o">==</span> <span class="n">t</span><span class="o">.</span><span class="n">name</span><span class="p">),</span> <span class="bp">cls</span><span class="o">.</span><span class="n">UNSET</span><span class="p">)</span></div>
 
     <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">is_addition_type</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">is_addition_type</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_is_addition_type</span>
 
     <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">is_deletion_type</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">is_deletion_type</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_is_deletion_type</span>
 
     <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">is_archive_type</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">is_archive_type</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_is_archive_type</span>
 
     <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">is_store_type</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">is_store_type</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_is_store_type</span>
 
     <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">is_harvest_type</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">is_harvest_type</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_is_harvest_type</span>
 
     <span class="c1"># noinspection PyMethodParameters,PyTypeChecker</span>
     <span class="nd">@classproperty</span>
-    <span class="k">def</span> <span class="nf">all_addition_types</span><span class="p">(</span><span class="bp">cls</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">all_addition_types</span><span class="p">(</span><span class="bp">cls</span><span class="p">):</span>
         <span class="k">return</span> <span class="p">{</span><span class="n">t</span> <span class="k">for</span> <span class="n">t</span> <span class="ow">in</span> <span class="bp">cls</span> <span class="k">if</span> <span class="n">t</span><span class="o">.</span><span class="n">is_addition_type</span><span class="p">}</span>
 
     <span class="c1"># noinspection PyMethodParameters,PyTypeChecker</span>
     <span class="nd">@classproperty</span>
-    <span class="k">def</span> <span class="nf">all_deletion_types</span><span class="p">(</span><span class="bp">cls</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">all_deletion_types</span><span class="p">(</span><span class="bp">cls</span><span class="p">):</span>
         <span class="k">return</span> <span class="p">{</span><span class="n">t</span> <span class="k">for</span> <span class="n">t</span> <span class="ow">in</span> <span class="bp">cls</span> <span class="k">if</span> <span class="n">t</span><span class="o">.</span><span class="n">is_deletion_type</span><span class="p">}</span></div>
 
 

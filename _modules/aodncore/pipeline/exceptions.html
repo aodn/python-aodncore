@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>aodncore.pipeline.exceptions &mdash; aodncore 1.4.9 documentation</title>
+  <title>aodncore.pipeline.exceptions &mdash; aodncore 1.4.10 documentation</title>
       <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
   <!--[if lt IE 9]>
@@ -89,7 +89,7 @@
 <span></span><span class="sd">&quot;&quot;&quot;This module provides custom exceptions used throughout the :py:mod:`aodncore.pipeline` package.</span>
 <span class="sd">&quot;&quot;&quot;</span>
 
-<span class="kn">from</span> <span class="nn">..common.exceptions</span> <span class="kn">import</span> <span class="n">AodnBaseError</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">..common.exceptions</span><span class="w"> </span><span class="kn">import</span> <span class="n">AodnBaseError</span>
 
 <span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span>
     <span class="s1">&#39;PipelineProcessingError&#39;</span><span class="p">,</span>
@@ -128,7 +128,7 @@
 <span class="p">]</span>
 
 
-<div class="viewcode-block" id="PipelineProcessingError"><a class="viewcode-back" href="../../../aodncore.pipeline.html#aodncore.pipeline.exceptions.PipelineProcessingError">[docs]</a><span class="k">class</span> <span class="nc">PipelineProcessingError</span><span class="p">(</span><span class="n">AodnBaseError</span><span class="p">):</span>
+<div class="viewcode-block" id="PipelineProcessingError"><a class="viewcode-back" href="../../../aodncore.pipeline.html#aodncore.pipeline.exceptions.PipelineProcessingError">[docs]</a><span class="k">class</span><span class="w"> </span><span class="nc">PipelineProcessingError</span><span class="p">(</span><span class="n">AodnBaseError</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Base class for all exceptions which indicate that there was a problem processing the file as opposed to an</span>
 <span class="sd">    internal configuration or environmental error. Handler classes should typically raise exceptions based on this</span>
 <span class="sd">    exception to signal non-compliance of the file or some other *user correctable* problem.</span>
@@ -136,7 +136,7 @@
     <span class="k">pass</span></div>
 
 
-<div class="viewcode-block" id="PipelineSystemError"><a class="viewcode-back" href="../../../aodncore.pipeline.html#aodncore.pipeline.exceptions.PipelineSystemError">[docs]</a><span class="k">class</span> <span class="nc">PipelineSystemError</span><span class="p">(</span><span class="n">AodnBaseError</span><span class="p">):</span>
+<div class="viewcode-block" id="PipelineSystemError"><a class="viewcode-back" href="../../../aodncore.pipeline.html#aodncore.pipeline.exceptions.PipelineSystemError">[docs]</a><span class="k">class</span><span class="w"> </span><span class="nc">PipelineSystemError</span><span class="p">(</span><span class="n">AodnBaseError</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Base class for all exceptions *not* related to file processing and which would typically *not* be suitable to</span>
 <span class="sd">    return to an end user</span>
 <span class="sd">    &quot;&quot;&quot;</span>
@@ -145,129 +145,129 @@
 
 <span class="c1"># Processing errors</span>
 
-<div class="viewcode-block" id="ComplianceCheckFailedError"><a class="viewcode-back" href="../../../aodncore.pipeline.html#aodncore.pipeline.exceptions.ComplianceCheckFailedError">[docs]</a><span class="k">class</span> <span class="nc">ComplianceCheckFailedError</span><span class="p">(</span><span class="n">PipelineProcessingError</span><span class="p">):</span>
+<div class="viewcode-block" id="ComplianceCheckFailedError"><a class="viewcode-back" href="../../../aodncore.pipeline.html#aodncore.pipeline.exceptions.ComplianceCheckFailedError">[docs]</a><span class="k">class</span><span class="w"> </span><span class="nc">ComplianceCheckFailedError</span><span class="p">(</span><span class="n">PipelineProcessingError</span><span class="p">):</span>
     <span class="k">pass</span></div>
 
 
-<div class="viewcode-block" id="InvalidFileNameError"><a class="viewcode-back" href="../../../aodncore.pipeline.html#aodncore.pipeline.exceptions.InvalidFileNameError">[docs]</a><span class="k">class</span> <span class="nc">InvalidFileNameError</span><span class="p">(</span><span class="n">PipelineProcessingError</span><span class="p">):</span>
+<div class="viewcode-block" id="InvalidFileNameError"><a class="viewcode-back" href="../../../aodncore.pipeline.html#aodncore.pipeline.exceptions.InvalidFileNameError">[docs]</a><span class="k">class</span><span class="w"> </span><span class="nc">InvalidFileNameError</span><span class="p">(</span><span class="n">PipelineProcessingError</span><span class="p">):</span>
     <span class="k">pass</span></div>
 
 
-<div class="viewcode-block" id="InvalidFileContentError"><a class="viewcode-back" href="../../../aodncore.pipeline.html#aodncore.pipeline.exceptions.InvalidFileContentError">[docs]</a><span class="k">class</span> <span class="nc">InvalidFileContentError</span><span class="p">(</span><span class="n">PipelineProcessingError</span><span class="p">):</span>
+<div class="viewcode-block" id="InvalidFileContentError"><a class="viewcode-back" href="../../../aodncore.pipeline.html#aodncore.pipeline.exceptions.InvalidFileContentError">[docs]</a><span class="k">class</span><span class="w"> </span><span class="nc">InvalidFileContentError</span><span class="p">(</span><span class="n">PipelineProcessingError</span><span class="p">):</span>
     <span class="k">pass</span></div>
 
 
-<div class="viewcode-block" id="InvalidFileFormatError"><a class="viewcode-back" href="../../../aodncore.pipeline.html#aodncore.pipeline.exceptions.InvalidFileFormatError">[docs]</a><span class="k">class</span> <span class="nc">InvalidFileFormatError</span><span class="p">(</span><span class="n">PipelineProcessingError</span><span class="p">):</span>
+<div class="viewcode-block" id="InvalidFileFormatError"><a class="viewcode-back" href="../../../aodncore.pipeline.html#aodncore.pipeline.exceptions.InvalidFileFormatError">[docs]</a><span class="k">class</span><span class="w"> </span><span class="nc">InvalidFileFormatError</span><span class="p">(</span><span class="n">PipelineProcessingError</span><span class="p">):</span>
     <span class="k">pass</span></div>
 
 
 <span class="c1"># System errors</span>
 
-<div class="viewcode-block" id="AttributeNotSetError"><a class="viewcode-back" href="../../../aodncore.pipeline.html#aodncore.pipeline.exceptions.AttributeNotSetError">[docs]</a><span class="k">class</span> <span class="nc">AttributeNotSetError</span><span class="p">(</span><span class="n">PipelineSystemError</span><span class="p">):</span>
+<div class="viewcode-block" id="AttributeNotSetError"><a class="viewcode-back" href="../../../aodncore.pipeline.html#aodncore.pipeline.exceptions.AttributeNotSetError">[docs]</a><span class="k">class</span><span class="w"> </span><span class="nc">AttributeNotSetError</span><span class="p">(</span><span class="n">PipelineSystemError</span><span class="p">):</span>
     <span class="k">pass</span></div>
 
 
-<div class="viewcode-block" id="AttributeValidationError"><a class="viewcode-back" href="../../../aodncore.pipeline.html#aodncore.pipeline.exceptions.AttributeValidationError">[docs]</a><span class="k">class</span> <span class="nc">AttributeValidationError</span><span class="p">(</span><span class="n">PipelineSystemError</span><span class="p">):</span>
+<div class="viewcode-block" id="AttributeValidationError"><a class="viewcode-back" href="../../../aodncore.pipeline.html#aodncore.pipeline.exceptions.AttributeValidationError">[docs]</a><span class="k">class</span><span class="w"> </span><span class="nc">AttributeValidationError</span><span class="p">(</span><span class="n">PipelineSystemError</span><span class="p">):</span>
     <span class="k">pass</span></div>
 
 
-<div class="viewcode-block" id="DuplicatePipelineFileError"><a class="viewcode-back" href="../../../aodncore.pipeline.html#aodncore.pipeline.exceptions.DuplicatePipelineFileError">[docs]</a><span class="k">class</span> <span class="nc">DuplicatePipelineFileError</span><span class="p">(</span><span class="n">PipelineSystemError</span><span class="p">):</span>
+<div class="viewcode-block" id="DuplicatePipelineFileError"><a class="viewcode-back" href="../../../aodncore.pipeline.html#aodncore.pipeline.exceptions.DuplicatePipelineFileError">[docs]</a><span class="k">class</span><span class="w"> </span><span class="nc">DuplicatePipelineFileError</span><span class="p">(</span><span class="n">PipelineSystemError</span><span class="p">):</span>
     <span class="k">pass</span></div>
 
 
-<div class="viewcode-block" id="HandlerAlreadyRunError"><a class="viewcode-back" href="../../../aodncore.pipeline.html#aodncore.pipeline.exceptions.HandlerAlreadyRunError">[docs]</a><span class="k">class</span> <span class="nc">HandlerAlreadyRunError</span><span class="p">(</span><span class="n">PipelineSystemError</span><span class="p">):</span>
+<div class="viewcode-block" id="HandlerAlreadyRunError"><a class="viewcode-back" href="../../../aodncore.pipeline.html#aodncore.pipeline.exceptions.HandlerAlreadyRunError">[docs]</a><span class="k">class</span><span class="w"> </span><span class="nc">HandlerAlreadyRunError</span><span class="p">(</span><span class="n">PipelineSystemError</span><span class="p">):</span>
     <span class="k">pass</span></div>
 
 
-<div class="viewcode-block" id="InvalidCheckSuiteError"><a class="viewcode-back" href="../../../aodncore.pipeline.html#aodncore.pipeline.exceptions.InvalidCheckSuiteError">[docs]</a><span class="k">class</span> <span class="nc">InvalidCheckSuiteError</span><span class="p">(</span><span class="n">PipelineSystemError</span><span class="p">):</span>
+<div class="viewcode-block" id="InvalidCheckSuiteError"><a class="viewcode-back" href="../../../aodncore.pipeline.html#aodncore.pipeline.exceptions.InvalidCheckSuiteError">[docs]</a><span class="k">class</span><span class="w"> </span><span class="nc">InvalidCheckSuiteError</span><span class="p">(</span><span class="n">PipelineSystemError</span><span class="p">):</span>
     <span class="k">pass</span></div>
 
 
-<div class="viewcode-block" id="InvalidCheckTypeError"><a class="viewcode-back" href="../../../aodncore.pipeline.html#aodncore.pipeline.exceptions.InvalidCheckTypeError">[docs]</a><span class="k">class</span> <span class="nc">InvalidCheckTypeError</span><span class="p">(</span><span class="n">PipelineSystemError</span><span class="p">):</span>
+<div class="viewcode-block" id="InvalidCheckTypeError"><a class="viewcode-back" href="../../../aodncore.pipeline.html#aodncore.pipeline.exceptions.InvalidCheckTypeError">[docs]</a><span class="k">class</span><span class="w"> </span><span class="nc">InvalidCheckTypeError</span><span class="p">(</span><span class="n">PipelineSystemError</span><span class="p">):</span>
     <span class="k">pass</span></div>
 
 
-<div class="viewcode-block" id="InvalidConfigError"><a class="viewcode-back" href="../../../aodncore.pipeline.html#aodncore.pipeline.exceptions.InvalidConfigError">[docs]</a><span class="k">class</span> <span class="nc">InvalidConfigError</span><span class="p">(</span><span class="n">PipelineSystemError</span><span class="p">):</span>
+<div class="viewcode-block" id="InvalidConfigError"><a class="viewcode-back" href="../../../aodncore.pipeline.html#aodncore.pipeline.exceptions.InvalidConfigError">[docs]</a><span class="k">class</span><span class="w"> </span><span class="nc">InvalidConfigError</span><span class="p">(</span><span class="n">PipelineSystemError</span><span class="p">):</span>
     <span class="k">pass</span></div>
 
 
-<div class="viewcode-block" id="InvalidHandlerError"><a class="viewcode-back" href="../../../aodncore.pipeline.html#aodncore.pipeline.exceptions.InvalidHandlerError">[docs]</a><span class="k">class</span> <span class="nc">InvalidHandlerError</span><span class="p">(</span><span class="n">PipelineSystemError</span><span class="p">):</span>
+<div class="viewcode-block" id="InvalidHandlerError"><a class="viewcode-back" href="../../../aodncore.pipeline.html#aodncore.pipeline.exceptions.InvalidHandlerError">[docs]</a><span class="k">class</span><span class="w"> </span><span class="nc">InvalidHandlerError</span><span class="p">(</span><span class="n">PipelineSystemError</span><span class="p">):</span>
     <span class="k">pass</span></div>
 
 
-<div class="viewcode-block" id="InvalidHarvesterError"><a class="viewcode-back" href="../../../aodncore.pipeline.html#aodncore.pipeline.exceptions.InvalidHarvesterError">[docs]</a><span class="k">class</span> <span class="nc">InvalidHarvesterError</span><span class="p">(</span><span class="n">PipelineSystemError</span><span class="p">):</span>
+<div class="viewcode-block" id="InvalidHarvesterError"><a class="viewcode-back" href="../../../aodncore.pipeline.html#aodncore.pipeline.exceptions.InvalidHarvesterError">[docs]</a><span class="k">class</span><span class="w"> </span><span class="nc">InvalidHarvesterError</span><span class="p">(</span><span class="n">PipelineSystemError</span><span class="p">):</span>
     <span class="k">pass</span></div>
 
 
-<div class="viewcode-block" id="InvalidHarvestMapError"><a class="viewcode-back" href="../../../aodncore.pipeline.html#aodncore.pipeline.exceptions.InvalidHarvestMapError">[docs]</a><span class="k">class</span> <span class="nc">InvalidHarvestMapError</span><span class="p">(</span><span class="n">PipelineSystemError</span><span class="p">):</span>
+<div class="viewcode-block" id="InvalidHarvestMapError"><a class="viewcode-back" href="../../../aodncore.pipeline.html#aodncore.pipeline.exceptions.InvalidHarvestMapError">[docs]</a><span class="k">class</span><span class="w"> </span><span class="nc">InvalidHarvestMapError</span><span class="p">(</span><span class="n">PipelineSystemError</span><span class="p">):</span>
     <span class="k">pass</span></div>
 
 
-<div class="viewcode-block" id="InvalidInputFileError"><a class="viewcode-back" href="../../../aodncore.pipeline.html#aodncore.pipeline.exceptions.InvalidInputFileError">[docs]</a><span class="k">class</span> <span class="nc">InvalidInputFileError</span><span class="p">(</span><span class="n">PipelineSystemError</span><span class="p">):</span>
+<div class="viewcode-block" id="InvalidInputFileError"><a class="viewcode-back" href="../../../aodncore.pipeline.html#aodncore.pipeline.exceptions.InvalidInputFileError">[docs]</a><span class="k">class</span><span class="w"> </span><span class="nc">InvalidInputFileError</span><span class="p">(</span><span class="n">PipelineSystemError</span><span class="p">):</span>
     <span class="k">pass</span></div>
 
 
-<div class="viewcode-block" id="InvalidPathFunctionError"><a class="viewcode-back" href="../../../aodncore.pipeline.html#aodncore.pipeline.exceptions.InvalidPathFunctionError">[docs]</a><span class="k">class</span> <span class="nc">InvalidPathFunctionError</span><span class="p">(</span><span class="n">PipelineSystemError</span><span class="p">):</span>
+<div class="viewcode-block" id="InvalidPathFunctionError"><a class="viewcode-back" href="../../../aodncore.pipeline.html#aodncore.pipeline.exceptions.InvalidPathFunctionError">[docs]</a><span class="k">class</span><span class="w"> </span><span class="nc">InvalidPathFunctionError</span><span class="p">(</span><span class="n">PipelineSystemError</span><span class="p">):</span>
     <span class="k">pass</span></div>
 
 
-<div class="viewcode-block" id="InvalidRecipientError"><a class="viewcode-back" href="../../../aodncore.pipeline.html#aodncore.pipeline.exceptions.InvalidRecipientError">[docs]</a><span class="k">class</span> <span class="nc">InvalidRecipientError</span><span class="p">(</span><span class="n">PipelineSystemError</span><span class="p">):</span>
+<div class="viewcode-block" id="InvalidRecipientError"><a class="viewcode-back" href="../../../aodncore.pipeline.html#aodncore.pipeline.exceptions.InvalidRecipientError">[docs]</a><span class="k">class</span><span class="w"> </span><span class="nc">InvalidRecipientError</span><span class="p">(</span><span class="n">PipelineSystemError</span><span class="p">):</span>
     <span class="k">pass</span></div>
 
 
-<div class="viewcode-block" id="InvalidStoreUrlError"><a class="viewcode-back" href="../../../aodncore.pipeline.html#aodncore.pipeline.exceptions.InvalidStoreUrlError">[docs]</a><span class="k">class</span> <span class="nc">InvalidStoreUrlError</span><span class="p">(</span><span class="n">PipelineSystemError</span><span class="p">):</span>
+<div class="viewcode-block" id="InvalidStoreUrlError"><a class="viewcode-back" href="../../../aodncore.pipeline.html#aodncore.pipeline.exceptions.InvalidStoreUrlError">[docs]</a><span class="k">class</span><span class="w"> </span><span class="nc">InvalidStoreUrlError</span><span class="p">(</span><span class="n">PipelineSystemError</span><span class="p">):</span>
     <span class="k">pass</span></div>
 
 
-<div class="viewcode-block" id="MissingConfigParameterError"><a class="viewcode-back" href="../../../aodncore.pipeline.html#aodncore.pipeline.exceptions.MissingConfigParameterError">[docs]</a><span class="k">class</span> <span class="nc">MissingConfigParameterError</span><span class="p">(</span><span class="n">PipelineSystemError</span><span class="p">):</span>
+<div class="viewcode-block" id="MissingConfigParameterError"><a class="viewcode-back" href="../../../aodncore.pipeline.html#aodncore.pipeline.exceptions.MissingConfigParameterError">[docs]</a><span class="k">class</span><span class="w"> </span><span class="nc">MissingConfigParameterError</span><span class="p">(</span><span class="n">PipelineSystemError</span><span class="p">):</span>
     <span class="k">pass</span></div>
 
 
-<div class="viewcode-block" id="MissingFileError"><a class="viewcode-back" href="../../../aodncore.pipeline.html#aodncore.pipeline.exceptions.MissingFileError">[docs]</a><span class="k">class</span> <span class="nc">MissingFileError</span><span class="p">(</span><span class="n">PipelineSystemError</span><span class="p">):</span>
+<div class="viewcode-block" id="MissingFileError"><a class="viewcode-back" href="../../../aodncore.pipeline.html#aodncore.pipeline.exceptions.MissingFileError">[docs]</a><span class="k">class</span><span class="w"> </span><span class="nc">MissingFileError</span><span class="p">(</span><span class="n">PipelineSystemError</span><span class="p">):</span>
     <span class="k">pass</span></div>
 
 
-<div class="viewcode-block" id="MissingConfigFileError"><a class="viewcode-back" href="../../../aodncore.pipeline.html#aodncore.pipeline.exceptions.MissingConfigFileError">[docs]</a><span class="k">class</span> <span class="nc">MissingConfigFileError</span><span class="p">(</span><span class="n">PipelineSystemError</span><span class="p">):</span>
+<div class="viewcode-block" id="MissingConfigFileError"><a class="viewcode-back" href="../../../aodncore.pipeline.html#aodncore.pipeline.exceptions.MissingConfigFileError">[docs]</a><span class="k">class</span><span class="w"> </span><span class="nc">MissingConfigFileError</span><span class="p">(</span><span class="n">PipelineSystemError</span><span class="p">):</span>
     <span class="k">pass</span></div>
 
 
-<div class="viewcode-block" id="NotificationFailedError"><a class="viewcode-back" href="../../../aodncore.pipeline.html#aodncore.pipeline.exceptions.NotificationFailedError">[docs]</a><span class="k">class</span> <span class="nc">NotificationFailedError</span><span class="p">(</span><span class="n">PipelineSystemError</span><span class="p">):</span>
+<div class="viewcode-block" id="NotificationFailedError"><a class="viewcode-back" href="../../../aodncore.pipeline.html#aodncore.pipeline.exceptions.NotificationFailedError">[docs]</a><span class="k">class</span><span class="w"> </span><span class="nc">NotificationFailedError</span><span class="p">(</span><span class="n">PipelineSystemError</span><span class="p">):</span>
     <span class="k">pass</span></div>
 
 
-<div class="viewcode-block" id="StorageBrokerError"><a class="viewcode-back" href="../../../aodncore.pipeline.html#aodncore.pipeline.exceptions.StorageBrokerError">[docs]</a><span class="k">class</span> <span class="nc">StorageBrokerError</span><span class="p">(</span><span class="n">PipelineSystemError</span><span class="p">):</span>
+<div class="viewcode-block" id="StorageBrokerError"><a class="viewcode-back" href="../../../aodncore.pipeline.html#aodncore.pipeline.exceptions.StorageBrokerError">[docs]</a><span class="k">class</span><span class="w"> </span><span class="nc">StorageBrokerError</span><span class="p">(</span><span class="n">PipelineSystemError</span><span class="p">):</span>
     <span class="k">pass</span></div>
 
 
-<div class="viewcode-block" id="UnmappedFilesError"><a class="viewcode-back" href="../../../aodncore.pipeline.html#aodncore.pipeline.exceptions.UnmappedFilesError">[docs]</a><span class="k">class</span> <span class="nc">UnmappedFilesError</span><span class="p">(</span><span class="n">PipelineSystemError</span><span class="p">):</span>
+<div class="viewcode-block" id="UnmappedFilesError"><a class="viewcode-back" href="../../../aodncore.pipeline.html#aodncore.pipeline.exceptions.UnmappedFilesError">[docs]</a><span class="k">class</span><span class="w"> </span><span class="nc">UnmappedFilesError</span><span class="p">(</span><span class="n">PipelineSystemError</span><span class="p">):</span>
     <span class="k">pass</span></div>
 
 
-<div class="viewcode-block" id="UnmatchedFilesError"><a class="viewcode-back" href="../../../aodncore.pipeline.html#aodncore.pipeline.exceptions.UnmatchedFilesError">[docs]</a><span class="k">class</span> <span class="nc">UnmatchedFilesError</span><span class="p">(</span><span class="n">PipelineSystemError</span><span class="p">):</span>
+<div class="viewcode-block" id="UnmatchedFilesError"><a class="viewcode-back" href="../../../aodncore.pipeline.html#aodncore.pipeline.exceptions.UnmatchedFilesError">[docs]</a><span class="k">class</span><span class="w"> </span><span class="nc">UnmatchedFilesError</span><span class="p">(</span><span class="n">PipelineSystemError</span><span class="p">):</span>
     <span class="k">pass</span></div>
 
 
-<div class="viewcode-block" id="UnexpectedCsvFilesError"><a class="viewcode-back" href="../../../aodncore.pipeline.html#aodncore.pipeline.exceptions.UnexpectedCsvFilesError">[docs]</a><span class="k">class</span> <span class="nc">UnexpectedCsvFilesError</span><span class="p">(</span><span class="n">PipelineSystemError</span><span class="p">):</span>
+<div class="viewcode-block" id="UnexpectedCsvFilesError"><a class="viewcode-back" href="../../../aodncore.pipeline.html#aodncore.pipeline.exceptions.UnexpectedCsvFilesError">[docs]</a><span class="k">class</span><span class="w"> </span><span class="nc">UnexpectedCsvFilesError</span><span class="p">(</span><span class="n">PipelineSystemError</span><span class="p">):</span>
     <span class="k">pass</span></div>
 
 
-<div class="viewcode-block" id="InvalidSchemaError"><a class="viewcode-back" href="../../../aodncore.pipeline.html#aodncore.pipeline.exceptions.InvalidSchemaError">[docs]</a><span class="k">class</span> <span class="nc">InvalidSchemaError</span><span class="p">(</span><span class="n">PipelineSystemError</span><span class="p">):</span>
+<div class="viewcode-block" id="InvalidSchemaError"><a class="viewcode-back" href="../../../aodncore.pipeline.html#aodncore.pipeline.exceptions.InvalidSchemaError">[docs]</a><span class="k">class</span><span class="w"> </span><span class="nc">InvalidSchemaError</span><span class="p">(</span><span class="n">PipelineSystemError</span><span class="p">):</span>
     <span class="k">pass</span></div>
 
 
-<div class="viewcode-block" id="InvalidSQLConnectionError"><a class="viewcode-back" href="../../../aodncore.pipeline.html#aodncore.pipeline.exceptions.InvalidSQLConnectionError">[docs]</a><span class="k">class</span> <span class="nc">InvalidSQLConnectionError</span><span class="p">(</span><span class="n">PipelineSystemError</span><span class="p">):</span>
+<div class="viewcode-block" id="InvalidSQLConnectionError"><a class="viewcode-back" href="../../../aodncore.pipeline.html#aodncore.pipeline.exceptions.InvalidSQLConnectionError">[docs]</a><span class="k">class</span><span class="w"> </span><span class="nc">InvalidSQLConnectionError</span><span class="p">(</span><span class="n">PipelineSystemError</span><span class="p">):</span>
     <span class="k">pass</span></div>
 
 
-<div class="viewcode-block" id="InvalidSQLTransactionError"><a class="viewcode-back" href="../../../aodncore.pipeline.html#aodncore.pipeline.exceptions.InvalidSQLTransactionError">[docs]</a><span class="k">class</span> <span class="nc">InvalidSQLTransactionError</span><span class="p">(</span><span class="n">PipelineSystemError</span><span class="p">):</span>
+<div class="viewcode-block" id="InvalidSQLTransactionError"><a class="viewcode-back" href="../../../aodncore.pipeline.html#aodncore.pipeline.exceptions.InvalidSQLTransactionError">[docs]</a><span class="k">class</span><span class="w"> </span><span class="nc">InvalidSQLTransactionError</span><span class="p">(</span><span class="n">PipelineSystemError</span><span class="p">):</span>
     <span class="k">pass</span></div>
 
 
-<div class="viewcode-block" id="GeonetworkConnectionError"><a class="viewcode-back" href="../../../aodncore.pipeline.html#aodncore.pipeline.exceptions.GeonetworkConnectionError">[docs]</a><span class="k">class</span> <span class="nc">GeonetworkConnectionError</span><span class="p">(</span><span class="n">PipelineSystemError</span><span class="p">):</span>
+<div class="viewcode-block" id="GeonetworkConnectionError"><a class="viewcode-back" href="../../../aodncore.pipeline.html#aodncore.pipeline.exceptions.GeonetworkConnectionError">[docs]</a><span class="k">class</span><span class="w"> </span><span class="nc">GeonetworkConnectionError</span><span class="p">(</span><span class="n">PipelineSystemError</span><span class="p">):</span>
     <span class="k">pass</span></div>
 
 
-<div class="viewcode-block" id="GeonetworkRequestError"><a class="viewcode-back" href="../../../aodncore.pipeline.html#aodncore.pipeline.exceptions.GeonetworkRequestError">[docs]</a><span class="k">class</span> <span class="nc">GeonetworkRequestError</span><span class="p">(</span><span class="n">PipelineSystemError</span><span class="p">):</span>
+<div class="viewcode-block" id="GeonetworkRequestError"><a class="viewcode-back" href="../../../aodncore.pipeline.html#aodncore.pipeline.exceptions.GeonetworkRequestError">[docs]</a><span class="k">class</span><span class="w"> </span><span class="nc">GeonetworkRequestError</span><span class="p">(</span><span class="n">PipelineSystemError</span><span class="p">):</span>
     <span class="k">pass</span></div>
 </pre></div>
 

@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>aodncore.pipeline.storage &mdash; aodncore 1.4.9 documentation</title>
+  <title>aodncore.pipeline.storage &mdash; aodncore 1.4.10 documentation</title>
       <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
   <!--[if lt IE 9]>
@@ -86,23 +86,23 @@
            <div itemprop="articleBody">
              
   <h1>Source code for aodncore.pipeline.storage</h1><div class="highlight"><pre>
-<span></span><span class="kn">import</span> <span class="nn">abc</span>
-<span class="kn">import</span> <span class="nn">errno</span>
-<span class="kn">import</span> <span class="nn">os</span>
-<span class="kn">from</span> <span class="nn">datetime</span> <span class="kn">import</span> <span class="n">datetime</span>
-<span class="kn">from</span> <span class="nn">http.client</span> <span class="kn">import</span> <span class="n">IncompleteRead</span>
-<span class="kn">from</span> <span class="nn">io</span> <span class="kn">import</span> <span class="nb">open</span>
-<span class="kn">from</span> <span class="nn">ssl</span> <span class="kn">import</span> <span class="n">SSLError</span>
-<span class="kn">from</span> <span class="nn">urllib.parse</span> <span class="kn">import</span> <span class="n">urlparse</span>
+<span></span><span class="kn">import</span><span class="w"> </span><span class="nn">abc</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">errno</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">os</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">datetime</span><span class="w"> </span><span class="kn">import</span> <span class="n">datetime</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">http.client</span><span class="w"> </span><span class="kn">import</span> <span class="n">IncompleteRead</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">io</span><span class="w"> </span><span class="kn">import</span> <span class="nb">open</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">ssl</span><span class="w"> </span><span class="kn">import</span> <span class="n">SSLError</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">urllib.parse</span><span class="w"> </span><span class="kn">import</span> <span class="n">urlparse</span>
 
-<span class="kn">import</span> <span class="nn">boto3</span>
-<span class="kn">from</span> <span class="nn">botocore.exceptions</span> <span class="kn">import</span> <span class="n">ClientError</span><span class="p">,</span> <span class="ne">ConnectionError</span>
-<span class="kn">from</span> <span class="nn">paramiko</span> <span class="kn">import</span> <span class="n">SSHClient</span><span class="p">,</span> <span class="n">AutoAddPolicy</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">boto3</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">botocore.exceptions</span><span class="w"> </span><span class="kn">import</span> <span class="n">ClientError</span><span class="p">,</span> <span class="ne">ConnectionError</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">paramiko</span><span class="w"> </span><span class="kn">import</span> <span class="n">SSHClient</span><span class="p">,</span> <span class="n">AutoAddPolicy</span>
 
-<span class="kn">from</span> <span class="nn">.exceptions</span> <span class="kn">import</span> <span class="n">AttributeNotSetError</span><span class="p">,</span> <span class="n">InvalidStoreUrlError</span><span class="p">,</span> <span class="n">StorageBrokerError</span>
-<span class="kn">from</span> <span class="nn">.files</span> <span class="kn">import</span> <span class="p">(</span><span class="n">ensure_pipelinefilecollection</span><span class="p">,</span> <span class="n">ensure_remotepipelinefilecollection</span><span class="p">,</span> <span class="n">PipelineFileCollection</span><span class="p">,</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">.exceptions</span><span class="w"> </span><span class="kn">import</span> <span class="n">AttributeNotSetError</span><span class="p">,</span> <span class="n">InvalidStoreUrlError</span><span class="p">,</span> <span class="n">StorageBrokerError</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">.files</span><span class="w"> </span><span class="kn">import</span> <span class="p">(</span><span class="n">ensure_pipelinefilecollection</span><span class="p">,</span> <span class="n">ensure_remotepipelinefilecollection</span><span class="p">,</span> <span class="n">PipelineFileCollection</span><span class="p">,</span>
                     <span class="n">RemotePipelineFile</span><span class="p">,</span> <span class="n">RemotePipelineFileCollection</span><span class="p">)</span>
-<span class="kn">from</span> <span class="nn">..util</span> <span class="kn">import</span> <span class="p">(</span><span class="n">ensure_regex_list</span><span class="p">,</span> <span class="n">filesystem_sort_key</span><span class="p">,</span> <span class="n">format_exception</span><span class="p">,</span> <span class="n">mkdir_p</span><span class="p">,</span> <span class="n">retry_decorator</span><span class="p">,</span> <span class="n">rm_f</span><span class="p">,</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">..util</span><span class="w"> </span><span class="kn">import</span> <span class="p">(</span><span class="n">ensure_regex_list</span><span class="p">,</span> <span class="n">filesystem_sort_key</span><span class="p">,</span> <span class="n">format_exception</span><span class="p">,</span> <span class="n">mkdir_p</span><span class="p">,</span> <span class="n">retry_decorator</span><span class="p">,</span> <span class="n">rm_f</span><span class="p">,</span>
                     <span class="n">safe_copy_file</span><span class="p">,</span> <span class="n">validate_relative_path</span><span class="p">,</span> <span class="n">validate_type</span><span class="p">)</span>
 
 <span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span>
@@ -119,7 +119,7 @@
 <span class="n">DISALLOWED_DELETE_REGEXES</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="s1">&#39;.*&#39;</span><span class="p">,</span> <span class="s1">&#39;.+&#39;</span><span class="p">}</span>
 
 
-<div class="viewcode-block" id="get_storage_broker"><a class="viewcode-back" href="../../../aodncore.pipeline.html#aodncore.pipeline.storage.get_storage_broker">[docs]</a><span class="k">def</span> <span class="nf">get_storage_broker</span><span class="p">(</span><span class="n">store_url</span><span class="p">):</span>
+<div class="viewcode-block" id="get_storage_broker"><a class="viewcode-back" href="../../../aodncore.pipeline.html#aodncore.pipeline.storage.get_storage_broker">[docs]</a><span class="k">def</span><span class="w"> </span><span class="nf">get_storage_broker</span><span class="p">(</span><span class="n">store_url</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Factory function to return appropriate storage broker class based on URL scheme</span>
 
 <span class="sd">    :param store_url: URL base</span>
@@ -140,40 +140,40 @@
         <span class="k">raise</span> <span class="n">InvalidStoreUrlError</span><span class="p">(</span><span class="s2">&quot;invalid URL scheme &#39;</span><span class="si">{url.scheme}</span><span class="s2">&#39;&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">url</span><span class="o">=</span><span class="n">url</span><span class="p">))</span></div>
 
 
-<span class="k">class</span> <span class="nc">BaseStorageBroker</span><span class="p">(</span><span class="nb">object</span><span class="p">,</span> <span class="n">metaclass</span><span class="o">=</span><span class="n">abc</span><span class="o">.</span><span class="n">ABCMeta</span><span class="p">):</span>
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">BaseStorageBroker</span><span class="p">(</span><span class="nb">object</span><span class="p">,</span> <span class="n">metaclass</span><span class="o">=</span><span class="n">abc</span><span class="o">.</span><span class="n">ABCMeta</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">prefix</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">mode</span> <span class="o">=</span> <span class="kc">None</span>
 
     <span class="nd">@abc</span><span class="o">.</span><span class="n">abstractmethod</span>
-    <span class="k">def</span> <span class="nf">_delete_file</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pipeline_file</span><span class="p">,</span> <span class="n">dest_path_attr</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_delete_file</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pipeline_file</span><span class="p">,</span> <span class="n">dest_path_attr</span><span class="p">):</span>
         <span class="k">pass</span>
 
     <span class="nd">@abc</span><span class="o">.</span><span class="n">abstractmethod</span>
-    <span class="k">def</span> <span class="nf">_post_run_hook</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_post_run_hook</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">pass</span>
 
     <span class="nd">@abc</span><span class="o">.</span><span class="n">abstractmethod</span>
-    <span class="k">def</span> <span class="nf">_pre_run_hook</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_pre_run_hook</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">pass</span>
 
     <span class="nd">@abc</span><span class="o">.</span><span class="n">abstractmethod</span>
-    <span class="k">def</span> <span class="nf">_run_query</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">query</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_run_query</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">query</span><span class="p">):</span>
         <span class="k">pass</span>
 
     <span class="nd">@abc</span><span class="o">.</span><span class="n">abstractmethod</span>
-    <span class="k">def</span> <span class="nf">_download_file</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">remote_pipeline_file</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_download_file</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">remote_pipeline_file</span><span class="p">):</span>
         <span class="k">pass</span>
 
     <span class="nd">@abc</span><span class="o">.</span><span class="n">abstractmethod</span>
-    <span class="k">def</span> <span class="nf">_upload_file</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pipeline_file</span><span class="p">,</span> <span class="n">dest_path_attr</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_upload_file</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pipeline_file</span><span class="p">,</span> <span class="n">dest_path_attr</span><span class="p">):</span>
         <span class="k">pass</span>
 
     <span class="nd">@abc</span><span class="o">.</span><span class="n">abstractmethod</span>
-    <span class="k">def</span> <span class="nf">_get_is_overwrite</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pipeline_file</span><span class="p">,</span> <span class="n">abs_path</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_get_is_overwrite</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pipeline_file</span><span class="p">,</span> <span class="n">abs_path</span><span class="p">):</span>
         <span class="k">pass</span>
 
-    <span class="k">def</span> <span class="nf">_get_absolute_dest_path</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pipeline_file</span><span class="p">,</span> <span class="n">dest_path_attr</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_get_absolute_dest_path</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pipeline_file</span><span class="p">,</span> <span class="n">dest_path_attr</span><span class="p">):</span>
         <span class="n">rel_path</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">pipeline_file</span><span class="p">,</span> <span class="n">dest_path_attr</span><span class="p">)</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="n">rel_path</span><span class="p">:</span>
             <span class="k">raise</span> <span class="n">AttributeNotSetError</span><span class="p">(</span><span class="s2">&quot;attribute &#39;</span><span class="si">{dest_path_attr}</span><span class="s2">&#39; not set in &#39;</span><span class="si">{pipeline_file}</span><span class="s2">&#39;&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
@@ -181,12 +181,12 @@
         <span class="k">return</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">prefix</span><span class="p">,</span> <span class="n">rel_path</span><span class="p">)</span>
 
     <span class="nd">@staticmethod</span>
-    <span class="k">def</span> <span class="nf">_prepare_file_for_download</span><span class="p">(</span><span class="n">remote_pipeline_file</span><span class="p">,</span> <span class="n">local_path</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_prepare_file_for_download</span><span class="p">(</span><span class="n">remote_pipeline_file</span><span class="p">,</span> <span class="n">local_path</span><span class="p">):</span>
         <span class="n">abs_local_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">local_path</span><span class="p">,</span> <span class="n">remote_pipeline_file</span><span class="o">.</span><span class="n">dest_path</span><span class="p">)</span>
         <span class="n">mkdir_p</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="n">abs_local_path</span><span class="p">))</span>
         <span class="n">remote_pipeline_file</span><span class="o">.</span><span class="n">local_path</span> <span class="o">=</span> <span class="n">abs_local_path</span>
 
-    <span class="k">def</span> <span class="nf">set_is_overwrite</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pipeline_files</span><span class="p">,</span> <span class="n">dest_path_attr</span><span class="o">=</span><span class="s1">&#39;dest_path&#39;</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">set_is_overwrite</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pipeline_files</span><span class="p">,</span> <span class="n">dest_path_attr</span><span class="o">=</span><span class="s1">&#39;dest_path&#39;</span><span class="p">):</span>
         <span class="n">overwrite_collection</span> <span class="o">=</span> <span class="n">ensure_pipelinefilecollection</span><span class="p">(</span><span class="n">pipeline_files</span><span class="p">)</span>
 
         <span class="n">should_upload</span> <span class="o">=</span> <span class="n">overwrite_collection</span><span class="o">.</span><span class="n">filter_by_bool_attributes_and_not</span><span class="p">(</span><span class="s1">&#39;should_store&#39;</span><span class="p">,</span> <span class="s1">&#39;is_deletion&#39;</span><span class="p">)</span>
@@ -194,7 +194,7 @@
             <span class="n">abs_path</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_absolute_dest_path</span><span class="p">(</span><span class="n">pipeline_file</span><span class="o">=</span><span class="n">pipeline_file</span><span class="p">,</span> <span class="n">dest_path_attr</span><span class="o">=</span><span class="n">dest_path_attr</span><span class="p">)</span>
             <span class="n">pipeline_file</span><span class="o">.</span><span class="n">is_overwrite</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_is_overwrite</span><span class="p">(</span><span class="n">pipeline_file</span><span class="p">,</span> <span class="n">abs_path</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">download</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">remote_pipeline_files</span><span class="p">,</span> <span class="n">local_path</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">download</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">remote_pipeline_files</span><span class="p">,</span> <span class="n">local_path</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Download the given RemotePipelineFileCollection or RemotePipelineFile from the storage backend</span>
 
 <span class="sd">        :param remote_pipeline_files: collection to download</span>
@@ -215,7 +215,7 @@
 
         <span class="bp">self</span><span class="o">.</span><span class="n">_post_run_hook</span><span class="p">()</span>
 
-    <span class="k">def</span> <span class="nf">download_iterator</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">remote_pipeline_files</span><span class="p">,</span> <span class="n">local_path</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">download_iterator</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">remote_pipeline_files</span><span class="p">,</span> <span class="n">local_path</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Iterate over the given RemotePipelineFileCollection, downloading the file to the given local_path before</span>
 <span class="sd">        yielding it and then deleting the local path at the end of the iteration</span>
 
@@ -240,7 +240,7 @@
 
         <span class="bp">self</span><span class="o">.</span><span class="n">_post_run_hook</span><span class="p">()</span>
 
-    <span class="k">def</span> <span class="nf">upload</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pipeline_files</span><span class="p">,</span> <span class="n">is_stored_attr</span><span class="o">=</span><span class="s1">&#39;is_stored&#39;</span><span class="p">,</span> <span class="n">dest_path_attr</span><span class="o">=</span><span class="s1">&#39;dest_path&#39;</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">upload</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pipeline_files</span><span class="p">,</span> <span class="n">is_stored_attr</span><span class="o">=</span><span class="s1">&#39;is_stored&#39;</span><span class="p">,</span> <span class="n">dest_path_attr</span><span class="o">=</span><span class="s1">&#39;dest_path&#39;</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Upload the given PipelineFileCollection or PipelineFile to the storage backend</span>
 
 <span class="sd">        :param pipeline_files: collection to upload</span>
@@ -263,7 +263,7 @@
 
         <span class="bp">self</span><span class="o">.</span><span class="n">_post_run_hook</span><span class="p">()</span>
 
-    <span class="k">def</span> <span class="nf">delete</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pipeline_files</span><span class="p">,</span> <span class="n">is_stored_attr</span><span class="o">=</span><span class="s1">&#39;is_stored&#39;</span><span class="p">,</span> <span class="n">dest_path_attr</span><span class="o">=</span><span class="s1">&#39;dest_path&#39;</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">delete</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pipeline_files</span><span class="p">,</span> <span class="n">is_stored_attr</span><span class="o">=</span><span class="s1">&#39;is_stored&#39;</span><span class="p">,</span> <span class="n">dest_path_attr</span><span class="o">=</span><span class="s1">&#39;dest_path&#39;</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Delete the given PipelineFileCollection or PipelineFile from the storage backend</span>
 
 <span class="sd">        :param pipeline_files: collection to delete</span>
@@ -286,7 +286,7 @@
 
         <span class="bp">self</span><span class="o">.</span><span class="n">_post_run_hook</span><span class="p">()</span>
 
-    <span class="k">def</span> <span class="nf">delete_regexes</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">regexes</span><span class="p">,</span> <span class="n">allow_match_all</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">delete_regexes</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">regexes</span><span class="p">,</span> <span class="n">allow_match_all</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Delete files storage if they match one of the given regular expressions</span>
 
 <span class="sd">        :param regexes: list of regular expressions to delete</span>
@@ -310,7 +310,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">delete</span><span class="p">(</span><span class="n">files_to_delete</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">files_to_delete</span>
 
-    <span class="k">def</span> <span class="nf">query</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">query</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">query</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">query</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Query the storage for existing files</span>
 
 <span class="sd">        A trailing slash will result in a directory listing type of query, recursively listing all files underneath</span>
@@ -328,36 +328,36 @@
             <span class="k">raise</span> <span class="n">StorageBrokerError</span><span class="p">(</span><span class="s2">&quot;error querying storage: </span><span class="si">{e}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">query</span><span class="o">=</span><span class="n">query</span><span class="p">,</span> <span class="n">e</span><span class="o">=</span><span class="n">format_exception</span><span class="p">(</span><span class="n">e</span><span class="p">)))</span>
 
 
-<div class="viewcode-block" id="LocalFileStorageBroker"><a class="viewcode-back" href="../../../aodncore.pipeline.html#aodncore.pipeline.storage.LocalFileStorageBroker">[docs]</a><span class="k">class</span> <span class="nc">LocalFileStorageBroker</span><span class="p">(</span><span class="n">BaseStorageBroker</span><span class="p">):</span>
+<div class="viewcode-block" id="LocalFileStorageBroker"><a class="viewcode-back" href="../../../aodncore.pipeline.html#aodncore.pipeline.storage.LocalFileStorageBroker">[docs]</a><span class="k">class</span><span class="w"> </span><span class="nc">LocalFileStorageBroker</span><span class="p">(</span><span class="n">BaseStorageBroker</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;StorageBroker to interact with a local directory</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">prefix</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">prefix</span><span class="p">):</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">prefix</span> <span class="o">=</span> <span class="n">prefix</span>
 
-    <span class="k">def</span> <span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="s2">&quot;</span><span class="si">{self.__class__.__name__}</span><span class="s2">(prefix=&#39;</span><span class="si">{self.prefix}</span><span class="s2">&#39;)&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">=</span><span class="bp">self</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">_delete_file</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pipeline_file</span><span class="p">,</span> <span class="n">dest_path_attr</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_delete_file</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pipeline_file</span><span class="p">,</span> <span class="n">dest_path_attr</span><span class="p">):</span>
         <span class="n">abs_path</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_absolute_dest_path</span><span class="p">(</span><span class="n">pipeline_file</span><span class="o">=</span><span class="n">pipeline_file</span><span class="p">,</span> <span class="n">dest_path_attr</span><span class="o">=</span><span class="n">dest_path_attr</span><span class="p">)</span>
         <span class="n">rm_f</span><span class="p">(</span><span class="n">abs_path</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">_get_is_overwrite</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pipeline_file</span><span class="p">,</span> <span class="n">abs_path</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_get_is_overwrite</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pipeline_file</span><span class="p">,</span> <span class="n">abs_path</span><span class="p">):</span>
         <span class="k">return</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">abs_path</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">_post_run_hook</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_post_run_hook</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span>
 
-    <span class="k">def</span> <span class="nf">_pre_run_hook</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_pre_run_hook</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span>
 
-    <span class="k">def</span> <span class="nf">_run_query</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">query</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_run_query</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">query</span><span class="p">):</span>
         <span class="n">validate_relative_path</span><span class="p">(</span><span class="n">query</span><span class="p">)</span>
 
         <span class="n">full_query</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">prefix</span><span class="p">,</span> <span class="n">query</span><span class="p">)</span>
 
-        <span class="k">def</span> <span class="nf">_find_prefix</span><span class="p">(</span><span class="n">path</span><span class="p">):</span>
+        <span class="k">def</span><span class="w"> </span><span class="nf">_find_prefix</span><span class="p">(</span><span class="n">path</span><span class="p">):</span>
             <span class="n">parent_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="n">path</span><span class="p">)</span>
             <span class="k">for</span> <span class="n">root</span><span class="p">,</span> <span class="n">dirs</span><span class="p">,</span> <span class="n">files</span> <span class="ow">in</span> <span class="n">os</span><span class="o">.</span><span class="n">walk</span><span class="p">(</span><span class="n">parent_path</span><span class="p">):</span>
                 <span class="n">dirs</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">dirs</span><span class="p">,</span> <span class="n">key</span><span class="o">=</span><span class="n">filesystem_sort_key</span><span class="p">)</span>
@@ -377,11 +377,11 @@
         <span class="n">result</span> <span class="o">=</span> <span class="n">RemotePipelineFileCollection</span><span class="p">(</span><span class="n">_find_prefix</span><span class="p">(</span><span class="n">full_query</span><span class="p">))</span>
         <span class="k">return</span> <span class="n">result</span>
 
-    <span class="k">def</span> <span class="nf">_download_file</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">remote_pipeline_file</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_download_file</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">remote_pipeline_file</span><span class="p">):</span>
         <span class="n">abs_path</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_absolute_dest_path</span><span class="p">(</span><span class="n">pipeline_file</span><span class="o">=</span><span class="n">remote_pipeline_file</span><span class="p">,</span> <span class="n">dest_path_attr</span><span class="o">=</span><span class="s1">&#39;dest_path&#39;</span><span class="p">)</span>
         <span class="n">safe_copy_file</span><span class="p">(</span><span class="n">abs_path</span><span class="p">,</span> <span class="n">remote_pipeline_file</span><span class="o">.</span><span class="n">local_path</span><span class="p">,</span> <span class="n">overwrite</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">_upload_file</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pipeline_file</span><span class="p">,</span> <span class="n">dest_path_attr</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_upload_file</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pipeline_file</span><span class="p">,</span> <span class="n">dest_path_attr</span><span class="p">):</span>
         <span class="n">abs_path</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_absolute_dest_path</span><span class="p">(</span><span class="n">pipeline_file</span><span class="o">=</span><span class="n">pipeline_file</span><span class="p">,</span> <span class="n">dest_path_attr</span><span class="o">=</span><span class="n">dest_path_attr</span><span class="p">)</span>
         <span class="n">mkdir_p</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="n">abs_path</span><span class="p">))</span>
         <span class="n">safe_copy_file</span><span class="p">(</span><span class="n">pipeline_file</span><span class="o">.</span><span class="n">src_path</span><span class="p">,</span> <span class="n">abs_path</span><span class="p">,</span> <span class="n">overwrite</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
@@ -389,7 +389,7 @@
             <span class="n">os</span><span class="o">.</span><span class="n">chmod</span><span class="p">(</span><span class="n">abs_path</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">mode</span><span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="S3StorageBroker"><a class="viewcode-back" href="../../../aodncore.pipeline.html#aodncore.pipeline.storage.S3StorageBroker">[docs]</a><span class="k">class</span> <span class="nc">S3StorageBroker</span><span class="p">(</span><span class="n">BaseStorageBroker</span><span class="p">):</span>
+<div class="viewcode-block" id="S3StorageBroker"><a class="viewcode-back" href="../../../aodncore.pipeline.html#aodncore.pipeline.storage.S3StorageBroker">[docs]</a><span class="k">class</span><span class="w"> </span><span class="nc">S3StorageBroker</span><span class="p">(</span><span class="n">BaseStorageBroker</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;StorageBroker to interact with an S3</span>
 
 <span class="sd">    Note: this does not and should not attempt to support any authentication code. Multiple mechanisms for loading</span>
@@ -408,7 +408,7 @@
         <span class="s1">&#39;exceptions&#39;</span><span class="p">:</span> <span class="p">(</span><span class="n">ClientError</span><span class="p">,</span> <span class="ne">ConnectionError</span><span class="p">,</span> <span class="n">IncompleteRead</span><span class="p">,</span> <span class="n">SSLError</span><span class="p">)</span>
     <span class="p">}</span>
 
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">bucket</span><span class="p">,</span> <span class="n">prefix</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">bucket</span><span class="p">,</span> <span class="n">prefix</span><span class="p">):</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">bucket</span> <span class="o">=</span> <span class="n">bucket</span>
@@ -416,23 +416,23 @@
 
         <span class="bp">self</span><span class="o">.</span><span class="n">s3_client</span> <span class="o">=</span> <span class="n">boto3</span><span class="o">.</span><span class="n">client</span><span class="p">(</span><span class="s1">&#39;s3&#39;</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="s2">&quot;</span><span class="si">{self.__class__.__name__}</span><span class="s2">(bucket=&#39;</span><span class="si">{self.bucket}</span><span class="s2">&#39;, prefix=&#39;</span><span class="si">{self.prefix}</span><span class="s2">&#39;)&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">=</span><span class="bp">self</span><span class="p">)</span>
 
     <span class="nd">@retry_decorator</span><span class="p">(</span><span class="o">**</span><span class="n">retry_kwargs</span><span class="p">)</span>
-    <span class="k">def</span> <span class="nf">_delete_file</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pipeline_file</span><span class="p">,</span> <span class="n">dest_path_attr</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_delete_file</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pipeline_file</span><span class="p">,</span> <span class="n">dest_path_attr</span><span class="p">):</span>
         <span class="n">abs_path</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_absolute_dest_path</span><span class="p">(</span><span class="n">pipeline_file</span><span class="o">=</span><span class="n">pipeline_file</span><span class="p">,</span> <span class="n">dest_path_attr</span><span class="o">=</span><span class="n">dest_path_attr</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">s3_client</span><span class="o">.</span><span class="n">delete_object</span><span class="p">(</span><span class="n">Bucket</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">bucket</span><span class="p">,</span> <span class="n">Key</span><span class="o">=</span><span class="n">abs_path</span><span class="p">)</span>
 
     <span class="nd">@retry_decorator</span><span class="p">(</span><span class="o">**</span><span class="n">retry_kwargs</span><span class="p">)</span>
-    <span class="k">def</span> <span class="nf">_get_is_overwrite</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pipeline_file</span><span class="p">,</span> <span class="n">abs_path</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_get_is_overwrite</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pipeline_file</span><span class="p">,</span> <span class="n">abs_path</span><span class="p">):</span>
         <span class="n">response</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">s3_client</span><span class="o">.</span><span class="n">list_objects_v2</span><span class="p">(</span><span class="n">Bucket</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">bucket</span><span class="p">,</span> <span class="n">Prefix</span><span class="o">=</span><span class="n">abs_path</span><span class="p">)</span>
         <span class="k">return</span> <span class="nb">bool</span><span class="p">([</span><span class="n">k</span> <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="n">response</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;Contents&#39;</span><span class="p">,</span> <span class="p">[])</span> <span class="k">if</span> <span class="n">k</span><span class="p">[</span><span class="s1">&#39;Key&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="n">abs_path</span><span class="p">])</span>
 
-    <span class="k">def</span> <span class="nf">_post_run_hook</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_post_run_hook</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span>
 
-    <span class="k">def</span> <span class="nf">_pre_run_hook</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_pre_run_hook</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">try</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_validate_bucket</span><span class="p">()</span>
         <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
@@ -440,7 +440,7 @@
                 <span class="s2">&quot;unable to access S3 bucket &#39;</span><span class="si">{0}</span><span class="s2">&#39;: </span><span class="si">{1}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">bucket</span><span class="p">,</span> <span class="n">format_exception</span><span class="p">(</span><span class="n">e</span><span class="p">)))</span>
 
 <div class="viewcode-block" id="S3StorageBroker.result_to_remote_pipelinefile_collection"><a class="viewcode-back" href="../../../aodncore.pipeline.html#aodncore.pipeline.storage.S3StorageBroker.result_to_remote_pipelinefile_collection">[docs]</a>    <span class="nd">@staticmethod</span>
-    <span class="k">def</span> <span class="nf">result_to_remote_pipelinefile_collection</span><span class="p">(</span><span class="n">result</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">result_to_remote_pipelinefile_collection</span><span class="p">(</span><span class="n">result</span><span class="p">):</span>
         <span class="k">return</span> <span class="n">RemotePipelineFileCollection</span><span class="p">([</span>
             <span class="n">RemotePipelineFile</span><span class="p">(</span><span class="n">k</span><span class="p">[</span><span class="s1">&#39;Key&#39;</span><span class="p">],</span>
                                <span class="n">name</span><span class="o">=</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">basename</span><span class="p">(</span><span class="n">k</span><span class="p">[</span><span class="s1">&#39;Key&#39;</span><span class="p">]),</span>
@@ -450,21 +450,21 @@
         <span class="p">])</span></div>
 
     <span class="nd">@retry_decorator</span><span class="p">(</span><span class="o">**</span><span class="n">retry_kwargs</span><span class="p">)</span>
-    <span class="k">def</span> <span class="nf">_run_query</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">query</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_run_query</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">query</span><span class="p">):</span>
         <span class="n">full_query</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">prefix</span><span class="p">,</span> <span class="n">query</span><span class="p">)</span>
         <span class="n">raw_result</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">s3_client</span><span class="o">.</span><span class="n">list_objects_v2</span><span class="p">(</span><span class="n">Bucket</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">bucket</span><span class="p">,</span> <span class="n">Prefix</span><span class="o">=</span><span class="n">full_query</span><span class="p">)</span>
         <span class="n">collection</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">result_to_remote_pipelinefile_collection</span><span class="p">(</span><span class="n">raw_result</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">collection</span>
 
     <span class="nd">@retry_decorator</span><span class="p">(</span><span class="o">**</span><span class="n">retry_kwargs</span><span class="p">)</span>
-    <span class="k">def</span> <span class="nf">_download_file</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">remote_pipeline_file</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_download_file</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">remote_pipeline_file</span><span class="p">):</span>
         <span class="n">abs_path</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_absolute_dest_path</span><span class="p">(</span><span class="n">pipeline_file</span><span class="o">=</span><span class="n">remote_pipeline_file</span><span class="p">,</span> <span class="n">dest_path_attr</span><span class="o">=</span><span class="s1">&#39;dest_path&#39;</span><span class="p">)</span>
 
         <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">remote_pipeline_file</span><span class="o">.</span><span class="n">local_path</span><span class="p">,</span> <span class="s1">&#39;wb&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">s3_client</span><span class="o">.</span><span class="n">download_fileobj</span><span class="p">(</span><span class="n">Bucket</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">bucket</span><span class="p">,</span> <span class="n">Key</span><span class="o">=</span><span class="n">abs_path</span><span class="p">,</span> <span class="n">Fileobj</span><span class="o">=</span><span class="n">f</span><span class="p">)</span>
 
     <span class="nd">@retry_decorator</span><span class="p">(</span><span class="o">**</span><span class="n">retry_kwargs</span><span class="p">)</span>
-    <span class="k">def</span> <span class="nf">_upload_file</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pipeline_file</span><span class="p">,</span> <span class="n">dest_path_attr</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_upload_file</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pipeline_file</span><span class="p">,</span> <span class="n">dest_path_attr</span><span class="p">):</span>
         <span class="n">abs_path</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_absolute_dest_path</span><span class="p">(</span><span class="n">pipeline_file</span><span class="o">=</span><span class="n">pipeline_file</span><span class="p">,</span> <span class="n">dest_path_attr</span><span class="o">=</span><span class="n">dest_path_attr</span><span class="p">)</span>
 
         <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">pipeline_file</span><span class="o">.</span><span class="n">src_path</span><span class="p">,</span> <span class="s1">&#39;rb&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
@@ -472,11 +472,11 @@
                                           <span class="n">ExtraArgs</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;ContentType&#39;</span><span class="p">:</span> <span class="n">pipeline_file</span><span class="o">.</span><span class="n">mime_type</span><span class="p">})</span>
 
     <span class="nd">@retry_decorator</span><span class="p">(</span><span class="o">**</span><span class="n">retry_kwargs</span><span class="p">)</span>
-    <span class="k">def</span> <span class="nf">_validate_bucket</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_validate_bucket</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">s3_client</span><span class="o">.</span><span class="n">head_bucket</span><span class="p">(</span><span class="n">Bucket</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">bucket</span><span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="sftp_path_exists"><a class="viewcode-back" href="../../../aodncore.pipeline.html#aodncore.pipeline.storage.sftp_path_exists">[docs]</a><span class="k">def</span> <span class="nf">sftp_path_exists</span><span class="p">(</span><span class="n">sftpclient</span><span class="p">,</span> <span class="n">path</span><span class="p">):</span>
+<div class="viewcode-block" id="sftp_path_exists"><a class="viewcode-back" href="../../../aodncore.pipeline.html#aodncore.pipeline.storage.sftp_path_exists">[docs]</a><span class="k">def</span><span class="w"> </span><span class="nf">sftp_path_exists</span><span class="p">(</span><span class="n">sftpclient</span><span class="p">,</span> <span class="n">path</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Test whether a path exists on a remote SFTP server</span>
 
 <span class="sd">    :param sftpclient: SFTPClient object</span>
@@ -492,7 +492,7 @@
     <span class="k">return</span> <span class="kc">True</span></div>
 
 
-<div class="viewcode-block" id="sftp_makedirs"><a class="viewcode-back" href="../../../aodncore.pipeline.html#aodncore.pipeline.storage.sftp_makedirs">[docs]</a><span class="k">def</span> <span class="nf">sftp_makedirs</span><span class="p">(</span><span class="n">sftpclient</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="mo">0o755</span><span class="p">):</span>
+<div class="viewcode-block" id="sftp_makedirs"><a class="viewcode-back" href="../../../aodncore.pipeline.html#aodncore.pipeline.storage.sftp_makedirs">[docs]</a><span class="k">def</span><span class="w"> </span><span class="nf">sftp_makedirs</span><span class="p">(</span><span class="n">sftpclient</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="mo">0o755</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Recursively create a directory path on a remote SFTP server</span>
 <span class="sd">        Based on os.makedirs, with local calls replaced with SFTPClient equivalents calls.</span>
 
@@ -517,7 +517,7 @@
     <span class="n">sftpclient</span><span class="o">.</span><span class="n">mkdir</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">mode</span><span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="sftp_mkdir_p"><a class="viewcode-back" href="../../../aodncore.pipeline.html#aodncore.pipeline.storage.sftp_mkdir_p">[docs]</a><span class="k">def</span> <span class="nf">sftp_mkdir_p</span><span class="p">(</span><span class="n">sftpclient</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="mo">0o755</span><span class="p">):</span>
+<div class="viewcode-block" id="sftp_mkdir_p"><a class="viewcode-back" href="../../../aodncore.pipeline.html#aodncore.pipeline.storage.sftp_mkdir_p">[docs]</a><span class="k">def</span><span class="w"> </span><span class="nf">sftp_mkdir_p</span><span class="p">(</span><span class="n">sftpclient</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="mo">0o755</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Replicate &#39;mkdir -p&#39; shell command behaviour by wrapping sftp_makedirs and suppressing exceptions where the</span>
 <span class="sd">        directory already exists.</span>
 
@@ -533,14 +533,14 @@
             <span class="k">raise</span></div>
 
 
-<div class="viewcode-block" id="SftpStorageBroker"><a class="viewcode-back" href="../../../aodncore.pipeline.html#aodncore.pipeline.storage.SftpStorageBroker">[docs]</a><span class="k">class</span> <span class="nc">SftpStorageBroker</span><span class="p">(</span><span class="n">BaseStorageBroker</span><span class="p">):</span>
+<div class="viewcode-block" id="SftpStorageBroker"><a class="viewcode-back" href="../../../aodncore.pipeline.html#aodncore.pipeline.storage.SftpStorageBroker">[docs]</a><span class="k">class</span><span class="w"> </span><span class="nc">SftpStorageBroker</span><span class="p">(</span><span class="n">BaseStorageBroker</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;StorageBroker to interact with a directory on a remote SFTP server</span>
 
 <span class="sd">    Note: similar to the S3 storage broker, this does not implement any authentication code, as this is better handled</span>
 <span class="sd">    by the environment in the form of public key authentication</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">server</span><span class="p">,</span> <span class="n">prefix</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">server</span><span class="p">,</span> <span class="n">prefix</span><span class="p">):</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">server</span> <span class="o">=</span> <span class="n">server</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">prefix</span> <span class="o">=</span> <span class="n">prefix</span>
@@ -552,33 +552,33 @@
 
         <span class="bp">self</span><span class="o">.</span><span class="n">sftp_client</span> <span class="o">=</span> <span class="kc">None</span>
 
-    <span class="k">def</span> <span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="s2">&quot;</span><span class="si">{self.__class__.__name__}</span><span class="s2">(server=&#39;</span><span class="si">{self.server}</span><span class="s2">&#39;, prefix=&#39;</span><span class="si">{self.prefix}</span><span class="s2">&#39;)&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">=</span><span class="bp">self</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">_connect_sftp</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_connect_sftp</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_sshclient</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">server</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">sftp_client</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_sshclient</span><span class="o">.</span><span class="n">open_sftp</span><span class="p">()</span>
 
-    <span class="k">def</span> <span class="nf">_delete_file</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pipeline_file</span><span class="p">,</span> <span class="n">dest_path_attr</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_delete_file</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pipeline_file</span><span class="p">,</span> <span class="n">dest_path_attr</span><span class="p">):</span>
         <span class="n">abs_path</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_absolute_dest_path</span><span class="p">(</span><span class="n">pipeline_file</span><span class="o">=</span><span class="n">pipeline_file</span><span class="p">,</span> <span class="n">dest_path_attr</span><span class="o">=</span><span class="n">dest_path_attr</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">sftp_client</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="n">abs_path</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">_get_is_overwrite</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pipeline_file</span><span class="p">,</span> <span class="n">abs_path</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_get_is_overwrite</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pipeline_file</span><span class="p">,</span> <span class="n">abs_path</span><span class="p">):</span>
         <span class="k">return</span> <span class="n">sftp_path_exists</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">sftp_client</span><span class="p">,</span> <span class="n">abs_path</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">_post_run_hook</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_post_run_hook</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span>
 
-    <span class="k">def</span> <span class="nf">_pre_run_hook</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_pre_run_hook</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_connect_sftp</span><span class="p">()</span>
 
-    <span class="k">def</span> <span class="nf">_run_query</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">query</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_run_query</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">query</span><span class="p">):</span>
         <span class="k">raise</span> <span class="ne">NotImplementedError</span>
 
-    <span class="k">def</span> <span class="nf">_download_file</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">remote_pipeline_file</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_download_file</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">remote_pipeline_file</span><span class="p">):</span>
         <span class="k">raise</span> <span class="ne">NotImplementedError</span>
 
-    <span class="k">def</span> <span class="nf">_upload_file</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pipeline_file</span><span class="p">,</span> <span class="n">dest_path_attr</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_upload_file</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pipeline_file</span><span class="p">,</span> <span class="n">dest_path_attr</span><span class="p">):</span>
         <span class="n">abs_path</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_absolute_dest_path</span><span class="p">(</span><span class="n">pipeline_file</span><span class="p">,</span> <span class="n">dest_path_attr</span><span class="o">=</span><span class="n">dest_path_attr</span><span class="p">)</span>
         <span class="n">parent_dir</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="n">abs_path</span><span class="p">)</span>
         <span class="n">sftp_mkdir_p</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">sftp_client</span><span class="p">,</span> <span class="n">parent_dir</span><span class="p">)</span>

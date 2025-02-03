@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>aodncore.pipeline.watch &mdash; aodncore 1.4.9 documentation</title>
+  <title>aodncore.pipeline.watch &mdash; aodncore 1.4.10 documentation</title>
       <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
   <!--[if lt IE 9]>
@@ -103,42 +103,43 @@
 <span class="sd">for debugging.</span>
 <span class="sd">&quot;&quot;&quot;</span>
 
-<span class="kn">import</span> <span class="nn">logging.config</span>
-<span class="kn">import</span> <span class="nn">os</span>
-<span class="kn">import</span> <span class="nn">re</span>
-<span class="kn">import</span> <span class="nn">stat</span>
-<span class="kn">import</span> <span class="nn">warnings</span>
-<span class="kn">from</span> <span class="nn">uuid</span> <span class="kn">import</span> <span class="n">uuid4</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">logging.config</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">os</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">re</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">stat</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">warnings</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">uuid</span><span class="w"> </span><span class="kn">import</span> <span class="n">uuid4</span>
 
-<span class="kn">from</span> <span class="nn">enum</span> <span class="kn">import</span> <span class="n">Enum</span>
-<span class="kn">from</span> <span class="nn">transitions</span> <span class="kn">import</span> <span class="n">Machine</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">enum</span><span class="w"> </span><span class="kn">import</span> <span class="n">Enum</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">transitions</span><span class="w"> </span><span class="kn">import</span> <span class="n">Machine</span>
 
-<span class="kn">from</span> <span class="nn">.files</span> <span class="kn">import</span> <span class="n">PipelineFile</span>
-<span class="kn">from</span> <span class="nn">.log</span> <span class="kn">import</span> <span class="n">get_pipeline_logger</span>
-<span class="kn">from</span> <span class="nn">.storage</span> <span class="kn">import</span> <span class="n">get_storage_broker</span>
-<span class="kn">from</span> <span class="nn">..util</span> <span class="kn">import</span> <span class="p">(</span><span class="n">ensure_regex_list</span><span class="p">,</span> <span class="n">format_exception</span><span class="p">,</span> <span class="n">lazyproperty</span><span class="p">,</span> <span class="n">mkdir_p</span><span class="p">,</span> <span class="n">rm_f</span><span class="p">,</span> <span class="n">rm_r</span><span class="p">,</span> <span class="n">validate_dir_writable</span><span class="p">,</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">.files</span><span class="w"> </span><span class="kn">import</span> <span class="n">PipelineFile</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">.log</span><span class="w"> </span><span class="kn">import</span> <span class="n">get_pipeline_logger</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">.storage</span><span class="w"> </span><span class="kn">import</span> <span class="n">get_storage_broker</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">..util</span><span class="w"> </span><span class="kn">import</span> <span class="p">(</span><span class="n">ensure_regex_list</span><span class="p">,</span> <span class="n">format_exception</span><span class="p">,</span> <span class="n">lazyproperty</span><span class="p">,</span> <span class="n">mkdir_p</span><span class="p">,</span> <span class="n">rm_f</span><span class="p">,</span> <span class="n">rm_r</span><span class="p">,</span> <span class="n">validate_dir_writable</span><span class="p">,</span>
                     <span class="n">validate_file_writable</span><span class="p">,</span> <span class="n">validate_membership</span><span class="p">)</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">..util.aws</span><span class="w"> </span><span class="kn">import</span> <span class="n">upload_to_s3</span>
 
 <span class="c1"># OS X test compatibility, due to absence of pyinotify (which is specific to the Linux kernel)</span>
 <span class="k">try</span><span class="p">:</span>
-    <span class="kn">import</span> <span class="nn">pyinotify</span>
+    <span class="kn">import</span><span class="w"> </span><span class="nn">pyinotify</span>
 <span class="k">except</span> <span class="ne">ImportError</span><span class="p">:</span>
-    <span class="k">class</span> <span class="nc">pyinotify</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="k">class</span><span class="w"> </span><span class="nc">pyinotify</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
         <span class="n">IN_MOVED_TO</span> <span class="o">=</span> <span class="mi">0</span>
         <span class="n">IN_CLOSE_WRITE</span> <span class="o">=</span> <span class="mi">0</span>
 
-        <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
             <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="s1">&#39;pyinotify package is not installed&#39;</span><span class="p">)</span>
 
-        <span class="k">class</span> <span class="nc">ProcessEvent</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
-            <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">class</span><span class="w"> </span><span class="nc">ProcessEvent</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+            <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
                 <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="s1">&#39;pyinotify package is not installed&#39;</span><span class="p">)</span>
 
-<span class="kn">from</span> <span class="nn">celery</span> <span class="kn">import</span> <span class="n">Task</span>
-<span class="kn">from</span> <span class="nn">celery.utils.log</span> <span class="kn">import</span> <span class="n">get_task_logger</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">celery</span><span class="w"> </span><span class="kn">import</span> <span class="n">Task</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">celery.utils.log</span><span class="w"> </span><span class="kn">import</span> <span class="n">get_task_logger</span>
 
-<span class="kn">from</span> <span class="nn">.exceptions</span> <span class="kn">import</span> <span class="n">InvalidHandlerError</span>
-<span class="kn">from</span> <span class="nn">..util</span> <span class="kn">import</span> <span class="n">dir_exists</span><span class="p">,</span> <span class="n">list_regular_files</span><span class="p">,</span> <span class="n">safe_move_file</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">.exceptions</span><span class="w"> </span><span class="kn">import</span> <span class="n">InvalidHandlerError</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">..util</span><span class="w"> </span><span class="kn">import</span> <span class="n">dir_exists</span><span class="p">,</span> <span class="n">list_regular_files</span><span class="p">,</span> <span class="n">safe_move_file</span>
 
 <span class="c1"># Filter noisy and useless numpy warnings</span>
 <span class="c1"># Reference: https://github.com/numpy/numpy/pull/432</span>
@@ -156,7 +157,7 @@
 <span class="p">]</span>
 
 
-<div class="viewcode-block" id="get_task_name"><a class="viewcode-back" href="../../../aodncore.pipeline.html#aodncore.pipeline.watch.get_task_name">[docs]</a><span class="k">def</span> <span class="nf">get_task_name</span><span class="p">(</span><span class="n">namespace</span><span class="p">,</span> <span class="n">function_name</span><span class="p">):</span>
+<div class="viewcode-block" id="get_task_name"><a class="viewcode-back" href="../../../aodncore.pipeline.html#aodncore.pipeline.watch.get_task_name">[docs]</a><span class="k">def</span><span class="w"> </span><span class="nf">get_task_name</span><span class="p">(</span><span class="n">namespace</span><span class="p">,</span> <span class="n">function_name</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Convenience function for :py:meth:`CeleryManager.get_task_name`</span>
 
 <span class="sd">    :param namespace: task namespace</span>
@@ -167,7 +168,7 @@
     <span class="k">return</span> <span class="n">task_name</span></div>
 
 
-<div class="viewcode-block" id="CeleryConfig"><a class="viewcode-back" href="../../../aodncore.pipeline.html#aodncore.pipeline.watch.CeleryConfig">[docs]</a><span class="k">class</span> <span class="nc">CeleryConfig</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+<div class="viewcode-block" id="CeleryConfig"><a class="viewcode-back" href="../../../aodncore.pipeline.html#aodncore.pipeline.watch.CeleryConfig">[docs]</a><span class="k">class</span><span class="w"> </span><span class="nc">CeleryConfig</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
     <span class="c1"># TODO: remove this hardcoding and get values from pipeline_config</span>
     <span class="n">broker_url</span> <span class="o">=</span> <span class="s1">&#39;amqp://&#39;</span>
     <span class="n">accept_content</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;json&#39;</span><span class="p">]</span>
@@ -177,11 +178,11 @@
 
     <span class="n">task_routes</span> <span class="o">=</span> <span class="p">{}</span>
 
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">routes</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">routes</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">task_routes</span> <span class="o">=</span> <span class="n">routes</span> <span class="ow">or</span> <span class="p">{}</span></div>
 
 
-<span class="k">def</span> <span class="nf">delete_same_name_from_error_store_callback</span><span class="p">(</span><span class="n">handler</span><span class="p">,</span> <span class="n">file_state_manager</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">delete_same_name_from_error_store_callback</span><span class="p">(</span><span class="n">handler</span><span class="p">,</span> <span class="n">file_state_manager</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Delete files from the error store if they match the regular expression &quot;INPUT_FILE.UUID&quot;</span>
 
 <span class="sd">    :param handler: Handler instance</span>
@@ -196,7 +197,7 @@
     <span class="k">return</span> <span class="n">log</span>
 
 
-<span class="k">def</span> <span class="nf">delete_custom_regexes_from_error_store_callback</span><span class="p">(</span><span class="n">handler</span><span class="p">,</span> <span class="n">file_state_manager</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">delete_custom_regexes_from_error_store_callback</span><span class="p">(</span><span class="n">handler</span><span class="p">,</span> <span class="n">file_state_manager</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Delete files from the error store if they match one of regular expressions in the error_cleanup_regexes attribute</span>
 <span class="sd">    of the handler</span>
 
@@ -211,7 +212,7 @@
     <span class="k">return</span> <span class="n">log</span>
 
 
-<span class="k">class</span> <span class="nc">ExitPolicy</span><span class="p">(</span><span class="n">Enum</span><span class="p">):</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">ExitPolicy</span><span class="p">(</span><span class="n">Enum</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Policies defining callback actions performed on completion of a handler</span>
 
 <span class="sd">    Callbacks are called with two parameters: the BaseHandler instance and the IncomingFileStateManager instance from</span>
@@ -234,19 +235,19 @@
     <span class="n">DELETE_CUSTOM_REGEXES_FROM_ERROR_STORE</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;callback&#39;</span><span class="p">:</span> <span class="n">delete_custom_regexes_from_error_store_callback</span><span class="p">}</span>
 
     <span class="nd">@classmethod</span>
-    <span class="k">def</span> <span class="nf">from_name</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">name</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">from_name</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">name</span><span class="p">):</span>
         <span class="k">return</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">ExitPolicy</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="bp">cls</span><span class="o">.</span><span class="n">NO_ACTION</span><span class="p">)</span>
 
     <span class="nd">@classmethod</span>
-    <span class="k">def</span> <span class="nf">from_names</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">names</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">from_names</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">names</span><span class="p">):</span>
         <span class="k">return</span> <span class="nb">tuple</span><span class="p">(</span><span class="bp">cls</span><span class="o">.</span><span class="n">from_name</span><span class="p">(</span><span class="n">n</span><span class="p">)</span> <span class="k">for</span> <span class="n">n</span> <span class="ow">in</span> <span class="n">names</span><span class="p">)</span>
 
     <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">callback</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">callback</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">value</span><span class="p">[</span><span class="s1">&#39;callback&#39;</span><span class="p">]</span>
 
 
-<span class="k">def</span> <span class="nf">build_task</span><span class="p">(</span><span class="n">config</span><span class="p">,</span> <span class="n">pipeline_name</span><span class="p">,</span> <span class="n">handler_class</span><span class="p">,</span> <span class="n">success_exit_policies</span><span class="p">,</span> <span class="n">error_exit_policies</span><span class="p">,</span> <span class="n">kwargs</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">build_task</span><span class="p">(</span><span class="n">config</span><span class="p">,</span> <span class="n">pipeline_name</span><span class="p">,</span> <span class="n">handler_class</span><span class="p">,</span> <span class="n">success_exit_policies</span><span class="p">,</span> <span class="n">error_exit_policies</span><span class="p">,</span> <span class="n">kwargs</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Closure function to return a Celery Task instance which has been prepared for a specific pipeline.</span>
 <span class="sd">        The this allows the task to accept a single input_file parameter, while dynamically instantiating the</span>
 <span class="sd">        handler class passed in via the &#39;handler_class&#39; parameter, with the per-pipeline &#39;kwargs&#39; pre-applied to the</span>
@@ -262,17 +263,19 @@
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">task_name</span> <span class="o">=</span> <span class="n">get_task_name</span><span class="p">(</span><span class="n">config</span><span class="o">.</span><span class="n">pipeline_config</span><span class="p">[</span><span class="s1">&#39;watch&#39;</span><span class="p">][</span><span class="s1">&#39;task_namespace&#39;</span><span class="p">],</span> <span class="n">pipeline_name</span><span class="p">)</span>
 
-    <span class="k">class</span> <span class="nc">PipelineTask</span><span class="p">(</span><span class="n">Task</span><span class="p">):</span>
+    <span class="k">class</span><span class="w"> </span><span class="nc">PipelineTask</span><span class="p">(</span><span class="n">Task</span><span class="p">):</span>
         <span class="n">ignore_result</span> <span class="o">=</span> <span class="kc">True</span>
         <span class="n">name</span> <span class="o">=</span> <span class="n">task_name</span>
 
-        <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">logger</span> <span class="o">=</span> <span class="kc">None</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">pipeline_name</span> <span class="o">=</span> <span class="n">pipeline_name</span>
 
-        <span class="k">def</span> <span class="nf">run</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">incoming_file</span><span class="p">):</span>
+        <span class="k">def</span><span class="w"> </span><span class="nf">run</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">incoming_file</span><span class="p">):</span>
             <span class="k">try</span><span class="p">:</span>
                 <span class="n">logging</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">dictConfig</span><span class="p">(</span><span class="n">config</span><span class="o">.</span><span class="n">get_worker_logging_config</span><span class="p">(</span><span class="n">task_name</span><span class="p">))</span>
+                <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="s1">&#39;boto3&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">setLevel</span><span class="p">(</span><span class="n">logging</span><span class="o">.</span><span class="n">DEBUG</span><span class="p">)</span>
+                <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="s1">&#39;botocore&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">setLevel</span><span class="p">(</span><span class="n">logging</span><span class="o">.</span><span class="n">DEBUG</span><span class="p">)</span>
                 <span class="n">logging_extra</span> <span class="o">=</span> <span class="p">{</span>
                     <span class="s1">&#39;celery_task_id&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">request</span><span class="o">.</span><span class="n">id</span><span class="p">,</span>
                     <span class="s1">&#39;celery_task_name&#39;</span><span class="p">:</span> <span class="n">task_name</span>
@@ -286,13 +289,18 @@
                     <span class="s2">&quot;</span><span class="si">{self.__class__.__name__}</span><span class="s2">.error_exit_policies -&gt; &quot;</span>
                     <span class="s2">&quot;</span><span class="si">{policies}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">=</span><span class="bp">self</span><span class="p">,</span> <span class="n">policies</span><span class="o">=</span><span class="p">[</span><span class="n">p</span><span class="o">.</span><span class="n">name</span> <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">error_exit_policies</span><span class="p">]))</span>
 
+                <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">sysinfo</span><span class="p">(</span>
+                    <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2">.kwargs -&gt; </span><span class="si">{</span><span class="n">kwargs</span><span class="si">}</span><span class="s2">&quot;</span>
+                <span class="p">)</span>
+
                 <span class="n">file_state_manager</span> <span class="o">=</span> <span class="n">IncomingFileStateManager</span><span class="p">(</span><span class="n">input_file</span><span class="o">=</span><span class="n">incoming_file</span><span class="p">,</span>
                                                               <span class="n">pipeline_name</span><span class="o">=</span><span class="n">pipeline_name</span><span class="p">,</span>
                                                               <span class="n">config</span><span class="o">=</span><span class="n">config</span><span class="p">,</span>
                                                               <span class="n">logger</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="p">,</span>
                                                               <span class="n">celery_request</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">request</span><span class="p">,</span>
                                                               <span class="n">error_exit_policies</span><span class="o">=</span><span class="n">error_exit_policies</span><span class="p">,</span>
-                                                              <span class="n">success_exit_policies</span><span class="o">=</span><span class="n">success_exit_policies</span><span class="p">)</span>
+                                                              <span class="n">success_exit_policies</span><span class="o">=</span><span class="n">success_exit_policies</span><span class="p">,</span>
+                                                              <span class="n">params</span><span class="o">=</span><span class="n">kwargs</span><span class="p">)</span>
 
                 <span class="n">file_state_manager</span><span class="o">.</span><span class="n">move_to_processing</span><span class="p">()</span>
 
@@ -319,8 +327,8 @@
     <span class="k">return</span> <span class="n">PipelineTask</span><span class="p">()</span>
 
 
-<div class="viewcode-block" id="CeleryContext"><a class="viewcode-back" href="../../../aodncore.pipeline.html#aodncore.pipeline.watch.CeleryContext">[docs]</a><span class="k">class</span> <span class="nc">CeleryContext</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">application</span><span class="p">,</span> <span class="n">config</span><span class="p">,</span> <span class="n">celeryconfig</span><span class="p">):</span>
+<div class="viewcode-block" id="CeleryContext"><a class="viewcode-back" href="../../../aodncore.pipeline.html#aodncore.pipeline.watch.CeleryContext">[docs]</a><span class="k">class</span><span class="w"> </span><span class="nc">CeleryContext</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">application</span><span class="p">,</span> <span class="n">config</span><span class="p">,</span> <span class="n">celeryconfig</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_application</span> <span class="o">=</span> <span class="n">application</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_config</span> <span class="o">=</span> <span class="n">config</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_celeryconfig</span> <span class="o">=</span> <span class="n">celeryconfig</span>
@@ -328,7 +336,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">_application_configured</span> <span class="o">=</span> <span class="kc">False</span>
 
     <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">application</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">application</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Return the configured Celery application instance</span>
 
 <span class="sd">        :return: Celery application instance with config applied and tasks registered</span>
@@ -337,12 +345,12 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">_configure_application</span><span class="p">()</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_application</span>
 
-    <span class="k">def</span> <span class="nf">_configure_application</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_configure_application</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_application</span><span class="o">.</span><span class="n">config_from_object</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_celeryconfig</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_register_tasks</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_application_configured</span> <span class="o">=</span> <span class="kc">True</span>
 
-    <span class="k">def</span> <span class="nf">_register_tasks</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_register_tasks</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="n">loaded_handlers</span><span class="p">,</span> <span class="n">failed_handlers</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_config</span><span class="o">.</span><span class="n">discovered_handlers</span>
 
         <span class="n">available_handler_names</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="n">loaded_handlers</span><span class="p">)</span>
@@ -384,7 +392,7 @@
                 <span class="bp">self</span><span class="o">.</span><span class="n">_application</span><span class="o">.</span><span class="n">register_task</span><span class="p">(</span><span class="n">task_object</span><span class="p">)</span></div>
 
 
-<span class="k">def</span> <span class="nf">should_ignore_event</span><span class="p">(</span><span class="n">pathname</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">should_ignore_event</span><span class="p">(</span><span class="n">pathname</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Determine whether an inotify event should be ignored</span>
 
 <span class="sd">    :param pathname: path to the file which triggered an event</span>
@@ -407,13 +415,13 @@
     <span class="k">return</span> <span class="kc">False</span>
 
 
-<div class="viewcode-block" id="IncomingFileEventHandler"><a class="viewcode-back" href="../../../aodncore.pipeline.html#aodncore.pipeline.watch.IncomingFileEventHandler">[docs]</a><span class="k">class</span> <span class="nc">IncomingFileEventHandler</span><span class="p">(</span><span class="n">pyinotify</span><span class="o">.</span><span class="n">ProcessEvent</span><span class="p">):</span>
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">config</span><span class="p">):</span>
+<div class="viewcode-block" id="IncomingFileEventHandler"><a class="viewcode-back" href="../../../aodncore.pipeline.html#aodncore.pipeline.watch.IncomingFileEventHandler">[docs]</a><span class="k">class</span><span class="w"> </span><span class="nc">IncomingFileEventHandler</span><span class="p">(</span><span class="n">pyinotify</span><span class="o">.</span><span class="n">ProcessEvent</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">config</span><span class="p">):</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_config</span> <span class="o">=</span> <span class="n">config</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_logger</span> <span class="o">=</span> <span class="n">get_pipeline_logger</span><span class="p">(</span><span class="n">config</span><span class="o">.</span><span class="n">pipeline_config</span><span class="p">[</span><span class="s1">&#39;watch&#39;</span><span class="p">][</span><span class="s1">&#39;logger_name&#39;</span><span class="p">])</span>
 
-<div class="viewcode-block" id="IncomingFileEventHandler.process_default"><a class="viewcode-back" href="../../../aodncore.pipeline.html#aodncore.pipeline.watch.IncomingFileEventHandler.process_default">[docs]</a>    <span class="k">def</span> <span class="nf">process_default</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">event</span><span class="p">):</span>
+<div class="viewcode-block" id="IncomingFileEventHandler.process_default"><a class="viewcode-back" href="../../../aodncore.pipeline.html#aodncore.pipeline.watch.IncomingFileEventHandler.process_default">[docs]</a>    <span class="k">def</span><span class="w"> </span><span class="nf">process_default</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">event</span><span class="p">):</span>
         <span class="c1"># event_id is distinct from task_id, and exists in order to correlate log messages before *and* after a task</span>
         <span class="c1"># is queued for a given event</span>
         <span class="n">event_id</span> <span class="o">=</span> <span class="n">uuid4</span><span class="p">()</span>
@@ -421,7 +429,7 @@
                                                                                                     <span class="n">event</span><span class="o">=</span><span class="n">event</span><span class="p">))</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">queue_task</span><span class="p">(</span><span class="n">event</span><span class="o">.</span><span class="n">path</span><span class="p">,</span> <span class="n">event</span><span class="o">.</span><span class="n">pathname</span><span class="p">,</span> <span class="n">event_id</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="IncomingFileEventHandler.queue_task"><a class="viewcode-back" href="../../../aodncore.pipeline.html#aodncore.pipeline.watch.IncomingFileEventHandler.queue_task">[docs]</a>    <span class="k">def</span> <span class="nf">queue_task</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">directory</span><span class="p">,</span> <span class="n">pathname</span><span class="p">,</span> <span class="n">event_id</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<div class="viewcode-block" id="IncomingFileEventHandler.queue_task"><a class="viewcode-back" href="../../../aodncore.pipeline.html#aodncore.pipeline.watch.IncomingFileEventHandler.queue_task">[docs]</a>    <span class="k">def</span><span class="w"> </span><span class="nf">queue_task</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">directory</span><span class="p">,</span> <span class="n">pathname</span><span class="p">,</span> <span class="n">event_id</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Add a task to the queue corresponding with the given directory, handling the given file</span>
 
 <span class="sd">        :param directory: the watched directory</span>
@@ -458,7 +466,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">_logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;full task_data: </span><span class="si">{task_data}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">task_data</span><span class="o">=</span><span class="n">task_data</span><span class="p">))</span></div></div>
 
 
-<div class="viewcode-block" id="IncomingFileStateManager"><a class="viewcode-back" href="../../../aodncore.pipeline.html#aodncore.pipeline.watch.IncomingFileStateManager">[docs]</a><span class="k">class</span> <span class="nc">IncomingFileStateManager</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+<div class="viewcode-block" id="IncomingFileStateManager"><a class="viewcode-back" href="../../../aodncore.pipeline.html#aodncore.pipeline.watch.IncomingFileStateManager">[docs]</a><span class="k">class</span><span class="w"> </span><span class="nc">IncomingFileStateManager</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
     <span class="n">processing_mode</span> <span class="o">=</span> <span class="n">stat</span><span class="o">.</span><span class="n">S_IRUSR</span> <span class="o">|</span> <span class="n">stat</span><span class="o">.</span><span class="n">S_IRGRP</span> <span class="o">|</span> <span class="n">stat</span><span class="o">.</span><span class="n">S_IROTH</span>
     <span class="n">error_mode</span> <span class="o">=</span> <span class="n">stat</span><span class="o">.</span><span class="n">S_IRUSR</span> <span class="o">|</span> <span class="n">stat</span><span class="o">.</span><span class="n">S_IWUSR</span> <span class="o">|</span> <span class="n">stat</span><span class="o">.</span><span class="n">S_IRGRP</span> <span class="o">|</span> <span class="n">stat</span><span class="o">.</span><span class="n">S_IWGRP</span> <span class="o">|</span> <span class="n">stat</span><span class="o">.</span><span class="n">S_IROTH</span>
 
@@ -474,7 +482,7 @@
             <span class="s1">&#39;trigger&#39;</span><span class="p">:</span> <span class="s1">&#39;move_to_processing&#39;</span><span class="p">,</span>
             <span class="s1">&#39;source&#39;</span><span class="p">:</span> <span class="s1">&#39;FILE_IN_INCOMING&#39;</span><span class="p">,</span>
             <span class="s1">&#39;dest&#39;</span><span class="p">:</span> <span class="s1">&#39;FILE_IN_PROCESSING&#39;</span><span class="p">,</span>
-            <span class="s1">&#39;before&#39;</span><span class="p">:</span> <span class="p">[</span><span class="s1">&#39;_pre_processing_checks&#39;</span><span class="p">,</span> <span class="s1">&#39;_move_to_processing&#39;</span><span class="p">]</span>
+            <span class="s1">&#39;before&#39;</span><span class="p">:</span> <span class="p">[</span><span class="s1">&#39;_pre_processing_checks&#39;</span><span class="p">,</span> <span class="s1">&#39;_copy_to_landing&#39;</span><span class="p">,</span> <span class="s1">&#39;_move_to_processing&#39;</span><span class="p">]</span>
         <span class="p">},</span>
         <span class="p">{</span>
             <span class="s1">&#39;trigger&#39;</span><span class="p">:</span> <span class="s1">&#39;move_to_error&#39;</span><span class="p">,</span>
@@ -491,8 +499,8 @@
         <span class="p">}</span>
     <span class="p">]</span>
 
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">input_file</span><span class="p">,</span> <span class="n">pipeline_name</span><span class="p">,</span> <span class="n">config</span><span class="p">,</span> <span class="n">logger</span><span class="p">,</span> <span class="n">celery_request</span><span class="p">,</span> <span class="n">error_exit_policies</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-                 <span class="n">success_exit_policies</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">error_broker</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">input_file</span><span class="p">,</span> <span class="n">pipeline_name</span><span class="p">,</span> <span class="n">config</span><span class="p">,</span> <span class="n">logger</span><span class="p">,</span> <span class="n">celery_request</span><span class="p">,</span> <span class="n">error_exit_policies</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                 <span class="n">success_exit_policies</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">error_broker</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">params</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">input_file</span> <span class="o">=</span> <span class="n">input_file</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">pipeline_name</span> <span class="o">=</span> <span class="n">pipeline_name</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">config</span> <span class="o">=</span> <span class="n">config</span>
@@ -501,6 +509,12 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">error_exit_policies</span> <span class="o">=</span> <span class="n">error_exit_policies</span> <span class="ow">or</span> <span class="p">[]</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">success_exit_policies</span> <span class="o">=</span> <span class="n">success_exit_policies</span> <span class="ow">or</span> <span class="p">[]</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_error_broker</span> <span class="o">=</span> <span class="n">error_broker</span>
+        <span class="k">if</span> <span class="n">params</span> <span class="ow">and</span> <span class="s2">&quot;custom_params&quot;</span> <span class="ow">in</span> <span class="n">params</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">custom_params</span> <span class="o">=</span> <span class="n">params</span><span class="p">[</span><span class="s2">&quot;custom_params&quot;</span><span class="p">]</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">copy_to_landing_enabled</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">custom_params</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;copy_to_landing_bucket&quot;</span><span class="p">,</span> <span class="kc">False</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">landing_prefix</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">custom_params</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;landing_prefix&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">copy_to_landing_enabled</span> <span class="o">=</span> <span class="kc">False</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">_machine</span> <span class="o">=</span> <span class="n">Machine</span><span class="p">(</span><span class="n">model</span><span class="o">=</span><span class="bp">self</span><span class="p">,</span> <span class="n">states</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">states</span><span class="p">,</span> <span class="n">initial</span><span class="o">=</span><span class="s1">&#39;FILE_IN_INCOMING&#39;</span><span class="p">,</span> <span class="n">auto_transitions</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
                                 <span class="n">transitions</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">transitions</span><span class="p">,</span> <span class="n">after_state_change</span><span class="o">=</span><span class="s1">&#39;_after_state_change&#39;</span><span class="p">)</span>
@@ -508,12 +522,12 @@
 
         <span class="bp">self</span><span class="o">.</span><span class="n">handler</span> <span class="o">=</span> <span class="kc">None</span>
 
-    <span class="k">def</span> <span class="nf">_log_state</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_log_state</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">sysinfo</span><span class="p">(</span>
             <span class="s2">&quot;</span><span class="si">{self.__class__.__name__}</span><span class="s2">.state -&gt; &#39;</span><span class="si">{self.state}</span><span class="s2">&#39;&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">=</span><span class="bp">self</span><span class="p">))</span>
 
     <span class="nd">@lazyproperty</span>
-    <span class="k">def</span> <span class="nf">error_broker</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">error_broker</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="n">error_broker</span> <span class="o">=</span> <span class="n">get_storage_broker</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">error_uri</span><span class="p">)</span>
         <span class="n">error_broker</span><span class="o">.</span><span class="n">mode</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">error_mode</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;</span><span class="si">{self.__class__.__name__}</span><span class="s2">.error_broker -&gt; </span><span class="si">{error_broker}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">=</span><span class="bp">self</span><span class="p">,</span>
@@ -521,38 +535,42 @@
         <span class="k">return</span> <span class="n">error_broker</span>
 
     <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">basename</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">basename</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">basename</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">input_file</span><span class="p">)</span>
 
     <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">incoming_dir</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">incoming_dir</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">input_file</span><span class="p">)</span>
 
     <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">processing_dir</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">processing_dir</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">pipeline_config</span><span class="p">[</span><span class="s1">&#39;global&#39;</span><span class="p">][</span><span class="s1">&#39;processing_dir&#39;</span><span class="p">],</span> <span class="bp">self</span><span class="o">.</span><span class="n">pipeline_name</span><span class="p">,</span>
                             <span class="bp">self</span><span class="o">.</span><span class="n">celery_request</span><span class="o">.</span><span class="n">id</span><span class="p">)</span>
 
     <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">processing_path</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">processing_path</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">processing_dir</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">basename</span><span class="p">)</span>
 
     <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">relative_path</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">relative_path</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">relpath</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">input_file</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">pipeline_config</span><span class="p">[</span><span class="s1">&#39;watch&#39;</span><span class="p">][</span><span class="s1">&#39;incoming_dir&#39;</span><span class="p">])</span>
 
     <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">error_name</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">error_name</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="s2">&quot;</span><span class="si">{name}</span><span class="s2">.</span><span class="si">{id}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">basename</span><span class="p">,</span> <span class="nb">id</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">celery_request</span><span class="o">.</span><span class="n">id</span><span class="p">)</span>
 
     <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">error_uri</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">error_uri</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">pipeline_config</span><span class="p">[</span><span class="s1">&#39;global&#39;</span><span class="p">][</span><span class="s1">&#39;error_uri&#39;</span><span class="p">],</span> <span class="bp">self</span><span class="o">.</span><span class="n">pipeline_name</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">_after_state_change</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="nd">@property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">landing_bucket</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">pipeline_config</span><span class="p">[</span><span class="s1">&#39;global&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;landing_bucket&#39;</span><span class="p">)</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_after_state_change</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_log_state</span><span class="p">()</span>
 
-    <span class="k">def</span> <span class="nf">_pre_processing_checks</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_pre_processing_checks</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">try</span><span class="p">:</span>
             <span class="n">validate_file_writable</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">input_file</span><span class="p">)</span>
 
@@ -565,19 +583,32 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">exception</span><span class="p">(</span><span class="s1">&#39;exception occurred initialising IncomingFileStateManager&#39;</span><span class="p">)</span>
             <span class="k">raise</span>
 
-    <span class="k">def</span> <span class="nf">_move_to_processing</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_copy_to_landing</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="c1"># skip this step all together if not configured to copy to landing</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">landing_bucket</span> <span class="ow">or</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">copy_to_landing_enabled</span><span class="p">:</span>
+            <span class="k">return</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span>
+            <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2">.copy_to_landing -&gt; &#39;s3://</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">landing_bucket</span><span class="si">}</span><span class="s2">/</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">landing_prefix</span><span class="si">}</span><span class="s2">&#39;&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">sysinfo</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Uploading </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">input_file</span><span class="si">}</span><span class="s2"> to &#39;s3://</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">landing_bucket</span><span class="si">}</span><span class="s2">/</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">landing_prefix</span><span class="si">}</span><span class="s2">&#39;&quot;</span><span class="p">)</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">upload_to_s3</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">input_file</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">landing_bucket</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">landing_prefix</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">basename</span><span class="p">)</span>
+        <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Failed to upload file to s3://</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">landing_bucket</span><span class="si">}</span><span class="s2">/</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">landing_prefix</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_move_to_processing</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;</span><span class="si">{self.__class__.__name__}</span><span class="s2">.move_to_processing -&gt; &#39;</span><span class="si">{self.processing_path}</span><span class="s2">&#39;&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">=</span><span class="bp">self</span><span class="p">))</span>
         <span class="n">safe_move_file</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">input_file</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">processing_path</span><span class="p">)</span>
         <span class="n">os</span><span class="o">.</span><span class="n">chmod</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">processing_path</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">processing_mode</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">_move_to_error</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_move_to_error</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="n">full_error_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">error_broker</span><span class="o">.</span><span class="n">prefix</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">error_name</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;</span><span class="si">{self.__class__.__name__}</span><span class="s2">.move_to_error -&gt; &#39;</span><span class="si">{path}</span><span class="s2">&#39;&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">=</span><span class="bp">self</span><span class="p">,</span> <span class="n">path</span><span class="o">=</span><span class="n">full_error_path</span><span class="p">))</span>
         <span class="n">error_file</span> <span class="o">=</span> <span class="n">PipelineFile</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">processing_path</span><span class="p">,</span> <span class="n">dest_path</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">error_name</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">error_broker</span><span class="o">.</span><span class="n">upload</span><span class="p">(</span><span class="n">error_file</span><span class="p">)</span>
         <span class="n">rm_f</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">processing_path</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">_run_error_callbacks</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_run_error_callbacks</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">try</span><span class="p">:</span>
             <span class="n">callbacks</span> <span class="o">=</span> <span class="p">[</span><span class="n">p</span><span class="o">.</span><span class="n">callback</span> <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">error_exit_policies</span><span class="p">]</span>
             <span class="k">for</span> <span class="n">callback</span> <span class="ow">in</span> <span class="n">callbacks</span><span class="p">:</span>
@@ -587,7 +618,7 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">exception</span><span class="p">(</span>
                 <span class="s2">&quot;error running error callbacks: &#39;</span><span class="si">{policies}</span><span class="s2">&#39;. </span><span class="si">{e}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">policies</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">error_exit_policies</span><span class="p">,</span> <span class="n">e</span><span class="o">=</span><span class="n">e</span><span class="p">))</span>
 
-    <span class="k">def</span> <span class="nf">_run_success_callbacks</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_run_success_callbacks</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">try</span><span class="p">:</span>
             <span class="n">callbacks</span> <span class="o">=</span> <span class="p">[</span><span class="n">p</span><span class="o">.</span><span class="n">callback</span> <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">success_exit_policies</span><span class="p">]</span>
             <span class="k">for</span> <span class="n">callback</span> <span class="ow">in</span> <span class="n">callbacks</span><span class="p">:</span>
@@ -597,26 +628,26 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">exception</span><span class="p">(</span>
                 <span class="s2">&quot;error running success callbacks: &#39;</span><span class="si">{policies}</span><span class="s2">&#39;. </span><span class="si">{e}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">policies</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">success_exit_policies</span><span class="p">,</span> <span class="n">e</span><span class="o">=</span><span class="n">e</span><span class="p">))</span>
 
-    <span class="k">def</span> <span class="nf">_remove_processing_file</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_remove_processing_file</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="n">rm_f</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">processing_path</span><span class="p">)</span>
         <span class="n">rm_r</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">processing_dir</span><span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="WatchServiceContext"><a class="viewcode-back" href="../../../aodncore.pipeline.html#aodncore.pipeline.watch.WatchServiceContext">[docs]</a><span class="k">class</span> <span class="nc">WatchServiceContext</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+<div class="viewcode-block" id="WatchServiceContext"><a class="viewcode-back" href="../../../aodncore.pipeline.html#aodncore.pipeline.watch.WatchServiceContext">[docs]</a><span class="k">class</span><span class="w"> </span><span class="nc">WatchServiceContext</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Class to create instances required for WatchServiceManager</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">config</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">config</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">event_handler</span> <span class="o">=</span> <span class="n">IncomingFileEventHandler</span><span class="p">(</span><span class="n">config</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">watch_manager</span> <span class="o">=</span> <span class="n">pyinotify</span><span class="o">.</span><span class="n">WatchManager</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">notifier</span> <span class="o">=</span> <span class="n">pyinotify</span><span class="o">.</span><span class="n">Notifier</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">watch_manager</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">event_handler</span><span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="WatchServiceManager"><a class="viewcode-back" href="../../../aodncore.pipeline.html#aodncore.pipeline.watch.WatchServiceManager">[docs]</a><span class="k">class</span> <span class="nc">WatchServiceManager</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+<div class="viewcode-block" id="WatchServiceManager"><a class="viewcode-back" href="../../../aodncore.pipeline.html#aodncore.pipeline.watch.WatchServiceManager">[docs]</a><span class="k">class</span><span class="w"> </span><span class="nc">WatchServiceManager</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
     <span class="n">EVENT_MASK</span> <span class="o">=</span> <span class="n">pyinotify</span><span class="o">.</span><span class="n">IN_MOVED_TO</span> <span class="o">|</span> <span class="n">pyinotify</span><span class="o">.</span><span class="n">IN_CLOSE_WRITE</span>
 
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">config</span><span class="p">,</span> <span class="n">event_handler</span><span class="p">,</span> <span class="n">watch_manager</span><span class="p">,</span> <span class="n">notifier</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">config</span><span class="p">,</span> <span class="n">event_handler</span><span class="p">,</span> <span class="n">watch_manager</span><span class="p">,</span> <span class="n">notifier</span><span class="p">):</span>
         <span class="c1"># noinspection PyProtectedMember</span>
         <span class="k">if</span> <span class="n">watch_manager</span> <span class="ow">is</span> <span class="ow">not</span> <span class="n">notifier</span><span class="o">.</span><span class="n">_watch_manager</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;notifier must be instantiated with the same watch_manager instance as __init__ param&quot;</span><span class="p">)</span>
@@ -630,14 +661,14 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">_logger</span> <span class="o">=</span> <span class="n">get_pipeline_logger</span><span class="p">(</span><span class="n">config</span><span class="o">.</span><span class="n">pipeline_config</span><span class="p">[</span><span class="s1">&#39;watch&#39;</span><span class="p">][</span><span class="s1">&#39;logger_name&#39;</span><span class="p">])</span>
 
     <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">watches</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">watches</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="p">[</span><span class="n">w</span><span class="o">.</span><span class="n">path</span> <span class="k">for</span> <span class="n">w</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_watch_manager</span><span class="o">.</span><span class="n">watches</span><span class="o">.</span><span class="n">values</span><span class="p">()]</span>
 
     <span class="c1"># noinspection PyUnusedLocal</span>
-<div class="viewcode-block" id="WatchServiceManager.handle_signal"><a class="viewcode-back" href="../../../aodncore.pipeline.html#aodncore.pipeline.watch.WatchServiceManager.handle_signal">[docs]</a>    <span class="k">def</span> <span class="nf">handle_signal</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">signo</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">stackframe</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<div class="viewcode-block" id="WatchServiceManager.handle_signal"><a class="viewcode-back" href="../../../aodncore.pipeline.html#aodncore.pipeline.watch.WatchServiceManager.handle_signal">[docs]</a>    <span class="k">def</span><span class="w"> </span><span class="nf">handle_signal</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">signo</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">stackframe</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">stop</span><span class="p">(</span><span class="s2">&quot;received signal &#39;</span><span class="si">{signo}</span><span class="s2">&#39;&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">signo</span><span class="o">=</span><span class="n">signo</span><span class="p">))</span></div>
 
-<div class="viewcode-block" id="WatchServiceManager.stop"><a class="viewcode-back" href="../../../aodncore.pipeline.html#aodncore.pipeline.watch.WatchServiceManager.stop">[docs]</a>    <span class="k">def</span> <span class="nf">stop</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">reason</span><span class="o">=</span><span class="s1">&#39;unknown&#39;</span><span class="p">):</span>
+<div class="viewcode-block" id="WatchServiceManager.stop"><a class="viewcode-back" href="../../../aodncore.pipeline.html#aodncore.pipeline.watch.WatchServiceManager.stop">[docs]</a>    <span class="k">def</span><span class="w"> </span><span class="nf">stop</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">reason</span><span class="o">=</span><span class="s1">&#39;unknown&#39;</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;stopping Notifier event loop. Reason: </span><span class="si">{reason}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">reason</span><span class="o">=</span><span class="n">reason</span><span class="p">))</span>
         <span class="k">try</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">notifier</span><span class="o">.</span><span class="n">stop</span><span class="p">()</span>
@@ -645,14 +676,14 @@
             <span class="c1"># already stopped</span>
             <span class="k">pass</span></div>
 
-    <span class="k">def</span> <span class="fm">__enter__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__enter__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_queue_and_watch_directories</span><span class="p">()</span>
         <span class="k">return</span> <span class="bp">self</span>
 
-    <span class="k">def</span> <span class="fm">__exit__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">exc_type</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">exc_val</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">exc_tb</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__exit__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">exc_type</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">exc_val</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">exc_tb</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">stop</span><span class="p">(</span><span class="s1">&#39;context manager exiting&#39;</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">_queue_and_watch_directories</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_queue_and_watch_directories</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Configure the given WatchManager with the watches defined in the configuration, queuing any existing files</span>
 
 <span class="sd">        :return: None</span>

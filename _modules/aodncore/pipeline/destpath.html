@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>aodncore.pipeline.destpath &mdash; aodncore 1.4.9 documentation</title>
+  <title>aodncore.pipeline.destpath &mdash; aodncore 1.4.10 documentation</title>
       <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
   <!--[if lt IE 9]>
@@ -92,15 +92,15 @@
 <span class="sd">mechanism is consistent.</span>
 <span class="sd">&quot;&quot;&quot;</span>
 
-<span class="kn">from</span> <span class="nn">.exceptions</span> <span class="kn">import</span> <span class="n">InvalidPathFunctionError</span>
-<span class="kn">from</span> <span class="nn">..util</span> <span class="kn">import</span> <span class="n">validate_callable</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">.exceptions</span><span class="w"> </span><span class="kn">import</span> <span class="n">InvalidPathFunctionError</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">..util</span><span class="w"> </span><span class="kn">import</span> <span class="n">validate_callable</span>
 
 <span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span>
     <span class="s1">&#39;get_path_function&#39;</span>
 <span class="p">]</span>
 
 
-<div class="viewcode-block" id="get_path_function"><a class="viewcode-back" href="../../../aodncore.pipeline.html#aodncore.pipeline.destpath.get_path_function">[docs]</a><span class="k">def</span> <span class="nf">get_path_function</span><span class="p">(</span><span class="n">handler_instance</span><span class="p">,</span> <span class="n">entry_point_group</span><span class="p">,</span> <span class="n">archive_mode</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+<div class="viewcode-block" id="get_path_function"><a class="viewcode-back" href="../../../aodncore.pipeline.html#aodncore.pipeline.destpath.get_path_function">[docs]</a><span class="k">def</span><span class="w"> </span><span class="nf">get_path_function</span><span class="p">(</span><span class="n">handler_instance</span><span class="p">,</span> <span class="n">entry_point_group</span><span class="p">,</span> <span class="n">archive_mode</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Return a tuple containing a reference to a path function, and the function&#39;s fully qualified, printable name</span>
 
 <span class="sd">    :param handler_instance: :py:class:`HandlerBase` instance</span>
@@ -112,25 +112,25 @@
     <span class="k">return</span> <span class="n">resolver</span><span class="o">.</span><span class="n">resolve</span><span class="p">()</span></div>
 
 
-<span class="k">class</span> <span class="nc">PathFunctionResolver</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">handler_instance</span><span class="p">,</span> <span class="n">entry_point_group</span><span class="p">,</span> <span class="n">archive_mode</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">PathFunctionResolver</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">handler_instance</span><span class="p">,</span> <span class="n">entry_point_group</span><span class="p">,</span> <span class="n">archive_mode</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">handler_instance</span> <span class="o">=</span> <span class="n">handler_instance</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">entry_point_group</span> <span class="o">=</span> <span class="n">entry_point_group</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">archive_mode</span> <span class="o">=</span> <span class="n">archive_mode</span>
 
     <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">attribute_name</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">attribute_name</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="s1">&#39;archive_path&#39;</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">archive_mode</span> <span class="k">else</span> <span class="s1">&#39;dest_path&#39;</span>
 
     <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">function_param</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">function_param</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">handler_instance</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">param_name</span><span class="p">)</span>
 
     <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">param_name</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">param_name</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="s1">&#39;archive_path_function&#39;</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">archive_mode</span> <span class="k">else</span> <span class="s1">&#39;dest_path_function&#39;</span>
 
-    <span class="k">def</span> <span class="nf">resolve</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">resolve</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">try</span><span class="p">:</span>
             <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_resolve</span><span class="p">()</span>
         <span class="k">except</span> <span class="n">InvalidPathFunctionError</span><span class="p">:</span>
@@ -139,7 +139,7 @@
                 <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_resolve</span><span class="p">()</span>
             <span class="k">raise</span>
 
-    <span class="k">def</span> <span class="nf">_resolve</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_resolve</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">function_param</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">function_ref</span><span class="p">,</span> <span class="n">function_parent</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_resolve_from_handler</span><span class="p">()</span>
         <span class="k">else</span><span class="p">:</span>
@@ -149,7 +149,7 @@
                                                                         <span class="n">function</span><span class="o">=</span><span class="n">function_ref</span><span class="o">.</span><span class="vm">__name__</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">function_ref</span><span class="p">,</span> <span class="n">function_qualified_name</span>
 
-    <span class="k">def</span> <span class="nf">_resolve_from_handler</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_resolve_from_handler</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="c1"># attempt to find the dest path function (method) in the handler class itself</span>
         <span class="k">try</span><span class="p">:</span>
             <span class="n">function_ref</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">handler_instance</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">attribute_name</span><span class="p">)</span>
@@ -169,7 +169,7 @@
         <span class="n">function_parent</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">handler_instance</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span>
         <span class="k">return</span> <span class="n">function_ref</span><span class="p">,</span> <span class="n">function_parent</span>
 
-    <span class="k">def</span> <span class="nf">_resolve_from_param</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_resolve_from_param</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">function_param</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
             <span class="c1"># a string parameter is assumed to be referring to an advertised entry point of the same name</span>
             <span class="n">loaded_functions</span><span class="p">,</span> <span class="n">failed_functions</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">handler_instance</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">discovered_dest_path_functions</span>
@@ -188,7 +188,7 @@
 
                 <span class="k">raise</span> <span class="n">InvalidPathFunctionError</span><span class="p">(</span><span class="n">message</span><span class="p">)</span>
 
-        <span class="k">elif</span> <span class="n">callable</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">function_param</span><span class="p">):</span>
+        <span class="k">elif</span> <span class="nb">callable</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">function_param</span><span class="p">):</span>
             <span class="c1"># dest_path_function parameter is already a Callable object, use it</span>
             <span class="n">function_ref</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">function_param</span>
         <span class="k">else</span><span class="p">:</span>

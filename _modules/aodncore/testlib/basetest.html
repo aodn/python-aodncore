@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>aodncore.testlib.basetest &mdash; aodncore 1.4.9 documentation</title>
+  <title>aodncore.testlib.basetest &mdash; aodncore 1.4.10 documentation</title>
       <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
   <!--[if lt IE 9]>
@@ -86,37 +86,37 @@
            <div itemprop="articleBody">
              
   <h1>Source code for aodncore.testlib.basetest</h1><div class="highlight"><pre>
-<span></span><span class="kn">import</span> <span class="nn">logging.config</span>
-<span class="kn">import</span> <span class="nn">os</span>
-<span class="kn">import</span> <span class="nn">tempfile</span>
-<span class="kn">import</span> <span class="nn">unittest</span>
+<span></span><span class="kn">import</span><span class="w"> </span><span class="nn">logging.config</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">os</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">tempfile</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">unittest</span>
 
-<span class="kn">from</span> <span class="nn">aodncore.pipeline.log</span> <span class="kn">import</span> <span class="n">SYSINFO</span><span class="p">,</span> <span class="n">get_pipeline_logger</span>
-<span class="kn">from</span> <span class="nn">.testutil</span> <span class="kn">import</span> <span class="n">get_test_config</span><span class="p">,</span> <span class="n">make_test_file</span>
-<span class="kn">from</span> <span class="nn">..util</span> <span class="kn">import</span> <span class="n">mkdir_p</span><span class="p">,</span> <span class="n">rm_rf</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">aodncore.pipeline.log</span><span class="w"> </span><span class="kn">import</span> <span class="n">SYSINFO</span><span class="p">,</span> <span class="n">get_pipeline_logger</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">.testutil</span><span class="w"> </span><span class="kn">import</span> <span class="n">get_test_config</span><span class="p">,</span> <span class="n">make_test_file</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">..util</span><span class="w"> </span><span class="kn">import</span> <span class="n">mkdir_p</span><span class="p">,</span> <span class="n">rm_rf</span>
 
 <span class="n">TEST_LOG_FORMAT</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="si">%(asctime)s</span><span class="s2"> </span><span class="si">%(levelname)s</span><span class="s2"> [</span><span class="si">%(name)s</span><span class="s2">] </span><span class="si">%(message)s</span><span class="s2">&quot;</span>
 <span class="n">TEST_LOG_LEVEL</span> <span class="o">=</span> <span class="n">SYSINFO</span>
 
 
-<span class="k">class</span> <span class="nc">_AssertNoExceptionContext</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>  <span class="c1"># pragma: no cover</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">_AssertNoExceptionContext</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>  <span class="c1"># pragma: no cover</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;A context manager used to implement BaseTestCase.assertNoException* method.&quot;&quot;&quot;</span>
 
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">test_case</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">test_case</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">failureException</span> <span class="o">=</span> <span class="n">test_case</span><span class="o">.</span><span class="n">failureException</span>
 
-    <span class="k">def</span> <span class="fm">__enter__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__enter__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="bp">self</span>
 
-    <span class="k">def</span> <span class="fm">__exit__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">exc_type</span><span class="p">,</span> <span class="n">exc_value</span><span class="p">,</span> <span class="n">tb</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__exit__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">exc_type</span><span class="p">,</span> <span class="n">exc_value</span><span class="p">,</span> <span class="n">tb</span><span class="p">):</span>
         <span class="k">if</span> <span class="n">exc_type</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="k">raise</span> <span class="bp">self</span><span class="o">.</span><span class="n">failureException</span><span class="p">(</span>
                 <span class="s2">&quot;unexpected exception raised. </span><span class="si">{cls}</span><span class="s2"> </span><span class="si">{msg}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">cls</span><span class="o">=</span><span class="n">exc_value</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="p">,</span> <span class="n">msg</span><span class="o">=</span><span class="n">exc_value</span><span class="p">))</span>
 
 
-<div class="viewcode-block" id="BaseTestCase"><a class="viewcode-back" href="../../../aodncore.testlib.html#aodncore.testlib.basetest.BaseTestCase">[docs]</a><span class="k">class</span> <span class="nc">BaseTestCase</span><span class="p">(</span><span class="n">unittest</span><span class="o">.</span><span class="n">TestCase</span><span class="p">):</span>
+<div class="viewcode-block" id="BaseTestCase"><a class="viewcode-back" href="../../../aodncore.testlib.html#aodncore.testlib.basetest.BaseTestCase">[docs]</a><span class="k">class</span><span class="w"> </span><span class="nc">BaseTestCase</span><span class="p">(</span><span class="n">unittest</span><span class="o">.</span><span class="n">TestCase</span><span class="p">):</span>
     <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">config</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">config</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s1">&#39;_config&#39;</span><span class="p">):</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_config</span> <span class="o">=</span> <span class="n">get_test_config</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">temp_dir</span><span class="p">)</span>
             <span class="k">for</span> <span class="n">subdir</span> <span class="ow">in</span> <span class="p">(</span><span class="s1">&#39;celery&#39;</span><span class="p">,</span> <span class="s1">&#39;harvest&#39;</span><span class="p">,</span> <span class="s1">&#39;process&#39;</span><span class="p">,</span> <span class="s1">&#39;watchservice&#39;</span><span class="p">):</span>
@@ -124,13 +124,13 @@
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_config</span>
 
     <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">temp_dir</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">temp_dir</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s1">&#39;_temp_dir&#39;</span><span class="p">):</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_temp_dir</span> <span class="o">=</span> <span class="n">tempfile</span><span class="o">.</span><span class="n">mkdtemp</span><span class="p">(</span><span class="n">prefix</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="p">)</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_temp_dir</span>
 
     <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">temp_nc_file</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">temp_nc_file</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s1">&#39;_temp_nc_file&#39;</span><span class="p">):</span>
             <span class="k">with</span> <span class="n">tempfile</span><span class="o">.</span><span class="n">NamedTemporaryFile</span><span class="p">(</span><span class="n">suffix</span><span class="o">=</span><span class="s1">&#39;.nc&#39;</span><span class="p">,</span> <span class="n">prefix</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="p">,</span> <span class="nb">dir</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">temp_dir</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
                 <span class="k">pass</span>
@@ -138,16 +138,16 @@
             <span class="n">make_test_file</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_temp_nc_file</span><span class="p">)</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_temp_nc_file</span>
 
-<div class="viewcode-block" id="BaseTestCase.setUp"><a class="viewcode-back" href="../../../aodncore.testlib.html#aodncore.testlib.basetest.BaseTestCase.setUp">[docs]</a>    <span class="k">def</span> <span class="nf">setUp</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="BaseTestCase.setUp"><a class="viewcode-back" href="../../../aodncore.testlib.html#aodncore.testlib.basetest.BaseTestCase.setUp">[docs]</a>    <span class="k">def</span><span class="w"> </span><span class="nf">setUp</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">maxDiff</span> <span class="o">=</span> <span class="mi">10000</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">test_logger</span> <span class="o">=</span> <span class="n">get_pipeline_logger</span><span class="p">(</span><span class="s1">&#39;unittest&#39;</span><span class="p">)</span>
         <span class="n">logging</span><span class="o">.</span><span class="n">basicConfig</span><span class="p">(</span><span class="n">level</span><span class="o">=</span><span class="n">TEST_LOG_LEVEL</span><span class="p">,</span> <span class="nb">format</span><span class="o">=</span><span class="n">TEST_LOG_FORMAT</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="BaseTestCase.tearDown"><a class="viewcode-back" href="../../../aodncore.testlib.html#aodncore.testlib.basetest.BaseTestCase.tearDown">[docs]</a>    <span class="k">def</span> <span class="nf">tearDown</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="BaseTestCase.tearDown"><a class="viewcode-back" href="../../../aodncore.testlib.html#aodncore.testlib.basetest.BaseTestCase.tearDown">[docs]</a>    <span class="k">def</span><span class="w"> </span><span class="nf">tearDown</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s1">&#39;_temp_dir&#39;</span><span class="p">):</span>
             <span class="n">rm_rf</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_temp_dir</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="BaseTestCase.assertNoException"><a class="viewcode-back" href="../../../aodncore.testlib.html#aodncore.testlib.basetest.BaseTestCase.assertNoException">[docs]</a>    <span class="k">def</span> <span class="nf">assertNoException</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">callableObj</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>   <span class="c1"># pragma: no cover</span>
+<div class="viewcode-block" id="BaseTestCase.assertNoException"><a class="viewcode-back" href="../../../aodncore.testlib.html#aodncore.testlib.basetest.BaseTestCase.assertNoException">[docs]</a>    <span class="k">def</span><span class="w"> </span><span class="nf">assertNoException</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">callableObj</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>   <span class="c1"># pragma: no cover</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Fail if any exception is raised</span>
 
 <span class="sd">        :return: None</span>
