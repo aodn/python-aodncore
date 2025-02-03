@@ -156,7 +156,8 @@ PIPELINE_CONFIG_SCHEMA = {
                 'upload_uri': {'type': 'string'},
                 'wfs_url': {'type': 'string'},
                 'wfs_version': {'type': 'string'},
-                'wip_dir': {'type': 'string'}
+                'wip_dir': {'type': 'string'},
+                'landing_bucket': {'type': 'string'}
             },
             'required': ['admin_recipients', 'archive_uri', 'error_uri', 'processing_dir', 'upload_uri', 'wip_dir'],
             'additionalProperties': False

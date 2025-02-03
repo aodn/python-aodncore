@@ -30,6 +30,7 @@ from .log import get_pipeline_logger
 from .storage import get_storage_broker
 from ..util import (ensure_regex_list, format_exception, lazyproperty, mkdir_p, rm_f, rm_r, validate_dir_writable,
                     validate_file_writable, validate_membership)
+from ..util.aws import upload_to_s3
 
 # OS X test compatibility, due to absence of pyinotify (which is specific to the Linux kernel)
 try:
@@ -185,6 +186,8 @@ def build_task(config, pipeline_name, handler_class, success_exit_policies, erro
         def run(self, incoming_file):
             try:
                 logging.config.dictConfig(config.get_worker_logging_config(task_name))
+                logging.getLogger('boto3').setLevel(logging.DEBUG)
+                logging.getLogger('botocore').setLevel(logging.DEBUG)
                 logging_extra = {
                     'celery_task_id': self.request.id,
                     'celery_task_name': task_name
@@ -198,13 +201,18 @@ def build_task(config, pipeline_name, handler_class, success_exit_policies, erro
                     "{self.__class__.__name__}.error_exit_policies -> "
                     "{policies}".format(self=self, policies=[p.name for p in error_exit_policies]))
 
+                self.logger.sysinfo(
+                    f"{self.__class__.__name__}.kwargs -> {kwargs}"
+                )
+
                 file_state_manager = IncomingFileStateManager(input_file=incoming_file,
                                                               pipeline_name=pipeline_name,
                                                               config=config,
                                                               logger=self.logger,
                                                               celery_request=self.request,
                                                               error_exit_policies=error_exit_policies,
-                                                              success_exit_policies=success_exit_policies)
+                                                              success_exit_policies=success_exit_policies,
+                                                              params=kwargs)
 
                 file_state_manager.move_to_processing()
 
@@ -386,7 +394,7 @@ class IncomingFileStateManager(object):
             'trigger': 'move_to_processing',
             'source': 'FILE_IN_INCOMING',
             'dest': 'FILE_IN_PROCESSING',
-            'before': ['_pre_processing_checks', '_move_to_processing']
+            'before': ['_pre_processing_checks', '_copy_to_landing', '_move_to_processing']
         },
         {
             'trigger': 'move_to_error',
@@ -404,7 +412,7 @@ class IncomingFileStateManager(object):
     ]
 
     def __init__(self, input_file, pipeline_name, config, logger, celery_request, error_exit_policies=None,
-                 success_exit_policies=None, error_broker=None):
+                 success_exit_policies=None, error_broker=None, params=None):
         self.input_file = input_file
         self.pipeline_name = pipeline_name
         self.config = config
@@ -413,6 +421,12 @@ class IncomingFileStateManager(object):
         self.error_exit_policies = error_exit_policies or []
         self.success_exit_policies = success_exit_policies or []
         self._error_broker = error_broker
+        if params and "custom_params" in params:
+            self.custom_params = params["custom_params"]
+            self.copy_to_landing_enabled = self.custom_params.get("copy_to_landing_bucket", False)
+            self.landing_prefix = self.custom_params.get("landing_prefix", "")
+        else:
+            self.copy_to_landing_enabled = False
 
         self._machine = Machine(model=self, states=self.states, initial='FILE_IN_INCOMING', auto_transitions=False,
                                 transitions=self.transitions, after_state_change='_after_state_change')
@@ -461,6 +475,10 @@ class IncomingFileStateManager(object):
     def error_uri(self):
         return os.path.join(self.config.pipeline_config['global']['error_uri'], self.pipeline_name)
 
+    @property
+    def landing_bucket(self):
+        return self.config.pipeline_config['global'].get('landing_bucket')
+
     def _after_state_change(self):
         self._log_state()
 
@@ -476,6 +494,19 @@ class IncomingFileStateManager(object):
         except Exception:  # pragma: no cover
             self.logger.exception('exception occurred initialising IncomingFileStateManager')
             raise
+
+    def _copy_to_landing(self):
+        # skip this step all together if not configured to copy to landing
+        if not self.landing_bucket or not self.copy_to_landing_enabled:
+            return
+
+        self.logger.info(
+            f"{self.__class__.__name__}.copy_to_landing -> 's3://{self.landing_bucket}/{self.landing_prefix}'")
+        self.logger.sysinfo(f"Uploading {self.input_file} to 's3://{self.landing_bucket}/{self.landing_prefix}'")
+        try:
+            upload_to_s3(self.input_file, self.landing_bucket, self.landing_prefix, self.basename)
+        except Exception as e:
+            self.logger.warning(f"Failed to upload file to s3://{self.landing_bucket}/{self.landing_prefix}: {e}")
 
     def _move_to_processing(self):
         self.logger.info("{self.__class__.__name__}.move_to_processing -> '{self.processing_path}'".format(self=self))

@@ -22,8 +22,8 @@ REFERENCE_PIPELINE_CONFIG = {
         'upload_uri': 'file:///tmp/probably/doesnt/exist/upload',
         'wfs_url': 'http://geoserver.example.com/geoserver/wfs',
         'wfs_version': '1.1.0',
-        'wip_dir': '/tmp/probably/doesnt/exist/wip'
-
+        'wip_dir': '/tmp/probably/doesnt/exist/wip',
+        'landing_bucket': 'probably-doesnt-exist-landing-bucket'
     },
     'logging': {
         'level': 'SYSINFO',
