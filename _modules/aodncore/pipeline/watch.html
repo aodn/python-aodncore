@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>aodncore.pipeline.watch &mdash; aodncore 1.4.10 documentation</title>
+  <title>aodncore.pipeline.watch &mdash; aodncore 1.4.11 documentation</title>
       <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
   <!--[if lt IE 9]>
@@ -306,7 +306,9 @@
 
                 <span class="k">try</span><span class="p">:</span>
                     <span class="n">handler</span> <span class="o">=</span> <span class="n">handler_class</span><span class="p">(</span><span class="n">file_state_manager</span><span class="o">.</span><span class="n">processing_path</span><span class="p">,</span> <span class="n">celery_task</span><span class="o">=</span><span class="bp">self</span><span class="p">,</span> <span class="n">config</span><span class="o">=</span><span class="n">config</span><span class="p">,</span>
-                                            <span class="n">upload_path</span><span class="o">=</span><span class="n">file_state_manager</span><span class="o">.</span><span class="n">relative_path</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+                                            <span class="n">upload_path</span><span class="o">=</span><span class="n">file_state_manager</span><span class="o">.</span><span class="n">relative_path</span><span class="p">,</span>
+                                            <span class="n">input_file_copied_to_landing</span><span class="o">=</span><span class="n">file_state_manager</span><span class="o">.</span><span class="n">copy_to_landing_successful</span><span class="p">,</span>
+                                            <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
                 <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
                     <span class="n">file_state_manager</span><span class="o">.</span><span class="n">move_to_error</span><span class="p">()</span>
                     <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s2">&quot;failed to instantiate handler class: </span><span class="si">{e}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">e</span><span class="o">=</span><span class="n">format_exception</span><span class="p">(</span><span class="n">e</span><span class="p">)))</span>
@@ -521,6 +523,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">_log_state</span><span class="p">()</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">handler</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">copy_to_landing_successful</span> <span class="o">=</span> <span class="kc">None</span>
 
     <span class="k">def</span><span class="w"> </span><span class="nf">_log_state</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">sysinfo</span><span class="p">(</span>
@@ -595,6 +598,10 @@
             <span class="n">upload_to_s3</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">input_file</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">landing_bucket</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">landing_prefix</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">basename</span><span class="p">)</span>
         <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Failed to upload file to s3://</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">landing_bucket</span><span class="si">}</span><span class="s2">/</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">landing_prefix</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">copy_to_landing_successful</span> <span class="o">=</span> <span class="kc">False</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">copy_to_landing_successful</span> <span class="o">=</span> <span class="kc">True</span>
+
 
     <span class="k">def</span><span class="w"> </span><span class="nf">_move_to_processing</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;</span><span class="si">{self.__class__.__name__}</span><span class="s2">.move_to_processing -&gt; &#39;</span><span class="si">{self.processing_path}</span><span class="s2">&#39;&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">=</span><span class="bp">self</span><span class="p">))</span>

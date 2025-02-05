@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>aodncore.pipeline.handlerbase &mdash; aodncore 1.4.10 documentation</title>
+  <title>aodncore.pipeline.handlerbase &mdash; aodncore 1.4.11 documentation</title>
       <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
   <!--[if lt IE 9]>
@@ -189,7 +189,9 @@
 <span class="sd">    :type config: :py:class:`aodncore.pipeline.config.LazyConfigManager`</span>
 
 <span class="sd">    :param custom_params: A dict containing parameters which are ignored by the base class, but allow passing arbitrary</span>
-<span class="sd">        custom values to subclasses. The structure of the dict is defined by the :const:`CUSTOM_PARAMS_SCHEMA` object in</span>
+<span class="sd">        custom values to subclasses. The only exception is when :py:attr:`input_file_copied_to_landing` is True</span>
+<span class="sd">        (see below), in which case custom_params can be used to modify the default publish type.</span>
+<span class="sd">        The structure of the dict is defined by the :const:`CUSTOM_PARAMS_SCHEMA` object in</span>
 <span class="sd">        the :py:mod:`aodncore.pipeline.schema` module.</span>
 <span class="sd">    :type custom_params: :py:class:`dict`</span>
 
@@ -260,6 +262,10 @@
 <span class="sd">        :py:const:`RESOLVE_PARAMS_SCHEMA` object in the :py:mod:`aodncore.pipeline.schema` module.</span>
 <span class="sd">    :type resolve_params: :py:class:`dict`</span>
 
+<span class="sd">    :param input_file_copied_to_landing: Flags whether the original input file has been successfully copied to the</span>
+<span class="sd">        landing bucket (to be published to S3 via new pipeline). If set to True and the custom_params contain the item</span>
+<span class="sd">        &quot;harvest_only&quot; set to True, the :py:attr:`default_addition_publish_type` will be set to HARVEST_ONLY and the</span>
+<span class="sd">        handler will not save files to S3.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="n">ordered_states</span> <span class="o">=</span> <span class="p">[</span>
@@ -377,7 +383,8 @@
                  <span class="n">include_regexes</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
                  <span class="n">notify_params</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
                  <span class="n">upload_path</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-                 <span class="n">resolve_params</span><span class="o">=</span><span class="kc">None</span>
+                 <span class="n">resolve_params</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                 <span class="n">input_file_copied_to_landing</span><span class="o">=</span><span class="kc">None</span>
                  <span class="p">):</span>
 
         <span class="c1"># property backing variables</span>
@@ -424,6 +431,10 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">upload_path</span> <span class="o">=</span> <span class="n">upload_path</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">resolve_params</span> <span class="o">=</span> <span class="n">resolve_params</span>
 
+        <span class="c1"># update default publish types if specified in config and the input file has been copied to the landing bucket</span>
+        <span class="k">if</span> <span class="n">input_file_copied_to_landing</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">custom_params</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">custom_params</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;harvest_only&quot;</span><span class="p">,</span> <span class="kc">False</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">default_addition_publish_type</span> <span class="o">=</span> <span class="n">PipelineFilePublishType</span><span class="o">.</span><span class="n">HARVEST_ONLY</span>
+
         <span class="c1"># private attributes</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_archive_path_function_ref</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_archive_path_function_name</span> <span class="o">=</span> <span class="kc">None</span>
@@ -436,7 +447,7 @@
                                 <span class="n">after_state_change</span><span class="o">=</span><span class="s1">&#39;_after_state_change&#39;</span><span class="p">)</span>
 
     <span class="k">def</span><span class="w"> </span><span class="fm">__iter__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="n">ignored_attributes</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;celery_task&#39;</span><span class="p">,</span> <span class="s1">&#39;config&#39;</span><span class="p">,</span> <span class="s1">&#39;default_addition_publish_type&#39;</span><span class="p">,</span> <span class="s1">&#39;default_deletion_publish_type&#39;</span><span class="p">,</span>
+        <span class="n">ignored_attributes</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;celery_task&#39;</span><span class="p">,</span> <span class="s1">&#39;config&#39;</span><span class="p">,</span> <span class="s1">&#39;default_deletion_publish_type&#39;</span><span class="p">,</span>
                               <span class="s1">&#39;input_file_object&#39;</span><span class="p">,</span> <span class="s1">&#39;logger&#39;</span><span class="p">,</span> <span class="s1">&#39;state&#39;</span><span class="p">,</span> <span class="s1">&#39;state_query&#39;</span><span class="p">,</span> <span class="s1">&#39;trigger&#39;</span><span class="p">}</span>
         <span class="n">ignored_attributes</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="s2">&quot;is_</span><span class="si">{state}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">state</span><span class="o">=</span><span class="n">s</span><span class="p">)</span> <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">all_states</span><span class="p">)</span>
 
