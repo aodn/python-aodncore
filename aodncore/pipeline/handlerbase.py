@@ -344,7 +344,7 @@ class HandlerBase(object):
         self.resolve_params = resolve_params
 
         # update default publish types if specified in config and the input file has been copied to the landing bucket
-        if self.custom_params and self.custom_params.get("harvest_only", False) and input_file_copied_to_landing:
+        if input_file_copied_to_landing and self.custom_params and self.custom_params.get("harvest_only", False):
             self.default_addition_publish_type = PipelineFilePublishType.HARVEST_ONLY
 
         # private attributes
