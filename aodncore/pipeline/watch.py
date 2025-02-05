@@ -200,10 +200,7 @@ def build_task(config, pipeline_name, handler_class, success_exit_policies, erro
                 self.logger.sysinfo(
                     "{self.__class__.__name__}.error_exit_policies -> "
                     "{policies}".format(self=self, policies=[p.name for p in error_exit_policies]))
-
-                self.logger.sysinfo(
-                    f"{self.__class__.__name__}.kwargs -> {kwargs}"
-                )
+                self.logger.debug(f"{self.__class__.__name__}.kwargs -> {kwargs}")
 
                 file_state_manager = IncomingFileStateManager(input_file=incoming_file,
                                                               pipeline_name=pipeline_name,
@@ -504,14 +501,15 @@ class IncomingFileStateManager(object):
             return
 
         self.logger.info(
-            f"{self.__class__.__name__}.copy_to_landing -> 's3://{self.landing_bucket}/{self.landing_prefix}'")
-        self.logger.sysinfo(f"Uploading {self.input_file} to 's3://{self.landing_bucket}/{self.landing_prefix}'")
+            f"{self.__class__.__name__}.copy_to_landing -> 's3://{self.landing_bucket}/{self.landing_prefix}'"
+         )
         try:
             upload_to_s3(self.input_file, self.landing_bucket, self.landing_prefix, self.basename)
         except Exception as e:
-            self.logger.warning(f"Failed to upload file to s3://{self.landing_bucket}/{self.landing_prefix}: {e}")
+            self.logger.warning(f"Failed to upload to s3://{self.landing_bucket}/{self.landing_prefix}: {e}")
             self.copy_to_landing_successful = False
         else:
+            self.logger.info(f"Incoming file uploaded to 's3://{self.landing_bucket}/{self.landing_prefix}/{self}'")
             self.copy_to_landing_successful = True
 
 
