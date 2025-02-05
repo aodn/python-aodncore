@@ -101,7 +101,9 @@ class HandlerBase(object):
     :type config: :py:class:`aodncore.pipeline.config.LazyConfigManager`
 
     :param custom_params: A dict containing parameters which are ignored by the base class, but allow passing arbitrary
-        custom values to subclasses. The structure of the dict is defined by the :const:`CUSTOM_PARAMS_SCHEMA` object in
+        custom values to subclasses. The only exception is when :py:attr:`input_file_copied_to_landing` is True
+        (see below), in which case custom_params can be used to modify the default publish type.
+        The structure of the dict is defined by the :const:`CUSTOM_PARAMS_SCHEMA` object in
         the :py:mod:`aodncore.pipeline.schema` module.
     :type custom_params: :py:class:`dict`
 
@@ -172,6 +174,10 @@ class HandlerBase(object):
         :py:const:`RESOLVE_PARAMS_SCHEMA` object in the :py:mod:`aodncore.pipeline.schema` module.
     :type resolve_params: :py:class:`dict`
 
+    :param input_file_copied_to_landing: Flags whether the original input file has been successfully copied to the
+        landing bucket (to be published to S3 via new pipeline). If set to True and the custom_params contain the item
+        "harvest_only" set to True, the :py:attr:`default_addition_publish_type` will be set to HARVEST_ONLY and the
+        handler will not save files to S3.
     """
 
     ordered_states = [
@@ -289,7 +295,8 @@ class HandlerBase(object):
                  include_regexes=None,
                  notify_params=None,
                  upload_path=None,
-                 resolve_params=None
+                 resolve_params=None,
+                 input_file_copied_to_landing=None
                  ):
 
         # property backing variables
@@ -336,6 +343,10 @@ class HandlerBase(object):
         self.upload_path = upload_path
         self.resolve_params = resolve_params
 
+        # update default publish types if specified in config and the input file has been copied to the landing bucket
+        if self.custom_params and self.custom_params.get("harvest_only", False) and input_file_copied_to_landing:
+            self.default_addition_publish_type = PipelineFilePublishType.HARVEST_ONLY
+
         # private attributes
         self._archive_path_function_ref = None
         self._archive_path_function_name = None
@@ -348,7 +359,7 @@ class HandlerBase(object):
                                 after_state_change='_after_state_change')
 
     def __iter__(self):
-        ignored_attributes = {'celery_task', 'config', 'default_addition_publish_type', 'default_deletion_publish_type',
+        ignored_attributes = {'celery_task', 'config', 'default_deletion_publish_type',
                               'input_file_object', 'logger', 'state', 'state_query', 'trigger'}
         ignored_attributes.update("is_{state}".format(state=s) for s in self.all_states)
 

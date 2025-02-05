@@ -218,7 +218,9 @@ def build_task(config, pipeline_name, handler_class, success_exit_policies, erro
 
                 try:
                     handler = handler_class(file_state_manager.processing_path, celery_task=self, config=config,
-                                            upload_path=file_state_manager.relative_path, **kwargs)
+                                            upload_path=file_state_manager.relative_path,
+                                            input_file_copied_to_landing=file_state_manager.copy_to_landing_successful,
+                                            **kwargs)
                 except Exception as e:
                     file_state_manager.move_to_error()
                     self.logger.error("failed to instantiate handler class: {e}".format(e=format_exception(e)))
@@ -433,6 +435,7 @@ class IncomingFileStateManager(object):
         self._log_state()
 
         self.handler = None
+        self.copy_to_landing_successful = None
 
     def _log_state(self):
         self.logger.sysinfo(
@@ -507,6 +510,10 @@ class IncomingFileStateManager(object):
             upload_to_s3(self.input_file, self.landing_bucket, self.landing_prefix, self.basename)
         except Exception as e:
             self.logger.warning(f"Failed to upload file to s3://{self.landing_bucket}/{self.landing_prefix}: {e}")
+            self.copy_to_landing_successful = False
+
+        self.copy_to_landing_successful = True
+
 
     def _move_to_processing(self):
         self.logger.info("{self.__class__.__name__}.move_to_processing -> '{self.processing_path}'".format(self=self))
