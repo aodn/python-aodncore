@@ -511,8 +511,8 @@ class IncomingFileStateManager(object):
         except Exception as e:
             self.logger.warning(f"Failed to upload file to s3://{self.landing_bucket}/{self.landing_prefix}: {e}")
             self.copy_to_landing_successful = False
-
-        self.copy_to_landing_successful = True
+        else:
+            self.copy_to_landing_successful = True
 
 
     def _move_to_processing(self):
