@@ -1,4 +1,3 @@
-import csv
 import psycopg2
 from psycopg2 import sql, extras
 import yaml

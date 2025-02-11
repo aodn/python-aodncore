@@ -219,7 +219,8 @@ class TestUtilFileOps(BaseTestCase):
         rm_f(temp_file)
         self.assertFalse(os.path.exists(temp_file))
 
-        with self.assertRaisesRegex(OSError, r'\[Errno 21\].*'):
+        # [Errno 1] or [Errno 21] depeding on the OS...
+        with self.assertRaises(OSError):
             rm_f(temp_dir)
 
     def test_rm_r(self):

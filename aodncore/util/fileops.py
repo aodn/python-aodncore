@@ -298,7 +298,7 @@ def mkdir_p(path, mode=0o755):
 
 def rm_f(path):
     """Remove a file, ignoring "file not found" errors (analogous to shell command 'rm -f')
-    
+
     :param path: path to file being deleted
     :return: None
     """
