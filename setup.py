@@ -12,6 +12,7 @@ INSTALL_REQUIRES = [
     'compliance-checker @ git+https://github.com/ioos/compliance-checker.git@5.0.1',
     'jsonschema>=2.6.0',
     'paramiko>=2.6.0',
+    'psycopg2>=2.8.6',
     'python-magic>=0.4.15',
     'tableschema>=1.19.4',
     'tabulate>=0.8.2',

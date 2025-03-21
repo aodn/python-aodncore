@@ -50,8 +50,11 @@ class TestPipelineStepsHarvest(BaseTestCase):
         self.uploader = StoreRunner(NullStorageBroker("/"), None, None)
 
     def test_get_harvester_runner(self):
-        harvester_runner = get_harvester_runner('talend', self.uploader, None, TESTDATA_DIR, None, self.test_logger)
-        self.assertIsInstance(harvester_runner, TalendHarvesterRunner)
+        talend_runner = get_harvester_runner('talend', self.uploader, None, TESTDATA_DIR, None, self.test_logger)
+        self.assertIsInstance(talend_runner, TalendHarvesterRunner)
+
+        csv_runner = get_harvester_runner('csv', self.uploader, None, TESTDATA_DIR, None, self.test_logger)
+        self.assertIsInstance(csv_runner, CsvHarvesterRunner)
 
     def test_get_harvester_runner_csv(self):
         harvester_runner = get_harvester_runner('csv', self.uploader, None, TESTDATA_DIR, None, self.test_logger)
@@ -70,6 +73,33 @@ class TestPipelineStepsHarvest(BaseTestCase):
 
         with self.assertRaises(UnmappedFilesError):
             validate_harvester_mapping(collection, matched_file_map)
+
+
+class TestCsvHarvesterRunner(BaseTestCase):
+    def setUp(self):
+        super().setUp()
+
+        self.uploader = NullStorageBroker("/")
+
+        # assumes that username and password are supplied externally in one of the ways supported by libpq, such as
+        # a ~/.pgpass file or environment variables
+
+        os.environ['PGHOST'] = 'PGHOST'
+        os.environ['PGDATABASE'] = 'PGDATABASE'
+        os.environ['PGSSLMODE'] = 'require'
+
+        self.harvester = CsvHarvesterRunner(self.uploader, None, self.config, self.test_logger)
+
+    def test_harvester(self):
+        collection = PipelineFileCollection([
+            PipelineFile(self.temp_nc_file, publish_type=PipelineFilePublishType.HARVEST_ONLY),
+            PipelineFile(GOOD_NC, publish_type=PipelineFilePublishType.UNHARVEST_ONLY, is_deletion=True),
+            PipelineFile(BAD_NC, publish_type=PipelineFilePublishType.UNHARVEST_ONLY, is_deletion=True, late_deletion=True)
+        ])
+        self.harvester.run(collection)
+
+        self.assertTrue(all(f.is_harvested for f in collection))
+        self.assertTrue(all(f.is_stored for f in collection))
 
 
 class TestTalendHarvesterRunner(BaseTestCase):
