@@ -3,6 +3,9 @@ from setuptools import setup, find_packages
 ENTRY_POINTS = {
     'pipeline.module_versions': [
         'compliance-checker = compliance_checker:__version__'
+    ],
+    'pipeline.handlers': [
+        'ArchiveHandler = aodncore.pipeline.archiveHandler:ArchiveHandler'
     ]
 }
 
